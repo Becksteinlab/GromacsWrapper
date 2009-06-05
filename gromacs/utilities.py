@@ -12,19 +12,19 @@ def anyopen(datasource):
         stream = None
         filename = datasource
         for openfunc in bz2.BZ2File, gzip.open, file:
-            stream = _trialreadline(datasource)
+            stream = _get_stream(datasource, openfunc)
             if not stream is None:
                 break
         if stream is None:
             raise IOError("Cannot open %r for reading." % filename)
     return stream, filename
 
-def _trialreadline(filename, openfunction=file):
+def _get_stream(filename, openfunction=file):
     try:
         stream = openfunction(filename,'r')
         stream.readline()
         stream.close()
-        stream = bz2.BZ2File(self.filename,'r')
+        stream = openfunction(filename,'r')
     except IOError:
         stream.close()
         stream = None

@@ -46,7 +46,7 @@ import gromacs.utilities
 class Mindist(object):
     """The Mindist class allows analysis of the output from ``g_dist -dist CUTOFF``.
 
-    Output is read from a bzipped file. The raw data (attribute
+    Output is read from a file or stream. The raw data (attribute
     ``all_distances``) is transformed into a true 'mindist' time
     series (available in the ``distances`` attribute): for each frame
     only the shortest distance is stored (whereas g_mindist provides
@@ -63,7 +63,7 @@ class Mindist(object):
     def __init__(self,datasource):
         """Read mindist data from file or stream."""
 
-        self.filename, stream = gromacs.utilities.anyopen(datasource)
+        stream, self.filename = gromacs.utilities.anyopen(datasource)
         M = GdistData(stream)
         _distances = numpy.rec.fromrecords(
             [(frame,distance) for frame,distance in M],  # pull data from file
