@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# $Id: mindist.py 191 2009-06-04 15:03:44Z oliver $
+# $Id$
 """
 Overview
 ========
