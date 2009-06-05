@@ -28,6 +28,6 @@ trajectories/topologies one is analyzing.
 
 """
 
-__all__ = ['tools']
+__all__ = ['tools', 'analysis']
 
 from tools import *
