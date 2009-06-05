@@ -40,8 +40,7 @@ class GromacsCommand(object):
         When the command is run one can override options that were
         given at initialization or add additional ones.
         """
-        self.gmxargs = self._args2kwargs(*args)  # switches are treated as kwargs, too
-        self.gmxargs.update(kwargs)              # proper options with parameters
+        self.gmxargs = self._combineargs(*args, **kwargs)
         self.__doc__ = self.gmxdoc
 
     def run(self,*args,**kwargs):
@@ -52,14 +51,10 @@ class GromacsCommand(object):
 
     def _combineargs(self,*args,**kwargs):
         """Add switches as 'options' with value True to the options dict."""
-        d = self._args2kwargs(*args)
-        d.update(kwargs)        
+        d = dict([(arg, True) for arg in args])   # switches are kwargs with value True
+        d.update(kwargs)
         return d
     
-    def _args2kwargs(self,*args):
-        """Turns all args into pseudo-kwargs with value True."""
-        return dict([(arg, True) for arg in args])
-
     def _build_arg_list(self,**kwargs):
         """Build list of arguments from the dict; keys must be valid  gromacs flags."""
         arglist = []
@@ -115,7 +110,7 @@ class GromacsCommand(object):
 
         :TODO:
         * It should be possible to make input/output pipes so that one can
-          chain analysis tools.
+          chain analysis tools. ... is this working?
         """
         # TODO: flexible in/ouput: 
         # - It should be possible to easily feed input (eg for make_ndx).
@@ -123,7 +118,7 @@ class GromacsCommand(object):
         #   structured manner, depending on the class of the tool.
         stdin = kwargs.pop('stdin', None)
         stderr = kwargs.pop('stderr', STDOUT)
-        stdout = kwargs.pop('stdout', PIPE)     # set to STDOUT for screen output
+        stdout = kwargs.pop('stdout', PIPE)     # set to None for screen output
         input = kwargs.pop('input', None)
         if input:
             stdin = PIPE
@@ -141,14 +136,18 @@ class GromacsCommand(object):
         out, err = p.communicate(input)
         rc = p.returncode
         if rc != 0:
-            warnings.warn("Command %(cmd)r failed with return code %(rc)d" % vars())
+            warnings.warn("Command %(cmd)r failed with return code %(rc)d" % vars(),
+                          category=RuntimeWarning)
         return rc, out, err
 
     def _get_gmx_docs(self):
         """Extract standard gromacs doc by running the program and chopping the header."""
         rc,docs,nothing = self._run_command('h', stdout=PIPE)
         m = re.match(self.doc_pattern, docs, re.DOTALL)    # keep from DESCRIPTION onwards
+        if m is None:
+            return "(No documentation provided)"
         return m.group('DOCS')
+        
 
     def gmxdoc():
         doc = """Usage for the underlying Gromacs tool (cached)."""
@@ -158,6 +157,11 @@ class GromacsCommand(object):
             return self.__doc_cache
         return locals()
     gmxdoc = property(**gmxdoc())
+
+    def help(self):
+        """Print help; same as using ``?`` in ``ipython``."""
+        print "\ncommand: %s\n\n" % self.command_name
+        print self.gmxdoc
         
     def __call__(self,*args,**kwargs):
         return self.run(*args,**kwargs)

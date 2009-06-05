@@ -1,7 +1,7 @@
 # $Id$
 # setuptools installation of GromacsWrapper
 # Copyright (c) 2007-2009 Oliver Beckstein <orbeckst@gmail.com>
-# Released under the GNU Public License 2 (or higher, your choice)
+# Released under the GNU Public License 3 (or higher, your choice)
 
 
 from ez_setup import use_setuptools

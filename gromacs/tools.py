@@ -1,9 +1,44 @@
 # $Id$
-"""Gromacs commands."""
+"""Gromacs commands classes.
+
+A class can be thought of as a factory function that produces an
+instance of a gromacs command with initial default values.
+
+A class has the capitalized name of the corresponding Gromacs tool.
+"""
 
 from core import GromacsCommand
 
-class g_dist(GromacsCommand):
-    command_name = 'g_dist'
 
-# should auto-generate the list
+# Auto-generate classes such as:
+# class g_dist(GromacsCommand):
+#     command_name = 'g_dist'
+
+gmx_tools = """\
+anadock      g_current     g_helix        g_rama     g_traj     mdrun_d
+demux.pl     g_density     g_helixorient  g_rdf      g_vanhove  mk_angndx
+do_dssp      g_densmap     g_kinetics     g_rms      g_velacc   pdb2gmx
+editconf     g_dielectric  g_lie          g_rmsdist  g_wham     protonate
+eneconv      g_dih         g_mdmat        g_rmsf     genbox     sigeps
+g_anaeig     g_dipoles     g_mindist      g_rotacf   genconf    tpbconv
+g_analyze    g_disre       g_morph        g_saltbr   genion     trjcat
+g_angle      g_dist        g_msd          g_sas      genrestr   trjconv
+g_bond       g_dyndom      g_nmeig        g_sdf      gmxcheck   trjorder
+g_bundle     g_enemat      g_nmens        g_sgangle  gmxdump    wheel
+g_chi        g_energy      g_nmtraj       g_sham     grompp     x2top
+g_cluster    g_filter      g_order        g_sorient  luck       xplor2gmx.pl
+g_clustsize  g_gyrate      g_polystat     g_spatial  make_edi   xpm2ps
+g_confrms    g_h2order     g_potential    g_spol     make_ndx
+g_covar      g_hbond       g_principal    g_tcaf     mdrun
+"""
+
+registry = {}
+
+for name in gmx_tools.split():
+    clsname = name.capitalize()  # convention: class names are capitalized
+    cls = type(clsname, (GromacsCommand,), {'command_name':name})
+    registry[clsname] = cls      # registry keeps track of all classes
+
+locals().update(registry)        # add classes to module's scope
+
+del name, cls, gmx_tools

@@ -30,4 +30,17 @@ trajectories/topologies one is analyzing.
 
 __all__ = ['tools', 'analysis']
 
-from tools import *
+# add gromacs command **instances** (note that each gromacs command is
+# actually run when the instance is created in order to gather the
+# documentation string.)
+import tools
+
+# ignore warnings from a few programs that do not produce documentation when
+# run with '-h'
+import warnings
+warnings.simplefilter("ignore", RuntimeWarning)
+for clsname, cls in tools.registry.items():
+    name = clsname[0].lower() + clsname[1:]    # instances should start lower case
+    name = name.replace('.','_')               # make names valid python identifiers
+    locals()[name] = cls()
+warnings.simplefilter("default", RuntimeWarning)
