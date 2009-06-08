@@ -41,6 +41,5 @@ import warnings
 warnings.simplefilter("ignore", RuntimeWarning)
 for clsname, cls in tools.registry.items():
     name = clsname[0].lower() + clsname[1:]    # instances should start lower case
-    name = name.replace('.','_')               # make names valid python identifiers
     locals()[name] = cls()
 warnings.simplefilter("default", RuntimeWarning)

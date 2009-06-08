@@ -4,11 +4,11 @@
 A class can be thought of as a factory function that produces an
 instance of a gromacs command with initial default values.
 
-A class has the capitalized name of the corresponding Gromacs tool.
+A class has the capitalized name of the corresponding Gromacs tool;
+dots are replaced by underscores to make it a valid python identifier.
 """
 
 from core import GromacsCommand
-
 
 # Auto-generate classes such as:
 # class g_dist(GromacsCommand):
@@ -35,10 +35,11 @@ g_covar      g_hbond       g_principal    g_tcaf     mdrun
 registry = {}
 
 for name in gmx_tools.split():
-    clsname = name.capitalize()  # convention: class names are capitalized
+    # make names valid python identifiers and convention: class names are capitalized
+    clsname = name.replace('.','_').capitalize()  
     cls = type(clsname, (GromacsCommand,), {'command_name':name})
     registry[clsname] = cls      # registry keeps track of all classes
 
 locals().update(registry)        # add classes to module's scope
 
-del name, cls, gmx_tools
+del name, cls, clsname, gmx_tools
