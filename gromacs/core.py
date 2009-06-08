@@ -13,6 +13,8 @@ class GromacsCommand(object):
     Limitations: User must have sourced GMXRC so that the python
     script can inherit the environment and find the gromacs programs.
 
+    The class doc string is dynamically replaced by the documentation of the
+    gromacs command when an instance is created.
     """
     # TODO: setup the environment from GMXRC (can use env=DICT in Popen/call)
 
@@ -71,7 +73,7 @@ class GromacsCommand(object):
                     arglist.extend([flag] + value) # option with value list
                 except TypeError:
                     arglist.extend([flag, value])  # option with single value
-        return arglist
+        return map(str, arglist)  # all arguments MUST be strings 
 
     def _run_command(self,*args,**kwargs):
         """Run command with the given arguments.
@@ -85,7 +87,9 @@ class GromacsCommand(object):
         At the moment, the processes stdout and stderr are merged        
         
         :Arguments:
-        input            string to be fed to the process' standard input [None]
+        input            string or sequence to be fed to the process' standard input;
+                         elements of a sequence are concatenated with
+                         newlines, including a railing one    [None]
         stdin            None or automatically set to PIPE if input given [None]
         stdout           filehandle to write to, eg None to see output on screen;
                          PIPE returns the output as a string in the stdout parameter [PIPE]
@@ -111,34 +115,48 @@ class GromacsCommand(object):
         :TODO:
         * It should be possible to make input/output pipes so that one can
           chain analysis tools. ... is this working?
+        * Output is memory buffered and hence chaining commands does not work well
+          for large amounts of output; no good solution at the moment. Maybe write
+          to temp file or write proper asynchronous select loop.
+         # TODO: flexible in/output: 
+         # - It should be possible to easily chain tools or compress output
+         # - Output should be made available, maybe even in a
+         #   structured manner, depending on the class of the tool.
         """
-        # TODO: flexible in/ouput: 
-        # - It should be possible to easily feed input (eg for make_ndx).
-        # - Output should be made available, maybe even in a
-        #   structured manner, depending on the class of the tool.
+        p = self.Popen(*args, **kwargs)
+        out, err = p.communicate()       # special Popen knos input!
+        rc = p.returncode
+        if rc != 0:
+            warnings.warn("Command %(command)r failed with return code %(returncode)d" % vars(p),
+                          category=RuntimeWarning)
+        return rc, out, err
+
+    def Popen(self, *args,**kwargs):
+        """Returns a special Popen instance with pre-set input for communicate()."""
         stdin = kwargs.pop('stdin', None)
         stderr = kwargs.pop('stderr', STDOUT)
         stdout = kwargs.pop('stdout', PIPE)     # set to None for screen output
         input = kwargs.pop('input', None)
         if input:
             stdin = PIPE
+            if not type(input) is str:
+                try:
+                    input = '\n'.join(map(str, input)) + '\n'
+                except TypeError:
+                    pass
         newargs = self._combineargs(*args,**kwargs)
         cmd = [self.command_name] + self._build_arg_list(**newargs)
         try:
-            p = subprocess.Popen(cmd, stdin=stdin, stderr=stderr, stdout=stdout,
-                                 universal_newlines=True)
+            p = PopenWithInput(cmd, stdin=stdin, stderr=stderr, stdout=stdout,
+                               universal_newlines=True, input=input)
         except OSError,err:
             if err.errno == errno.ENOENT:
                 raise OSError("Failed to find Gromacs command '%r'. Source GMXRC." %
                               self.command_name)
             else:
                 raise
-        out, err = p.communicate(input)
-        rc = p.returncode
-        if rc != 0:
-            warnings.warn("Command %(cmd)r failed with return code %(rc)d" % vars(),
-                          category=RuntimeWarning)
-        return rc, out, err
+        return p
+        
 
     def _get_gmx_docs(self):
         """Extract standard gromacs doc by running the program and chopping the header."""
@@ -168,4 +186,13 @@ class GromacsCommand(object):
 
 
 
+
+class PopenWithInput(subprocess.Popen):
+    """Popen class that knows its input; simply call communicate() later."""
+    def __init__(self,*args,**kwargs):
+        self.input = kwargs.pop('input',None)
+        self.command = args[0]
+        super(PopenWithInput,self).__init__(*args,**kwargs)
+    def communicate(self):
+        return super(PopenWithInput,self).communicate(self.input)
 

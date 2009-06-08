@@ -34,7 +34,6 @@ itself.::
 
 """
 
-import bz2
 import re
 import numpy
 
@@ -82,7 +81,8 @@ class Mindist(object):
         the data.
 
         If the number of bins is not provided then it is set so that
-        on average 100 counts come to a bin.
+        on average 100 counts come to a bin. Set nbins manually if the
+        histogram only contains a single bin (and then get more data)!
 
         :Keyword arguments:
         nbins       number of bins
@@ -111,6 +111,17 @@ class Mindist(object):
         if midpoints:
             e = 0.5*(e[:-1] + e[1:])
         return h,e
+
+    def plot(self,**kwargs):
+        import pylab
+        kwargs['midpoints'] = True
+        histogram_args = ('nbins','lo','hi','midpoints','normed')
+        histargs = kwargs.copy()
+        histargs = dict([(k, kwargs.pop(k)) for k in histargs if k in histogram_args])
+        h,m = self.histogram(**histargs)        
+
+        pylab.plot(m, h, **kwargs)
+        pylab.xlabel('minimum distance (nm)')
 
 class GdistData(object):
     """Object that represents the output of g_dist -dist CUTOFF"""
