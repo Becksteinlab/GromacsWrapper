@@ -19,11 +19,28 @@ from core import AttributeDict
 import gromacs
 
 class Plugin(object):
-    """Empty class to nicely label all plugins.
+    """Plugin mixin classes are derived from Plugin. 
 
-    If we want to add some general code for all plugins in the future it can go
-    here.
+    They only register the actual plugin in the plugins dictionary.
     """    
+    plugin_name = None     # name of the plugin
+    plugin_class = None    # actual plugin class (typically name with leading underscore)
+
+    def __init__(self,**kwargs):
+        """Registers the plugin with the simulation class.
+        :Arguments:
+        <plugin_name>      a dictionary named like the plugin is taken to include
+                           keyword arguments to initialize the plugin
+        **kwargs           all other kwargs are passed along                           
+        """
+        plugin_args = kwargs.pop(plugin_name,None)  # must be a dict named like the plugin
+        plugin_args['simulation'] = self            # allows access of plugin to globals
+        super(Plugin, self).__init__(**kwargs)
+        self.plugins[plugin_name] = plugin_class(**plugin_args)
+
+class XXXCysAccessibility(Plugin):
+    plugin_name = "CysAccessibility"
+###XXX    plugin_class = _CysAccessibility
 
 # * This is not a well-thought out plan. If the method resolution order is messed
 #   up then some data structures (location, parameters, results, _analysis) are
@@ -33,10 +50,11 @@ class Plugin(object):
 #
 # We'll probably rewrite all this eventually....
 
-class CysAccessibility(Plugin):
+#class _CysAccessibility(Plugin):
+class CysAccessibility(object):
     """Analysis of Cysteine accessibility. Use as mixin class for Simulation"""
 
-    plugin_name = "CysAccessibility"
+    plugin_name = "CysAccessibility"   # <--- crap, if we mixin more than one Plugin this will be overwritten!!
 
     def __init__(self,**kwargs):
         """Set up  customized Cysteine accessibility analysis.
@@ -46,6 +64,7 @@ class CysAccessibility(Plugin):
                         labels or in the form 'Cys<resid>'. []
         cys_cutoff      cutoff in nm for the minimum S-OW distance [1.0]                        
         """
+        ## self.simulation = kwargs.pop('simulation',None)  # required
 
         cysteines = kwargs.pop('cysteines',[])       # sequence resids as labels (NOT necessarily Gromacs itp)
         cys_cutoff = kwargs.pop('cys_cutoff', 1.0)   # nm
@@ -64,9 +83,10 @@ class CysAccessibility(Plugin):
         self.parameters[self.plugin_name].ndx = self.topdir(self.location[self.plugin_name],'cys.ndx')
         # output filenames for g_dist, indexed by Cys resid
         self.parameters[self.plugin_name].filenames = dict(\
-            [(resid, self.topdir(self.location[self.plugin_name],
-                                 'Cys%d_OW_dist.txt.bz2' % resid)) 
+            [(resid, self.plugindir(self.plugin_name, 'Cys%d_OW_dist.txt.bz2' % resid))
              for resid in self.parameters[self.plugin_name].cysteines])
+        # default filename for the combined plot
+        self.parameters[self.plugin_name].figname = self.plugindir(self.plugin_name, 'mindist_S_OW')
 
         # analysis method
         self._analysis[self.plugin_name] = self.analyze_cys

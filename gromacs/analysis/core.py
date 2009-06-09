@@ -73,6 +73,9 @@ class Simulation(object):
         self.ndx = kwargs.pop('ndx',None)
         self.analysis_dir = kwargs.pop('analysisdir', os.path.dirname(self.tpr))
 
+        # registry for plugins
+        self.plugins = {}
+
         # Class dictionaries: each plugin records parameters, results, and location here.
         # Key == plugin_name
         # results: should be objects that have a plot() method
@@ -98,6 +101,9 @@ class Simulation(object):
                 raise
         return p
 
+    def plugindir(self,plugin_name,*args):
+        return self.topdir(self.location[self.plugin_name], *args)
+
     def check_file(self,filetype, path):
         if path is None or not os.path.isfile(path):
             raise ValueError("Missing required file %(filetype)r, got %(path)r." % vars())
@@ -107,13 +113,29 @@ class Simulation(object):
         """Run analysis for the plugin."""
         return self._analysis[plugin_name](**kwargs)
 
-    def plot(self,plugin_name,**plotargs):
-        """Plot all data for the selected plugin."""
+    def plot(self,plugin_name,figure=True,**plotargs):
+        """Plot all data for the selected plugin.
+        
+        plot(plugin_name, **kwargs)
+
+        :Arguments:
+        plugin_name   name of the plugin to plot data from
+        figure        True: plot to file with default name.
+                      string: use this filename (+extension for format)
+                      False: only display
+        **plotargs    arguments for pylab.plot
+        """
         import pylab
         for name,result in self.results[plugin_name].items():
             plotargs['label'] = name
             result.plot(**plotargs)
         pylab.legend(loc='best')
+        if figure is True:
+            for ext in ('pdf','png'):
+                fn = self.parameters[plugin_name].figname + '.' + ext
+                pylab.savefig(fn)
+        elif figure:
+            pylab.savefig(figure)
 
 
     # semi-generic analysis snippets.... could be cleaned up
