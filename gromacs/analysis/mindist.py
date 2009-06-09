@@ -89,7 +89,7 @@ class Mindist(object):
             cutoff_filter = "WHERE distance <= %d" % float(cutoff)
         self.distances = self.all_distances.selection(
             "SELECT frame, MIN(distance) AS distance FROM __self__ "+cutoff_filter+" GROUP BY frame",
-            name="mindistances")
+            name="mindistances", cache=False)
         
     def histogram(self,nbins=None,lo=None,hi=None,midpoints=False,normed=True):
         """Returns a histogram of the minimum distances.
