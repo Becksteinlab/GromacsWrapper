@@ -61,6 +61,7 @@ class Mindist(object):
     :TODO:
     * Save analysis to pickle or data files.
     * Export data as simple data files for plotting in other programs.
+    * Make implementation more memory efficient.
     """
 
     def __init__(self,datasource,cutoff=None):
@@ -77,11 +78,13 @@ class Mindist(object):
         stream, self.filename = gromacs.utilities.anyopen(datasource)
         try:
             M = GdistData(stream)
+            # BIG array in memory!!
             _distances = numpy.rec.fromrecords(
                 [(frame,distance) for frame,distance in M],  # pull data from file
                 names='frame,distance')                      # and make a tmp recarray
         finally:
             stream.close()
+        # BIG database in memory!!
         self.all_distances = SQLarray('distances', _distances)  # ... can be accessed via SQL
         if cutoff is None:
             cutoff_filter = ""
@@ -92,7 +95,7 @@ class Mindist(object):
             name="mindistances", cache=False)
         
     def histogram(self,nbins=None,lo=None,hi=None,midpoints=False,normed=True):
-        """Returns a histogram of the minimum distances.
+        """Returns a distribution or histogram of the minimum distances.
 
         hist,edges = histogram(nbins=10, hi=1)
 
@@ -128,9 +131,53 @@ class Mindist(object):
         SQL = """SELECT %(FUNC)s(distance,%(nbins)d,%(lo)f,%(hi)f) AS "h [Object]" 
                  FROM __self__""" % vars()
         (((h,e),),) = D.sql(SQL, asrecarray=False)
-        if midpoints:
-            e = 0.5*(e[:-1] + e[1:])
-        return h,e
+        # should probably cache this...
+        if normed:
+            self.__distribution = h
+        else:
+            self.__histogram = h
+        self.__edges = e
+        if midpoints:            
+            return h, self.midpoints
+        return h, e
+
+    def hist():
+        doc = "Histogram of the minimum distances."
+        def fget(self):
+            try:
+                return self.__histogram
+            except AttributeError:
+                raise RuntimeError("run histogram(...,normed=False) first")
+        return locals()
+    hist = property(**hist())
+
+    def dist():
+        doc = "Distribution of the minimum distances."
+        def fget(self):
+            try:
+                return self.__distribution
+            except AttributeError:
+                raise RuntimeError("run histogram(...,normed=True) first")
+        return locals()
+    dist = property(**dist())
+
+    def edges():
+        doc = "Edges of the histogram of the minimum distances."
+        def fget(self):
+            try:
+                return self.__edges
+            except AttributeError:
+                raise RuntimeError("run histogram(...) first")
+        return locals()
+    edges = property(**edges())
+
+    def midpoints():
+        doc = "Midpoints of the histogram of the minimum distances."
+        def fget(self):
+            e = self.__edges
+            return 0.5*(e[:-1] + e[1:])
+        return locals()
+    midpoints = property(**midpoints())
 
     def plot(self,**kwargs):
         """Plot histograms with matplotlib's plot() function.
