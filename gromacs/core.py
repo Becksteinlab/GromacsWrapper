@@ -10,8 +10,8 @@ import errno
 class GromacsCommand(object):
     """Base class for wrapping a g_* command.
     
-    Limitations: User must have sourced GMXRC so that the python
-    script can inherit the environment and find the gromacs programs.
+    Limitations: User must have sourced GMXRC so that the python script can
+    inherit the environment and find the gromacs programs.
 
     The class doc string is dynamically replaced by the documentation of the
     gromacs command when an instance is created.
@@ -26,21 +26,22 @@ class GromacsCommand(object):
 
           cmd = GromacsCommand('v', f=['md1.xtc','md2.xtc'], o='processed.xtc', t=200, ...)
 
-        Gromacs boolean switches (such as ``-v``) are given as python
-        positional arguments (``'v'``) or as keyword argument (``v=True``);
-        note the quotes in the first case. Any Gromacs options that take
-        parameters are handled as keyword arguments. If an option takes
-        multiple arguments (such as the multi-file input ``-f file1 file2
-        ...``) then the list of files must be supplied as a python list.
+        Gromacs boolean switches (such as ``-v``) are given as python positional
+        arguments (``'v'``) or as keyword argument (``v=True``); note the quotes
+        in the first case. Negating at boolean switch can be done with
+        ``'-nov'``, ``nov=True`` or ``v=False``. Any Gromacs options that take
+        parameters are handled as keyword arguments. If an option takes multiple
+        arguments (such as the multi-file input ``-f file1 file2 ...``) then the
+        list of files must be supplied as a python list.
 
         The command is executed with the run() method or by
         calling it as a function. The two next lines are equivalent::
 
-          cmd(t=100)
-          cmd.run(t=100)
+          cmd(...)
+          cmd.run(...)
 
-        When the command is run one can override options that were
-        given at initialization or add additional ones.
+        When the command is run one can override options that were given at
+        initialization or add additional ones.
         """
         self.gmxargs = self._combineargs(*args, **kwargs)
         self.__doc__ = self.gmxdoc
@@ -65,9 +66,10 @@ class GromacsCommand(object):
             flag = str(flag)
             if not flag.startswith('-'):
                 flag = '-' + flag
-            # XXX: could treat value == False, too --- useful?
             if value is True:
-                arglist.append(flag)          # simple command line flag
+                arglist.append(flag)            # simple command line flag
+            elif value is False:
+                arglist.append('-no'+flag[1:])  # gromacs switches booleans by prefixing 'no'
             else:
                 try:
                     arglist.extend([flag] + value) # option with value list
@@ -83,8 +85,6 @@ class GromacsCommand(object):
         All positional parameters *args and all gromacs **kwargs are passed on
         to the Gromacs command. input and output keywords allow communication
         with the process.
-
-        At the moment, the processes stdout and stderr are merged        
         
         :Arguments:
         input            string or sequence to be fed to the process' standard input;
@@ -104,24 +104,19 @@ class GromacsCommand(object):
         on the value of output, various strings are filled with output from the
         command.
 
-        :Note:
+        :Notes:
+
+        At the moment, the processes stdout and stderr are merged        
+
         STDOUT and PIPE are objects provided by the subprocess module. Any
         python stream can be provided and manipulated. This allows for chaining
         of commands. Use ::
           from subprocess import PIPE, STDOUT
         when requiring the special streams.
 
+        In order to build pipes one must use the special Popen object returned
+        by the Popen() method (qv).
 
-        :TODO:
-        * It should be possible to make input/output pipes so that one can
-          chain analysis tools. ... is this working?
-        * Output is memory buffered and hence chaining commands does not work well
-          for large amounts of output; no good solution at the moment. Maybe write
-          to temp file or write proper asynchronous select loop.
-         # TODO: flexible in/output: 
-         # - It should be possible to easily chain tools or compress output
-         # - Output should be made available, maybe even in a
-         #   structured manner, depending on the class of the tool.
         """
         p = self.Popen(*args, **kwargs)
         out, err = p.communicate()       # special Popen knos input!
@@ -163,7 +158,7 @@ class GromacsCommand(object):
         rc,docs,nothing = self._run_command('h', stdout=PIPE)
         m = re.match(self.doc_pattern, docs, re.DOTALL)    # keep from DESCRIPTION onwards
         if m is None:
-            return "(No documentation provided)"
+            return "(No Gromacs documentation available)"
         return m.group('DOCS')
         
 
@@ -176,12 +171,56 @@ class GromacsCommand(object):
         return locals()
     gmxdoc = property(**gmxdoc())
 
-    def help(self):
+    def help(self,long=True):
         """Print help; same as using ``?`` in ``ipython``."""
         print "\ncommand: %s\n\n" % self.command_name
-        print self.gmxdoc
+        print self.__doc__
+        if long:
+            print "\ncall method: command():\n"
+            print self.__call__.__doc__
         
     def __call__(self,*args,**kwargs):
+        """Run command with the given arguments.
+
+           rc,stdout,stderr = command(*args, input=None, **kwargs)
+           
+        All positional parameters *args and all gromacs **kwargs are passed on
+        to the Gromacs command. input and output keywords allow communication
+        with the process via the python subprocess module.
+        
+        :Arguments:
+        input            string or sequence to be fed to the process' standard input;
+                         elements of a sequence are concatenated with
+                         newlines, including a railing one    [None]
+        stdin            None or automatically set to PIPE if input given [None]
+        stdout           filehandle to write to, eg None to see output on screen;
+                         PIPE returns the output as a string in the stdout parameter [PIPE]
+        stderr           filehandle to write to; STDOUT merges standard error with
+                         the standard out stream. PIPE returns the output
+                         as a string in the stderr parameter [STDOUT]
+
+        All other kwargs are passed on to the Gromacs tool.
+     
+        :Returns:
+        The shell return code rc of the command is always returned. Depending
+        on the value of output, various strings are filled with output from the
+        command.
+
+        :Notes:
+
+        By default, the process stdout and stderr are merged.
+
+        In order to chain different commands via pipes one must use the special
+        Popen object (see Popen() method of the command) instead of the simple
+        call described here and first construct the pipeline explicitly and then
+        call the communicate() method of the Popen object.
+
+        STDOUT and PIPE are objects provided by the subprocess module. Any
+        python stream can be provided and manipulated. This allows for chaining
+        of commands. Use ::
+          from subprocess import PIPE, STDOUT
+        when requiring the special streams.
+        """
         return self.run(*args,**kwargs)
 
 
