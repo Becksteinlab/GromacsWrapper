@@ -89,7 +89,7 @@ class GromacsCommand(object):
         :Arguments:
         input            string or sequence to be fed to the process' standard input;
                          elements of a sequence are concatenated with
-                         newlines, including a railing one    [None]
+                         newlines, including a trailing one    [None]
         stdin            None or automatically set to PIPE if input given [None]
         stdout           filehandle to write to, eg None to see output on screen;
                          PIPE returns the output as a string in the stdout parameter [PIPE]
@@ -171,8 +171,8 @@ class GromacsCommand(object):
         return locals()
     gmxdoc = property(**gmxdoc())
 
-    def help(self,long=True):
-        """Print help; same as using ``?`` in ``ipython``."""
+    def help(self,long=False):
+        """Print help; same as using ``?`` in ``ipython``. long=True also gives call signature."""
         print "\ncommand: %s\n\n" % self.command_name
         print self.__doc__
         if long:
@@ -191,7 +191,7 @@ class GromacsCommand(object):
         :Arguments:
         input            string or sequence to be fed to the process' standard input;
                          elements of a sequence are concatenated with
-                         newlines, including a railing one    [None]
+                         newlines, including a trailing one    [None]
         stdin            None or automatically set to PIPE if input given [None]
         stdout           filehandle to write to, eg None to see output on screen;
                          PIPE returns the output as a string in the stdout parameter [PIPE]

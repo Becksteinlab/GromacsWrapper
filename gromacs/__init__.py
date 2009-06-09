@@ -39,7 +39,19 @@ import tools
 # run with '-h'
 import warnings
 warnings.simplefilter("ignore", RuntimeWarning)
+_have_g_commands = []
+_missing_g_commands = []
 for clsname, cls in tools.registry.items():
     name = clsname[0].lower() + clsname[1:]    # instances should start lower case
-    locals()[name] = cls()
+    try:
+        locals()[name] = cls()                 # add instance of command for immediate use
+        _have_g_commands.append(name)
+    except OSError,err:
+        _missing_g_commands.append(name)
 warnings.simplefilter("default", RuntimeWarning)
+_have_g_commands.sort()
+_missing_g_commands.sort()
+if len(_missing_g_commands) > 0:
+    warnings.warn("Some Gromacs commands were NOT found; "
+                  "maybe source GMXRC first? The following are missing:\n%r\n" % _missing_g_commands,
+                  category=RuntimeWarning)

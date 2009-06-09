@@ -1,4 +1,6 @@
 # $Id$
 """Specific analysis modules."""
 
-import mindist
+__all__ = ['core','plugins']
+
+from core import Simulation
