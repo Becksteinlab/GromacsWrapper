@@ -56,19 +56,39 @@ class Mindist(object):
 
     :Methods:
     histogram          histogram of the mindist time series
+    plot               compute histograms and plot with matplotlib
+
+    :TODO:
+    * Save analysis to pickle or data files.
+    * Export data as simple data files for plotting in other programs.
     """
 
-    def __init__(self,datasource):
-        """Read mindist data from file or stream."""
+    def __init__(self,datasource,cutoff=None):
+        """Read mindist data from file or stream.
 
+        M = Mindist(datasource, cutoff=1.0)
+        
+        :Arguments:
+        datasource:     a filename (plain, gzip, bzip2) or file object
+        cutoff:         the ``-dist CUTOFF`` that was provided to ``g_dist``; if supplied 
+                        we work around a bug in ``g_dist`` (at least in Gromacs 4.0.2) in which
+                         sometimes numbers >> CUTOFF are printed.
+        """
         stream, self.filename = gromacs.utilities.anyopen(datasource)
-        M = GdistData(stream)
-        _distances = numpy.rec.fromrecords(
-            [(frame,distance) for frame,distance in M],  # pull data from file
-            names='frame,distance')                      # and make a tmp recarray
+        try:
+            M = GdistData(stream)
+            _distances = numpy.rec.fromrecords(
+                [(frame,distance) for frame,distance in M],  # pull data from file
+                names='frame,distance')                      # and make a tmp recarray
+        finally:
+            stream.close()
         self.all_distances = SQLarray('distances', _distances)  # ... can be accessed via SQL
+        if cutoff is None:
+            cutoff_filter = ""
+        else:
+            cutoff_filter = "WHERE distance <= %d" % float(cutoff)
         self.distances = self.all_distances.selection(
-            'SELECT frame, MIN(distance) AS distance FROM __self__ GROUP BY frame',
+            "SELECT frame, MIN(distance) AS distance FROM __self__ "+cutoff_filter+" GROUP BY frame",
             name="mindistances")
         
     def histogram(self,nbins=None,lo=None,hi=None,midpoints=False,normed=True):
@@ -113,6 +133,12 @@ class Mindist(object):
         return h,e
 
     def plot(self,**kwargs):
+        """Plot histograms with matplotlib's plot() function.
+
+        plot(**histogramargs, **plotargs)
+
+        Arguments for both histogram() and plot() can be provided (qv).
+        """
         import pylab
         kwargs['midpoints'] = True
         histogram_args = ('nbins','lo','hi','midpoints','normed')
