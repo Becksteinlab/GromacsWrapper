@@ -22,6 +22,10 @@ def anyopen(datasource):
 def _get_stream(filename, openfunction=file):
     try:
         stream = openfunction(filename,'r')
+    except IOError:
+        return None
+
+    try:
         stream.readline()
         stream.close()
         stream = openfunction(filename,'r')

@@ -10,6 +10,11 @@ See docs in gromacs.analysis.core for preliminary API.
 ALPHA.
 """
 
+import sys
+import os.path
+import warnings
+import subprocess
+
 from core import AttributeDict
 import gromacs
 
@@ -66,8 +71,10 @@ class CysAccessibility(Plugin):
         # analysis method
         self._analysis[self.plugin_name] = self.analyze_cys
         
-    def make_cys_index(self):
-        """Make index file for all cysteines and water oxygens."""
+    def make_index_cys(self):
+        """Make index file for all cysteines and water oxygens. 
+        NO SANITY CHECKS
+        """
         commands_1 = ['keep 0', 'del 0', 'r CYSH & t S', 'splitres 0', 'del 0']
         commands_2 = ['t OW', 'q']
         commands = commands_1[:]
@@ -88,8 +95,8 @@ class CysAccessibility(Plugin):
 
         ndx = self.parameters[self.plugin_name].ndx
         if not os.path.isfile(ndx):
-            warnings.warn("Cysteine index file %r missing: running 'make_cys_ndx'." % ndx)
-            self.make_cys_index()
+            warnings.warn("Cysteine index file %r missing: running 'make_index_cys'." % ndx)
+            self.make_index_cys()
 
         for resid in self.parameters[self.plugin_name].cysteines:
             groupname = 'Cys%(resid)d' % vars()
