@@ -18,11 +18,129 @@ import subprocess
 from core import AttributeDict
 import gromacs
 
+
+# worker classes (used by the plugins)
+# (These must be defined before the plugins.)
+
+class _CysAccessibility(object):
+    """Analysis of Cysteine accessibility."""
+
+    plugin_name = "CysAccessibility"
+
+    def __init__(self,**kwargs):
+        """Set up  customized Cysteine accessibility analysis.
+
+        :Arguments:
+        cysteines       list of resids (eg from the sequence) that are used as
+                        labels or in the form 'Cys<resid>'. []
+        cys_cutoff      cutoff in nm for the minimum S-OW distance [1.0]                        
+        """
+        # general
+        self.simulation = kwargs.pop('simulation',None)  # required (but kw for super & friends)
+        assert self.simulation != None
+        
+        # specific setup
+        cysteines = kwargs.pop('cysteines',[])       # sequence resids as labels (NOT necessarily Gromacs itp)
+        cys_cutoff = kwargs.pop('cys_cutoff', 1.0)   # nm
+
+        # super class do this before doing anything else (maybe not important anymore)
+        super(_CysAccessibility,self).__init__(**kwargs)
+
+        self.location = 'accessibility'     # directory under topdir()
+        self.results = AttributeDict()
+        self.parameters = AttributeDict()
+
+        self.parameters.cysteines = map(int, cysteines)  # sequence resids
+        self.parameters.cysteines.sort()                 # sorted because make_ndx returns sorted order
+        self.parameters.cutoff = cys_cutoff
+        self.parameters.ndx = self.plugindir('cys.ndx')
+        # output filenames for g_dist, indexed by Cys resid
+        self.parameters.filenames = dict(\
+            [(resid, self.plugindir('Cys%d_OW_dist.txt.bz2' % resid))
+             for resid in self.parameters.cysteines])
+        # default filename for the combined plot
+        self.parameters.figname = self.plugindir('mindist_S_OW')
+        
+    def topdir(self, *args):
+        return self.simulation.topdir(*args)
+    
+    def plugindir(self, *args):
+        return self.topdir(self.location, *args)
+
+    def run(self,**kwargs):
+        return self.run_g_dist_cys(**kwargs)
+
+    def analyze(self,**kwargs):
+        return self.analyze_cys()
+
+    # specific methods
+
+    def make_index_cys(self):
+        """Make index file for all cysteines and water oxygens. 
+        NO SANITY CHECKS
+        """
+        commands_1 = ['keep 0', 'del 0', 'r CYSH & t S', 'splitres 0', 'del 0']  # CYS-S sorted by resid
+        commands_2 = ['t OW', 'q']                                               # water oxygens
+        commands = commands_1[:]
+        for groupid, resid in enumerate(self.parameters.cysteines):
+            commands.append('name %(groupid)d Cys%(resid)d'  % vars())           # name CYS-S groups canonically
+        commands.extend(commands_2)
+        return gromacs.make_ndx(f=self.simulation.tpr, o=self.parameters.ndx, 
+                                input=commands, stdout=None)
+
+    def run_g_dist_cys(self,cutoff=None,**gmxargs):
+        """Run ``g_dist -dist cutoff`` for each cysteine and save output for further analysis."""
+
+        if cutoff is None:
+            cutoff = self.parameters.cutoff
+        else:
+            self.parameters.cutoff = cutoff    # record cutoff used
+
+        ndx = self.parameters.ndx
+        if not os.path.isfile(ndx):
+            warnings.warn("Cysteine index file %r missing: running 'make_index_cys'." % ndx)
+            self.make_index_cys()
+
+        for resid in self.parameters.cysteines:
+            groupname = 'Cys%(resid)d' % vars()
+            commands = [groupname, 'OW']
+            filename = self.parameters.filenames[resid]
+            print "run_g_dist: %(groupname)s --> %(filename)r" % vars()
+            sys.stdout.flush()
+            datafile = open(filename, 'w')
+            try:
+                p = gromacs.g_dist.Popen(
+                    s=self.simulation.tpr, f=self.simulation.xtc, n=ndx, dist=cutoff, input=commands, 
+                    stderr=None, stdout=subprocess.PIPE, **gmxargs)
+                compressor = subprocess.Popen(['bzip2', '-c'], stdin=p.stdout, stdout=datafile)
+                p.communicate()
+            finally:
+                datafile.close()
+
+    def analyze_cys(self):
+        """Mindist analysis for all cysteines. Returns results for interactive analysis."""        
+        results = AttributeDict()
+        for resid in self.parameters.cysteines:
+            groupname = 'Cys%(resid)d' % vars()    # identifier should be a valid python variable name
+            results[groupname] = self._mindist(resid)
+        self.results = results
+        return results
+
+    def _mindist(self,resid):
+        """Analyze minimum distance for resid."""
+        filename = self.parameters.filenames[resid]
+        return Mindist(filename,cutoff=self.parameters.cutoff)
+
+
+# plugins:
+# registers a worker class in Simulation.plugins and adds a pointer to Simulation to worker
+
 class Plugin(object):
     """Plugin mixin classes are derived from Plugin. 
 
     They only register the actual plugin in the plugins dictionary.
     """    
+    # XXX: gets overwritten with multiple plugin mixins --- do something else!
     plugin_name = None     # name of the plugin
     plugin_class = None    # actual plugin class (typically name with leading underscore)
 
@@ -33,113 +151,15 @@ class Plugin(object):
                            keyword arguments to initialize the plugin
         **kwargs           all other kwargs are passed along                           
         """
-        plugin_args = kwargs.pop(plugin_name,None)  # must be a dict named like the plugin
-        plugin_args['simulation'] = self            # allows access of plugin to globals
+        plugin_args = kwargs.pop(self.plugin_name,{})  # must be a dict named like the plugin
+        plugin_args['simulation'] = self               # allows access of plugin to globals
         super(Plugin, self).__init__(**kwargs)
-        self.plugins[plugin_name] = plugin_class(**plugin_args)
+        self.plugins[self.plugin_name] = self.plugin_class(**plugin_args)
 
-class XXXCysAccessibility(Plugin):
-    plugin_name = "CysAccessibility"
-###XXX    plugin_class = _CysAccessibility
 
-# * This is not a well-thought out plan. If the method resolution order is messed
-#   up then some data structures (location, parameters, results, _analysis) are
-#   not available yet that are needed. 
-# * It would be better to encapsulate this in a separate class as to avoid
-#   clashes between analysis methods of different plugins.
-#
-# We'll probably rewrite all this eventually....
 
-#class _CysAccessibility(Plugin):
-class CysAccessibility(object):
-    """Analysis of Cysteine accessibility. Use as mixin class for Simulation"""
+class CysAccessibility(Plugin):
+    plugin_name = "CysAccessibility"   # XXX: these get overwritten when mixing-in
+    plugin_class = _CysAccessibility   # (find a better way to do this..only tested with single mixin yet)
 
-    plugin_name = "CysAccessibility"   # <--- crap, if we mixin more than one Plugin this will be overwritten!!
-
-    def __init__(self,**kwargs):
-        """Set up  customized Cysteine accessibility analysis.
-
-        :Arguments:
-        cysteines       list of resids (eg from the sequence) that are used as
-                        labels or in the form 'Cys<resid>'. []
-        cys_cutoff      cutoff in nm for the minimum S-OW distance [1.0]                        
-        """
-        ## self.simulation = kwargs.pop('simulation',None)  # required
-
-        cysteines = kwargs.pop('cysteines',[])       # sequence resids as labels (NOT necessarily Gromacs itp)
-        cys_cutoff = kwargs.pop('cys_cutoff', 1.0)   # nm
-
-        # super class Simulation must come before doing anything else
-        super(CysAccessibility,self).__init__(**kwargs)
-
-        # plugin_name = 'CysAccessibility'
-        # this should be set by deriving from a base class, currently hard coded for Mhp1
-        self.location[self.plugin_name] = 'accessibility'     # directory under topdir()
-        self.results[self.plugin_name] = AttributeDict()
-        self.parameters[self.plugin_name] = AttributeDict()
-
-        self.parameters[self.plugin_name].cysteines = cysteines
-        self.parameters[self.plugin_name].cutoff = cys_cutoff
-        self.parameters[self.plugin_name].ndx = self.topdir(self.location[self.plugin_name],'cys.ndx')
-        # output filenames for g_dist, indexed by Cys resid
-        self.parameters[self.plugin_name].filenames = dict(\
-            [(resid, self.plugindir(self.plugin_name, 'Cys%d_OW_dist.txt.bz2' % resid))
-             for resid in self.parameters[self.plugin_name].cysteines])
-        # default filename for the combined plot
-        self.parameters[self.plugin_name].figname = self.plugindir(self.plugin_name, 'mindist_S_OW')
-
-        # analysis method
-        self._analysis[self.plugin_name] = self.analyze_cys
-        
-    def make_index_cys(self):
-        """Make index file for all cysteines and water oxygens. 
-        NO SANITY CHECKS
-        """
-        commands_1 = ['keep 0', 'del 0', 'r CYSH & t S', 'splitres 0', 'del 0']
-        commands_2 = ['t OW', 'q']
-        commands = commands_1[:]
-        for groupid, resid in enumerate(self.parameters[self.plugin_name].cysteines):
-            commands.append('name %(groupid)d Cys%(resid)d'  % vars())
-        commands.extend(commands_2)
-        # print "DEBUG: "+'\n'.join(commands)
-        return gromacs.make_ndx(f=self.tpr, o=self.parameters[self.plugin_name].ndx, 
-                                input=commands, stdout=None)
-
-    def run_g_dist_cys(self,cutoff=None,**gmxargs):
-        """Run ``g_dist -dist cutoff`` for each cysteine and save output for further analysis."""
-
-        if cutoff is None:
-            cutoff = self.parameters[self.plugin_name].cutoff
-        else:
-            self.parameters[self.plugin_name].cutoff = cutoff    # record cutoff used
-
-        ndx = self.parameters[self.plugin_name].ndx
-        if not os.path.isfile(ndx):
-            warnings.warn("Cysteine index file %r missing: running 'make_index_cys'." % ndx)
-            self.make_index_cys()
-
-        for resid in self.parameters[self.plugin_name].cysteines:
-            groupname = 'Cys%(resid)d' % vars()
-            commands = [groupname, 'OW']
-            filename = self.parameters[self.plugin_name].filenames[resid]
-            print "run_g_dist: %(groupname)s --> %(filename)r" % vars()
-            sys.stdout.flush()
-            datafile = open(filename, 'w')
-            try:
-                p = gromacs.g_dist.Popen(
-                    s=self.tpr, f=self.xtc, n=ndx, dist=cutoff, input=commands, 
-                    stderr=None, stdout=subprocess.PIPE, **gmxargs)
-                compressor = subprocess.Popen(['bzip2', '-c'], stdin=p.stdout, stdout=datafile)
-                p.communicate()
-            finally:
-                datafile.close()
-
-    def analyze_cys(self):
-        """Mindist analysis for all cysteines. Returns results for interactive analysis."""        
-        results = AttributeDict()
-        for resid in self.parameters[self.plugin_name].cysteines:
-            groupname = 'Cys%(resid)d' % vars()    # identifier should be a valid python variable name
-            results[groupname] = self._mindist(resid)
-        self.results[self.plugin_name] = results
-        return results
 

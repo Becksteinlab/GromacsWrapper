@@ -8,29 +8,39 @@ Programming API for plugins
 * Additional analysis capabilities are added with mixin classes (from plugins).
 * Derive class for the simulation of interest along the lines of ::
 
+  from plugins import CysAccessibility
   class Mhp1(Simulation, CysAccessibility):
     def __init__(self,**kwargs):
-        kwargs['cysteines'] = [69, 234, 327]
+        kwargs['CysAccessibility'] = {'cysteines': [69, 234, 327]}
         super(Mhp1,self).__init__(**kwargs)
 
   S = Mhp1(tpr=..., xtc=..., analysisdir=...)
+  S.run('CysAccessibility')
+  S.analyze('CysAccessibility')
+  S.plot('CysAccessibility')
 
 
 Plugins
 -------
 
-A plugin has the plugin_name attribute; typically it equald the class name.
+Analysis capabilities can be added by mixing in additional plugins into the
+simulation base class. Each plugin registers itself and provides at a minimum
+run(), analyze(), and plot() methods.
 
-Each plugin is responsible for filling in the appropriate dictionaries
-that are provided by the Simulation main class. See CysAccessibility as an example.
+The plugin class is derived from Plugin and bears the name that is used to
+access it. When its __init__ method executes it adds the actual worker class
+(typically named with the underscore-prepended name) to the Simulation.plugins
+dictionary.
 
-  # Class dictionaries: each plugin records parameters, results, and location here.
-  # Key == plugin_name
-  # results: should be objects that have a plot() method
-  self.location = AttributeDict()
-  self.parameters =  AttributeDict()        
-  self.results = AttributeDict()
-  self._analysis = AttributeDict()     # record the analysis method; signature call(**kwargs)
+Variables for initializing a plugin a given to the class constructor as a
+keyword argument that is named like the plugin and contains a dictionary that
+is used as the keyword parameters for the plugin's init.
+
+A plugin **must** obtain a pointer to the Simulation class as the keyword
+argument ``simulation`` in order to be able to access simulation-global
+parameters such as top directories or input files.
+
+See CysAccessibility and _CysAccessibility as examples.
 
 """
 
@@ -60,10 +70,6 @@ class Simulation(object):
         analysisdir     directory under which derived data are stored;
                         defaults to the directory containing the tpr [None]        
         """
-        # XXX should make different analysis plugins/classes with each in a separate dir
-        # XXX sort of done... not sure if the idea with mixin classes is good, though
-        # XXX Mabe better to make them individual classes (but how to communicate?)
-
         # required files
         self.tpr = kwargs.pop('tpr',None)
         self.xtc = kwargs.pop('xtc',None)
@@ -74,15 +80,7 @@ class Simulation(object):
         self.analysis_dir = kwargs.pop('analysisdir', os.path.dirname(self.tpr))
 
         # registry for plugins
-        self.plugins = {}
-
-        # Class dictionaries: each plugin records parameters, results, and location here.
-        # Key == plugin_name
-        # results: should be objects that have a plot() method
-        self.location = AttributeDict()
-        self.parameters =  AttributeDict()        
-        self.results = AttributeDict()
-        self._analysis = AttributeDict()     # record the analysis method; signature call(**kwargs)
+        self.plugins = AttributeDict()   # nicer for interactive use than dict
 
         # important: do not forget to call mixin classes
         super(Simulation,self).__init__(**kwargs)
@@ -95,23 +93,25 @@ class Simulation(object):
         try:
             os.makedirs(parent)
         except OSError,err:
-            if err.errno == errno.EEXIST:
-                pass
-            else:
+            if err.errno != errno.EEXIST:
                 raise
         return p
 
     def plugindir(self,plugin_name,*args):
-        return self.topdir(self.location[self.plugin_name], *args)
+        return self.plugins[plugin_name].plugindir(*args)
 
     def check_file(self,filetype, path):
         if path is None or not os.path.isfile(path):
             raise ValueError("Missing required file %(filetype)r, got %(path)r." % vars())
         return True
     
+    def run(self,plugin_name,**kwargs):
+        """Generate data files as prerequisite to analysis."""
+        return self.plugins[plugin_name].run(**kwargs)
+
     def analyze(self,plugin_name,**kwargs):
         """Run analysis for the plugin."""
-        return self._analysis[plugin_name](**kwargs)
+        return self.plugins[plugin_name].analyze(**kwargs)    
 
     def plot(self,plugin_name,figure=True,**plotargs):
         """Plot all data for the selected plugin.
@@ -125,25 +125,18 @@ class Simulation(object):
                       False: only display
         **plotargs    arguments for pylab.plot
         """
+        # XXX: move plot functionality also into plugins
         import pylab
-        for name,result in self.results[plugin_name].items():
+        for name,result in self.plugins[plugin_name].results.items():
             plotargs['label'] = name
             result.plot(**plotargs)
         pylab.legend(loc='best')
         if figure is True:
             for ext in ('pdf','png'):
-                fn = self.parameters[plugin_name].figname + '.' + ext
+                fn = self.plugins[plugin_name].parameters.figname + '.' + ext
                 pylab.savefig(fn)
         elif figure:
             pylab.savefig(figure)
-
-
-    # semi-generic analysis snippets.... could be cleaned up
-    def _mindist(self,resid,plugin_name='CysAccessibility'):
-        """Analyze minimum distance for resid."""
-        filename = self.parameters[plugin_name].filenames[resid]
-        return Mindist(filename,cutoff=self.parameters[plugin_name].cutoff)
-
 
     def __str__(self):
         return 'Simulation(tpr=%(tpr)r,xtc=%(xtc)r,analysisdir=%(analysis_dir)r)' % vars(self)
