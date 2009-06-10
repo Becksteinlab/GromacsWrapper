@@ -38,6 +38,7 @@ import re
 import numpy
 
 from recsql import SQLarray   # my own ReqSQL module
+from recsql.sqlutil import FakeRecArray
 
 import gromacs.utilities
 
@@ -78,21 +79,26 @@ class Mindist(object):
         stream, self.filename = gromacs.utilities.anyopen(datasource)
         try:
             M = GdistData(stream)
-            # BIG array in memory!!
-            _distances = numpy.rec.fromrecords(
-                [(frame,distance) for frame,distance in M],  # pull data from file
-                names='frame,distance')                      # and make a tmp recarray
+            # make a tmp recarray (BIG array in memory!!) to pass into
+            # db (crappy...)
+            #_distances = numpy.rec.fromrecords(
+            #    [(frame,distance) for frame,distance in M],  # pull data from file
+            #    names='frame,distance', formats='i4,f8')     # MUST be i4 (i8 gives sqlite unsuported type error)
+            _distances = FakeRecArray(M, columns=('frame','distance'))
+            # BIG database in memory!!
+            all_distances = SQLarray('distances', _distances)  # ... can be accessed via SQL
         finally:
             stream.close()
-        # BIG database in memory!!
-        self.all_distances = SQLarray('distances', _distances)  # ... can be accessed via SQL
         if cutoff is None:
             cutoff_filter = ""
         else:
             cutoff_filter = "WHERE distance <= %d" % float(cutoff)
-        self.distances = self.all_distances.selection(
+        self.distances = all_distances.selection(
             "SELECT frame, MIN(distance) AS distance FROM __self__ "+cutoff_filter+" GROUP BY frame",
             name="mindistances", cache=False)
+
+        # release some memory (?)
+        all_distances.sql("DROP TABLE distances")
         
     def histogram(self,nbins=None,lo=None,hi=None,midpoints=False,normed=True):
         """Returns a distribution or histogram of the minimum distances.

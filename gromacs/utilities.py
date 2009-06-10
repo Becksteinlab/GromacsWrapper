@@ -2,6 +2,7 @@
 """Helper functions."""
 
 import os.path
+import warnings
 import bz2, gzip
 
 def anyopen(datasource):
@@ -77,6 +78,31 @@ class FileUtils(object):
                 ext = ext[1:]  # strip a dot to avoid annoying mistakes
             filename = filename + '.' + ext
         return filename
+
+    def check_file_exists(self, filename, resolve='exception'):
+        """If a file exists then continue with the recipe specified in resolve.
+
+        resolve must be one of
+           ignore:           always return False
+           indicate:         return True if it exists
+           warn:             indicate and issue a UserWarning
+           exception:        raise IOError if it exists
+        """
+        def _warn(x):
+            warnings.warn("File %r already exists." % x)
+            return True
+        def _raise(x):
+            raise IOError("File %r already exists." % x)
+        solutions = {'ignore': lambda x: False,      # file exists, but we pretend that it doesn't
+                     'indicate': lambda x: True,     # yes, file exists
+                     'warn': _warn,
+                     'exception': _raise,
+                     }
+        if not os.path.isfile(filename):
+            return False
+        else:
+            return solutions[resolve](filename)
+
 
 def iterable(obj):
     """Returns True if obj can be iterated over and is NOT a string."""

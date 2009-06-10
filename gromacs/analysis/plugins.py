@@ -80,6 +80,7 @@ class Worker(FileUtils):
         _filename = self.filename(filename, ext=ext, use_my_ext=True)
         pylab.savefig(_filename)
         print "Saved figure as %(_filename)r." % vars()
+            
 
 class _CysAccessibility(Worker):
     """Analysis of Cysteine accessibility."""
@@ -163,6 +164,8 @@ class _CysAccessibility(Worker):
             groupname = 'Cys%(resid)d' % vars()
             commands = [groupname, 'OW']
             filename = self.parameters.filenames[resid]
+            if self.check_file_exists(filename, resolve='warning'):
+                continue
             print "run_g_dist: %(groupname)s --> %(filename)r" % vars()
             sys.stdout.flush()
             datafile = open(filename, 'w')
