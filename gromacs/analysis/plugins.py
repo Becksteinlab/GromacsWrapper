@@ -16,6 +16,7 @@ import warnings
 import subprocess
 
 from core import AttributeDict
+import mindist
 import gromacs
 
 
@@ -129,7 +130,7 @@ class _CysAccessibility(object):
     def _mindist(self,resid):
         """Analyze minimum distance for resid."""
         filename = self.parameters.filenames[resid]
-        return Mindist(filename,cutoff=self.parameters.cutoff)
+        return mindist.Mindist(filename,cutoff=self.parameters.cutoff)
 
 
 # plugins:
