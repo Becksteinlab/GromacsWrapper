@@ -8,16 +8,19 @@ Programming API for plugins
 * Additional analysis capabilities are added with mixin classes (from plugins).
 * Derive class for the simulation of interest along the lines of ::
 
-  from plugins import CysAccessibility
+  from gromacs.analysis import Simulation
+  from gromacs.analysis.plugins import CysAccessibility
+
   class Mhp1(Simulation, CysAccessibility):
     def __init__(self,**kwargs):
         kwargs['CysAccessibility'] = {'cysteines': [69, 234, 327]}
         super(Mhp1,self).__init__(**kwargs)
 
   S = Mhp1(tpr=..., xtc=..., analysisdir=...)
-  S.run('CysAccessibility')
-  S.analyze('CysAccessibility')
-  S.plot('CysAccessibility')
+  S.set_default_plugin('CysAccessibility')
+  S.run()
+  S.analyze()
+  S.plot(figure=True)
 
 
 Plugins
@@ -47,10 +50,11 @@ See CysAccessibility and _CysAccessibility as examples.
 
 import sys, os
 import errno
-import gromacs
-from mindist import Mindist
 import subprocess
 import warnings
+
+import gromacs
+from mindist import Mindist
 
 class Simulation(object):
     """Class that represents one simulation.
@@ -79,12 +83,18 @@ class Simulation(object):
         self.ndx = kwargs.pop('ndx',None)
         self.analysis_dir = kwargs.pop('analysisdir', os.path.dirname(self.tpr))
 
-        # registry for plugins
+        # registry for plugins: This dict is central.
         self.plugins = AttributeDict()   # nicer for interactive use than dict
+        self.default_plugin_name = None
 
-        # important: do not forget to call mixin classes
+        # important: Do not forget to call mixin classes:
+        #            each plugin class registers itself in self.plugins[].
         super(Simulation,self).__init__(**kwargs)
 
+        # XXX: does this work (i.e. do we end up here AFTER mixin inits??)
+        # convenience: if only a single plugin was registered we default to that one
+        if len(self.plugins) == 1:
+            self.set_default_plugin(self.plugins.keys()[0])
 
     def topdir(self,*args):
         """Returns path under self.analysis_dir. Parent dirs are created if necessary."""
@@ -98,22 +108,53 @@ class Simulation(object):
         return p
 
     def plugindir(self,plugin_name,*args):
-        return self.plugins[plugin_name].plugindir(*args)
+        return self.select_plugin(plugin_name).plugindir(*args)
 
     def check_file(self,filetype, path):
         if path is None or not os.path.isfile(path):
             raise ValueError("Missing required file %(filetype)r, got %(path)r." % vars())
         return True
-    
-    def run(self,plugin_name,**kwargs):
+
+    def set_default_plugin(self,plugin_name):
+        """Set the plugin that should be used by default.
+
+        If no plugin_name is supplied to run(), analyze() etc. then
+        this will be used.
+        """
+        if plugin_name == None:
+            self.default_plugin_name = None
+        else:
+            self.check_plugin_name(plugin_name)
+            self.default_plugin_name = plugin_name
+        return self.default_plugin_name
+
+    def has_plugin(self,plugin_name):
+        """Returns True if plugin_name is registered."""
+        return plugin_name in self.plugins
+
+    def check_plugin_name(self,plugin_name):
+        """Raises a ValueError if plugin_name is not registered."""
+        if not (plugin_name is None or self.has_plugin(plugin_name)):
+            raise ValueError('plugin_name must be None or one of\n%r\n' % self.plugins.keys())
+
+    def select_plugin(self,plugin_name=None):
+        """Return valid plugin or the default for plugin_name=None."""
+        self.check_plugin_name(plugin_name)
+        if plugin_name is None:
+            if self.default_plugin_name is None:
+                raise ValueError('No default plugin was set.')
+            plugin_name = self.default_plugin_name
+        return self.plugins[plugin_name]
+
+    def run(self,plugin_name=None,**kwargs):
         """Generate data files as prerequisite to analysis."""
-        return self.plugins[plugin_name].run(**kwargs)
+        return self.select_plugin(plugin_name).run(**kwargs)
 
-    def analyze(self,plugin_name,**kwargs):
+    def analyze(self,plugin_name=None,**kwargs):
         """Run analysis for the plugin."""
-        return self.plugins[plugin_name].analyze(**kwargs)    
+        return self.select_plugin(plugin_name).analyze(**kwargs)    
 
-    def plot(self,plugin_name,figure=True,**plotargs):
+    def plot(self,plugin_name=None,figure=False,**plotargs):
         """Plot all data for the selected plugin.
         
         plot(plugin_name, **kwargs)
@@ -125,18 +166,7 @@ class Simulation(object):
                       False: only display
         **plotargs    arguments for pylab.plot
         """
-        # XXX: move plot functionality also into plugins
-        import pylab
-        for name,result in self.plugins[plugin_name].results.items():
-            plotargs['label'] = name
-            result.plot(**plotargs)
-        pylab.legend(loc='best')
-        if figure is True:
-            for ext in ('pdf','png'):
-                fn = self.plugins[plugin_name].parameters.figname + '.' + ext
-                pylab.savefig(fn)
-        elif figure:
-            pylab.savefig(figure)
+        return self.select_plugin(plugin_name).plot(figure=figure,**plotargs)    
 
     def __str__(self):
         return 'Simulation(tpr=%(tpr)r,xtc=%(xtc)r,analysisdir=%(analysis_dir)r)' % vars(self)
