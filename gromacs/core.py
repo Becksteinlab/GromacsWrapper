@@ -69,6 +69,7 @@ class GromacsCommand(object):
             if value is True:
                 arglist.append(flag)            # simple command line flag
             elif value is False:
+                # XXX: does not work for '-noXXX False' ... but who uses that?
                 arglist.append('-no'+flag[1:])  # gromacs switches booleans by prefixing 'no'
             else:
                 try:
@@ -78,46 +79,7 @@ class GromacsCommand(object):
         return map(str, arglist)  # all arguments MUST be strings 
 
     def _run_command(self,*args,**kwargs):
-        """Run command with the given arguments.
-
-           rc,stdout,stderr = c._run_command(*args, input=None, **kwargs)
-           
-        All positional parameters *args and all gromacs **kwargs are passed on
-        to the Gromacs command. input and output keywords allow communication
-        with the process.
-        
-        :Arguments:
-        input            string or sequence to be fed to the process' standard input;
-                         elements of a sequence are concatenated with
-                         newlines, including a trailing one    [None]
-        stdin            None or automatically set to PIPE if input given [None]
-        stdout           filehandle to write to, eg None to see output on screen;
-                         PIPE returns the output as a string in the stdout parameter [PIPE]
-        stderr           filehandle to write to; STDOUT merges standard error with
-                         the standard out stream. PIPE returns the output
-                         as a string in the stderr parameter [STDOUT]
-
-        All other kwargs are passed on to the Gromacs tool.
-     
-        :Returns:
-        The shell return code rc of the command is always returned. Depending
-        on the value of output, various strings are filled with output from the
-        command.
-
-        :Notes:
-
-        At the moment, the processes stdout and stderr are merged        
-
-        STDOUT and PIPE are objects provided by the subprocess module. Any
-        python stream can be provided and manipulated. This allows for chaining
-        of commands. Use ::
-          from subprocess import PIPE, STDOUT
-        when requiring the special streams.
-
-        In order to build pipes one must use the special Popen object returned
-        by the Popen() method (qv).
-
-        """
+        """Execute the gromacs command; see the docs for __call__."""
         p = self.Popen(*args, **kwargs)
         out, err = p.communicate()       # special Popen knos input!
         rc = p.returncode
