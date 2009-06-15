@@ -60,9 +60,10 @@ class GromacsCommand(object):
         failure:     'raise': raises GromacsError if command fails
                       'warn': issue a GromacsFailureWarning
                       None: just continue silently
-        
+        doc          string; additional documentation []
         """
         self.failuremode = kwargs.pop('failure','raise')
+        self.extra_doc = kwargs.pop('doc',None)
         if not self.failuremode in self.failuremodes:
             raise ValueError('failuremode must be one of\n%(failuremodes)r' % vars(self))
         self.gmxargs = self._combineargs(*args, **kwargs)
@@ -167,7 +168,11 @@ class GromacsCommand(object):
         def fget(self):
             if not (hasattr(self, '__doc_cache') and self.__doc_cache):
                 self.__doc_cache = self._get_gmx_docs()
-            return self.__doc_cache
+            docs = self.__doc_cache
+            if self.extra_doc:
+                docs = '\n'.join([docs, "Additional documentation:", 25*'=',
+                                  self.extra_doc])
+            return docs
         return locals()
     gmxdoc = property(**gmxdoc())
 
