@@ -109,9 +109,14 @@ class FileUtils(object):
 
 
 def iterable(obj):
-    """Returns True if obj can be iterated over and is NOT a string."""
-    try: len(obj)
-    except: return False
+    """Returns True if obj can be iterated over and is NOT a  string."""
     if type(obj) is str:
         return False    # avoid iterating over characters of a string
+
+    if hasattr(obj, 'next'):
+        return True    # any iterator will do 
+    try: 
+        len(obj)       # anything else that might work
+    except TypeError: 
+        return False
     return True
