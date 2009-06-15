@@ -30,9 +30,9 @@ import re
 import gromacs
 import tools
 
-trj_compact = tools.G_trjconv(ur='compact', center=True, boxcenter='tric', pbc='mol',
-                              input=('protein','system'),
-                              doc="Returns a compact representation of the system centered on the protein")
+trj_compact = tools.Trjconv(ur='compact', center=True, boxcenter='tric', pbc='mol',
+                            input=('protein','system'),
+                            doc="Returns a compact representation of the system centered on the protein")
 
 def grompp_qtot(*args, **kwargs):
     """Run ``gromacs.grompp`` and return the total charge of the system."""
