@@ -17,7 +17,7 @@ def anyopen(datasource):
     else:
         stream = None
         filename = datasource
-        for openfunc in bz2.BZ2File, gzip.open, file:
+        for openfunc in bz2.BZ2File, gzip.open, file:   # file should be last
             stream = _get_stream(datasource, openfunc)
             if not stream is None:
                 break

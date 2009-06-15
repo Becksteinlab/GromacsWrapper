@@ -27,11 +27,15 @@ class GromacsCommand(object):
     command_name = None
     doc_pattern = r'.*?(?P<DOCS>DESCRIPTION.*)'
 
-    # failure output (gmx_fatal()):
+    # TODO: grep failure output (gmx_fatal()); example:
     # -------------------------------------------------------
     # Program <program_name>, VERSION <version>
-    # ...
+    # ... <message>
     # -------------------------------------------------------    
+    # not used yet:
+    gmxfatal_pattern = r'\n----+\n'\
+        r'Program (?P<program_name>\w+), VERSION (?P<version>\w+)\n'\
+        r'(?P<message>.*)\n----+'
 
     failuremodes = ('raise', 'warn', None)
 
