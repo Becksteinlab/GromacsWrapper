@@ -96,9 +96,6 @@ class Mindist(object):
         self.distances = all_distances.selection(
             "SELECT frame, MIN(distance) AS distance FROM __self__ "+cutoff_filter+" GROUP BY frame",
             name="mindistances", cache=False)
-
-        # release some memory (?)
-        all_distances.sql("DROP TABLE distances")
         
     def histogram(self,nbins=None,lo=None,hi=None,midpoints=False,normed=True):
         """Returns a distribution or histogram of the minimum distances.
