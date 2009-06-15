@@ -8,11 +8,11 @@ Gromacs Cook Book (cbook)
 
 The ``cbook `` module contains short recipes for tasks that are often
 repeated. In the simplest case this is just one of the gromacs tools
-with a certain set of command line options.
+with a certain set of default command line options.
 
-By collecting these invocations here it, errors can be avoided by
-repeatedly re-inventing the wheel and it can also be used as a
-tutorial.
+By abstracting and collecting these invocations here, errors can be
+avoided by repeatedly re-inventing the wheel and the code snippets can
+also serve as canonical examples for how to do simple things.
 """
 
 # Right now the simplest thing to do is to just create instances with pre-set
