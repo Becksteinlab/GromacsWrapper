@@ -36,6 +36,12 @@ g_confrms    g_h2order     g_potential    g_spol     make_ndx
 g_covar      g_hbond       g_principal    g_tcaf     mdrun
 """
 
+# not added at the moment
+gmx_extra_tools = """\
+g_count      g_flux
+g_ri3Dc      a_ri3Dc       a_gridcalc
+"""
+
 registry = {}
 
 for name in gmx_tools.split():
