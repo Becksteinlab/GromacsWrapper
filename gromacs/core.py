@@ -83,7 +83,9 @@ class GromacsCommand(object):
         gmxargs.update(self._combineargs(*args,**kwargs))
         return self._run_command(**gmxargs)
 
-    def check_failure(self, rc, msg='Gromacs tool failed'):
+    def check_failure(self, rc, msg='Gromacs tool failed', command_string=None):
+        if not command_string is None:
+            msg += '\nCommand: ' + str(command_string)
         success = (rc == 0)
         if not success:
             if self.failuremode == 'raise':
@@ -128,7 +130,7 @@ class GromacsCommand(object):
         p = self.Popen(*args, **kwargs)
         out, err = p.communicate()       # special Popen knows input!
         rc = p.returncode
-        self.check_failure(rc)           # TODO: capture error message
+        self.check_failure(rc, command_string=p.command_string)      # TODO: capture error message
         return rc, out, err
 
     def Popen(self, *args,**kwargs):
@@ -245,7 +247,9 @@ class PopenWithInput(subprocess.Popen):
     def __init__(self,*args,**kwargs):
         self.input = kwargs.pop('input',None)
         self.command = args[0]
+        self.command_string = " ".join(self.command)
         super(PopenWithInput,self).__init__(*args,**kwargs)
     def communicate(self):
         return super(PopenWithInput,self).communicate(self.input)
-
+    def __str__(self):
+        return "<Popen on %r>" % self.command_string
