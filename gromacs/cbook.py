@@ -28,6 +28,7 @@ also serve as canonical examples for how to do simple things.
 import re
 
 import gromacs
+from gromacs import GromacsError
 import tools
 
 trj_compact = tools.Trjconv(ur='compact', center=True, boxcenter='tric', pbc='mol',
@@ -35,7 +36,12 @@ trj_compact = tools.Trjconv(ur='compact', center=True, boxcenter='tric', pbc='mo
                             doc="Returns a compact representation of the system centered on the protein")
 
 def grompp_qtot(*args, **kwargs):
-    """Run ``gromacs.grompp`` and return the total charge of the system."""
+    """Run ``gromacs.grompp`` and return the total charge of the system.
+
+    :Bugs:
+    * The stdout output of grompp is not shown. This can make debugging
+      pretty hard (would need ``tee``-like capabilities for stdout)
+    """
 
     # match '  System has non-zero total charge: -4.000001e+00',
     qtot_pattern = re.compile('System has non-zero total charge: *(?P<qtot>[-+]?\d*\.\d+[eE][-+]\d+)')

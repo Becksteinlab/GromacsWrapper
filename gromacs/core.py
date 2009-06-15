@@ -5,6 +5,7 @@
 
 """Core functionality for the Gromacs python shell."""
 
+import sys
 import re
 import subprocess
 from subprocess import STDOUT, PIPE
@@ -26,16 +27,14 @@ class GromacsCommand(object):
 
     command_name = None
     doc_pattern = r'.*?(?P<DOCS>DESCRIPTION.*)'
-
-    # TODO: grep failure output (gmx_fatal()); example:
+    gmxfatal_pattern = r'---+\n'\
+        r'Program\s+(?P<program_name>\w+),\s+VERSION\s+(?P<version>[\w.]+)\s*\n'\
+        r'(?P<message>.*)\n---+'
+    # matches gmx_fatal() otput
     # -------------------------------------------------------
     # Program <program_name>, VERSION <version>
     # ... <message>
     # -------------------------------------------------------    
-    # not used yet:
-    gmxfatal_pattern = r'\n----+\n'\
-        r'Program (?P<program_name>\w+), VERSION (?P<version>\w+)\n'\
-        r'(?P<message>.*)\n----+'
 
     failuremodes = ('raise', 'warn', None)
 
@@ -83,12 +82,20 @@ class GromacsCommand(object):
         gmxargs.update(self._combineargs(*args,**kwargs))
         return self._run_command(**gmxargs)
 
-    def check_failure(self, rc, msg='Gromacs tool failed', command_string=None):
+    def check_failure(self, result, msg='Gromacs tool failed', command_string=None):
+        rc, out, err = result
         if not command_string is None:
-            msg += '\nCommand: ' + str(command_string)
+            msg += '\nCommand invocation: ' + str(command_string)
         success = (rc == 0)
         if not success:
-            if self.failuremode == 'raise':
+            gmxoutput = "\n".join([x for x in [out, err] if not x is None])
+            m = re.search(self.gmxfatal_pattern, gmxoutput, re.DOTALL)
+            if m:
+                formatted_message = ['GMX_FATAL  '+line for line in m.group('message').split('\n')]
+                msg = "\n".join(\
+                    [msg, "Gromacs command %(program_name)r fatal error message:" % m.groupdict()] +
+                    formatted_message)
+            if self.failuremode == 'raise':                
                 raise GromacsError(rc, msg)
             elif self.failuremode == 'warn':
                 warnings.warn(msg + '\nError code: %r\n' % rc, category=GromacsFailureWarning)
@@ -130,26 +137,41 @@ class GromacsCommand(object):
         p = self.Popen(*args, **kwargs)
         out, err = p.communicate()       # special Popen knows input!
         rc = p.returncode
-        self.check_failure(rc, command_string=p.command_string)      # TODO: capture error message
-        return rc, out, err
+        result = rc, out, err
+        self.check_failure(result, command_string=p.command_string)      # TODO: capture error message
+        return result
 
     def Popen(self, *args,**kwargs):
         """Returns a special Popen instance with pre-set input for communicate()."""
-        stdin = kwargs.pop('stdin', None)
-        stderr = kwargs.pop('stderr', STDOUT)
-        stdout = kwargs.pop('stdout', None)     # either set to PIPE for returning output
-        if stdout is False:                     # ... or False 
-            stdout = PIPE                       # special convenience case
+
+        stderr = kwargs.pop('stderr', STDOUT)   # default: Merge with stdout
+        if stderr is False:                     # False: capture it 
+            stderr = PIPE
+        elif stderr is True:
+            stderr = None                       # use stderr
+
+        stdout = kwargs.pop('stdout', None)     # either set to PIPE for capturing output
+        if stdout is False:                     # ... or to False 
+            stdout = PIPE
         elif stdout is True:
-            stdout = None                       # for consistency
+            stdout = None                       # for consistency, make True write to screen
+
+        stdin = kwargs.pop('stdin', None)
         input = kwargs.pop('input', None)
         if input:
             stdin = PIPE
-            if not type(input) is str:
+            if type(input) is str:
+                # make sure that input is a simple string with \n line endings
+                if not input.endswith('\n'):
+                    input += '\n'
+            else:
                 try:
+                    # make sure that input is a simple string with \n line endings
                     input = '\n'.join(map(str, input)) + '\n'
                 except TypeError:
+                    # so maybe we are a file or something ... and hope for the best
                     pass
+
         newargs = self._combineargs(*args,**kwargs)
         cmd = [self.command_name] + self._build_arg_list(**newargs)
         try:
@@ -208,12 +230,13 @@ class GromacsCommand(object):
                          elements of a sequence are concatenated with
                          newlines, including a trailing one    [None]
         stdin            None or automatically set to PIPE if input given [None]
-        stdout           filehandle to write to, eg None/True to see output on screen;
-                         False/PIPE returns the output as a string in the stdout
-                         parameter [None]
+        stdout           filehandle to write to; special cases are None/True to see 
+                         output on screen; False/PIPE returns the output as a string in 
+                         the stdout parameter [None]
         stderr           filehandle to write to; STDOUT merges standard error with
-                         the standard out stream. PIPE returns the output
-                         as a string in the stderr return parameter [STDOUT]
+                         the standard out stream. False/PIPE returns the output
+                         as a string in the stderr return parameter, None/True keeps it 
+                         on stderr (and presumably on screen)  [STDOUT]
 
         All other kwargs are passed on to the Gromacs tool.
      
