@@ -7,6 +7,8 @@ from subprocess import STDOUT, PIPE
 import warnings
 import errno
 
+from gromacs import GromacsError, GromacsFailureWarning
+
 class GromacsCommand(object):
     """Base class for wrapping a g_* command.
     
@@ -20,6 +22,14 @@ class GromacsCommand(object):
 
     command_name = None
     doc_pattern = r'.*?(?P<DOCS>DESCRIPTION.*)'
+
+    # failure output (gmx_fatal()):
+    # -------------------------------------------------------
+    # Program <program_name>, VERSION <version>
+    # ...
+    # -------------------------------------------------------    
+
+    failuremodes = ('raise', 'warn', None)
 
     def __init__(self,*args,**kwargs):
         """Set up the command with gromacs flags as keyword arguments.::
@@ -42,7 +52,19 @@ class GromacsCommand(object):
 
         When the command is run one can override options that were given at
         initialization or add additional ones.
+
+        The following keyword arguments are not passed on to the
+        Gromacs tool but determined how the command class behaves.
+        
+        :Keyword arguments:
+        failure:     'raise': raises GromacsError if command fails
+                      'warn': issue a GromacsFailureWarning
+                      None: just continue silently
+        
         """
+        self.failuremode = kwargs.pop('failure','raise')
+        if not self.failuremode in self.failuremodes:
+            raise ValueError('failuremode must be one of\n%(failuremodes)r' % vars(self))
         self.gmxargs = self._combineargs(*args, **kwargs)
         self.__doc__ = self.gmxdoc
 
@@ -51,6 +73,20 @@ class GromacsCommand(object):
         gmxargs = self.gmxargs.copy()
         gmxargs.update(self._combineargs(*args,**kwargs))
         return self._run_command(**gmxargs)
+
+    def check_failure(self, rc, msg='Gromacs tool failed'):
+        success = (rc == 0)
+        if not success:
+            if self.failuremode == 'raise':
+                raise GromacsError(rc, msg)
+            elif self.failuremode == 'warn':
+                warnings.warn(msg + '\nError code: %r\n' % rc, category=GromacsFailureWarning)
+            elif self.failuremode is None:
+                pass
+            else:
+                raise ValueError('unknown failure mode %r' % self.failuremode)
+        return success
+            
 
     def _combineargs(self,*args,**kwargs):
         """Add switches as 'options' with value True to the options dict."""
@@ -81,18 +117,20 @@ class GromacsCommand(object):
     def _run_command(self,*args,**kwargs):
         """Execute the gromacs command; see the docs for __call__."""
         p = self.Popen(*args, **kwargs)
-        out, err = p.communicate()       # special Popen knos input!
+        out, err = p.communicate()       # special Popen knows input!
         rc = p.returncode
-        if rc != 0:
-            warnings.warn("Command %(command)r failed with return code %(returncode)d" % vars(p),
-                          category=RuntimeWarning)
+        self.check_failure(rc)           # TODO: capture error message
         return rc, out, err
 
     def Popen(self, *args,**kwargs):
         """Returns a special Popen instance with pre-set input for communicate()."""
         stdin = kwargs.pop('stdin', None)
         stderr = kwargs.pop('stderr', STDOUT)
-        stdout = kwargs.pop('stdout', PIPE)     # set to None for screen output
+        stdout = kwargs.pop('stdout', None)     # either set to PIPE for returning output
+        if stdout is False:                     # ... or False 
+            stdout = PIPE                       # special convenience case
+        elif stdout is True:
+            stdout = None                       # for consistency
         input = kwargs.pop('input', None)
         if input:
             stdin = PIPE
@@ -155,11 +193,12 @@ class GromacsCommand(object):
                          elements of a sequence are concatenated with
                          newlines, including a trailing one    [None]
         stdin            None or automatically set to PIPE if input given [None]
-        stdout           filehandle to write to, eg None to see output on screen;
-                         PIPE returns the output as a string in the stdout parameter [PIPE]
+        stdout           filehandle to write to, eg None/True to see output on screen;
+                         False/PIPE returns the output as a string in the stdout
+                         parameter [None]
         stderr           filehandle to write to; STDOUT merges standard error with
                          the standard out stream. PIPE returns the output
-                         as a string in the stderr parameter [STDOUT]
+                         as a string in the stderr return parameter [STDOUT]
 
         All other kwargs are passed on to the Gromacs tool.
      
