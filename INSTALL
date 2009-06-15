@@ -1,0 +1,61 @@
+.. $Id$
+
+=========
+ INSTALL
+=========
+
+This document should help you to install the package. The installation
+uses setuptools (also known as easy_install or egg install); if this
+is not available on your system you can either let the installer
+itself get it from the internet (so just go to `Quick installation
+instructions`_) or install it using your package manager, eg
+
+  aptitude install python-setuptools
+
+or similar.
+
+Please do not hesitate to contact Oliver Beckstein
+<orbeckst@gmail.com> if problems occur or if you have suggestions on
+how to improve the package or these instructions.
+
+
+Quick installation instructions
+===============================
+
+From a tar ball, eg GromacsWrapper-0.1.tbz:
+
+   easy_install GromacsWrapper-0.1.tbz
+
+From the unpacked source:
+
+  python setup.py install
+
+See the easy_install instructions for explanation of the options that
+allow you to install into non-standard places.
+
+
+
+Requirements
+============
+
+System requirements
+-------------------
+
+Tested with python 2.4, 2.5 on Linux and Mac OS X.
+
+Required python modules
+-----------------------
+
+The basic package only uses the standard library.
+
+For the analysis library additional modules are required::
+
+  numpy        >=1.0.3          http://numpy.scipy.org/
+  matplotlib   >=0.91.3         http://matplotlib.sourceforge.net/
+  RecSQL                        ask Oli, will be available automatically soon
+
+:TODO: 
+* Say how to make setup.py download the optional dependencies
+  automagically.
+* Example of non-standard install.
+     

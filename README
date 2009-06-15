@@ -1,0 +1,9 @@
+.. $Id$
+
+================
+ GromacsWrapper
+================
+
+See INSTALL for installation instructions and COPYING for the
+licensing terms for all modules except ``vmd`` (see COPYING and
+COPYING.LESSER).
