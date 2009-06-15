@@ -13,12 +13,12 @@ Programming API for plugins
   from gromacs.analysis import Simulation
   from gromacs.analysis.plugins import CysAccessibility
 
-  class Mhp1(Simulation, CysAccessibility):
+  class MyProtein(Simulation, CysAccessibility):
     def __init__(self,**kwargs):
-        kwargs['CysAccessibility'] = {'cysteines': [69, 234, 327]}
-        super(Mhp1,self).__init__(**kwargs)
+        kwargs['CysAccessibility'] = {'cysteines': [96, 243, 372]}
+        super(MyProtein,self).__init__(**kwargs)
 
-  S = Mhp1(tpr=..., xtc=..., analysisdir=...)
+  S = MyProtein(tpr=..., xtc=..., analysisdir=...)
   S.set_default_plugin('CysAccessibility')
   S.run()
   S.analyze()
@@ -37,7 +37,7 @@ access it. When its __init__ method executes it adds the actual worker class
 (typically named with the underscore-prepended name) to the Simulation.plugins
 dictionary.
 
-Variables for initializing a plugin a given to the class constructor as a
+Variables for initializing a plugin are given to the class constructor as a
 keyword argument that is named like the plugin and contains a dictionary that
 is used as the keyword parameters for the plugin's init.
 
@@ -45,7 +45,7 @@ A plugin **must** obtain a pointer to the Simulation class as the keyword
 argument ``simulation`` in order to be able to access simulation-global
 parameters such as top directories or input files.
 
-See CysAccessibility and _CysAccessibility as examples.
+See plugins.CysAccessibility and plugins._CysAccessibility as examples.
 
 """
 
