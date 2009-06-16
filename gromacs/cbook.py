@@ -25,6 +25,8 @@ also serve as canonical examples for how to do simple things.
 # new class and set arguments explicitly in init (using kwargs['flag'] =
 # default) ... or I can write some meta(??) class to do this nicely
 
+from __future__ import with_statement
+
 import re
 import tempfile
 import shutil
