@@ -101,19 +101,22 @@ def edit_mdp(mdp, new_mdp=None, **substitutions):
     target = tempfile.TemporaryFile()
     with open(mdp) as src:
         for line in src:
-            new_line = line.strip()
+            new_line = line.strip()  # \n must be stripped to ensure that new line is built without break
             for p in params[:]:
-                m = patterns[p].match(line)
+                m = patterns[p].match(new_line)
                 if m:
                     # I am too stupid to replace a specific region in the string so I rebuild it
                     # (matching a line and then replacing value requires TWO re calls)
+                    #print 'line:' + new_line
+                    #print m.groupdict()
                     if m.group('comment') is None:
                         comment = ''
                     else:
                         comment = " "+m.group('comment')
-                    new_line = "".join([m.group('assignment'), 
-                                        str(substitutions[p]), 
-                                        comment])
+                    assignment = m.group('assignment')
+                    if not assignment.endswith(' '):
+                        assignment += ' '
+                    new_line = assignment + str(substitutions[p]) + comment
                     params.remove(p)
                     break
             target.write(new_line+'\n')
@@ -123,3 +126,43 @@ def edit_mdp(mdp, new_mdp=None, **substitutions):
         shutil.copyfileobj(target, final)
     target.close()
     return params
+
+def edit_txt(filename, substitutions, newname=None):
+    """Primitive top editor (sed is better...)
+    
+    substitutions ::= [ search_replace_tuple, ... ]
+    search_replace_tuple ::= ( line_match_RE, search_RE, replacement )
+
+    line_match_RE     regular expression that selects the line
+    search_RE         regular expression that is searched in the line
+    replacement       replacement string for search_RE
+    
+    """
+    raise NotImplementedError
+
+    if newname is None:
+        newname = filename
+
+    try:
+        _substitutions = dict([(n, {'lRE': re.compile(lRE),
+                                    'sRE': re.compile(sRE),
+                                    'repl': str(repl)})
+                               for n,(lRE,sRE,repl) in enumerate(substitutions)])
+    except:   # figure out later how to give useful error message
+        raise
+
+    target = tempfile.TemporaryFile()
+    with open(filename) as src:
+        for line in src:
+            new_line = line.strip()
+            # for 
+            target.write(new_line+'\n')
+    target.seek(0)
+    # XXX: Is there a danger of corrupting the original mdp if something went wrong?
+    with open(newname, 'w') as final:
+        shutil.copyfileobj(target, final)
+    target.close()
+
+    
+
+
