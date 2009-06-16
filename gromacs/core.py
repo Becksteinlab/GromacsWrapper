@@ -205,7 +205,9 @@ class GromacsCommand(object):
         
 
     def _get_gmx_docs(self):
-        """Extract standard gromacs doc by running the program and chopping the header."""
+        """Extract standard gromacs doc by running the program and chopping the header."""        
+        # TODO: Maybe use the class-wide arguments also? Would be good for
+        # canned invocations such as the ones in gromacs.cbook.
         rc,docs,nothing = self._run_command('h', stdout=PIPE)
         m = re.match(self.doc_pattern, docs, re.DOTALL)    # keep from DESCRIPTION onwards
         if m is None:
