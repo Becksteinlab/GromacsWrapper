@@ -43,14 +43,26 @@ class GromacsCommand(object):
 
           cmd = GromacsCommand('v', f=['md1.xtc','md2.xtc'], o='processed.xtc', t=200, ...)
 
-        Gromacs boolean switches (such as ``-v``) are given as python positional
-        arguments (``'v'``) or as keyword argument (``v=True``); note the quotes
-        in the first case. Negating at boolean switch can be done with
-        ``'-nov'``, ``nov=True`` or ``v=False``. Any Gromacs options that take
-        parameters are handled as keyword arguments. If an option takes multiple
-        arguments (such as the multi-file input ``-f file1 file2 ...``) then the
-        list of files must be supplied as a python list.
+        Gromacs command line arguments
+        ------------------------------
 
+        Gromacs boolean switches (such as ``-v``) are given as python
+        positional arguments (``'v'``) or as keyword argument (``v=True``);
+        note the quotes in the first case. Negating at boolean switch can be
+        done with ``'-nov'``, ``nov=True`` or ``v=False``.
+
+        Any Gromacs options that take parameters are handled as keyword
+        arguments. If an option takes multiple arguments (such as the
+        multi-file input ``-f file1 file2 ...``) then the list of files must be
+        supplied as a python list.
+
+        If a keyword has the python value None then it will *not* be added to
+        the Gromacs command line; this allows for flexible scripting if it is
+        not known in advance if an input file is needed.
+
+        Command execution
+        -----------------
+        
         The command is executed with the run() method or by
         calling it as a function. The two next lines are equivalent::
 
@@ -60,8 +72,11 @@ class GromacsCommand(object):
         When the command is run one can override options that were given at
         initialization or add additional ones.
 
-        The following keyword arguments are not passed on to the
-        Gromacs tool but determined how the command class behaves.
+        Non-Gromacs keyword arguments
+        -----------------------------
+
+        The following keyword arguments are not passed on to the Gromacs tool
+        but determine how the command class behaves.
         
         :Keyword arguments:
         failure:     'raise': raises GromacsError if command fails
@@ -69,6 +84,7 @@ class GromacsCommand(object):
                       None: just continue silently
         doc          string; additional documentation []
         """
+
         self.failuremode = kwargs.pop('failure','raise')
         self.extra_doc = kwargs.pop('doc',None)
         if not self.failuremode in self.failuremodes:
@@ -125,6 +141,8 @@ class GromacsCommand(object):
             elif value is False:
                 # XXX: does not work for '-noXXX False' ... but who uses that?
                 arglist.append('-no'+flag[1:])  # gromacs switches booleans by prefixing 'no'
+            elif value is None:
+                pass                            # ignore flag = None
             else:
                 try:
                     arglist.extend([flag] + value) # option with value list
