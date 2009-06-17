@@ -7,3 +7,6 @@
 See INSTALL for installation instructions and COPYING for the
 licensing terms for all modules except ``vmd`` (see COPYING and
 COPYING.LESSER).
+
+Documentation is currently only provided through the python doc
+strings.

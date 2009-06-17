@@ -52,7 +52,7 @@ For the analysis library additional modules are required::
 
   numpy        >=1.0.3          http://numpy.scipy.org/
   matplotlib   >=0.91.3         http://matplotlib.sourceforge.net/
-  RecSQL                        ask Oli, will be available automatically soon
+  RecSQL                        http://sbcb.bioch.ox.ac.uk/oliver/download/Python/RecSQL
 
 :TODO: 
 * Say how to make setup.py download the optional dependencies
