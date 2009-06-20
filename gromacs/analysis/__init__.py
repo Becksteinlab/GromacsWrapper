@@ -1,6 +1,6 @@
 # $Id$
 """Specific analysis modules."""
 
-__all__ = ['core','plugins']
+__all__ = ['plugins']
 
 from core import Simulation

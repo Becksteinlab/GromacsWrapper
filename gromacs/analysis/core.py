@@ -50,13 +50,28 @@ See plugins.CysAccessibility and plugins._CysAccessibility as examples.
 """
 
 
-import sys, os
+import sys
+import os
 import errno
 import subprocess
 import warnings
 
-import gromacs
-from mindist import Mindist
+from gromacs.utilities import FileUtils
+
+class AttributeDict(dict):
+    """A dictionary with pythonic access to keys as attributes --- useful for interactive work."""
+    def __getattribute__(self,x):
+        try:
+            return super(AttributeDict,self).__getattribute__(x)
+        except AttributeError:
+            return self[x]
+    def __setattr__(self,name,value):
+        try:
+            super(AttributeDict,self).__setitem__(name, value)
+        except KeyError:
+            super(AttributeDict,self).__setattr__(name, value)
+            
+
 
 class Simulation(object):
     """Class that represents one simulation.
@@ -177,16 +192,96 @@ class Simulation(object):
 
 
 
-class AttributeDict(dict):
-    """A dictionary with pythonic access to keys as attributes --- useful for interactive work."""
-    def __getattribute__(self,x):
-        try:
-            return super(AttributeDict,self).__getattribute__(x)
-        except AttributeError:
-            return self[x]
-    def __setattr__(self,name,value):
-        try:
-            super(AttributeDict,self).__setitem__(name, value)
-        except KeyError:
-            super(AttributeDict,self).__setattr__(name, value)
+# Plugin infrastructure
+# ---------------------
+
+# worker classes (used by the plugins)
+
+class Worker(FileUtils):
+    """Base class for a plugin worker. Derive '_<plugin_name>(Worker)'."""
+    plugin_name = None
+
+    def __init__(self,**kwargs):
+        # general
+        assert self.plugin_name != None                  # derive from Worker
+        self.simulation = kwargs.pop('simulation',None)  # required (but kw for super & friends)
+        assert self.simulation != None
+        self.location = None          # directory name under analysisdir (set in derived class)
+        super(Worker,self).__init__(**kwargs)
+
+    def topdir(self, *args):
+        return self.simulation.topdir(*args)
+    
+    def plugindir(self, *args):
+        return self.topdir(self.location, *args)
+
+    def run(self,**kwargs):
+        raise NotImplementedError
+
+    def analyze(self,**kwargs):
+        raise NotImplementedError
+
+    def plot(self,**kwargs):
+        """Plot all results in one graph, labelled by the result keys.
+
+        figure:       True: save figures in the given formats
+                      "name.ext": save figure under this filename (ext -> format)
+                      False: only show on screen
+        formats:      sequence of all formats that should be saved [('png', 'pdf')]
+        **plotargs    keyword arguments for pylab.plot()
+        """
+
+        # XXX: maybe move this into individual plugins in case the self.results
+        # XXX: dict differs considerably between plugins
+
+        import pylab
+        figure = kwargs.pop('figure', False)
+        extensions = kwargs.pop('formats', ('pdf','png'))
+        for name,result in self.results.items():
+            kwargs['label'] = name
+            result.plot(**kwargs)
+        pylab.legend(loc='best')
+        if figure is True:
+            for ext in extensions:
+                self.savefig(ext=ext)
+        elif figure:
+            self.savefig(filename=figure)
+
+    def savefig(self, filename=None, ext='png'):
+        """Save the current figure under the default name, using the supplied format and extension."""
+        import pylab
+        if filename is None:
+            filename = self.parameters.figname
+        _filename = self.filename(filename, ext=ext, use_my_ext=True)
+        pylab.savefig(_filename)
+        print "Saved figure as %(_filename)r." % vars()
             
+
+# plugins:
+# registers a worker class in Simulation.plugins and adds a pointer to Simulation to worker
+
+class Plugin(object):
+    """Plugin class to be used as a mixin class with Simulation.
+
+    All analysis plugins must be derived from the Plugin base class.
+
+    A plugin registers a worker class in Simulation.plugins and adds a
+    pointer to Simulation to worker.
+    """    
+    # XXX: gets overwritten with multiple plugin mixins --- do something else!
+    plugin_name = None     # name of the plugin
+    plugin_class = None    # actual plugin class (typically name with leading underscore)
+
+    def __init__(self,**kwargs):
+        """Registers the plugin with the simulation class.
+        :Arguments:
+        <plugin_name>      a dictionary named like the plugin is taken to include
+                           keyword arguments to initialize the plugin
+        **kwargs           all other kwargs are passed along                           
+        """
+        assert self.plugin_name != None                # must derive from Plugin
+        plugin_args = kwargs.pop(self.plugin_name,{})  # must be a dict named like the plugin
+        plugin_args['simulation'] = self               # allows access of plugin to globals
+        super(Plugin, self).__init__(**kwargs)
+        self.plugins[self.plugin_name] = self.plugin_class(**plugin_args)  # add the worker
+
