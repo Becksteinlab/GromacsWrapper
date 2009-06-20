@@ -156,7 +156,7 @@ class GromacsCommand(object):
         out, err = p.communicate()       # special Popen knows input!
         rc = p.returncode
         result = rc, out, err
-        self.check_failure(result, command_string=p.command_string)      # TODO: capture error message
+        self.check_failure(result, command_string=p.command_string)
         return result
 
     def Popen(self, *args,**kwargs):
@@ -207,7 +207,7 @@ class GromacsCommand(object):
     def _get_gmx_docs(self):
         """Extract standard gromacs doc by running the program and chopping the header."""        
         # Uses the class-wide arguments so that 'canned invocations' in cbook
-        # are accurately reflected. Might be a problem when thes invocations
+        # are accurately reflected. Might be a problem when these invocations
         # supply wrong arguments... TODO: maybe check rc for that?
         rc,docs,nothing = self.run('h', stdout=PIPE)
         m = re.match(self.doc_pattern, docs, re.DOTALL)    # keep from DESCRIPTION onwards
