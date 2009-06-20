@@ -102,8 +102,8 @@ class GromacsCommand(object):
         rc, out, err = result
         if not command_string is None:
             msg += '\nCommand invocation: ' + str(command_string)
-        success = (rc == 0)
-        if not success:
+        had_success = (rc == 0)
+        if not had_success:
             gmxoutput = "\n".join([x for x in [out, err] if not x is None])
             m = re.search(self.gmxfatal_pattern, gmxoutput, re.DOTALL)
             if m:
@@ -119,7 +119,7 @@ class GromacsCommand(object):
                 pass
             else:
                 raise ValueError('unknown failure mode %r' % self.failuremode)
-        return success
+        return had_success
             
 
     def _combineargs(self,*args,**kwargs):
