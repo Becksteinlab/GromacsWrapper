@@ -123,3 +123,7 @@ if len(_missing_g_commands) > 0:
                   category=GromacsImportWarning)
 
 del name, cls, clsname
+
+# cbook should come after the whole of init as it relies on command
+# instances in the topl level name space
+import cbook

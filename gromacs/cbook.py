@@ -39,6 +39,10 @@ trj_compact = tools.Trjconv(ur='compact', center=True, boxcenter='tric', pbc='mo
                             input=('protein','system'),
                             doc="Returns a compact representation of the system centered on the protein")
 
+rmsd_backbone = tools.G_rms(what='rmsd', fit='rot+trans',
+                            input=('Backbone','Backbone'),
+                            doc="Compute RMSD of backbone after fitting to Backbone.")
+
 def grompp_qtot(*args, **kwargs):
     """Run ``gromacs.grompp`` and return the total charge of the system.
 
@@ -65,18 +69,25 @@ def edit_mdp(mdp, new_mdp=None, **substitutions):
 
     edit_mdp('md.mdp', new_mdp='long_md.mdp', nsteps=100000, nstxtcout=1000, lincs_iter=2)
 
-    Parameters and values are supplied as substitutions, eg nsteps=1000. Note
-    that dashes have to be replaced by an underscore.
+    Parameters and values are supplied as substitutions, eg nsteps=1000.
     
     By default the template mdp file is **overwritten in place**.
 
     :Arguments:
     mdp             filename of input (and output filename of new_mdp=None)
-    new_mdp         filename of output mdp file [None]
+    new_mdp         filename of alternative output mdp file [None]
     substitutions   parameter=value pairs, where parameter is defined by Gromacs
 
     :Returns:
     List of parameters that have NOT been substituted.
+
+    :Notes:
+    * Dashes in Gromacs mdp parameters have to be replaced by an underscore
+      when supplied as python keyword arguments (a limitation of python).
+      For example
+        MDP:      lincs-iter = 4
+        keyword:  lincs_iter = 4
+
 
     :Bugs: 
     * Parameters *aa_bb* and *aa-bb* are considered the same (but should not be a problem).

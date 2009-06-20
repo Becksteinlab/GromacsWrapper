@@ -206,9 +206,10 @@ class GromacsCommand(object):
 
     def _get_gmx_docs(self):
         """Extract standard gromacs doc by running the program and chopping the header."""        
-        # TODO: Maybe use the class-wide arguments also? Would be good for
-        # canned invocations such as the ones in gromacs.cbook.
-        rc,docs,nothing = self._run_command('h', stdout=PIPE)
+        # Uses the class-wide arguments so that 'canned invocations' in cbook
+        # are accurately reflected. Might be a problem when thes invocations
+        # supply wrong arguments... TODO: maybe check rc for that?
+        rc,docs,nothing = self.run('h', stdout=PIPE)
         m = re.match(self.doc_pattern, docs, re.DOTALL)    # keep from DESCRIPTION onwards
         if m is None:
             return "(No Gromacs documentation available)"
@@ -222,8 +223,9 @@ class GromacsCommand(object):
                 self.__doc_cache = self._get_gmx_docs()
             docs = self.__doc_cache
             if self.extra_doc:
-                docs = '\n'.join([docs, "Additional documentation:", 25*'=',
-                                  self.extra_doc])
+                docs = '\n'.join([self.extra_doc,'',
+                                  "Documentation of the gromacs tool:", 34*'=',
+                                  docs])
             return docs
         return locals()
     gmxdoc = property(**gmxdoc())
