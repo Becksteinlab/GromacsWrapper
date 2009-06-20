@@ -42,7 +42,6 @@ import re
 import numpy
 
 from recsql import SQLarray   # my own ReqSQL module
-from recsql.sqlutil import FakeRecArray
 
 import gromacs.utilities
 
@@ -66,7 +65,6 @@ class Mindist(object):
     :TODO:
     * Save analysis to pickle or data files.
     * Export data as simple data files for plotting in other programs.
-    * Make implementation more memory efficient.
     """
 
     def __init__(self,datasource,cutoff=None):
@@ -83,14 +81,8 @@ class Mindist(object):
         stream, self.filename = gromacs.utilities.anyopen(datasource)
         try:
             M = GdistData(stream)
-            # make a tmp recarray (BIG array in memory!!) to pass into
-            # db (crappy...)
-            #_distances = numpy.rec.fromrecords(
-            #    [(frame,distance) for frame,distance in M],  # pull data from file
-            #    names='frame,distance', formats='i4,f8')     # MUST be i4 (i8 gives sqlite unsuported type error)
-            _distances = FakeRecArray(M, columns=('frame','distance'))
-            # BIG database in memory!!
-            all_distances = SQLarray('distances', _distances)  # ... can be accessed via SQL
+            # BIG database in memory ... can be accessed via SQL
+            all_distances = SQLarray('distances', iterable=M, columns=('frame','distance')) 
         finally:
             stream.close()
         if cutoff is None:
