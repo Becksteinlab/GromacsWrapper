@@ -70,7 +70,7 @@ application.)
 
 """
 
-__all__ = ['tools', 'cbook']
+__all__ = ['tools', 'cbook', 'setup']
 
 # Note: analysis not imported by default (requires additional pre-requisites)
 

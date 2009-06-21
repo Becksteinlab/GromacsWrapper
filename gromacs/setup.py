@@ -1,8 +1,20 @@
 # $Id$
-"""Setting up a Gromacs MD run.
+"""
+Setting up a Gromacs MD run
+===========================
 
 Individual steps such as solvating a structure or energy minimization
-are set up in individual directories.
+are set up in individual directories. For energy minimization one
+should supply appropriate mdp run input files; otherwise example
+templates are used.
+
+:Note:
+
+- **This is software is in ALPHA status and likely to change
+    completely in the future.**
+
+- You **must** check all simulation parameters for yourself. Do not
+  rely on any defaults provided here.
 
 """
 
@@ -64,7 +76,7 @@ def topology(struct=None, protein='protein',
     with in_dir(dirname):
         gromacs.pdb2gmx(ff=ff, water=watermodel, f=structure,
                         o=new_struct, p='tmp', i=posres)
-        # need some editing  AKeco_tmp --> system.top and AKeco.itp
+        # need some editing  protein_tmp --> system.top and protein.itp
 
     return topology, new_struct
 
