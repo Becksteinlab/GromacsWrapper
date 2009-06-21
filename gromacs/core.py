@@ -152,8 +152,9 @@ class GromacsCommand(object):
 
     def _run_command(self,*args,**kwargs):
         """Execute the gromacs command; see the docs for __call__."""
+        use_input = kwargs.pop('use_input', True)     # hack to run command WITHOUT input (-h...)
         p = self.Popen(*args, **kwargs)
-        out, err = p.communicate()       # special Popen knows input!
+        out, err = p.communicate(use_input=use_input) # special Popen knows input!
         rc = p.returncode
         result = rc, out, err
         self.check_failure(result, command_string=p.command_string)
@@ -209,7 +210,8 @@ class GromacsCommand(object):
         # Uses the class-wide arguments so that 'canned invocations' in cbook
         # are accurately reflected. Might be a problem when these invocations
         # supply wrong arguments... TODO: maybe check rc for that?
-        rc,docs,nothing = self.run('h', stdout=PIPE)
+        # use_input=False needed for running commands in cbook that have input pre-defined
+        rc,docs,nothing = self.run('h', stdout=PIPE, use_input=False)
         m = re.match(self.doc_pattern, docs, re.DOTALL)    # keep from DESCRIPTION onwards
         if m is None:
             return "(No Gromacs documentation available)"
@@ -294,7 +296,10 @@ class PopenWithInput(subprocess.Popen):
         self.command = args[0]
         self.command_string = " ".join(self.command)
         super(PopenWithInput,self).__init__(*args,**kwargs)
-    def communicate(self):
-        return super(PopenWithInput,self).communicate(self.input)
+    def communicate(self, use_input=True):
+        if use_input:
+            return super(PopenWithInput,self).communicate(self.input)
+        else:
+            return super(PopenWithInput,self).communicate()
     def __str__(self):
         return "<Popen on %r>" % self.command_string
