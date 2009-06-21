@@ -1,0 +1,26 @@
+; energy minimisation of full system
+; $Id$
+; some values from http://code.google.com/p/acpypi/wiki/TutorialAcpypi4GromacsOPLS
+
+cpp            = cpp
+include        = -I. -I.. -I../top
+define         = -DPOSRES -DFLEXSPC
+
+;integrator     = cg
+integrator     = l-bfgs
+emtol          = 500
+emstep         = 0.01
+nsteps         = 1000
+nstcgsteep     = 100
+constraints              = none
+nstcomm                  = 1
+coulombtype              = PME
+ns_type                  = grid
+rlist                    = 1.0
+rcoulomb                 = 1.0
+rvdw                     = 1.0  ; is this the correct value for OPLS-AA?
+Tcoupl                   = no
+Pcoupl                   = no
+gen_vel                  = no
+nstxout                  = 0 ; write coords every # step
+optimize_fft             = yes

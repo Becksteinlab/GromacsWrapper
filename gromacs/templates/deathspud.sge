@@ -1,0 +1,136 @@
+#!/bin/bash
+# $Id$
+#
+#$ -S /bin/bash
+#$ -N AKeco
+#
+# Set the Parallel Environment and number of procs.
+#$ -pe mpich2 4
+#$ -R y
+#$ -cwd
+# merge error and standard out
+#$ -j y
+# restarts with this script: yes (-cpi)
+#$ -r y
+#
+# To email to another account, use the "-M [email address]" option
+#    -m e
+# Get LD_LIBRRARY_PATH (and the rest)
+#$ -V
+
+# qsub flags (set with -V FLAG=1)
+#    DEBUG          more debug output
+#    WITH_SCRIPTS   create house keeping scripts
+
+# BUGS
+# * mpich2 mpiexec does not honour -wdir and ALWAYS runs in the initial
+#   directory
+
+#------------------------------------------------------------
+# Quick and Dirty -- all deffnm
+# 
+DEFFNM=md
+TPR=${DEFFNM}.tpr
+#
+#------------------------------------------------------------
+
+OUTPUT=$DEFFNM.out
+PDB=$DEFFNM.pdb
+
+function die () {
+   local msg="$1" err=${2:-1}
+   echo 1>&2 "EE   Fatal ERROR: $msg"
+   exit $err
+} 
+
+#------------------------------------------------
+#  Job commands (using SGE)
+#------------------------------------------------
+
+
+export LD_LIBRARY_PATH=/opt/gromacs/4.0/lib:/opt/intel/cce/10.1.018/lib:/opt/intel/mkl/10.0.5.025/lib/em64t
+mpiexec=/opt/mpich2/intel/bin/mpiexec 
+gromacs_mpi=/opt/gromacs/4.0/bin/mdrun_mpich2
+
+
+echo "Starting calculation (using $NSLOTS processors)"
+echo "input:  $TPR"
+echo "output: $OUTPUT"
+echo "host:   ${HOSTNAME}"
+
+# debugging.... 
+set -x
+
+orig_dir=$PWD
+if [ "${SGE_TASK_ID}" = "undefined" ]; then
+   jobdir_name=${JOB_NAME}.${JOB_ID}
+else
+   # part of an array job
+   jobdir_name=${JOB_NAME}.${JOB_ID}.${SGE_TASK_ID}
+fi
+
+temp_dir=/fast/oliver/sge/${jobdir_name}
+mkdir -p ${temp_dir}  || die "Failed to mkdir ${temp_dir}"
+
+if [ -n "${WITH_SCRIPTS}" ]; then
+ # generate scripts for house keeping
+ rmscript=rm_${jobdir_name}.sh
+ getoutscript=getoutput_${jobdir_name}.sh
+
+ (echo -e '#!/bin/sh'; \
+ echo -e "ssh ${HOSTNAME} rm -vrf ${temp_dir}") > ${rmscript}
+
+ (echo -e '#!/bin/sh'; \
+ echo -e "scp ${HOSTNAME}:${temp_dir}/${CHARMM_OUTPUT} .") > ${getoutscript}
+
+ chmod a+x ${rmscript} ${getoutscript}
+fi
+
+
+
+# Gromacs only needs the TPR file:
+cp ${orig_dir}/${TPR} ${temp_dir}    || die "Failed to cp ${TPR}"
+cd ${temp_dir}                       || die "Failed to cd ${temp_dir}"
+
+[ "$PWD" == "${temp_dir}" ] || echo "WARNING: we maybe in the wrong directory (PWD=$PWD)"
+
+
+# debugging
+if [ -n "${DEBUG}" ]; then
+   echo "------------------------------------------------------------"
+   echo "| ldd ${gromacs_mpi}"
+   ldd ${gromacs_mpi}
+   echo "|"
+   echo "------------------------------------------------------------"
+   echo
+   #echo "------------------------------------------------------------"
+   #echo "| env"
+   #env
+   #echo "|"
+   #echo "------------------------------------------------------------"
+fi
+
+set -x
+echo "Backup machine file..."
+cp  ${TMPDIR}/machines ${orig_dir}/machines
+
+
+echo "Running in PWD=$PWD, start: $(date)"
+
+export MPIEXEC_RSH=rsh
+${mpiexec} -rsh -nopm -n ${NSLOTS} -machinefile ${TMPDIR}/machines -wdir ${temp_dir} \
+          ${gromacs_mpi} -step 1000 -deffnm ${DEFFNM} -s ${TPR} -c ${PDB} \
+                         -cpi > $OUTPUT
+
+echo "Run complete: $(date)"
+
+# note: '*' does not copy dot files etc:
+cd ${orig_dir} || die "Failed to 'cd ${orig_dir}'. Check '${temp_dir}' for files"
+cp -vru ${temp_dir}/* ${orig_dir}   || die "Failed to copy results; remove ${temp_dir} manually"
+
+# If commented out, use the rmscript manually
+rm -vrf ${temp_dir}
+
+exit 0
+ 
+

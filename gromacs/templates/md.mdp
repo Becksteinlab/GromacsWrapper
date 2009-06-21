@@ -1,0 +1,53 @@
+; $Id$
+; are these parameters ok for OPLS-AA?
+
+include                  = -I. -I.. -I../top
+define                   =
+
+integrator               = md
+tinit                    = 0.0
+dt                       = 0.002
+nsteps                   = 50000000
+
+nstxout                  = 50000
+nstvout                  = 50000
+nstfout                  = 0
+; Output frequency for energies to log file and energy file
+nstlog                   = 500
+nstenergy                = 250
+; Output frequency and precision for xtc file
+nstxtcout                = 500
+xtc-precision            = 1000
+
+
+comm-mode                = Linear
+nstcomm                  = 1000
+comm-grps                = SYSTEM
+
+ns_type                  = grid
+;; nstlist                  = 10 ;; ??
+
+rlist                    = 1.0           ; should be >0.1nm larger than rvdw
+rcoulomb                 = 1.0           ; ? 1.2 
+rvdw                     = 1.0           ; is 1.0nm ok for OPLS-AA? 1.2 in Lindahl Kv paper
+vdwtype                  = cut-off
+coulombtype              = PME
+optimize_fft             = yes
+
+Tcoupl                   = v-rescale
+tau_t                    = 0.1 0.1
+tc-grps                  = protein non-protein
+ref_t                    = 300 300
+Pcoupl                   = parrinello-rahman
+Pcoupltype               = isotropic
+tau_p                    = 0.5
+compressibility          = 4.5e-5
+ref_p                    = 1.0
+DispCorr                 = EnerPres
+
+gen_vel                  = yes
+
+constraints              = all-bonds
+constraint-algorithm     = Lincs
+lincs-order              = 4
+lincs-iter               = 1
