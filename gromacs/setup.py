@@ -141,17 +141,45 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
 templates = {'em_mdp': resource_filename(__name__, 'templates/em.mdp'),
              'md_mdp': resource_filename(__name__, 'templates/md.mdp'),
              'deathspud_sge': resource_filename(__name__, 'templates/deathspud.sge'),
+             'neuron_sge': resource_filename(__name__, 'templates/neuron.sge'),
              }
+sge_template = templates['neuron_sge']
 
-def energy_minimize(mdp=templates['em_mdp'],
-                    struct='solvate/ionized.gro', top='top/system.top', dirname='em'):
-    """Energy minimize the system."""
+def energy_minimize(dirname='em', mdp=templates['em_mdp'],
+                    struct='solvate/ionized.gro', top='top/system.top',
+                    **mdp_kwargs):
+    """Energy minimize the system.
+
+    energy_minimize(**kwargs)
+
+    This sets up the system (creates run input files) and also runs
+    ``mdrun_d``. Thus it can take a while.
+
+    Many of the keyword arguments below already have sensible values. 
+
+    :Keyword arguments:
+
+    dirname        set up under directory dirname [em]
+    struct         input structure (gro, pdb, ...) [solvate/ionized.gro]
+    top            topology file [top/system.top]
+    mdp            mdp file (or use the template) [templates/em.mdp]
+
+    **mdp_kwargs   dictionary of values that should be changed in the 
+                   template mdp file, eg {'nstxtcout': 250, 'nstfout': 250}
+
+    :Bugs & Limitations:
+
+    * If ``mdrun_d`` is not found, it fails with OSError.
+    """
+
     structure = os.path.realpath(struct)
     topology = os.path.realpath(top)
-    mdp = os.path.realpath(mdp)
-
+    mdp_template = os.path.realpath(mdp)    
+    mdp = 'em.mdp'
     tpr = 'em.tpr'
+
     with in_dir(dirname):
+        gromacs.cbook.edit_mdp(mdp_template, new_mdp=mdp, **mdp_kwargs)
         gromacs.grompp(f=mdp, o=tpr, c=structure, p=topology, maxwarn=1)
         # TODO: not clear yet how to run as MPI with mpiexec & friends
         # TODO: fall back to mdrun wif no double precision binary
@@ -163,8 +191,11 @@ def _setup_MD(dirname,
               deffnm='md', mdp=templates['md_mdp'],
               struct=None,
               top='top/system.top', ndx=None,
-              sge=templates['deathspud_sge'],
+              sge=sge_template,
               dt=0.002, runtime=1e3, **mdp_kwargs):
+
+    if struct is None:
+        raise ValueError('struct must be set to a input structure')
     structure = os.path.realpath(struct)
     topology = os.path.realpath(top)
     mdp_template = os.path.realpath(mdp)
@@ -193,12 +224,54 @@ def _setup_MD(dirname,
 
 
 def MD_restrained(dirname='MD_POSRES', **kwargs):
+    """Set up MD with position restraints.
+
+    MD_restrained(**kwargs)
+
+    Many of the keyword arguments below already have sensible values. 
+
+    :Keyword arguments:
+
+    dirname        set up under directory dirname [MD_POSRES]
+    struct         input structure (gro, pdb, ...) [em/em.pdb]
+    top            topology file [top/system.top]
+    mdp            mdp file (or use the template) [templates/md.mdp]
+    deffnm         default filename for Gromacs run [md]
+    runtime        total length of the simulation in ps [1e3]
+    dt             integration time step in ps [0.002]
+    sge            script to submit to the SGE queuing system
+
+    **mdp_kwargs   dictionary of values that should be changed in the 
+                   template mdp file, eg {'nstxtcout': 250, 'nstfout': 250}
+    """
+
     kwargs.setdefault('struct', 'em/em.pdb')
     kwargs['define'] = '-DPOSRES'
     return _setup_MD(dirname, **kwargs)
 
 def MD(dirname='MD', **kwargs):
-    kwargs.setdefault('struct', 'md_posres/md_posres.pdb')
+    """Set up equilibrium MD.
+
+    MD(**kwargs)
+
+    Many of the keyword arguments below already have sensible values. 
+
+    :Keyword arguments:
+
+    dirname        set up under directory dirname [MD]
+    struct         input structure (gro, pdb, ...) [MD_POSRES/md_posres.pdb]
+    top            topology file [top/system.top]
+    mdp            mdp file (or use the template) [templates/md.mdp]
+    deffnm         default filename for Gromacs run [md]
+    runtime        total length of the simulation in ps [1e3]
+    dt             integration time step in ps [0.002]
+    sge            script to submit to the SGE queuing system
+
+    **mdp_kwargs   dictionary of values that should be changed in the 
+                   template mdp file, eg {'nstxtcout': 250, 'nstfout': 250}
+    """
+
+    kwargs.setdefault('struct', 'MD_POSRES/md_posres.pdb')
     return _setup_MD(dirname, **kwargs)
 
 
