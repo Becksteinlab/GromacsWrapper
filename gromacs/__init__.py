@@ -85,15 +85,15 @@ class GromacsError(EnvironmentError):
     Returns error code in the errno attribute and a string in strerror.
     """
     # TODO: return status code and possibly error message
-    pass
 
 class GromacsFailureWarning(Warning):
     """Warning about failure of a Gromacs tool."""
-    pass
 
 class GromacsImportWarning(ImportWarning):
     """Warns about problems with using a gromacs tool."""
-    pass
+
+class GromacsValueWarning(Warning):
+    """Warns about problems with the value of an option or variable."""
 
 # Add gromacs command **instances** to the top level.
 # These serve as the equivalence of running commands in the shell.

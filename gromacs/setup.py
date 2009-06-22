@@ -31,7 +31,8 @@ from __future__ import with_statement
 import os
 import errno
 import re
-import shutil
+#import shutil
+import warnings
 from contextlib import contextmanager
 
 from pkg_resources import resource_filename
@@ -136,8 +137,24 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
         gromacs.cbook.trj_compact(f='ionized.gro', s='ionized.tpr', o='compact.pdb')
         return qtot
 
-# templates have to be extracted from the egg because they are used
-# by external code
+# Templates have to be extracted from the egg because they are used by
+# external code.
+#
+# Gromacs mdp templates
+# ---------------------
+# These are supplied as examples and there is NO GUARANTEE THAT THEY
+# PRODUCE SENSIBLE OUTPUT --- check for yourself!
+# Note that only existing parameter names can be modified with 
+# gromacs.cbook.edit_mdp() at the moment.
+#
+# SGE templates:
+# --------------
+# The sge scripts are highly specific and you will need to add your own.
+# Temmplates should be sh-scripts and contain the following (except '|')
+#
+# |DEFFNM=md        'md' is replaced by kw deffnm
+# |#$ -N GMX_MD     'GMX_MD' is replaced by kw sgename
+#
 templates = {'em_mdp': resource_filename(__name__, 'templates/em.mdp'),
              'md_mdp': resource_filename(__name__, 'templates/md.mdp'),
              'deathspud_sge': resource_filename(__name__, 'templates/deathspud.sge'),
@@ -191,7 +208,7 @@ def _setup_MD(dirname,
               deffnm='md', mdp=templates['md_mdp'],
               struct=None,
               top='top/system.top', ndx=None,
-              sge=sge_template,
+              sge=sge_template, sgename=None,
               dt=0.002, runtime=1e3, **mdp_kwargs):
 
     if struct is None:
@@ -205,6 +222,14 @@ def _setup_MD(dirname,
 
     mdp = deffnm + '.mdp'
     tpr = deffnm + '.tpr'
+    sge = os.path.basename(sge_template)
+    if sgename is None:
+        sgename = 'GMX_MD'
+    elif not re.match('[a-zA-Z]', sgename[0]):
+        # fix illegal SGE name
+        sgename = 'md_'+sgename
+        warnings.warn("Illegal SGE name fixed: new=%r" % sgename, 
+                      category=gromacs.GromacsValueWarning)
 
     mdp_parameters = {'nsteps':nsteps, 'dt':dt}
     mdp_parameters.update(mdp_kwargs)
@@ -216,11 +241,15 @@ def _setup_MD(dirname,
         gromacs.grompp(f=mdp, p=topology, c=structure, n=ndx, o=tpr)
         # edit sge script manually
         # TODO: edit DEFFNM in sge template
-        shutil.copy(sge_template, os.path.curdir)        
+        #shutil.copy(sge_template, os.path.curdir)
+        # replace DEFFNM=md --> DEFFNM=deffnm
+        # 
+        gromacs.cbook.edit_txt(sge_template, [('^DEFFNM=','md',deffnm), 
+                                              ('^#$ -N', 'GMX_MD', sgename)], newname=sge)
 
     print "All files set up for a run time of %(runtime)g ps "\
         "(dt=%(dt)g, nsteps=%(nsteps)g)" % vars()
-    return {'dirname':dirname, 'tpr':tpr}
+    return {'dirname':dirname, 'tpr':tpr, 'sge': sge}
 
 
 def MD_restrained(dirname='MD_POSRES', **kwargs):
@@ -240,12 +269,14 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
     runtime        total length of the simulation in ps [1e3]
     dt             integration time step in ps [0.002]
     sge            script to submit to the SGE queuing system
+    sgename        name to be used for the job in the queuing system [PR_GMX]
 
     **mdp_kwargs   dictionary of values that should be changed in the 
                    template mdp file, eg {'nstxtcout': 250, 'nstfout': 250}
     """
 
     kwargs.setdefault('struct', 'em/em.pdb')
+    kwargs.setdefault('sgename', 'PR_GMX')
     kwargs['define'] = '-DPOSRES'
     return _setup_MD(dirname, **kwargs)
 
@@ -266,12 +297,14 @@ def MD(dirname='MD', **kwargs):
     runtime        total length of the simulation in ps [1e3]
     dt             integration time step in ps [0.002]
     sge            script to submit to the SGE queuing system
+    sgename        name to be used for the job in the queuing system [MD_GMX]
 
     **mdp_kwargs   dictionary of values that should be changed in the 
                    template mdp file, eg {'nstxtcout': 250, 'nstfout': 250}
     """
 
     kwargs.setdefault('struct', 'MD_POSRES/md_posres.pdb')
+    kwargs.setdefault('sgename', 'MD_GMX')
     return _setup_MD(dirname, **kwargs)
 
 
