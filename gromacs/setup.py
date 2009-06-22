@@ -8,6 +8,15 @@ are set up in individual directories. For energy minimization one
 should supply appropriate mdp run input files; otherwise example
 templates are used.
 
+
+:Functions:
+
+  topology:         generate initial topology file (NOT WORKING)
+  solvate:          solvate globular protein and add ions to neutralize
+  energy_minimize:  set up energy minimization and run it (using ``mdrun_d``)
+  MD_restrained:    set up restrained MD
+  MD:               set up equilibrium MD
+
 :Note:
 
 - **This is software is in ALPHA status and likely to change
