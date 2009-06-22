@@ -91,10 +91,49 @@ def topology(struct=None, protein='protein',
 
     return topology, new_struct
 
+trj_compact_main = gromacs.tools.Trjconv(ur='compact', center=True, boxcenter='tric', pbc='mol',
+                                         input=('__main__','system'),
+                                         doc="Returns a compact representation of the system centered on the __main__ group")
+
+def main_index(struct, selection='"Protein"', ndx='top/main.ndx'):
+    """Make index file with the special __main__ group.
+
+    Selection is a ``make_ndx`` command such as::
+        protein
+        r DRG
+    which determines what is considered the main group for centering etc.
+
+    This routine is very dumb at the moment; maybe some heuristics will be added later.
+    """
+
+    # pass 1: select
+    rc,out,nothing = gromacs.make_ndx(f=struct, o=ndx, input=(selection, 'q'), stdout=False, stderr=True)
+    # parse out
+    m = re.search("""(                                            # anything that shows success is ORed:
+                      (Found\s(?P<NATOMS>\d+)\satoms\s)           # 1) regular selection
+                     |                                             
+                      (Copied\sindex\sgroup\s(?P<COPYNR>\d+)      # 2) named selection with "":
+                       \s'(?P<COPYNAME>\w+)')                     #    something like "Protein"
+                     ).*                                          # ... remaining crud on the line
+                     \n\n                                         # always two newlines follow
+                     \s+(?P<GROUPNUMBER>\d+)\s+(?P<GROUPNAME>\w+) # GROUPNUMBER is what we really want
+                  """, out, re.VERBOSE)
+    try:
+        main_groupnumber = int(m.group('GROUPNUMBER'))
+    except (AttributeError, TypeError):
+        raise GromacsError("Cannot find the group for the selection %r. Output from make_ndx follows:\n%s" %
+                           (selection, out))
+    
+    # pass 2: name it
+    gromacs.make_ndx(f=struct, n=ndx, o=ndx, 
+                     input=('name %d __main__' % main_groupnumber, '', 'q'))    
+
+
 def solvate(struct='top/protein.pdb', top='top/system.top',
             distance=0.9, boxtype='dodecahedron',
             concentration=0, cation='NA+', anion='CL-',
             watermodel='tip4p',
+            ndx = 'main.ndx', mainselection = '"Protein"',
             dirname='solvate'):
     """Put protein into box, add water, add ions."""
 
@@ -149,8 +188,18 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
 
         qtot = gromacs.cbook.grompp_qtot(f='none.mdp', o='ionized.tpr', c='ionized.gro',
                                          p=topology, stdout=False)
+
+        # make main index
         try:
-            gromacs.cbook.trj_compact(f='ionized.gro', s='ionized.tpr', o='compact.pdb')
+            main_index('ionized.tpr', selection=mainselection, ndx=ndx)
+        except GromacsError, err:
+            # or should I rather fail here?
+            warnings.warn("Failed to make main index file %r ... maybe set mainselection='...'.\n"
+                          "The error message was:\n%s\n" % (ndx, str(err)), 
+                          category=GromacsFailureWarning)
+
+        try:
+            trj_compact_main(f='ionized.gro', s='ionized.tpr', o='compact.pdb', n=ndx)
         except GromacsError, err:
             warnings.warn("Failed to make compact pdb for visualization... pressing on regardless. "
                           "The error message was:\n%s\n" % str(err), category=GromacsFailureWarning)
