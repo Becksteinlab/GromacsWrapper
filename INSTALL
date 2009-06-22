@@ -1,4 +1,5 @@
 .. $Id$
+.. -*- mode: rst -*-
 
 =========
  INSTALL
@@ -8,40 +9,57 @@ This document should help you to install the package. The installation
 uses setuptools (also known as easy_install or egg install); if this
 is not available on your system you can either let the installer
 itself get it from the internet (so just go to `Quick installation
-instructions`_) or install it using your package manager, eg
+instructions`_) or install it using your package manager, eg::
 
   aptitude install python-setuptools
 
 or similar.
 
-Please do not hesitate to contact Oliver Beckstein
-<orbeckst@gmail.com> if problems occur or if you have suggestions on
-how to improve the package or these instructions.
+Please do not hesitate to contact `Oliver Beckstein`_ if problems
+occur or if you have suggestions on how to improve the package or
+these instructions.
+
+.. _`Oliver Beckstein`: orbeckst@gmail.com
 
 
 Quick installation instructions
 ===============================
 
-From a tar ball, eg GromacsWrapper-0.1.tbz:
+From a tar ball, eg GromacsWrapper-0.1.tbz::
 
    easy_install GromacsWrapper-0.1.tbz
 
-From the unpacked source:
+From the unpacked source::
 
   python setup.py install
 
-See the easy_install instructions for explanation of the options that
-allow you to install into non-standard places.
+See the `easy_install instructions`__
+
+.. __: http://peak.telecommunity.com/DevCenter/EasyInstall#custom-installation-locations
+
+for explanation of the options that allow you to install into non-standard
+places.
 
 
 
 Requirements
 ============
 
+Python_ and Gromacs_ must be installed. ipython_ is very much
+recommended. These packages might already be available through your local
+package manager such as ``aptitude/apt``, ``yum``, ``yast``, ``fink`` or
+``macports``.
+
+.. _Python: http://www.python.org
+.. _Gromacs: http://www.gromacs.org
+.. _ipython: http://ipython.scipy.org
+
+
 System requirements
 -------------------
 
 Tested with python 2.4, 2.5 on Linux and Mac OS X.
+
 
 Required python modules
 -----------------------
@@ -54,7 +72,8 @@ For the analysis library additional modules are required::
   matplotlib   >=0.91.3         http://matplotlib.sourceforge.net/
   RecSQL                        http://sbcb.bioch.ox.ac.uk/oliver/download/Python/RecSQL
 
-:TODO: 
+TODO
+====
 * Say how to make setup.py download the optional dependencies
   automagically.
 * Example of non-standard install.

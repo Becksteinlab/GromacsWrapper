@@ -1,4 +1,5 @@
 .. $Id$
+.. -*- mode: rst -*-
 
 ================
  GromacsWrapper
@@ -10,3 +11,31 @@ COPYING.LESSER).
 
 Documentation is currently only provided through the python doc
 strings.
+
+
+Citing
+======
+
+If you find this package useful and used it in published work I'd be
+grateful if it was acknowledged in text as
+
+  "... used GromacsWrapper (Oliver Beckstein,
+  http://sbcb.bioch.ox.ac.uk/oliver/Software/GromacsWrapper.html)"
+
+or in the Acknowledgements section.
+
+Thank you.
+
+
+
+Availability & Contact
+======================
+
+The latest version of the package is being made available via the
+internet-thingy at
+http://sbcb.bioch.ox.ac.uk/oliver/Software/GromacsWrapper.html or from
+the direct download URI (for ``easy_install``)
+http://sbcb.bioch.ox.ac.uk/oliver/download/Python/GromacsWrapper/ . 
+
+Please send feedback to `Oliver Beckstein`_.
+.. _`Oliver Beckstein`: oliver.beckstein@bioch.ox.ac.uk
