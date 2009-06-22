@@ -127,7 +127,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
         gromacs.cbook.trj_compact(f='ionized.gro', s='ionized.tpr', o='compact.pdb')
         return qtot
 
-def energy_minimize(mdp=resource_filename('templates/em.mdp'),
+def energy_minimize(mdp=resource_filename(__name__, 'templates/em.mdp'),
                     struct='solvate/ionized.gro', top='top/system.top', dirname='em'):
     """Energy minimize the system."""
     structure = os.path.realpath(struct)
@@ -144,9 +144,10 @@ def energy_minimize(mdp=resource_filename('templates/em.mdp'),
 
 
 def _setup_MD(dirname,
-              deffnm='md', mdp=resource_filename('templates/md.mdp'), struct=None,
+              deffnm='md', mdp=resource_filename(__name__, 'templates/md.mdp'),
+              struct=None,
               top='top/system.top', ndx=None,
-              sge=resource_filename('templates/deathspud.sge'),
+              sge=resource_filename(__name__, 'templates/deathspud.sge'),
               dt=0.002, runtime=1e3, **mdp_kwargs):
     structure = os.path.realpath(struct)
     topology = os.path.realpath(top)
