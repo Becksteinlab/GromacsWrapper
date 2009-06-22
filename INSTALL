@@ -6,7 +6,7 @@
 =========
 
 This document should help you to install the package. The installation
-uses setuptools (also known as easy_install or egg install); if this
+uses setuptools (also known as ``easy_install`` or egg install); if this
 is not available on your system you can either let the installer
 itself get it from the internet (so just go to `Quick installation
 instructions`_) or install it using your package manager, eg::
@@ -70,11 +70,63 @@ For the analysis library additional modules are required::
 
   numpy        >=1.0.3          http://numpy.scipy.org/
   matplotlib   >=0.91.3         http://matplotlib.sourceforge.net/
-  RecSQL                        http://sbcb.bioch.ox.ac.uk/oliver/download/Python/RecSQL
+  RecSQL       >=0.2            http://sbcb.bioch.ox.ac.uk/oliver/download/Python/
 
-TODO
-====
-* Say how to make setup.py download the optional dependencies
-  automagically.
-* Example of non-standard install.
+See `Installing *all* packages and requirements`_ for hints on how to
+do this.
+
+
+Additional instructions
+=======================
+
+Installing *all* packages and requirements
+------------------------------------------
+
+If you want to make sure that ``easy_install`` also installs
+requirements for optional modules then you will have to add the
+additional requirement to the command line, for instance::
+
+  easy_install GromacsWrapper-0.1.tbz[analysis]
+
+or from the unpacked source::
+
+  cd GromacsWrapper-0.1
+  easy_install . GromacsWrapper[analysis]
+
+in order to try to download additional packages for the additional
+*analysis* module.
+
+Note for Mac OS X users 
+.......................
+
+If automatic downloading of ``matplotlib`` fails then `download
+matplotlib`_ manually and `install matplotlib manually`_ first. For
+example,::
+
+   wget http://kent.dl.sourceforge.net/sourceforge/matplotlib/matplotlib-0.98.5.3-py2.5-macosx-10.3-fat.egg \
+        -O matplotlib-0.98.5.3-py2.5.egg
+
+   easy_install matplotlib-0.98.5.3-py2.5.egg
+
+Note that you should look at the `download matplotlib`_ page to get
+the latest distribution. As highlighted in the `matplotlib
+installation FAQ`_ it is important to rename the ``egg`` file (as done
+in the example above).
+
+Possibly the following installation from the source distribution
+works, too::
+
+   easy_install matplotlib-0.98.5.3.tar.gz
+
+Once this has been accomplished, try the above installation
+instructions again; ``easy_install`` should now pick up the newly
+installed matplotlib.
+
+.. _`download matplotlib`: 
+     http://sourceforge.net/project/showfiles.php?group_id=80706
+.. _`install matplotlib manually`: 
+     http://matplotlib.sourceforge.net/users/installing.html
+.. _`matplotlib installation FAQ`:
+     http://matplotlib.sourceforge.net/faq/installing_faq.html#easy-install-from-egg
+
      

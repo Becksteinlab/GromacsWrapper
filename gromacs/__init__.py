@@ -27,6 +27,11 @@ gromacs.tools:
      Contains classes that wrap the gromacs tools. They are automatically
      generated from the list of tools in ``gromacs.tools.gmx_tools``.
 
+gromacs.setup:
+     Functions to set up a MD simulation, containing tasks such as solvation
+     and adding ions, energy minimizqtion, MD with position-restraints, and
+     equilibrium MD. (INCOMPLETE)
+
 gromacs.analysis:
      A package that collects whole analysis tasks. It uses the gromacs but is
      otherwise only loosely coupled with the rest. See the package documentation.
@@ -38,28 +43,28 @@ Examples
 Getting help
 ............
 
-In python
+In python::
    help(gromacs.g_dist)
    gromacs.g_dist.help()
    gromacs.g_dist.help(long=True)
 
-In ``ipython``:
+In ``ipython``::
    gromacs.g_dist ?
 
 
 Simple usage
 ............
 
-Gromacs flags are given as python keyword arguments:
+Gromacs flags are given as python keyword arguments::
    gromacs.g_dist(v=True, s='topol.tpr', f='md.xtc', o='dist.xvg', dist=1.2)
 
-Input to stdin of the command can be supplied:
+Input to stdin of the command can be supplied::
    gromacs.make_ndx(f='topol.tpr', o='md.ndx', 
                     input=('keep "SOL"', '"SOL" | r NA | r CL', 'name 2 solvent', 'q'))
 
-Output of the command can be caught in a variable and analyzed:
+Output of the command can be caught in a variable and analyzed::
    rc, output, junk = gromacs.grompp(..., stdout=False)        # collects command output
-   for line in output.split('\n'):
+   for line in output.split('\\n'):
        line = line.strip()
        if line.startswith('System has non-zero total charge:'):
              qtot = float(line[34:])
@@ -126,4 +131,8 @@ del name, cls, clsname
 
 # cbook should come after the whole of init as it relies on command
 # instances in the topl level name space
-import cbook
+try:
+    import cbook
+except OSError, err:
+    warnings.warn("Some Gromacs commands were NOT found when importing gromacs.cbook:\n"+str(err),
+                  category=GromacsImportWarning)
