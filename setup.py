@@ -23,16 +23,18 @@ more complicated analysis tasks.
       url="http://sbcb.bioch.ox.ac.uk/oliver/download/Python/GromacsWrapper",
       keywords="science Gromacs analysis 'molecular dynamics'",
       packages=find_packages(exclude=['tests','extras','doc/examples']),
-      package_data={'gromacs': ['*.sge', '*.mdp'],      # template files
-                    'vmd': ['*.tcl'],                   # server start in VMD
+      package_data={'gromacs': ['templates/*.sge', 'templates/*.mdp'], # template files
+                    'vmd': ['*.tcl'],                                  # server start in VMD
                     },
       install_requires = [],              # basic package (w/o analysis)
       extras_require = {
-                'analysis': ['numpy>=1.0', 'matplotlib>=0.91.3', 
+                'analysis': ['numpy>=1.0', 
+                             'matplotlib>=0.91.3', 
                              'RecSQL>=0.2',            
                              ],
                 },
       dependency_links = ["http://sbcb.bioch.ox.ac.uk/oliver/download/Python/"],
+      zip_safe = True,
 )
 
       

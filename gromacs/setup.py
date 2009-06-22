@@ -136,7 +136,14 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
         gromacs.cbook.trj_compact(f='ionized.gro', s='ionized.tpr', o='compact.pdb')
         return qtot
 
-def energy_minimize(mdp=resource_filename(__name__, 'templates/em.mdp'),
+# templates have to be extracted from the egg because they are used
+# by external code
+templates = {'em_mdp': resource_filename(__name__, 'templates/em.mdp'),
+             'md_mdp': resource_filename(__name__, 'templates/md.mdp'),
+             'deathspud_sge': resource_filename(__name__, 'templates/deathspud.sge'),
+             }
+
+def energy_minimize(mdp=templates['em_mdp'],
                     struct='solvate/ionized.gro', top='top/system.top', dirname='em'):
     """Energy minimize the system."""
     structure = os.path.realpath(struct)
@@ -153,10 +160,10 @@ def energy_minimize(mdp=resource_filename(__name__, 'templates/em.mdp'),
 
 
 def _setup_MD(dirname,
-              deffnm='md', mdp=resource_filename(__name__, 'templates/md.mdp'),
+              deffnm='md', mdp=templates['md_mdp'],
               struct=None,
               top='top/system.top', ndx=None,
-              sge=resource_filename(__name__, 'templates/deathspud.sge'),
+              sge=templates['deathspud_sge'],
               dt=0.002, runtime=1e3, **mdp_kwargs):
     structure = os.path.realpath(struct)
     topology = os.path.realpath(top)
