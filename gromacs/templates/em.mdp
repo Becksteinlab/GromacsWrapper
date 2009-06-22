@@ -1,5 +1,12 @@
-; energy minimisation of full system
 ; $Id$
+; Template for energy minimisation of full system with OPLS-AA;
+; by default position restraints are used (POSRES).
+;
+; ==================================================================
+;      DO NOT USE THIS INPUT FILE WITHOUT CHECKING ALL SETTINGS.
+; *YOU* ARE SOLELY RESPONSIBLE FOR CORRECT INPUT TO YOUR SIMULATION.
+; ==================================================================
+;
 ; some values from http://code.google.com/p/acpypi/wiki/TutorialAcpypi4GromacsOPLS
 
 cpp            = cpp
@@ -18,7 +25,7 @@ coulombtype              = PME
 ns_type                  = grid
 rlist                    = 1.0
 rcoulomb                 = 1.0
-rvdw                     = 1.0  ; is this the correct value for OPLS-AA?
+rvdw                     = 1.0
 Tcoupl                   = no
 Pcoupl                   = no
 gen_vel                  = no

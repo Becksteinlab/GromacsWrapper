@@ -1,5 +1,10 @@
 ; $Id$
-; are these parameters ok for OPLS-AA?
+; Template for MD with OPLS-AA.
+;
+; ==================================================================
+;      DO NOT USE THIS INPUT FILE WITHOUT CHECKING ALL SETTINGS.
+; *YOU* ARE SOLELY RESPONSIBLE FOR CORRECT INPUT TO YOUR SIMULATION.
+; ==================================================================
 
 include                  = -I. -I.. -I../top
 define                   =
@@ -27,9 +32,9 @@ comm-grps                = SYSTEM
 ns_type                  = grid
 ;; nstlist                  = 10 ;; ??
 
-rlist                    = 1.0           ; should be >0.1nm larger than rvdw
-rcoulomb                 = 1.0           ; ? 1.2 
-rvdw                     = 1.0           ; is 1.0nm ok for OPLS-AA? 1.2 in Lindahl Kv paper
+rlist                    = 1.0
+rcoulomb                 = 1.0
+rvdw                     = 1.0
 vdwtype                  = cut-off
 coulombtype              = PME
 optimize_fft             = yes

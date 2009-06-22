@@ -1,8 +1,8 @@
-#!/bin/bash
 # $Id$
+# Sun Gridengine run script for 'deathspud'
 #
 #$ -S /bin/bash
-#$ -N AKeco
+#$ -N GMX_MD
 #
 # Set the Parallel Environment and number of procs.
 #$ -pe mpich2 4
