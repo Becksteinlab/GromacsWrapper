@@ -39,6 +39,7 @@ from pkg_resources import resource_filename
 
 
 import gromacs
+from gromacs import GromacsError, GromacsFailureWarning, GromacsValueWarning
 import gromacs.cbook
 
 @contextmanager
@@ -93,18 +94,22 @@ def topology(struct=None, protein='protein',
 def solvate(struct='top/protein.pdb', top='top/system.top',
             distance=0.9, boxtype='dodecahedron',
             concentration=0, cation='NA+', anion='CL-',
+            watermodel='tip4p',
             dirname='solvate'):
     """Put protein into box, add water, add ions."""
 
     structure = os.path.realpath(struct)
     topology = os.path.realpath(top)
 
+    if watermodel.lower() in ('spc', 'spce'):
+        watermodel = 'spc216'
+
     # should scrub topology but hard to know what to scrub; for
     # instance, some ions or waters could be part of the crystal structure
     
     with in_dir(dirname):
         gromacs.editconf(f=structure, o='boxed.gro', bt=boxtype, d=distance)
-        gromacs.genbox(p=topology, cp='boxed.gro', cs='tip4p', o='solvated.gro')
+        gromacs.genbox(p=topology, cp='boxed.gro', cs=watermodel, o='solvated.gro')
 
         with open('none.mdp','w') as mdp:
             print >> mdp, '; empty'
@@ -128,13 +133,27 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
             n_anion = int(abs(qtot))
         elif qtot < 0:
             n_cation = int(abs(qtot))
-        gromacs.genion(s='topol.tpr', o='ionized.gro', p=topology,
-                       pname=cation, nname=anion, np=n_cation, nn=n_anion,
-                       input='SOL')
+
+        if n_cation != 0 or n_anion != 0:
+            gromacs.genion(s='topol.tpr', o='ionized.gro', p=topology,
+                           pname=cation, nname=anion, np=n_cation, nn=n_anion,
+                           input='SOL')
+        else:
+            # fake ionized file ... makes it easier to continue without too much fuzz
+            try:
+                os.unlink( 'ionized.gro')
+            except OSError, err:
+                if err.errno != errno.ENOENT:
+                    raise
+            os.symlink('solvated.gro', 'ionized.gro')
 
         qtot = gromacs.cbook.grompp_qtot(f='none.mdp', o='ionized.tpr', c='ionized.gro',
                                          p=topology, stdout=False)
-        gromacs.cbook.trj_compact(f='ionized.gro', s='ionized.tpr', o='compact.pdb')
+        try:
+            gromacs.cbook.trj_compact(f='ionized.gro', s='ionized.tpr', o='compact.pdb')
+        except GromacsError, err:
+            warnings.warn("Failed to make compact pdb for visualization... pressing on regardless. "
+                          "The error message was:\n%s\n" % str(err), category=GromacsFailureWarning)
         return qtot
 
 # Templates have to be extracted from the egg because they are used by
@@ -229,7 +248,7 @@ def _setup_MD(dirname,
         # fix illegal SGE name
         sgename = 'md_'+sgename
         warnings.warn("Illegal SGE name fixed: new=%r" % sgename, 
-                      category=gromacs.GromacsValueWarning)
+                      category=GromacsValueWarning)
 
     mdp_parameters = {'nsteps':nsteps, 'dt':dt}
     mdp_parameters.update(mdp_kwargs)
