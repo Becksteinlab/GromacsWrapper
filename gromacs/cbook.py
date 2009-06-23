@@ -14,7 +14,6 @@ By abstracting and collecting these invocations here, errors can be
 reduced and the code snippets can also serve as canonical examples for
 how to do simple things.
 """
-__docformat__ = "restructuredtext en"
 
 # Right now the simplest thing to do is to just create instances with pre-set
 # values; this works fine and is succinct but has some disadvantages:
@@ -27,6 +26,8 @@ __docformat__ = "restructuredtext en"
 # default) ... or I can write some meta(??) class to do this nicely
 
 from __future__ import with_statement
+
+__docformat__ = "restructuredtext en"
 
 import re
 import tempfile
