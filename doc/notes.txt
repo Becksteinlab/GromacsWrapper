@@ -1,5 +1,7 @@
-Notes
------
+.. $Id$
+
+General Notes
+=============
 
 In an ideal world we would have library bindings provided (eg generated via
 SWIG wrappers) so that we could directly load the Gromacs analysis code as a
@@ -16,3 +18,27 @@ will only have to interface with the classes and one can easily switch the
 underlying implementation. In addition one can imagine making the analysis tool
 MD-package agnostic and switching the 'backend' depending on what kind of
 trajectories/topologies one is analyzing.
+
+
+Documentation
+=============
+
+* Main documentation is produced with `sphinx`_. Use sphinx syntax for
+  documentation, including doc strings.
+
+  Phase out the epydoc-compatible format if it interferes with sphinx
+  reST.
+
+  Generate with::
+
+    cd doc/sphinx
+    make html
+
+* Use `epydoc`_ for the auto-generated documentation of all
+  classes. Generate with::
+
+    scripts/make_epydoc.sh
+
+
+.. _sphinx: http://sphinx.pocoo.org/
+.. _epydoc: http://epydoc.sourceforge.net
