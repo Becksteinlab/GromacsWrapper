@@ -4,6 +4,7 @@
 # See the file COPYING for details.
 
 """Helper functions."""
+__docformat__ = "restructuredtext en"
 
 import os.path
 import warnings

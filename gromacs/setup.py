@@ -26,6 +26,7 @@ templates are used.
   rely on any defaults provided here.
 
 """
+__docformat__ = "restructuredtext en"
 
 from __future__ import with_statement
 import os

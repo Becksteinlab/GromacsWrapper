@@ -48,7 +48,7 @@ parameters such as top directories or input files.
 See plugins.CysAccessibility and plugins._CysAccessibility as examples.
 
 """
-
+__docformat__ = "restructuredtext en"
 
 import sys
 import os

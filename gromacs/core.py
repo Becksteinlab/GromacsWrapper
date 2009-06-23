@@ -4,6 +4,7 @@
 # See the file COPYING for details.
 
 """Core functionality for the Gromacs python shell."""
+__docformat__ = "restructuredtext en"
 
 import sys
 import re

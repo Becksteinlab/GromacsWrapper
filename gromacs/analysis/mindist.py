@@ -37,6 +37,7 @@ itself.::
    ...
 
 """
+__docformat__ = "restructuredtext en"
 
 import re
 import numpy

@@ -35,7 +35,7 @@ The latest version of the package is being made available via the
 internet-thingy at
 http://sbcb.bioch.ox.ac.uk/oliver/Software/GromacsWrapper.html or from
 the direct download URI (for ``easy_install``)
-http://sbcb.bioch.ox.ac.uk/oliver/download/Python/GromacsWrapper/ . 
+http://sbcb.bioch.ox.ac.uk/oliver/download/Python/ . 
 
 Please send feedback to `Oliver Beckstein`_.
 .. _`Oliver Beckstein`: oliver.beckstein@bioch.ox.ac.uk

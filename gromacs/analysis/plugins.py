@@ -11,8 +11,10 @@ Mixin classes for core.Simulation that provide code to analyze
 trajectory data.
 
 See docs in gromacs.analysis.core for preliminary API.
-ALPHA.
+
+**ALPHA STATUS**
 """
+__docformat__ = "restructuredtext en"
 
 import sys
 import os.path

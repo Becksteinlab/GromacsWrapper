@@ -11,6 +11,7 @@ instance of a gromacs command with initial default values.
 A class has the capitalized name of the corresponding Gromacs tool;
 dots are replaced by underscores to make it a valid python identifier.
 """
+__docformat__ = "restructuredtext en"
 
 from core import GromacsCommand
 

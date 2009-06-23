@@ -74,6 +74,7 @@ application.)
 
 
 """
+__docformat__ = "restructuredtext en"
 
 __all__ = ['tools', 'cbook', 'setup']
 
