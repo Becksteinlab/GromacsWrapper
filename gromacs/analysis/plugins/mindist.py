@@ -4,6 +4,10 @@
 # See the file COPYING for details.
 
 """
+mindist is contains helper classes for other analysis plugins that
+make use of ``g_dist``.
+
+
 Overview
 ========
 

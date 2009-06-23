@@ -4,15 +4,16 @@
 # See the file COPYING for details.
 
 """\
-Analysis plugins
-================
+CysAccessibility plugin
+=======================
 
-Mixin classes for core.Simulation that provide code to analyze
-trajectory data.
+Cysteine accessibility is analyzed by histogramming the distance of
+shortest approach of water molecules to the sulfhydryl group of Cys.
 
-See docs in gromacs.analysis.core for preliminary API.
+See class docs for more details.
 
-**ALPHA STATUS**
+This plugin is the canonical example for how to structure plugins that
+conform to the plugin API (see docs ``analysis.core`` for details).
 """
 __docformat__ = "restructuredtext en"
 
@@ -23,7 +24,7 @@ import subprocess
 
 import gromacs
 
-from core import AttributeDict, Worker, Plugin
+from gromacs.analysis.core import AttributeDict, Worker, Plugin
 import mindist
 
 
@@ -152,7 +153,7 @@ class _CysAccessibility(Worker):
 
 class CysAccessibility(Plugin):
     """\
-    'CysAccessibility' plugin
+    *CysAccessibility* plugin
     =========================
     
     For each frame of a trajectory, the shortest distance of all water oxygens

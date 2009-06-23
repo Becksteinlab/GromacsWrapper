@@ -45,7 +45,8 @@ A plugin **must** obtain a pointer to the Simulation class as the keyword
 argument ``simulation`` in order to be able to access simulation-global
 parameters such as top directories or input files.
 
-See plugins.CysAccessibility and plugins._CysAccessibility as examples.
+See ``CysAccessibility`` and ``_CysAccessibility`` in
+plugins/CysAccessibility.py as examples.
 
 """
 __docformat__ = "restructuredtext en"
