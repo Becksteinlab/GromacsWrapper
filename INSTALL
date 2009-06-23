@@ -72,7 +72,7 @@ For the analysis library additional modules are required::
   matplotlib   >=0.91.3         http://matplotlib.sourceforge.net/
   RecSQL       >=0.2            http://sbcb.bioch.ox.ac.uk/oliver/download/Python/
 
-See `Installing *all* packages and requirements`_ for hints on how to
+See `Installing all packages and requirements`_ for hints on how to
 do this.
 
 

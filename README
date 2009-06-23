@@ -1,9 +1,9 @@
 .. $Id$
 .. -*- mode: rst -*-
 
-================
- GromacsWrapper
-================
+========
+ README
+========
 
 See INSTALL for installation instructions and COPYING for the
 licensing terms for all modules except ``vmd`` (see COPYING and
@@ -38,4 +38,5 @@ the direct download URI (for ``easy_install``)
 http://sbcb.bioch.ox.ac.uk/oliver/download/Python/ . 
 
 Please send feedback to `Oliver Beckstein`_.
+
 .. _`Oliver Beckstein`: oliver.beckstein@bioch.ox.ac.uk
