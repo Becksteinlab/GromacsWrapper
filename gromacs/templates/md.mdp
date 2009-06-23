@@ -41,7 +41,7 @@ optimize_fft             = yes
 
 Tcoupl                   = v-rescale
 tau_t                    = 0.1 0.1
-tc-grps                  = protein non-protein
+tc-grps                  = __main__ __environment__
 ref_t                    = 300 300
 Pcoupl                   = parrinello-rahman
 Pcoupltype               = isotropic

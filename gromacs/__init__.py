@@ -95,6 +95,9 @@ class GromacsImportWarning(ImportWarning):
 class GromacsValueWarning(Warning):
     """Warns about problems with the value of an option or variable."""
 
+class AutoCorrectionWarning(Warning):
+    """Warns about cases when the code is choosing new values automatically."""
+
 # Add gromacs command **instances** to the top level.
 # These serve as the equivalence of running commands in the shell.
 # (Note that each gromacs command is actually run when the instance is

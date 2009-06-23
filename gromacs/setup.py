@@ -39,7 +39,8 @@ from pkg_resources import resource_filename
 
 
 import gromacs
-from gromacs import GromacsError, GromacsFailureWarning, GromacsValueWarning
+from gromacs import GromacsError, GromacsFailureWarning, GromacsValueWarning, \
+     AutoCorrectionWarning
 import gromacs.cbook
 
 @contextmanager
@@ -66,7 +67,8 @@ def in_dir(directory):
         os.chdir(startdir)
 
 # TODO:
-# - should be part of a class so that we can store the topology etc
+# - should be part of a class so that we can store the topology etc !!!
+#   and also store mainselection
 # - full logging would be nice (for provenance)
 
 def topology(struct=None, protein='protein',
@@ -95,38 +97,61 @@ trj_compact_main = gromacs.tools.Trjconv(ur='compact', center=True, boxcenter='t
                                          input=('__main__','system'),
                                          doc="Returns a compact representation of the system centered on the __main__ group")
 
-def main_index(struct, selection='"Protein"', ndx='top/main.ndx'):
-    """Make index file with the special __main__ group.
+def make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None):
+    """Make index file with the special groups.
 
-    Selection is a ``make_ndx`` command such as::
-        protein
-        r DRG
-    which determines what is considered the main group for centering etc.
+    groups = make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None)    
 
-    This routine is very dumb at the moment; maybe some heuristics will be added later.
+    This routine adds the group __main__ and the group __environment__
+    to the end of the index file. __main__ contains what the user
+    defines as the *central* and *most important* parts of the
+    system. __environment__ is everything else.
+
+    The template mdp file, for instance, uses T-coupling over these two groups.
+
+    These groups are mainly useful if the default groups "Protein" and "Non-Protein"
+    are not appropriate. By using symbolic names such as __main__ one
+    can keep scripts more general.
+        
+    :Returns:
+
+    groups is a list of dictionaries that describe the index
+    groups. See gromacs.cbook.parse_ndxlist() for details.
+
+    :Arguments:
+    
+    struct        structure (tpr, pdb, gro)    
+    selection     is a ``make_ndx`` command such as::
+                     "Protein"
+                      r DRG
+                  which determines what is considered the main group for
+                  centering etc.                      
+    ndx           name of the final index file
+    oldndx        name of index file that should be used as a basis; if None
+                  then the ``make_ndx`` default groups are used.
+                  
+    This routine is very dumb at the moment; maybe some heuristics
+    will be added later as could be other symbolic groups such as __membrane__.
     """
 
     # pass 1: select
-    rc,out,nothing = gromacs.make_ndx(f=struct, o=ndx, input=(selection, 'q'), stdout=False, stderr=True)
-    # parse out
-    m = re.search("""(                                            # anything that shows success is ORed:
-                      (Found\s(?P<NATOMS>\d+)\satoms\s)           # 1) regular selection
-                     |                                             
-                      (Copied\sindex\sgroup\s(?P<COPYNR>\d+)      # 2) named selection with "":
-                       \s'(?P<COPYNAME>\w+)')                     #    something like "Protein"
-                     ).*                                          # ... remaining crud on the line
-                     \n\n                                         # always two newlines follow
-                     \s+(?P<GROUPNUMBER>\d+)\s+(?P<GROUPNAME>\w+) # GROUPNUMBER is what we really want
-                  """, out, re.VERBOSE)
-    try:
-        main_groupnumber = int(m.group('GROUPNUMBER'))
-    except (AttributeError, TypeError):
-        raise GromacsError("Cannot find the group for the selection %r. Output from make_ndx follows:\n%s" %
-                           (selection, out))
+    # empty command '' important to get final list of groups
+    rc,out,nothing = gromacs.make_ndx(f=struct, n=oldndx, o=ndx, stdout=False, stderr=True,
+                                      input=(selection, '', 'q'))
+    groups = gromacs.cbook.parse_ndxlist(out)
+    last = len(groups) - 1
+    assert last == groups[-1]['nr']
     
-    # pass 2: name it
-    gromacs.make_ndx(f=struct, n=ndx, o=ndx, 
-                     input=('name %d __main__' % main_groupnumber, '', 'q'))    
+    # pass 2:
+    # 1) last group is __main__
+    # 2) __environment__ is everything else (eg SOL, ions, ...)
+    rc,out,nothing = gromacs.make_ndx(f=struct, n=ndx, o=ndx,
+                                      stdout=False, stderr=True,
+                                      input=('name %d __main__' % last,
+                                             '! "__main__"',  # is now group last+1
+                                             'name %d __environment__' % (last+1),
+                                             '', 'q'))
+    return gromacs.cbook.parse_ndxlist(out)
 
 
 def solvate(struct='top/protein.pdb', top='top/system.top',
@@ -191,7 +216,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
 
         # make main index
         try:
-            main_index('ionized.tpr', selection=mainselection, ndx=ndx)
+            make_main_index('ionized.tpr', selection=mainselection, ndx=ndx)
         except GromacsError, err:
             # or should I rather fail here?
             warnings.warn("Failed to make main index file %r ... maybe set mainselection='...'.\n"
@@ -276,6 +301,7 @@ def _setup_MD(dirname,
               deffnm='md', mdp=templates['md_mdp'],
               struct=None,
               top='top/system.top', ndx=None,
+              mainselection=None,
               sge=sge_template, sgename=None,
               dt=0.002, runtime=1e3, **mdp_kwargs):
 
@@ -290,6 +316,7 @@ def _setup_MD(dirname,
 
     mdp = deffnm + '.mdp'
     tpr = deffnm + '.tpr'
+    mainindex = deffnm + '.ndx'
     sge = os.path.basename(sge_template)
     if sgename is None:
         sgename = 'GMX_MD'
@@ -304,14 +331,28 @@ def _setup_MD(dirname,
     
     with in_dir(dirname):
         # do I need an index file?
-        gromacs.cbook.edit_mdp(mdp_template, new_mdp=mdp, 
-                               **mdp_parameters)
+        if not mainselection is None:
+            groups = make_main_index(structure, selection=mainselection,
+                                     oldndx=ndx, ndx=mainindex)
+            natoms = dict([(g['name'], float(g['natoms'])) for g in groups])
+            x = natoms['__main__']/natoms['__environment__']
+            if x < 0.1:
+                # does not handle properly multiple ones
+                tau_t = mdp_parameters.pop('tau_t', 0.1)
+                ref_t = mdp_parameters.pop('ref_t', 300)
+                # combine all in on T-coupling group
+                mdp_parameters['tc-grps'] = 'System'
+                mdp_parameters['tau_t'] = tau_t   # this override the commandline!
+                mdp_parameters['ref_t'] = ref_t   # this override the commandline!
+                warnings.warn("Size of __main__ is only %.1f%% of __environment__ so "
+                              "we use 'System' for T-coupling and ref_t = %g and "
+                              "tau_t = %g (can be changed in mdp_parameters).\n"
+                              % (x * 100, ref_t, tau_t),
+                              category=AutoCorrectionWarning)
+            ndx = mainindex
+        
+        gromacs.cbook.edit_mdp(mdp_template, new_mdp=mdp, **mdp_parameters)
         gromacs.grompp(f=mdp, p=topology, c=structure, n=ndx, o=tpr)
-        # edit sge script manually
-        # TODO: edit DEFFNM in sge template
-        #shutil.copy(sge_template, os.path.curdir)
-        # replace DEFFNM=md --> DEFFNM=deffnm
-        # 
         gromacs.cbook.edit_txt(sge_template, [('^DEFFNM=','md',deffnm), 
                                               ('^#$ -N', 'GMX_MD', sgename)], newname=sge)
 

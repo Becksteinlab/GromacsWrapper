@@ -196,4 +196,46 @@ def edit_txt(filename, substitutions, newname=None):
 
     
 
+def parse_ndxlist(output):
+    """Parse output from make_ndx to build list of index groups.
+
+    groups = parse_ndxlist(output)
+
+    output should be the standard output from make_ndx, e.g.::
+       rc,output,junk = gromacs.make_ndx(..., input=('', 'q'), stdout=False, stderr=True)
+
+    groups is a list of dicts, with fields
+
+    name:    name of the groups
+    nr:      number of the group (starts at 0)
+    natoms:  number of atoms in the group
+    
+    """
+    
+    NDXLIST = re.compile(r""">\s+\n    # '> ' marker line from '' input (input not echoed)
+                     \n                # empty line
+                     (?P<LIST>         # list of groups
+                      (                # consists of repeats of the same pattern:
+                        \s*\d+         # group number
+                        \s+\w+\s*:     # group name, separator ':'
+                        \s*\d+\satoms  # number of atoms in group
+                        \n
+                       )+              # multiple repeats
+                      )""", re.VERBOSE)
+    m = NDXLIST.search(output)
+    grouplist = m.group('LIST')
+    NDXGROUP = re.compile(r"""
+                         \s*(?P<GROUPNUMBER>\d+)      # group number
+                         \s+(?P<GROUPNAME>\w+)\s*:    # group name, separator ':'
+                         \s*(?P<NATOMS>\d+)\satoms    # number of atoms in group
+                         """, re.VERBOSE)
+    groups = []
+    for line in grouplist.split('\n'):
+        m = NDXGROUP.match(line)
+        if m:
+            d = m.groupdict()
+            groups.append({'name': d['GROUPNAME'],
+                           'nr': int(d['GROUPNUMBER']),
+                           'natoms': int(d['NATOMS'])})
+    return groups
 
