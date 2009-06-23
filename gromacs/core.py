@@ -31,7 +31,8 @@ class GromacsCommand(object):
     gmxfatal_pattern = """----+\n                   # ---- decorator line
             \s*Program\s+(?P<program_name>\w+),     #  Program name,
               \s+VERSION\s+(?P<version>[\w.]+)\s*\n #    VERSION 4.0.5
-            (?P<message>.*)\n                       # full message, multiple lines
+            (?P<message>.*?)\n                      # full message, multiple lines
+            \s*                                     # empty line (?)
             ----+\n                                 # ---- decorator line
             """
     # matches gmx_fatal() output
