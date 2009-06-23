@@ -6,13 +6,8 @@
 Plugin Modules
 ================
 
-Mixin classes for core.Simulation that provide code to analyze
+Mixin classes for ``core.Simulation`` that provide code to analyze
 trajectory data.
-
-See docs in gromacs.analysis.core for preliminary API.
-
-**ALPHA STATUS**
-
 
 New analysis plugins should follow the API sketched out in
 ``analysis.core``; see an example for use there.
@@ -22,16 +17,18 @@ sending it to the `package author`_. You will be acknowledged in the list below.
 
 .. _`package author`: oliver.beckstein@bioch.ox.ac.uk
 
-
 Authors
 -------
 
-================       ============================== 
+====================  ============================== 
 plugin                 author
-================       ==============================
+====================  ==============================
 CysAccessibility       Oliver Beckstein
-================       ==============================
+====================  ==============================
 
+Warning   
+-------
+This is **ALPHA STATUS**. Use at your own risk.
 """
 __docformat__ = "restructuredtext en"
 __all__ = ['CysAccessibility']

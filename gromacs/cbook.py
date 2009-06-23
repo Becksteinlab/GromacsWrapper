@@ -6,9 +6,9 @@
 Gromacs Cook Book (cbook)
 =========================
 
-The ``cbook `` module contains short recipes for tasks that are often
-repeated. In the simplest case this is just one of the gromacs tools
-with a certain set of default command line options.
+The ``cbook`` (cook book) module contains short recipes for tasks
+that are often repeated. In the simplest case this is just one of the
+gromacs tools with a certain set of default command line options.
 
 By abstracting and collecting these invocations here, errors can be
 reduced and the code snippets can also serve as canonical examples for
@@ -46,11 +46,18 @@ rmsd_backbone = tools.G_rms(what='rmsd', fit='rot+trans',
                             doc="Compute RMSD of backbone after fitting to the backbone.")
 
 def grompp_qtot(*args, **kwargs):
-    """Run ``gromacs.grompp`` and return the total charge of the system.
+    """Run ``gromacs.grompp`` and return the total charge of the system::
 
-    :Bugs:
-    * The stdout output of grompp is not shown. This can make debugging
-      pretty hard.
+      qtot = grompp_qtot(*args, **kwargs)
+
+    where the arguments are the ones one would pass to ``gromacs.grompp``.
+
+    :Note:
+      * The stdout output of grompp is not shown. This can make debugging
+        pretty hard.  Try running the normal ``gromacs.grompp`` command and
+        analyze the output if the debugging messages are not sufficient.
+      * Check that qtot is correct; because the function is based on pattern 
+        matching of the output it canb reak when the output format changes.
     """
 
     # match '  System has non-zero total charge: -4.000001e+00',
@@ -67,38 +74,44 @@ def grompp_qtot(*args, **kwargs):
 
 
 def edit_mdp(mdp, new_mdp=None, **substitutions):
-    """Change values in a Gromacs mdp file.
+    """Change values in a Gromacs mdp file::
 
       edit_mdp('md.mdp', new_mdp='long_md.mdp', nsteps=100000, nstxtcout=1000, lincs_iter=2)
 
-    Parameters and values are supplied as substitutions, eg nsteps=1000.
+    Parameters and values are supplied as substitutions, eg ``nsteps=1000``.
     
     By default the template mdp file is **overwritten in place**.
 
     :Arguments:
+       mdp : filename
+         filename of input (and output filename of ``new_mdp=None``)
+       new_mdp : filename
+         filename of alternative output mdp file [None]
+       substitutions : dict
+         parameter=value pairs, where parameter is defined by the Gromacs mdp file
 
-    mdp             filename of input (and output filename of new_mdp=None)
-    new_mdp         filename of alternative output mdp file [None]
-    substitutions   parameter=value pairs, where parameter is defined by Gromacs
-
-    :Returns:
+    Returns
+    -------
     List of parameters that have NOT been substituted.
 
-
-    :Notes:
+    Notes
+    -----
 
     * Dashes in Gromacs mdp parameters have to be replaced by an underscore
-      when supplied as python keyword arguments (a limitation of python).
-      For example
-        MDP:      lincs-iter = 4
-        keyword:  lincs_iter = 4
+      when supplied as python keyword arguments (a limitation of python). For example
+      the MDP syntax is  ``lincs-iter = 4`` but the corresponding  keyword would be 
+      ``lincs_iter = 4``.
+    * If the keyword is set as a dict key, eg ``mdp_params['lincs-iter']=4`` then one
+       does not have to substitute.
 
+    Bugs 
+    ----
 
-    :Bugs: 
-
-    * Parameters *aa_bb* and *aa-bb* are considered the same (but should not be a problem).
+    * Parameters *aa_bb* and *aa-bb* are considered the same (although this should not be 
+      a problem in practice because there are no mdp parameters that only differe by a underscore).
     * This code is more compact in ``Perl`` as one can use ``s///`` operators:
-          s/^(\s*$key\s*=\s*).*/$1${val}/
+      ``s/^(\s*$key\s*=\s*).*/$1${val}/``
+
     """
     if new_mdp is None:
         new_mdp = mdp
@@ -145,29 +158,33 @@ def edit_mdp(mdp, new_mdp=None, **substitutions):
     return params
 
 def edit_txt(filename, substitutions, newname=None):
-    """Primitive top editor (sed is better...).
+    """Primitive top editor (sed is better...)::
 
         edit_txt(filename, substitutions, newname=otherfilename)
 
-    substitutions ::= [ search_replace_tuple, ... ]
-    search_replace_tuple ::= ( line_match_RE, search_RE, replacement )
+        substitutions ::= [ search_replace_tuple, ... ]
+        search_replace_tuple ::= ( line_match_RE, search_RE, replacement )
 
-    line_match_RE     regular expression that selects the line (uses match)
-    search_RE         regular expression that is searched in the line
-    replacement       replacement string for search_RE
+        line_match_RE     regular expression that selects the line (uses match)
+        search_RE         regular expression that is searched in the line
+        replacement       replacement string for search_RE
 
 
-    edit_txt() does pretty much what::
-      sed /line_match_RE/s/search_RE/replacement/
+    ``edit_txt()`` does pretty much what a simple::
+
+         sed /line_match_RE/s/search_RE/replacement/
+
     with repeated substitution commands does.
 
-    :Notes:
+    Notes
+    -----
 
-    * No sanity checks are performed and the substitutions must supplied
+    * No sanity checks are performed and the substitutions must be supplied
       exactly as shown.    
     * Only the first matching substitution is applied to a line; thus the order
       of the substitution commands matters. This behaviour was chosen to avoid
       ambiguity when a substitution would create a match for a subsequent rule.
+
     """
     if newname is None:
         newname = filename
@@ -199,19 +216,19 @@ def edit_txt(filename, substitutions, newname=None):
     
 
 def parse_ndxlist(output):
-    """Parse output from make_ndx to build list of index groups.
+    """Parse output from make_ndx to build list of index groups::
 
-    groups = parse_ndxlist(output)
+      groups = parse_ndxlist(output)
 
-    output should be the standard output from make_ndx, e.g.::
+    output should be the standard output from ``make_ndx``, e.g.::
+
        rc,output,junk = gromacs.make_ndx(..., input=('', 'q'), stdout=False, stderr=True)
 
-    groups is a list of dicts, with fields
+    ``groups`` is a list of dicts, with fields
 
     name:    name of the groups
     nr:      number of the group (starts at 0)
     natoms:  number of atoms in the group
-    
     """
     
     NDXLIST = re.compile(r""">\s+\n    # '> ' marker line from '' input (input not echoed)

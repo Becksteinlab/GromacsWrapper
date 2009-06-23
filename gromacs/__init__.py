@@ -4,11 +4,15 @@
 # See the file COPYING for details.
 
 """\
-Gromacs shell
-=============
+GromacsWrapper
+==============
 
-A thin shell around the Gromacs tools for light-weight integration into python
-scripts or interactive use in ``ipython``.
+**GromacsWrapper** (package *gromacs*) is a thin shell around the `Gromacs`_
+tools for light-weight integration into python scripts or interactive use in
+`ipython`_.
+
+.. _`Gromacs`: http://www.gromacs.org
+.. _`ipython`: http://ipython.scipy.org
 
 
 Modules
@@ -44,11 +48,13 @@ Getting help
 ............
 
 In python::
+
    help(gromacs.g_dist)
    gromacs.g_dist.help()
    gromacs.g_dist.help(long=True)
 
 In ``ipython``::
+
    gromacs.g_dist ?
 
 
@@ -56,23 +62,25 @@ Simple usage
 ............
 
 Gromacs flags are given as python keyword arguments::
+
    gromacs.g_dist(v=True, s='topol.tpr', f='md.xtc', o='dist.xvg', dist=1.2)
 
 Input to stdin of the command can be supplied::
+
    gromacs.make_ndx(f='topol.tpr', o='md.ndx', 
                     input=('keep "SOL"', '"SOL" | r NA | r CL', 'name 2 solvent', 'q'))
 
 Output of the command can be caught in a variable and analyzed::
+
    rc, output, junk = gromacs.grompp(..., stdout=False)        # collects command output
    for line in output.split('\\n'):
        line = line.strip()
        if line.startswith('System has non-zero total charge:'):
              qtot = float(line[34:])
              break
+
 (See ``gromacs.cbook.grompp_qtot`` for a more robust implementation of this
 application.)
-
-
 """
 __docformat__ = "restructuredtext en"
 

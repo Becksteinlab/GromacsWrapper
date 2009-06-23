@@ -9,7 +9,8 @@ should supply appropriate mdp run input files; otherwise example
 templates are used.
 
 
-:Functions:
+Functions
+---------
 
   topology:         generate initial topology file (NOT WORKING)
   solvate:          solvate globular protein and add ions to neutralize
@@ -17,11 +18,12 @@ templates are used.
   MD_restrained:    set up restrained MD
   MD:               set up equilibrium MD
 
-:Note:
+
+Note
+====
 
 - **This is software is in ALPHA status and likely to change
-    completely in the future.**
-
+  completely in the future.**
 - You **must** check all simulation parameters for yourself. Do not
   rely on any defaults provided here.
 
@@ -101,40 +103,39 @@ trj_compact_main = gromacs.tools.Trjconv(ur='compact', center=True, boxcenter='t
                                          doc="Returns a compact representation of the system centered on the __main__ group")
 
 def make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None):
-    """Make index file with the special groups.
+    """Make index file with the special groups::
 
-    groups = make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None)    
+       groups = make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None)    
 
     This routine adds the group __main__ and the group __environment__
     to the end of the index file. __main__ contains what the user
     defines as the *central* and *most important* parts of the
     system. __environment__ is everything else.
 
-    The template mdp file, for instance, uses T-coupling over these two groups.
+    The template mdp file, for instance, uses these two groups for T-coupling.
 
     These groups are mainly useful if the default groups "Protein" and "Non-Protein"
     are not appropriate. By using symbolic names such as __main__ one
     can keep scripts more general.
         
     :Returns:
+      *groups* is a list of dictionaries that describe the index groups. See
+      ``gromacs.cbook.parse_ndxlist()`` for details.
 
-    groups is a list of dictionaries that describe the index
-    groups. See gromacs.cbook.parse_ndxlist() for details.
-
-    :Arguments:
-    
-    struct        structure (tpr, pdb, gro)    
-    selection     is a ``make_ndx`` command such as::
-                     "Protein"
-                      r DRG
-                  which determines what is considered the main group for
-                  centering etc.                      
-    ndx           name of the final index file
-    oldndx        name of index file that should be used as a basis; if None
-                  then the ``make_ndx`` default groups are used.
+    :Arguments:    
+      struct : filename
+        structure (tpr, pdb, gro)    
+      selection : string
+        is a ``make_ndx`` command such as ``"Protein"`` or ``r DRG`` which determines what 
+        is considered the main group for centering etc. It is passed directly to ``make_ndx``.
+      ndx : string
+         name of the final index file
+      oldndx : string
+         name of index file that should be used as a basis; if None
+         then the ``make_ndx`` default groups are used.
                   
-    This routine is very dumb at the moment; maybe some heuristics
-    will be added later as could be other symbolic groups such as __membrane__.
+    This routine is very dumb at the moment; maybe some heuristics will be
+    added later as could be other symbolic groups such as __membrane__.
     """
 
     # pass 1: select
@@ -261,28 +262,33 @@ sge_template = templates['neuron_sge']
 def energy_minimize(dirname='em', mdp=templates['em_mdp'],
                     struct='solvate/ionized.gro', top='top/system.top',
                     **mdp_kwargs):
-    """Energy minimize the system.
+    """Energy minimize the system::
 
-    energy_minimize(**kwargs)
+       energy_minimize(**kwargs)
 
     This sets up the system (creates run input files) and also runs
     ``mdrun_d``. Thus it can take a while.
 
     Many of the keyword arguments below already have sensible values. 
 
-    :Keyword arguments:
+    :Keywords:
+       dirname
+          set up under directory dirname [em]
+       struct
+          input structure (gro, pdb, ...) [solvate/ionized.gro]
+       top
+          topology file [top/system.top]
+       mdp
+          mdp file (or use the template) [templates/em.mdp]
+       \*\*mdp_kwargs
+          key/value pairs that should be changed in the 
+          template mdp file, eg ``nstxtcout=250, nstfout=250``.
 
-    dirname        set up under directory dirname [em]
-    struct         input structure (gro, pdb, ...) [solvate/ionized.gro]
-    top            topology file [top/system.top]
-    mdp            mdp file (or use the template) [templates/em.mdp]
+    Note
+    ----
 
-    **mdp_kwargs   dictionary of values that should be changed in the 
-                   template mdp file, eg {'nstxtcout': 250, 'nstfout': 250}
+    * If ``mdrun_d`` is not found, the function simply fails with *OSError*.
 
-    :Bugs & Limitations:
-
-    * If ``mdrun_d`` is not found, it fails with OSError.
     """
 
     structure = os.path.realpath(struct)
@@ -295,7 +301,7 @@ def energy_minimize(dirname='em', mdp=templates['em_mdp'],
         gromacs.cbook.edit_mdp(mdp_template, new_mdp=mdp, **mdp_kwargs)
         gromacs.grompp(f=mdp, o=tpr, c=structure, p=topology, maxwarn=1)
         # TODO: not clear yet how to run as MPI with mpiexec & friends
-        # TODO: fall back to mdrun wif no double precision binary
+        # TODO: fall back to mdrun if no double precision binary
         gromacs.mdrun_d('v', stepout=10, deffnm='em', c='em.pdb')   # or em.pdb ? (box??)
         # em.gro --> gives 'Bad box in file em.gro' warning ??
 
@@ -307,6 +313,7 @@ def _setup_MD(dirname,
               mainselection='"Protein"',
               sge=sge_template, sgename=None,
               dt=0.002, runtime=1e3, **mdp_kwargs):
+    """Generic function to set up a ``mdrun`` MD simulation."""
 
     if struct is None:
         raise ValueError('struct must be set to a input structure')
@@ -365,31 +372,41 @@ def _setup_MD(dirname,
 
 
 def MD_restrained(dirname='MD_POSRES', **kwargs):
-    """Set up MD with position restraints.
+    """Set up MD with position restraints::
 
-    MD_restrained(**kwargs)
+      MD_restrained(**kwargs)
 
     Many of the keyword arguments below already have sensible values. 
 
-    :Keyword arguments:
-
-    dirname        set up under directory dirname [MD_POSRES]
-    struct         input structure (gro, pdb, ...) [em/em.pdb]
-    top            topology file [top/system.top]
-    mdp            mdp file (or use the template) [templates/md.mdp]
-    deffnm         default filename for Gromacs run [md]
-    runtime        total length of the simulation in ps [1e3]
-    dt             integration time step in ps [0.002]
-    sge            script to submit to the SGE queuing system
-    sgename        name to be used for the job in the queuing system [PR_GMX]
-    ndx            index file
-    mainselection  make_ndx selection to select main group ["Protein"]
-                   (If None then no canonical idenx file is generated and
-                   it is the users responsibility to set 'tc_grps',
-                   'tau_t', and 'ref_t' via mdp_kwargs.
-
-    **mdp_kwargs   dictionary of values that should be changed in the 
-                   template mdp file, eg {'nstxtcout': 250, 'nstfout': 250}
+    :Keywords:
+       dirname
+          set up under directory dirname [MD_POSRES]
+       struct
+          input structure (gro, pdb, ...) [em/em.pdb]
+       top
+          topology file [top/system.top]
+       mdp
+          mdp file (or use the template) [templates/md.mdp]
+       deffnm
+          default filename for Gromacs run [md]
+       runtime
+          total length of the simulation in ps [1e3]
+       dt
+          integration time step in ps [0.002]
+       sge
+          script to submit to the SGE queuing system
+       sgename
+          name to be used for the job in the queuing system [PR_GMX]
+       ndx
+          index file
+       mainselection
+          `` make_ndx`` selection to select main group ["Protein"]
+          (If ``None`` then no canonical idenx file is generated and
+          it is the users responsibility to set 'tc_grps',
+          'tau_t', and 'ref_t' via mdp_kwargs.
+       \*\*mdp_kwargs
+          key/value pairs that should be changed in the 
+          template mdp file, eg ``nstxtcout=250, nstfout=250``.
     """
 
     kwargs.setdefault('struct', 'em/em.pdb')
@@ -398,31 +415,41 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
     return _setup_MD(dirname, **kwargs)
 
 def MD(dirname='MD', **kwargs):
-    """Set up equilibrium MD.
+    """Set up equilibrium MD::
 
-    MD(**kwargs)
+      MD(**kwargs)
 
     Many of the keyword arguments below already have sensible values. 
 
-    :Keyword arguments:
-
-    dirname        set up under directory dirname [MD]
-    struct         input structure (gro, pdb, ...) [MD_POSRES/md_posres.pdb]
-    top            topology file [top/system.top]
-    mdp            mdp file (or use the template) [templates/md.mdp]
-    deffnm         default filename for Gromacs run [md]
-    runtime        total length of the simulation in ps [1e3]
-    dt             integration time step in ps [0.002]
-    sge            script to submit to the SGE queuing system
-    sgename        name to be used for the job in the queuing system [MD_GMX]
-    ndx            index file
-    mainselection  make_ndx selection to select main group ["Protein"]
-                   (If None then no canonical idenx file is generated and
-                   it is the users responsibility to set 'tc_grps',
-                   'tau_t', and 'ref_t' via mdp_kwargs.    
-
-    **mdp_kwargs   dictionary of values that should be changed in the 
-                   template mdp file, eg {'nstxtcout': 250, 'nstfout': 250}
+    :Keywords:
+       dirname        
+          set up under directory dirname [MD]
+       struct
+          input structure (gro, pdb, ...) [MD_POSRES/md_posres.pdb]
+       top
+          topology file [top/system.top]
+       mdp
+          mdp file (or use the template) [templates/md.mdp]
+       deffnm
+          default filename for Gromacs run [md]
+       runtime
+          total length of the simulation in ps [1e3]
+       dt
+          integration time step in ps [0.002]
+       sge
+          script template to submit to the SGE queuing system
+       sgename
+          name to be used for the job in the queuing system [MD_GMX]
+       ndx
+          index file
+       mainselection
+          ``make_ndx`` selection to select main group ["Protein"]
+          (If ``None`` then no canonical idenx file is generated and
+          it is the users responsibility to set 'tc_grps',
+          'tau_t', and 'ref_t' via mdp_kwargs.    
+       \*\*mdp_kwargs
+          key/value pairs that should be changed in the 
+          template mdp file, eg ``nstxtcout=250, nstfout=250``.
     """
 
     kwargs.setdefault('struct', 'MD_POSRES/md_posres.pdb')

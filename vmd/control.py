@@ -6,6 +6,38 @@
 # using asynchat/asyncore to talk to a VMD server process
 # (see http://www.python.org/doc/current/lib/module-asyncore.html & 
 # http://squirl.nightmare.com/medusa/async_sockets.html)
+"""
+VMD control
+===========
+
+Simple client to transmit Tcl commands to a server running in `VMD`_.
+
+VMD and the server run locally and can be started from the module. Once the
+server is running, one can use ``vmd.client()`` to communicate with the server
+process via a local socket.
+
+Example
+-------
+
+Start a VMD server and connect::
+
+  from vmd.control import *
+  VMD = server()
+  VMD.command('molecule new load 1AKE')
+
+or start an interactive `Tcl`_ session connected to a running VMD 
+server process::
+
+  interactive(host)
+  asyncore.loop()      # necessary
+
+See `VMD Tcl Text Commands`_ for all available commands.
+
+.. _VMD: http://www.ks.uiuc.edu/Research/vmd/
+.. _Tcl: http://www.tcl.tk/man/
+.. _VMD Tcl Text Commands: http://www.ks.uiuc.edu/Research/vmd/current/ug/node107.html
+"""
+__docformat__ = "restructuredtext en"
 
 import asynchat, asyncore, socket
 import os, sys, readline, string, re
@@ -28,22 +60,32 @@ class server:
                  server_tcl=REMOTE_TCL,
                  force=False,maxdelay=10,dispdev='text'):
         
-        """Start VMD in text mode and launch the remote server.
+        """Start VMD in text mode and launch the remote server::
 
-        server(**kwargs)
+           server(**kwargs)
 
-        Arguments:
-        vmdbinary        vmd (either in PATH or absolute path)
-        server_tcl       path to the tcl script that starts the listening server in VMD
-                         (the default is correct in 99.9% of cases)
-        force            False: don't launch new server if one is already active
-                         True: always start new vmd process
-        maxdelay         maximum time to wait for the server to come up in seconds
-        dispdev          VMD display device; default is 'text' which runs VMD without
-                         graphics. 'win' is the graphical window device
+        :Arguments:
+           vmdbinary
+                 ``vmd`` (either in PATH or absolute path)
+           server_tcl
+                  path to the tcl script that starts the listening server in VMD
+                  (the default is correct in 99.9% of cases)
+           force
+                  ``False``
+                       don't launch new server if one is already active
+                  ``True``
+                       always start new vmd process
+           maxdelay         
+                  maximum time to wait for the server to come up in seconds
+           dispdev
+                  VMD display device; default is 'text' which runs VMD without
+                  graphics. 'win' is the graphical window device
 
-        Bugs:
+        Bugs
+        ----
+
         * starting multiple VMD processes does not work as we always use the same port
+
         """
         devices = {'graphics':'win','win':'win', 'text':'text','batch':'text'}
         self.vmdbinary = vmdbinary
@@ -60,14 +102,18 @@ class server:
         self.start(force=force)
 
     def start(self,force=False,maxdelay=10):
-        """Start VMD and launch the remote server.
+        """Start VMD and launch the remote server::
 
-        server.start(**kwargs)
+          server.start(**kwargs)
 
-        Arguments:
-        force            False: don't launch new server if one is already active
-                         True: always start new vmd process
-        maxdelay         maximum number of seconds to wait for VMD to start 
+        :Arguments:
+           force
+               ``False``
+                     don't launch new server if one is already active
+               ``True``
+                     always start new vmd process
+           maxdelay
+               maximum number of seconds to wait for VMD to start 
         """
         import time
         
@@ -89,7 +135,9 @@ class server:
 
     def ping(self,pid=os.getpid()):
         """Check if a vmd server can be used.
+
         Returns True or False.
+
         Ignore the message 'error: uncaptured python exception' if the server is down.
         """
         token = 'ALIVE (ping from pid %d)' % pid
@@ -98,38 +146,46 @@ class server:
         return x == token
 
     def command(self,*args):
-        """Send commands to the VMD server.
+        """Send commands to the VMD server::
 
-        c = command('cd','set w [atomselect top {water}]', '$w writepdb water.pdb')
-        c.results()
+           c = command('cd','set w [atomselect top {water}]', '$w writepdb water.pdb')
+           c.results()
 
         This is only a thin convenience wrapper for
-        vmd.control.command() and not strongly tied to the server (as
+        ``vmd.control.command()`` and not strongly tied to the server (as
         anyone can connect).
         """
         return command(*args)
 
 class client(asynchat.async_chat):
-    """one command -> response exchange between the client and vmd
+    """one command -> response exchange between the client and vmd::
 
-    c = client(|host|,port=5555)
-    c.cmd(|tcl|,|tcl|,...)
-    asyncore.loop()
+       c = client(host,port=5555)
+       c.cmd(tcl, tcl,...)
+       asyncore.loop()
 
-    Starting VMD as 'vmd -e remote_ctl.tcl' opens port 5555 for connection.
-    The client only becomes active in the asyncore.loop() and exits after
+    Starting VMD as ``vmd -e remote_ctl.tcl`` opens port 5555 for connection.
+    The client only becomes active in the ``asyncore.loop()`` and exits after
     sending the commands and receiving the response. The response is available
-    as c.response()
+    as ``c.response()``
 
-    BUGS: somehow it doesnt like many commands...
+    :Parameters:
+       host
+           currently remote_ctl.tcl only allows 'localhost'
+       port
+           port to connect to (typically 5555)
 
-    |host|         currently remote_ctl.tcl only allows 'localhost'
-    |port|
+    Methods
+    -------
 
-    methods:
-    c.cmd(|tcl|,|tcl|,...)    commands (with embedded newlines!) scheduled for
-                              sending and execution in VMD
-    c.response()              response from VMD
+    c.cmd(tcl, tcl, ...)
+        commands (with embedded newlines!) scheduled for sending and execution in VMD
+    c.response()              
+        response from VMD
+
+    Bugs
+    ----
+    Somehow it doesnt like many commands...
     """
     def __init__(self, host,port=services['vmd']):
         asynchat.async_chat.__init__(self)
@@ -152,10 +208,12 @@ class client(asynchat.async_chat):
                                  # -- THIS IS PART OF THE PROTOCOL
 
     def cmd(self,*tcl):
-        """
-        c.cmd(|tcl|,|tcl|,...)    commands (with embedded newlines!) scheduled for
-                                  sending and execution in VMD. All strings will
-                                  be executed sequentially. 
+        """Submits the commands to be executed in VMD::
+
+           c.cmd(tcl, tcl, ...)    
+
+        Commands (*with embedded newlines!*) scheduled for sending and execution
+        in ``VMD``. All strings will be executed sequentially.
         """
         if len(tcl) == 0:
             raise ValueError, 'at least one Tcl command is required'
@@ -167,12 +225,11 @@ class client(asynchat.async_chat):
         
 
 class command(client):
+    """Send one or more tcl commands to VMD and return response::
 
-    """send command(s) to vmd and return response
+       c = command(*tcl)
 
-    usage: c = command(*|command|)
-
-    command appends a newline to each command if necessary and then
+    Appends a newline to each command if necessary and then
     feeds every single command separately to vmd. Commands that
     include newlines are split on newlines. The responses are stored
     in the tuple c._results (and can be retrieved by the c.results()
@@ -180,8 +237,13 @@ class command(client):
 
     Technically, this is unelegant cr^&...
 
-    c.results()        response from vmd
-    c.commands()       corresponding commands
+    Methods
+    -------
+
+    c.results()
+         response from VMD
+    c.commands()
+         corresponding commands
     """
 
     def __init__(self,*commands):
@@ -202,32 +264,39 @@ class command(client):
             self._resp.append(r[:])
 
     def results(self):
-        "show results from vmd"
+        """Return results from vmd."""
         return tuple(self._resp)
+
     def commands(self):
+        """Return submitted tcl commands."""
         return tuple(self._cmds)
 
 class interactive(client):
-   
-    """Interactive remote session with vmd
+    """Interactive remote session with vmd::
 
-    usage: interactive(|host|)
-           asyncore.loop()
+      interactive(host)
+      asyncore.loop()
 
-    When the loop() is called the interactive session starts and the prompt
-    is displayed as 'python->vmd>'. You are now connected to the tcl
-    interpreter in vmd. End the session by issuing the command 'close' or
-    'EXIT'.
+    When the ``loop()`` is called the interactive session starts and the prompt
+    is displayed as ``python->vmd>``. You are now connected to the tcl
+    interpreter in vmd. End the session by issuing the command ``close`` or
+    ``EXIT``.
 
-    |host|         currently remote_ctl.tcl only allows 'localhost'    
+    :Parameters:
+       host
+           currently remote_ctl.tcl only allows 'localhost'    
 
     Commands interpreted by the remote server and not by tcl in vmd:
 
+    ================  ====================================================
+    command           description
+    ================  ====================================================
     close             close the current connection (socket)
     exit              exit the server (no more connections possible,
                       but current connections are still open)
     loglevel N        set LOGLEVEL to value N (0<=N<=2) [default: 1]
     EXIT              exit the interactive session
+    ================  ====================================================
     """
     
     def __init__(self, host,port=services['vmd']):

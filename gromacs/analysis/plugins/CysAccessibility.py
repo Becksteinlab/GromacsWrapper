@@ -41,13 +41,15 @@ class _CysAccessibility(Worker):
         """Set up  customized Cysteine accessibility analysis.
 
         :Arguments:
-        cysteines       list of *all* resids (eg from the sequence) that are used as
-                        labels or in the form 'Cys<resid>'. MUST BE PROVIDED.
-        cys_cutoff      cutoff in nm for the minimum S-OW distance [1.0]
+           cysteines : list
+              list of *all* resids (eg from the sequence) that are used as
+              labels or in the form 'Cys<resid>'. (**required**)
+           cys_cutoff : number
+              cutoff in nm for the minimum S-OW distance [1.0]
 
         Note that *all* Cys residues in the protein are analyzed. Therefore,
-        the list of cysteine labels should contain as many entries as there are
-        cysteines in the protein.
+        the list of cysteine labels *must* contain as many entries as there are
+        cysteines in the protein. There are no sanity checks.
         """
         super(_CysAccessibility,self).__init__(**kwargs)
         

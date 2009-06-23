@@ -40,7 +40,7 @@ class GromacsCommand(object):
     failuremodes = ('raise', 'warn', None)
 
     def __init__(self,*args,**kwargs):
-        """Set up the command with gromacs flags as keyword arguments.::
+        """Set up the command with gromacs flags as keyword arguments::
 
           cmd = GromacsCommand('v', f=['md1.xtc','md2.xtc'], o='processed.xtc', t=200, ...)
 
@@ -78,12 +78,21 @@ class GromacsCommand(object):
 
         The following keyword arguments are not passed on to the Gromacs tool
         but determine how the command class behaves.
-        
-        :Keyword arguments:
-        failure:     'raise': raises GromacsError if command fails
-                      'warn': issue a GromacsFailureWarning
-                      None: just continue silently
-        doc          string; additional documentation []
+                
+        :Keywords:
+           failure
+              determines how a failure of the gromacs command is treated; it
+              can be one of the following:
+
+              'raise'
+                   raises GromacsError if command fails
+              'warn'
+                   issue a ``GromacsFailureWarning``
+              ``None``
+                   just continue silently
+
+           doc : string
+              additional documentation []
         """
 
         self.failuremode = kwargs.pop('failure','raise')
@@ -242,57 +251,74 @@ class GromacsCommand(object):
             print self.__call__.__doc__
         
     def __call__(self,*args,**kwargs):
-        """Run command with the given arguments.
+        """Run command with the given arguments::
 
            rc,stdout,stderr = command(*args, input=None, **kwargs)
            
-        All positional parameters *args and all gromacs **kwargs are passed on
+        All positional parameters \*args and all gromacs \*\*kwargs are passed on
         to the Gromacs command. input and output keywords allow communication
         with the process via the python subprocess module.
         
         :Arguments:
-        input            string or sequence to be fed to the process' standard input;
-                         elements of a sequence are concatenated with
-                         newlines, including a trailing one    [None]
-        stdin            None or automatically set to PIPE if input given [None]
-        stdout           filehandle to write to; special cases are None/True to see 
-                         output on screen; False/PIPE returns the output as a string in 
-                         the stdout parameter [None]
-        stderr           filehandle to write to; STDOUT merges standard error with
-                         the standard out stream. False/PIPE returns the output
-                         as a string in the stderr return parameter, None/True keeps it 
-                         on stderr (and presumably on screen)  [STDOUT]
+          input : string, sequence            
+             to be fed to the process' standard input;
+             elements of a sequence are concatenated with
+             newlines, including a trailing one    [None]
+          stdin
+             ``None`` or automatically set to ``PIPE`` if input given [None]
+          stdout
+             how to handle the program's stdout stream [None]
+
+             filehandle
+                    anything that behaves like a file object
+             ``None/True``
+                    to see  output on screen
+             ``False/PIPE``
+                     returns the output as a string in  the stdout parameter 
+
+          stderr
+             how to handle the stderr stream [STDOUT]
+
+             ``STDOUT``
+                     merges standard error with the standard out stream
+             ``False/PIPE``
+                     returns the output as a string in the stderr return parameter
+             ``None/True``
+                     keeps it on stderr (and presumably on screen)
 
         All other kwargs are passed on to the Gromacs tool.
      
-        :Returns:
+        Returns
+        -------
         The shell return code rc of the command is always returned. Depending
         on the value of output, various strings are filled with output from the
         command.
 
-        :Notes:
-
+        Notes
+        -----
         By default, the process stdout and stderr are merged.
 
         In order to chain different commands via pipes one must use the special
-        Popen object (see Popen() method of the command) instead of the simple
+        ``Popen`` object (see ``Popen()`` method of the command) instead of the simple
         call described here and first construct the pipeline explicitly and then
-        call the communicate() method of the Popen object.
+        call the ``communicate()`` method of the ``Popen`` object.
 
-        STDOUT and PIPE are objects provided by the subprocess module. Any
+        ``STDOUT`` and ``PIPE`` are objects provided by the ``subprocess`` module. Any
         python stream can be provided and manipulated. This allows for chaining
         of commands. Use ::
-          from subprocess import PIPE, STDOUT
+
+           from subprocess import PIPE, STDOUT
+
         when requiring the special streams.
         """
         return self.run(*args,**kwargs)
 
 
-
-
 class PopenWithInput(subprocess.Popen):
     """Popen class that knows its input; simply call communicate() later."""
+
     def __init__(self,*args,**kwargs):
+        """Initialize with the standard ``Popen`` arguments and *input*."""
         self.input = kwargs.pop('input',None)
         self.command = args[0]
         self.command_string = " ".join(self.command)

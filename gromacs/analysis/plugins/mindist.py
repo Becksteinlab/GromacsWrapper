@@ -11,11 +11,10 @@ make use of ``g_dist``.
 Overview
 ========
 
-Analyze output from::
-
- printf '22\n25\n' | \
-   g_dist -f ../md.xtc -s ../md.tpr -n cys_ow.ndx -dist 1.0 | \
-   bzip2 -vc > mindist_C60_OW_1nm.dat.bz2 
+Analyze output from
+| printf '22\n25\n' | \
+|   g_dist -f ../md.xtc -s ../md.tpr -n cys_ow.ndx -dist 1.0 | \
+|   bzip2 -vc > mindist_C60_OW_1nm.dat.bz2 
 
 and produce a histogram of minimum contact distances. This should
 provide an estimate for water accessibility of the atom (here: SG of
@@ -59,17 +58,26 @@ class Mindist(object):
     only the shortest distance is stored (whereas g_mindist provides
     *all* distances below the cutoff).
 
-    :Attributes:
-    all_distances      data from g_mindist (frame, distance) 
-    distances          time (frame) series of the shortest distances
+    Attributes
+    ----------
+    all_distances      
+       data from g_mindist (frame, distance) 
+    distances          
+       time (frame) series of the shortest distances
 
-    :Methods:
-    histogram          histogram of the mindist time series
-    plot               compute histograms and plot with matplotlib
+    Methods
+    -------
+    histogram
+        histogram of the mindist time series
+    plot
+        compute histograms and plot with matplotlib
 
-    :TODO:
+    TODO
+    ----
+
     * Save analysis to pickle or data files.
     * Export data as simple data files for plotting in other programs.
+
     """
 
     def __init__(self,datasource,cutoff=None):
@@ -78,10 +86,12 @@ class Mindist(object):
         M = Mindist(datasource, cutoff=1.0)
         
         :Arguments:
-        datasource:     a filename (plain, gzip, bzip2) or file object
-        cutoff:         the ``-dist CUTOFF`` that was provided to ``g_dist``; if supplied 
-                        we work around a bug in ``g_dist`` (at least in Gromacs 4.0.2) in which
-                         sometimes numbers >> CUTOFF are printed.
+          datasource
+             a filename (plain, gzip, bzip2) or file object
+          cutoff
+             the ``-dist CUTOFF`` that was provided to ``g_dist``; if supplied 
+             we work around a bug in ``g_dist`` (at least in Gromacs 4.0.2) in which
+             sometimes numbers >> CUTOFF are printed.
         """
         stream, self.filename = gromacs.utilities.anyopen(datasource)
         try:
@@ -111,12 +121,17 @@ class Mindist(object):
         on average 100 counts come to a bin. Set nbins manually if the
         histogram only contains a single bin (and then get more data)!
 
-        :Keyword arguments:
-        nbins       number of bins
-        lo          lower edge of histogram
-        hi          upper edge of histogram
-        midpoints   False: return edges. True: return midpoints
-        normed      True: return probability distribution. False: histogram
+        :Keywords:
+           nbins : int
+              number of bins
+           lo : float
+              lower edge of histogram
+           hi : float
+              upper edge of histogram
+           midpoints : boolean
+              False: return edges. True: return midpoints
+           normed : boolean
+              True: return probability distribution. False: histogram
         """
         D = self.distances
         if lo is None or hi is None:
@@ -184,9 +199,9 @@ class Mindist(object):
     midpoints = property(**midpoints())
 
     def plot(self,**kwargs):
-        """Plot histograms with matplotlib's plot() function.
+        """Plot histograms with matplotlib's plot() function::
 
-        plot(**histogramargs, **plotargs)
+          plot(**histogramargs, **plotargs)
 
         Arguments for both histogram() and plot() can be provided (qv).
         """

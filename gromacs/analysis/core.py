@@ -7,41 +7,47 @@
 
 Programming API for plugins
 ===========================
-* Additional analysis capabilities are added with mixin classes (from plugins).
-* Derive class for the simulation of interest along the lines of ::
 
-  from gromacs.analysis import Simulation
-  from gromacs.analysis.plugins import CysAccessibility
+Additional analysis capabilities are added to a ``Simulation`` class
+with mixin classes; these mixin classes are the *plugins*.
 
-  class MyProtein(Simulation, CysAccessibility):
-    def __init__(self,**kwargs):
-        kwargs['CysAccessibility'] = {'cysteines': [96, 243, 372]}
-        super(MyProtein,self).__init__(**kwargs)
+Example usage
+-------------
 
-  S = MyProtein(tpr=..., xtc=..., analysisdir=...)
-  S.set_default_plugin('CysAccessibility')
-  S.run()
-  S.analyze()
-  S.plot(figure=True)
+Derive class for the simulation of interest along the lines of ::
+
+     from gromacs.analysis import Simulation
+     from gromacs.analysis.plugins import CysAccessibility
+
+     class MyProtein(Simulation, CysAccessibility):
+       def __init__(self,**kwargs):
+           kwargs['CysAccessibility'] = {'cysteines': [96, 243, 372]}
+           super(MyProtein,self).__init__(**kwargs)
+
+     S = MyProtein(tpr=..., xtc=..., analysisdir=...)
+     S.set_default_plugin('CysAccessibility')
+     S.run()
+     S.analyze()
+     S.plot(figure=True)
 
 
-Plugins
--------
+Capabilities
+------------
 
 Analysis capabilities can be added by mixing in additional plugins into the
 simulation base class. Each plugin registers itself and provides at a minimum
-run(), analyze(), and plot() methods.
+``run()``, ``analyze()``, and ``plot()`` methods.
 
-The plugin class is derived from Plugin and bears the name that is used to
-access it. When its __init__ method executes it adds the actual worker class
-(typically named with the underscore-prepended name) to the Simulation.plugins
+The plugin class is derived from ``Plugin`` and bears the name that is used to
+access it. When its ``__init__`` method executes it adds the actual worker class
+(typically named with the underscore-prepended name) to the ``Simulation.plugins``
 dictionary.
 
 Variables for initializing a plugin are given to the class constructor as a
 keyword argument that is named like the plugin and contains a dictionary that
 is used as the keyword parameters for the plugin's init.
 
-A plugin **must** obtain a pointer to the Simulation class as the keyword
+A plugin **must** obtain a pointer to the ``Simulation`` class as the keyword
 argument ``simulation`` in order to be able to access simulation-global
 parameters such as top directories or input files.
 
@@ -79,18 +85,22 @@ class Simulation(object):
 
     Analysis capailities are added with mixin classes. 
 
-    NOTE: Only keyword arguments are allowed so that init resolution
-    works as expected.
+    :NOTE: Only keyword arguments are allowed so that init resolution
+           works as expected.
     """
     def __init__(self, **kwargs):
         """Set up a Simulation object; analysis is performed via methods.
 
-        :Arguments:
-        tpr             Gromacs tpr file (required)
-        xtc             Gromacs trajectory (required)
-        ndx             Gromacs index file
-        analysisdir     directory under which derived data are stored;
-                        defaults to the directory containing the tpr [None]        
+        :Parameters:
+           tpr
+             Gromacs tpr file (**required**)
+           xtc
+             Gromacs trajectory (**required**)
+           ndx
+             Gromacs index file
+           analysisdir
+             directory under which derived data are stored;
+             defaults to the directory containing the tpr [None]        
         """
         # required files
         self.tpr = kwargs.pop('tpr',None)
@@ -173,16 +183,19 @@ class Simulation(object):
         return self.select_plugin(plugin_name).analyze(**kwargs)    
 
     def plot(self,plugin_name=None,figure=False,**plotargs):
-        """Plot all data for the selected plugin.
-        
-        plot(plugin_name, **kwargs)
+        """Plot all data for the selected plugin::
+
+          plot(plugin_name, **kwargs)
 
         :Arguments:
-        plugin_name   name of the plugin to plot data from
-        figure        True: plot to file with default name.
-                      string: use this filename (+extension for format)
-                      False: only display
-        **plotargs    arguments for pylab.plot
+           plugin_name   
+              name of the plugin to plot data from
+           figure
+              - True: plot to file with default name.
+              - string: use this filename (+extension for format)
+              - False: only display
+           plotargs
+              arguments for pylab.plot
         """
         return self.select_plugin(plugin_name).plot(figure=figure,**plotargs)    
 
@@ -199,11 +212,19 @@ class Simulation(object):
 # worker classes (used by the plugins)
 
 class Worker(FileUtils):
-    """Base class for a plugin worker. Derive '_<plugin_name>(Worker)'."""
+    """Base class for a plugin worker."""
     plugin_name = None
 
     def __init__(self,**kwargs):
-        # general
+        """Set up Worker class.
+        
+        :Keywords:
+          simulation
+             A ``Simulation`` object; this is filled in by the ``Plugin`` class when the plugin 
+             is registered (**required**).
+          \*\*kwargs
+             All other keyword arguments are passed to the super class.
+        """
         assert self.plugin_name != None                  # derive from Worker
         self.simulation = kwargs.pop('simulation',None)  # required (but kw for super & friends)
         assert self.simulation != None
@@ -225,11 +246,15 @@ class Worker(FileUtils):
     def plot(self,**kwargs):
         """Plot all results in one graph, labelled by the result keys.
 
-        figure:       True: save figures in the given formats
-                      "name.ext": save figure under this filename (ext -> format)
-                      False: only show on screen
-        formats:      sequence of all formats that should be saved [('png', 'pdf')]
-        **plotargs    keyword arguments for pylab.plot()
+        :Keywords:
+           figure
+               - True: save figures in the given formats
+               - ``"name.ext"``: save figure under this filename (``ext`` -> format)
+               - False: only show on screen
+           formats : sequence
+               sequence of all formats that should be saved [('png', 'pdf')]
+           \*\*plotargs    
+               keyword arguments for pylab.plot()
         """
 
         # XXX: maybe move this into individual plugins in case the self.results
@@ -275,10 +300,14 @@ class Plugin(object):
 
     def __init__(self,**kwargs):
         """Registers the plugin with the simulation class.
-        :Arguments:
-        <plugin_name>      a dictionary named like the plugin is taken to include
-                           keyword arguments to initialize the plugin
-        **kwargs           all other kwargs are passed along                           
+
+        Specific keyword arguments are listed below, all other kwargs
+        are passed through.
+
+        :Keywords:
+           plugin_name : dict     
+                A dictionary named like the plugin is taken to include
+                keyword arguments that are passed to the __init__ of the plugin.
         """
         assert self.plugin_name != None                # must derive from Plugin
         plugin_args = kwargs.pop(self.plugin_name,{})  # must be a dict named like the plugin
