@@ -27,11 +27,14 @@ class GromacsCommand(object):
     # TODO: setup the environment from GMXRC (can use env=DICT in Popen/call)
 
     command_name = None
-    doc_pattern = r'.*?(?P<DOCS>DESCRIPTION.*)'
-    gmxfatal_pattern = r'---+\n'\
-        r'Program\s+(?P<program_name>\w+),\s+VERSION\s+(?P<version>[\w.]+)\s*\n'\
-        r'(?P<message>.*)\n---+'
-    # matches gmx_fatal() otput
+    doc_pattern = """.*?(?P<DOCS>DESCRIPTION.*)"""
+    gmxfatal_pattern = """----+\n                   # ---- decorator line
+            \s*Program\s+(?P<program_name>\w+),     #  Program name,
+              \s+VERSION\s+(?P<version>[\w.]+)\s*\n #    VERSION 4.0.5
+            (?P<message>.*)\n                       # full message, multiple lines
+            ----+\n                                 # ---- decorator line
+            """
+    # matches gmx_fatal() output
     # -------------------------------------------------------
     # Program <program_name>, VERSION <version>
     # ... <message>
@@ -115,7 +118,7 @@ class GromacsCommand(object):
         had_success = (rc == 0)
         if not had_success:
             gmxoutput = "\n".join([x for x in [out, err] if not x is None])
-            m = re.search(self.gmxfatal_pattern, gmxoutput, re.DOTALL)
+            m = re.search(self.gmxfatal_pattern, gmxoutput, re.VERBOSE | re.DOTALL)
             if m:
                 formatted_message = ['GMX_FATAL  '+line for line in m.group('message').split('\n')]
                 msg = "\n".join(\
