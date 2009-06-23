@@ -12,17 +12,22 @@ templates are used.
 Functions
 ---------
 
-  topology:         generate initial topology file (NOT WORKING)
-  solvate:          solvate globular protein and add ions to neutralize
-  energy_minimize:  set up energy minimization and run it (using ``mdrun_d``)
-  MD_restrained:    set up restrained MD
-  MD:               set up equilibrium MD
+  topology
+        generate initial topology file (NOT WORKING)
+  solvate
+        solvate globular protein and add ions to neutralize
+  energy_minimize
+        set up energy minimization and run it (using ``mdrun_d``)
+  MD_restrained
+        set up restrained MD
+  MD
+        set up equilibrium MD
 
 
 Note
 ====
 
-- **This is software is in ALPHA status and likely to change
+- **This software is in ALPHA status and likely to change
   completely in the future.**
 - You **must** check all simulation parameters for yourself. Do not
   rely on any defaults provided here.
@@ -78,12 +83,14 @@ def in_dir(directory):
 
 def topology(struct=None, protein='protein',
              ff='oplsaa', watermodel='TIP4P', 
-             top='system.top',  dirname='top'):
+             top='system.top',  dirname='top',
+             force=False):
     """Build Gromacs topology files from pdb.
     
     INCOMPLETE
     """
-    raise NotImplemented('sorry, this needs to be done manually at the moment')
+    if not force:
+        raise NotImplemented('sorry, this needs to be done manually at the moment')
 
     structure = os.path.realpath(struct)
     topology = os.path.realpath(os.path.join(dirname, top))
