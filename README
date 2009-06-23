@@ -1,16 +1,24 @@
 .. $Id$
 .. -*- mode: rst -*-
+.. The whole GromacsWrapper package is Copyright (c) 2009 Oliver Beckstein.
 
 ========
  README
 ========
 
-See INSTALL for installation instructions and COPYING for the
-licensing terms for all modules except ``vmd`` (see COPYING and
-COPYING.LESSER).
+See INSTALL for installation instructions. Documentation is currently
+only provided through the python doc strings.
 
-Documentation is currently only provided through the python doc
-strings.
+
+License
+=======
+
+The **GromacsWrapper** package is maded available under the terms of the
+GNU Public License v3 (or any higher version at your choice). 
+
+See COPYING for the licensing terms for all modules except the **vmd**
+module, which is made available under the LGPL v3 (see COPYING and
+COPYING.LESSER).
 
 
 Citing
@@ -27,15 +35,18 @@ or in the Acknowledgements section.
 Thank you.
 
 
-
-Availability & Contact
-======================
+Availability 
+============
 
 The latest version of the package is being made available via the
 internet-thingy at
 http://sbcb.bioch.ox.ac.uk/oliver/Software/GromacsWrapper.html or from
 the direct download URI (for ``easy_install``)
 http://sbcb.bioch.ox.ac.uk/oliver/download/Python/ . 
+
+
+Contact
+=======
 
 Please send feedback to `Oliver Beckstein`_.
 
