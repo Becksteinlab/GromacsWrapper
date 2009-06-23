@@ -301,7 +301,7 @@ def _setup_MD(dirname,
               deffnm='md', mdp=templates['md_mdp'],
               struct=None,
               top='top/system.top', ndx=None,
-              mainselection=None,
+              mainselection='"Protein"',
               sge=sge_template, sgename=None,
               dt=0.002, runtime=1e3, **mdp_kwargs):
 
@@ -379,6 +379,11 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
     dt             integration time step in ps [0.002]
     sge            script to submit to the SGE queuing system
     sgename        name to be used for the job in the queuing system [PR_GMX]
+    ndx            index file
+    mainselection  make_ndx selection to select main group ["Protein"]
+                   (If None then no canonical idenx file is generated and
+                   it is the users responsibility to set 'tc_grps',
+                   'tau_t', and 'ref_t' via mdp_kwargs.
 
     **mdp_kwargs   dictionary of values that should be changed in the 
                    template mdp file, eg {'nstxtcout': 250, 'nstfout': 250}
@@ -407,6 +412,11 @@ def MD(dirname='MD', **kwargs):
     dt             integration time step in ps [0.002]
     sge            script to submit to the SGE queuing system
     sgename        name to be used for the job in the queuing system [MD_GMX]
+    ndx            index file
+    mainselection  make_ndx selection to select main group ["Protein"]
+                   (If None then no canonical idenx file is generated and
+                   it is the users responsibility to set 'tc_grps',
+                   'tau_t', and 'ref_t' via mdp_kwargs.    
 
     **mdp_kwargs   dictionary of values that should be changed in the 
                    template mdp file, eg {'nstxtcout': 250, 'nstfout': 250}
