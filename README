@@ -6,8 +6,11 @@
  README
 ========
 
-See INSTALL for installation instructions. Documentation is currently
-only provided through the python doc strings.
+See :doc:`INSTALL` for installation instructions. Documentation is currently
+only provided through the python doc strings. See `Availability`_ for
+download instructions if the instructions in :doc:`INSTALL` are not
+sufficient.
+
 
 
 License

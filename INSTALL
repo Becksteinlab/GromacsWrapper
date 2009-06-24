@@ -5,11 +5,12 @@
  INSTALL
 =========
 
-This document should help you to install the package. The installation
-uses setuptools (also known as ``easy_install`` or egg install); if this
-is not available on your system you can either let the installer
-itself get it from the internet (so just go to `Quick installation
-instructions`_) or install it using your package manager, eg::
+This document should help you to install the **GromacsWrapper**
+package. The installation uses `setuptools`_ (also known as
+``easy_install`` or "egg install"); if this is not available on your
+system you can either let the installer download it automatically from
+the internet (so just go to `Quick installation instructions`_) or
+install it using your package manager, eg::
 
   aptitude install python-setuptools
 
@@ -20,10 +21,18 @@ occur or if you have suggestions on how to improve the package or
 these instructions.
 
 .. _`Oliver Beckstein`: orbeckst@gmail.com
+.. _setuptools: http://peak.telecommunity.com/DevCenter/setuptools
 
 
 Quick installation instructions
 ===============================
+
+If you have ``easy_install`` on your system you can directly install
+from the interweb::
+
+  easy_install -f http://sbcb.bioch.ox.ac.uk/oliver/download/Python GromacsWrapper
+
+This will automatically download and install the latest version.
 
 From a tar ball, eg GromacsWrapper-0.1.tbz::
 
@@ -33,13 +42,10 @@ From the unpacked source::
 
   python setup.py install
 
-See the `easy_install instructions`__
+See the `easy_install instructions`__ for explanation of the options
+that allow you to install into non-standard places.
 
 .. __: http://peak.telecommunity.com/DevCenter/EasyInstall#custom-installation-locations
-
-for explanation of the options that allow you to install into non-standard
-places.
-
 
 
 Requirements
@@ -86,9 +92,13 @@ If you want to make sure that ``easy_install`` also installs
 requirements for optional modules then you will have to add the
 additional requirement to the command line, for instance::
 
+  easy_install -f http://sbcb.bioch.ox.ac.uk/oliver/download/Python GromacsWrapper[analysis]
+
+when installing from the internet; from a downloaded source distribution::
+
   easy_install GromacsWrapper-0.1.tbz[analysis]
 
-or from the unpacked source::
+or from within the unpacked source::
 
   cd GromacsWrapper-0.1
   easy_install . GromacsWrapper[analysis]
@@ -96,8 +106,68 @@ or from the unpacked source::
 in order to try to download additional packages for the additional
 *analysis* module.
 
-Note for Mac OS X users 
-.......................
+
+Troubleshooting
+===============
+
+For problems with ``easy_install`` please read the `User setuptools
+instructions`__. 
+
+.. __: http://peak.telecommunity.com/DevCenter/setuptools#what-your-users-should-know
+
+
+Installing in non-standard locations
+------------------------------------
+
+Inform yourself about how to use ``easy_install`` to install packages
+in `Custom Installation Locations`_.
+
+For code hacking and development a *developer installation* is often
+useful. In the unpacked source::
+
+  python setup.py develop --install-dir python-lib-dir
+
+where ``python-lib-dir`` must be on the ``PYTHONPATH``.
+
+
+
+.. _Custom Installation Locations:
+   http://peak.telecommunity.com/DevCenter/EasyInstall#custom-installation-locations
+
+
+ez_install import error
+-----------------------
+
+Online installation can run into issues where the installation dies
+with the error::
+
+ ImportError: No module named ez_setup
+
+If `EasyInstall Troubleshooting`_ does not help then simply download
+the source distribution package manually, unpack, and install from
+inside with something like::
+
+ python setup.py install
+
+.. _EasyInstall Troubleshooting:
+   http://peak.telecommunity.com/DevCenter/EasyInstall#troubleshooting
+
+
+
+
+Could not find matplotlib
+-------------------------
+
+Automatic downloading of ``matplotlib`` often fails::
+
+   Searching for matplotlib>=0.91.3
+   Reading http://pypi.python.org/simple/matplotlib/
+   Reading http://matplotlib.sourceforge.net
+   Reading https://sourceforge.net/project/showfiles.php?group_id=80706&package_id=278194
+   Reading https://sourceforge.net/project/showfiles.php?group_id=80706&package_id=82474
+   Reading http://sourceforge.net/project/showfiles.php?group_id=80706
+   No local packages or download links found for matplotlib>=0.91.3
+   error: Could not find suitable distribution for Requirement.parse('matplotlib>=0.91.3')
 
 If automatic downloading of ``matplotlib`` fails then `download
 matplotlib`_ manually and `install matplotlib manually`_ first. For
