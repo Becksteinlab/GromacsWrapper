@@ -29,9 +29,9 @@ details.
 
 .. _Gromacs: http://www.gromacs.org
 .. _Documentation: 
-   http://sbcb.bioch.ox.ac.uk/oliver/Software/GromacsWrapper/html/index.html
+   http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/html/index.html
 .. _online source code documentation:
-   http://sbcb.bioch.ox.ac.uk/oliver/Software/GromacsWrapper/epydoc/index.html
+   http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/epydoc/index.html
 
 
 Contents:
