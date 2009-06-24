@@ -1,0 +1,1 @@
+include   ez_setup.py setup.py COPYING COPYING.LESSER INSTALL README
