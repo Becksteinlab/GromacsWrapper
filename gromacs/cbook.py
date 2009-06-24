@@ -236,7 +236,7 @@ def parse_ndxlist(output):
                      (?P<LIST>         # list of groups
                       (                # consists of repeats of the same pattern:
                         \s*\d+         # group number
-                        \s+\w+\s*:     # group name, separator ':'
+                        \s+[^\s]+\s*:  # group name, separator ':'
                         \s*\d+\satoms  # number of atoms in group
                         \n
                        )+              # multiple repeats
@@ -245,7 +245,7 @@ def parse_ndxlist(output):
     grouplist = m.group('LIST')
     NDXGROUP = re.compile(r"""
                          \s*(?P<GROUPNUMBER>\d+)      # group number
-                         \s+(?P<GROUPNAME>\w+)\s*:    # group name, separator ':'
+                         \s+(?P<GROUPNAME>[^\s]+)\s*: # group name, separator ':'
                          \s*(?P<NATOMS>\d+)\satoms    # number of atoms in group
                          """, re.VERBOSE)
     groups = []
