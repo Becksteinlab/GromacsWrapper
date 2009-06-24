@@ -18,27 +18,29 @@ tools for light-weight integration into python scripts or interactive use in
 Modules
 -------
 
-gromacs:     
+gromacs  
      The top level module contains all gromacs tools; each tool can be run
      directly or queried for its documentation.
 
-gromacs.cbook:
+gromacs.cbook
      The Gromacs cook book contains typical applications of the tools. In many
      cases this not more than just an often-used combination of parameters for
      a tool.
 
-gromacs.tools:
+gromacs.tools
      Contains classes that wrap the gromacs tools. They are automatically
      generated from the list of tools in ``gromacs.tools.gmx_tools``.
 
-gromacs.setup:
+gromacs.setup
      Functions to set up a MD simulation, containing tasks such as solvation
      and adding ions, energy minimizqtion, MD with position-restraints, and
      equilibrium MD. (INCOMPLETE)
 
-gromacs.analysis:
+gromacs.analysis
      A package that collects whole analysis tasks. It uses the gromacs but is
-     otherwise only loosely coupled with the rest. See the package documentation.
+     otherwise only loosely coupled with the rest. At the moment it only
+     contains the infrastructure and an example application. See the package
+     documentation.
 
 
 Examples
@@ -81,9 +83,30 @@ Output of the command can be caught in a variable and analyzed::
 
 (See ``gromacs.cbook.grompp_qtot`` for a more robust implementation of this
 application.)
+
+
+Warnings and Exceptions
+-----------------------
+
+A number of package-sepecific exceptions (GromacsError) and warnings
+(Gromacs*Warning, AutoCorrectionWarning, BadParameterWarning) can be raised.
+
+If you want to stop execution at, for instance, a AutoCorrectionWarning or
+BadParameterWarning then use the python warnings filter::
+ 
+  import warnings
+  warnings.simplefilter('error', gromacs.AutoCorrectionWarning)
+  warnings.simplefilter('error', gromacs.BadParameterWarning)
+
+This will make python raise an exception instead of moving on. The default is
+to always report, eg::
+
+  warnings.simplefilter('always', gromacs.BadParameterWarning)
+
 """
 __docformat__ = "restructuredtext en"
 
+# __all__ is extended with all gromacs command instances later
 __all__ = ['tools', 'cbook', 'setup']
 
 # Note: analysis not imported by default (requires additional pre-requisites)
@@ -92,8 +115,8 @@ class GromacsError(EnvironmentError):
     """Error raised when a gromacs tool fails.
 
     Returns error code in the errno attribute and a string in strerror.
-    """
     # TODO: return status code and possibly error message
+    """
 
 class GromacsFailureWarning(Warning):
     """Warning about failure of a Gromacs tool."""
@@ -106,6 +129,15 @@ class GromacsValueWarning(Warning):
 
 class AutoCorrectionWarning(Warning):
     """Warns about cases when the code is choosing new values automatically."""
+
+class BadParameterWarning(Warning):
+    """Warns if some parameters or variables are unlikely to be appropriate or correct."""
+
+# These warnings should always be displayed because other parameters
+# can have changed, eg during interactive use.
+for w in (AutoCorrectionWarning, BadParameterWarning, 
+          GromacsFailureWarning, GromacsValueWarning):
+    warnings.simplefilter('always', category=w)
 
 # Add gromacs command **instances** to the top level.
 # These serve as the equivalence of running commands in the shell.
@@ -129,9 +161,8 @@ for clsname, cls in tools.registry.items():
         pass
     except OSError:
         _missing_g_commands.append(name)
-warnings.simplefilter("default", GromacsFailureWarning)
+warnings.simplefilter("always", GromacsFailureWarning)
 
-warnings.simplefilter("default", GromacsImportWarning)
 _have_g_commands.sort()
 _missing_g_commands.sort()
 if len(_missing_g_commands) > 0:
@@ -141,8 +172,12 @@ if len(_missing_g_commands) > 0:
 
 del name, cls, clsname
 
+# get ALL active command instances with 'from gromacs import *'
+__all__.extend(_have_g_commands)
+
+
 # cbook should come after the whole of init as it relies on command
-# instances in the topl level name space
+# instances in the top level name space
 try:
     import cbook
 except OSError, err:

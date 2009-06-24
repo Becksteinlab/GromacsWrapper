@@ -12,6 +12,9 @@ templates are used.
 Functions
 ---------
 
+The individual steps of setting up a simple MD simulation are borken down in a
+sequence of functions that depend on the previous step(s):
+
   topology
         generate initial topology file (NOT WORKING)
   solvate
@@ -23,9 +26,48 @@ Functions
   MD
         set up equilibrium MD
 
+Each function uses its own working directory (set with the ``dirname`` keyword
+argument, but it should be safe and convenient to use the defaults). Other
+arguments assume the default locations so typically not much should have to be
+set manually.
 
-Note
-====
+
+Example
+=======
+
+Run a single protein in a dodecahedral box of SPC water molecules and
+use the GROMOS96 G43a1 force field. We start with the structure in
+``protein.pdb``::
+
+  from gromacs.setup import *
+  f1 = topology(protein='MyProtein', struct='protein.pdb', ff='G43a1', water='spc', force=True, ignh=True)
+
+Each function returns "interesting" new files in a dictionary in such
+a away that it can often be used as input for the next function in the
+chain (although in most cases one can get away with the defaults of
+the keyword arguments)::
+
+  f2 = solvate(**f1)
+  f3 = energy_minimize(**f2)
+
+Now prepare input for a MD run with restraints on the protein::
+
+  MD_restrained(**f3)
+
+Use the files in the directory to run the simulation locally or on a
+cluster. You can provide your own template for a queuing system
+submission script; see the source code for details.
+
+Once the restraint run has completed, use the last frame as input for
+the equilibrium MD::
+
+  MD(struct='MD_POSRES/md.gro', runtime=1e5)
+
+Run the resulting tpr file on a cluster.
+
+
+Important Notes
+===============
 
 - **This software is in ALPHA status and likely to change
   completely in the future.**
@@ -39,9 +81,10 @@ from __future__ import with_statement
 __docformat__ = "restructuredtext en"
 
 import os
+from os.path import realpath
 import errno
 import re
-#import shutil
+import shutil
 import warnings
 from contextlib import contextmanager
 
@@ -50,7 +93,7 @@ from pkg_resources import resource_filename
 
 import gromacs
 from gromacs import GromacsError, GromacsFailureWarning, GromacsValueWarning, \
-     AutoCorrectionWarning
+     AutoCorrectionWarning, BadParameterWarning
 import gromacs.cbook
 
 @contextmanager
@@ -82,28 +125,39 @@ def in_dir(directory):
 # - full logging would be nice (for provenance)
 
 def topology(struct=None, protein='protein',
-             ff='oplsaa', watermodel='TIP4P', 
              top='system.top',  dirname='top',
-             force=False):
+             force=False, **pdb2gmx_args):
     """Build Gromacs topology files from pdb.
     
-    INCOMPLETE
+    **INCOMPLETE**
+
+    struct
+        input structure
+    protein
+        name of the output files
+    top 
+        name of the topology file
+    dirname
+        directory in which the new topology will be stored
+    pdb2gmxargs
+        arguments for `pdb2gmx` such as ff, water, ...
     """
     if not force:
         raise NotImplemented('sorry, this needs to be done manually at the moment')
 
-    structure = os.path.realpath(struct)
-    topology = os.path.realpath(os.path.join(dirname, top))
-    
+    structure = realpath(struct)
+
     new_struct = protein + '.pdb'
     posres = protein + '_posres.itp'
+    tmp_top = "tmp.top"
+
+    pdb2gmx_args.update({'f': structure, 'o': new_struct, 'p': tmp_top, 'i': posres})
 
     with in_dir(dirname):
-        gromacs.pdb2gmx(ff=ff, water=watermodel, f=structure,
-                        o=new_struct, p='tmp', i=posres)
+        gromacs.pdb2gmx(**pdb2gmx_args)
         # need some editing  protein_tmp --> system.top and protein.itp
-
-    return topology, new_struct
+        shutil.copy(tmp_top, top)
+        return {'top': realpath(top), 'struct': realpath(new_struct)}
 
 trj_compact_main = gromacs.tools.Trjconv(ur='compact', center=True, boxcenter='tric', pbc='mol',
                                          input=('__main__','system'),
@@ -168,23 +222,24 @@ def make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None):
 def solvate(struct='top/protein.pdb', top='top/system.top',
             distance=0.9, boxtype='dodecahedron',
             concentration=0, cation='NA+', anion='CL-',
-            watermodel='tip4p',
+            water='spc',
             ndx = 'main.ndx', mainselection = '"Protein"',
-            dirname='solvate'):
+            dirname='solvate',
+            **kwargs):
     """Put protein into box, add water, add ions."""
 
-    structure = os.path.realpath(struct)
-    topology = os.path.realpath(top)
+    structure = realpath(struct)
+    topology = realpath(top)
 
-    if watermodel.lower() in ('spc', 'spce'):
-        watermodel = 'spc216'
+    if water.lower() in ('spc', 'spce'):
+        water = 'spc216'
 
     # should scrub topology but hard to know what to scrub; for
     # instance, some ions or waters could be part of the crystal structure
     
     with in_dir(dirname):
         gromacs.editconf(f=structure, o='boxed.gro', bt=boxtype, d=distance)
-        gromacs.genbox(p=topology, cp='boxed.gro', cs=watermodel, o='solvated.gro')
+        gromacs.genbox(p=topology, cp='boxed.gro', cs=water, o='solvated.gro')
 
         with open('none.mdp','w') as mdp:
             print >> mdp, '; empty'
@@ -239,7 +294,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
         except GromacsError, err:
             warnings.warn("Failed to make compact pdb for visualization... pressing on regardless. "
                           "The error message was:\n%s\n" % str(err), category=GromacsFailureWarning)
-        return qtot
+        return {'qtot': qtot, 'struct': realpath('ionized.gro'), 'ndx': realpath(ndx)}
 
 # Templates have to be extracted from the egg because they are used by
 # external code.
@@ -266,8 +321,22 @@ templates = {'em_mdp': resource_filename(__name__, 'templates/em.mdp'),
              }
 sge_template = templates['neuron_sge']
 
+
+# parse this table for a usable data structure (and then put it directly in the docs)
+recommended_mdp_table = """\
+Table: recommended mdp parameters for different FF
+==========   =========  ================
+mdp          GROMOS     OPLS-AA
+==========   =========  ================
+rvdw         1.4        1.0
+rlist        1.4        1.0
+==========   =========  ================
+"""
+
+
 def energy_minimize(dirname='em', mdp=templates['em_mdp'],
                     struct='solvate/ionized.gro', top='top/system.top',
+                    qtot=0,   # only important when passed from solvate()
                     **mdp_kwargs):
     """Energy minimize the system::
 
@@ -298,11 +367,18 @@ def energy_minimize(dirname='em', mdp=templates['em_mdp'],
 
     """
 
-    structure = os.path.realpath(struct)
-    topology = os.path.realpath(top)
-    mdp_template = os.path.realpath(mdp)    
+    structure = realpath(struct)
+    topology = realpath(top)
+    mdp_template = realpath(mdp)    
     mdp = 'em.mdp'
     tpr = 'em.tpr'
+
+    if qtot != 0:
+        # At the moment this is purely user-reported and really only here because 
+        # it might get fed into the function when using the keyword-expansion pipeline
+        # usage paradigm.
+        warnings.warn("Total charge was reported as qtot = %(qtot)g <> 0; probably a problem." % vars(),
+                      category=BadParameterWarning)
 
     with in_dir(dirname):
         gromacs.cbook.edit_mdp(mdp_template, new_mdp=mdp, **mdp_kwargs)
@@ -312,6 +388,7 @@ def energy_minimize(dirname='em', mdp=templates['em_mdp'],
         gromacs.mdrun_d('v', stepout=10, deffnm='em', c='em.pdb')   # or em.pdb ? (box??)
         # em.gro --> gives 'Bad box in file em.gro' warning ??
 
+        return {'struct': realpath('em.pdb')}
 
 def _setup_MD(dirname,
               deffnm='md', mdp=templates['md_mdp'],
@@ -324,10 +401,10 @@ def _setup_MD(dirname,
 
     if struct is None:
         raise ValueError('struct must be set to a input structure')
-    structure = os.path.realpath(struct)
-    topology = os.path.realpath(top)
-    mdp_template = os.path.realpath(mdp)
-    sge_template = os.path.realpath(sge)
+    structure = realpath(struct)
+    topology = realpath(top)
+    mdp_template = realpath(mdp)
+    sge_template = realpath(sge)
 
     nsteps = int(float(runtime)/float(dt))
 
@@ -341,26 +418,27 @@ def _setup_MD(dirname,
         # fix illegal SGE name
         sgename = 'md_'+sgename
         warnings.warn("Illegal SGE name fixed: new=%r" % sgename, 
-                      category=GromacsValueWarning)
+                      category=AutoCorrectionWarning)
 
     mdp_parameters = {'nsteps':nsteps, 'dt':dt}
     mdp_parameters.update(mdp_kwargs)
     
     with in_dir(dirname):
-        # do I need an index file?
         if not mainselection is None:
+            # make index file in almost all cases; with None the user
+            # takes FULL control and also has to provide the template or ndx
             groups = make_main_index(structure, selection=mainselection,
                                      oldndx=ndx, ndx=mainindex)
             natoms = dict([(g['name'], float(g['natoms'])) for g in groups])
             x = natoms['__main__']/natoms['__environment__']
             if x < 0.1:
-                # does not handle properly multiple ones
+                # TODO: does not handle properly multiple groups in arglist yet
                 tau_t = mdp_parameters.pop('tau_t', 0.1)
                 ref_t = mdp_parameters.pop('ref_t', 300)
-                # combine all in on T-coupling group
+                # combine all in one T-coupling group
                 mdp_parameters['tc-grps'] = 'System'
-                mdp_parameters['tau_t'] = tau_t   # this override the commandline!
-                mdp_parameters['ref_t'] = ref_t   # this override the commandline!
+                mdp_parameters['tau_t'] = tau_t   # this overrides the commandline!
+                mdp_parameters['ref_t'] = ref_t   # this overrides the commandline!
                 warnings.warn("Size of __main__ is only %.1f%% of __environment__ so "
                               "we use 'System' for T-coupling and ref_t = %g and "
                               "tau_t = %g (can be changed in mdp_parameters).\n"
@@ -397,18 +475,19 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
        deffnm
           default filename for Gromacs run [md]
        runtime
-          total length of the simulation in ps [1e3]
+          total length of the simulation in ps [1000]
        dt
           integration time step in ps [0.002]
        sge
-          script to submit to the SGE queuing system
+          script to submit to the SGE queuing system; by default
+          uses the template ``gromacs.setup.templa
        sgename
           name to be used for the job in the queuing system [PR_GMX]
        ndx
           index file
        mainselection
           `` make_ndx`` selection to select main group ["Protein"]
-          (If ``None`` then no canonical idenx file is generated and
+          (If ``None`` then no canonical index file is generated and
           it is the users responsibility to set 'tc_grps',
           'tau_t', and 'ref_t' via mdp_kwargs.
        \*\*mdp_kwargs
@@ -440,7 +519,7 @@ def MD(dirname='MD', **kwargs):
        deffnm
           default filename for Gromacs run [md]
        runtime
-          total length of the simulation in ps [1e3]
+          total length of the simulation in ps [1000]
        dt
           integration time step in ps [0.002]
        sge
