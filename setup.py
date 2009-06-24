@@ -20,7 +20,7 @@ more complicated analysis tasks.
       author="Oliver Beckstein",
       author_email="orbeckst@gmail.com",
       license="GPLv3",
-      url="http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper",
+      url="http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/",
       download_url="http://sbcb.bioch.ox.ac.uk/oliver/download/Python/",
       keywords="science Gromacs analysis 'molecular dynamics'",
       packages=find_packages(exclude=['tests','extras','doc/examples']),

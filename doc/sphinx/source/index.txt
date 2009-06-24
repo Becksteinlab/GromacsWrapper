@@ -6,6 +6,34 @@
 Welcome to GromacsWrapper's documentation!
 ==========================================
 
+**GromacsWrapper** is a python package that wraps system calls to
+`Gromacs`_ tools into thin classes. This allows for fairly seamless
+integration of the gromacs tools into python scripts. This is
+generally superior to shell scripts because of python's better error
+handling and superior data structures. It also allows for
+modularization and code re-use.
+
+See :doc:`INSTALL` for installation instructions. `Documentation`_ is
+only provided through the python doc strings. 
+
+There is also auto-generated `online source code documentation`_
+available.
+
+Please be aware that this is **alpha** software that most definitely
+contains bugs. It is *your* responsibility to ensure that you are
+running simulations with sensible parameters.
+
+The documentation is still in flux and any suggestions and
+contributions are welcome. See the package :doc:`README` for contact
+details.
+
+.. _Gromacs: http://www.gromacs.org
+.. _Documentation: 
+   http://sbcb.bioch.ox.ac.uk/oliver/Software/GromacsWrapper/html/
+.. _online source code documentation:
+   http://sbcb.bioch.ox.ac.uk/oliver/Software/GromacsWrapper/epydoc/
+
+
 Contents:
 
 .. toctree::
