@@ -133,6 +133,7 @@ class AutoCorrectionWarning(Warning):
 class BadParameterWarning(Warning):
     """Warns if some parameters or variables are unlikely to be appropriate or correct."""
 
+import warnings
 # These warnings should always be displayed because other parameters
 # can have changed, eg during interactive use.
 for w in (AutoCorrectionWarning, BadParameterWarning, 
@@ -148,7 +149,6 @@ import tools
 # Ignore warnings from a few programs that do not produce
 # documentation when run with '-h' (only applies when the default for
 # failuremode of core.GromacsCommand is changed to 'warn')
-import warnings
 warnings.simplefilter("ignore", GromacsFailureWarning)
 _have_g_commands = []
 _missing_g_commands = []
