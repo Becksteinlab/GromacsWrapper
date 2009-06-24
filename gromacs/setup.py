@@ -96,6 +96,46 @@ from gromacs import GromacsError, GromacsFailureWarning, GromacsValueWarning, \
      AutoCorrectionWarning, BadParameterWarning
 import gromacs.cbook
 
+
+# Templates have to be extracted from the egg because they are used by
+# external code.
+#
+# Gromacs mdp templates
+# ---------------------
+# These are supplied as examples and there is NO GUARANTEE THAT THEY
+# PRODUCE SENSIBLE OUTPUT --- check for yourself!
+# Note that only existing parameter names can be modified with 
+# gromacs.cbook.edit_mdp() at the moment.
+#
+# SGE templates:
+# --------------
+# The sge scripts are highly specific and you will need to add your own.
+# Temmplates should be sh-scripts and contain the following (except '|')
+#
+# |DEFFNM=md        'md' is replaced by kw deffnm
+# |#$ -N GMX_MD     'GMX_MD' is replaced by kw sgename
+#
+templates = {'em_mdp': resource_filename(__name__, 'templates/em.mdp'),
+             'md_mdp': resource_filename(__name__, 'templates/md.mdp'),
+             'deathspud_sge': resource_filename(__name__, 'templates/deathspud.sge'),
+             'neuron_sge': resource_filename(__name__, 'templates/neuron.sge'),
+             }
+sge_template = templates['neuron_sge']
+
+
+# parse this table for a usable data structure (and then put it directly in the docs)
+recommended_mdp_table = """\
+Table: recommended mdp parameters for different FF
+==========   =========  ================
+mdp          GROMOS     OPLS-AA
+==========   =========  ================
+rvdw         1.4        1.0
+rlist        1.4        1.0
+==========   =========  ================
+"""
+
+
+
 @contextmanager
 def in_dir(directory):
     """Context manager to execute a code block in a directory.
@@ -296,43 +336,6 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
                           "The error message was:\n%s\n" % str(err), category=GromacsFailureWarning)
         return {'qtot': qtot, 'struct': realpath('ionized.gro'), 'ndx': realpath(ndx)}
 
-# Templates have to be extracted from the egg because they are used by
-# external code.
-#
-# Gromacs mdp templates
-# ---------------------
-# These are supplied as examples and there is NO GUARANTEE THAT THEY
-# PRODUCE SENSIBLE OUTPUT --- check for yourself!
-# Note that only existing parameter names can be modified with 
-# gromacs.cbook.edit_mdp() at the moment.
-#
-# SGE templates:
-# --------------
-# The sge scripts are highly specific and you will need to add your own.
-# Temmplates should be sh-scripts and contain the following (except '|')
-#
-# |DEFFNM=md        'md' is replaced by kw deffnm
-# |#$ -N GMX_MD     'GMX_MD' is replaced by kw sgename
-#
-templates = {'em_mdp': resource_filename(__name__, 'templates/em.mdp'),
-             'md_mdp': resource_filename(__name__, 'templates/md.mdp'),
-             'deathspud_sge': resource_filename(__name__, 'templates/deathspud.sge'),
-             'neuron_sge': resource_filename(__name__, 'templates/neuron.sge'),
-             }
-sge_template = templates['neuron_sge']
-
-
-# parse this table for a usable data structure (and then put it directly in the docs)
-recommended_mdp_table = """\
-Table: recommended mdp parameters for different FF
-==========   =========  ================
-mdp          GROMOS     OPLS-AA
-==========   =========  ================
-rvdw         1.4        1.0
-rlist        1.4        1.0
-==========   =========  ================
-"""
-
 
 def energy_minimize(dirname='em', mdp=templates['em_mdp'],
                     struct='solvate/ionized.gro', top='top/system.top',
@@ -480,7 +483,8 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
           integration time step in ps [0.002]
        sge
           script to submit to the SGE queuing system; by default
-          uses the template ``gromacs.setup.templa
+          uses the template ``gromacs.setup.sge_template``, which can 
+          be manually set to another template from ``gromacs.setup.templates``
        sgename
           name to be used for the job in the queuing system [PR_GMX]
        ndx
