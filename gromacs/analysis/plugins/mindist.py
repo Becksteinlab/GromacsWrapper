@@ -4,28 +4,32 @@
 # See the file COPYING for details.
 
 """
-mindist is contains helper classes for other analysis plugins that
-make use of ``g_dist``.
+``analysis.plugins.mindist`` --- Helper Class Based on ``g_dist``
+=================================================================
+
+``mindist`` is contains helper classes for other analysis plugins that
+want to make use of ``g_dist``.
 
 
 Overview
-========
+--------
 
-Analyze output from
-| printf '22\n25\n' | \
-|   g_dist -f ../md.xtc -s ../md.tpr -n cys_ow.ndx -dist 1.0 | \
-|   bzip2 -vc > mindist_C60_OW_1nm.dat.bz2 
+Analyze output from::
+
+ printf '22\n25\n' | \
+   g_dist -f ../md.xtc -s ../md.tpr -n cys_ow.ndx -dist 1.0 | \
+   bzip2 -vc > mindist_C60_OW_1nm.dat.bz2 
 
 and produce a histogram of minimum contact distances. This should
 provide an estimate for water accessibility of the atom (here: SG of
 Cys60).
 
 File format
-===========
+-----------
   
-``g_mindist`` with the ``-dist CUTOFF`` option writes to stdout the
+``g_dist`` with the ``-dist CUTOFF`` option writes to stdout the
 identity of all atoms within the cutoff distance and the distance
-itself.::
+itself::
 
    Selected 22: 'CYSH_CYSH_60_&_SG'
    Selected 25: 'OW'
@@ -38,6 +42,14 @@ itself.::
    t: 186  10028 SOL 46031 OW  0.788268 (nm)
    t: 187  6682 SOL 35993 OW  0.997688 (nm)
    ...
+
+Classes
+-------
+
+.. autoclass:: Mindist
+   :members:
+
+.. autoclass:: GdistData
 
 """
 __docformat__ = "restructuredtext en"
@@ -58,22 +70,11 @@ class Mindist(object):
     only the shortest distance is stored (whereas g_mindist provides
     *all* distances below the cutoff).
 
-    Attributes
-    ----------
-    all_distances      
-       data from g_mindist (frame, distance) 
-    distances          
-       time (frame) series of the shortest distances
+    .. attribute:: distances
+       Time (frame) series of the shortest distances as a numpy array;
+       should only be read.
 
-    Methods
-    -------
-    histogram
-        histogram of the mindist time series
-    plot
-        compute histograms and plot with matplotlib
-
-    TODO
-    ----
+    :TODO:
 
     * Save analysis to pickle or data files.
     * Export data as simple data files for plotting in other programs.
@@ -81,9 +82,9 @@ class Mindist(object):
     """
 
     def __init__(self,datasource,cutoff=None):
-        """Read mindist data from file or stream.
+        """Read mindist data from file or stream::
 
-        M = Mindist(datasource, cutoff=1.0)
+           M = Mindist(datasource, cutoff=1.0)
         
         :Arguments:
           datasource
@@ -109,9 +110,9 @@ class Mindist(object):
             name="mindistances", cache=False)
         
     def histogram(self,nbins=None,lo=None,hi=None,midpoints=False,normed=True):
-        """Returns a distribution or histogram of the minimum distances.
+        """Returns a distribution or histogram of the minimum distances::
 
-        hist,edges = histogram(nbins=10, hi=1)
+           hist,edges = histogram(nbins=10, hi=1)
 
         If no values for the bin edges are given then they are set to
         0.1 below and 0.1 above the minimum and maximum values seen in
@@ -201,7 +202,7 @@ class Mindist(object):
     def plot(self,**kwargs):
         """Plot histograms with matplotlib's plot() function::
 
-          plot(**histogramargs, **plotargs)
+           plot(**histogramargs, **plotargs)
 
         Arguments for both histogram() and plot() can be provided (qv).
         """
@@ -216,7 +217,7 @@ class Mindist(object):
         pylab.xlabel('minimum distance (nm)')
 
 class GdistData(object):
-    """Object that represents the output of g_dist -dist CUTOFF"""
+    """Object that represents the output of ``g_dist -dist CUTOFF``."""
     data_pattern = re.compile("""t:\s*                 # marker for beginning of line
                 (?P<FRAME>\d+)\s+                      # frame number (?)
                 (?P<RESID>\d+)\s+(?P<RESNAME>\w+)\s+   # resid and residue name

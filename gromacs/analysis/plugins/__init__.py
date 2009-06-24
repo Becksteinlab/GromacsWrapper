@@ -3,8 +3,8 @@
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
 """
-Plugin Modules
-================
+``analysis.plugins`` -- Plugin Modules
+======================================
 
 Mixin classes for ``core.Simulation`` that provide code to analyze
 trajectory data.

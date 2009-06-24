@@ -3,7 +3,17 @@
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
 
-"""Core functionality for the Gromacs python shell."""
+"""
+``gromacs.core`` -- Core functionality
+======================================
+
+Here the basic command class ``GromacsCommand`` is defined. All
+Gromacs command classes in ``gromacs.tools`` are automatically
+generated from it.
+
+.. autoclass:: GromacsCommand
+
+"""
 __docformat__ = "restructuredtext en"
 
 import sys
@@ -240,7 +250,7 @@ class GromacsCommand(object):
             docs = self.__doc_cache
             if self.extra_doc:
                 docs = '\n'.join([self.extra_doc,'',
-                                  "Documentation of the gromacs tool:", 34*'=',
+                                  "Documentation of the gromacs tool", 34*'=',
                                   docs])
             return docs
         return locals()

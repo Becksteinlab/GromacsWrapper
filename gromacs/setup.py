@@ -1,7 +1,7 @@
 # $Id$
 """
-Setting up a Gromacs MD run
-===========================
+``gromacs.setup`` -- Setting up a Gromacs MD run
+================================================
 
 Individual steps such as solvating a structure or energy minimization
 are set up in individual directories. For energy minimization one
@@ -33,7 +33,7 @@ set manually.
 
 
 Example
-=======
+-------
 
 Run a single protein in a dodecahedral box of SPC water molecules and
 use the GROMOS96 G43a1 force field. We start with the structure in
@@ -67,7 +67,7 @@ Run the resulting tpr file on a cluster.
 
 
 Important Notes
-===============
+---------------
 
 - **This software is in ALPHA status and likely to change
   completely in the future.**

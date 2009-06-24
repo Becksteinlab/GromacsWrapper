@@ -3,16 +3,18 @@
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
 
-"""Core classes for simulation of Gromacs trajectories.
+"""
+``analysis.core`` -- Core classes for simulation of Gromacs trajectories
+========================================================================
 
 Programming API for plugins
-===========================
+---------------------------
 
 Additional analysis capabilities are added to a ``Simulation`` class
 with mixin classes; these mixin classes are the *plugins*.
 
 Example usage
--------------
+.............
 
 Derive class for the simulation of interest along the lines of ::
 
@@ -32,7 +34,7 @@ Derive class for the simulation of interest along the lines of ::
 
 
 Capabilities
-------------
+............
 
 Analysis capabilities can be added by mixing in additional plugins into the
 simulation base class. Each plugin registers itself and provides at a minimum
@@ -53,6 +55,17 @@ parameters such as top directories or input files.
 
 See ``CysAccessibility`` and ``_CysAccessibility`` in
 plugins/CysAccessibility.py as examples.
+
+
+Classes
+-------
+
+.. autoclass:: Simulation
+   :members:
+.. autoclass:: Plugin
+   :members:
+.. autoclass:: AttributeDict
+
 
 """
 __docformat__ = "restructuredtext en"

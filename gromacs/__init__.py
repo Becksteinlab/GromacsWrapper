@@ -4,8 +4,8 @@
 # See the file COPYING for details.
 
 """\
-GromacsWrapper
-==============
+``gromacs`` -- GromacsWrapper Package Overview
+==============================================
 
 **GromacsWrapper** (package *gromacs*) is a thin shell around the `Gromacs`_
 tools for light-weight integration into python scripts or interactive use in
@@ -45,6 +45,9 @@ gromacs.analysis
 
 Examples
 --------
+
+The following examples should simply convey the flavour of using the
+package. See the individual modules for more examples.
 
 Getting help
 ............
@@ -88,7 +91,7 @@ application.)
 Warnings and Exceptions
 -----------------------
 
-A number of package-sepecific exceptions (GromacsError) and warnings
+A number of package-specific exceptions (GromacsError) and warnings
 (Gromacs*Warning, AutoCorrectionWarning, BadParameterWarning) can be raised.
 
 If you want to stop execution at, for instance, a AutoCorrectionWarning or

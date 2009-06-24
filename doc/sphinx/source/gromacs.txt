@@ -1,7 +1,8 @@
 .. $Id$
 
-Gromacs
-=======
+=========
+ Gromacs
+=========
 
 The ``gromacs`` package makes `Gromacs`_ tools available via thin
 python wrappers. In addition, it provides litle building blocks of
@@ -9,8 +10,9 @@ commonly used tasks.
 
 .. _Gromacs: http://www.gromacs.org
 
-Gromacs core modules
---------------------
+----------------------
+ Gromacs core modules
+----------------------
 
 .. automodule:: gromacs
 .. automodule:: gromacs.core
@@ -18,32 +20,11 @@ Gromacs core modules
 .. automodule:: gromacs.utilities
 
 
-Gromacs building blocks
------------------------
+-------------------------
+ Gromacs building blocks
+-------------------------
 
 .. automodule:: gromacs.cbook
 .. automodule:: gromacs.setup
 
 
-Analysis
-========
-
-The analysis package uses ``gromacs`` but ``gromacs`` is independent
-from it.
-
-Analysis core modules
----------------------
-
-.. automodule:: gromacs.analysis
-.. automodule:: gromacs.analysis.core
-
-Analysis.plugins
-----------------
-
-.. automodule:: gromacs.analysis.plugins
-.. automodule:: gromacs.analysis.plugins.CysAccessibility
-
-Helper modules
---------------
-
-.. automodule:: gromacs.analysis.plugins.mindist

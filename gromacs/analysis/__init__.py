@@ -1,7 +1,7 @@
 # $Id$
 """
-Analysis Modules
-================
+``analysis`` -- Analysis Package Overview
+=========================================
 
 The ``analysis`` package is a framework for analyzing Gromacs MD
 trajectories. The basic object is the Simulation class. For a particular
@@ -13,9 +13,20 @@ New analysis plugins should follow the API sketched out in
 
 Right now the number of plugins is limited. Feel free to contribute your own by
 sending it to the `package author`_. You will be acknowledged in the list of
-plugin authors in ``plugin.__init__```.
+plugin authors in ``plugin.__init__``.
 
 .. _`package author`: oliver.beckstein@bioch.ox.ac.uk
+
+
+Simulation class
+----------------
+
+The :class:`Simulation` class is central for doing analysis. The user
+will have to derive a custom analysis class that mixes
+:class:`Simulation` and any plugin classes.
+
+.. autoclass:: Simulation
+
 
 Example
 -------

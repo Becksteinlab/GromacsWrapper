@@ -3,7 +3,32 @@
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
 
-"""Helper functions."""
+"""
+``gromacs.utilities`` -- Helper functions
+=========================================
+
+The module defines some convenience functions and classes that are
+used in other modules.
+
+Classes
+-------
+
+``FileUtils`` provides functions related to filename handling. It can
+be used as a mixin class. The ``analysis.Simulation`` class is derived
+from it.
+
+.. autoclass:: FileUtils
+
+
+Functions
+---------
+
+Some additiona convenience functions:
+
+.. autofunction:: anyopen
+.. autofunction:: iterable
+
+"""
 __docformat__ = "restructuredtext en"
 
 import os.path
@@ -46,23 +71,26 @@ class FileUtils(object):
     """Mixin class to provide additional IO capabilities."""
 
     def filename(self,filename=None,ext=None,set_default=False,use_my_ext=False):
-        """Supply a file name for the object.
+        """Supply a file name for the class object.
 
-        fn = filename()             ---> <default_filename>
-        fn = filename('name.ext')   ---> 'name'
-        fn = filename(ext='pickle') ---> <default_filename>'.pickle'
-        fn = filename('name.inp','pdf') --> 'name.pdf'
-        fn = filename('foo.pdf',ext='png',use_my_ext=True) --> 'foo.pdf'
+        Typical uses::
 
-        The returned filename is stripped of the extension (use_my_ext=False) and
-        if provided, another extension is appended. Chooses a default if no
-        filename is given.  Raises a ValueError exception if no default file name
-        is known.
+           fn = filename()             ---> <default_filename>
+           fn = filename('name.ext')   ---> 'name'
+           fn = filename(ext='pickle') ---> <default_filename>'.pickle'
+           fn = filename('name.inp','pdf') --> 'name.pdf'
+           fn = filename('foo.pdf',ext='png',use_my_ext=True) --> 'foo.pdf'
 
-        If set_default=True then the default filename is also set.
+        The returned filename is stripped of the extension
+        (``use_my_ext=False``) and if provided, another extension is
+        appended. Chooses a default if no filename is given.  
 
-        use_my_ext=True lets the suffix of a provided filename take priority over a
-        default ext(tension).
+        Raises a ``ValueError`` exception if no default file name is known.
+
+        If ``set_default=True`` then the default filename is also set.
+
+        ``use_my_ext=True`` lets the suffix of a provided filename take
+        priority over a default ``ext`` tension.
         """
         if filename is None:
             if not hasattr(self,'_filename'):
@@ -85,13 +113,18 @@ class FileUtils(object):
         return filename
 
     def check_file_exists(self, filename, resolve='exception'):
-        """If a file exists then continue with the recipe specified in resolve.
+        """If a file exists then continue with the action specified in ``resolve``.
 
-        resolve must be one of
-           ignore:           always return False
-           indicate:         return True if it exists
-           warn:             indicate and issue a UserWarning
-           exception:        raise IOError if it exists
+        ``resolve`` must be one of
+
+        "ignore"
+              always return ``False``
+        "indicate"
+              return ``True`` if it exists
+         "warn"
+              indicate and issue a ``UserWarning``
+         "exception"
+              raise ``IOError`` if it exists
         """
         def _warn(x):
             warnings.warn("File %r already exists." % x)
@@ -110,7 +143,7 @@ class FileUtils(object):
 
 
 def iterable(obj):
-    """Returns True if obj can be iterated over and is NOT a  string."""
+    """Returns ``True`` if *obj* can be iterated over and is *not* a  string."""
     if type(obj) is str:
         return False    # avoid iterating over characters of a string
 

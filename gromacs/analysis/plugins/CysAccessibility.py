@@ -14,6 +14,22 @@ See class docs for more details.
 
 This plugin is the canonical example for how to structure plugins that
 conform to the plugin API (see docs ``analysis.core`` for details).
+
+Plugin class
+------------
+
+.. autoclass:: CysAccessibility
+
+Worker class
+------------
+
+The worker class performs the analysis.
+
+.. autoclass:: _CysAccessibility
+   :members:
+   :inherited-members:
+
+
 """
 __docformat__ = "restructuredtext en"
 
@@ -155,8 +171,7 @@ class _CysAccessibility(Worker):
 
 class CysAccessibility(Plugin):
     """\
-    *CysAccessibility* plugin
-    =========================
+    *CysAccessibility* plugin.
     
     For each frame of a trajectory, the shortest distance of all water oxygens
     to all cysteine sulphur atoms is computed. For computational efficiency,
