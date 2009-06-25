@@ -1,6 +1,10 @@
 .. $Id$
 
-The ``vmd`` module contains a very simple client that can connect to a
+===========================================
+ :mod:`vmd` --- Remote Tcl commands in VMD
+===========================================
+
+The :mod:`vmd` module contains a very simple client that can connect to a
 locally running server process in `VMD`_. This allows running VMD
 `Tcl`_ commands remotely. See `VMD Tcl Text Commands`_ for all
 available commands.
@@ -10,5 +14,4 @@ available commands.
 .. _VMD Tcl Text Commands: http://www.ks.uiuc.edu/Research/vmd/current/ug/node107.html
 
 
-.. automodule:: vmd
 .. automodule:: vmd.control

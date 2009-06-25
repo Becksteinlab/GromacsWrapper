@@ -3,32 +3,36 @@
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
 """
-``analysis.plugins`` -- Plugin Modules
-======================================
+:mod:`analysis.plugins` -- Plugin Modules
+=========================================
 
-Mixin classes for ``core.Simulation`` that provide code to analyze
-trajectory data.
+Mixin classes for :class:`gromacs.analysis.core.Simulation` that
+provide code to analyze trajectory data.
 
 New analysis plugins should follow the API sketched out in
-``analysis.core``; see an example for use there.
+:mod:`gromacs.analysis.core`; see an example for use there.
+
+
+
+List of plugins
+---------------
 
 Right now the number of plugins is limited. Feel free to contribute your own by
 sending it to the `package author`_. You will be acknowledged in the list below.
 
 .. _`package author`: oliver.beckstein@bioch.ox.ac.uk
 
-Authors
--------
+====================  =======================  ===============================
+plugin                author                   description
+====================  =======================  ===============================
+CysAccessibility      Oliver Beckstein [#OB]_  estimate accessibility of Cys
+                                               residues by water
+====================  =======================  ===============================
 
-====================  ============================== 
-plugin                 author
-====================  ==============================
-CysAccessibility       Oliver Beckstein
-====================  ==============================
 
-Warning   
--------
-This is **ALPHA STATUS**. Use at your own risk.
+.. rubric:: Footnotes
+.. [#OB] oliver.beckstein@bioch.ox.ac.uk
+
 """
 __docformat__ = "restructuredtext en"
 __all__ = ['CysAccessibility']

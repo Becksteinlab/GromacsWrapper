@@ -1,30 +1,23 @@
 .. $Id$
 
-=========
- Gromacs
-=========
+=================
+ Gromacs package
+=================
 
-The ``gromacs`` package makes `Gromacs`_ tools available via thin
-python wrappers. In addition, it provides litle building blocks of
-commonly used tasks.
+The :mod:`gromacs` package makes `Gromacs`_ tools available via
+thin python wrappers. In addition, it provides little building blocks
+to solve commonly encountered tasks.
 
 .. _Gromacs: http://www.gromacs.org
 
-----------------------
- Gromacs core modules
-----------------------
 
-.. automodule:: gromacs
-.. automodule:: gromacs.core
-.. automodule:: gromacs.tools
-.. automodule:: gromacs.utilities
+Contents:
 
+.. toctree::
+   :maxdepth: 2
 
--------------------------
- Gromacs building blocks
--------------------------
+   gromacs/core
+   gromacs/building_blocks
 
-.. automodule:: gromacs.cbook
-.. automodule:: gromacs.setup
 
 

@@ -3,7 +3,7 @@
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
 
-"""\
+"""
 CysAccessibility plugin
 =======================
 
@@ -12,13 +12,18 @@ shortest approach of water molecules to the sulfhydryl group of Cys.
 
 See class docs for more details.
 
-This plugin is the canonical example for how to structure plugins that
-conform to the plugin API (see docs ``analysis.core`` for details).
+.. note::
+
+   This plugin is the canonical example for how to structure plugins that
+   conform to the plugin API (see docs :mod:`gromacs.analysis.core` for
+   details).
 
 Plugin class
 ------------
 
 .. autoclass:: CysAccessibility
+   :members: plugin_name, plugin_class
+   :undoc-members:
 
 Worker class
 ------------
@@ -27,7 +32,6 @@ The worker class performs the analysis.
 
 .. autoclass:: _CysAccessibility
    :members:
-   :inherited-members:
 
 
 """
@@ -170,8 +174,7 @@ class _CysAccessibility(Worker):
 #------------------------------------------------
 
 class CysAccessibility(Plugin):
-    """\
-    *CysAccessibility* plugin.
+    """*CysAccessibility* plugin.
     
     For each frame of a trajectory, the shortest distance of all water oxygens
     to all cysteine sulphur atoms is computed. For computational efficiency,

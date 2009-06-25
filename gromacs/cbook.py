@@ -3,10 +3,10 @@
 # Released under the GNU Public License 3 (or higher, your choice)
 
 """
-``gromacs.cbook`` -- Gromacs Cook Book
-======================================
+:mod:`gromacs.cbook` -- Gromacs Cook Book
+=========================================
 
-The ``cbook`` (cook book) module contains short recipes for tasks
+The :mod:`cbook` (cook book) module contains short recipes for tasks
 that are often repeated. In the simplest case this is just one of the
 gromacs tools with a certain set of default command line options.
 
@@ -90,13 +90,13 @@ def grompp_qtot(*args, **kwargs):
 
     where the arguments are the ones one would pass to ``gromacs.grompp``.
 
-    :Note:
+    .. note::
 
      * The stdout output of grompp is not shown. This can make debugging
-       pretty hard.  Try running the normal ``gromacs.grompp`` command and
+       pretty hard.  Try running the normal :func:`gromacs.grompp` command and
        analyze the output if the debugging messages are not sufficient.
-     * Check that qtot is correct; because the function is based on pattern 
-       matching of the output it canb reak when the output format changes.
+     * Check that ``qtot`` is correct; because the function is based on pattern 
+       matching of the output it can break when the output format changes.
     """
 
     # match '  System has non-zero total charge: -4.000001e+00',
@@ -132,19 +132,18 @@ def edit_mdp(mdp, new_mdp=None, **substitutions):
     :Returns:    
        List of parameters that have NOT been substituted.
 
-    :Note:
+    .. note::
+    
        * Dashes in Gromacs mdp parameters have to be replaced by an underscore
          when supplied as python keyword arguments (a limitation of python). For example
          the MDP syntax is  ``lincs-iter = 4`` but the corresponding  keyword would be 
          ``lincs_iter = 4``.
        * If the keyword is set as a dict key, eg ``mdp_params['lincs-iter']=4`` then one
-          does not have to substitute.
-
-    :Bugs:
+         does not have to substitute.
        * Parameters *aa_bb* and *aa-bb* are considered the same (although this should not be 
          a problem in practice because there are no mdp parameters that only differe by a underscore).
        * This code is more compact in ``Perl`` as one can use ``s///`` operators:
-         ``s/^(\s*$key\s*=\s*).*/$1${val}/``
+         ``s/^(\s*${key}\s*=\s*).*/$1${val}/``
 
     """
     if new_mdp is None:
@@ -204,13 +203,14 @@ def edit_txt(filename, substitutions, newname=None):
         replacement       replacement string for search_RE
 
 
-    ``edit_txt()`` does pretty much what a simple::
+    :func:`edit_txt()` does pretty much what a simple ::
 
          sed /line_match_RE/s/search_RE/replacement/
 
     with repeated substitution commands does.
 
-    :Note:
+    .. note::
+
        * No sanity checks are performed and the substitutions must be supplied
          exactly as shown.    
        * Only the first matching substitution is applied to a line; thus the order

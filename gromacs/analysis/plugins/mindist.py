@@ -4,21 +4,19 @@
 # See the file COPYING for details.
 
 """
-``analysis.plugins.mindist`` --- Helper Class Based on ``g_dist``
-=================================================================
+``analysis.plugins.mindist`` --- Helper Class for ``g_dist``
+============================================================
 
-``mindist`` is contains helper classes for other analysis plugins that
-want to make use of ``g_dist``.
+:mod:`mindist` contains helper classes for other analysis plugins that
+want to make use of the Gromacs command ``g_dist``.
 
 
 Overview
 --------
 
-Analyze output from::
+The task we are solving is to analyze output from ::
 
- printf '22\n25\n' | \
-   g_dist -f ../md.xtc -s ../md.tpr -n cys_ow.ndx -dist 1.0 | \
-   bzip2 -vc > mindist_C60_OW_1nm.dat.bz2 
+   g_dist -f md.xtc -s md.tpr -n cys_ow.ndx -dist 1.0 | bzip2 -vc > mindist_C60_OW_1nm.dat.bz2 
 
 and produce a histogram of minimum contact distances. This should
 provide an estimate for water accessibility of the atom (here: SG of
@@ -41,7 +39,8 @@ itself::
    t: 186  6682 SOL 35993 OW  0.897016 (nm)
    t: 186  10028 SOL 46031 OW  0.788268 (nm)
    t: 187  6682 SOL 35993 OW  0.997688 (nm)
-   ...
+   ....
+   
 
 Classes
 -------
@@ -70,11 +69,11 @@ class Mindist(object):
     only the shortest distance is stored (whereas g_mindist provides
     *all* distances below the cutoff).
 
-    .. attribute:: distances
-       Time (frame) series of the shortest distances as a numpy array;
-       should only be read.
+    .. attribute:: Mindist.distances
+       Time series (or frame series) of the shortest distances as a
+       numpy array; should only be read.
 
-    :TODO:
+    TODO:
 
     * Save analysis to pickle or data files.
     * Export data as simple data files for plotting in other programs.

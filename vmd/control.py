@@ -13,7 +13,7 @@ VMD control
 Simple client to transmit Tcl commands to a server running in `VMD`_.
 
 VMD and the server run locally and can be started from the module. Once the
-server is running, one can use ``vmd.client()`` to communicate with the server
+server is running, one can use :class:`vmd.client` to communicate with the server
 process via a local socket.
 
 Example

@@ -1,0 +1,13 @@
+.. $Id$
+
+
+=========================
+ Gromacs building blocks
+=========================
+
+*Building blocks* are small classes or functions that can be freely combined
+in setup or analysis scripts or used interactively. These modules act
+as "library" for common tasks.
+
+.. automodule:: gromacs.cbook
+.. automodule:: gromacs.setup

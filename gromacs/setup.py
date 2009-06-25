@@ -1,7 +1,7 @@
 # $Id$
 """
-``gromacs.setup`` -- Setting up a Gromacs MD run
-================================================
+:mod:`gromacs.setup` -- Setting up a Gromacs MD run
+===================================================
 
 Individual steps such as solvating a structure or energy minimization
 are set up in individual directories. For energy minimization one
@@ -15,15 +15,16 @@ Functions
 The individual steps of setting up a simple MD simulation are borken down in a
 sequence of functions that depend on the previous step(s):
 
-  topology
-        generate initial topology file (NOT WORKING)
-  solvate
+  :func:`topology`
+        generate initial topology file (limited functionality, might require
+        manual setup)
+  :func:`solvate`
         solvate globular protein and add ions to neutralize
-  energy_minimize
+  :func:`energy_minimize`
         set up energy minimization and run it (using ``mdrun_d``)
-  MD_restrained
+  :func:`MD_restrained`
         set up restrained MD
-  MD
+  :func:`MD`
         set up equilibrium MD
 
 Each function uses its own working directory (set with the ``dirname`` keyword
@@ -66,13 +67,24 @@ the equilibrium MD::
 Run the resulting tpr file on a cluster.
 
 
-Important Notes
----------------
+.. warning::
 
-- **This software is in ALPHA status and likely to change
-  completely in the future.**
-- You **must** check all simulation parameters for yourself. Do not
-  rely on any defaults provided here.
+   **This software is in ALPHA status and likely to change
+   completely in the future.**
+
+   You **must** check all simulation parameters for yourself. Do not
+   rely on any defaults provided here.
+
+
+Functions
+---------
+
+.. autofunction:: topology
+.. autofunction:: solvate
+.. autofunction:: energy_minimize
+.. autofunction:: MD_restrained
+.. autofunction:: MD
+.. autofunction:: make_main_index
 
 """
 
@@ -165,14 +177,15 @@ def in_dir(directory):
 # - full logging would be nice (for provenance)
 
 def topology(struct=None, protein='protein',
-             top='system.top',  dirname='top',
-             force=False, **pdb2gmx_args):
-    """Build Gromacs topology files from pdb.
-    
-    **INCOMPLETE**
+             top='system.top',  dirname='top', **pdb2gmx_args):
+    """Build Gromacs topology files from pdb::
 
+      topology(struct=None[, protein='protein', top='system.top',  dirname='top', **pdb2gmx_args])
+
+    :Keywords:
+    
     struct
-        input structure
+        input structure (**required**)
     protein
         name of the output files
     top 
@@ -180,10 +193,15 @@ def topology(struct=None, protein='protein',
     dirname
         directory in which the new topology will be stored
     pdb2gmxargs
-        arguments for `pdb2gmx` such as ff, water, ...
+        arguments for ``pdb2gmx`` such as ``ff``, ``water``, ...
+
+    .. note::
+       At the moment this function simply runs ``pdb2gmx`` and uses
+       the resulting topology file directly. If you want to create
+       more complicate topologies and maybe also use additional itp
+       files or make a protein itp file then you will have to do this
+       manually.
     """
-    if not force:
-        raise NotImplemented('sorry, this needs to be done manually at the moment')
 
     structure = realpath(struct)
 
@@ -266,7 +284,19 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
             ndx = 'main.ndx', mainselection = '"Protein"',
             dirname='solvate',
             **kwargs):
-    """Put protein into box, add water, add ions."""
+    """Put protein into box, add water, add ions::
+
+       solvate(struct='top/protein.pdb', top='top/system.top',
+            distance=0.9, boxtype='dodecahedron',
+            concentration=0, cation='NA+', anion='CL-',
+            water='spc',
+            ndx = 'main.ndx', mainselection = '"Protein"',
+            dirname='solvate',
+            **kwargs)
+
+    At the moment only adding counter ions is implemented; the routine
+    will raise an exception if concentration > 0.
+    """
 
     structure = realpath(struct)
     topology = realpath(top)
@@ -363,10 +393,8 @@ def energy_minimize(dirname='em', mdp=templates['em_mdp'],
           key/value pairs that should be changed in the 
           template mdp file, eg ``nstxtcout=250, nstfout=250``.
 
-    Note
-    ----
-
-    * If ``mdrun_d`` is not found, the function simply fails with *OSError*.
+    .. note::
+       If ``mdrun_d`` is not found, the function simply fails with *OSError*.
 
     """
 

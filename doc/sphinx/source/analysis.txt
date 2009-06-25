@@ -4,28 +4,19 @@
  Analysis
 ==========
 
-The analysis package use the ``gromacs`` package and various other 3rd
-party ones such as `numpy`_ and `pylab`_.
+The analysis package uses the :mod:`gromacs` package and various other 3rd
+party ones such as `numpy`_ and `pylab`_. It provides a frame work to
+analyze `Gromacs`_ MD simulations.
 
 .. _numpy: http://numpy.scipy.org
 .. _pylab: http://pylab.scipy.org
+.. _Gromacs: http://www.gromacs.org
 
-------------------------
-  Analysis core modules
-------------------------
 
-.. automodule:: gromacs.analysis
-.. automodule:: gromacs.analysis.core
+.. toctree::
+   :maxdepth: 2
 
---------------------
-  Analysis.plugins
---------------------
+   analysis/core
+   analysis/plugins
+   
 
-.. automodule:: gromacs.analysis.plugins
-.. automodule:: gromacs.analysis.plugins.CysAccessibility
-
------------------
-  Helper modules
------------------
-
-.. automodule:: gromacs.analysis.plugins.mindist

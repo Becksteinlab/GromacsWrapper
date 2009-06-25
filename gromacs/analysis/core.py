@@ -4,8 +4,8 @@
 # See the file COPYING for details.
 
 """
-``analysis.core`` -- Core classes for simulation of Gromacs trajectories
-========================================================================
+:mod:`analysis.core` -- Core classes for simulation of Gromacs trajectories
+===========================================================================
 
 Programming API for plugins
 ---------------------------
@@ -38,23 +38,24 @@ Capabilities
 
 Analysis capabilities can be added by mixing in additional plugins into the
 simulation base class. Each plugin registers itself and provides at a minimum
-``run()``, ``analyze()``, and ``plot()`` methods.
+:meth:`run()`, :meth:`analyze()`, and :meth:`plot()` methods.
 
-The plugin class is derived from ``Plugin`` and bears the name that is used to
-access it. When its ``__init__`` method executes it adds the actual worker class
-(typically named with the underscore-prepended name) to the ``Simulation.plugins``
+The plugin class is derived from :class:`Plugin` and bears the name that is used to
+access it. When its :meth:`__init__` method executes it adds the actual worker class
+(typically named with the underscore-prepended name) to the :attr:`Simulation.plugins`
 dictionary.
 
 Variables for initializing a plugin are given to the class constructor as a
 keyword argument that is named like the plugin and contains a dictionary that
 is used as the keyword parameters for the plugin's init.
 
-A plugin **must** obtain a pointer to the ``Simulation`` class as the keyword
+A plugin **must** obtain a pointer to the :class:`Simulation` class as the keyword
 argument ``simulation`` in order to be able to access simulation-global
 parameters such as top directories or input files.
 
-See ``CysAccessibility`` and ``_CysAccessibility`` in
-plugins/CysAccessibility.py as examples.
+See :class:`analysis.plugins.CysAccessibility` and
+:class:`analysis.plugins._CysAccessibility` in
+``analysis/plugins/CysAccessibility.py`` as examples.
 
 
 Classes
@@ -62,8 +63,13 @@ Classes
 
 .. autoclass:: Simulation
    :members:
+
 .. autoclass:: Plugin
    :members:
+
+.. autoclass:: Worker
+   :members:
+   
 .. autoclass:: AttributeDict
 
 
