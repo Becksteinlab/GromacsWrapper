@@ -18,25 +18,25 @@ tools for light-weight integration into python scripts or interactive use in
 Modules
 -------
 
-gromacs  
+:mod:`gromacs`
      The top level module contains all gromacs tools; each tool can be run
      directly or queried for its documentation.
 
-gromacs.cbook
+:mod:`gromacs.cbook`
      The Gromacs cook book contains typical applications of the tools. In many
      cases this not more than just an often-used combination of parameters for
      a tool.
 
-gromacs.tools
+:mod:`gromacs.tools`
      Contains classes that wrap the gromacs tools. They are automatically
-     generated from the list of tools in ``gromacs.tools.gmx_tools``.
+     generated from the list of tools in :data:`gromacs.tools.gmx_tools`.
 
-gromacs.setup
+:mod:`gromacs.setup`
      Functions to set up a MD simulation, containing tasks such as solvation
      and adding ions, energy minimizqtion, MD with position-restraints, and
-     equilibrium MD. (INCOMPLETE)
+     equilibrium MD.
 
-gromacs.analysis
+:mod:`gromacs.analysis`
      A package that collects whole analysis tasks. It uses the gromacs but is
      otherwise only loosely coupled with the rest. At the moment it only
      contains the infrastructure and an example application. See the package
@@ -84,18 +84,19 @@ Output of the command can be caught in a variable and analyzed::
              qtot = float(line[34:])
              break
 
-(See ``gromacs.cbook.grompp_qtot`` for a more robust implementation of this
+(See :func:`gromacs.cbook.grompp_qtot` for a more robust implementation of this
 application.)
 
 
 Warnings and Exceptions
 -----------------------
 
-A number of package-specific exceptions (GromacsError) and warnings
-(Gromacs*Warning, AutoCorrectionWarning, BadParameterWarning) can be raised.
+A number of package-specific exceptions (:exc:`GromacsError`) and
+warnings (:exc:`Gromacs*Warning`, :exc:`AutoCorrectionWarning`,
+:exc:`BadParameterWarning`) can be raised.
 
-If you want to stop execution at, for instance, a AutoCorrectionWarning or
-BadParameterWarning then use the python warnings filter::
+If you want to stop execution at, for instance, a :exc:`AutoCorrectionWarning` or
+:exc:`BadParameterWarning` then use the python :mod:`warnings` filter::
  
   import warnings
   warnings.simplefilter('error', gromacs.AutoCorrectionWarning)
@@ -105,6 +106,18 @@ This will make python raise an exception instead of moving on. The default is
 to always report, eg::
 
   warnings.simplefilter('always', gromacs.BadParameterWarning)
+
+The following *exceptions* are defined:
+
+.. autoexception:: GromacsError
+
+The following *warnings* are defined:
+
+.. autoexception:: GromacsFailureWarning
+.. autoexception:: GromacsImportWarning
+.. autoexception:: GromacsValueWarning
+.. autoexception:: AutoCorrectionWarning
+.. autoexception:: BadParameterWarning
 
 """
 __docformat__ = "restructuredtext en"

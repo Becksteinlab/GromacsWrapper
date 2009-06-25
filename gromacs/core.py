@@ -4,11 +4,11 @@
 # See the file COPYING for details.
 
 """
-``gromacs.core`` -- Core functionality
+:mod:`gromacs.core` -- Core functionality
 ======================================
 
-Here the basic command class ``GromacsCommand`` is defined. All
-Gromacs command classes in ``gromacs.tools`` are automatically
+Here the basic command class :class:`GromacsCommand` is defined. All
+Gromacs command classes in :mod:`gromacs.tools` are automatically
 generated from it.
 
 .. autoclass:: GromacsCommand
@@ -28,7 +28,7 @@ from gromacs import GromacsError, GromacsFailureWarning
 class GromacsCommand(object):
     """Base class for wrapping a g_* command.
     
-    Limitations: User must have sourced GMXRC so that the python script can
+    Limitations: User must have sourced ``GMXRC`` so that the python script can
     inherit the environment and find the gromacs programs.
 
     The class doc string is dynamically replaced by the documentation of the
@@ -59,39 +59,37 @@ class GromacsCommand(object):
           cmd = GromacsCommand('v', f=['md1.xtc','md2.xtc'], o='processed.xtc', t=200, ...)
 
         Gromacs command line arguments
-        ------------------------------
 
-        Gromacs boolean switches (such as ``-v``) are given as python
-        positional arguments (``'v'``) or as keyword argument (``v=True``);
-        note the quotes in the first case. Negating at boolean switch can be
-        done with ``'-nov'``, ``nov=True`` or ``v=False``.
+           Gromacs boolean switches (such as ``-v``) are given as python
+           positional arguments (``'v'``) or as keyword argument (``v=True``);
+           note the quotes in the first case. Negating at boolean switch can be
+           done with ``'-nov'``, ``nov=True`` or ``v=False``.
 
-        Any Gromacs options that take parameters are handled as keyword
-        arguments. If an option takes multiple arguments (such as the
-        multi-file input ``-f file1 file2 ...``) then the list of files must be
-        supplied as a python list.
+           Any Gromacs options that take parameters are handled as keyword
+           arguments. If an option takes multiple arguments (such as the
+           multi-file input ``-f file1 file2 ...``) then the list of files must be
+           supplied as a python list.
 
-        If a keyword has the python value None then it will *not* be added to
-        the Gromacs command line; this allows for flexible scripting if it is
-        not known in advance if an input file is needed.
+           If a keyword has the python value None then it will *not* be added to
+           the Gromacs command line; this allows for flexible scripting if it is
+           not known in advance if an input file is needed.
 
         Command execution
-        -----------------
-        
-        The command is executed with the run() method or by
-        calling it as a function. The two next lines are equivalent::
 
-          cmd(...)
-          cmd.run(...)
+           The command is executed with the run() method or by
+           calling it as a function. The two next lines are equivalent::
 
-        When the command is run one can override options that were given at
-        initialization or add additional ones.
+             cmd(...)
+             cmd.run(...)
+
+           When the command is run one can override options that were given at
+           initialization or add additional ones.
 
         Non-Gromacs keyword arguments
-        -----------------------------
 
-        The following keyword arguments are not passed on to the Gromacs tool
-        but determine how the command class behaves.
+           The other keyword arguments are not passed on to the Gromacs tool
+           but determine how the command class behaves.
+
                 
         :Keywords:
            failure
@@ -277,53 +275,56 @@ class GromacsCommand(object):
           input : string, sequence            
              to be fed to the process' standard input;
              elements of a sequence are concatenated with
-             newlines, including a trailing one    [None]
+             newlines, including a trailing one    [``None``]
           stdin
-             ``None`` or automatically set to ``PIPE`` if input given [None]
+             ``None`` or automatically set to ``PIPE`` if input given [``None``]
           stdout
-             how to handle the program's stdout stream [None]
+             how to handle the program's stdout stream [``None``]
 
              filehandle
                     anything that behaves like a file object
-             ``None/True``
+             ``None`` or ``True``
                     to see  output on screen
-             ``False/PIPE``
+             ``False`` or ``PIPE``
                      returns the output as a string in  the stdout parameter 
 
           stderr
-             how to handle the stderr stream [STDOUT]
+             how to handle the stderr stream [``STDOUT``]
 
              ``STDOUT``
                      merges standard error with the standard out stream
-             ``False/PIPE``
+             ``False`` or ``PIPE``
                      returns the output as a string in the stderr return parameter
-             ``None/True``
+             ``None`` or ``True``
                      keeps it on stderr (and presumably on screen)
 
         All other kwargs are passed on to the Gromacs tool.
      
-        Returns
-        -------
-        The shell return code rc of the command is always returned. Depending
-        on the value of output, various strings are filled with output from the
-        command.
+        :Returns:
 
-        Notes
-        -----
-        By default, the process stdout and stderr are merged.
+           The shell return code rc of the command is always returned. Depending
+           on the value of output, various strings are filled with output from the
+           command.
 
-        In order to chain different commands via pipes one must use the special
-        ``Popen`` object (see ``Popen()`` method of the command) instead of the simple
-        call described here and first construct the pipeline explicitly and then
-        call the ``communicate()`` method of the ``Popen`` object.
+        :Notes:
 
-        ``STDOUT`` and ``PIPE`` are objects provided by the ``subprocess`` module. Any
-        python stream can be provided and manipulated. This allows for chaining
-        of commands. Use ::
+           By default, the process stdout and stderr are merged.
 
-           from subprocess import PIPE, STDOUT
+           In order to chain different commands via pipes one must use the special
+           :class:`PopenWithInput` object (see :meth:`GromacsCommand.Popen` method) instead of the simple
+           call described here and first construct the pipeline explicitly and then
+           call the :meth:`PopenWithInput.communicate` method.
 
-        when requiring the special streams.
+           ``STDOUT`` and ``PIPE`` are objects provided by the :mod:`subprocess` module. Any
+           python stream can be provided and manipulated. This allows for chaining
+           of commands. Use ::
+
+              from subprocess import PIPE, STDOUT
+
+           when requiring these special streams (and the special boolean
+           switches ``True``/``False`` cannot do what you need.)
+
+           (TODO: example for chaining commands)
         """
         return self.run(*args,**kwargs)
 
@@ -332,7 +333,7 @@ class PopenWithInput(subprocess.Popen):
     """Popen class that knows its input; simply call communicate() later."""
 
     def __init__(self,*args,**kwargs):
-        """Initialize with the standard ``Popen`` arguments and *input*."""
+        """Initialize with the standard :class:`subprocess.Popen` arguments and *input*."""
         self.input = kwargs.pop('input',None)
         self.command = args[0]
         self.command_string = " ".join(self.command)

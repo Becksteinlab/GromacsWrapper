@@ -22,7 +22,8 @@ the list was generated from Gromacs 4.0.2.
 Example
 -------
 
-In this example we create two instances of the :class:`Trjconv` command::
+In this example we create two instances of the :class:`gromacs.tools.Trjconv` command (which
+runs the Gromacs ``trjconv`` command)::
 
   import gromacs.tools as tools
 
@@ -47,7 +48,7 @@ from core import GromacsCommand
 
 #: Contains the file names of all Gromacs tools for which classes are generated.
 #: Changing this list does *not* add additional classes. Either change the source
-#: or derive new classes manually from ``gromacs.core.GromacsCommand``.
+#: or derive new classes manually from :class:`gromacs.core.GromacsCommand`.
 gmx_tools = """\
 anadock      g_current     g_helix        g_rama     g_traj     mdrun_d
 demux.pl     g_density     g_helixorient  g_rdf      g_vanhove  mk_angndx
