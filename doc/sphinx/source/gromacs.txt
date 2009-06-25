@@ -16,10 +16,10 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   gromacs/init
    gromacs/core
    gromacs/building_blocks
 
 
-.. automodule:: gromacs
 
 
