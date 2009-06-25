@@ -12,7 +12,10 @@ Gromacs command classes in :mod:`gromacs.tools` are automatically
 generated from it.
 
 .. autoclass:: GromacsCommand
+   :members: __init__, __call__, run, Popen, help
 
+.. autoclass:: PopenWithInput
+   :members:
 """
 __docformat__ = "restructuredtext en"
 
@@ -99,7 +102,7 @@ class GromacsCommand(object):
               'raise'
                    raises GromacsError if command fails
               'warn'
-                   issue a ``GromacsFailureWarning``
+                   issue a :exc:`GromacsFailureWarning`
               ``None``
                    just continue silently
 
@@ -183,7 +186,16 @@ class GromacsCommand(object):
         return result
 
     def Popen(self, *args,**kwargs):
-        """Returns a special Popen instance with pre-set input for communicate()."""
+        """Returns a special Popen instance (:class:`PopenWithInput`).
+
+        The instance has its input pre-set so that calls to
+        :meth:`~PopenWithInput.communicate` will not need to supply
+        input. This is necessary if one wants to chain the output from
+        one command to an input from another.
+
+        :TODO:
+          Write example.
+        """
 
         stderr = kwargs.pop('stderr', STDOUT)   # default: Merge with stdout
         if stderr is False:                     # False: capture it 
