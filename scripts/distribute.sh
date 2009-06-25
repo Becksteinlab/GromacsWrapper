@@ -25,7 +25,7 @@ function die () {
 distribution () {
   python setup.py sdist \
       && python setup.py bdist_egg \
-      && rsync -v dist/* $PACKAGES \
+      && rsync -v --checksum dist/* $PACKAGES \
       || die "Failed distribution"
 }
 
