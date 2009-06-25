@@ -1,0 +1,14 @@
+.. $Id$
+
+========================
+  Analysis core modules
+========================
+
+The core modules contain the important classes :class:`Simulation` and
+:class:`Plugin`. An analysis class is derived from :class:`Simulation`
+and additional plugins from :mod:`gromacs.analysis.plugins` are mixed
+in; these plugin classes must be derived from :class:`Plugin`.
+
+.. automodule:: gromacs.analysis
+.. automodule:: gromacs.analysis.core
+
