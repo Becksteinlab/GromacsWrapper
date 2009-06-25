@@ -27,15 +27,39 @@ plugin                author                   description
 ====================  =======================  ===============================
 CysAccessibility      Oliver Beckstein [#OB]_  estimate accessibility of Cys
                                                residues by water
+Distances             Oliver Beckstein [#OB]_  time series of distances
 ====================  =======================  ===============================
 
 
 .. rubric:: Footnotes
 .. [#OB] oliver.beckstein@bioch.ox.ac.uk
 
+
+Developer notes
+---------------
+
+.. autodata:: __plugins__
+
 """
 __docformat__ = "restructuredtext en"
-__all__ = ['CysAccessibility']
 
-# the plugin can/should mask the package of the same name
-from CysAccessibility import CysAccessibility
+#: all available plugin names are listed; because this is used to
+#: automatically set up imports, each plugin class must have the same
+#: name as the module.
+__plugins__ = ['CysAccessibility', 'Distances']
+__all__ = []
+__all__.extend(__plugins__)
+
+
+# 1. Insert all plugin classes into the current module.
+# 2. The plugin can/should mask the package of the same name.
+_mod_dict = [(m, __import__(m, globals(), locals(), fromlist=[m])) for m in __plugins__]
+
+# XXX: Using locals() is crap, should not be doing this but don't know any better.
+#      http://docs.python.org/library/functions.html#locals
+#      Using sys.modules[name] does not work because I need to know the FULL dotted name
+#      but we are not guaranteed to always be 'gromacs.analysis.plugins'.
+locals().update(_mod_dict)
+del _mod_dict
+
+

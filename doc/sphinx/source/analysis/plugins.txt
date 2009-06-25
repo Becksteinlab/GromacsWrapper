@@ -15,8 +15,7 @@ analysis code.
 
 Plugin modules are named like the plugin class, i.e. the filename is
 capitalized. This makes it easier to distinguish plugins from `Helper
-modules`_ that are also part of the package but has no other
-significance.
+modules`_ that are also part of the package.
 
 .. automodule:: gromacs.analysis.plugins
 .. automodule:: gromacs.analysis.plugins.CysAccessibility

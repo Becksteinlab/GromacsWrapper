@@ -86,6 +86,10 @@ for name in gmx_tools.split():
     cls = type(clsname, (GromacsCommand,), {'command_name':name})
     registry[clsname] = cls      # registry keeps track of all classes
 
+# XXX: Using locals() is crap, should not be doing this but don't know any better.
+#      http://docs.python.org/library/functions.html#locals
+#      Using sys.modules[name] does not work because I need to know the FULL dotted name
+#      but we are not guaranteed to always be 'gromacs.tools'.
 locals().update(registry)        # add classes to module's scope
 
 del name, cls, clsname
