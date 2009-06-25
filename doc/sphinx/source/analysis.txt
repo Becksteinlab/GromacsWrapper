@@ -1,0 +1,31 @@
+.. $Id$
+
+==========
+ Analysis
+==========
+
+The analysis package use the ``gromacs`` package and various other 3rd
+party ones such as `numpy`_ and `pylab`_.
+
+.. _numpy: http://numpy.scipy.org
+.. _pylab: http://pylab.scipy.org
+
+------------------------
+  Analysis core modules
+------------------------
+
+.. automodule:: gromacs.analysis
+.. automodule:: gromacs.analysis.core
+
+--------------------
+  Analysis.plugins
+--------------------
+
+.. automodule:: gromacs.analysis.plugins
+.. automodule:: gromacs.analysis.plugins.CysAccessibility
+
+-----------------
+  Helper modules
+-----------------
+
+.. automodule:: gromacs.analysis.plugins.mindist
