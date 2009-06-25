@@ -45,7 +45,7 @@ import subprocess
 import gromacs
 
 from gromacs.analysis.core import AttributeDict, Worker, Plugin
-import mindist
+import dist
 
 
 # Worker classes that are registered via Plugins (see below)
@@ -166,7 +166,7 @@ class _CysAccessibility(Worker):
     def _mindist(self,resid):
         """Analyze minimum distance for resid."""
         filename = self.parameters.filenames[resid]
-        return mindist.Mindist(filename,cutoff=self.parameters.cutoff)
+        return dist.Mindist(filename,cutoff=self.parameters.cutoff)
 
 
 

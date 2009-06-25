@@ -4,10 +4,10 @@
 # See the file COPYING for details.
 
 """
-``analysis.plugins.mindist`` --- Helper Class for ``g_dist``
-============================================================
+``analysis.plugins.dist`` --- Helper Class for ``g_dist``
+=========================================================
 
-:mod:`mindist` contains helper classes for other analysis plugins that
+:mod:`dist` contains helper classes for other analysis plugins that
 want to make use of the Gromacs command ``g_dist``.
 
 
@@ -66,7 +66,7 @@ class Mindist(object):
     Output is read from a file or stream. The raw data (attribute
     ``all_distances``) is transformed into a true 'mindist' time
     series (available in the ``distances`` attribute): for each frame
-    only the shortest distance is stored (whereas g_mindist provides
+    only the shortest distance is stored (whereas ``g_dist`` provides
     *all* distances below the cutoff).
 
     .. attribute:: Mindist.distances
