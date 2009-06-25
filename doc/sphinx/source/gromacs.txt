@@ -20,4 +20,6 @@ Contents:
    gromacs/building_blocks
 
 
+.. automodule:: gromacs
+
 

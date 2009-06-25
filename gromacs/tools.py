@@ -4,8 +4,8 @@
 # See the file COPYING for details.
 
 """
-gromacs.tools -- Gromacs commands classes
-=========================================
+:mod:`gromacs.tools` -- Gromacs commands classes
+================================================
 
 A Gromacs command class can be thought of as a factory function that
 produces an instance of a gromacs command with initial default values.
@@ -13,7 +13,7 @@ produces an instance of a gromacs command with initial default values.
 By convention, a class has the capitalized name of the corresponding Gromacs
 tool; dots are replaced by underscores to make it a valid python identifier.
 
-At the moment the gromacs tools are hard coded in ``gromacs.tools.gmx_tools``;
+At the moment the gromacs tools are hard coded in :data:`gromacs.tools.gmx_tools`;
 the list was generated from Gromacs 4.0.2.
 
 .. autodata:: gmx_tools
@@ -22,7 +22,7 @@ the list was generated from Gromacs 4.0.2.
 Example
 -------
 
-In this example we create two instances of the ``Trjconv`` command::
+In this example we create two instances of the :class:`Trjconv` command::
 
   import gromacs.tools as tools
 
@@ -31,23 +31,19 @@ In this example we create two instances of the ``Trjconv`` command::
                                   input=('protein','system'),
                                   doc="Returns a compact representation of the system centered on the protein")
 
-The first one ``trjconv`` behaves as the standard commandline tool but the
+The first one, ``trjconv``, behaves as the standard commandline tool but the
 second one, ``trjconv_compact``, will by default create a compact
 representation of the input data by taking into account the shape of the unit
 cell. Of course, the same effect can be obtained by providing the corresponding
 arguments to ``trjconv`` but by naming the more specific command differently
 one can easily build up a library of small tools that will solve a specifi,
-repeatedly encountered problem reliably. This is particularly helpful when doin
+repeatedly encountered problem reliably. This is particularly helpful when doing
 interactive work.
 """
 
 __docformat__ = "restructuredtext en"
 
 from core import GromacsCommand
-
-# Auto-generate classes such as:
-# class g_dist(GromacsCommand):
-#     command_name = 'g_dist'
 
 #: Contains the file names of all Gromacs tools for which classes are generated.
 #: Changing this list does *not* add additional classes. Either change the source
@@ -76,7 +72,12 @@ g_count      g_flux
 g_ri3Dc      a_ri3Dc       a_gridcalc
 """
 
+#: This dict holds all generated classes.
 registry = {}
+
+# Auto-generate classes such as:
+# class g_dist(GromacsCommand):
+#     command_name = 'g_dist'
 
 for name in gmx_tools.split():
     # make names valid python identifiers and convention: class names are capitalized

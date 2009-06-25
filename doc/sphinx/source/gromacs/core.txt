@@ -8,7 +8,6 @@ This section documents the modules, classes, and functions on which
 the other parts of the package rely. The information is probably
 mostly relevant to anyone who wants to extend the package.
 
-.. automodule:: gromacs
 .. automodule:: gromacs.core
 .. automodule:: gromacs.tools
 .. automodule:: gromacs.utilities
