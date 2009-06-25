@@ -5,7 +5,7 @@
 
 """
 :mod:`gromacs.core` -- Core functionality
-======================================
+=========================================
 
 Here the basic command class :class:`GromacsCommand` is defined. All
 Gromacs command classes in :mod:`gromacs.tools` are automatically
