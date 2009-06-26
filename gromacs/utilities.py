@@ -66,6 +66,17 @@ def _get_stream(filename, openfunction=file):
         stream = None
     return stream
 
+#: translation table for 1-letter codes --> 3-letter codes 
+amino_acid_codes = {'A':'ALA', 'C':'CYS', 'D':'ASP', 'E':'GLU',
+                    'F':'PHE', 'G':'GLY', 'H':'HIS', 'I':'ILE',
+                    'K':'LYS', 'L':'LEU', 'M':'MET', 'N':'ASN',
+                    'P':'PRO', 'Q':'GLN', 'R':'ARG', 'S':'SER',
+                    'T':'THR', 'V':'VAL', 'W':'TRP', 'Y':'TYR'}
+
+def convert_aa_code(x):
+    """Returns the 3-letter abbreviation for the 1-letter amino acid code."""
+    return amino_acid_codes[x]
+
 
 class FileUtils(object):
     """Mixin class to provide additional IO capabilities."""
@@ -154,3 +165,9 @@ def iterable(obj):
     except TypeError: 
         return False
     return True
+
+def asiterable(obj):
+    """Returns obj so that it can be iterated over; a string is *not* treated as iterable"""
+    if not iterable(obj):
+        obj = [obj]
+    return obj

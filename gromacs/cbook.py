@@ -31,6 +31,7 @@ problem:
    Computes the RMSD of the "Backbone" atoms after fitting to the
    "Backbone" (including both translation and rotation).
 
+
 Processing output
 -----------------
 
@@ -42,6 +43,24 @@ grompping a tpr file. The ``grompp_qtot`` function does just that.
 
 .. autofunction:: grompp_qtot
 .. autofunction:: parse_ndxlist
+
+
+Working with index files
+------------------------
+
+Manipulation of index files (``ndx``) can be cumbersome because the
+``make_ndx`` program is not very sophisticated compared to full-fledged atom
+selection expression as available in Charmm, VMD, or MDAnalysis. Some tools
+help in building and interpreting index files.
+
+.. autoclass:: IndexBuilder
+   :members: __init__, combine, gmx_resid
+   .. autoattribute:: offset
+   .. autoattribute:: indexfiles
+   .. autoattribute:: make_ndx
+
+.. autofunction:: parse_ndxlist
+
 
 File editing functions
 ----------------------
@@ -68,12 +87,14 @@ from __future__ import with_statement
 __docformat__ = "restructuredtext en"
 
 import re
+import os
 import tempfile
 import shutil
 
 import gromacs
-from gromacs import GromacsError
+from gromacs import GromacsError, BadParameterWarning
 import tools
+import utilities
 
 trj_compact = tools.Trjconv(ur='compact', center=True, boxcenter='tric', pbc='mol',
                             input=('protein','system'),
@@ -244,7 +265,27 @@ def edit_txt(filename, substitutions, newname=None):
         shutil.copyfileobj(target, final)
     target.close()
 
-    
+
+#: compiled regular expression to match a list of index groups
+#: in the output of ``make_ndx``s <Enter> (empty) command.
+NDXLIST = re.compile(r""">\s+\n    # '> ' marker line from '' input (input not echoed)
+                 \n                # empty line
+                 (?P<LIST>         # list of groups
+                  (                # consists of repeats of the same pattern:
+                    \s*\d+         # group number
+                    \s+[^\s]+\s*:  # group name, separator ':'
+                    \s*\d+\satoms  # number of atoms in group
+                    \n
+                   )+              # multiple repeats
+                  )""", re.VERBOSE)
+#: compiler regular expression to match a single line of 
+#: ``make_ndx`` output (e.g. after a successful group creation)
+NDXGROUP = re.compile(r"""
+                     \s*(?P<GROUPNUMBER>\d+)      # group number
+                     \s+(?P<GROUPNAME>[^\s]+)\s*: # group name, separator ':'
+                     \s*(?P<NATOMS>\d+)\satoms    # number of atoms in group
+                     """, re.VERBOSE)
+
 
 def parse_ndxlist(output):
     """Parse output from make_ndx to build list of index groups::
@@ -266,25 +307,14 @@ def parse_ndxlist(output):
            number of atoms in the group
     """
     
-    NDXLIST = re.compile(r""">\s+\n    # '> ' marker line from '' input (input not echoed)
-                     \n                # empty line
-                     (?P<LIST>         # list of groups
-                      (                # consists of repeats of the same pattern:
-                        \s*\d+         # group number
-                        \s+[^\s]+\s*:  # group name, separator ':'
-                        \s*\d+\satoms  # number of atoms in group
-                        \n
-                       )+              # multiple repeats
-                      )""", re.VERBOSE)
-    m = NDXLIST.search(output)
+    m = NDXLIST.search(output)    # make sure we pick up a proper full list
     grouplist = m.group('LIST')
-    NDXGROUP = re.compile(r"""
-                         \s*(?P<GROUPNUMBER>\d+)      # group number
-                         \s+(?P<GROUPNAME>[^\s]+)\s*: # group name, separator ':'
-                         \s*(?P<NATOMS>\d+)\satoms    # number of atoms in group
-                         """, re.VERBOSE)
+    return parse_groups(grouplist)
+
+def parse_groups(output):
+    """Parse ``make_ndx`` output and return groups as a list of dicts."""
     groups = []
-    for line in grouplist.split('\n'):
+    for line in output.split('\n'):
         m = NDXGROUP.match(line)
         if m:
             d = m.groupdict()
@@ -293,3 +323,263 @@ def parse_ndxlist(output):
                            'natoms': int(d['NATOMS'])})
     return groups
 
+
+class IndexBuilder(object):
+    """Build an index file with specified groups and the combined group.
+
+    This is *not* a full blown selection parser a la Charmm, VMD or
+    MDAnalysis but a very quick hack.
+
+    .. Example:
+       How to use the :class:`IndexBuilder`::
+ 
+          G = gromacs.cbook.IndexBuilder('md_posres.pdb', 
+                        ['S312:OG','T313:OG1','A38:O','A309:O','@a62549 & r NA'], 
+                        offset=-9, out_ndx='selection.ndx')
+          groupname, ndx = G.combine()
+          del G
+
+       The residue numbers are given with their canonical resids from the
+       sequence or pdb. *offset=-9* says that one calculates Gromacs topology
+       resids by subtracting 9 from the canonical resid. 
+
+       The combined selection is ``OR``ed by default and written to *selection.ndx*.
+
+       Deleting the class removes all temporary files associated with it (see
+       :attr:`IndexBuilder.indexfiles`).
+
+    """
+
+    def __init__(self, struct, selections, names=None, name_all=None,
+                 ndx=None, out_ndx="selection.ndx", offset=0):
+        """Build a index group from the selection arguments.
+
+        All selection arguments are effectively ORed. The command
+        builds the individual groups with :func:`gromacs.make_ndx` and
+        combines them.
+
+        :Arguments:
+           selections : list
+              The list must contain strings, which must be be one of
+              the following ad-hoc constructs:
+
+                 "<1-letter aa code><resid>[:<atom name]"
+
+                     Selects the CA of the residue or the specified atom
+                     name.
+
+                     example: "S312:OA" or "A22" == "A22:CA"
+
+                 "@<make_ndx selection>"
+
+                     Will apply the given ``make_ndx`` selection verbatim.
+
+                     example: "@a 6234 - 6238" or '@"SOL"' or '@r SER & r 312 & t OA'
+
+           names : list
+              Strings to name the selections; if not supplied or if individuals
+              are ``None`` then a default name is created.
+
+           offset : int, dict
+              This number is added to the resids in the first selection scheme; this
+              allows names to be the same as in a crystal structure. If offset is a 
+              dict then it is used to directly look up the resids.
+
+           ndx : filename
+              Optional input index file.
+
+           out_ndx : filename
+              Output index file.  
+        """
+        self.structure = struct
+        self.ndx = ndx
+        self.output = out_ndx
+        self.name_all = name_all
+        #: This number is added to the resids in the first selection scheme; this
+        #: allows names to be the same as in a crystal structure. If offset is a 
+        #: dict then it is used to directly look up the resids. Use :meth:`gmx_resid`
+        #: to transform a crystal resid to a gromacs resid.
+        #:
+        #: The attribute may be changed directly after init.
+        self.offset = offset
+
+        #: Auto-labelled groups use this counter.
+        self.command_counter = 0
+
+        if not utilities.iterable(selections):
+            selections = [selections]
+        if names is None:
+            names = [None] * len(selections)
+        
+        #: Specialized ``make_ndx`` that  always uses same structure 
+        #: and redirection (can be overridden)
+        self.make_ndx = tools.Make_ndx(f=self.structure, n=self.ndx,
+                                       stdout=False, stderr=False)
+
+        #: dict, keyed by group name and pointing to index file for group
+        #: (Groups are built in separate files because that is more robust
+        #: as I can clear groups easily.)
+        self.indexfiles = dict([self.parse_selection(selection, name) 
+                                for selection, name in zip(selections, names)])
+        self.names = self.indexfiles.keys()
+
+    def gmx_resid(self, resid):
+        """Returns resid in the Gromacs index by transforming with offset."""
+        try:
+            gmx_resid = int(self.offset[resid])
+        except TypeError:
+            gmx_resid = resid + self.offset
+        except KeyError:
+            raise KeyError("offset must be a dict that contains the gmx resid for %d" % resid)
+        return gmx_resid
+
+    def combine(self, name_all=None, out_ndx=None, operation='|'):
+        """Combine individual groups into a single one and write output.
+
+        :Keywords:         
+           name_all : string
+              Name of the combined group, ``None`` generates a name.  [``None``]
+           out_ndx : filename
+              Name of the output file that will contain the individual groups
+              and the combined group. If ``None`` then default from the class
+              constructor is used. [``None``]
+           operation : character
+              Logical operation that is used to generate the combined group from
+              the individual groups: "|" (OR) or "&" (AND) ["|"]
+
+        :Returns:
+        ``(combinedgroup_name, output_ndx)``, a tuple showing the
+        actual group name and the name of the file; useful when all names are autogenerated.
+        """
+        if name_all is None:
+            name_all = self.name_all
+        if name_all is None:
+            name_all = operation.join(self.indexfiles)
+        if not operation in ('|', '&'):
+            raise ValueError("Illegal operation %r, only '|' (OR) and '&' (AND) allowed." % 
+                             operation)
+        if out_ndx is None:
+            out_ndx = self.output
+
+        try:
+            fd, tmp_ndx = tempfile.mkstemp(suffix='.ndx', prefix='combined')
+            # combine all selections by loading ALL temporary index files
+            operation = ' '+operation.strip()+' '
+            cmd = [operation.join(['"%s"' % gname for gname in self.indexfiles]),
+                   '', 'q']
+            rc,output,err = self.make_ndx(n=self.indexfiles.values(), o=tmp_ndx, input=cmd)
+
+            # second pass for naming, sigh
+            groups = parse_ndxlist(output)
+            last = groups[-1]
+            # name this group
+            name_cmd = ["name %d %s" % (last['nr'], name), 
+                        'q']
+            rc,out,err = self.make_ndx(n=tmp_ndx, o=out_ndx, input=name_cmd)
+            # For debugging, look at out and err or set stdout=True, stderr=True
+            # TODO: check out if at least 1 atom selected
+            print "DEBUG: combine()"
+            print out
+        finally:
+            os.unlink(tmp_ndx)
+        
+        return name_all, out_ndx
+        
+
+    def parse_selection(self, selection, name=None):
+        """Retuns (groupname, filename) with index group."""
+
+        if selection.startswith('@'):
+            process = self._process_command
+            selection = selection[1:]
+        else:
+            process = self._process_residue
+        return process(selection, name)
+
+    def _process_command(self, command, name=None):
+        """Process ``make_ndx`` command and  return name and temp index file."""
+    
+        self.command_counter += 1    
+        if name is None:
+            name = "CMD%03d" % self.command_counter
+    
+        # Need to build it with two make_ndx calls because I cannot reliably
+        # name the new group without knowing its number.
+        try:
+            fd, tmp_ndx = tempfile.mkstemp(suffix='.ndx', prefix='tmp_'+name)
+            cmd = [command, '', 'q']   # empty command '' necessary to get list
+            rc,output,junk = self.make_ndx(o=tmp_ndx, input=cmd)
+            # For debugging, look at out and err or set stdout=True, stderr=True
+            # TODO: check '  0 r_300_&_ALA_&_O     :     1 atoms' has at least 1 atom
+            print "DEBUG: _process_command()"
+            print out
+            if self._is_empty_group(out):   # XXX: probably won't catch it
+                warnings.warn("No atoms found for %(command)r" 
+                              % vars(), category=BadParameterWarning)
+            groups = parse_ndxlist(output)
+            last = groups[-1]
+            # reduce and name this group
+            fd, ndx = tempfile.mkstemp(suffix='.ndx', prefix=name)
+            name_cmd = ["keep %d" % last['nr'], 
+                        "name 0 %s" % name, 'q']
+            rc,out,err = self.make_ndx(n=tmp_ndx, o=ndx, input=name_cmd)
+        finally:
+            os.unlink(tmp_ndx)
+        return name, ndx
+
+    #: regular expression to match and parse a residue-atom selection
+    RESIDUE = re.compile("""
+                 (?P<aa>[ACDEFGHIKLMNPQRSTVWY])    # 1-letter amino acid
+                 (?P<resid>\d+)                    # resid
+                 (:                                # separator ':'
+                   (?P<atom>\w+)                   # atom name
+                 )?                                # possibly one 
+            """, re.VERBOSE)
+    
+    def _process_residue(self, selection, name=None):
+        """Process residue/atom selection and return name and temp index file."""
+
+        if name is None:
+            name = selection.replace(':', '_')
+        m = self.RESIDUE.match(selection)
+        if not m:
+            raise ValueError("Selection %(selection)r is not valid." % vars())
+
+        gmx_resid = self.gmx_resid(int(m.group('resid')))
+        gmx_resname = utilities.convert_aa_code(m.group('aa'))
+        gmx_atomname = m.group('atom')
+        if gmx_atomname is None:
+            gmx_atomname = 'CA'
+
+        #: select residue <gmx_resname><gmx_resid> atom <gmx_atomname>
+        _selection = 'r %(gmx_resid)d & r %(gmx_resname)s & a %(gmx_atomname)s' % vars()
+        cmd = ['keep 0', 'del 0', 
+               _selection,
+               'name 0 %(name)s' % vars(),
+               'q']
+        fd, ndx = tempfile.mkstemp(suffix='.ndx', prefix=name)
+        rc,out,err = self.make_ndx(n=self.ndx, o=ndx, input=cmd)
+        # For debugging, look at out and err or set stdout=True, stderr=True
+        print "DEBUG: _process_residue()"
+        print out
+        if self._is_empty_group(out):
+            warnings.warn("No atoms found for %(selection)r --> %(_selection)r" 
+                          % vars(), category=BadParameterWarning)
+
+        return name, ndx
+
+    def _is_empty_group(self, output):
+        m = re.search('Group is empty', output)
+        return not (m is None)
+
+    def __del__(self):
+        try:
+            for f in self.indexfiles.values():
+                os.unlink(f)
+        except (AttributeError, OSError):
+            # all exceptions are ignored inside __del__ anyway but these
+            # two we do not even want to be noticed off:
+            # AttributeError: when reloading the module, OSError: when file disappeared
+            pass
+
+        
