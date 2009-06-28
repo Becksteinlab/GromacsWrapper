@@ -348,7 +348,12 @@ class PopenWithInput(subprocess.Popen):
         """Initialize with the standard :class:`subprocess.Popen` arguments and *input*."""
         self.input = kwargs.pop('input',None)
         self.command = args[0]
-        self.command_string = " ".join(self.command)
+        try:
+            input_string = 'printf "' + \
+                self.input.replace('\n','\\n') + '" | '  # display newlines
+        except (TypeError, AttributeError):
+            input_string = ""
+        self.command_string = input_string + " ".join(self.command)
         super(PopenWithInput,self).__init__(*args,**kwargs)
     def communicate(self, use_input=True):
         if use_input:

@@ -349,6 +349,17 @@ class IndexBuilder(object):
     :Raises:
        If an empty group is detected (which does not always work) then a
        :exc:`gromacs.BadParameterWarning` is issued.
+
+    :Bugs:
+       If ``make_ndx`` crashes with an unexpected error then this is fairly hard to
+       diagnose. For instance, in certain cases it segmentation faults when a tpr
+       is provided as a *struct* file and the resulting error messages becomes ::
+
+          GromacsError: [Errno -11] Gromacs tool failed
+          Command invocation: make_ndx -o /tmp/tmp_Na1__NK7cT3.ndx -f md_posres.tpr
+
+       In this case run the command invocation manually to see what the problem
+       could be.       
     """
 
     def __init__(self, struct, selections, names=None, name_all=None,
@@ -512,7 +523,7 @@ class IndexBuilder(object):
         try:
             fd, tmp_ndx = tempfile.mkstemp(suffix='.ndx', prefix='tmp_'+name+'__')
             cmd = [command, '', 'q']   # empty command '' necessary to get list
-            rc,output,junk = self.make_ndx(o=tmp_ndx, input=cmd)
+            rc,out,err = self.make_ndx(o=tmp_ndx, input=cmd)
             # For debugging, look at out and err or set stdout=True, stderr=True
             # TODO: check '  0 r_300_&_ALA_&_O     :     1 atoms' has at least 1 atom
             print "DEBUG: _process_command()"
