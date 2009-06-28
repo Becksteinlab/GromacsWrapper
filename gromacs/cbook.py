@@ -479,16 +479,16 @@ class IndexBuilder(object):
             operation = ' '+operation.strip()+' '
             cmd = [operation.join(['"%s"' % gname for gname in self.indexfiles]),
                    '', 'q']
-            rc,output,err = self.make_ndx(n=self.indexfiles.values(), o=tmp_ndx, input=cmd)
-            if self._is_empty_group(output):
+            rc,out,err = self.make_ndx(n=self.indexfiles.values(), o=tmp_ndx, input=cmd)
+            if self._is_empty_group(out):
                 warnings.warn("No atoms found for %(cmd)r" % vars(), 
                               category=BadParameterWarning)
 
             # second pass for naming, sigh
-            groups = parse_ndxlist(output)
+            groups = parse_ndxlist(out)
             last = groups[-1]
             # name this group
-            name_cmd = ["name %d %s" % (last['nr'], name), 
+            name_cmd = ["name %d %s" % (last['nr'], name_all), 
                         'q']
             rc,out,err = self.make_ndx(n=tmp_ndx, o=out_ndx, input=name_cmd)
             # For debugging, look at out and err or set stdout=True, stderr=True
@@ -531,7 +531,7 @@ class IndexBuilder(object):
             if self._is_empty_group(out):   # XXX: probably won't catch it
                 warnings.warn("No atoms found for %(command)r" 
                               % vars(), category=BadParameterWarning)
-            groups = parse_ndxlist(output)
+            groups = parse_ndxlist(out)
             last = groups[-1]
             # reduce and name this group
             fd, ndx = tempfile.mkstemp(suffix='.ndx', prefix=name+'__')
@@ -583,8 +583,8 @@ class IndexBuilder(object):
 
         return name, ndx
 
-    def _is_empty_group(self, output):
-        m = re.search('Group is empty', output)
+    def _is_empty_group(self, make_ndx_output):
+        m = re.search('Group is empty', make_ndx_output)
         return not (m is None)
 
     def __del__(self):
