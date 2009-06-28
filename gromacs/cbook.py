@@ -88,6 +88,7 @@ __docformat__ = "restructuredtext en"
 
 import re
 import os
+import warnings
 import tempfile
 import shutil
 
@@ -348,6 +349,9 @@ class IndexBuilder(object):
        Deleting the class removes all temporary files associated with it (see
        :attr:`IndexBuilder.indexfiles`).
 
+    :raises:
+    If an empty group is detected (which does not always work) an 
+    :exc:`gromacs.BadParameterWarning` is issued.
     """
 
     def __init__(self, struct, selections, names=None, name_all=None,
@@ -468,6 +472,9 @@ class IndexBuilder(object):
             cmd = [operation.join(['"%s"' % gname for gname in self.indexfiles]),
                    '', 'q']
             rc,output,err = self.make_ndx(n=self.indexfiles.values(), o=tmp_ndx, input=cmd)
+            if self._is_empty_group(output):
+                warnings.warn("No atoms found for %(cmd)r" % vars(), 
+                              category=BadParameterWarning)
 
             # second pass for naming, sigh
             groups = parse_ndxlist(output)
