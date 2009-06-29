@@ -8,7 +8,8 @@
 =========================================
 
 The module defines some convenience functions and classes that are
-used in other modules.
+used in other modules; they do *not* make use of :mod:`gromacs.tools`
+or :mod:`gromacs.cbook` and can be safely imported.
 
 Classes
 -------
@@ -27,12 +28,23 @@ Some additiona convenience functions:
 
 .. autofunction:: anyopen
 .. autofunction:: iterable
+.. autofunction:: convert_aa_code
+.. autofunction:: unlink_f
+.. autofunction:: unlink_gmx
+.. autofunction:: unlink_gmx_backups
+
+Data
+----
+
+.. autodata:: amino_acid_codes
 
 """
 __docformat__ = "restructuredtext en"
 
-import os.path
+import os
+import glob
 import warnings
+import errno
 import bz2, gzip
 
 def anyopen(datasource):
@@ -171,3 +183,28 @@ def asiterable(obj):
     if not iterable(obj):
         obj = [obj]
     return obj
+
+
+# In utilities so that it can be safely used in tools, cbook, ...
+
+def unlink_f(path):
+    """Unlink path but do not complain if file does not exist."""
+    try:
+        os.unlink(path)
+    except OSError, err:
+        if err.errno <> errno.ENOENT:
+            raise
+
+def unlink_gmx(*args):
+    """Unlink (remove) Gromacs file(s) and all corresponding backups."""
+    for path in args:
+        unlink_f(path)
+    unlink_gmx_backups(*args)
+
+def unlink_gmx_backups(*args):
+    """Unlink (rm) all backup files corresponding to the listed files."""
+    for path in args:
+        dirname, filename = os.path.split(path)
+        fbaks = glob.glob(os.path.join(dirname, '#'+filename+'.*#'))
+        for bak in fbaks:
+            unlink_f(bak)

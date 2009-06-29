@@ -44,7 +44,10 @@ interactive work.
 
 __docformat__ = "restructuredtext en"
 
+import tempfile
+
 from core import GromacsCommand
+import utilities
 
 #: Contains the file names of all Gromacs tools for which classes are generated.
 #: Changing this list does *not* add additional classes. Either change the source
@@ -93,3 +96,86 @@ for name in gmx_tools.split():
 locals().update(registry)        # add classes to module's scope
 
 del name, cls, clsname
+
+# modify/fix classes as necessary
+# Note: 
+# - check if class was defined in first place
+# - replace class
+# - update local context AND registry as done below
+
+class GromacsCommandMultiIndex(GromacsCommand):
+        def __init__(self, **kwargs):
+            kwargs = self._fake_multi_ndx(**kwargs)
+            super(GromacsCommandMultiIndex, self).__init__(**kwargs)
+
+        def run(self,*args,**kwargs):
+            kwargs = self._fake_multi_ndx(**kwargs)            
+            return super(GromacsCommandMultiIndex, self).run(*args, **kwargs)
+
+        def _fake_multi_ndx(self, **kwargs):
+            """Combine multiple index file into a single one and return appropriate kwargs.
+
+            Calling the method combines multiple index files into a a single
+            temporary one so that Gromacs tools that do not (yet) support multi
+            file input for index files can be used transparently as if they did.
+
+            If a temporary index file is required then it is deleted once the
+            object is destroyed.
+
+            :Returns:
+            The method returns the input keyword arguments with the necessary
+            changes to use the temporary index files.
+
+            :Keywords: Only the listed keywords have meaning for the method:
+               n : filename or list of filenames
+                  possibly multiple index files; *n* is replaced by the name of 
+                  the temporary index file.
+               s : filename
+                  structure file (tpr, pdb, ...) or ``None``; if a structure file is 
+                  supplied then the Gromacs default index groups are automatically added
+                  to the temporrary indexs file.
+
+            :Example: 
+               Used in derived classes that replace the standard
+               :meth:`run` (or :meth:`__init__`) methods with something like::
+
+                  def run(self,*args,**kwargs):
+                      kwargs = self._fake_multi_ndx(**kwargs)            
+                      return super(G_mindist, self).run(*args, **kwargs)
+
+                      """
+            ndx = kwargs.get('n')
+            if not (ndx is None or type(ndx) is str):
+                if len(ndx) > 1:
+                    # g_mindist cannot deal with multiple ndx files (at least 4.0.5)
+                    # so we combine them in a temporary file; it is unlinked in __del__.
+                    # self..multi_ndx stores file name for __del__
+                    fd, self.multi_ndx = tempfile.mkstemp(suffix='.ndx', prefix='multi_')
+                    make_ndx = Make_ndx(f=kwargs.get('s'), n=ndx)
+                    rc,out,err = make_ndx(o=self.multi_ndx, input=['q'], 
+                                          stdout=False, stderr=False)
+                    self.orig_ndx = ndx
+                    kwargs['n'] = self.multi_ndx
+            return kwargs
+
+        def __del__(self):
+            try:
+                # clean up temporay multi index file if it was used
+                # self.multi_ndx <-- _fake_multi_index()
+                utilities.unlink_gmx(self.multi_ndx)
+            except (AttributeError, OSError):
+                pass
+            # XXX: type error --- can't use super in __del__?
+            #super(GromacsCommandMultiIndex, self).__del__()
+
+
+
+if 'G_mindist' in registry:
+    del G_mindist, registry['G_mindist']
+
+    # let G_mindist handle multiple ndx files
+    class G_mindist(GromacsCommandMultiIndex):
+        command_name = 'g_mindist'
+
+    registry['g_mindist'] = G_mindist
+

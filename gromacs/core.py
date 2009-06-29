@@ -237,7 +237,8 @@ class GromacsCommand(object):
             else:
                 raise
         return p
-        
+
+
 
     def _get_gmx_docs(self):
         """Extract standard gromacs doc by running the program and chopping the header."""        
@@ -339,6 +340,7 @@ class GromacsCommand(object):
            (TODO: example for chaining commands)
         """
         return self.run(*args,**kwargs)
+
 
 
 class PopenWithInput(subprocess.Popen):

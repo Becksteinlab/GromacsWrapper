@@ -362,31 +362,39 @@ class IndexBuilder(object):
        could be.       
     """
 
-    def __init__(self, struct, selections, names=None, name_all=None,
+    def __init__(self, struct=None, selections=None, names=None, name_all=None,
                  ndx=None, out_ndx="selection.ndx", offset=0):
         """Build a index group from the selection arguments.
 
-        All selection arguments are effectively ORed. The command
-        builds the individual groups with :func:`gromacs.make_ndx` and
-        combines them.
+        If selections and a structure file are supplied then the individual
+        selections are constructed with separate calls to
+        :func:`gromacs.make_ndx`. Use :meth:`IndexBuilder.combines` to combine
+        them into a joint selection.
 
         :Arguments:
+
+           struct : filename
+              Structure file (tpr, pdb, ...)
+
            selections : list
               The list must contain strings, which must be be one of
-              the following ad-hoc constructs:
+              the following constructs:
 
                  "<1-letter aa code><resid>[:<atom name]"
 
                      Selects the CA of the residue or the specified atom
                      name.
 
-                     example: "S312:OA" or "A22" == "A22:CA"
+                     example: ``"S312:OA"`` or ``"A22"`` (equivalent to ``"A22:CA"``)
 
                  "@<make_ndx selection>"
 
-                     Will apply the given ``make_ndx`` selection verbatim.
+                     The ``@`` letter introduces a verbatim ``make_ndx``
+                     command. It will apply the given selection without any
+                     further processing or checks.
 
-                     example: "@a 6234 - 6238" or '@"SOL"' or '@r SER & r 312 & t OA'
+                     example: ``"@a 6234 - 6238"`` or ``'@"SOL"'`` (note the quoting)
+                     or ``"@r SER & r 312 & t OA"``.
 
            names : list
               Strings to name the selections; if not supplied or if individuals
@@ -397,8 +405,8 @@ class IndexBuilder(object):
               allows names to be the same as in a crystal structure. If offset is a 
               dict then it is used to directly look up the resids.
 
-           ndx : filename
-              Optional input index file.
+           ndx : filename or list of filenames
+              Optional input index file(s).
 
            out_ndx : filename
               Output index file.  
@@ -418,6 +426,8 @@ class IndexBuilder(object):
         #: Auto-labelled groups use this counter.
         self.command_counter = 0
 
+        if selections is None:
+            selections = []
         if not utilities.iterable(selections):
             selections = [selections]
         if names is None:
@@ -499,7 +509,23 @@ class IndexBuilder(object):
             os.unlink(tmp_ndx)
         
         return name_all, out_ndx
-        
+
+    def cat(self, out_ndx=None):
+        """Concatenate input index files.
+
+        Generate a new index file that contains the default Gromacs index
+        groups (if a structure file was defined) and all index groups from the
+        input index files.
+
+        :Arguments:
+           out_ndx : filename
+              Name of the output index file; if ``None`` then use the default 
+              provided to the constructore. [``None``]. 
+        """
+        if out_ndx is None:
+            out_ndx = self.output
+        self.make_ndx(o=out_ndx, input=['q'])
+        return out_ndx
 
     def parse_selection(self, selection, name=None):
         """Retuns (groupname, filename) with index group."""
@@ -589,13 +615,10 @@ class IndexBuilder(object):
 
     def __del__(self):
         try:
-            for f in self.indexfiles.values():
-                os.unlink(f)
-                # Remove auto-backup files, too (which we have because mkstemp creates
-                # an empty file and make_ndx backs that up):
-                dirname, filename = os.path.split(f)
-                fbak = os.path.join(dirname, '#'+filename+'.1#')
-                os.unlink(fbak)
+            for path in self.indexfiles.values():
+                utilities.unlink_gmx(path)
+                # Removes auto-backup files, too (which we have because mkstemp creates
+                # an empty file and make_ndx backs that up).
         except (AttributeError, OSError):
             # all exceptions are ignored inside __del__ anyway but these
             # two we do not even want to be noticed off:
