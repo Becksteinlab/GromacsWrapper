@@ -73,9 +73,18 @@ class GromacsCommand(object):
            multi-file input ``-f file1 file2 ...``) then the list of files must be
            supplied as a python list.
 
-           If a keyword has the python value None then it will *not* be added to
-           the Gromacs command line; this allows for flexible scripting if it is
-           not known in advance if an input file is needed.
+           If a keyword has the python value ``None`` then it will *not* be
+           added to the Gromacs command line; this allows for flexible
+           scripting if it is not known in advance if an input file is needed.
+
+           Keywords must be legal python keywords or the interpreter raises a
+           :exc:`SyntaxError`. Of course this is not true for Gromacs
+           commandline arguments. In this case "quote" the option with an
+           underscore (``_``) and the class will silently strip the
+           underscore. For instance, ``-or`` translates to to the illegal
+           keyword ``or`` so it must be underscore-quoted::
+               
+              cmd(...., _or='mindistres.xvg')
 
         Command execution
 
@@ -159,6 +168,8 @@ class GromacsCommand(object):
         for flag,value in kwargs.items():
             # XXX: check flag against allowed values
             flag = str(flag)
+            if flag.startswith('_'):
+                flag = flag[1:]                 # python-illegal keywords are '_'-quoted
             if not flag.startswith('-'):
                 flag = '-' + flag
             if value is True:
