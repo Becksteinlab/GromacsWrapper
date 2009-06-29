@@ -32,6 +32,7 @@ import sys
 import os.path
 import warnings
 import subprocess
+import tempfile
 
 import gromacs
 
@@ -44,7 +45,19 @@ import mindist
 # These must be defined before the plugins.
 
 class _Distances(Worker):
-    """Analysis of distances."""
+    """Analysis of distances.
+
+    First generate index files with the groups of interest::
+
+      from gromacs.cbook import IndexBuilder
+      A_ndx = IndexBuilder(tpr, ['@a 62549 & r NA'], names=['Na1'], offset=-9, out_ndx='Na1.ndx', name_all="NA1").combine()
+      B_ndx = IndexBuilder('md_posres.pdb', ['S312:OG','T313:OG1','A38:O','I41:O','A309:O'], offset=-9, out_ndx='Na1_site.ndx', name_all="Na1_site").combine()
+
+    
+      
+      
+
+    """
 
     plugin_name = "Distances"
 
@@ -52,27 +65,28 @@ class _Distances(Worker):
         """Set up  customized distance analysis.
 
         :Arguments:
-           A : list
+           A : index group name
              First group of atoms.
-           B : list
+           B : index group name
              Second group of atoms.
+           ndx : index filename or list
+             All index files that contain the A and B groups.
         """
-        super(_Distances,self).__init__(**kwargs)
-        
         # specific setup
         A = kwargs.pop('A',None)
         B = kwargs.pop('B', None)
+        ndx = kwargs.pop('ndx', None)
 
         # super class do this before doing anything else (maybe not important anymore)
         super(_Distances,self).__init__(**kwargs)
 
         self.location = 'distances'     # directory under topdir()
-        self.results = AttributeDict()
-        self.parameters = AttributeDict()
-
         self.parameters.A = A
         self.parameters.B = B
-        self.parameters.ndx = self.plugindir('distances.ndx')
+        self.parameters.ndx = ndx
+
+
+
         # output filenames for g_dist, indexed by Cys resid
         self.parameters.filenames = self.plugindir('dist.txt.bz2')   # ??? needed???
 
@@ -82,40 +96,17 @@ class _Distances(Worker):
     # override 'API' methods of base class
         
     def run(self,**kwargs):
-        return self.run_g_dist(**kwargs)
+        return self.run_g_mindist(**kwargs)
 
     def analyze(self,**kwargs):
         return self.analyze_dist()
 
     # specific methods
 
-    def make_index_cys(self):
-        """Make index file for all cysteines and water oxygens. 
+    def run_g_mindist(self,cutoff=None,**gmxargs):
+        """Run ``g_mindist ``  for all distances between A and B atoms and save output for further analysis."""
 
-        **NO SANITY CHECKS**: The SH atoms are simply labelled consecutively
-        with the resids from the cysteines parameter.
-        """
-        commands_1 = ['keep 0', 'del 0', 'r CYSH & t S', 'splitres 0', 'del 0']  # CYS-S sorted by resid
-        commands_2 = ['t OW', 'q']                                               # water oxygens
-        commands = commands_1[:]
-        for groupid, resid in enumerate(self.parameters.cysteines):
-            commands.append('name %(groupid)d Cys%(resid)d'  % vars())           # name CYS-S groups canonically
-        commands.extend(commands_2)
-        return gromacs.make_ndx(f=self.simulation.tpr, o=self.parameters.ndx, 
-                                input=commands, stdout=None)
-
-    def run_g_dist_cys(self,cutoff=None,**gmxargs):
-        """Run ``g_dist -dist cutoff`` for each cysteine and save output for further analysis."""
-
-        if cutoff is None:
-            cutoff = self.parameters.cutoff
-        else:
-            self.parameters.cutoff = cutoff    # record cutoff used
-
-        ndx = self.parameters.ndx
-        if not os.path.isfile(ndx):
-            warnings.warn("Cysteine index file %r missing: running 'make_index_cys'." % ndx)
-            self.make_index_cys()
+        
 
         for resid in self.parameters.cysteines:
             groupname = 'Cys%(resid)d' % vars()

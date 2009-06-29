@@ -248,6 +248,8 @@ class Worker(FileUtils):
         self.simulation = kwargs.pop('simulation',None)  # required (but kw for super & friends)
         assert self.simulation != None
         self.location = None          # directory name under analysisdir (set in derived class)
+        self.results = AttributeDict()
+        self.parameters = AttributeDict()
         super(Worker,self).__init__(**kwargs)
 
     def topdir(self, *args):

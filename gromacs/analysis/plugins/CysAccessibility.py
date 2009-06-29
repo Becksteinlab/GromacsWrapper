@@ -71,19 +71,19 @@ class _CysAccessibility(Worker):
         the list of cysteine labels *must* contain as many entries as there are
         cysteines in the protein. There are no sanity checks.
         """
-        super(_CysAccessibility,self).__init__(**kwargs)
-        
-        # specific setup
+        # specific arguments: take them before calling the super class that
+        # does not know what to do with them
         cysteines = kwargs.pop('cysteines',None)     # sequence resids as labels (NOT necessarily Gromacs itp)
         cys_cutoff = kwargs.pop('cys_cutoff', 1.0)   # nm
 
-        # super class do this before doing anything else (maybe not important anymore)
+        # super class init: do this before doing anything else
+        # (also sets up self.parameters and self.results)
         super(_CysAccessibility,self).__init__(**kwargs)
 
+        # location must be defined in the derived class
         self.location = 'accessibility'     # directory under topdir()
-        self.results = AttributeDict()
-        self.parameters = AttributeDict()
 
+        # process specific parameters now
         try:
             self.parameters.cysteines = map(int, cysteines)  # sequence resids
         except (TypeError,ValueError):
