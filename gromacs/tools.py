@@ -19,6 +19,15 @@ the list was generated from Gromacs 4.0.2.
 .. autodata:: gmx_tools
 .. autodata:: gmx_extra_tools
 
+It is also possible to extend the basic commands and patch in additional
+functionality. For example, the :class:`GromacsCommandMultiIndex` class makes a
+command accept multiple index files and concatenates them on the fly; the
+behaviour mimics Gromacs' "multi-file" input that has not yet been enabled for
+all tools.
+
+.. autoclass:: GromacsCommandMultiIndex
+   :members: __init__, run, _fake_multi_index, __del__
+
 Example
 -------
 
@@ -159,8 +168,8 @@ class GromacsCommandMultiIndex(GromacsCommand):
             return kwargs
 
         def __del__(self):
+            """Clean up temporary multi-index files if they were used."""
             try:
-                # clean up temporay multi index file if it was used
                 # self.multi_ndx <-- _fake_multi_index()
                 utilities.unlink_gmx(self.multi_ndx)
             except (AttributeError, OSError):
