@@ -550,13 +550,11 @@ class IndexBuilder(object):
             fd, tmp_ndx = tempfile.mkstemp(suffix='.ndx', prefix='tmp_'+name+'__')
             cmd = [command, '', 'q']   # empty command '' necessary to get list
             rc,out,err = self.make_ndx(o=tmp_ndx, input=cmd)
+            self.check_output(out, "Not atoms found for selection %(command)r." % vars())
             # For debugging, look at out and err or set stdout=True, stderr=True
             # TODO: check '  0 r_300_&_ALA_&_O     :     1 atoms' has at least 1 atom
             print "DEBUG: _process_command()"
             print out
-            if self._is_empty_group(out):   # XXX: probably won't catch it
-                warnings.warn("No atoms found for %(command)r" 
-                              % vars(), category=BadParameterWarning)
             groups = parse_ndxlist(out)
             last = groups[-1]
             # reduce and name this group
@@ -566,6 +564,7 @@ class IndexBuilder(object):
             rc,out,err = self.make_ndx(n=tmp_ndx, o=ndx, input=name_cmd)
         finally:
             os.unlink(tmp_ndx)
+
         return name, ndx
 
     #: regular expression to match and parse a residue-atom selection
@@ -600,18 +599,44 @@ class IndexBuilder(object):
                'q']
         fd, ndx = tempfile.mkstemp(suffix='.ndx', prefix=name+'__')
         rc,out,err = self.make_ndx(n=self.ndx, o=ndx, input=cmd)
+        self.check_output(out, "No atoms found for "
+                          "%(selection)r --> %(_selection)r" % vars())
         # For debugging, look at out and err or set stdout=True, stderr=True
         print "DEBUG: _process_residue()"
         print out
-        if self._is_empty_group(out):
-            warnings.warn("No atoms found for %(selection)r --> %(_selection)r" 
-                          % vars(), category=BadParameterWarning)
 
         return name, ndx
+
+    def check_output(self, make_ndx_output, message=None):
+        """Simple tests to flag problems with a ``make_ndx`` run."""
+        if message is None:
+            message = ""
+        else:
+            message = '\n' + message
+        def format(output, w=60):
+            hrule = "====[ GromacsError (diagnostic output) ]".ljust(w,"=")
+            return hrule + '\n' + output + hrule
+
+        rc = True
+        if self._is_empty_group(make_ndx_output):
+            warnings.warn("Selection produced empty group.%(message)s" 
+                          % vars(), category=GromacsWarning)
+            rc = False
+        if self._has_syntax_error(make_ndx_output):
+            rc = False
+            out_formatted = format(make_ndx_output)
+            raise GromacsError("make_ndx encountered a Syntax Error, "
+                               "%(message)s\noutput:\n%(out_formatted)s" % vars())
+        return rc
 
     def _is_empty_group(self, make_ndx_output):
         m = re.search('Group is empty', make_ndx_output)
         return not (m is None)
+
+    def _has_syntax_error(self, make_ndx_output):
+        m = re.search('Syntax error:', make_ndx_output)
+        return not (m is None)
+        
 
     def __del__(self):
         try:
