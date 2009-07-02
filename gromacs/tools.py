@@ -95,14 +95,11 @@ registry = {}
 for name in gmx_tools.split():
     # make names valid python identifiers and convention: class names are capitalized
     clsname = name.replace('.','_').capitalize()  
-    cls = type(clsname, (GromacsCommand,), {'command_name':name})
+    cls = type(clsname, (GromacsCommand,), {'command_name':name,
+                                            '__doc__': "Gromacs tool %(name)r." % vars()})
     registry[clsname] = cls      # registry keeps track of all classes
 
-# XXX: Using locals() is crap, should not be doing this but don't know any better.
-#      http://docs.python.org/library/functions.html#locals
-#      Using sys.modules[name] does not work because I need to know the FULL dotted name
-#      but we are not guaranteed to always be 'gromacs.tools'.
-locals().update(registry)        # add classes to module's scope
+globals().update(registry)        # add classes to module's scope
 
 del name, cls, clsname
 
@@ -184,6 +181,7 @@ if 'G_mindist' in registry:
 
     # let G_mindist handle multiple ndx files
     class G_mindist(GromacsCommandMultiIndex):
+        """Gromacs tool 'g_mindist' (with patch to handle multiple ndx files)."""
         command_name = 'g_mindist'
 
     registry['g_mindist'] = G_mindist

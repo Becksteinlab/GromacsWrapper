@@ -52,14 +52,10 @@ __all__.extend(__plugins__)
 
 
 # 1. Insert all plugin classes into the current module.
-# 2. The plugin can/should mask the package of the same name.
+# 2. The plugin can/should mask the module of the same name to reduce clutter.
 _mod_dict = [(m, __import__(m, globals(), locals(), fromlist=[m])) for m in __plugins__]
 
-# XXX: Using locals() is crap, should not be doing this but don't know any better.
-#      http://docs.python.org/library/functions.html#locals
-#      Using sys.modules[name] does not work because I need to know the FULL dotted name
-#      but we are not guaranteed to always be 'gromacs.analysis.plugins'.
-locals().update(_mod_dict)
+globals().update(_mod_dict)
 del _mod_dict
 
 
