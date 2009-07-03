@@ -84,10 +84,17 @@ amino_acid_codes = {'A':'ALA', 'C':'CYS', 'D':'ASP', 'E':'GLU',
                     'K':'LYS', 'L':'LEU', 'M':'MET', 'N':'ASN',
                     'P':'PRO', 'Q':'GLN', 'R':'ARG', 'S':'SER',
                     'T':'THR', 'V':'VAL', 'W':'TRP', 'Y':'TYR'}
+inverse_aa_codes = dict([(three, one) for one,three in amino_acid_codes.items()])
 
 def convert_aa_code(x):
-    """Returns the 3-letter abbreviation for the 1-letter amino acid code."""
-    return amino_acid_codes[x]
+    """Converts between 3-letter and 1-letter amino acid codes."""
+    if len(x) == 1:
+        return amino_acid_codes[x.upper()]
+    elif len(x) == 3:
+        return inverse_aa_codes[x.upper()]
+    else:
+        raise ValueError("Can only convert 1-letter or 3-letter amino acid codes, "
+                         "not %r" % x)
 
 
 class FileUtils(object):
