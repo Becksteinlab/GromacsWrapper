@@ -34,12 +34,12 @@ make_epydocs() {
          --url=http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/ \
          gromacs gromacs/analysis/plugins/ vmd/  \
       || die "Failed making epydoc"
-  rsync -vrP doc/epydoc $DOCS
+  rsync -vrP --delete doc/epydoc $DOCS
 }
 
 make_sphinx () {
   (cd doc/sphinx && make html) || die "Failed making sphinx docs"
-  rsync -vrP doc/sphinx/build/html $DOCS
+  rsync -vrP --delete doc/sphinx/build/html $DOCS
 }
 
 docs () {
