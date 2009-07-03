@@ -27,7 +27,7 @@ running simulations with sensible parameters.
 License
 =======
 
-The **GromacsWrapper** package is maded available under the terms of the
+The **GromacsWrapper** package is made available under the terms of the
 `GNU Public License v3`_ (or any higher version at your choice). 
 
 See the file COPYING for the licensing terms for all modules except
@@ -57,7 +57,7 @@ Availability
 
 The latest version of the package is being made available via the
 internet-thingy at
-http://sbcb.bioch.ox.ac.uk/oliver/Software/GromacsWrapper/ or from
+http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/ or from
 the direct download URI (for ``easy_install``)
 http://sbcb.bioch.ox.ac.uk/oliver/download/Python/ . 
 
