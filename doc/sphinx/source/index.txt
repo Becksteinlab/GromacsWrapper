@@ -3,9 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-==============================================
-  Welcome to GromacsWrapper's documentation!
-==============================================
+====================================================
+  GromacsWrapper --- a python framework for Gromacs
+====================================================
 
 **GromacsWrapper** is a python package that wraps system calls to
 `Gromacs`_ tools into thin classes. This allows for fairly seamless
@@ -15,18 +15,22 @@ handling and superior data structures. It also allows for
 modularization and code re-use.
 
 See :doc:`INSTALL` for installation instructions. `Documentation`_ is
-only provided through the python doc strings. 
+primarily provided through the python doc strings (from which most of
+the online documentation is generated).
 
 There is also auto-generated `online source code documentation`_
 available.
 
-Please be aware that this is **alpha** software that most definitely
-contains bugs. It is *your* responsibility to ensure that you are
-running simulations with sensible parameters.
+.. warning:: Please be aware that this is **alpha** software that most
+  definitely contains bugs. The API is not stable and can change
+  between releases.
+  
+  It is *your* responsibility to ensure that you are running
+  simulations with sensible parameters.
 
-The package and the documentation is still in flux and any suggestions
-and contributions are very welcome. See the package :doc:`README` for
-contact details.
+The package and the documentation are still in flux and any feedback,
+bug reports, suggestions and contributions are very welcome. See the
+package :doc:`README` for contact details.
 
 .. _Gromacs: http://www.gromacs.org
 .. _Documentation: 
@@ -35,7 +39,8 @@ contact details.
    http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/epydoc/index.html
 
 
-Contents:
+Contents
+--------
 
 .. toctree::
    :maxdepth: 2

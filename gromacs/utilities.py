@@ -19,7 +19,7 @@ be used as a mixin class. The ``analysis.Simulation`` class is derived
 from it.
 
 .. autoclass:: FileUtils
-
+   :members:
 
 Functions
 ---------
@@ -144,10 +144,10 @@ class FileUtils(object):
               always return ``False``
         "indicate"
               return ``True`` if it exists
-         "warn"
-              indicate and issue a ``UserWarning``
-         "exception"
-              raise ``IOError`` if it exists
+        "warn"
+              indicate and issue a :exc:`UserWarning`
+        "exception"
+              raise :exc:`IOError` if it exists
         """
         def _warn(x):
             warnings.warn("File %r already exists." % x)

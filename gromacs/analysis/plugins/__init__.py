@@ -43,20 +43,25 @@ Developer notes
 """
 __docformat__ = "restructuredtext en"
 
-#: all available plugin names are listed; because this is used to
-#: automatically set up imports, each plugin class must have the same
-#: name as the module.
+#: All available plugin names are listed here. Because this is used to
+#: automatically set up imports a module file *must* be named like the
+#: plugin class it contains but in all lower case. For example, the
+#: *Distances* plugin class is contained in the module *distances* (the
+#: file ``plugins/distances.py``).
 __plugins__ = ['CysAccessibility', 'Distances']
 __all__ = []
 __all__.extend(__plugins__)
 
 
-# 1. Insert all plugin classes into the current module.
-# 2. The plugin can/should mask the module of the same name to reduce clutter.
-_mod_dict = dict([(m, __import__(m, globals(), locals(), fromlist=[m])) for m in __plugins__])
+# 1. Load all modules
+#    (module is plugin name in lower case)
+#    ('__import__(m.lower(), fromlist=[m])' does not work like 'from m.lower() import m'
+_modules = dict([(p, __import__(p.lower(), globals(), locals())) for p in __plugins__])
+# 2. Get the classes
+_plugins = dict([(p, M.__dict__[p]) for p,M in _modules.items()])
+# 3. add to the name space (bind classes to names)
+globals().update(_plugins)
 
-
-globals().update(_mod_dict)
-#del _mod_dict
+#del _modules, _plugins
 
 
