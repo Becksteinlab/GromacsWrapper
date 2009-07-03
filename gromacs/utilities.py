@@ -4,8 +4,8 @@
 # See the file COPYING for details.
 
 """
-``gromacs.utilities`` -- Helper functions
-=========================================
+``gromacs.utilities`` -- Helper functions and classes
+=====================================================
 
 The module defines some convenience functions and classes that are
 used in other modules; they do *not* make use of :mod:`gromacs.tools`
@@ -14,12 +14,13 @@ or :mod:`gromacs.cbook` and can be safely imported.
 Classes
 -------
 
-``FileUtils`` provides functions related to filename handling. It can
-be used as a mixin class. The ``analysis.Simulation`` class is derived
-from it.
+:class:`FileUtils` provides functions related to filename handling. It
+can be used as a mixin class. The :class:`gromacs.analysis.Simulation`
+class is derived from it.
 
 .. autoclass:: FileUtils
    :members:
+.. autoclass:: AttributeDict
 
 Functions
 ---------
@@ -46,6 +47,19 @@ import glob
 import warnings
 import errno
 import bz2, gzip
+
+class AttributeDict(dict):
+    """A dictionary with pythonic access to keys as attributes --- useful for interactive work."""
+    def __getattribute__(self,x):
+        try:
+            return super(AttributeDict,self).__getattribute__(x)
+        except AttributeError:
+            return self[x]
+    def __setattr__(self,name,value):
+        try:
+            super(AttributeDict,self).__setitem__(name, value)
+        except KeyError:
+            super(AttributeDict,self).__setattr__(name, value)            
 
 def anyopen(datasource):
     """Open datasource and return a stream."""

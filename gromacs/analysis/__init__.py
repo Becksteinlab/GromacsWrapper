@@ -5,9 +5,9 @@
 
 The :mod:`gromacs.analysis` package is a framework for analyzing Gromacs MD
 trajectories. The basic object is the :class:`Simulation` class. For a
-particular project one has to derive a class from :class:`Simulation` and
-mix-in all analysis plugin classes (from :mod:`gromacs.analysis.plugins`) that
-are required. This is slightly cumbersome but flexible.
+particular project one has to derive a class from :class:`Simulation` and add
+analysis plugin classes (from :mod:`gromacs.analysis.plugins`) for specific
+analysis tasks. This is slightly cumbersome but flexible.
 
 New analysis plugins should follow the API sketched out in
 :mod:`gromacs.analysis.core`; see an example for use there.
@@ -25,12 +25,12 @@ will be acknowledged in the list of plugin authors in
 Simulation class
 ----------------
 
-The :class:`Simulation` class is central for doing analysis. The user
-will have to derive a custom analysis class that mixes
-:class:`Simulation` and any plugin classes.
+The :class:`Simulation` class is central for doing analysis. The user can
+derive a custom analysis class that pre-defines values for plugins as seen in
+the `Example`_.
 
 .. autoclass:: Simulation
-   :members: __init__, set_default_plugin, run, analyze, plot
+   :members: __init__, add_plugin, set_default_plugin, run, analyze, plot
 
 Example
 -------
@@ -43,12 +43,12 @@ because we might want to do additional analysis in the future we also add the
   from gromacs.analysis import Simulation
   from gromacs.analysis.plugins import CysAccessibility
 
-  class MyProtein(Simulation, CysAccessibility, Distances):
+  class MyProtein(Simulation):
     def __init__(self,**kwargs):
-        kwargs['CysAccessibility'] = {'cysteines': [96, 243, 372]}
+        kwargs['CysAccessibility'] = {'cysteines': [96, 243, 372]}  # pre-sets for CysAccessibility
         super(MyProtein,self).__init__(**kwargs)   # should ALWAYS come last
 
-  S = MyProtein(tpr=..., xtc=..., analysisdir=...)
+  S = MyProtein(tpr=..., xtc=..., analysisdir=..., plugins=['CysAccessibility', 'Distances'])
   S.set_default_plugin('CysAccessibility')  # do CysAccessibility analysis
   S.run()                                   # analyze trajectory and write files
   S.analyze()                               # analyze output files

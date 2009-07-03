@@ -13,7 +13,7 @@ Plugin class
 ------------
 
 .. autoclass:: Distances
-   :members: plugin_name, plugin_class
+   :members: plugin_name, worker_class
    :undoc-members:
 
 Worker class
@@ -35,9 +35,8 @@ import subprocess
 import tempfile
 
 import gromacs
-
-from gromacs.analysis.core import AttributeDict, Worker, Plugin
-import mindist
+from gromacs.utilities import AttributeDict
+from gromacs.analysis.core import Worker, Plugin
 
 
 # Worker classes that are registered via Plugins (see below)
@@ -52,10 +51,6 @@ class _Distances(Worker):
       from gromacs.cbook import IndexBuilder
       A_ndx = IndexBuilder(tpr, ['@a 62549 & r NA'], names=['Na1'], offset=-9, out_ndx='Na1.ndx', name_all="NA1").combine()
       B_ndx = IndexBuilder('md_posres.pdb', ['S312:OG','T313:OG1','A38:O','I41:O','A309:O'], offset=-9, out_ndx='Na1_site.ndx', name_all="Na1_site").combine()
-
-    
-      
-      
 
     """
 
@@ -80,7 +75,7 @@ class _Distances(Worker):
         ndx = kwargs.pop('ndx', None)
         cutoff = kwargs.pop('cutoff', 0.6)
 
-        # super class do this before doing anything else (maybe not important anymore)
+        # super class: do this before doing anything else
         super(_Distances,self).__init__(**kwargs)
 
         self.location = 'distances'     # directory under topdir()
@@ -137,7 +132,8 @@ class _Distances(Worker):
     def analyze_dist(self):
         """Make data available as numpy arrays."""        
         results = AttributeDict()
-        
+
+        # XXX: do something...
 
         self.results = results
         return results
@@ -156,7 +152,7 @@ class Distances(Plugin):
     (:meth:`_Distances.run`). Additional analysis is deferred to the
     :meth:`_Distances.analyze` call.
     """
-    plugin_name = "Distances"   # XXX: these get overwritten when mixing-in
-    plugin_class = _Distances   # (find a better way to do this..only tested with single mixin yet)
+    plugin_name = "Distances"
+    worker_class = _Distances
 
 

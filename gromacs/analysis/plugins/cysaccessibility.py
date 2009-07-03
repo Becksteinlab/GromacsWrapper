@@ -22,7 +22,7 @@ Plugin class
 ------------
 
 .. autoclass:: CysAccessibility
-   :members: plugin_name, plugin_class
+   :members: plugin_name, worker_class
    :undoc-members:
 
 Worker class
@@ -43,8 +43,8 @@ import warnings
 import subprocess
 
 import gromacs
-
-from gromacs.analysis.core import AttributeDict, Worker, Plugin
+from gromacs.utilities import AttributeDict
+from gromacs.analysis.core import Worker, Plugin
 import dist
 
 
@@ -212,7 +212,7 @@ class CysAccessibility(Plugin):
     closest approach distance should be indicative of the reactivity of the SH
     group with crosslinking agents.
     """
-    plugin_name = "CysAccessibility"   # XXX: these get overwritten when mixing-in
-    plugin_class = _CysAccessibility   # (find a better way to do this..only tested with single mixin yet)
+    plugin_name = "CysAccessibility"
+    worker_class = _CysAccessibility
 
 

@@ -15,8 +15,7 @@ Programming API for plugins
 ---------------------------
 
 Additional analysis capabilities are added to a
-:class:`gromacs.analysis.Simulation` class with mixin classes; these mixin
-classes are the *plugins*.
+:class:`gromacs.analysis.Simulation` class with *plugin* classes.
 
 Example usage
 .............
@@ -26,12 +25,12 @@ Derive class for the simulation of interest along the lines of ::
      from gromacs.analysis import Simulation
      from gromacs.analysis.plugins import CysAccessibility, Distances
 
-     class MyProtein(Simulation, CysAccessibility, Distances):
+     class MyProtein(Simulation):
        def __init__(self,**kwargs):
-           kwargs['CysAccessibility'] = {'cysteines': [96, 243, 372]}
+           kwargs['CysAccessibility'] = {'cysteines': [96, 243, 372]}  # default for CysAccessibility
            super(MyProtein,self).__init__(**kwargs)
 
-     S = MyProtein(tpr=..., xtc=..., analysisdir=...)
+     S = MyProtein(tpr=..., xtc=..., analysisdir=..., plugins=[CysAccessibility, Distances])
      S.set_default_plugin('CysAccessibility')  # do CysAccessibility for now
      S.run()                                   # generate data from trajectories
      S.analyze()                               # analyze data
@@ -41,8 +40,8 @@ Derive class for the simulation of interest along the lines of ::
 API description
 ...............
 
-Analysis capabilities can be added by mixing in additional plugins into the
-simulation base class. Each plugin registers itself and provides at a minimum
+Analysis capabilities can be added with plugins to the simulation base
+class. Each plugin registers itself and provides at a minimum
 :meth:`run()`, :meth:`analyze()`, and :meth:`plot()` methods.
 
 The plugin class is derived from :class:`Plugin` and bears the name that is used to
@@ -96,27 +95,24 @@ API requirements
 
 * Parameters of the plugin are stored in :attr:`Worker.parameters` (either as
   attributes or as key/value pairs, see the container class
-  :class:`AttributeDict`).
+  :class:`gromacs.utilities.AttributeDict`).
 
-* Results are stored in :attr:`Worker.results` (also a :class:`AttributeDict`).
+* Results are stored in :attr:`Worker.results` (also a :class:`gromacs.utilities.AttributeDict`).
 
 
 Classes
 -------
 
 .. autoclass:: Simulation
-   :members: __init__, set_default_plugin, run, analyze, plot, 
+   :members: __init__, add_plugin, set_default_plugin, run, analyze, plot, 
             topdir, plugindir, check_file, has_plugin, check_plugin_name, select_plugin
 
 .. autoclass:: Plugin
-   :members: __init__   
+   :members: __init__, plugin_name, worker_class
 
 .. autoclass:: Worker   
    :members: __init__, topdir, plugindir, savefig
    :show-inheritance:
-
-.. autoclass:: AttributeDict
-
 
 """
 __docformat__ = "restructuredtext en"
@@ -127,30 +123,20 @@ import errno
 import subprocess
 import warnings
 
-from gromacs.utilities import FileUtils
-
-class AttributeDict(dict):
-    """A dictionary with pythonic access to keys as attributes --- useful for interactive work."""
-    def __getattribute__(self,x):
-        try:
-            return super(AttributeDict,self).__getattribute__(x)
-        except AttributeError:
-            return self[x]
-    def __setattr__(self,name,value):
-        try:
-            super(AttributeDict,self).__setitem__(name, value)
-        except KeyError:
-            super(AttributeDict,self).__setattr__(name, value)
-            
+from gromacs.utilities import FileUtils, AttributeDict
 
 
 class Simulation(object):
     """Class that represents one simulation.
 
-    Analysis capailities are added with mixin classes. 
+    Analysis capabilities are added via plugins. 
 
-    Only keyword arguments are allowed so that init resolution works as
-    expected.
+    1. Set the *active plugin* with the :meth:`set_default_plugin` method. 
+    2. Analyze the trajectory with the active plugin by calling the 
+       :meth:`run` method.
+    3. Analyze the output from :meth:`run` with :meth:`analyze`; results are stored 
+       in :attr:`results`. 
+    4. Plot results with :meth:`plot`.
     """
     def __init__(self, **kwargs):
         """Set up a Simulation object; analysis is performed via methods.
@@ -164,8 +150,13 @@ class Simulation(object):
              Gromacs index file
            analysisdir
              directory under which derived data are stored;
-             defaults to the directory containing the tpr [None]        
+             defaults to the directory containing the tpr [None]
+           plugins : list
+             plugin classes (not instances!) or names (strings) to be used; more 
+             can be added later with :meth:`Simulation.add_plugin`.
         """
+        super(Simulation,self).__init__(**kwargs)
+
         # required files
         self.tpr = kwargs.pop('tpr',None)
         self.xtc = kwargs.pop('xtc',None)
@@ -179,14 +170,43 @@ class Simulation(object):
         self.plugins = AttributeDict()   # nicer for interactive use than dict
         self.default_plugin_name = None
 
-        # important: Do not forget to call mixin classes:
-        #            each plugin class registers itself in self.plugins[].
-        super(Simulation,self).__init__(**kwargs)
+        plugin_classes = kwargs.pop('plugins', [])
+        for P in plugin_classes:
+            self.add_plugin(P, **kwargs)
 
-        # XXX: does this work (i.e. do we end up here AFTER mixin inits??)
         # convenience: if only a single plugin was registered we default to that one
         if len(self.plugins) == 1:
             self.set_default_plugin(self.plugins.keys()[0])
+
+    def add_plugin(self, plugin_class, **kwargs):
+        """Create a plugin instance from plugin_class and add it to the registry.
+
+        :Arguments:
+            plugin_class : class or string
+               If the parameter is a class then it should have been derived
+               from :class:`Plugin`. If it is a string then it is taken as a
+               plugin name in :mod:`gromacs.analysis.plugins` and the
+               corresponding class is added.
+            kwargs
+               Keyword arguments are all passed to the plugin constructor,
+               which ignores everything except an argument that has the name of
+               the plugin itself. This must be a dict with all the parameters
+               that are needed to initialize the plugin (or rather its worker
+               class). For example, the
+               :class:`~gromacs.analysis.plugins.CysAccessibility` plugin would
+               only use a keyword argument such as
+               ``CysAccessibility={'cysteines': [23, 123, 456]}`` and ignore
+               everythin else. The contents of the dict are specific for the
+               plugin and should be described in its documentation.
+        """
+        # 1. self must be provided so that plugin knows who owns it
+        # 2. plugin_class.__init__ will take a dict of name plugin_class.plugin_name
+        #    to initialize the Worker (... yes, it's convoluted...)
+        # 3. plugin_class registers itself in self.plugins
+        if type(plugin_class) is str:
+            import plugins            # XXX: hope we can import this safely now...
+            plugin_class = plugins.__plugin_classes__[plugin_class]
+        plugin_class(simulation=self, **kwargs)  # simulation=self is REQUIRED!
 
     def topdir(self,*args):
         """Returns path under self.analysis_dir. Parent dirs are created if necessary."""
@@ -331,33 +351,36 @@ class Worker(FileUtils):
 # registers a worker class in Simulation.plugins and adds a pointer to Simulation to worker
 
 class Plugin(object):
-    """Plugin class to be used as a mixin class with Simulation.
+    """Plugin class that can be added to a Simulation instance.
 
     All analysis plugins must be derived from the Plugin base class.
 
-    A plugin registers a worker class in Simulation.plugins and adds a
-    pointer to Simulation to worker.
+    A plugin registers a worker class in Simulation.plugins and adds
+    the Simulation instance to the worker.
     """    
-    # XXX: gets overwritten with multiple plugin mixins --- do something else!
     #: name of the plugin
     plugin_name = None
-    #: actual plugin class (typically name with leading underscore)
-    plugin_class = None
+    #: actual plugin :class:`Worker` class (name with leading underscore)
+    worker_class = None
 
-    def __init__(self,**kwargs):
+    def __init__(self,simulation=None,**kwargs):
         """Registers the plugin with the simulation class.
 
         Specific keyword arguments are listed below, all other kwargs
         are passed through.
 
-        :Keywords:
+        :Arguments:
+           simulation : Simulation class
+                The simulation class that owns this plugin instance.
            plugin_name : dict     
                 A dictionary named like the plugin is taken to include
                 keyword arguments that are passed to the __init__ of the plugin.
         """
+        print "DEBUG: plugin() registering %r" % self.plugin_name
         assert self.plugin_name != None                # must derive from Plugin
+        assert simulation != None                      # must know who we belong to
         plugin_args = kwargs.pop(self.plugin_name,{})  # must be a dict named like the plugin
-        plugin_args['simulation'] = self               # allows access of plugin to globals
+        plugin_args['simulation'] = simulation         # allows access of plugin to globals
         super(Plugin, self).__init__(**kwargs)
-        self.plugins[self.plugin_name] = self.plugin_class(**plugin_args)  # add the worker
+        simulation.plugins[self.plugin_name] = self.worker_class(**plugin_args)  # add the worker
 

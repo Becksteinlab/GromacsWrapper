@@ -6,12 +6,11 @@
 :mod:`analysis.plugins` -- Plugin Modules
 =========================================
 
-Mixin classes for :class:`gromacs.analysis.core.Simulation` that
-provide code to analyze trajectory data.
+Classes for :class:`gromacs.analysis.core.Simulation` that provide
+code to analyze trajectory data.
 
 New analysis plugins should follow the API sketched out in
 :mod:`gromacs.analysis.core`; see an example for use there.
-
 
 
 List of plugins
@@ -22,23 +21,37 @@ sending it to the `package author`_. You will be acknowledged in the list below.
 
 .. _`package author`: oliver.beckstein@bioch.ox.ac.uk
 
-====================  =======================  ===============================
-plugin                author                   description
-====================  =======================  ===============================
-CysAccessibility      Oliver Beckstein [#OB]_  estimate accessibility of Cys
-                                               residues by water
-Distances             Oliver Beckstein [#OB]_  time series of distances
-====================  =======================  ===============================
+==========================  =======================  ===============================
+plugin                      author                   description
+==========================  =======================  ===============================
+:class:`CysAccessibility`   Oliver Beckstein [#OB]_  estimate accessibility of Cys
+                                                     residues by water
+:class:`Distances`          Oliver Beckstein [#OB]_  time series of distances
+==========================  =======================  ===============================
 
 
 .. rubric:: Footnotes
 .. [#OB] oliver.beckstein@bioch.ox.ac.uk
 
 
+Plugin classes
+--------------
+
+..autoclass:: CysAccessibility
+  :members:
+..autoclass:: Distances
+  :members:
+
+
 Developer notes
 ---------------
 
+In principle all that needs to be done to automatically load plugins
+is to add their name to :data:`__plugins__`. See the source code for
+further comments and how the auto loading of plugins is done.
+
 .. autodata:: __plugins__
+.. autodata:: __plugin_classes__
 
 """
 __docformat__ = "restructuredtext en"
@@ -58,10 +71,12 @@ __all__.extend(__plugins__)
 #    ('__import__(m.lower(), fromlist=[m])' does not work like 'from m.lower() import m'
 _modules = dict([(p, __import__(p.lower(), globals(), locals())) for p in __plugins__])
 # 2. Get the classes
-_plugins = dict([(p, M.__dict__[p]) for p,M in _modules.items()])
+#: Gives access to all available plugin classes (or use the module __dict__)
+__plugin_classes__ = dict([(p, M.__dict__[p]) for p,M in _modules.items()])
 # 3. add to the name space (bind classes to names)
-globals().update(_plugins)
+globals().update(__plugin_classes__)
 
-#del _modules, _plugins
+del p, M
+del _modules
 
 

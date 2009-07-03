@@ -26,7 +26,7 @@ behaviour mimics Gromacs' "multi-file" input that has not yet been enabled for
 all tools.
 
 .. autoclass:: GromacsCommandMultiIndex
-   :members: __init__, run, _fake_multi_index, __del__
+   :members: __init__, run, _fake_multi_ndx, __del__
 
 Example
 -------
@@ -49,6 +49,10 @@ arguments to ``trjconv`` but by naming the more specific command differently
 one can easily build up a library of small tools that will solve a specifi,
 repeatedly encountered problem reliably. This is particularly helpful when doing
 interactive work.
+
+Gromacs tools
+-------------
+.. The docs for the tool classes are auto generated.
 """
 
 __docformat__ = "restructuredtext en"
@@ -129,10 +133,12 @@ class GromacsCommandMultiIndex(GromacsCommand):
             object is destroyed.
 
             :Returns:
-            The method returns the input keyword arguments with the necessary
-            changes to use the temporary index files.
+              The method returns the input keyword arguments with the necessary
+              changes to use the temporary index files.
 
-            :Keywords: Only the listed keywords have meaning for the method:
+            :Keywords: 
+               Only the listed keywords have meaning for the method:
+
                n : filename or list of filenames
                   possibly multiple index files; *n* is replaced by the name of 
                   the temporary index file.
