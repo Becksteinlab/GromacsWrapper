@@ -71,11 +71,14 @@ class _Distances(Worker):
              Second group of atoms.
            ndx : index filename or list
              All index files that contain the A and B groups.
+           cutoff : float
+             A contact is recorded if the distance is <cutoff [0.6nm]
         """
         # specific setup
         A = kwargs.pop('A',None)
         B = kwargs.pop('B', None)
         ndx = kwargs.pop('ndx', None)
+        cutoff = kwargs.pop('cutoff', 0.6)
 
         # super class do this before doing anything else (maybe not important anymore)
         super(_Distances,self).__init__(**kwargs)
@@ -84,11 +87,13 @@ class _Distances(Worker):
         self.parameters.A = A
         self.parameters.B = B
         self.parameters.ndx = ndx
+        self.parameters.cutoff = cutoff
 
 
-
-        # output filenames for g_dist, indexed by Cys resid
-        self.parameters.filenames = self.plugindir('dist.txt.bz2')   # ??? needed???
+        # output filenames for g_dist
+        self.parameters.filenames = {'contacts': self.plugindir('contacts.xvg'),
+                                     'distance': self.plugindir('distance.xvg'),
+                                     }
 
         # default filename for the combined plot
         self.parameters.figname = self.plugindir('distances')
@@ -103,42 +108,40 @@ class _Distances(Worker):
 
     # specific methods
 
-    def run_g_mindist(self,cutoff=None,**gmxargs):
-        """Run ``g_mindist ``  for all distances between A and B atoms and save output for further analysis."""
+    def run_g_mindist(self,**gmxargs):
+        """Run ``g_dist `` to compute distances between A and B groups.
 
+        Additional arguments can be provided (e.g. ``-b`` or ``-e``)
+        but an error will result if one tries to set parameters that
+        are already being set by the method itself such as ``-s`` or
+        ``-d``; one must to provide the appropriate values to the
+        class constructor.
+
+        If the primary output file already exists then no data are generated
+        and the method returns immediately.        
+        """
+        if self.check_file_exists(self.parameters.filenames['distance'],
+                                  resolve='warning'):
+            return
+            
+        indexgroups = [x for x in (self.parameters.A, self.parameters.B)
+                       if not x is None]
+        gromacs.g_mindist(s=self.simulation.tpr, n=self.parameters.ndx,
+                          f=self.simulation.xtc, d=self.parameters.cutoff,
+                          od=self.parameters.filenames['distance'],
+                          on=self.parameters.filenames['contacts'],
+                          o=True, _or=True,    # just generate with default names
+                          input=indexgroups,
+                          **gmxargs)
+
+    def analyze_dist(self):
+        """Make data available as numpy arrays."""        
+        results = AttributeDict()
         
 
-        for resid in self.parameters.cysteines:
-            groupname = 'Cys%(resid)d' % vars()
-            commands = [groupname, 'OW']
-            filename = self.parameters.filenames[resid]
-            if self.check_file_exists(filename, resolve='warning'):
-                continue
-            print "run_g_dist: %(groupname)s --> %(filename)r" % vars()
-            sys.stdout.flush()
-            datafile = open(filename, 'w')
-            try:
-                p = gromacs.g_dist.Popen(
-                    s=self.simulation.tpr, f=self.simulation.xtc, n=ndx, dist=cutoff, input=commands, 
-                    stderr=None, stdout=subprocess.PIPE, **gmxargs)
-                compressor = subprocess.Popen(['bzip2', '-c'], stdin=p.stdout, stdout=datafile)
-                p.communicate()
-            finally:
-                datafile.close()
-
-    def analyze_cys(self):
-        """Mindist analysis for all cysteines. Returns results for interactive analysis."""        
-        results = AttributeDict()
-        for resid in self.parameters.cysteines:
-            groupname = 'Cys%(resid)d' % vars()    # identifier should be a valid python variable name
-            results[groupname] = self._mindist(resid)
         self.results = results
         return results
 
-    def _mindist(self,resid):
-        """Analyze minimum distance for resid."""
-        filename = self.parameters.filenames[resid]
-        return mindist.Mindist(filename,cutoff=self.parameters.cutoff)
 
 
 

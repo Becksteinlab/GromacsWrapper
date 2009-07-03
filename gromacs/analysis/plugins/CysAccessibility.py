@@ -106,6 +106,9 @@ class _CysAccessibility(Worker):
     def analyze(self,**kwargs):
         return self.analyze_cys()
 
+    def plot(self,**kwargs):
+        return self.plot_cys(**kwargs)
+    
     # specific methods
 
     def make_index_cys(self):
@@ -168,6 +171,32 @@ class _CysAccessibility(Worker):
         filename = self.parameters.filenames[resid]
         return dist.Mindist(filename,cutoff=self.parameters.cutoff)
 
+    def plot_cys(self, **kwargs):
+        """Plot all results in one graph, labelled by the result keys.
+
+        :Keywords:
+           figure
+               - True: save figures in the given formats
+               - "name.ext": save figure under this filename (``ext`` -> format)
+               - False: only show on screen
+           formats : sequence
+               sequence of all formats that should be saved [('png', 'pdf')]
+           \*\*plotargs    
+               keyword arguments for pylab.plot()
+        """
+
+        import pylab
+        figure = kwargs.pop('figure', False)
+        extensions = kwargs.pop('formats', ('pdf','png'))
+        for name,result in self.results.items():
+            kwargs['label'] = name
+            result.plot(**kwargs)
+        pylab.legend(loc='best')
+        if figure is True:
+            for ext in extensions:
+                self.savefig(ext=ext)
+        elif figure:
+            self.savefig(filename=figure)
 
 
 # Public classes that register the worker classes

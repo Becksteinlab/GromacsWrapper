@@ -53,9 +53,10 @@ __all__.extend(__plugins__)
 
 # 1. Insert all plugin classes into the current module.
 # 2. The plugin can/should mask the module of the same name to reduce clutter.
-_mod_dict = [(m, __import__(m, globals(), locals(), fromlist=[m])) for m in __plugins__]
+_mod_dict = dict([(m, __import__(m, globals(), locals(), fromlist=[m])) for m in __plugins__])
+
 
 globals().update(_mod_dict)
-del _mod_dict
+#del _mod_dict
 
 

@@ -265,34 +265,7 @@ class Worker(FileUtils):
         raise NotImplementedError
 
     def plot(self,**kwargs):
-        """Plot all results in one graph, labelled by the result keys.
-
-        :Keywords:
-           figure
-               - True: save figures in the given formats
-               - ``"name.ext"``: save figure under this filename (``ext`` -> format)
-               - False: only show on screen
-           formats : sequence
-               sequence of all formats that should be saved [('png', 'pdf')]
-           \*\*plotargs    
-               keyword arguments for pylab.plot()
-        """
-
-        # XXX: maybe move this into individual plugins in case the self.results
-        # XXX: dict differs considerably between plugins
-
-        import pylab
-        figure = kwargs.pop('figure', False)
-        extensions = kwargs.pop('formats', ('pdf','png'))
-        for name,result in self.results.items():
-            kwargs['label'] = name
-            result.plot(**kwargs)
-        pylab.legend(loc='best')
-        if figure is True:
-            for ext in extensions:
-                self.savefig(ext=ext)
-        elif figure:
-            self.savefig(filename=figure)
+        raise NotImplementedError
 
     def savefig(self, filename=None, ext='png'):
         """Save the current figure under the default name, using the supplied format and extension."""
