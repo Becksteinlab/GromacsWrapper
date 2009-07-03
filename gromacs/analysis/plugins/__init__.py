@@ -37,10 +37,10 @@ plugin                      author                   description
 Plugin classes
 --------------
 
-..autoclass:: CysAccessibility
-  :members:
-..autoclass:: Distances
-  :members:
+.. autoclass:: CysAccessibility
+   :members:
+.. autoclass:: Distances
+   :members:
 
 
 Developer notes

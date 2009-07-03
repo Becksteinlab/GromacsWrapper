@@ -46,9 +46,9 @@ Classes
 -------
 
 .. autoclass:: Mindist
-   :members:
-
+   :members: __init__, histogram, hist, dist, edges, midpoints, plot
 .. autoclass:: GdistData
+   :members: __init__, __iter__
 
 """
 __docformat__ = "restructuredtext en"
@@ -63,21 +63,19 @@ import gromacs.utilities
 class Mindist(object):
     """The Mindist class allows analysis of the output from ``g_dist -dist CUTOFF``.
 
-    Output is read from a file or stream. The raw data (attribute
-    ``all_distances``) is transformed into a true 'mindist' time
-    series (available in the ``distances`` attribute): for each frame
-    only the shortest distance is stored (whereas ``g_dist`` provides
-    *all* distances below the cutoff).
+    Output is read from a file or stream. The raw data is transformed
+    into a true 'mindist' time series (available in the
+    :attr:`Mindist.distances` attribute): for each frame only the
+    shortest distance is stored (whereas ``g_dist`` provides *all*
+    distances below the cutoff).
 
-    .. attribute:: Mindist.distances
+    .. attribute:: distances
        Time series (or frame series) of the shortest distances as a
        numpy array; should only be read.
 
-    TODO:
-
-    * Save analysis to pickle or data files.
-    * Export data as simple data files for plotting in other programs.
-
+    :TODO:
+      * Save analysis to pickle or data files.
+      * Export data as simple data files for plotting in other programs.
     """
 
     def __init__(self,datasource,cutoff=None):
@@ -225,10 +223,11 @@ class GdistData(object):
                 \s+\(nm\)""", re.VERBOSE)
 
     def __init__(self,stream):
-        """Initialize with an open stream to the data (eg stdin or file)"""
+        """Initialize with an open stream to the data (eg stdin or file)."""
         self.stream = stream
 
     def __iter__(self):
+        """Iterator that filters the input stream and returns (frame, distance) tuples."""
         for line in self.stream:
             line = line.strip()
             m = self.data_pattern.search(line)
