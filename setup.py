@@ -31,7 +31,7 @@ more complicated analysis tasks.
       extras_require = {
                 'analysis': ['numpy>=1.0', 
                              'matplotlib>=0.91.3', 
-                             'RecSQL>=0.2',            
+                             'RecSQL>=0.3',            
                              ],
                 },
       dependency_links = ["http://sbcb.bioch.ox.ac.uk/oliver/download/Python/"],

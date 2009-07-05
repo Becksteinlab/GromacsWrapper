@@ -95,7 +95,7 @@ class Mindist(object):
         try:
             M = GdistData(stream)
             # BIG database in memory ... can be accessed via SQL
-            all_distances = SQLarray('distances', iterable=M, columns=('frame','distance')) 
+            all_distances = SQLarray('distances', records=M, columns=('frame','distance')) 
         finally:
             stream.close()
         if cutoff is None:
