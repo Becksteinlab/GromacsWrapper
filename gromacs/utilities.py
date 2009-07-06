@@ -200,9 +200,10 @@ class FileUtils(object):
 
 
 class XVG(FileUtils):
-    """Class that represents a grace xvg file."""
+    """Class that represents a grace xvg file. Read-only at the moment."""
     def __init__(self, filename):
         self.filename = filename
+        self.real_filename = os.path.realpath(filename)  # use full path for accessing data
         self.__array = None          # cache for array property
 
     def asarray(self):
@@ -212,12 +213,15 @@ class XVG(FileUtils):
         columns X Y1 Y2 Y3 ... the array a will be a[0] = X, a[1] = Y1, ... .
 
         All data must be numerical. ``NAN`` and ``INF`` values are
-        supported via python's float() function.
+        supported via python's :func:`float` builtin function.
 
-        .. note:: Only simple nxy files are currently supported, not grace files
-                  that contain multiple data sets separated by '&'.
+        Instead of using this function one can also use the attr:`~XVG.array`
+        attribute to access a cached version of the array.
+
+        .. Note:: Only simple XY or NXY files are currently supported, not
+                  Grace files that contain multiple data sets separated by '&'.
         """
-        with open(self.filename) as xvg:
+        with open(self.real_filename) as xvg:
             rows = []
             for line in xvg:
                 line = line.strip()
@@ -230,20 +234,40 @@ class XVG(FileUtils):
 
     @Property
     def array():
-        doc = "Represent xvg data as a (cached) numpy array."
+        doc = """Represent xvg data as a (cached) numpy array. 
+              See meth:`~XVG.asarray` for details."""
         def fget(self):
             if self.__array is None:
                 self.__array = self.asarray()
             return self.__array
         return locals()
 
-    def plot(self, *args, **kwargs):
+    def plot(self, **kwargs):
         """Plot xvg file data.
 
-        All arguments are passed on to pylab.plot.
+        The first column of the data is always taken as the abscissa
+        X. Additional columns are plotted as ordinates Y1, Y2, ...
+
+        In the special case that there is only a single column then this column
+        is plotted against the index, i.e. (N, Y).
+
+        :Arguments:
+          - *transform*: function *transform(array) --> array* which transforms
+            the original array; must return a 2D numpy array of shape [X,
+            Y1, Y2, ...] where X, Y1, ... are column vectors.
+            By default the transformation is the identity.
+          - All other keyword arguments are passed on to :func:`pylab.plot`.
         """
         import pylab
-        pylab.plot(self.array, *args, **kwargs)
+        transform = kwargs.pop('transform', lambda x: x)  # default is identity transformation
+        a = numpy.asarray(transform(self.array))
+        if len(a.shape) == 1:
+            # special case: plot against index; plot would do this automatically but 
+            # we'll just produce our own xdata and pretend that this was X all along
+            X = numpy.arange(len(a))
+            a = numpy.concatenate([[X], [a]])  # does NOT overwrite original a but make a new one
+        kwargs['xdata'] = a[0]          # abscissa set separately
+        pylab.plot(a[1:].T, **kwargs)   # plot all other columns in parallel
         
 
 def iterable(obj):

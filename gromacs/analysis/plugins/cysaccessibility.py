@@ -176,12 +176,12 @@ class _CysAccessibility(Worker):
 
         :Keywords:
            figure
-               - True: save figures in the given formats
+               - ``True``: save figures in the given formats
                - "name.ext": save figure under this filename (``ext`` -> format)
-               - False: only show on screen
+               - ``False``: only show on screen
            formats : sequence
                sequence of all formats that should be saved [('png', 'pdf')]
-           \*\*plotargs    
+           plotargs    
                keyword arguments for pylab.plot()
         """
 

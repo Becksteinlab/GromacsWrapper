@@ -266,7 +266,7 @@ class Simulation(object):
         """Run analysis for the plugin."""
         return self.select_plugin(plugin_name).analyze(**kwargs)    
 
-    def plot(self,plugin_name=None,figure=False,**plotargs):
+    def plot(self,plugin_name=None,figure=False,**kwargs):
         """Plot all data for the selected plugin::
 
           plot(plugin_name, **kwargs)
@@ -278,10 +278,10 @@ class Simulation(object):
               - True: plot to file with default name.
               - string: use this filename (+extension for format)
               - False: only display
-           plotargs
-              arguments for pylab.plot
+           kwargs
+              arguments for plugin plot function and possibly :func:`pylab.plot`
         """
-        return self.select_plugin(plugin_name).plot(figure=figure,**plotargs)    
+        return self.select_plugin(plugin_name).plot(figure=figure,**kwargs)    
 
     def __str__(self):
         return 'Simulation(tpr=%(tpr)r,xtc=%(xtc)r,analysisdir=%(analysis_dir)r)' % vars(self)

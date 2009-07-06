@@ -503,8 +503,8 @@ class IndexBuilder(object):
             rc,out,err = self.make_ndx(n=tmp_ndx, o=out_ndx, input=name_cmd)
             # For debugging, look at out and err or set stdout=True, stderr=True
             # TODO: check out if at least 1 atom selected
-            print "DEBUG: combine()"
-            print out
+            ##print "DEBUG: combine()"
+            ##print out
         finally:
             os.unlink(tmp_ndx)
         
@@ -553,8 +553,8 @@ class IndexBuilder(object):
             self.check_output(out, "Not atoms found for selection %(command)r." % vars())
             # For debugging, look at out and err or set stdout=True, stderr=True
             # TODO: check '  0 r_300_&_ALA_&_O     :     1 atoms' has at least 1 atom
-            print "DEBUG: _process_command()"
-            print out
+            ##print "DEBUG: _process_command()"
+            ##print out
             groups = parse_ndxlist(out)
             last = groups[-1]
             # reduce and name this group
@@ -602,8 +602,8 @@ class IndexBuilder(object):
         self.check_output(out, "No atoms found for "
                           "%(selection)r --> %(_selection)r" % vars())
         # For debugging, look at out and err or set stdout=True, stderr=True
-        print "DEBUG: _process_residue()"
-        print out
+        ##print "DEBUG: _process_residue()"
+        ##print out
 
         return name, ndx
 

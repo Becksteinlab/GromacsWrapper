@@ -33,9 +33,10 @@ import os.path
 import warnings
 import subprocess
 import tempfile
+import numpy
 
 import gromacs
-from gromacs.utilities import AttributeDict, XVG
+from gromacs.utilities import AttributeDict, XVG, asiterable
 from gromacs.analysis.core import Worker, Plugin
 
 
@@ -50,6 +51,16 @@ class _Distances(Worker):
     """
 
     plugin_name = "Distances"
+    #: list of results (not used at the moment, see __init__)
+    names = ["distance", "contacts"]
+    #: dict of labels for the plot x-axis; one for each result
+    xlabels = {"distance": r"time $t/$ns",
+               "contacts": r"time $t/$ns",
+               }
+    #: dict of labels for the plot y-axis; one for each result
+    ylabels = {"distance": r"distance $d/$nm",
+               "contacts": r"contacts $N$",
+               }
 
     def __init__(self,**kwargs):
         """Set up  customized distance analysis.
@@ -89,16 +100,8 @@ class _Distances(Worker):
         self.parameters.figname = self.plugindir('distances')
 
     # override 'API' methods of base class
-        
+    
     def run(self,**kwargs):
-        return self.run_g_mindist(**kwargs)
-
-    def analyze(self,**kwargs):
-        return self.analyze_dist()
-
-    # specific methods
-
-    def run_g_mindist(self,**gmxargs):
         """Run ``g_mindist `` to compute distances between A and B groups.
 
         Additional arguments can be provided (e.g. ``-b`` or ``-e``)
@@ -116,26 +119,88 @@ class _Distances(Worker):
             
         indexgroups = [x for x in (self.parameters.A, self.parameters.B)
                        if not x is None]
+        kwargs.setdefault('o', True)      # just generate with default names
+        kwargs.setdefault('_or', True)    # just generate with default names
         gromacs.g_mindist(s=self.simulation.tpr, n=self.parameters.ndx,
                           f=self.simulation.xtc, d=self.parameters.cutoff,
                           od=self.parameters.filenames['distance'],
                           on=self.parameters.filenames['contacts'],
-                          o=True, _or=True,    # just generate with default names
                           input=indexgroups,
-                          **gmxargs)
+                          **kwargs)
 
-    def analyze_dist(self):
-        """Make data available as numpy arrays."""        
+    def analyze(self,**kwargs):
+        """Make data files available as numpy arrays."""        
         results = AttributeDict()
-
         for name, f in self.parameters.filenames.items():
-            results[name] = XVG(f).asarray()
-
+            results[name] = XVG(f)
         self.results = results
         return results
 
+    def plot(self, names=None, **kwargs):
+        """Plot the selected data.
 
+        :Arguments:
+           names : string or list
+              Selects which results should be plotted. ``None`` plots all
+              in separate graphs.
+           figure
+               - ``True``: save figures in the given formats
+               - "name.ext": save figure under this filename (``ext`` -> format)
+               - ``False``: only show on screen
+           formats : sequence
+               sequence of all formats that should be saved [('png', 'pdf')]
+           callbacks : dict
+               **hack**: provide a dictionary that contains callback functions
+               to customize the plot. They will be called at the end of
+               generating a subplot and must be indexed by *name*. They will
+               be called with the keyword arguments *name* and *axis*
+               (current subplot axis object)::
 
+                    callback(name=name, axis=ax)
+           kwargs
+              All other keyword arguments are directly passed to 
+              meth:`gromacs.utilities.XVG.plot`.
+        """
+        import pylab
+
+        figure = kwargs.pop('figure', False)
+        extensions = kwargs.pop('formats', ('pdf','png'))
+        callbacks = kwargs.pop('callbacks', None)
+        def ps2ns(a):
+            """Transform first column (in ps) to ns."""
+            _a = numpy.array(a, copy=True)
+            _a[0] *= 0.001
+            return _a
+        kwargs.setdefault('transform', ps2ns)
+
+        if names is None:
+            names = self.results.keys()
+        names = asiterable(names)  # this is now a list (hopefully of strings)
+        ngraphs = len(names)
+        for plotNum, name in enumerate(names):
+            plotNum += 1
+            ax = pylab.subplot(1, ngraphs, plotNum)
+            try:
+                data = self.results[name].plot(**kwargs)
+            except KeyError:
+                ax.close()
+                raise KeyError('name = %r not known, choose one of %r' % (name, self.results.keys()))
+            #pylab.title(r'Distances: %s' % name)
+            pylab.xlabel(self.xlabels[name])
+            pylab.ylabel(self.ylabels[name])
+            
+            # hack: callbacks for customization
+            if not callbacks is None:
+                callbacks[name](name=name, axis=ax)
+
+        # pylab.legend(loc='best')
+        if figure is True:
+            for ext in extensions:
+                self.savefig(ext=ext)
+        elif figure:
+            self.savefig(filename=figure)
+                           
+                           
 
 # Public classes that register the worker classes
 #------------------------------------------------
