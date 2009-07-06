@@ -35,7 +35,7 @@ import subprocess
 import tempfile
 
 import gromacs
-from gromacs.utilities import AttributeDict
+from gromacs.utilities import AttributeDict, XVG
 from gromacs.analysis.core import Worker, Plugin
 
 
@@ -62,13 +62,13 @@ class _Distances(Worker):
            ndx : index filename or list
              All index files that contain the A and B groups.
            cutoff : float
-             A contact is recorded if the distance is <cutoff [0.6nm]
+             A contact is recorded if the distance is <cutoff [0.6 nm]
         """
         # specific setup
         A = kwargs.pop('A',None)
         B = kwargs.pop('B', None)
         ndx = kwargs.pop('ndx', None)
-        cutoff = kwargs.pop('cutoff', 0.6)
+        cutoff = kwargs.pop('cutoff', 0.6)   # default: 0.6 nm
 
         # super class: do this before doing anything else
         super(_Distances,self).__init__(**kwargs)
@@ -111,7 +111,7 @@ class _Distances(Worker):
         and the method returns immediately.        
         """
         if self.check_file_exists(self.parameters.filenames['distance'],
-                                  resolve='warning'):
+                                  resolve='warn'):
             return
             
         indexgroups = [x for x in (self.parameters.A, self.parameters.B)
@@ -128,7 +128,8 @@ class _Distances(Worker):
         """Make data available as numpy arrays."""        
         results = AttributeDict()
 
-        # XXX: do something...
+        for name, f in self.parameters.filenames.items():
+            results[name] = XVG(f).asarray()
 
         self.results = results
         return results

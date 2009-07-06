@@ -21,6 +21,7 @@ class is derived from it.
 .. autoclass:: FileUtils
    :members:
 .. autoclass:: AttributeDict
+.. autoclass:; XVG
 
 Functions
 ---------
@@ -40,6 +41,8 @@ Data
 .. autodata:: amino_acid_codes
 
 """
+from __future__ import with_statement
+
 __docformat__ = "restructuredtext en"
 
 import os
@@ -47,6 +50,7 @@ import glob
 import warnings
 import errno
 import bz2, gzip
+import numpy
 
 class AttributeDict(dict):
     """A dictionary with pythonic access to keys as attributes --- useful for interactive work."""
@@ -178,6 +182,7 @@ class FileUtils(object):
         solutions = {'ignore': lambda x: False,      # file exists, but we pretend that it doesn't
                      'indicate': lambda x: True,     # yes, file exists
                      'warn': _warn,
+                     'warning': _warn,
                      'exception': _raise,
                      }
         if not os.path.isfile(filename):
@@ -185,6 +190,25 @@ class FileUtils(object):
         else:
             return solutions[resolve](filename)
 
+
+class XVG(FileUtils):
+    """Class that represents a grace xvg file."""
+    def __init__(self, filename):
+        self.filename = filename
+
+    def asarray(self):
+        """Return data of the file as numpy array.
+
+        .. note:: Only simple nxy files are currently supported.
+        """
+        with open(self.filename) as xvg:
+            rows = []
+            for line in xvg:
+                line = line.strip()
+                if line.startswith(('#', '@')) or len(line) == 0:
+                    continue
+                rows.append(map(float, line.split()))
+        return numpy.array(rows)
 
 def iterable(obj):
     """Returns ``True`` if *obj* can be iterated over and is *not* a  string."""
