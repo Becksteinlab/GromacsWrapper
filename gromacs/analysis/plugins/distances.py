@@ -46,12 +46,7 @@ from gromacs.analysis.core import Worker, Plugin
 class _Distances(Worker):
     """Analysis of distances.
 
-    First generate index files with the groups of interest::
-
-      from gromacs.cbook import IndexBuilder
-      A_ndx = IndexBuilder(tpr, ['@a 62549 & r NA'], names=['Na1'], offset=-9, out_ndx='Na1.ndx', name_all="NA1").combine()
-      B_ndx = IndexBuilder('md_posres.pdb', ['S312:OG','T313:OG1','A38:O','I41:O','A309:O'], offset=-9, out_ndx='Na1_site.ndx', name_all="Na1_site").combine()
-
+    See :class:`Distances` for usage.
     """
 
     plugin_name = "Distances"
@@ -104,7 +99,7 @@ class _Distances(Worker):
     # specific methods
 
     def run_g_mindist(self,**gmxargs):
-        """Run ``g_dist `` to compute distances between A and B groups.
+        """Run ``g_mindist `` to compute distances between A and B groups.
 
         Additional arguments can be provided (e.g. ``-b`` or ``-e``)
         but an error will result if one tries to set parameters that
@@ -147,10 +142,24 @@ class _Distances(Worker):
 class Distances(Plugin):
     """*Distances* plugin.
 
-    Distances between all members of groups A and B are calculated for
-    each time step and written to file
-    (:meth:`_Distances.run`). Additional analysis is deferred to the
-    :meth:`_Distances.analyze` call.
+    Distances between the centers of groups A and B and the number of contacts
+    are calculated for each time step and written to files.
+    
+    First generate index files with the groups of interest::
+
+      from gromacs.cbook import IndexBuilder
+      A_grp, A_ndx = IndexBuilder(tpr, ['@a 62549 & r NA'], names=['Na1'], offset=-9, 
+                                  out_ndx='Na1.ndx', name_all="NA1").combine()
+      B_grp, B_ndx = IndexBuilder(tpr, ['S312:OG','T313:OG1','A38:O','I41:O','A309:O'], offset=-9, 
+                                  out_ndx='Na1_site.ndx', name_all="Na1_site").combine()
+
+    Use a :class:`gromacs.analysis.Simulation` class with the :class:`Distances` plugin
+    and provide the parameters in the ``Distances`` dict::
+ 
+      from gromacs.analysis import Simulation
+      S = Simulation(..., plugins=['Distances', ...], 
+                     Distances={'A':A_grp, 'B':B_grp, 'ndx': [A_ndx, B_ndx]})
+
     """
     plugin_name = "Distances"
     worker_class = _Distances
