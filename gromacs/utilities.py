@@ -52,6 +52,13 @@ import errno
 import bz2, gzip
 import numpy
 
+def Property(func):
+    """Simple decorator wrapper to make full fledged properties.
+    See eg http://adam.gomaa.us/blog/2008/aug/11/the-python-property-builtin/
+    """
+    return property(**func())
+    
+
 class AttributeDict(dict):
     """A dictionary with pythonic access to keys as attributes --- useful for interactive work."""
     def __getattribute__(self,x):
@@ -184,6 +191,7 @@ class FileUtils(object):
                      'warn': _warn,
                      'warning': _warn,
                      'exception': _raise,
+                     'raise': _raise,
                      }
         if not os.path.isfile(filename):
             return False
@@ -195,11 +203,19 @@ class XVG(FileUtils):
     """Class that represents a grace xvg file."""
     def __init__(self, filename):
         self.filename = filename
+        self.__array = None          # cache for array property
 
     def asarray(self):
         """Return data of the file as numpy array.
 
-        .. note:: Only simple nxy files are currently supported.
+        The array is returned with column-first indexing, i.e. for a data file with
+        columns X Y1 Y2 Y3 ... the array a will be a[0] = X, a[1] = Y1, ... .
+
+        All data must be numerical. ``NAN`` and ``INF`` values are
+        supported via python's float() function.
+
+        .. note:: Only simple nxy files are currently supported, not grace files
+                  that contain multiple data sets separated by '&'.
         """
         with open(self.filename) as xvg:
             rows = []
@@ -207,8 +223,28 @@ class XVG(FileUtils):
                 line = line.strip()
                 if line.startswith(('#', '@')) or len(line) == 0:
                     continue
+                if line.startswith('&'):
+                    raise NotImplementedError('Sorry only simple NXY format is supported.')
                 rows.append(map(float, line.split()))
-        return numpy.array(rows)
+        return numpy.array(rows).transpose()
+
+    @Property
+    def array():
+        doc = "Represent xvg data as a (cached) numpy array."
+        def fget(self):
+            if self.__array is None:
+                self.__array = self.asarray()
+            return self.__array
+        return locals()
+
+    def plot(self, *args, **kwargs):
+        """Plot xvg file data.
+
+        All arguments are passed on to pylab.plot.
+        """
+        import pylab
+        pylab.plot(self.array, *args, **kwargs)
+        
 
 def iterable(obj):
     """Returns ``True`` if *obj* can be iterated over and is *not* a  string."""
