@@ -78,13 +78,17 @@ automatically installed with ``easy_install``).
 .. _numpy: http://numpy.scipy.org
 .. _matplotlib: http://matplotlib.sourceforge.net/
 
-For the :mod:`gromacs.analysis` library additional packages are required::
+For the :mod:`gromacs.analysis` library additional packages are required:
 
-  matplotlib   >=0.91.3         http://matplotlib.sourceforge.net/
-  RecSQL       >=0.3            http://sbcb.bioch.ox.ac.uk/oliver/download/Python/
+  =============  ==========  ==================================================
+  package        version     source
+  =============  ==========  ==================================================
+  matplotlib     >=0.91.3    http://matplotlib.sourceforge.net/
+  RecSQL         >=0.3       http://sbcb.bioch.ox.ac.uk/oliver/software/RecSQL/
+  =============  ==========  ==================================================
 
 See `Installing all packages and requirements`_ for hints on how to
-do this.
+install these package.
 
 
 Additional instructions
@@ -95,13 +99,12 @@ Installing *all* packages and requirements
 
 If you want to make sure that ``easy_install`` also installs
 requirements for optional modules then you will have to add the
-additional requirement ``[analysis]`` to the command line, for
-instance ::
+additional requirement ``[analysis]`` to the command line. For a web
+install this would look like ::
 
   easy_install -f http://sbcb.bioch.ox.ac.uk/oliver/download/Python GromacsWrapper[analysis]
 
-when installing from the internet; from a downloaded source
-distribution ::
+For installation from a downloaded source distribution ::
 
   easy_install GromacsWrapper-0.1.tbz[analysis]
 
@@ -110,8 +113,11 @@ or from within the unpacked source ::
   cd GromacsWrapper-0.1
   easy_install . GromacsWrapper[analysis]
 
-This will try to download additional packages for the extra *analysis*
-module.
+In each case this will try to download additional packages for the
+extra *analysis* module.
+
+A common problem appears to be the error `Could not find matplotlib`_
+as discussed below.
 
 
 Troubleshooting
@@ -175,9 +181,12 @@ Automatic downloading of ``matplotlib`` often fails::
    No local packages or download links found for matplotlib>=0.91.3
    error: Could not find suitable distribution for Requirement.parse('matplotlib>=0.91.3')
 
-If automatic downloading of ``matplotlib`` fails then `download
-matplotlib`_ manually and `install matplotlib manually`_ first. For
-example,::
+If automatic downloading of ``matplotlib`` fails then the best
+approach is to install it through your package management
+system. Search for "matplotlib" or "pylab" in the list of available packages.
+
+If this is not an option then `download matplotlib`_ manually and
+`install matplotlib manually`_ first. For example, ::
 
    wget http://kent.dl.sourceforge.net/sourceforge/matplotlib/matplotlib-0.98.5.3-py2.5-macosx-10.3-fat.egg \
         -O matplotlib-0.98.5.3-py2.5.egg
@@ -204,5 +213,3 @@ installed matplotlib.
      http://matplotlib.sourceforge.net/users/installing.html
 .. _`matplotlib installation FAQ`:
      http://matplotlib.sourceforge.net/faq/installing_faq.html#easy-install-from-egg
-
-     
