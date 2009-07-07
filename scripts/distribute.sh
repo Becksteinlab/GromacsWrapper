@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# XXX: would be nice to get version from setup.py and patch it into
+# XXX: doc/sphinx/source/conf.py
+
 PACKAGE=GromacsWrapper
 
 SERVERDIR=/sansom/public_html/sbcb/oliver
@@ -49,7 +52,7 @@ distribution () {
 make_epydocs() {
   epydoc -v -o doc/epydoc --html --name=$PACKAGE \
          --url=http://sbcb.bioch.ox.ac.uk/oliver/software/$PACKAGE/ \
-         recsql  \
+         gromacs gromacs/analysis/plugins/ vmd/  \
       || die "Failed making epydoc"
   RSYNC -vrP --delete doc/epydoc $DOCS
 }

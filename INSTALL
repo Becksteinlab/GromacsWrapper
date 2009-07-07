@@ -54,7 +54,7 @@ Requirements
 Python_ and Gromacs_ must be installed. ipython_ is very much
 recommended. These packages might already be available through your local
 package manager such as ``aptitude/apt``, ``yum``, ``yast``, ``fink`` or
-``macports``.
+``macports``. 
 
 .. _Python: http://www.python.org
 .. _Gromacs: http://www.gromacs.org
@@ -64,19 +64,24 @@ package manager such as ``aptitude/apt``, ``yum``, ``yast``, ``fink`` or
 System requirements
 -------------------
 
-Tested with python 2.4, 2.5 on Linux and Mac OS X.
+Tested with python 2.4, 2.5, 2.6 on Linux and Mac OS X. Python 2.3 is
+probably not going to work any more, sorry.
 
 
 Required python modules
 -----------------------
 
-The basic package only uses the standard library.
+The basic package makes use of numpy_ and can use matplotlib_ (in the
+form of the ``pylab`` package). Only numpy_ is immediately required (and
+automatically installed with ``easy_install``).
 
-For the analysis library additional modules are required::
+.. _numpy: http://numpy.scipy.org
+.. _matplotlib: http://matplotlib.sourceforge.net/
 
-  numpy        >=1.0.3          http://numpy.scipy.org/
+For the :mod:`gromacs.analysis` library additional packages are required::
+
   matplotlib   >=0.91.3         http://matplotlib.sourceforge.net/
-  RecSQL       >=0.2            http://sbcb.bioch.ox.ac.uk/oliver/download/Python/
+  RecSQL       >=0.3            http://sbcb.bioch.ox.ac.uk/oliver/download/Python/
 
 See `Installing all packages and requirements`_ for hints on how to
 do this.
@@ -90,21 +95,23 @@ Installing *all* packages and requirements
 
 If you want to make sure that ``easy_install`` also installs
 requirements for optional modules then you will have to add the
-additional requirement to the command line, for instance::
+additional requirement ``[analysis]`` to the command line, for
+instance ::
 
   easy_install -f http://sbcb.bioch.ox.ac.uk/oliver/download/Python GromacsWrapper[analysis]
 
-when installing from the internet; from a downloaded source distribution::
+when installing from the internet; from a downloaded source
+distribution ::
 
   easy_install GromacsWrapper-0.1.tbz[analysis]
 
-or from within the unpacked source::
+or from within the unpacked source ::
 
   cd GromacsWrapper-0.1
   easy_install . GromacsWrapper[analysis]
 
-in order to try to download additional packages for the additional
-*analysis* module.
+This will try to download additional packages for the extra *analysis*
+module.
 
 
 Troubleshooting
@@ -129,29 +136,28 @@ useful. In the unpacked source::
 
 where ``python-lib-dir`` must be on the ``PYTHONPATH``.
 
-
-
 .. _Custom Installation Locations:
    http://peak.telecommunity.com/DevCenter/EasyInstall#custom-installation-locations
 
 
-ez_install import error
------------------------
+easy_install import error
+-------------------------
 
 Online installation can run into issues where the installation dies
 with the error::
 
  ImportError: No module named ez_setup
 
-If `EasyInstall Troubleshooting`_ does not help then simply download
+If `EasyInstall Troubleshooting`_ does not help then try downloading
 the source distribution package manually, unpack, and install from
 inside with something like::
 
  python setup.py install
 
+If this is still not working contact the author and complain.
+
 .. _EasyInstall Troubleshooting:
    http://peak.telecommunity.com/DevCenter/EasyInstall#troubleshooting
-
 
 
 
