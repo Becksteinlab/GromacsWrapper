@@ -137,11 +137,14 @@ class Simulation(object):
     3. Analyze the output from :meth:`run` with :meth:`analyze`; results are stored 
        in :attr:`results`. 
     4. Plot results with :meth:`plot`.
+
+    Detailed listing of methods:
+
     """
     def __init__(self, **kwargs):
         """Set up a Simulation object; analysis is performed via methods.
 
-        :Parameters:
+        :Keywords:
            tpr
              Gromacs tpr file (**required**)
            xtc
@@ -172,14 +175,19 @@ class Simulation(object):
 
         plugin_classes = kwargs.pop('plugins', [])
         for P in plugin_classes:
-            self.add_plugin(P, **kwargs)
+            self._add_plugin(P, **kwargs)
 
         # convenience: if only a single plugin was registered we default to that one
         if len(self.plugins) == 1:
             self.set_default_plugin(self.plugins.keys()[0])
 
-    def add_plugin(self, plugin_class, **kwargs):
+    def _add_plugin(self, plugin_class, **kwargs):
         """Create a plugin instance from plugin_class and add it to the registry.
+
+        This is the 'real' add_plugin method. Notably, it requires plugin
+        arguments to apckaged in a dict that is named like the pligin. A user
+        should simply use the :meth:`add_plugin` method with its more intuitive
+        calling convention.
 
         :Arguments:
             plugin_class : class or string
@@ -198,6 +206,11 @@ class Simulation(object):
                ``CysAccessibility={'cysteines': [23, 123, 456]}`` and ignore
                everythin else. The contents of the dict are specific for the
                plugin and should be described in its documentation.
+
+        The convoluted way to pass arguments is necessary so that the
+        :class:`Simulation` class constructor can initialize all plugins
+        immediately without worrying about clashes of keyword argument names in
+        the individual plugins.
         """
         # 1. self must be provided so that plugin knows who owns it
         # 2. plugin_class.__init__ will take a dict of name plugin_class.plugin_name
@@ -207,6 +220,26 @@ class Simulation(object):
             import plugins            # XXX: hope we can import this safely now...
             plugin_class = plugins.__plugin_classes__[plugin_class]
         plugin_class(simulation=self, **kwargs)  # simulation=self is REQUIRED!
+
+    def add_plugin(self, plugin_class, **kwargs):
+        """Create a plugin instance from plugin_class and add it to the registry.
+
+        :Arguments:
+            plugin_class : class or string
+               If the parameter is a class then it should have been derived
+               from :class:`Plugin`. If it is a string then it is taken as a
+               plugin name in :mod:`gromacs.analysis.plugins` and the
+               corresponding class is added.
+            kwargs
+               Keyword arguments are all passed to the plugin constructor,
+        """
+        try:
+            plugin_name = plugin_class.plugin_name
+        except AttributeError:
+            plugin_name = plugin_class
+        plugin_args = {plugin_name: kwargs}    # wrap all arguments in dict to be passed to Plugin init
+        self._add_plugin(plugin_class, **plugin_args)
+        
 
     def topdir(self,*args):
         """Returns path under self.analysis_dir. Parent dirs are created if necessary."""
@@ -222,15 +255,25 @@ class Simulation(object):
     def plugindir(self,plugin_name,*args):
         return self.select_plugin(plugin_name).plugindir(*args)
 
-    def check_file(self,filetype, path):
+    def check_file(self,filetype,path):
+        """Raise :exc:`ValueError` if path does not exist. Uses *filetype* in message."""
         if path is None or not os.path.isfile(path):
             raise ValueError("Missing required file %(filetype)r, got %(path)r." % vars())
         return True
 
+    def check_plugin_name(self,plugin_name):
+        """Raises a exc:`ValueError` if *plugin_name* is not registered."""
+        if not (plugin_name is None or self.has_plugin(plugin_name)):
+            raise ValueError('plugin_name must be None or one of\n%r\n' % self.plugins.keys())
+
+    def has_plugin(self,plugin_name):
+        """Returns True if *plugin_name* is registered."""
+        return plugin_name in self.plugins
+
     def set_default_plugin(self,plugin_name):
         """Set the plugin that should be used by default.
 
-        If no plugin_name is supplied to run(), analyze() etc. then
+        If no *plugin_name* is supplied to :meth:`run`, :meth:`analyze` etc. then
         this will be used.
         """
         if plugin_name == None:
@@ -240,23 +283,18 @@ class Simulation(object):
             self.default_plugin_name = plugin_name
         return self.default_plugin_name
 
-    def has_plugin(self,plugin_name):
-        """Returns True if plugin_name is registered."""
-        return plugin_name in self.plugins
-
-    def check_plugin_name(self,plugin_name):
-        """Raises a ValueError if plugin_name is not registered."""
-        if not (plugin_name is None or self.has_plugin(plugin_name)):
-            raise ValueError('plugin_name must be None or one of\n%r\n' % self.plugins.keys())
+    set_plugin = set_default_plugin
 
     def select_plugin(self,plugin_name=None):
-        """Return valid plugin or the default for plugin_name=None."""
+        """Return valid plugin or the default for *plugin_name*=``None``."""
         self.check_plugin_name(plugin_name)
         if plugin_name is None:
             if self.default_plugin_name is None:
                 raise ValueError('No default plugin was set.')
             plugin_name = self.default_plugin_name
         return self.plugins[plugin_name]
+
+    get_plugin = select_plugin
 
     def run(self,plugin_name=None,**kwargs):
         """Generate data files as prerequisite to analysis."""
@@ -281,7 +319,8 @@ class Simulation(object):
            kwargs
               arguments for plugin plot function and possibly :func:`pylab.plot`
         """
-        return self.select_plugin(plugin_name).plot(figure=figure,**kwargs)    
+        kwargs['figure'] = figure
+        return self.select_plugin(plugin_name).plot(**kwargs)    
 
     def __str__(self):
         return 'Simulation(tpr=%(tpr)r,xtc=%(xtc)r,analysisdir=%(analysis_dir)r)' % vars(self)
@@ -309,7 +348,7 @@ class Worker(FileUtils):
           simulation
              A ``Simulation`` object; this is filled in by the ``Plugin`` class when the plugin 
              is registered (**required**).
-          \*\*kwargs
+          kwargs
              All other keyword arguments are passed to the super class.
         """
         assert self.plugin_name != None                  # derive from Worker
@@ -372,7 +411,7 @@ class Plugin(object):
         :Arguments:
            simulation : Simulation class
                 The simulation class that owns this plugin instance.
-           plugin_name : dict     
+           *plugin_name* : dict     
                 A dictionary named like the plugin is taken to include
                 keyword arguments that are passed to the __init__ of the plugin.
         """
