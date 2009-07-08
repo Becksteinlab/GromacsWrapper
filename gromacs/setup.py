@@ -98,16 +98,14 @@ import errno
 import re
 import shutil
 import warnings
-from contextlib import contextmanager
 
 from pkg_resources import resource_filename
-
 
 import gromacs
 from gromacs import GromacsError, GromacsFailureWarning, GromacsValueWarning, \
      AutoCorrectionWarning, BadParameterWarning
 import gromacs.cbook
-
+from gromacs.utilities import in_dir
 
 # Templates have to be extracted from the egg because they are used by
 # external code.
@@ -146,30 +144,6 @@ rlist        1.4        1.0
 ==========   =========  ================
 """
 
-
-
-@contextmanager
-def in_dir(directory):
-    """Context manager to execute a code block in a directory.
-
-    * directory is created if it does not exist
-    * at the end or after and exception code always returns to
-      the directory that was the current directory before entering
-      the block
-    """
-    startdir = os.getcwd()
-    try:
-        try:
-            os.chdir(directory)
-        except OSError, err:
-            if err.errno == errno.ENOENT:
-                os.makedirs(directory)
-                os.chdir(directory)
-            else:
-                raise
-        yield os.getcwd()
-    finally:
-        os.chdir(startdir)
 
 # TODO:
 # - should be part of a class so that we can store the topology etc !!!

@@ -30,6 +30,7 @@ Some additiona convenience functions:
 
 .. autofunction:: anyopen
 .. autofunction:: iterable
+.. autofunction:: in_dir
 .. autofunction:: convert_aa_code
 .. autofunction:: unlink_f
 .. autofunction:: unlink_gmx
@@ -49,6 +50,7 @@ import os
 import glob
 import warnings
 import errno
+from contextlib import contextmanager
 import bz2, gzip
 import numpy
 
@@ -124,6 +126,28 @@ def convert_aa_code(x):
         raise ValueError("Can only convert 1-letter or 3-letter amino acid codes, "
                          "not %r" % x)
 
+@contextmanager
+def in_dir(directory):
+    """Context manager to execute a code block in a directory.
+
+    * directory is created if it does not exist
+    * at the end or after and exception code always returns to
+      the directory that was the current directory before entering
+      the block
+    """
+    startdir = os.getcwd()
+    try:
+        try:
+            os.chdir(directory)
+        except OSError, err:
+            if err.errno == errno.ENOENT:
+                os.makedirs(directory)
+                os.chdir(directory)
+            else:
+                raise
+        yield os.getcwd()
+    finally:
+        os.chdir(startdir)
 
 class FileUtils(object):
     """Mixin class to provide additional IO capabilities."""
