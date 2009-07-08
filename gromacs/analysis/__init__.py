@@ -49,7 +49,7 @@ because we might want to do additional analysis in the future we also add the
         super(MyProtein,self).__init__(**kwargs)   # should ALWAYS come last
 
   S = MyProtein(tpr=..., xtc=..., analysisdir=..., plugins=['CysAccessibility', 'Distances'])
-  S.set_default_plugin('CysAccessibility')  # do CysAccessibility analysis
+  S.set_plugin('CysAccessibility')          # do CysAccessibility analysis
   S.run()                                   # analyze trajectory and write files
   S.analyze()                               # analyze output files
   S.plot(figure=True)                       # plot and save the figure

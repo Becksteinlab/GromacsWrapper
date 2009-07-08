@@ -31,7 +31,7 @@ Derive class for the simulation of interest along the lines of ::
            super(MyProtein,self).__init__(**kwargs)
 
      S = MyProtein(tpr=..., xtc=..., analysisdir=..., plugins=[CysAccessibility, Distances])
-     S.set_default_plugin('CysAccessibility')  # do CysAccessibility for now
+     S.set_plugin('CysAccessibility')          # do CysAccessibility for now
      S.run()                                   # generate data from trajectories
      S.analyze()                               # analyze data
      S.plot(figure=True)                       # plot and save figures
@@ -270,7 +270,7 @@ class Simulation(object):
         """Returns True if *plugin_name* is registered."""
         return plugin_name in self.plugins
 
-    def set_default_plugin(self,plugin_name):
+    def set_plugin(self,plugin_name):
         """Set the plugin that should be used by default.
 
         If no *plugin_name* is supplied to :meth:`run`, :meth:`analyze` etc. then
@@ -283,9 +283,9 @@ class Simulation(object):
             self.default_plugin_name = plugin_name
         return self.default_plugin_name
 
-    set_plugin = set_default_plugin
+    set_default_plugin = set_plugin  # deprecated
 
-    def select_plugin(self,plugin_name=None):
+    def get_plugin(self,plugin_name=None):
         """Return valid plugin or the default for *plugin_name*=``None``."""
         self.check_plugin_name(plugin_name)
         if plugin_name is None:
@@ -294,7 +294,12 @@ class Simulation(object):
             plugin_name = self.default_plugin_name
         return self.plugins[plugin_name]
 
-    get_plugin = select_plugin
+    @property
+    def current_plugin(self):
+        """The currently active plugin (set with :meth:`Simulation.set_plugin`)."""
+        return self.get_plugin()
+
+    select_plugin = get_plugin     # deprecated
 
     def run(self,plugin_name=None,**kwargs):
         """Generate data files as prerequisite to analysis."""

@@ -181,7 +181,7 @@ class _Distances(Worker):
             plotNum += 1
             ax = pylab.subplot(1, ngraphs, plotNum)
             try:
-                data = self.results[name].plot(**kwargs)
+                data = self.results[name].plot(**kwargs)   # results are XVG objects with plot method
             except KeyError:
                 ax.close()
                 raise KeyError('name = %r not known, choose one of %r' % (name, self.results.keys()))
