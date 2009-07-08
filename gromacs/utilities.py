@@ -52,6 +52,9 @@ import errno
 import bz2, gzip
 import numpy
 
+from gromacs import AutoCorrectionWarning
+
+
 def Property(func):
     """Simple decorator wrapper to make full fledged properties.
     See eg http://adam.gomaa.us/blog/2008/aug/11/the-python-property-builtin/
@@ -232,15 +235,13 @@ class XVG(FileUtils):
                 rows.append(map(float, line.split()))
         return numpy.array(rows).transpose()
 
-    @Property
-    def array():
-        doc = """Represent xvg data as a (cached) numpy array. 
-              See meth:`~XVG.asarray` for details."""
-        def fget(self):
-            if self.__array is None:
-                self.__array = self.asarray()
-            return self.__array
-        return locals()
+    @property
+    def array(self):
+        """Represent xvg data as a (cached) numpy array. 
+           See meth:`~XVG.asarray` for details."""
+        if self.__array is None:
+            self.__array = self.asarray()
+        return self.__array
 
     def plot(self, **kwargs):
         """Plot xvg file data.
@@ -252,15 +253,34 @@ class XVG(FileUtils):
         is plotted against the index, i.e. (N, Y).
 
         :Arguments:
-          - *transform*: function *transform(array) --> array* which transforms
-            the original array; must return a 2D numpy array of shape [X,
-            Y1, Y2, ...] where X, Y1, ... are column vectors.
-            By default the transformation is the identity.
-          - All other keyword arguments are passed on to :func:`pylab.plot`.
+           transform : function
+               function *transform(array) --> array* which transforms
+               the original array; must return a 2D numpy array of
+               shape [X, Y1, Y2, ...] where X, Y1, ... are column
+               vectors.  By default the transformation is the
+               identity [``lambda x: x``].
+          maxpoints : int
+               limit the total number of data points; matplotlib has issues processing
+               png files with >100,000 points and pdfs take forever to display. Set to
+               ``None`` if really all data should be displayed. At the moment we simply
+               subsample the data at regular intervals. [10000]
+          kwargs
+               All other keyword arguments are passed on to :func:`pylab.plot`.
         """
         import pylab
+
+        maxpoints = kwargs.pop('maxpoints', 10000)
         transform = kwargs.pop('transform', lambda x: x)  # default is identity transformation
         a = numpy.asarray(transform(self.array))
+
+        ny = a.shape[-1]   # assume 1D or 2D array with last dimension varying fastest
+        if not maxpoints is None and ny > maxpoints:
+            # reduce size by subsampling (primitive --- can leave out bits at the end)
+            stepsize = int(ny / maxpoints)
+            a = a[..., ::stepsize]
+            warnings.warn("Plot had %d datapoints > maxpoints = %d; subsampled to %d regularly spaced points." 
+                          % (ny, maxpoints, a.shape[-1]), category=AutoCorrectionWarning)
+
         if len(a.shape) == 1:
             # special case: plot against index; plot would do this automatically but 
             # we'll just produce our own xdata and pretend that this was X all along
