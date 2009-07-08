@@ -269,7 +269,8 @@ class XVG(FileUtils):
         """
         import pylab
 
-        maxpoints = kwargs.pop('maxpoints', 10000)
+        maxpoints_default = 10000
+        maxpoints = kwargs.pop('maxpoints', maxpoints_default)
         transform = kwargs.pop('transform', lambda x: x)  # default is identity transformation
         a = numpy.asarray(transform(self.array))
 
@@ -278,8 +279,9 @@ class XVG(FileUtils):
             # reduce size by subsampling (primitive --- can leave out bits at the end)
             stepsize = int(ny / maxpoints)
             a = a[..., ::stepsize]
-            warnings.warn("Plot had %d datapoints > maxpoints = %d; subsampled to %d regularly spaced points." 
-                          % (ny, maxpoints, a.shape[-1]), category=AutoCorrectionWarning)
+            if maxpoints == maxpoints_default:
+                warnings.warn("Plot had %d datapoints > maxpoints = %d; subsampled to %d regularly spaced points." 
+                              % (ny, maxpoints, a.shape[-1]), category=AutoCorrectionWarning)
 
         if len(a.shape) == 1:
             # special case: plot against index; plot would do this automatically but 
