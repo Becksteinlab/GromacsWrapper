@@ -12,4 +12,3 @@ mostly relevant to anyone who wants to extend the package.
 .. automodule:: gromacs.tools
    :members:
 .. automodule:: gromacs.utilities
-

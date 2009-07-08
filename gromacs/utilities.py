@@ -21,15 +21,16 @@ class is derived from it.
 .. autoclass:: FileUtils
    :members:
 .. autoclass:: AttributeDict
-.. autoclass:; XVG
+.. autoclass:: XVG
 
 Functions
 ---------
 
-Some additiona convenience functions:
+Some additional convenience functions:
 
 .. autofunction:: anyopen
 .. autofunction:: iterable
+.. autofunction:: asiterable
 .. autofunction:: in_dir
 .. autofunction:: convert_aa_code
 .. autofunction:: unlink_f
