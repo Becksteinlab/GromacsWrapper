@@ -182,8 +182,14 @@ class Simulation(object):
         self.analysis_dir = kwargs.pop('analysisdir', os.path.dirname(self.tpr))
 
         # registry for plugins: This dict is central.
-        self.plugins = AttributeDict()   # nicer for interactive use than dict
+        self.plugins = AttributeDict()
         self.default_plugin_name = None
+
+        # XXX: Or should we simply add instances and the re-register
+        #      all instances using Instance.register() ?
+        # XXX: ... this API should be cleaned up. It seems to be connected
+        #      back and forth in vicious circles. -- OB 2009-07-10
+        
 
         plugin_classes = kwargs.pop('plugins', [])
         for P in plugin_classes:
@@ -191,7 +197,7 @@ class Simulation(object):
 
         # convenience: if only a single plugin was registered we default to that one
         if len(self.plugins) == 1:
-            self.set_default_plugin(self.plugins.keys()[0])
+            self.set_plugin(self.plugins.keys()[0])
 
     def _add_plugin(self, plugin_class, **kwargs):
         """Create a plugin instance from plugin_class and add it to the registry.
@@ -254,7 +260,9 @@ class Simulation(object):
         
 
     def topdir(self,*args):
-        """Returns path under self.analysis_dir. Parent dirs are created if necessary."""
+        """Returns a path under self.analysis_dir, which is guaranteed to exist. 
+
+        .. Note:: Parent dirs are created if necessary."""
         p = os.path.join(self.analysis_dir, *args)
         parent = os.path.dirname(p)
         try:
@@ -315,11 +323,11 @@ class Simulation(object):
 
     def run(self,plugin_name=None,**kwargs):
         """Generate data files as prerequisite to analysis."""
-        return self.select_plugin(plugin_name).run(**kwargs)
+        return self.get_plugin(plugin_name).run(**kwargs)
 
     def analyze(self,plugin_name=None,**kwargs):
         """Run analysis for the plugin."""
-        return self.select_plugin(plugin_name).analyze(**kwargs)    
+        return self.get_plugin(plugin_name).analyze(**kwargs)    
 
     def plot(self,plugin_name=None,figure=False,**kwargs):
         """Plot all data for the selected plugin::
@@ -438,19 +446,28 @@ class Plugin(object):
 
     Otherwise the :meth:`Plugin.register` method must be called explicitly with
     a :class:`Simulation` instance.
+
+    The plugin class handles the administrative tasks of interfacing with the
+    :class:`Simulation` class. The worker runs the analysis.
+
+    .. Note:: If multiple Plugin instances are added to a Simulation one *must*
+              set the *name* keyword argument to distinguish the
+              instances. Plugins are referred to by this name in all further
+              interactions with the user.
     """    
-    #: name of the plugin
-    plugin_name = None
     #: actual plugin :class:`Worker` class (name with leading underscore)
     worker_class = None
 
-    def __init__(self,simulation=None,**kwargs):
+    def __init__(self,name=None,simulation=None,**kwargs):
         """Registers the plugin with the simulation class.
 
         Specific keyword arguments are listed below, all other kwargs
         are passed through.
 
         :Arguments:
+           name : string
+                Name of the plugin. Should differ for different
+                instances. Defaults to the class name.
            simulation : Simulation instance
                 The :class:`Simulation` instance that owns this plugin instance. Can be
                 ``None`` but then the :meth:`register` method has to be called manually
@@ -459,9 +476,17 @@ class Plugin(object):
                 A dictionary named like the plugin is taken to include
                 keyword arguments that are passed to the __init__ of the plugin.
         """
+        if name is None:
+            name = self.__class__.__name__
+        self.plugin_name = name
+        """Name of the plugin; this must be a **unique** identifier across all
+           plugins of a :class:`Simulation` object. It should also be human
+           understandable and must be a valid python identifier as it is used
+           as a dict key."""
+
+
         print "DEBUG: plugin() registering %r" % self.plugin_name
 
-        assert self.plugin_name != None                # must derive from Plugin
         assert issubclass(self.worker_class, Worker)   # must be a Worker
 
         self.__is_registered = False
