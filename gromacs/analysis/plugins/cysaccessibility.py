@@ -100,33 +100,7 @@ class _CysAccessibility(Worker):
 
     # override 'API' methods of base class
         
-    def run(self,**kwargs):
-        return self.run_g_dist_cys(**kwargs)
-
-    def analyze(self,**kwargs):
-        return self.analyze_cys()
-
-    def plot(self,**kwargs):
-        return self.plot_cys(**kwargs)
-    
-    # specific methods
-
-    def make_index_cys(self):
-        """Make index file for all cysteines and water oxygens. 
-
-        **NO SANITY CHECKS**: The SH atoms are simply labelled consecutively
-        with the resids from the cysteines parameter.
-        """
-        commands_1 = ['keep 0', 'del 0', 'r CYSH & t S', 'splitres 0', 'del 0']  # CYS-S sorted by resid
-        commands_2 = ['t OW', 'q']                                               # water oxygens
-        commands = commands_1[:]
-        for groupid, resid in enumerate(self.parameters.cysteines):
-            commands.append('name %(groupid)d Cys%(resid)d'  % vars())           # name CYS-S groups canonically
-        commands.extend(commands_2)
-        return gromacs.make_ndx(f=self.simulation.tpr, o=self.parameters.ndx, 
-                                input=commands, stdout=None)
-
-    def run_g_dist_cys(self,cutoff=None,**gmxargs):
+    def run(self, cutoff=None, **gmxargs):
         """Run ``g_dist -dist cutoff`` for each cysteine and save output for further analysis."""
 
         if cutoff is None:
@@ -157,8 +131,9 @@ class _CysAccessibility(Worker):
             finally:
                 datafile.close()
 
-    def analyze_cys(self):
+    def analyze(self,**kwargs):
         """Mindist analysis for all cysteines. Returns results for interactive analysis."""        
+
         results = AttributeDict()
         for resid in self.parameters.cysteines:
             groupname = 'Cys%(resid)d' % vars()    # identifier should be a valid python variable name
@@ -166,12 +141,7 @@ class _CysAccessibility(Worker):
         self.results = results
         return results
 
-    def _mindist(self,resid):
-        """Analyze minimum distance for resid."""
-        filename = self.parameters.filenames[resid]
-        return dist.Mindist(filename,cutoff=self.parameters.cutoff)
-
-    def plot_cys(self, **kwargs):
+    def plot(self, **kwargs):
         """Plot all results in one graph, labelled by the result keys.
 
         :Keywords:
@@ -197,6 +167,29 @@ class _CysAccessibility(Worker):
                 self.savefig(ext=ext)
         elif figure:
             self.savefig(filename=figure)
+
+    
+    # specific methods
+
+    def make_index_cys(self):
+        """Make index file for all cysteines and water oxygens. 
+
+        **NO SANITY CHECKS**: The SH atoms are simply labelled consecutively
+        with the resids from the cysteines parameter.
+        """
+        commands_1 = ['keep 0', 'del 0', 'r CYSH & t S', 'splitres 0', 'del 0']  # CYS-S sorted by resid
+        commands_2 = ['t OW', 'q']                                               # water oxygens
+        commands = commands_1[:]
+        for groupid, resid in enumerate(self.parameters.cysteines):
+            commands.append('name %(groupid)d Cys%(resid)d'  % vars())           # name CYS-S groups canonically
+        commands.extend(commands_2)
+        return gromacs.make_ndx(f=self.simulation.tpr, o=self.parameters.ndx, 
+                                input=commands, stdout=None)
+
+    def _mindist(self,resid):
+        """Analyze minimum distance for resid."""
+        filename = self.parameters.filenames[resid]
+        return dist.Mindist(filename,cutoff=self.parameters.cutoff)
 
 
 # Public classes that register the worker classes
