@@ -91,7 +91,19 @@ API requirements
 
 * The worker class can access parameters of the simulation via the
   :attr:`Worker.simulation` attribute that is automatically set when the plugin
-  registers itself with :class:`Simulations`.
+  registers itself with :class:`Simulations`. However, the plugin should *not*
+  rely on :attr:`~Worker.simulation` being present during initialization
+  (__init__) because registration of the plugin might occur *after* init.
+
+  This also means that one cannot use the directory methods such as
+  :meth:`Worker.plugindir` because they depend on :meth:`Simulation.topdir` and
+  :meth:`Simulation.plugindir`. 
+
+  Any initialization that requires access to the :class:`Simulation` instance
+  should be moved into the :meth:`Worker._register_hook` method. It is called
+  when the plugin is actually being registered. Note that the hook should also
+  call the hook of the super class before setting any values. The hook should
+  pop any arguments that it requires and ignore everything else.
 
 * Parameters of the plugin are stored in :attr:`Worker.parameters` (either as
   attributes or as key/value pairs, see the container class
@@ -158,7 +170,7 @@ class Simulation(object):
              plugin classes (not instances!) or names (strings) to be used; more 
              can be added later with :meth:`Simulation.add_plugin`.
         """
-        super(Simulation,self).__init__(**kwargs)
+        super(Simulation, self).__init__(**kwargs)
 
         # required files
         self.tpr = kwargs.pop('tpr',None)
@@ -252,7 +264,7 @@ class Simulation(object):
                 raise
         return p
 
-    def plugindir(self,plugin_name,*args):
+    def plugindir(self, plugin_name, *args):
         return self.select_plugin(plugin_name).plugindir(*args)
 
     def check_file(self,filetype,path):
@@ -357,12 +369,32 @@ class Worker(FileUtils):
              All other keyword arguments are passed to the super class.
         """
         assert self.plugin_name != None                  # derive from Worker
-        self.simulation = kwargs.pop('simulation',None)  # required (but kw for super & friends)
-        assert self.simulation != None
+        self.simulation = kwargs.pop('simulation',None)  # eventually needed but can come after init
         self.location = None          # directory name under analysisdir (set in derived class)
         self.results = AttributeDict()
         self.parameters = AttributeDict()
         super(Worker,self).__init__(**kwargs)
+
+        # note: We are NOT calling self._register_hook() here; subclasses do this
+        #       themselves and it cascades via super(cls, self)._register_hook().
+
+    def _register_hook(self, **kwargs):
+        """Things to initialize once the :class:`Simulation` instance is known.
+
+        The hook is called from :meth:`Plugin.register`.
+
+        .. Note:: Subclasses should do all their :class:`Simulation` -
+                  dependent initialization in their own :meth:`_register_hook` which
+                  **must** call the super class hook via the :class:`super`
+                  mechanism.
+        """
+
+        simulation = kwargs.pop('simulation', self.simulation)
+        # XXX: should we 
+        # XXX: 'try: super(Worker, self)._register_hook(**kwargs) except AttributeError: pass' 
+        # XXX: just in case?
+        if not simulation is None:
+            self.simulation = simulation
 
     def topdir(self, *args):
         """Returns a directory located under the simulation top directory."""
@@ -395,12 +427,17 @@ class Worker(FileUtils):
 # registers a worker class in Simulation.plugins and adds a pointer to Simulation to worker
 
 class Plugin(object):
-    """Plugin class that can be added to a Simulation instance.
+    """Plugin class that can be added to a :class:`Simulation` instance.
 
-    All analysis plugins must be derived from the Plugin base class.
+    All analysis plugins must be derived from this base class.
 
-    A plugin registers a worker class in Simulation.plugins and adds
-    the Simulation instance to the worker.
+    If a :class:`Simulation` instance is provided to the constructore in the
+    *simulation* keyword argument then the plugin instantiates and registers a
+    worker class in :attr:`Simulation.plugins` and adds the :class:`Simulation`
+    instance to the worker.
+
+    Otherwise the :meth:`Plugin.register` method must be called explicitly with
+    a :class:`Simulation` instance.
     """    
     #: name of the plugin
     plugin_name = None
@@ -414,17 +451,48 @@ class Plugin(object):
         are passed through.
 
         :Arguments:
-           simulation : Simulation class
-                The simulation class that owns this plugin instance.
+           simulation : Simulation instance
+                The :class:`Simulation` instance that owns this plugin instance. Can be
+                ``None`` but then the :meth:`register` method has to be called manually
+                with a simulation instance later.
            *plugin_name* : dict     
                 A dictionary named like the plugin is taken to include
                 keyword arguments that are passed to the __init__ of the plugin.
         """
         print "DEBUG: plugin() registering %r" % self.plugin_name
+
         assert self.plugin_name != None                # must derive from Plugin
-        assert simulation != None                      # must know who we belong to
+        assert issubclass(self.worker_class, Worker)   # must be a Worker
+
+        self.__is_registered = False
+
         plugin_args = kwargs.pop(self.plugin_name,{})  # must be a dict named like the plugin
         plugin_args['simulation'] = simulation         # allows access of plugin to globals
-        super(Plugin, self).__init__(**kwargs)
-        simulation.plugins[self.plugin_name] = self.worker_class(**plugin_args)  # add the worker
+        #: The :class:`Worker` instance of the plugin.
+        self.worker = self.worker_class(**plugin_args) # create Worker instance
 
+        if not simulation is None:                     # can delay registration
+            self.register(simulation)
+        #: The :class:`Simulation` instance who owns the plugin. Can be ``None`` 
+        #: until a successful call to :meth:`~Plugin.register`.
+        self.simulation = simulation
+
+        super(Plugin, self).__init__(**kwargs)
+
+    def register(self, simulation):
+        """Register the plugin with the :class:`Simulation` instance.
+
+        This method also ensures that the worker class knows the simulation
+        instance. This is typically required for its :meth:`~Worker.run`,
+        :meth:`~Worker.analyze`, and :meth:`~Worker.plot` methods.
+        """
+
+        assert simulation != None                      # must know who we belong to
+        assert self.__is_registered == False           # only register once (necessary?)
+
+        self.simulation = simulation                   # update our own
+        self.worker._register_hook(simulation=simulation)    # HACK!!! patch simulation into worker & do more
+        simulation.plugins[self.plugin_name] = self.worker  # add the worker to simulation
+
+        self.__is_registered = True
+        

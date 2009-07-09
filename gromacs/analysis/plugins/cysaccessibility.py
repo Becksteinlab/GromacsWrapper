@@ -90,6 +90,17 @@ class _CysAccessibility(Worker):
             raise ValueError("Keyword argument cysteines MUST be set to sequence of resids.")
         self.parameters.cysteines.sort()                 # sorted because make_ndx returns sorted order
         self.parameters.cutoff = cys_cutoff
+
+        if not self.simulation is None:
+            self._register_hook()
+
+    def _register_hook(self, **kwargs):
+        """Run when registering; requires simulation."""
+
+        super(_CysAccessibility, self)._register_hook(**kwargs)
+        assert not self.simulation is None
+
+        # filename of the index file that we generate for the cysteines
         self.parameters.ndx = self.plugindir('cys.ndx')
         # output filenames for g_dist, indexed by Cys resid
         self.parameters.filenames = dict(\
@@ -97,6 +108,7 @@ class _CysAccessibility(Worker):
              for resid in self.parameters.cysteines])
         # default filename for the combined plot
         self.parameters.figname = self.plugindir('mindist_S_OW')
+
 
     # override 'API' methods of base class
         

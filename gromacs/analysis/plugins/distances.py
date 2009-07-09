@@ -66,30 +66,40 @@ class _Distances(Worker):
         """Set up  customized distance analysis.
 
         :Arguments:
-           A : index group name
-             First group of atoms.
-           B : index group name
-             Second group of atoms.
+           groups : list of index group names
+             The first entry is the *primary group*. All other entries
+             are *secondary groups* and the plugin calculates distances
+             between the center of mass of the primary group and the
+             COM of each secondary group.
            ndx : index filename or list
-             All index files that contain the A and B groups.
+             All index files that contain the listed groups.
            cutoff : float
              A contact is recorded if the distance is <cutoff [0.6 nm]
         """
         # specific setup
-        A = kwargs.pop('A',None)
-        B = kwargs.pop('B', None)
+        indexgroups = kwargs.pop('groups',None)
+        if indexgroups is None or len(indexgroups) < 2 or type(indexgroups) is str:
+            raise ValueError("groups must be a list with at least a primary and secondary group")
         ndx = kwargs.pop('ndx', None)
         cutoff = kwargs.pop('cutoff', 0.6)   # default: 0.6 nm
 
-        # super class: do this before doing anything else
+        # super class: do this before setting any instance attributes
+        #  sets self.simulation if available!
         super(_Distances,self).__init__(**kwargs)
 
         self.location = 'distances'     # directory under topdir()
-        self.parameters.A = A
-        self.parameters.B = B
+        self.parameters.indexgroups = indexgroups
         self.parameters.ndx = ndx
         self.parameters.cutoff = cutoff
 
+        if not self.simulation is None:
+            self._register_hook()
+
+    def _register_hook(self, **kwargs):
+        """Run when registering; requires simulation."""
+
+        super(_Distances, self)._register_hook(**kwargs)
+        assert not self.simulation is None
 
         # output filenames for g_dist
         self.parameters.filenames = {'contacts': self.plugindir('contacts.xvg'),
@@ -98,6 +108,7 @@ class _Distances(Worker):
 
         # default filename for the combined plot
         self.parameters.figname = self.plugindir('distances')
+
 
     # override 'API' methods of base class
     
@@ -116,16 +127,15 @@ class _Distances(Worker):
         if self.check_file_exists(self.parameters.filenames['distance'],
                                   resolve='warn'):
             return
-            
-        indexgroups = [x for x in (self.parameters.A, self.parameters.B)
-                       if not x is None]
-        kwargs.setdefault('o', True)      # just generate with default names
-        kwargs.setdefault('_or', True)    # just generate with default names
+        indexgroups = self.parameters.indexgroups
+        ngroups = len(indexgroups) - 1    # number of secondary groups
+        kwargs.setdefault('o', None)     # set to True if default output is required, or
+        kwargs.setdefault('_or', None)   #   add filenames to self.parameters.filenames
         gromacs.g_mindist(s=self.simulation.tpr, n=self.parameters.ndx,
                           f=self.simulation.xtc, d=self.parameters.cutoff,
                           od=self.parameters.filenames['distance'],
                           on=self.parameters.filenames['contacts'],
-                          input=indexgroups,
+                          ng=ngroups, input=indexgroups,
                           **kwargs)
 
     def analyze(self,**kwargs):
