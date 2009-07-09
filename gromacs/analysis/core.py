@@ -101,10 +101,9 @@ Classes
 -------
 
 .. autoclass:: Simulation
-   :members: __init__, _register_hook, add_plugin, set_plugin, get_plugin, run, analyze, plot, 
+   :members: __init__, add_plugin, set_plugin, get_plugin, run, analyze, plot, 
             topdir, plugindir, check_file, has_plugin,
             check_plugin_name, current_plugin
-
 
 .. autoclass:: Plugin
    :members: __init__, plugin_name, worker_class, register,
@@ -194,27 +193,27 @@ class Simulation(object):
         if len(self.plugins) == 1:
             self.set_plugin(self.plugins.keys()[0])
 
-    def add_plugin(self, plugin_class, **kwargs):
+    def add_plugin(self, plugin, **kwargs):
         """Add a plugin to the registry.
 
-        - If *plugin_class* is a :class:`Plugin` instance then the
+        - If *plugin* is a :class:`Plugin` instance then the
           instance is directly registered and any keyword arguments
           are ignored.
 
-        - If *plugin_class* is a :class:`Plugin` class object or a
+        - If *plugin* is a :class:`Plugin` class object or a
           string that can be found in :mod:`gromacs.analysis.plugins`
           then first an instance is created with the given keyword
           arguments and then registered.
 
         :Arguments:
-            plugin_class : class or string, or instance
+            plugin : class or string, or instance
                If the parameter is a class then it should have been derived
                from :class:`Plugin`. If it is a string then it is taken as a
                plugin name in :mod:`gromacs.analysis.plugins` and the
                corresponding class is added. In both cases any parameters for
                initizlization should be provided.
 
-               If plugin_class is already a plugin instance then the kwargs 
+               If *plugin* is already a :class:`Plugin` instance then the kwargs 
                will be ignored.
             kwargs
                The kwargs are specific for the plugin and should be
@@ -223,13 +222,13 @@ class Simulation(object):
         # simulation=self must be provided so that plugin knows who owns it
         
         try:
-            plugin_class.register(simulation=self)
+            plugin.register(simulation=self)
         except (TypeError, AttributeError):
-            if type(plugin_class) is str:
+            if type(plugin) is str:
                 import plugins            # We should be able to import this safely now...
-                plugin_class = plugins.__plugin_classes__[plugin_class]
-            # plugin_class registers itself in self.plugins
-            plugin_class(simulation=self, **kwargs)  # simulation=self is REQUIRED!
+                plugin = plugins.__plugin_classes__[plugin]
+            # plugin registers itself in self.plugins
+            plugin(simulation=self, **kwargs)  # simulation=self is REQUIRED!
         
 
     def topdir(self,*args):
@@ -276,8 +275,6 @@ class Simulation(object):
             self.default_plugin_name = plugin_name
         return self.default_plugin_name
 
-    set_default_plugin = set_plugin  # deprecated
-
     def get_plugin(self,plugin_name=None):
         """Return valid plugin or the default for *plugin_name*=``None``."""
         self.check_plugin_name(plugin_name)
@@ -291,8 +288,6 @@ class Simulation(object):
     def current_plugin(self):
         """The currently active plugin (set with :meth:`Simulation.set_plugin`)."""
         return self.get_plugin()
-
-    select_plugin = get_plugin     # deprecated
 
     def run(self,plugin_name=None,**kwargs):
         """Generate data files as prerequisite to analysis."""

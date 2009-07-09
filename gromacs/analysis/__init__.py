@@ -30,36 +30,35 @@ derive a custom analysis class that pre-defines values for plugins as seen in
 the `Example`_.
 
 .. autoclass:: Simulation
-   :members: __init__, add_plugin, set_default_plugin, run, analyze, plot
+   :members: __init__, add_plugin, set_plugin, run, analyze, plot
 
 Example
 -------
 
-Here we analyze *MyProtein*, which has three Cysteines (C96, C243, C372). The
-only analysis plugin we want to use is :class:`plugins.CysAccessibility` but
-because we might want to do additional analysis in the future we also add the
-:class:`plugins.Distances` plugin ::
-
-  **TODO**
-  **MUST BE UPDATED**
+Here we analyze a, which has three Cysteines (C96, C243, C372). We
+will use the :class:`plugins.CysAccessibility` and the
+:class:`plugins.Distances` plugin (arguments for ``Distances`` omitted)::
 
   from gromacs.analysis import Simulation
-  from gromacs.analysis.plugins import CysAccessibility
+  from gromacs.analysis.plugins import CysAccessibility, Distances
 
-  class MyProtein(Simulation):
-    def __init__(self,**kwargs):
-        kwargs['CysAccessibility'] = {'cysteines': [96, 243, 372]}  # pre-sets for CysAccessibility
-        super(MyProtein,self).__init__(**kwargs)   # should ALWAYS come last
-
-  S = MyProtein(tpr=..., xtc=..., analysisdir=..., plugins=['CysAccessibility', 'Distances'])
+  S = Simulation(tpr=..., xtc=..., analysisdir=...,
+                 plugins=[('CysAccessibility', {'cysteines': [96, 243, 372]}),
+                          Distances(...),
+                          ])
   S.set_plugin('CysAccessibility')          # do CysAccessibility analysis
   S.run()                                   # analyze trajectory and write files
   S.analyze()                               # analyze output files
   S.plot(figure=True)                       # plot and save the figure
 
-Note how the :class:`plugins.CysAccessibility` plugin is initialized via ::
+The plugins can be supplied when the ``Simulation`` object is
+constructed, or they can be later added, e.g. ::
 
-  kwargs['CysAccessibility'] = {'cysteines': [96, 243, 372]}
+  S.add_plugin(Distances(name='Dist2', ...))
+
+This second ``Distances`` analysis would be available with ::
+
+  S.set_plugin('Dist2')
 
 Other plugins might require no or a very different initialization. See the
 plugin documentation for what is required.
