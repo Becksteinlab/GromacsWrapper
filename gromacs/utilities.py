@@ -20,8 +20,9 @@ class is derived from it.
 
 .. autoclass:: FileUtils
    :members:
-.. autoclass:: AttributeDict
 .. autoclass:: XVG
+   :members:   
+.. autoclass:: AttributeDict
 
 Functions
 ---------
@@ -31,7 +32,15 @@ Some additional convenience functions:
 .. autofunction:: anyopen
 .. autofunction:: iterable
 .. autofunction:: asiterable
-.. autofunction:: in_dir
+.. function:: in_dir(directory)
+
+   Context manager to execute a code block in a directory.
+
+   * The *directory* is created if it does not exist.
+   * At the end or after an exception code always returns to
+     the directory that was the current directory before entering
+     the block.
+
 .. autofunction:: convert_aa_code
 .. autofunction:: unlink_f
 .. autofunction:: unlink_gmx
@@ -79,7 +88,7 @@ class AttributeDict(dict):
             super(AttributeDict,self).__setattr__(name, value)            
 
 def anyopen(datasource):
-    """Open datasource and return a stream."""
+    """Open datasource (gzipped, bzipped, uncompressed) and return a stream."""
     if hasattr(datasource,'next') or hasattr(datasource,'readline'):
         stream = datasource
         filename = '(%s)' % stream.name  # maybe that does not always work?        
@@ -131,10 +140,10 @@ def convert_aa_code(x):
 def in_dir(directory):
     """Context manager to execute a code block in a directory.
 
-    * directory is created if it does not exist
-    * at the end or after and exception code always returns to
+    * The directory is created if it does not exist.
+    * At the end or after an exception code always returns to
       the directory that was the current directory before entering
-      the block
+      the block.
     """
     startdir = os.getcwd()
     try:
@@ -240,10 +249,10 @@ class XVG(FileUtils):
         The array is returned with column-first indexing, i.e. for a data file with
         columns X Y1 Y2 Y3 ... the array a will be a[0] = X, a[1] = Y1, ... .
 
-        All data must be numerical. ``NAN`` and ``INF`` values are
+        All data must be numerical. :const:`NAN` and :const:`INF` values are
         supported via python's :func:`float` builtin function.
 
-        Instead of using this function one can also use the attr:`~XVG.array`
+        Instead of using this function one can also use the :attr:`~XVG.array`
         attribute to access a cached version of the array.
 
         .. Note:: Only simple XY or NXY files are currently supported, not
@@ -263,7 +272,7 @@ class XVG(FileUtils):
     @property
     def array(self):
         """Represent xvg data as a (cached) numpy array. 
-           See meth:`~XVG.asarray` for details."""
+           See :meth:`~XVG.asarray` for details."""
         if self.__array is None:
             self.__array = self.asarray()
         return self.__array
@@ -278,8 +287,8 @@ class XVG(FileUtils):
         is plotted against the index, i.e. (N, Y).
 
         :Arguments:
-           transform : function
-               function *transform(array) --> array* which transforms
+          transform : function
+               function ``transform(array) -> array`` which transforms
                the original array; must return a 2D numpy array of
                shape [X, Y1, Y2, ...] where X, Y1, ... are column
                vectors.  By default the transformation is the
