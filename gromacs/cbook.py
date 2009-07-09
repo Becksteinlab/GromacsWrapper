@@ -449,7 +449,7 @@ class IndexBuilder(object):
         """Returns resid in the Gromacs index by transforming with offset."""
         try:
             gmx_resid = int(self.offset[resid])
-        except IndexError:
+        except (TypeError, IndexError):
             gmx_resid = resid + self.offset
         except KeyError:
             raise KeyError("offset must be a dict that contains the gmx resid for %d" % resid)
