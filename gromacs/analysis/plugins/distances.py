@@ -244,7 +244,7 @@ class Distances(Plugin):
 
       from gromacs.cbook import IndexBuilder
       A_grp, A_ndx = IndexBuilder(tpr, ['@a 62549 & r NA'], names=['Na1_ion'], offset=-9, 
-                                  out_ndx='Na1.ndx', name_all="NA1").combine()
+                                  out_ndx='Na1.ndx', name_all="Na1").combine()
       B = IndexBuilder(tpr, ['S312:OG','T313:OG1','A38:O','I41:O','A309:O'], offset=-9, 
                             out_ndx='Na1_site.ndx', name_all="Na1_site")
       B_grp, B_ndx = B.combine()                            
@@ -258,7 +258,7 @@ class Distances(Plugin):
 
     To calculate the individual distances::
 
-      dist_Na1_res = Distances(name='Dsite', groups=['Na1']+B.names, ndx=all_ndx_files)
+      dist_Na1_res = Distances(name='Dres', groups=['Na1']+B.names, ndx=all_ndx_files)
       S.add_plugin(dist_Na1_res)
 
     (Keeping the second IndexBuilder instance ``B`` allows us to directly
