@@ -22,7 +22,7 @@ Plugin class
 ------------
 
 .. autoclass:: CysAccessibility
-   :members: plugin_name, worker_class
+   :members: worker_class
    :undoc-members:
 
 Worker class
@@ -217,7 +217,6 @@ class CysAccessibility(Plugin):
     closest approach distance should be indicative of the reactivity of the SH
     group with crosslinking agents.
     """
-    plugin_name = "CysAccessibility"
     worker_class = _CysAccessibility
 
 

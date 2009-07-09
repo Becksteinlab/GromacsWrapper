@@ -40,6 +40,9 @@ only analysis plugin we want to use is :class:`plugins.CysAccessibility` but
 because we might want to do additional analysis in the future we also add the
 :class:`plugins.Distances` plugin ::
 
+  **TODO**
+  **MUST BE UPDATED**
+
   from gromacs.analysis import Simulation
   from gromacs.analysis.plugins import CysAccessibility
 

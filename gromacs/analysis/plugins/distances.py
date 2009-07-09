@@ -13,7 +13,7 @@ Plugin class
 ------------
 
 .. autoclass:: Distances
-   :members: plugin_name, worker_class
+   :members: worker_class
    :undoc-members:
 
 Worker class
@@ -237,7 +237,6 @@ class Distances(Plugin):
                      Distances={'A':A_grp, 'B':B_grp, 'ndx': [A_ndx, B_ndx]})
 
     """
-    plugin_name = "Distances"
     worker_class = _Distances
 
 

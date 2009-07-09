@@ -15,26 +15,8 @@ Programming API for plugins
 ---------------------------
 
 Additional analysis capabilities are added to a
-:class:`gromacs.analysis.Simulation` class with *plugin* classes.
-
-Example usage
-.............
-
-Derive class for the simulation of interest along the lines of ::
-
-     from gromacs.analysis import Simulation
-     from gromacs.analysis.plugins import CysAccessibility, Distances
-
-     class MyProtein(Simulation):
-       def __init__(self,**kwargs):
-           kwargs['CysAccessibility'] = {'cysteines': [96, 243, 372]}  # default for CysAccessibility
-           super(MyProtein,self).__init__(**kwargs)
-
-     S = MyProtein(tpr=..., xtc=..., analysisdir=..., plugins=[CysAccessibility, Distances])
-     S.set_plugin('CysAccessibility')          # do CysAccessibility for now
-     S.run()                                   # generate data from trajectories
-     S.analyze()                               # analyze data
-     S.plot(figure=True)                       # plot and save figures
+:class:`gromacs.analysis.Simulation` class with *plugin* classes. For
+and example see :mod:`gromacs.analysis.plugins`.
 
 
 API description
@@ -101,7 +83,7 @@ API requirements
 
   Any initialization that requires access to the :class:`Simulation` instance
   should be moved into the :meth:`Worker._register_hook` method. It is called
-  when the plugin is actually being registered. Note that the hook should also
+  when the plugin is actually being registered. Note that the hook *must* also
   call the hook of the super class before setting any values. The hook should
   pop any arguments that it requires and ignore everything else.
 
@@ -116,14 +98,17 @@ Classes
 -------
 
 .. autoclass:: Simulation
-   :members: __init__, add_plugin, set_default_plugin, run, analyze, plot, 
-            topdir, plugindir, check_file, has_plugin, check_plugin_name, select_plugin
+   :members: __init__, _register_hook, add_plugin, set_plugin, get_plugin, run, analyze, plot, 
+            topdir, plugindir, check_file, has_plugin,
+            check_plugin_name, current_plugin
+
 
 .. autoclass:: Plugin
-   :members: __init__, plugin_name, worker_class
+   :members: __init__, plugin_name, worker_class, register,
+             simulation, worker
 
 .. autoclass:: Worker   
-   :members: __init__, topdir, plugindir, savefig
+   :members: __init__, topdir, plugindir, savefig, _register_hook
    :show-inheritance:
 
 """
@@ -186,7 +171,7 @@ class Simulation(object):
         self.default_plugin_name = None
 
         # XXX: Or should we simply add instances and the re-register
-        #      all instances using Instance.register() ?
+        #      all instances using register() ?
         # XXX: ... this API should be cleaned up. It seems to be connected
         #      back and forth in vicious circles. -- OB 2009-07-10
         
@@ -362,21 +347,24 @@ class Simulation(object):
 class Worker(FileUtils):
     """Base class for a plugin worker."""
 
-    #: name of the plugin that this Worker belongs to; set when deriving the 
-    #: plugin's worker class
-    plugin_name = None
-
     def __init__(self,**kwargs):
         """Set up Worker class.
         
         :Keywords:
+          plugin : instance
+             The :class:`Plugin` instance that owns this worker. *Must be supplied.*
           simulation
-             A ``Simulation`` object; this is filled in by the ``Plugin`` class when the plugin 
-             is registered (**required**).
+             A :class:Simulation` object, required for registration.
           kwargs
              All other keyword arguments are passed to the super class.
         """
-        assert self.plugin_name != None                  # derive from Worker
+
+        self.plugin = kwargs.pop('plugin', None)
+        """:class:`Plugin` instance that owns this Worker."""        
+        assert not self.plugin is None                   # must be supplied, non-opt kw arg
+        self.plugin_name = self.plugin.plugin_name
+        """Name of the plugin that this Worker belongs to."""
+
         self.simulation = kwargs.pop('simulation',None)  # eventually needed but can come after init
         self.location = None          # directory name under analysisdir (set in derived class)
         self.results = AttributeDict()
@@ -384,7 +372,7 @@ class Worker(FileUtils):
         super(Worker,self).__init__(**kwargs)
 
         # note: We are NOT calling self._register_hook() here; subclasses do this
-        #       themselves and it cascades via super(cls, self)._register_hook().
+        #       themselves and it *must* cascade via super(cls, self)._register_hook().
 
     def _register_hook(self, **kwargs):
         """Things to initialize once the :class:`Simulation` instance is known.
@@ -493,6 +481,7 @@ class Plugin(object):
 
         plugin_args = kwargs.pop(self.plugin_name,{})  # must be a dict named like the plugin
         plugin_args['simulation'] = simulation         # allows access of plugin to globals
+        plugin_args['plugin'] = self                   # tell Worker who owns it
         #: The :class:`Worker` instance of the plugin.
         self.worker = self.worker_class(**plugin_args) # create Worker instance
 
