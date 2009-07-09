@@ -50,7 +50,6 @@ class _Distances(Worker):
     See :class:`Distances` for usage.
     """
 
-    plugin_name = "Distances"
     #: list of results (not used at the moment, see __init__)
     names = ["distance", "contacts"]
     #: dict of labels for the plot x-axis; one for each result
@@ -87,7 +86,6 @@ class _Distances(Worker):
         #  sets self.simulation if available!
         super(_Distances,self).__init__(**kwargs)
 
-        self.location = 'distances'     # directory under topdir()
         self.parameters.indexgroups = indexgroups
         self.parameters.ndx = ndx
         self.parameters.cutoff = cutoff
@@ -218,23 +216,55 @@ class _Distances(Worker):
 class Distances(Plugin):
     """*Distances* plugin.
 
-    Distances between the centers of groups A and B and the number of contacts
-    are calculated for each time step and written to files.
+    The distances between the centers of at least two index groups and
+    the number of contacts are calculated for each time step and
+    written to files.
+
+    .. class:: Distances(groups, ndx, [cutoff, [, name[, simulation]]])
     
-    First generate index files with the groups of interest::
+    :Arguments:
+        name : string
+            plugin name (used to access it)
+        simulation : instance
+            The :class:`gromacs.analysis.Simulation` instance that owns the plugin.
+        groups : list of index group names
+            The first entry is the *primary group*. All other entries
+            are *secondary groups* and the plugin calculates distances
+            between the center of mass of the primary group and the
+            COM of each secondary group.
+        ndx : index filename or list
+            All index files that contain the listed groups.
+        cutoff : float
+            A contact is recorded if the distance is <cutoff [0.6 nm]
+
+    Example:
+    
+    Generate index files with the groups of interest, for instance
+    with :class:`gromacs.cbook.IndexBuilder`::
 
       from gromacs.cbook import IndexBuilder
-      A_grp, A_ndx = IndexBuilder(tpr, ['@a 62549 & r NA'], names=['Na1'], offset=-9, 
+      A_grp, A_ndx = IndexBuilder(tpr, ['@a 62549 & r NA'], names=['Na1_ion'], offset=-9, 
                                   out_ndx='Na1.ndx', name_all="NA1").combine()
-      B_grp, B_ndx = IndexBuilder(tpr, ['S312:OG','T313:OG1','A38:O','I41:O','A309:O'], offset=-9, 
-                                  out_ndx='Na1_site.ndx', name_all="Na1_site").combine()
+      B = IndexBuilder(tpr, ['S312:OG','T313:OG1','A38:O','I41:O','A309:O'], offset=-9, 
+                            out_ndx='Na1_site.ndx', name_all="Na1_site")
+      B_grp, B_ndx = B.combine()                            
+      all_ndx_files = [A_ndx, B_ndx]
 
-    Use a :class:`gromacs.analysis.Simulation` class with the :class:`Distances` plugin
-    and provide the parameters in the ``Distances`` dict::
- 
-      from gromacs.analysis import Simulation
-      S = Simulation(..., plugins=['Distances', ...], 
-                     Distances={'A':A_grp, 'B':B_grp, 'ndx': [A_ndx, B_ndx]})
+    To calculate the distance between "Na1" and the "Na1_site", create an instance with
+    the appropriate parameters and add them to a :class:`gromacs.analysis.Simulation` instance::
+
+      dist_Na1_site = Distances(name='Dsite', groups=['Na1', 'Na1_site'], ndx=all_ndx_files)
+      S.add_plugin(dist_Na1_site)
+
+    To calculate the individual distances::
+
+      dist_Na1_res = Distances(name='Dsite', groups=['Na1']+B.names, ndx=all_ndx_files)
+      S.add_plugin(dist_Na1_res)
+
+    (Keeping the second IndexBuilder instance ``B`` allows us to directly
+    use all groups without typing them, ``B.names = ['A309_O', 'S312_OG', 'I41_O',
+    'T313_OG1', 'A38_O']``.)
+    
 
     """
     worker_class = _Distances

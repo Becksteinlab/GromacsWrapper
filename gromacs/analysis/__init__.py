@@ -35,7 +35,7 @@ the `Example`_.
 Example
 -------
 
-Here we analyze a, which has three Cysteines (C96, C243, C372). We
+Here we analyze a protein, which has three Cysteines (C96, C243, C372). We
 will use the :class:`plugins.CysAccessibility` and the
 :class:`plugins.Distances` plugin (arguments for ``Distances`` omitted)::
 

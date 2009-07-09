@@ -349,7 +349,7 @@ class Worker(FileUtils):
         """Name of the plugin that this Worker belongs to."""
 
         self.simulation = kwargs.pop('simulation',None)  # eventually needed but can come after init
-        self.location = None          # directory name under analysisdir (set in derived class)
+        self.location = self.plugin_name                 # directory name under analysisdir
         self.results = AttributeDict()
         self.parameters = AttributeDict()
         super(Worker,self).__init__(**kwargs)

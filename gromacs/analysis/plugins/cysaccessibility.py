@@ -55,8 +55,6 @@ import dist
 class _CysAccessibility(Worker):
     """Analysis of Cysteine accessibility."""
 
-    plugin_name = "CysAccessibility"
-
     def __init__(self,**kwargs):
         """Set up  customized Cysteine accessibility analysis.
 
@@ -79,9 +77,6 @@ class _CysAccessibility(Worker):
         # super class init: do this before doing anything else
         # (also sets up self.parameters and self.results)
         super(_CysAccessibility,self).__init__(**kwargs)
-
-        # location must be defined in the derived class
-        self.location = 'accessibility'     # directory under topdir()
 
         # process specific parameters now
         try:
@@ -216,6 +211,25 @@ class CysAccessibility(Plugin):
     the distances shows how close water molecules can get to cysteines. The
     closest approach distance should be indicative of the reactivity of the SH
     group with crosslinking agents.
+
+    .. class:: CysAccessibility(cysteines, [cys_cutoff[, name[, simulation]]]])
+    
+
+    :Arguments:
+        name : string
+            plugin name (used to access it)
+        simulation : instance
+            The :class:`gromacs.analysis.Simulation` instance that owns the plugin.
+        cysteines : list
+            list of *all* resids (eg from the sequence) that are used as
+            labels or in the form 'Cys<resid>'. (**required**)
+        cys_cutoff : number
+            cutoff in nm for the minimum S-OW distance [1.0]
+
+    Note that *all* Cys residues in the protein are analyzed. Therefore, the
+    list of cysteine labels *must* contain as many entries as there are
+    cysteines in the protein. There are no sanity checks.
+
     """
     worker_class = _CysAccessibility
 
