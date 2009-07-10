@@ -253,7 +253,7 @@ class Simulation(object):
         return p
 
     def plugindir(self, plugin_name, *args):
-        return self.select_plugin(plugin_name).plugindir(*args)
+        return self.get_plugin(plugin_name).plugindir(*args)
 
     def check_file(self,filetype,path):
         """Raise :exc:`ValueError` if path does not exist. Uses *filetype* in message."""
@@ -321,7 +321,7 @@ class Simulation(object):
               arguments for plugin plot function and possibly :func:`pylab.plot`
         """
         kwargs['figure'] = figure
-        return self.select_plugin(plugin_name).plot(**kwargs)    
+        return self.get_plugin(plugin_name).plot(**kwargs)    
 
     def __str__(self):
         return 'Simulation(tpr=%(tpr)r,xtc=%(xtc)r,analysisdir=%(analysis_dir)r)' % vars(self)
