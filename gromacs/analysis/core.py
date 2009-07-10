@@ -482,8 +482,6 @@ class Plugin(object):
            kwargs
                 All other keyword arguments are passed to the Worker.
         """
-        super(Plugin, self).__init__(**kwargs)
-
         if name is None:
             name = self.__class__.__name__
         self.plugin_name = name
