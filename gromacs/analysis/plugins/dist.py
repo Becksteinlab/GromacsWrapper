@@ -73,6 +73,10 @@ class Mindist(object):
        Time series (or frame series) of the shortest distances as a
        numpy array; should only be read.
 
+    .. Note:: :class:`gromacs.tools.G_mindist` is apparently providing
+              exactly the service that is required: a timeseries of
+              the minimum distance between two groups.
+
     :TODO:
       * Save analysis to pickle or data files.
       * Export data as simple data files for plotting in other programs.

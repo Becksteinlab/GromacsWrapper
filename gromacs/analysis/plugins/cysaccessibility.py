@@ -214,7 +214,6 @@ class CysAccessibility(Plugin):
 
     .. class:: CysAccessibility(cysteines, [cys_cutoff[, name[, simulation]]]])
     
-
     :Arguments:
         name : string
             plugin name (used to access it)
