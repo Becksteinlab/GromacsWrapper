@@ -64,6 +64,8 @@ class _Distances(Worker):
                "contacts": r"contacts $N$",
                }
 
+    default_plot_columns = [0, 1]   # plot time and distance only
+
     def __init__(self,**kwargs):
         """Set up  customized distance analysis.
 
@@ -158,6 +160,8 @@ class _Distances(Worker):
            names : string or list
               Selects which results should be plotted. ``None`` plots all
               in separate graphs.
+           columns : list
+              Which columns to plot; typically the default is ok.
            figure
                - ``True``: save figures in the given formats
                - "name.ext": save figure under this filename (``ext`` -> format)
@@ -187,6 +191,7 @@ class _Distances(Worker):
             _a[0] *= 0.001
             return _a
         kwargs.setdefault('transform', ps2ns)
+        kwargs.setdefault('columns', self.default_plot_columns)
 
         if names is None:
             names = self.results.keys()

@@ -43,6 +43,8 @@ class _MinDistances(_Distances):
     #: list of results (not used at the moment, see _register_hook())
     names = ["distance", "contacts"]
 
+    default_plot_columns = Ellipsis   # plot everything by default
+
     def _register_hook(self, **kwargs):
         """Run when registering; requires simulation.
 
