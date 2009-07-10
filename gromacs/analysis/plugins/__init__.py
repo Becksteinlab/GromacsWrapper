@@ -27,6 +27,7 @@ plugin                      author                   description
 :class:`CysAccessibility`   Oliver Beckstein [#OB]_  estimate accessibility of Cys
                                                      residues by water
 :class:`Distances`          Oliver Beckstein [#OB]_  time series of distances
+:class:`MinDistances`       Oliver Beckstein [#OB]_  time series of shortest distances
 ==========================  =======================  ===============================
 
 
@@ -40,6 +41,8 @@ Plugin classes
 .. autoclass:: CysAccessibility
    :members:
 .. autoclass:: Distances
+   :members:
+.. autoclass:: MinDistances
    :members:
 
 
@@ -61,7 +64,7 @@ __docformat__ = "restructuredtext en"
 #: plugin class it contains but in all lower case. For example, the
 #: *Distances* plugin class is contained in the module *distances* (the
 #: file ``plugins/distances.py``).
-__plugins__ = ['CysAccessibility', 'Distances']
+__plugins__ = ['CysAccessibility', 'Distances', 'MinDistances']
 __all__ = []
 __all__.extend(__plugins__)
 

@@ -48,10 +48,13 @@ class _Distances(Worker):
     """Analysis of distances.
 
     See :class:`Distances` for usage.
+
+    Also used as a base class for :class:`mindistances._MinDistances`.
     """
 
-    #: list of results (not used at the moment, see __init__)
-    names = ["distance", "contacts"]
+    #: list of results (not used at the moment, see _register_hook())
+    names = ["distance"]
+
     #: dict of labels for the plot x-axis; one for each result
     xlabels = {"distance": r"time $t/$ns",
                "contacts": r"time $t/$ns",
@@ -75,6 +78,8 @@ class _Distances(Worker):
            cutoff : float
              A contact is recorded if the distance is <cutoff [0.6 nm]
         """
+        # Note: this init is also used for mindistances._MinDistance
+        #       thus we have the add. file contacts that is not used otherwise
         # specific setup
         indexgroups = kwargs.pop('groups',None)
         if indexgroups is None or len(indexgroups) < 2 or type(indexgroups) is str:
@@ -94,13 +99,17 @@ class _Distances(Worker):
             self._register_hook()
 
     def _register_hook(self, **kwargs):
-        """Run when registering; requires simulation."""
+        """Run when registering; requires simulation.
+
+        Defines output files (note that we overwrite the
+        parameters.filenames and figname that super might have set).
+        """
 
         super(_Distances, self)._register_hook(**kwargs)
         assert not self.simulation is None
 
         # output filenames for g_dist
-        self.parameters.filenames = {'contacts': self.plugindir('contacts.xvg'),
+        self.parameters.filenames = {
                                      'distance': self.plugindir('distance.xvg'),
                                      }
 
@@ -111,7 +120,7 @@ class _Distances(Worker):
     # override 'API' methods of base class
     
     def run(self,**kwargs):
-        """Run ``g_mindist `` to compute distances between A and B groups.
+        """Run ``g_dist `` to compute distances between A and B groups.
 
         Additional arguments can be provided (e.g. ``-b`` or ``-e``)
         but an error will result if one tries to set parameters that
@@ -127,14 +136,12 @@ class _Distances(Worker):
             return
         indexgroups = self.parameters.indexgroups
         ngroups = len(indexgroups) - 1    # number of secondary groups
-        kwargs.setdefault('o', None)     # set to True if default output is required, or
-        kwargs.setdefault('_or', None)   #   add filenames to self.parameters.filenames
-        gromacs.g_mindist(s=self.simulation.tpr, n=self.parameters.ndx,
-                          f=self.simulation.xtc, d=self.parameters.cutoff,
-                          od=self.parameters.filenames['distance'],
-                          on=self.parameters.filenames['contacts'],
-                          ng=ngroups, input=indexgroups,
-                          **kwargs)
+        if ngroups != 1:
+            raise ValueError("g_dist can only compute the distance between a primary and a secondary group")
+        gromacs.g_dist(s=self.simulation.tpr, n=self.parameters.ndx, f=self.simulation.xtc,
+                       o=self.parameters.filenames['distance'],
+                       input=indexgroups,
+                       **kwargs)
 
     def analyze(self,**kwargs):
         """Make data files available as numpy arrays."""        
@@ -207,7 +214,8 @@ class _Distances(Worker):
                 self.savefig(ext=ext)
         elif figure:
             self.savefig(filename=figure)
-                           
+
+
                            
 
 # Public classes that register the worker classes
@@ -216,9 +224,8 @@ class _Distances(Worker):
 class Distances(Plugin):
     """*Distances* plugin.
 
-    The minimum distances between the members of at least two index
-    groups and the number of contacts are calculated for each time
-    step and written to files.
+    The distance between the center of mass of two index groups are
+    calculated for each time step and written to files.
 
     .. class:: Distances(groups, ndx, [cutoff, [, name[, simulation]]])
     
@@ -228,10 +235,8 @@ class Distances(Plugin):
         simulation : instance
             The :class:`gromacs.analysis.Simulation` instance that owns the plugin.
         groups : list of index group names
-            The first entry is the *primary group*. All other entries
-            are *secondary groups* and the plugin calculates the minimum distance
-            between members of the primary group and the members of each
-            secondary group.
+            The first entry is the *primary group*, the second is the
+            *secondary group.
         ndx : index filename or list
             All index files that contain the listed groups.
         cutoff : float
@@ -255,15 +260,6 @@ class Distances(Plugin):
 
       dist_Na1_site = Distances(name='Dsite', groups=['Na1', 'Na1_site'], ndx=all_ndx_files)
       S.add_plugin(dist_Na1_site)
-
-    To calculate the individual distances::
-
-      dist_Na1_res = Distances(name='Dres', groups=['Na1']+B.names, ndx=all_ndx_files)
-      S.add_plugin(dist_Na1_res)
-
-    (Keeping the second IndexBuilder instance ``B`` allows us to directly
-    use all groups without typing them, ``B.names = ['A309_O', 'S312_OG', 'I41_O',
-    'T313_OG1', 'A38_O']``.)
     
 
     """
