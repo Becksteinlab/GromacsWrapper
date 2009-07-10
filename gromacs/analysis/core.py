@@ -271,7 +271,7 @@ class Simulation(object):
     def check_plugin_name(self,plugin_name):
         """Raises a exc:`ValueError` if *plugin_name* is not registered."""
         if not (plugin_name is None or self.has_plugin(plugin_name)):
-            raise ValueError('plugin_name must be None or one of\n%r\n' % self.plugins.keys())
+            raise ValueError('plugin_name (%r) must be None or one of\n%r\n' % (plugin_name, self.plugins.keys()))
 
     def has_plugin(self,plugin_name):
         """Returns True if *plugin_name* is registered."""
