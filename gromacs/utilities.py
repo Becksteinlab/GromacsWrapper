@@ -287,6 +287,10 @@ class XVG(FileUtils):
         is plotted against the index, i.e. (N, Y).
 
         :Arguments:
+          columns : list
+               Select the columns of the data to be plotted; the list
+               is used as a numpy.array extended slice. The default is
+               to use all columns. Columns are selected *after* a transform.
           transform : function
                function ``transform(array) -> array`` which transforms
                the original array; must return a 2D numpy array of
@@ -304,13 +308,15 @@ class XVG(FileUtils):
         import pylab
 
         maxpoints_default = 10000
+        columns = kwargs.pop('columns', Ellipsis)         # slice for everything
         maxpoints = kwargs.pop('maxpoints', maxpoints_default)
         transform = kwargs.pop('transform', lambda x: x)  # default is identity transformation
-        a = numpy.asarray(transform(self.array))
+        a = numpy.asarray(transform(self.array))[columns] # (slice o transform)(array)
 
         ny = a.shape[-1]   # assume 1D or 2D array with last dimension varying fastest
         if not maxpoints is None and ny > maxpoints:
-            # reduce size by subsampling (primitive --- can leave out bits at the end)
+            # reduce size by subsampling (primitive --- can leave out
+            # bits at the end or end up with almost twice of maxpoints)
             stepsize = int(ny / maxpoints)
             a = a[..., ::stepsize]
             if maxpoints == maxpoints_default:
