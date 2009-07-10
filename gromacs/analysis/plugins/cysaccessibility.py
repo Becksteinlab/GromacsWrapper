@@ -102,7 +102,7 @@ class _CysAccessibility(Worker):
             [(resid, self.plugindir('Cys%d_OW_dist.txt.bz2' % resid))
              for resid in self.parameters.cysteines])
         # default filename for the combined plot
-        self.parameters.figname = self.plugindir('mindist_S_OW')
+        self.parameters.figname = self.figdir('mindist_S_OW')
 
 
     # override 'API' methods of base class

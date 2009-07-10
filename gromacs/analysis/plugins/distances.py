@@ -116,7 +116,7 @@ class _Distances(Worker):
                                      }
 
         # default filename for the combined plot
-        self.parameters.figname = self.plugindir('distances')
+        self.parameters.figname = self.figdir('distances')
 
 
     # override 'API' methods of base class

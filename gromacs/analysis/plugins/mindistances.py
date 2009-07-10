@@ -60,7 +60,7 @@ class _MinDistances(_Distances):
                                      'distance': self.plugindir('distance.xvg'),
                                      }
         # default filename for the combined plot
-        self.parameters.figname = self.plugindir('mindist')
+        self.parameters.figname = self.figdir('mindist')
     
     def run(self,**kwargs):
         """Run ``g_mindist `` to compute distances between multiple groups.

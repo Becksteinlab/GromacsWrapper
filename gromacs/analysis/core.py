@@ -255,7 +255,12 @@ class Simulation(object):
         return p
 
     def plugindir(self, plugin_name, *args):
+        """Directory where the plugin creates and looks for files."""
         return self.get_plugin(plugin_name).plugindir(*args)
+
+    def figdir(self, plugin_name, *args):
+        """Directory where the plugin saves figures."""
+        return self.get_plugin(plugin_name).figdir(*args)
 
     def check_file(self,filetype,path):
         """Raise :exc:`ValueError` if path does not exist. Uses *filetype* in message."""
@@ -410,6 +415,10 @@ class Worker(FileUtils):
         """Returns a directory located under the plugin top directory."""
         return self.topdir(self.location, *args)
 
+    def figdir(self, *args):
+        """Returns a directory under the plugin top directory to store figures in."""
+        return self.topdir('figs', *args)
+
     def run(self,**kwargs):
         raise NotImplementedError
 
@@ -484,7 +493,7 @@ class Plugin(object):
            as a dict key."""
 
 
-        print "DEBUG: plugin() registering %r" % self.plugin_name
+        print "Initializing plugin %r" % self.plugin_name
 
         assert issubclass(self.worker_class, Worker)   # must be a Worker
 
