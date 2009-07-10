@@ -16,28 +16,34 @@ Programming API for plugins
 
 Additional analysis capabilities are added to a
 :class:`gromacs.analysis.Simulation` class with *plugin* classes. For
-and example see :mod:`gromacs.analysis.plugins`.
+an example see :mod:`gromacs.analysis.plugins`.
 
 
 API description
 ...............
 
-Analysis capabilities can be added with plugins to the simulation base
-class. Each plugin registers itself and provides at a minimum
-:meth:`run()`, :meth:`analyze()`, and :meth:`plot()` methods.
+Analysis capabilities can be added with plugins to the simulation class. Each
+plugin is registered with the simulation class and provides at a minimum
+:meth:`~Worker.run`, :meth:`~Worker.analyze`, and :meth:`~Worker.plot` methods.
 
-The plugin class is derived from :class:`Plugin` and bears the name that is used to
-access it. When its :meth:`__init__` method executes it adds the actual worker class
-(typically named with the underscore-prepended name) to the :attr:`Simulation.plugins`
-dictionary.
+A plugin consists of a subclass of :class:`Plugin`  and an associated :class:`Worker`
+instance. The former is responsible for administrative tasks and documentation,
+the latter implements the analysis code.
 
-Variables for initializing a plugin are given to the class constructor as a
-keyword argument that is named like the plugin and contains a dictionary that
-is used as the keyword parameters for the plugin's init.
+A plugin class must be derived from :class:`Plugin` and typically bears the
+name that is used to access it. A plugin instance must be *registered* with a
+:class:`Simulation` object. This can be done implicitly by passing the
+:class:`Simulation` instance in the ``simulation`` keyword argument to the
+constructor or by explicitly calling the :meth:`Plugin.register` method with
+the simulation instance. Alternatively, one can also register a plugin via the
+:meth:`Simulation.add_plugin` method.
 
-A plugin **must** obtain a pointer to the :class:`Simulation` class as the keyword
-argument ``simulation`` in order to be able to access simulation-global
-parameters such as top directories or input files.
+Registering the plugin means that the actual worker class is added to the
+:attr:`Simulation.plugins` dictionary.
+
+A plugin must eventually obtain a pointer to the :class:`Simulation` class in
+order to be able to access simulation-global parameters such as top directories
+or input files.
 
 See :class:`analysis.plugins.CysAccessibility` and
 :class:`analysis.plugins._CysAccessibility` in
@@ -137,6 +143,7 @@ class Simulation(object):
        in the plugin's :attr:`~Worker.results` dictionary.
     4. Plot results with :meth:`Simulation.plot`.
 
+
     Detailed listing of methods:
 
     """
@@ -169,11 +176,12 @@ class Simulation(object):
         self.ndx = kwargs.pop('ndx',None)
         self.analysis_dir = kwargs.pop('analysisdir', os.path.dirname(self.tpr))
 
-        # registry for plugins: This dict is central.
+        #: Registry for plugins: This dict is central.
         self.plugins = AttributeDict()
+        #: Use this plugin if none is explicitly specified. Typically set with :meth:`~Simulation.set_plugin`.
         self.default_plugin_name = None
 
-        # XXX: Or should we simply add instances and the re-register
+        # XXX: Or should we simply add instances and then re-register
         #      all instances using register() ?
         # XXX: ... this API should be cleaned up. It seems to be connected
         #      back and forth in vicious circles. -- OB 2009-07-10
@@ -183,7 +191,7 @@ class Simulation(object):
         # list of tuples (plugin, kwargs) or just (plugin,) if no kwords required (eg if plugin is an instance)
         for x in plugins:
             try:
-                P, kwargs = asiterable(x)   # make sure to wrap strings,, especially 2-letter ones!
+                P, kwargs = asiterable(x)   # make sure to wrap strings, especially 2-letter ones!
             except ValueError:
                 P = x
                 kwargs = {}
