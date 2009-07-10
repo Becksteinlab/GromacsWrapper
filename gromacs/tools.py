@@ -161,10 +161,10 @@ class GromacsCommandMultiIndex(GromacsCommand):
                 if len(ndx) > 1:
                     # g_mindist cannot deal with multiple ndx files (at least 4.0.5)
                     # so we combine them in a temporary file; it is unlinked in __del__.
-                    # self..multi_ndx stores file name for __del__
+                    # self.multi_ndx stores file name for __del__
                     fd, self.multi_ndx = tempfile.mkstemp(suffix='.ndx', prefix='multi_')
                     make_ndx = Make_ndx(f=kwargs.get('s'), n=ndx)
-                    rc,out,err = make_ndx(o=self.multi_ndx, input=['q'], 
+                    rc,out,err = make_ndx(o=self.multi_ndx, input=['q'],  # concatenate all index files
                                           stdout=False, stderr=False)
                     self.orig_ndx = ndx
                     kwargs['n'] = self.multi_ndx
@@ -172,6 +172,7 @@ class GromacsCommandMultiIndex(GromacsCommand):
 
         def __del__(self):
             """Clean up temporary multi-index files if they were used."""
+            # XXX: does not seem to work when closing the interpreter?!
             try:
                 # self.multi_ndx <-- _fake_multi_index()
                 utilities.unlink_gmx(self.multi_ndx)
@@ -190,5 +191,16 @@ if 'G_mindist' in registry:
         """Gromacs tool 'g_mindist' (with patch to handle multiple ndx files)."""
         command_name = 'g_mindist'
 
-    registry['g_mindist'] = G_mindist
+    registry['G_mindist'] = G_mindist
 
+if 'G_dist' in registry:
+    del G_dist, registry['G_dist']
+
+    # let G_dist handle multiple ndx files
+    class G_dist(GromacsCommandMultiIndex):
+        """Gromacs tool 'g_dist' (with patch to handle multiple ndx files)."""
+        command_name = 'g_dist'
+
+    registry['G_dist'] = G_dist
+
+# XXX: generate multi index classes via type(), not copy&paste...
