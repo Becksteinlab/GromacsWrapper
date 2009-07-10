@@ -318,7 +318,9 @@ class Simulation(object):
               - string: use this filename (+extension for format)
               - False: only display
            kwargs
-              arguments for plugin plot function and possibly :func:`pylab.plot`
+              arguments for plugin plot function (in many cases
+              provided by :meth:`gromacs.utilities.XVG.plot` and
+              ultimately by :func:`pylab.plot`)
         """
         kwargs['figure'] = figure
         return self.get_plugin(plugin_name).plot(**kwargs)    
