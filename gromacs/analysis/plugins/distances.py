@@ -67,9 +67,9 @@ class _Distances(Worker):
         :Arguments:
            groups : list of index group names
              The first entry is the *primary group*. All other entries
-             are *secondary groups* and the plugin calculates distances
-             between the center of mass of the primary group and the
-             COM of each secondary group.
+             are *secondary groups* and the plugin calculates the minimum distance
+             between members of the primary group and the members of each
+             secondary group.
            ndx : index filename or list
              All index files that contain the listed groups.
            cutoff : float
@@ -216,9 +216,9 @@ class _Distances(Worker):
 class Distances(Plugin):
     """*Distances* plugin.
 
-    The distances between the centers of at least two index groups and
-    the number of contacts are calculated for each time step and
-    written to files.
+    The minimum distances between the members of at least two index
+    groups and the number of contacts are calculated for each time
+    step and written to files.
 
     .. class:: Distances(groups, ndx, [cutoff, [, name[, simulation]]])
     
@@ -229,9 +229,9 @@ class Distances(Plugin):
             The :class:`gromacs.analysis.Simulation` instance that owns the plugin.
         groups : list of index group names
             The first entry is the *primary group*. All other entries
-            are *secondary groups* and the plugin calculates distances
-            between the center of mass of the primary group and the
-            COM of each secondary group.
+            are *secondary groups* and the plugin calculates the minimum distance
+            between members of the primary group and the members of each
+            secondary group.
         ndx : index filename or list
             All index files that contain the listed groups.
         cutoff : float
