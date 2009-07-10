@@ -107,9 +107,11 @@ Classes
 -------
 
 .. autoclass:: Simulation
-   :members: __init__, add_plugin, set_plugin, get_plugin, run, analyze, plot, 
-            topdir, plugindir, check_file, has_plugin,
-            check_plugin_name, current_plugin
+   :members: __init__, add_plugin, set_plugin, get_plugin, run,
+             analyze, plot, run_all, analyze_all, _apply_all,
+             topdir, plugindir, check_file, has_plugin,
+             check_plugin_name, current_plugin
+   :show-inheritance:
 
 .. autoclass:: Plugin
    :members: __init__, plugin_name, worker_class, register,
@@ -301,9 +303,17 @@ class Simulation(object):
         """Generate data files as prerequisite to analysis."""
         return self.get_plugin(plugin_name).run(**kwargs)
 
+    def run_all(self,**kwargs):
+        """Execute the run() method for all registered plugins."""
+        return self._apply_all(self.run, **kwargs)
+
     def analyze(self,plugin_name=None,**kwargs):
         """Run analysis for the plugin."""
         return self.get_plugin(plugin_name).analyze(**kwargs)    
+
+    def analyze_all(self,**kwargs):
+        """Execute the analyze() method for all registered plugins."""
+        return self._apply_all(self.analyze, **kwargs)
 
     def plot(self,plugin_name=None,figure=False,**kwargs):
         """Plot all data for the selected plugin::
@@ -324,6 +334,13 @@ class Simulation(object):
         """
         kwargs['figure'] = figure
         return self.get_plugin(plugin_name).plot(**kwargs)    
+
+    def _apply_all(self, func, **kwargs):
+        """Execute *func* for all plugins."""
+        results = {}
+        for plugin_name in self.plugins:
+            results[plugin_name] = func(plugin_name=plugin_name, **kwargs)
+        return results
 
     def __str__(self):
         return 'Simulation(tpr=%(tpr)r,xtc=%(xtc)r,analysisdir=%(analysis_dir)r)' % vars(self)
