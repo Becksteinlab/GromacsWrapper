@@ -4,8 +4,8 @@
 # See the file COPYING for details.
 
 """
-``gromacs.utilities`` -- Helper functions and classes
-=====================================================
+:mod:`gromacs.utilities` -- Helper functions and classes
+========================================================
 
 The module defines some convenience functions and classes that are
 used in other modules; they do *not* make use of :mod:`gromacs.tools`
@@ -32,11 +32,12 @@ Some additional convenience functions:
 .. autofunction:: anyopen
 .. autofunction:: iterable
 .. autofunction:: asiterable
-.. function:: in_dir(directory)
+.. function:: in_dir(directory[,create=True])
 
    Context manager to execute a code block in a directory.
 
-   * The *directory* is created if it does not exist.
+   * The *directory* is created if it does not exist (unless
+     *create*=``False`` is set)   
    * At the end or after an exception code always returns to
      the directory that was the current directory before entering
      the block.
@@ -137,10 +138,11 @@ def convert_aa_code(x):
                          "not %r" % x)
 
 @contextmanager
-def in_dir(directory):
+def in_dir(directory, create=True):
     """Context manager to execute a code block in a directory.
 
-    * The directory is created if it does not exist.
+    * The directory is created if it does not exist (unless
+      create=False is set)
     * At the end or after an exception code always returns to
       the directory that was the current directory before entering
       the block.
@@ -150,7 +152,7 @@ def in_dir(directory):
         try:
             os.chdir(directory)
         except OSError, err:
-            if err.errno == errno.ENOENT:
+            if create and err.errno == errno.ENOENT:
                 os.makedirs(directory)
                 os.chdir(directory)
             else:
