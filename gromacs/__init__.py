@@ -149,6 +149,7 @@ class AutoCorrectionWarning(Warning):
 class BadParameterWarning(Warning):
     """Warns if some parameters or variables are unlikely to be appropriate or correct."""
 
+
 import warnings
 # These warnings should always be displayed because other parameters
 # can have changed, eg during interactive use.
@@ -199,3 +200,44 @@ try:
 except OSError, err:
     warnings.warn("Some Gromacs commands were NOT found when importing gromacs.cbook:\n"+str(err),
                   category=GromacsImportWarning)
+
+
+# convenience functions for warnings
+
+less_important_warnings = ['AutoCorrectionWarning']
+
+def filter_gromacs_warnings(action, categories=None):
+    """Set the :meth:`warnings.simplefilter` to *action*.
+
+    *categories* must be a list of warning classes or strings.
+    ``None`` selects the defaults,  :data:`gromacs.less_important_warnings`.
+    """
+    
+    if categories is None:
+        categories = less_important_warnings
+    for c in categories:
+        try:
+            w = globals()[c]
+        except KeyError:
+            w = c
+        if not issubclass(w, Warning):
+            raise TypeError("%r is neither a Warning nor the name of a Gromacs warning." % c)
+        warnings.simplefilter(action, category=w)
+
+def disable_gromacs_warnings(categories=None):
+    """Disable ("ignore") specified warnings from the gromacs package.
+
+    *categories* must be a list of warning classes or strings.
+    ``None`` selects the defaults.
+
+    """
+    filter_gromacs_warnings('ignore', categories=categories)
+
+def enable_gromacs_warnings(categories=None):
+    """Enable ("always") specified warnings from the gromacs package.
+
+    *categories* must be a list of warning classes or strings.
+    ``None`` selects the defaults, :data:`gromacs._less_important_warnings`.
+
+    """
+    filter_gromacs_warnings('always', categories=categories)    
