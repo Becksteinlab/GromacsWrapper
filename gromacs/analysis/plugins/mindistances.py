@@ -72,10 +72,11 @@ class _MinDistances(_Distances):
         class constructor.
 
         If the primary output file already exists then no data are generated
-        and the method returns immediately.        
+        and the method returns immediately unless one sets *force* = ``True``.
         """
-        if self.check_file_exists(self.parameters.filenames['distance'],
-                                  resolve='warn'):
+        force = kwargs.pop('force',False)
+        if not force and \
+           self.check_file_exists(self.parameters.filenames['distance'],resolve='warn'):
             return
         indexgroups = self.parameters.indexgroups
         ngroups = len(indexgroups) - 1    # number of secondary groups

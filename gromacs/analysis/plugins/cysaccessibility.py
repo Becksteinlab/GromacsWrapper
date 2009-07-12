@@ -35,6 +35,8 @@ The worker class performs the analysis.
 
 
 """
+from __future__ import with_statement
+
 __docformat__ = "restructuredtext en"
 
 import sys
@@ -107,8 +109,15 @@ class _CysAccessibility(Worker):
 
     # override 'API' methods of base class
         
-    def run(self, cutoff=None, **gmxargs):
-        """Run ``g_dist -dist cutoff`` for each cysteine and save output for further analysis."""
+    def run(self, cutoff=None, force=False, **gmxargs):
+        """Run ``g_dist -dist cutoff`` for each cysteine and save output for further analysis.
+
+        By default existing data files are *not* overwritten. If this
+        behaviour is desired then set the *force* = ``True`` keyword
+        argument.
+
+        All other parameters are passed on to :func:`gromacs.g_dist`.
+        """
 
         if cutoff is None:
             cutoff = self.parameters.cutoff
@@ -124,19 +133,16 @@ class _CysAccessibility(Worker):
             groupname = 'Cys%(resid)d' % vars()
             commands = [groupname, 'OW']
             filename = self.parameters.filenames[resid]
-            if self.check_file_exists(filename, resolve='warning'):
+            if not force and self.check_file_exists(filename, resolve='warning'):
                 continue
             print "run_g_dist: %(groupname)s --> %(filename)r" % vars()
             sys.stdout.flush()
-            datafile = open(filename, 'w')
-            try:
+            with open(filename, 'w') as datafile:
                 p = gromacs.g_dist.Popen(
                     s=self.simulation.tpr, f=self.simulation.xtc, n=ndx, dist=cutoff, input=commands, 
                     stderr=None, stdout=subprocess.PIPE, **gmxargs)
                 compressor = subprocess.Popen(['bzip2', '-c'], stdin=p.stdout, stdout=datafile)
                 p.communicate()
-            finally:
-                datafile.close()
 
     def analyze(self,**kwargs):
         """Mindist analysis for all cysteines. Returns results for interactive analysis."""        
