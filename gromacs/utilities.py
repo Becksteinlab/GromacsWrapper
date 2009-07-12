@@ -9,13 +9,14 @@
 
 The module defines some convenience functions and classes that are
 used in other modules; they do *not* make use of :mod:`gromacs.tools`
-or :mod:`gromacs.cbook` and can be safely imported.
+or :mod:`gromacs.cbook` and can be safely imported at any time.
+
 
 Classes
 -------
 
 :class:`FileUtils` provides functions related to filename handling. It
-can be used as a mixin class. The :class:`gromacs.analysis.Simulation`
+can be used as a base or mixin class. The :class:`gromacs.analysis.Simulation`
 class is derived from it.
 
 .. autoclass:: FileUtils
@@ -27,25 +28,45 @@ class is derived from it.
 Functions
 ---------
 
-Some additional convenience functions:
+Some additional convenience functions that deal with files and
+directories:
 
 .. autofunction:: anyopen
-.. autofunction:: iterable
-.. autofunction:: asiterable
 .. function:: in_dir(directory[,create=True])
 
    Context manager to execute a code block in a directory.
 
    * The *directory* is created if it does not exist (unless
-     *create*=``False`` is set)   
+     *create* = ``False`` is set)   
    * At the end or after an exception code always returns to
      the directory that was the current directory before entering
      the block.
 
-.. autofunction:: convert_aa_code
+Functions that improve list processing and which fo *not* treat
+strings as lists:
+
+.. autofunction:: iterable
+.. autofunction:: asiterable
+
+
+Functions that help handling Gromacs files:
+
 .. autofunction:: unlink_f
 .. autofunction:: unlink_gmx
 .. autofunction:: unlink_gmx_backups
+
+
+Functions that make working with matplotlib_ easier:
+.. _matplotlib: http://matplotlib.sourceforge.net/
+
+.. autofunction:: activate_subplot
+.. autofunction:: remove_legend
+
+
+Miscellaneous functions:
+
+.. autofunction:: convert_aa_code
+
 
 Data
 ----
@@ -90,6 +111,8 @@ class AttributeDict(dict):
 
 def anyopen(datasource):
     """Open datasource (gzipped, bzipped, uncompressed) and return a stream."""
+    # TODO: make this act as ContextManager (and not return filename)
+    
     if hasattr(datasource,'next') or hasattr(datasource,'readline'):
         stream = datasource
         filename = '(%s)' % stream.name  # maybe that does not always work?        
@@ -377,3 +400,27 @@ def unlink_gmx_backups(*args):
         fbaks = glob.glob(os.path.join(dirname, '#'+filename+'.*#'))
         for bak in fbaks:
             unlink_f(bak)
+
+# helpers for matplotlib
+def activate_subplot(numPlot):
+    """Make subplot *numPlot* active on the canvas.
+
+    Use this if a simple ``subplot(numRows, numCols, numPlot)``
+    overwrites the subplot instead of activating it.
+    """
+    # see http://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg07156.html
+    from pylab import gcf, axes
+    numPlot -= 1  # index is 0-based, plots are 1-based
+    return axes(gcf().get_axes()[numPlot])
+
+def remove_legend(ax=None):
+    """Remove legend for axes or gca.
+
+    See http://osdir.com/ml/python.matplotlib.general/2005-07/msg00285.html
+    """
+    from pylab import gca, draw
+    if ax is None:
+        ax = gca()
+    ax.legend_ = None
+    draw()
+    
