@@ -355,10 +355,24 @@ class GromacsCommand(object):
 
 
 class PopenWithInput(subprocess.Popen):
-    """Popen class that knows its input; simply call communicate() later."""
+    """Popen class that knows its input; simply call communicate() later.
+
+    .. Note:: Some versions of python have a bug in the subprocess module
+              (`issue 5179`_) which does not clean up open file
+              descriptors. Eventually code (such as this one) fails with the
+              error::
+
+                     OSError: [Errno 24] Too many open files
+
+              A weak workaround is to increase the available number of open
+              file descriptors with ``ulimit -n 2048`` and partition analysis.
+
+              _issue 5179: http://bugs.python.org/issue5179
+    """
 
     def __init__(self,*args,**kwargs):
-        """Initialize with the standard :class:`subprocess.Popen` arguments and *input*."""
+        """Initialize with the standard :class:`subprocess.Popen` arguments and *input*.
+        """
         self.input = kwargs.pop('input',None)
         self.command = args[0]
         try:
