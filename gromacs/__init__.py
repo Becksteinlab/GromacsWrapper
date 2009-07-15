@@ -156,6 +156,7 @@ import warnings
 for w in (AutoCorrectionWarning, BadParameterWarning, 
           GromacsFailureWarning, GromacsValueWarning):
     warnings.simplefilter('always', category=w)
+del w
 
 # Add gromacs command **instances** to the top level.
 # These serve as the equivalence of running commands in the shell.
@@ -200,7 +201,6 @@ try:
 except OSError, err:
     warnings.warn("Some Gromacs commands were NOT found when importing gromacs.cbook:\n"+str(err),
                   category=GromacsImportWarning)
-
 
 # convenience functions for warnings
 
