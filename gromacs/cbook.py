@@ -83,8 +83,9 @@ from __future__ import with_statement
 
 __docformat__ = "restructuredtext en"
 
-import re
+import sys
 import os
+import re
 import warnings
 import tempfile
 import shutil
@@ -117,6 +118,57 @@ for the least square fit, centering is done for the whole protein.
 
 Note:: Gromacs 4.x only""")
 
+def trj_fitandcenter(xy=False, **kwargs):
+    """Fit the system to a reference (pass 1) and center everything (pass 2).
+
+    Note that here we first do a rotation+translation fit (or
+    restricted to the xy plane if *xy* = ``True`` is set) and write
+    an intermediate xtc. Then in a second pass this intermediate xtc
+    is centered, using ``-pbc mol -ur compact -center -boxcenter
+    tric``.
+
+    Most kwargs are passed to both invocations of
+    :class:`gromacs.tools.Trjconv` so it does not really make sense to use eg
+    *dump*, *timestep*; in this case do things manually.
+
+    By default the *input* to the fit command is ('backbone',
+    'protein','system'); the compact command always uses the second and third
+    group for its purposes or if this fails, prompts the user.
+
+    Both steps cannot performed in one pass; this is a known limitation of
+    ``trjconv``. An intermediate temporary XTC files is generated which should
+    be automatically cleaned up unless bad things happened.
+
+    FYI: The `g_spatial documentation`_ documentation actualy recommends
+    the opposite::
+
+      trjconv -s a.tpr -f a.xtc -o b.xtc -center tric -ur compact -pbc none
+      trjconv -s a.tpr -f b.xtc -o c.xtc -fit rot+trans
+    
+    .. _`g_spatial documentation`: http://oldwiki.gromacs.org/index.php/Manual:g_spatial_4.0.3
+    """
+    if xy:
+        fitmode = 'rotxy+transxy'
+    else:
+        fitmode = 'rot+trans'
+        
+    intrj = kwargs.pop('f', None)
+    outtrj = kwargs.pop('o', None)
+    inpfit = kwargs.pop('input', ('backbone', 'protein','system'))
+    try:
+        inpcompact = inpfit[1:]
+    except TypeError:
+        inpcompact = None
+    fd, tmptrj = tempfile.mkstemp(suffix='.xtc', prefix='fitted_')
+
+    print "Input trajectory:  %(intrj)r\nOutput trajectory: %(outtrj)r"% vars()
+    print "... writing temporary trajectory %(tmptrj)r (will be auto-cleaned)." % vars()
+    sys.stdout.flush()
+    try:
+        trj_xyfitted(f=intrj, o=tmptrj, fit=fitmode, input=inpfit, **kwargs)
+        trj_compact(f=tmptrj, o=outtrj, input=inpcompact, **kwargs)
+    finally:
+        os.unlink(tmptrj)
 
 def grompp_qtot(*args, **kwargs):
     """Run ``gromacs.grompp`` and return the total charge of the system::
