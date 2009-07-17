@@ -96,11 +96,27 @@ import utilities
 
 trj_compact = tools.Trjconv(ur='compact', center=True, boxcenter='tric', pbc='mol',
                             input=('protein','system'),
-                            doc="Writes a compact representation of the system centered on the protein")
+                            doc="""
+Writes a compact representation of the system centered on the protein""")
 
 rmsd_backbone = tools.G_rms(what='rmsd', fit='rot+trans',
                             input=('Backbone','Backbone'),
-                            doc="Computes RMSD of backbone after fitting to the backbone.")
+                            doc="""
+Computes RMSD of backbone after fitting to the backbone.""")
+
+# Gromacs 4.x
+trj_xyfitted = tools.Trjconv(fit='rotxy+transxy',
+                            center=True, boxcenter='tric', pbc='mol',
+                            input=('backbone', 'protein','system'),
+                            doc="""
+Writes a trajectory centered and fitted to the protein in the XY-plane only.
+
+This is useful for membrane proteins. The system *must* be oriented so
+that !the membrane is in the XY plane. The protein backbone is used
+for the least square fit, centering is done for the whole protein.
+
+Note:: Gromacs 4.x only""")
+
 
 def grompp_qtot(*args, **kwargs):
     """Run ``gromacs.grompp`` and return the total charge of the system::
