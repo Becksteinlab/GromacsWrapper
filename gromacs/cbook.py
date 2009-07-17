@@ -106,7 +106,7 @@ Computes RMSD of backbone after fitting to the backbone.""")
 
 # Gromacs 4.x
 trj_xyfitted = tools.Trjconv(fit='rotxy+transxy',
-                            center=True, boxcenter='tric', pbc='mol',
+                            center=True, boxcenter='rect', pbc='whole',
                             input=('backbone', 'protein','system'),
                             doc="""
 Writes a trajectory centered and fitted to the protein in the XY-plane only.

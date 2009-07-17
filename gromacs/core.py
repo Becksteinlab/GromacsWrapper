@@ -66,7 +66,7 @@ class GromacsCommand(object):
            Gromacs boolean switches (such as ``-v``) are given as python
            positional arguments (``'v'``) or as keyword argument (``v=True``);
            note the quotes in the first case. Negating at boolean switch can be
-           done with ``'-nov'``, ``nov=True`` or ``v=False``.
+           done with ``'nov'``, ``nov=True`` or ``v=False``.
 
            Any Gromacs options that take parameters are handled as keyword
            arguments. If an option takes multiple arguments (such as the
@@ -75,34 +75,36 @@ class GromacsCommand(object):
 
            If a keyword has the python value ``None`` then it will *not* be
            added to the Gromacs command line; this allows for flexible
-           scripting if it is not known in advance if an input file is needed.
+           scripting if it is not known in advance if an input file is
+           needed. In this case the default value of the gromacs tool
+           is used.
 
            Keywords must be legal python keywords or the interpreter raises a
-           :exc:`SyntaxError`. Of course this is not true for Gromacs
-           commandline arguments. In this case "quote" the option with an
-           underscore (``_``) and the class will silently strip the
-           underscore. For instance, ``-or`` translates to to the illegal
-           keyword ``or`` so it must be underscore-quoted::
+           :exc:`SyntaxError` but of course Gromacs commandline arguments are
+           not required to be legal python. In this case "quote" the option
+           with an underscore (``_``) and the underscore will silently stripped
+           and passed on just fine. For instance, ``-or`` translates to the
+           illegal keyword ``or`` so it must be underscore-quoted::
                
               cmd(...., _or='mindistres.xvg')
 
         Command execution
 
-           The command is executed with the run() method or by
+           The command is executed with the :meth:`~GromacsCommand.run` method or by
            calling it as a function. The two next lines are equivalent::
 
              cmd(...)
              cmd.run(...)
 
            When the command is run one can override options that were given at
-           initialization or add additional ones.
+           initialization or one can add additional ones.
 
         Non-Gromacs keyword arguments
 
-           The other keyword arguments are not passed on to the Gromacs tool
-           but determine how the command class behaves.
+           The other keyword arguments (listed below) are not passed on to the
+           Gromacs tool but determine how the command class behaves. This is
+           mostly of interest to developers.
 
-                
         :Keywords:
            failure
               determines how a failure of the gromacs command is treated; it
@@ -358,14 +360,15 @@ class PopenWithInput(subprocess.Popen):
     """Popen class that knows its input; simply call communicate() later.
 
     .. Note:: Some versions of python have a bug in the subprocess module
-              (`issue 5179`_) which does not clean up open file
+              ( `issue 5179`_ ) which does not clean up open file
               descriptors. Eventually code (such as this one) fails with the
-              error::
+              error:
 
-                     OSError: [Errno 24] Too many open files
+                  *OSError: [Errno 24] Too many open files*
 
               A weak workaround is to increase the available number of open
-              file descriptors with ``ulimit -n 2048`` and partition analysis.
+              file descriptors with ``ulimit -n 2048`` and run analysis in
+              different scripts.
 
               _issue 5179: http://bugs.python.org/issue5179
     """
