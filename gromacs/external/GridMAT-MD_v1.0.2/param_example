@@ -1,0 +1,40 @@
+##########################################################################################
+# - This is the parameter file for GridMAT-MD.pl                                         #
+#     - arguments and values must be separated by white space (tab or space, any amount) #
+#     - comments must be preceeded by a '#' sign                                         #
+#     - run this program by typing:   "perl GridMAT-MD.pl param_example"                 #
+##########################################################################################
+
+###### Input file and input file parameters
+
+bilayer			my_bilayer.gro
+solvent			SOL
+ions			NA+,CL-
+
+resname			DPPC
+atomname		P8
+
+# resname2		POPC
+# atomname2		P1,C1
+
+###### Define the size and shape of the grid
+
+box_size		solvent
+vectors			5.2,10.0,6.9
+grid			20
+conserve_ratio		yes
+
+###### Define whether there is a protein embedded in the bilayer
+
+protein			no
+precision		1.3
+P_value			5.0
+
+###### Define the desired output files
+
+top_pbc			yes
+bottom_pbc		yes
+average_pbc		yes
+
+top_area		no
+bottom_area		no
