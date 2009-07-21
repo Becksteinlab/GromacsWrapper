@@ -9,13 +9,9 @@
 
 This helper module contains code to drive ``GridMAT-MD.pl``, available
 from the `GridMAT-MD`_ home page and written by WJ Allen et al
-[Allen2009]_
-
-
-You will need a little patch to the original version of the perl code
-that is available from the GromacsWrapper distribution. Patch, rename
-the script to ``GridMAT-MDx.pl``, and make sure that it can be found
-on your :envvar:`PATH`.
+[Allen2009]_ . The GromacsWrapper distribution comes with version
+1.0.2 of ``GridMAT-MD.pl`` and includes a small patch so that it can
+accept filenames on the command line.
 
 
 
@@ -47,7 +43,15 @@ import numpy
 import gromacs.tools
 
 class GridMatMD(object):    
-    """Analysis of lipid bilayers with GridMAT-MDx."""
+    """Analysis of lipid bilayers with GridMAT-MD.
+
+    It requires a configuration file and a list of structure files
+    (gro or pdb) as input. See the documentation (pdf_) for the format of the
+    config file. Note that the *bilayer* keyword will be ignored in
+    the config file.
+
+    .. pdf: http://www.bevanlab.biochem.vt.edu/GridMAT-MD/doc/GridMAT-MD_ug_v1.0.2.pdf
+    """
     
     # regular expression to pull useful information from output
     pNX = re.compile("There are (?P<NX>\d+) grid points in the X direction, "
@@ -131,8 +135,8 @@ class GridMatData(object):
     """Represent GridMatMD data file.
 
     The loaded array data is accessible as a numpy array in
-    :attr:`~GridMatData.array` and bins and midpoints as
-    :attr:`~GridMatData.bins` and :attr:`~GridMatData.midpoints`
+    :attr:`GridMatData.array` and bins and midpoints as
+    :attr:`GridMatData.bins` and :attr:`GridMatData.midpoints`
     respectively.
     """
 
@@ -174,7 +178,7 @@ class GridMatData(object):
         return 0.5*(x[1:] + x[:-1])
 
     def parse_filename(self, filename):
-        """Get dimensions from filename, 20x20_.*.dat"""
+        """Get dimensions from filename"""
         m = self.DATANAME.match(filename)
         if m is None:
             raise ValueError("filename %s does not appear to be a standard GridMat-MD output filename")
