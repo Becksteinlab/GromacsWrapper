@@ -76,6 +76,12 @@ class GridMatMD(object):
         self.dy = None
         #: thickness results (dict of :class:`GridMatData` instances)
         self.thickness = {}
+        #: averages of thickness, indexed by "top", "bottom", "average"
+        self.arrays = {}
+        #: averages of bins
+        self.bins = {}
+        #: averages of midpoints
+        self.midpoints = {}
 
         self.GridMatMD = gromacs.tools.GridMAT_MD(self.config)
 
@@ -118,17 +124,32 @@ class GridMatMD(object):
 
     def run(self):
         """Run analysis on all files and average results."""
-        sums = {}
+
+        # ugly... accumulate averages and divide at the end
+        arrays = {}
+        bins = {}
+        midpoints = {}
         for f in self.filenames:
-            d = self.run_frame(f)
+            d = self.run_frame(f)        # <-- run GridMAT-MD
             for name, data in d.items():
                 try:
-                    sums[name] += data.array
+                    arrays[name] += data.array
+                    for dim in xrange(len(bins[name])):
+                        bins[name][dim] += data.bins[dim]
+                        midpoints[name][dim] += data.midpoints[dim]
                 except KeyError:
-                    sums[name] = data.array
-        for name in sums:
-            sums[name] /= float(len(self.filenames))
-        self.averages = sums
+                    arrays[name] = data.array
+                    bins[name] = data.bins
+                    midpoints[name] = data.midpoints
+        N = float(len(self.filenames))
+        for name in arrays:
+            arrays[name] /= N
+            for dim in xrange(len(bins[name])):
+                bins[name][dim] /= N
+                midpoints[name][dim] /= N
+        self.arrays = arrays
+        self.bins = bins
+        self.midpoints = midpoints
 
 
 class GridMatData(object):
@@ -191,3 +212,9 @@ class GridMatData(object):
         extent = numpy.concatenate([self.bins[0][[0,-1]], self.bins[1][[0,-1]]])
         kwargs.setdefault('extent', extent)
         pylab.imshow(self.array, **kwargs)
+
+
+    def __add__(self, *other):
+        # XXX: averages would be muc nicer if we could just sum
+        # XXX: these objects
+        raise NotImplementedError
