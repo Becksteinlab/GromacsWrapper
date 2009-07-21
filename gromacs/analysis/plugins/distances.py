@@ -212,7 +212,10 @@ class _Distances(Worker):
             
             # hack: callbacks for customization
             if not callbacks is None:
-                callbacks[name](name=name, axis=ax)
+                try:
+                    callbacks[name](name=name, axis=ax)
+                except KeyError:
+                    pass
 
         # pylab.legend(loc='best')
         if figure is True:
