@@ -1,29 +1,39 @@
 # $Id$
-"""Configuration for GromacsWrapper (not really used yet).
+# Copyright (c) 2009 Oliver Beckstein <orbeckst@gmail.com>
+# Released under the GNU Public License 3 (or higher, your choice)
+# See the file COPYING for details.
+
+"""Configuration for GromacsWrapper.
 
 This is a stub for handling user-settable configuration options. See
-pylab's ``rc`` mechanism. 
+pylab's ``rc`` mechanism.
 """
 
 #: preliminary: list the variables in gromacs.tools that should be
 #: loaded. Possible values: *gmx_tools*, *gmx_extra_tools*.
 load_tools = ['gmx_tools', ]
 
+# XXX: install script via setup.py ... this is a hack:
+# part of a python egg
+# see http://peak.telecommunity.com/DevCenter/PythonEggs#accessing-package-resources
+import os
+from pkg_resources import resource_filename
+GridMAT_MD = resource_filename(__name__,'external/GridMAT-MD_v1.0.2/GridMAT-MD.pl')
+os.chmod(GridMAT_MD, 0755)
+
+
 #: 3rd party analysis scripts and tools; triplets of 
 #:   (script name/path, command name, doc string)
 load_scripts = [
-    ('GridMAT-MDx.pl',
-     'GridMAT_MDx',
+    (GridMAT_MD,
+     'GridMAT_MD',
      """GridMAT-MD: A Grid-based Membrane Analysis Tool for use with Molecular Dynamics.
 
-*GridMAT-MDx* is a patched version of ``GridMAT-MD.pl`` , written by WJ
-Allen, JA Lemkul and DR Bevan. It is available from the `GridMAT-MD`_
-home page,
+*This* ``GridMAT-MD`` is a patched version of ``GridMAT-MD.pl``
+v1.0.2, written by WJ Allen, JA Lemkul and DR Bevan. The original
+version is available from the `GridMAT-MD`_ home page,
    
 .. _`GridMAT-MD`: http://www.bevanlab.biochem.vt.edu/GridMAT-MD/index.html
-
-The patch can be obtained from Oliver Beckstein <orbeckst@gmail.com>;
-it allows overriding the structure file name from the command line.
 
 Please cite 
 
@@ -35,7 +45,7 @@ when using this programme.
 
 Usage:
 
-.. class:: GridMAT_MDx(config[,structure])
+.. class:: GridMAT_MD(config[,structure])
 
 :Arguments:
 - *config* : See the original documentation for a description for the

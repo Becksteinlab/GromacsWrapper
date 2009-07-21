@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+# $Id: GridMAT-MDx.pl 224 2009-07-21 16:13:08Z oliver $
 
 #########################################################################
 #       	This is GridMAT-MD, version 1.0.1       		#
@@ -9,6 +10,9 @@
 #	http://www.bevanlab.biochem.vt.edu/GridMAT-MD/bugs.html		#
 #									#
 #########################################################################
+
+# Modified by Oliver Beckstein <orbeckst@gmail.com>
+# - read filename from command line (overrides config file)
 
 use strict;
 
@@ -23,11 +27,21 @@ open (INPUT, $config_file) or die "It seems \"$config_file\" does not exist!\n";
 my @config_file = (<INPUT>);
 close (INPUT);
 
+my $conformation;
+if (@ARGV > 1) {
+    $conformation = $ARGV[1];
+}
+
 my @config_file_short = grep !/^#/, @config_file;
 my %config;
 foreach (@config_file_short){
 	my ($key, $value) = split(/\s+/, $_);
 	$config{$key} = $value;
+}
+
+if (defined($conformation)) {
+    $config{bilayer} = $conformation;
+    print "Will use the filename provided on the command line: $conformation.";
 }
 
 print "\nReading from \"$config_file\"...\n";

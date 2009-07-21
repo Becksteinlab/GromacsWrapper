@@ -28,3 +28,4 @@ not necessarily restricted to a single plugin they have been moved
 into separate modules for code reuse.
 
 .. automodule:: gromacs.analysis.plugins.dist
+.. automodule:: gromacs.analysis.plugins.gridmatmd

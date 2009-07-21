@@ -44,15 +44,17 @@ class Command(object):
     def __init__(self,*args,**kwargs):
         """Set up the command class.
 
-        The arguments can always be provided as standard positional arguments such as
+        The arguments can always be provided as standard positional
+        arguments such as
 
           ``"-c", "config.conf", "-o". "output.dat", "--repeats=3", "-v", "input.dat"``
 
-        In addition one can alsu use keyword arguments such as
+        In addition one can also use keyword arguments such as
 
           ``c="config.conf", o="output.dat", repeats=3, v=True``
           
-        These are automatically transformed appropriately according to simple  rules:
+        These are automatically transformed appropriately according to
+        simple rules:
 
         * Any single-character keywords are assumed to be POSIX-style
           options and will be prefixed with a single dash and the value

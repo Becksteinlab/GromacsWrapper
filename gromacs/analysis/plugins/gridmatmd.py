@@ -1,4 +1,8 @@
 # $Id$
+# Copyright (c) 2009 Oliver Beckstein <orbeckst@gmail.com>
+# Released under the GNU Public License 3 (or higher, your choice)
+# See the file COPYING for details.
+
 """
 :mod:`gromacs.analysis.plugins.gridmatmd` --- Lipid bilayer analysis helper
 ===========================================================================
@@ -55,16 +59,25 @@ class GridMatMD(object):
     pBOT = re.compile('The bottom leaflet "thickness" will be printed to (?P<FILENAME>.*_bottom_.*\.dat)')
 
 
-    def __init__(self, config, gro_files):
+    def __init__(self, config, filenames):
         self.config = config
-        self.filenames = gro_files   # list of filenames
+        self.filenames = filenames   # list of filenames (gro or pdb)
+        #: Number of bins in the *x* direction. 
+        self.nx = None
+        #: Numberof bins in the *y* direction.         
+        self.ny = None
+        #: Bin width in *x*.
+        self.dx = None
+        #: Bin width in *y*.
+        self.dy = None
+        #: thickness results (dict of :class:`GridMatData` instances)
         self.thickness = {}
-        self.nx = self.ny = None
-        self.dx = self.dy = None
 
-        self.GridMatMD = gromacs.tools.GridMAT_MDx(self.config)
+        self.GridMatMD = gromacs.tools.GridMAT_MD(self.config)
 
     def run_frame(self, frame):
+        """Run GridMAT-MD on a single *frame* and store results."""
+        
         thickness = {}
         print "Analyzing frame %r (takes a few seconds)..." % frame
         sys.stdout.flush()
@@ -92,19 +105,27 @@ class GridMatMD(object):
                 thickness['average'] = m.group('FILENAME')
                 continue
 
-        d = {}
+        d = {}  # thickness results
         for name, filename in thickness.items():
             d[name] = GridMatData(filename, shape=(self.nx, self.ny),
                                   delta=(self.dx, self.dy))
-        self.d = d
+        self.thickness = d
+        return d
 
+    def run(self):
+        """Run analysis on all files and average results."""
+        sums = {}
+        for f in self.filenames:
+            d = self.run_frame(f)
+            for name, data in d.items():
+                try:
+                    sums[name] += data.array
+                except KeyError:
+                    sums[name] = data.array
+        for name in sums:
+            sums[name] /= float(len(self.filenames))
+        self.averages = sums
 
-
-DATANAME = re.compile("""(?P<NX>\d+)     # number of grid points in X
-                         x
-                         (?P<NY>\d+)     # number of grid points in Y
-                         _(top|bottom|average)_.*\.dat  # all the rest
-                      """, re.VERBOSE)
 
 class GridMatData(object):
     """Represent GridMatMD data file.
@@ -114,7 +135,15 @@ class GridMatData(object):
     :attr:`~GridMatData.bins` and :attr:`~GridMatData.midpoints`
     respectively.
     """
-    
+
+    DATANAME = re.compile("""
+                         (?P<NX>\d+)     # number of grid points in X
+                         x
+                         (?P<NY>\d+)     # number of grid points in Y
+                         _(top|bottom|average)_.*\.dat  # all the rest
+                         """, re.VERBOSE)
+
+
     def __init__(self, filename, shape=None, delta=None):
         """Load the data into a numpy array.
 
@@ -146,7 +175,7 @@ class GridMatData(object):
 
     def parse_filename(self, filename):
         """Get dimensions from filename, 20x20_.*.dat"""
-        m = DATANAME.match(filename)
+        m = self.DATANAME.match(filename)
         if m is None:
             raise ValueError("filename %s does not appear to be a standard GridMat-MD output filename")
         return map(int, m.group('NX', 'NY'))
