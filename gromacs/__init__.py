@@ -22,6 +22,9 @@ Modules
      The top level module contains all gromacs tools; each tool can be run
      directly or queried for its documentation.
 
+:mod:`config`
+     Configuration options. Not really used much at the moment.
+
 :mod:`gromacs.cbook`
      The Gromacs cook book contains typical applications of the tools. In many
      cases this not more than just an often-used combination of parameters for
@@ -123,7 +126,7 @@ The following *warnings* are defined:
 __docformat__ = "restructuredtext en"
 
 # __all__ is extended with all gromacs command instances later
-__all__ = ['tools', 'cbook', 'setup']
+__all__ = ['config', 'tools', 'cbook', 'setup']
 
 # Note: analysis not imported by default (requires additional pre-requisites)
 
@@ -158,6 +161,10 @@ for w in (AutoCorrectionWarning, BadParameterWarning,
     warnings.simplefilter('always', category=w)
 del w
 
+
+# configuration
+import config
+
 # Add gromacs command **instances** to the top level.
 # These serve as the equivalence of running commands in the shell.
 # (Note that each gromacs command is actually run when the instance is
@@ -173,13 +180,14 @@ _missing_g_commands = []
 for clsname, cls in tools.registry.items():
     name = clsname[0].lower() + clsname[1:]    # instances should start with lower case
     try:
-        locals()[name] = cls()                 # add instance of command for immediate use
+        globals()[name] = cls()                # add instance of command for immediate use
         _have_g_commands.append(name)
     except GromacsError:                       # ignore missing -h for doc extraction
         pass
     except OSError:
         _missing_g_commands.append(name)
 warnings.simplefilter("always", GromacsFailureWarning)
+warnings.simplefilter("always", GromacsImportWarning)
 
 _have_g_commands.sort()
 _missing_g_commands.sort()

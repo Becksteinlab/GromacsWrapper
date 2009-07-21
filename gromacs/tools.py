@@ -59,7 +59,8 @@ __docformat__ = "restructuredtext en"
 
 import tempfile
 
-from core import GromacsCommand
+import config
+from core import GromacsCommand, Command
 import utilities
 
 #: Contains the file names of all Gromacs tools for which classes are generated.
@@ -83,7 +84,7 @@ g_confrms    g_h2order     g_potential    g_spol     make_ndx
 g_covar      g_hbond       g_principal    g_tcaf     mdrun
 """
 
-#: Additional gromacs tools (not added at the moment).
+#: Additional gromacs tools (see :mod:`gromacs.config` for enabling).
 gmx_extra_tools = """\
 g_count      g_flux
 g_ri3Dc      a_ri3Dc       a_gridcalc
@@ -96,16 +97,16 @@ registry = {}
 # class g_dist(GromacsCommand):
 #     command_name = 'g_dist'
 
-for name in gmx_tools.split():
-    # make names valid python identifiers and convention: class names are capitalized
-    clsname = name.replace('.','_').capitalize()  
-    cls = type(clsname, (GromacsCommand,), {'command_name':name,
-                                            '__doc__': "Gromacs tool %(name)r." % vars()})
-    registry[clsname] = cls      # registry keeps track of all classes
+# clumsy 'load_tools' ... move the whole tool lists into configuration soon.
+for varname in config.load_tools:
+    tool_list = globals()[varname].split()
+    for name in tool_list:
+        # make names valid python identifiers and use convention that class names are capitalized
+        clsname = name.replace('.','_').replace('-','_').capitalize()  
+        cls = type(clsname, (GromacsCommand,), {'command_name':name,
+                                                '__doc__': "Gromacs tool %(name)r." % vars()})
+        registry[clsname] = cls      # registry keeps track of all classes
 
-globals().update(registry)        # add classes to module's scope
-
-del name, cls, clsname
 
 # modify/fix classes as necessary
 # Note: 
@@ -182,26 +183,33 @@ class GromacsCommandMultiIndex(GromacsCommand):
             # XXX: type error --- can't use super in __del__?
             #super(GromacsCommandMultiIndex, self).__del__()
 
-
+# patching up...
 
 if 'G_mindist' in registry:
-    del G_mindist, registry['G_mindist']
-
     # let G_mindist handle multiple ndx files
     class G_mindist(GromacsCommandMultiIndex):
         """Gromacs tool 'g_mindist' (with patch to handle multiple ndx files)."""
         command_name = 'g_mindist'
-
     registry['G_mindist'] = G_mindist
 
 if 'G_dist' in registry:
-    del G_dist, registry['G_dist']
-
     # let G_dist handle multiple ndx files
     class G_dist(GromacsCommandMultiIndex):
         """Gromacs tool 'g_dist' (with patch to handle multiple ndx files)."""
         command_name = 'g_dist'
-
     registry['G_dist'] = G_dist
 
 # XXX: generate multi index classes via type(), not copy&paste...
+
+
+# load additional scripts from config
+for rec in config.load_scripts:
+    name, clsname, doc = rec
+    registry[clsname] = type(clsname, (Command,), 
+                          {'command_name':name,
+                           '__doc__': "External tool %(name)r\n\n%(doc)s." % vars()})
+
+
+# finally, add everything and clean up
+globals().update(registry)        # add classes to module's scope
+del rec, name, cls, clsname, doc

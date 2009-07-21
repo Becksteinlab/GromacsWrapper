@@ -11,8 +11,14 @@ Here the basic command class :class:`GromacsCommand` is defined. All
 Gromacs command classes in :mod:`gromacs.tools` are automatically
 generated from it.
 
+.. autoclass:: Command
+   :members: __init__, __call__, run, transform_args, Popen, help,
+             command_name
+   
 .. autoclass:: GromacsCommand
-   :members: __init__, __call__, run, Popen, help
+   :members: __init__, __call__, run, transform_args, Popen, help,
+             check_failure, gmxdoc
+   :inherited-members:
 
 .. autoclass:: PopenWithInput
    :members:
@@ -28,7 +34,211 @@ import errno
 
 from gromacs import GromacsError, GromacsFailureWarning
 
-class GromacsCommand(object):
+class Command(object):
+    """Wrap simple script or command."""
+    #: Derive a class from command; typically one only has to set *command_name*
+    #: to the name of the script or executable. The full path is required if it
+    #: cannot be found by searching :envvar:`PATH`.
+    command_name = None
+
+    def __init__(self,*args,**kwargs):
+        """Set up the command class.
+
+        The arguments can always be provided as standard positional arguments such as
+
+          ``"-c", "config.conf", "-o". "output.dat", "--repeats=3", "-v", "input.dat"``
+
+        In addition one can alsu use keyword arguments such as
+
+          ``c="config.conf", o="output.dat", repeats=3, v=True``
+          
+        These are automatically transformed appropriately according to simple  rules:
+
+        * Any single-character keywords are assumed to be POSIX-style
+          options and will be prefixed with a single dash and the value
+          separated by a space.
+
+        * Any other keyword is assumed to be a GNU-style long option
+          and thus will be prefixed with two dashes and the value will
+          be joined directly with an equals sign and no space.
+
+        If this does not work (as for instance for the options of the
+        UNIX ``find`` command) then provide options and values in the
+        sequence of positional arguments.
+        """
+          
+        self.args = args
+        self.kwargs = kwargs
+
+    def run(self,*args,**kwargs):
+        """Run the command; args/kwargs are added or replace the ones given to the constructor."""
+        _args = self.args + args
+        _kwargs = self.kwargs.copy()
+        _kwargs.update(kwargs)
+        return self._run_command(*_args, **_kwargs)
+
+    def _run_command(self,*args,**kwargs):
+        """Execute the command; see the docs for __call__."""
+        use_input = kwargs.pop('use_input', True)     # hack to run command WITHOUT input (-h...)
+        p = self.Popen(*args, **kwargs)
+        out, err = p.communicate(use_input=use_input) # special Popen knows input!
+        rc = p.returncode
+        result = rc, out, err
+        return result
+
+    def Popen(self, *args,**kwargs):
+        """Returns a special Popen instance (:class:`PopenWithInput`).
+
+        The instance has its input pre-set so that calls to
+        :meth:`~PopenWithInput.communicate` will not need to supply
+        input. This is necessary if one wants to chain the output from
+        one command to an input from another.
+
+        :TODO:
+          Write example.
+        """
+
+        stderr = kwargs.pop('stderr', STDOUT)   # default: Merge with stdout
+        if stderr is False:                     # False: capture it 
+            stderr = PIPE
+        elif stderr is True:
+            stderr = None                       # use stderr
+
+        stdout = kwargs.pop('stdout', None)     # either set to PIPE for capturing output
+        if stdout is False:                     # ... or to False 
+            stdout = PIPE
+        elif stdout is True:
+            stdout = None                       # for consistency, make True write to screen
+
+        stdin = kwargs.pop('stdin', None)
+        input = kwargs.pop('input', None)
+        if input:
+            stdin = PIPE
+            if type(input) is str:
+                # make sure that input is a simple string with \n line endings
+                if not input.endswith('\n'):
+                    input += '\n'
+            else:
+                try:
+                    # make sure that input is a simple string with \n line endings
+                    input = '\n'.join(map(str, input)) + '\n'
+                except TypeError:
+                    # so maybe we are a file or something ... and hope for the best
+                    pass
+
+        # transform_args() is a hook (used in GromacsCommand very differently!)
+        cmd = [self.command_name] + self.transform_args(*args,**kwargs)
+        try:
+            p = PopenWithInput(cmd, stdin=stdin, stderr=stderr, stdout=stdout,
+                               universal_newlines=True, input=input)
+        except OSError,err:
+            if err.errno == errno.ENOENT:
+                raise OSError("Failed to find command '%r', "
+                              "maybe its not on PATH or GMXRC must be sourced?" %
+                              self.command_name)
+            else:
+                raise
+        return p
+
+    def transform_args(self, *args, **kwargs):
+        """Transform arguments and return them as a list suitable for Popen."""
+        options = []
+        for option,value in kwargs.items():
+            if not option.startswith('-'):
+                # heuristic for turning key=val pairs into options
+                # (fails for commands such as 'find' -- then just use args)
+                if len(option) == 1:
+                    option = '-' + option         # POSIX style
+                else:
+                    option = '--' + option        # GNU option
+            if value is True:
+                options.append(option)
+                continue
+            elif value is False:
+                raise ValueError('A False value is ambiguous for option %r' % option)
+            
+            if option[:2] == '--':
+                options.append(option + '=' + str(value))    # GNU option
+            else:
+                options.extend((option, str(value)))         # POSIX style
+        return options + list(args)
+                            
+    def help(self,long=False):
+        """Print help; same as using ``?`` in ``ipython``. long=True also gives call signature."""
+        print "\ncommand: %s\n\n" % self.command_name
+        print self.__doc__
+        if long:
+            print "\ncall method: command():\n"
+            print self.__call__.__doc__
+        
+    def __call__(self,*args,**kwargs):
+        """Run command with the given arguments::
+
+           rc,stdout,stderr = command(*args, input=None, **kwargs)
+           
+        All positional parameters \*args and all gromacs \*\*kwargs are passed on
+        to the Gromacs command. input and output keywords allow communication
+        with the process via the python subprocess module.
+        
+        :Arguments:
+          input : string, sequence            
+             to be fed to the process' standard input;
+             elements of a sequence are concatenated with
+             newlines, including a trailing one    [``None``]
+          stdin
+             ``None`` or automatically set to ``PIPE`` if input given [``None``]
+          stdout
+             how to handle the program's stdout stream [``None``]
+
+             filehandle
+                    anything that behaves like a file object
+             ``None`` or ``True``
+                    to see  output on screen
+             ``False`` or ``PIPE``
+                     returns the output as a string in  the stdout parameter 
+
+          stderr
+             how to handle the stderr stream [``STDOUT``]
+
+             ``STDOUT``
+                     merges standard error with the standard out stream
+             ``False`` or ``PIPE``
+                     returns the output as a string in the stderr return parameter
+             ``None`` or ``True``
+                     keeps it on stderr (and presumably on screen)
+
+        All other kwargs are passed on to the Gromacs tool.
+     
+        :Returns:
+
+           The shell return code rc of the command is always returned. Depending
+           on the value of output, various strings are filled with output from the
+           command.
+
+        :Notes:
+
+           By default, the process stdout and stderr are merged.
+
+           In order to chain different commands via pipes one must use the special
+           :class:`PopenWithInput` object (see :meth:`GromacsCommand.Popen` method) instead of the simple
+           call described here and first construct the pipeline explicitly and then
+           call the :meth:`PopenWithInput.communicate` method.
+
+           ``STDOUT`` and ``PIPE`` are objects provided by the :mod:`subprocess` module. Any
+           python stream can be provided and manipulated. This allows for chaining
+           of commands. Use ::
+
+              from subprocess import PIPE, STDOUT
+
+           when requiring these special streams (and the special boolean
+           switches ``True``/``False`` cannot do what you need.)
+
+           (TODO: example for chaining commands)
+        """
+        return self.run(*args,**kwargs)
+
+
+class GromacsCommand(Command):
     """Base class for wrapping a g_* command.
     
     Limitations: User must have sourced ``GMXRC`` so that the python script can
@@ -54,6 +264,7 @@ class GromacsCommand(object):
     # ... <message>
     # -------------------------------------------------------    
 
+    #: Available failure modes.
     failuremodes = ('raise', 'warn', None)
 
     def __init__(self,*args,**kwargs):
@@ -198,60 +409,12 @@ class GromacsCommand(object):
         self.check_failure(result, command_string=p.command_string)
         return result
 
-    def Popen(self, *args,**kwargs):
-        """Returns a special Popen instance (:class:`PopenWithInput`).
 
-        The instance has its input pre-set so that calls to
-        :meth:`~PopenWithInput.communicate` will not need to supply
-        input. This is necessary if one wants to chain the output from
-        one command to an input from another.
-
-        :TODO:
-          Write example.
-        """
-
-        stderr = kwargs.pop('stderr', STDOUT)   # default: Merge with stdout
-        if stderr is False:                     # False: capture it 
-            stderr = PIPE
-        elif stderr is True:
-            stderr = None                       # use stderr
-
-        stdout = kwargs.pop('stdout', None)     # either set to PIPE for capturing output
-        if stdout is False:                     # ... or to False 
-            stdout = PIPE
-        elif stdout is True:
-            stdout = None                       # for consistency, make True write to screen
-
-        stdin = kwargs.pop('stdin', None)
-        input = kwargs.pop('input', None)
-        if input:
-            stdin = PIPE
-            if type(input) is str:
-                # make sure that input is a simple string with \n line endings
-                if not input.endswith('\n'):
-                    input += '\n'
-            else:
-                try:
-                    # make sure that input is a simple string with \n line endings
-                    input = '\n'.join(map(str, input)) + '\n'
-                except TypeError:
-                    # so maybe we are a file or something ... and hope for the best
-                    pass
-
+    def transform_args(self,*args,**kwargs):
+        """Combine arguments and turn them into gromacs tool arguments."""
         newargs = self._combineargs(*args,**kwargs)
-        cmd = [self.command_name] + self._build_arg_list(**newargs)
-        try:
-            p = PopenWithInput(cmd, stdin=stdin, stderr=stderr, stdout=stdout,
-                               universal_newlines=True, input=input)
-        except OSError,err:
-            if err.errno == errno.ENOENT:
-                raise OSError("Failed to find Gromacs command '%r'. Source GMXRC." %
-                              self.command_name)
-            else:
-                raise
-        return p
-
-
+        return self._build_arg_list(**newargs)
+        
 
     def _get_gmx_docs(self):
         """Extract standard gromacs doc by running the program and chopping the header."""        
@@ -280,80 +443,6 @@ class GromacsCommand(object):
         return locals()
     gmxdoc = property(**gmxdoc())
 
-    def help(self,long=False):
-        """Print help; same as using ``?`` in ``ipython``. long=True also gives call signature."""
-        print "\ncommand: %s\n\n" % self.command_name
-        print self.__doc__
-        if long:
-            print "\ncall method: command():\n"
-            print self.__call__.__doc__
-        
-    def __call__(self,*args,**kwargs):
-        """Run command with the given arguments::
-
-           rc,stdout,stderr = command(*args, input=None, **kwargs)
-           
-        All positional parameters \*args and all gromacs \*\*kwargs are passed on
-        to the Gromacs command. input and output keywords allow communication
-        with the process via the python subprocess module.
-        
-        :Arguments:
-          input : string, sequence            
-             to be fed to the process' standard input;
-             elements of a sequence are concatenated with
-             newlines, including a trailing one    [``None``]
-          stdin
-             ``None`` or automatically set to ``PIPE`` if input given [``None``]
-          stdout
-             how to handle the program's stdout stream [``None``]
-
-             filehandle
-                    anything that behaves like a file object
-             ``None`` or ``True``
-                    to see  output on screen
-             ``False`` or ``PIPE``
-                     returns the output as a string in  the stdout parameter 
-
-          stderr
-             how to handle the stderr stream [``STDOUT``]
-
-             ``STDOUT``
-                     merges standard error with the standard out stream
-             ``False`` or ``PIPE``
-                     returns the output as a string in the stderr return parameter
-             ``None`` or ``True``
-                     keeps it on stderr (and presumably on screen)
-
-        All other kwargs are passed on to the Gromacs tool.
-     
-        :Returns:
-
-           The shell return code rc of the command is always returned. Depending
-           on the value of output, various strings are filled with output from the
-           command.
-
-        :Notes:
-
-           By default, the process stdout and stderr are merged.
-
-           In order to chain different commands via pipes one must use the special
-           :class:`PopenWithInput` object (see :meth:`GromacsCommand.Popen` method) instead of the simple
-           call described here and first construct the pipeline explicitly and then
-           call the :meth:`PopenWithInput.communicate` method.
-
-           ``STDOUT`` and ``PIPE`` are objects provided by the :mod:`subprocess` module. Any
-           python stream can be provided and manipulated. This allows for chaining
-           of commands. Use ::
-
-              from subprocess import PIPE, STDOUT
-
-           when requiring these special streams (and the special boolean
-           switches ``True``/``False`` cannot do what you need.)
-
-           (TODO: example for chaining commands)
-        """
-        return self.run(*args,**kwargs)
-
 
 
 class PopenWithInput(subprocess.Popen):
@@ -370,7 +459,7 @@ class PopenWithInput(subprocess.Popen):
               file descriptors with ``ulimit -n 2048`` and run analysis in
               different scripts.
 
-              _issue 5179: http://bugs.python.org/issue5179
+    _`issue 5179`: http://bugs.python.org/issue5179
     """
 
     def __init__(self,*args,**kwargs):

@@ -89,6 +89,7 @@ import re
 import warnings
 import tempfile
 import shutil
+import glob
 
 import gromacs
 from gromacs import GromacsError, BadParameterWarning
@@ -139,7 +140,7 @@ def trj_fitandcenter(xy=False, **kwargs):
     ``trjconv``. An intermediate temporary XTC files is generated which should
     be automatically cleaned up unless bad things happened.
 
-    FYI: The `g_spatial documentation`_ documentation actualy recommends
+    FYI: The `g_spatial documentation`_ documentation actually recommends
     the opposite::
 
       trjconv -s a.tpr -f a.xtc -o b.xtc -center tric -ur compact -pbc none
@@ -169,6 +170,110 @@ def trj_fitandcenter(xy=False, **kwargs):
         trj_compact(f=tmptrj, o=outtrj, input=inpcompact, **kwargs)
     finally:
         os.unlink(tmptrj)
+
+class Frames(object):
+    """A iterator that transparently provides frames from a trajectory.
+    
+    The iterator chops a trajectory into individual frames for
+    analysis tools that only work on separate structures such as
+    ``gro`` or ``pdb`` files. Instead of turning the whole trajectory
+    immediately into pdb files (and potentially filling the disk), the
+    iterator can be instructed to only provide a fixed number of
+    frames and compute more frames when needed.
+
+    .. Note:: Setting a limit on the number of frames on disk can lead
+              to longish waiting times because ``trjconv`` must
+              re-seek to the middle of the trajectory and the only way
+              it can do this at the moment is by reading frames
+              sequentially. This might still be preferrable to filling
+              up a disk, though.
+
+    .. Warning:: The *maxframes* option is not implemented yet; use
+              the *dt* option or similar to keep the number of frames
+              manageable.
+    """
+    
+    def __init__(self, structure, trj, maxframes=None, format='pdb', **kwargs):
+        """Set up the Frames iterator.
+
+        :Arguments:
+           structure
+              name of a structure file (tpr, pdb, ...)
+           trj
+              name of the trajectory (xtc, trr, ...)
+           format
+              output format for the frames, eg "pdb" or "gro" [pdb]
+           maxframes : int
+             maximum number of frames that are extracted to disk at
+             one time; set to ``None`` to extract the whole trajectory
+             at once. [``None``]
+           kwargs
+             All other arguments are passed to
+             `class:~gromacs.tools.Trjconv`; the only options that
+             cannot be changed are *sep* and the output file name *o*.
+        """
+        self.structure = structure  # tpr or equivalent
+        self.trj = trj              # xtc, trr, ...
+        self.maxframes = maxframes
+        if not self.maxframes is None:
+            raise NotImplementedError('sorry, maxframes feature not implemented yet')
+
+        self.framedir = tempfile.mkdtemp(prefix="Frames_", suffix='_'+format)
+        self.frameprefix = os.path.join(self.framedir, 'frame')
+        self.frametemplate = self.frameprefix + '%d' + '.' + format  # depends on trjconv
+        self.frameglob = self.frameprefix + '*' + '.' + format
+        kwargs['sep'] = True
+        kwargs['o'] = self.frameprefix + '.' + format
+        kwargs.setdefault('input', ('System',))
+        self.extractor = tools.Trjconv(s=self.structure, f=self.trj, **kwargs)        
+        
+        #: Holds the current frame number of the currently extracted
+        #: batch of frames. Increases when iterating.
+        self.framenumber = 0
+        #: Total number of frames read so far; only important when *maxframes* > 0 is used.
+        self.totalframes = 0
+
+    def extract(self):
+        """Extract frames from the trajectory to the temporary directory."""
+        # XXX: extract everything at the moment, logic for maxframes not done yet
+        self.extractor.run()
+
+    @property
+    def all_frames(self):
+        """Unordered list of all frames currently held on disk."""
+        return glob.glob(self.frameglob)
+
+    @property
+    def current_framename(self):
+        return self.frametemplate % self.framenumber
+
+    def __iter__(self):
+        """Primitive iterator."""
+        frames = self.all_frames
+        if len(frames) == 0:
+            self.extract()
+        frames = self.all_frames
+
+        # filenames are 'Frame0.pdb', 'Frame11.pdb', ... so I must
+        # order manually because glob does not give it in sequence.        
+        for i in xrange(len(frames)):
+            self.framenumber = i
+            yield self.current_framename
+        self.totalframes += len(frames)
+            
+    def delete_frames(self):
+        """Delete all frames."""
+        for frame in glob.glob(self.frameglob):
+            os.unlink(frame)
+
+    def cleanup(self):
+        """Clean up all temporary frames (which can be HUGE)."""
+        shutil.rmtree(self.framedir)
+        self.framedir = None
+
+    def __del__(self):
+        if not self.framedir is None:
+            self.cleanup()
 
 def grompp_qtot(*args, **kwargs):
     """Run ``gromacs.grompp`` and return the total charge of the system::
