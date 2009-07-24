@@ -89,11 +89,11 @@ class GridMatMD(object):
         """Run GridMAT-MD on a single *frame* and store results."""
         
         thickness = {}
-        print "Analyzing frame %r (takes a few seconds)..." % frame
+        print >> sys.stdout, "Analyzing frame %r (takes a few seconds)..." % frame
         sys.stdout.flush()
         rc,output,stderr = self.GridMatMD(frame, stdout=False)
         for line in output.split('\n'):
-            print '>>> '+line
+            print >> sys.stdout, '>>> '+line
             m = self.pNX.match(line)
             if m:
                 self.nx, self.dx = int(m.group('NX')), float(m.group('DX'))
@@ -151,8 +151,47 @@ class GridMatMD(object):
         self.bins = bins
         self.midpoints = midpoints
 
+    def imshow(self, name, **kwargs):
+        """Display array *name* with ``pylab.imshow``."""
+        self.arrays[name].imshow(**kwargs)
+        
+class Grid2D(object):
+    """Represents a 2D array with bin sizes. """
 
-class GridMatData(object):
+    def __init__(self, data, bins):
+        self.array = numpy.asarray(data)  # numpy array
+        self.shape = self.array.shape
+        self.ndim = len(self.shape)
+        self.bins = bins
+        if len(bins) == 1:
+            self.bins = (self.bins,)      # bins should be a tuple, one for each dimension
+        self.midpoints = [self._midpoints(x) for x in self.bins]
+
+    def _midpoints(self, x):
+        _x = numpy.asarray(x)
+        return 0.5*(x[1:] + x[:-1])
+
+    def imshow(self, **kwargs):
+        """Display data as a 2D image using :func:`pylab.imshow`."""
+        import pylab
+        # extent: [ None | scalars (left, right, bottom, top) ]
+        extent = numpy.concatenate([self.bins[0][[0,-1]], self.bins[1][[0,-1]]])
+        kwargs.setdefault('extent', extent)
+        kwargs['origin'] = 'lower'
+        pylab.imshow(self.array, **kwargs)
+
+    def __add__(self, other):
+        """Add arrays and bins (really only makes sense when averaging)."""
+        if self.array.shape != other.array.shape:
+            raise TypeError("arrays are of incompatible shape")
+
+        _bins = [self.bins[dim] + other.bins[dim] for dim in xrange(len(self.bins))]
+        _array = self.array + other.array
+
+        return Grid2D(data=_array, bins=_bins)
+
+
+class GridMatData(Grid2D):
     """Represent GridMatMD data file.
 
     The loaded array data is accessible as a numpy array in
@@ -187,16 +226,16 @@ class GridMatData(object):
             self.delta = tuple(delta)
 
         #: 2D data from file is made available as a numpy array.
-        self.array = numpy.loadtxt(self.filename).reshape(self.shape)
+        _array = numpy.loadtxt(self.filename).reshape(self.shape)
 
         #: reconstructed bins  (always start at 0,0 as the offset is lost)
-        self.bins = [numpy.linspace(0,n*dx,n+1) for n,dx in zip(self.shape, self.delta)]
-        #: reconstructed midpoints  (always start at 0,0 as the offset is lost)
-        self.midpoints = [self._midpoints(x) for x in self.bins]
+        _bins = [numpy.linspace(0,n*dx,n+1) for n,dx in zip(self.shape, self.delta)]
 
-    def _midpoints(self, x):
-        _x = numpy.asarray(x)
-        return 0.5*(x[1:] + x[:-1])
+        Grid2D.__init__(self, data=_array, bins=_bins)
+
+        # reconstructed midpoints  (always start at 0,0 as the offset
+        # is lost)        
+
 
     def parse_filename(self, filename):
         """Get dimensions from filename"""
@@ -205,16 +244,3 @@ class GridMatData(object):
             raise ValueError("filename %s does not appear to be a standard GridMat-MD output filename")
         return map(int, m.group('NX', 'NY'))
             
-    def imshow(self, **kwargs):
-        """Display data as a 2D image using :func:`pylab.imshow`."""
-        import pylab
-        # extent: [ None | scalars (left, right, bottom, top) ]
-        extent = numpy.concatenate([self.bins[0][[0,-1]], self.bins[1][[0,-1]]])
-        kwargs.setdefault('extent', extent)
-        pylab.imshow(self.array, **kwargs)
-
-
-    def __add__(self, *other):
-        # XXX: averages would be muc nicer if we could just sum
-        # XXX: these objects
-        raise NotImplementedError
