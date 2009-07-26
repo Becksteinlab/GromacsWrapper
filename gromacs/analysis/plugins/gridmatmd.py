@@ -76,17 +76,18 @@ class GridMatMD(object):
         self.dy = None
         #: thickness results (dict of :class:`GridMatData` instances)
         self.thickness = {}
-        #: averages of thickness, indexed by "top", "bottom", "average"
-        self.arrays = {}
-        #: averages of bins
-        self.bins = {}
-        #: averages of midpoints
-        self.midpoints = {}
+        #: averaged thickness profiles, indexed by "top", "bottom", "average"
+        self.averages = {}
 
         self.GridMatMD = gromacs.tools.GridMAT_MD(self.config)
 
     def run_frame(self, frame):
-        """Run GridMAT-MD on a single *frame* and store results."""
+        """Run GridMAT-MD on a single *frame* and return results.
+
+        :Arguments: *frame* is a filename (gro or pdb)
+        :Returns:   a dict of :class:`GridMapData` objects; the keys
+                    are "top", "bottom", "average" 
+        """
         
         thickness = {}
         print >> sys.stdout, "Analyzing frame %r (takes a few seconds)..." % frame
@@ -119,44 +120,40 @@ class GridMatMD(object):
         for name, filename in thickness.items():
             d[name] = GridMatData(filename, shape=(self.nx, self.ny),
                                   delta=(self.dx, self.dy))
-        self.thickness = d
+        self.thickness = d  # use thickness as common block... useful for interactive work
         return d
 
     def run(self):
         """Run analysis on all files and average results."""
 
-        # ugly... accumulate averages and divide at the end
-        arrays = {}
-        bins = {}
-        midpoints = {}
+        results = {}
         for f in self.filenames:
             d = self.run_frame(f)        # <-- run GridMAT-MD
-            for name, data in d.items():
+            for name,grid2d in d.items():
                 try:
-                    arrays[name] += data.array
-                    for dim in xrange(len(bins[name])):
-                        bins[name][dim] += data.bins[dim]
-                        midpoints[name][dim] += data.midpoints[dim]
+                    results[name].append(grid2d)
                 except KeyError:
-                    arrays[name] = data.array
-                    bins[name] = data.bins
-                    midpoints[name] = data.midpoints
-        N = float(len(self.filenames))
-        for name in arrays:
-            arrays[name] /= N
-            for dim in xrange(len(bins[name])):
-                bins[name][dim] /= N
-                midpoints[name][dim] /= N
-        self.arrays = arrays
-        self.bins = bins
-        self.midpoints = midpoints
+                    results[name] = [grid2d]
+        
+        # averages arrays and bins
+        self.averages = dict([(name,numpy.mean(v)) for name,v in results.items()])
 
     def imshow(self, name, **kwargs):
         """Display array *name* with ``pylab.imshow``."""
-        self.arrays[name].imshow(**kwargs)
+        from pylab import xlabel, ylabel
+        try:
+            self.averages[name].imshow(**kwargs)
+        except KeyError:
+            raise KeyError("name must be one of %r" % self.arrays.keys())
+        xlabel(r'$x/$nm')
+        ylabel(r'$y/$nm')
         
 class Grid2D(object):
-    """Represents a 2D array with bin sizes. """
+    """Represents a 2D array with bin sizes.
+
+    Addition and subtraction of grids is defined for the arrays and
+    the bins.  Multiplication and division with scalars is also
+    defined. Each operation returns a new :class:`Grid2D` object."""
 
     def __init__(self, data, bins):
         self.array = numpy.asarray(data)  # numpy array
@@ -184,11 +181,30 @@ class Grid2D(object):
         """Add arrays and bins (really only makes sense when averaging)."""
         if self.array.shape != other.array.shape:
             raise TypeError("arrays are of incompatible shape")
-
         _bins = [self.bins[dim] + other.bins[dim] for dim in xrange(len(self.bins))]
         _array = self.array + other.array
-
         return Grid2D(data=_array, bins=_bins)
+
+    def __sub__(self, other):
+        """Subtract other from self."""
+        if self.array.shape != other.array.shape:
+            raise TypeError("arrays are of incompatible shape")
+        _bins = [self.bins[dim] - other.bins[dim] for dim in xrange(len(self.bins))]
+        _array = self.array - other.array
+        return Grid2D(data=_array, bins=_bins)
+
+    def __mul__(self, x):
+        """Multiply arrays by a scalar *x*."""
+        _bins = [self.bins[dim] * x for dim in xrange(len(self.bins))]
+        _array = self.array * x
+        return Grid2D(data=_array, bins=_bins)
+
+    def __div__(self, x):
+        """Divide arrays by a scalar *x*."""
+        _bins = [self.bins[dim] / x for dim in xrange(len(self.bins))]
+        _array = self.array / x
+        return Grid2D(data=_array, bins=_bins)
+        
 
 
 class GridMatData(Grid2D):
