@@ -34,10 +34,12 @@ Module contents
    :members:
 
 """
+from __future__ import with_statement
 
 import sys
 import subprocess
 import re
+import cPickle
 import numpy
 
 import gromacs.tools
@@ -147,6 +149,11 @@ class GridMatMD(object):
             raise KeyError("name must be one of %r" % self.arrays.keys())
         xlabel(r'$x/$nm')
         ylabel(r'$y/$nm')
+
+    def save(self, name):
+        """Save object as pickle."""
+        with open(name, 'wb') as f:
+            cPickle.dump(self, f, protocol=cPickle.HIGHEST_PROTOCOL)
         
 class Grid2D(object):
     """Represents a 2D array with bin sizes.
