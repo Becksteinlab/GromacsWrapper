@@ -29,9 +29,10 @@ load_scripts = [
      'GridMAT_MD',
      """GridMAT-MD: A Grid-based Membrane Analysis Tool for use with Molecular Dynamics.
 
-*This* ``GridMAT-MD`` is a patched version of ``GridMAT-MD.pl``
-v1.0.2, written by WJ Allen, JA Lemkul and DR Bevan. The original
-version is available from the `GridMAT-MD`_ home page,
+*This* ``GridMAT-MD`` is a patched version of the original
+``GridMAT-MD.pl`` v1.0.2, written by WJ Allen, JA Lemkul and DR
+Bevan. The original version is available from the `GridMAT-MD`_ home
+page,
    
 .. _`GridMAT-MD`: http://www.bevanlab.biochem.vt.edu/GridMAT-MD/index.html
 

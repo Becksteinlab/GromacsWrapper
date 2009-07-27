@@ -39,6 +39,7 @@ from __future__ import with_statement
 import sys
 import subprocess
 import re
+import glob
 import cPickle
 import numpy
 
@@ -66,8 +67,23 @@ class GridMatMD(object):
 
 
     def __init__(self, config, filenames):
+        """Set up GridMAT-MD analysis.
+
+        :Arguments:
+          config : filename
+             input file for GridMAT-MD (see docs)
+          filenames : list or glob-pattern
+             list of gro or pdb files, or a glob pattern that creates
+             such a list
+        """
         self.config = config
-        self.filenames = filenames   # list of filenames (gro or pdb)
+        if type(filenames) is str:
+            # use it as a glob pattern
+            _filenames = glob.glob(filenames)
+        else:
+            _filenames = filenames
+        #: list of filenames (gro or pdb files)        
+        self.filenames = _filenames
         #: Number of bins in the *x* direction. 
         self.nx = None
         #: Numberof bins in the *y* direction.         
@@ -76,11 +92,14 @@ class GridMatMD(object):
         self.dx = None
         #: Bin width in *y*.
         self.dy = None
-        #: thickness results (dict of :class:`GridMatData` instances)
+        #: Thickness results (dict of :class:`GridMatData` instances);
+        #: used to store the results from the last processed frame.
         self.thickness = {}
-        #: averaged thickness profiles, indexed by "top", "bottom", "average"
+        #: Final result: averaged thickness profiles, indexed by "top", "bottom", "average"
         self.averages = {}
 
+        #: Instance of :class:`gromacs.tools.GridMAT_MD` which always
+        #: uses *config* for input.
         self.GridMatMD = gromacs.tools.GridMAT_MD(self.config)
 
     def run_frame(self, frame):
