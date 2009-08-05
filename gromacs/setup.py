@@ -32,6 +32,12 @@ argument, but it should be safe and convenient to use the defaults). Other
 arguments assume the default locations so typically not much should have to be
 set manually.
 
+One can supply non-standard itp files in the topology director. In
+some cases one does not use the :func:`topology` function at all but
+sets up the topology manually. In this case it is safest to call the
+topology directory ``top`` and make sure that it contains all relevant
+top, itp, and pdb files.
+
 
 Example
 -------
@@ -69,11 +75,10 @@ Run the resulting tpr file on a cluster.
 
 .. warning::
 
-   **This software is in ALPHA status and likely to change
-   completely in the future.**
-
    You **must** check all simulation parameters for yourself. Do not
-   rely on any defaults provided here.
+   rely on any defaults provided here. The scripts provided here are
+   provided under the assumption that you know what you are doing but
+   you want to automate the boring parts of the process.
 
 
 Functions
