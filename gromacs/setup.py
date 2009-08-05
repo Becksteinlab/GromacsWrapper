@@ -12,7 +12,7 @@ templates are used.
 Functions
 ---------
 
-The individual steps of setting up a simple MD simulation are borken down in a
+The individual steps of setting up a simple MD simulation are broken down in a
 sequence of functions that depend on the previous step(s):
 
   :func:`topology`
@@ -275,6 +275,11 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
     structure = realpath(struct)
     topology = realpath(top)
 
+    # half-hack: find additional itps in the same directory as the
+    # topology; once this is all a class we will NOT deduce the local
+    # topology directory but just keep it as a class attribute.
+    topology_dir = os.path.dirname(topology)
+
     if water.lower() in ('spc', 'spce'):
         water = 'spc216'
 
@@ -286,7 +291,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
         gromacs.genbox(p=topology, cp='boxed.gro', cs=water, o='solvated.gro')
 
         with open('none.mdp','w') as mdp:
-            print >> mdp, '; empty'
+            mdp.write('; empty mdp file\ninclude = -I. -I%(topology_dir)s\n' % vars())
 
         qtot = gromacs.cbook.grompp_qtot(f='none.mdp', o='topol.tpr', c='solvated.gro',
                                          p=topology, stdout=False)
@@ -369,6 +374,10 @@ def energy_minimize(dirname='em', mdp=templates['em_mdp'],
 
     .. note::
        If ``mdrun_d`` is not found, the function simply fails with *OSError*.
+    
+       Additional it files should be in the same directory as the top
+       file; at the moment this only works when this directory can be
+       found as ``../top``.
 
     """
 
@@ -499,6 +508,11 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
        \*\*mdp_kwargs
           key/value pairs that should be changed in the 
           template mdp file, eg ``nstxtcout=250, nstfout=250``.
+
+    .. Note:: Additional it files should be in the same directory as the top
+       file; at the moment this only works when this directory can be
+       found as ``../top``.
+
     """
 
     kwargs.setdefault('struct', 'em/em.pdb')
@@ -542,6 +556,10 @@ def MD(dirname='MD', **kwargs):
        \*\*mdp_kwargs
           key/value pairs that should be changed in the 
           template mdp file, eg ``nstxtcout=250, nstfout=250``.
+
+    .. Note:: Additional it files should be in the same directory as the top
+       file; at the moment this only works when this directory can be
+       found as ``../top``.
     """
 
     kwargs.setdefault('struct', 'MD_POSRES/md_posres.pdb')
