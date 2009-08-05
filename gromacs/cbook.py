@@ -114,7 +114,7 @@ trj_xyfitted = tools.Trjconv(fit='rotxy+transxy',
 Writes a trajectory centered and fitted to the protein in the XY-plane only.
 
 This is useful for membrane proteins. The system *must* be oriented so
-that !the membrane is in the XY plane. The protein backbone is used
+that the membrane is in the XY plane. The protein backbone is used
 for the least square fit, centering is done for the whole protein.
 
 Note:: Gromacs 4.x only""")
@@ -140,8 +140,8 @@ def trj_fitandcenter(xy=False, **kwargs):
     ``trjconv``. An intermediate temporary XTC files is generated which should
     be automatically cleaned up unless bad things happened.
 
-    FYI: The `g_spatial documentation`_ documentation actually recommends
-    the opposite::
+    FYI: The `g_spatial documentation`_ actually recommends the
+    opposite::
 
       trjconv -s a.tpr -f a.xtc -o b.xtc -center tric -ur compact -pbc none
       trjconv -s a.tpr -f b.xtc -o c.xtc -fit rot+trans
