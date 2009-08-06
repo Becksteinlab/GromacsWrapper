@@ -3,10 +3,24 @@
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
 
-"""Configuration for GromacsWrapper.
+"""
+:mod:`gromacs.config` -- Configuration for GromacsWrapper
+==========================================================
 
-This is a stub for handling user-settable configuration options. See
-pylab's ``rc`` mechanism.
+The config module is supposed to provide configurable options for the
+whole package; eventually it might grow into a sophisticated
+configuration system such as matplotlib's rc system but right now it
+only serves to define which gromacs tools and other scripts are
+offered in the package. If the user wants to change anything they will
+still have to do it here (and in :mod:`gromacs.tools`) until a better
+mechanism with rc files has been implemented.
+
+``load_*`` variables are lists that contain instructions to other
+parts of the code which packages and scripts should be wrapped.
+
+.. autodata:: load_tools
+.. autodata:: load_scripts
+
 """
 
 #: preliminary: list the variables in gromacs.tools that should be
@@ -49,10 +63,11 @@ Usage:
 .. class:: GridMAT_MD(config[,structure])
 
 :Arguments:
-- *config* : See the original documentation for a description for the
-  configuration file.
-- *structure* : A gro or pdb file that overrides the value for
-  *bilayer* in the configuration file.
+   - *config* : See the original documentation for a description for the
+     configuration file.
+   - *structure* : A gro or pdb file that overrides the value for
+     *bilayer* in the configuration file.
+
 """),
     ]
 

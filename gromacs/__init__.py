@@ -3,11 +3,11 @@
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
 
-"""\
-``gromacs`` -- GromacsWrapper Package Overview
-==============================================
+"""
+:mod:`gromacs` -- GromacsWrapper Package Overview
+=================================================
 
-**GromacsWrapper** (package *gromacs*) is a thin shell around the `Gromacs`_
+**GromacsWrapper** (package :mod:`gromacs`) is a thin shell around the `Gromacs`_
 tools for light-weight integration into python scripts or interactive use in
 `ipython`_.
 
@@ -22,7 +22,7 @@ Modules
      The top level module contains all gromacs tools; each tool can be run
      directly or queried for its documentation.
 
-:mod:`config`
+:mod:`gromacs.config`
      Configuration options. Not really used much at the moment.
 
 :mod:`gromacs.cbook`
