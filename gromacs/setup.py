@@ -280,10 +280,8 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
     structure = realpath(struct)
     topology = realpath(top)
 
-    # half-hack: find additional itps in the same directory as the
-    # topology; once this is all a class we will NOT deduce the local
-    # topology directory but just keep it as a class attribute.
-    topology_dir = os.path.dirname(topology)
+    # needed only for the include keyword
+    mdp_kwargs = add_mdp_includes(topology)
 
     if water.lower() in ('spc', 'spce'):
         water = 'spc216'
@@ -296,7 +294,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
         gromacs.genbox(p=topology, cp='boxed.gro', cs=water, o='solvated.gro')
 
         with open('none.mdp','w') as mdp:
-            mdp.write('; empty mdp file\ninclude = -I. -I%(topology_dir)s\n' % vars())
+            mdp.write('; empty mdp file\ninclude = %s(include)s\n' % mdp_kwargs)
 
         qtot = gromacs.cbook.grompp_qtot(f='none.mdp', o='topol.tpr', c='solvated.gro',
                                          p=topology, stdout=False)
@@ -392,6 +390,8 @@ def energy_minimize(dirname='em', mdp=templates['em_mdp'],
     mdp = 'em.mdp'
     tpr = 'em.tpr'
 
+    add_mdp_includes(topology, mdp_kwargs)
+
     if qtot != 0:
         # At the moment this is purely user-reported and really only here because 
         # it might get fed into the function when using the keyword-expansion pipeline
@@ -407,7 +407,47 @@ def energy_minimize(dirname='em', mdp=templates['em_mdp'],
         gromacs.mdrun_d('v', stepout=10, deffnm='em', c='em.pdb')   # or em.pdb ? (box??)
         # em.gro --> gives 'Bad box in file em.gro' warning ??
 
-        return {'struct': realpath('em.pdb')}
+        return {'struct': realpath('em.pdb'), 'top': topology}
+
+def add_mdp_includes(topology, mdp_kwargs=None):
+    """Add the directory containing *topology* to the dict *mdp_kwargs*.
+
+    By default, the directories ``.`` and ``..`` are also added to the
+    *include* list for the mdp; when fed into
+    :func:`gromacs.cbook.edit_mdp` it will result in a line such as ::
+
+      include = -I. -I.. -I../topology_dir
+
+    Note that the user can always override the behaviour by setting
+    the *include* keyword herself.
+
+    If no *mdp_kwargs* were supplied then a dict is generated with the
+    single *include* entry.
+
+    :Arguments:
+       *topology* : top filename
+          Topology file; the name of the enclosing directory is added
+          to the include path.
+       *mdp_kwargs* : dict
+          Optional dictionary of mdp keywords; will be modified in place.
+    :Returns: 
+       *mdp_kwargs* with the *include* keyword added if it did not
+       exist previously; if the keyword already existed, nothing
+       happens.
+
+    .. Note:; This function is a bit of a hack. It might be removed
+              once all setup functions become methods in a nice class.
+    """
+    if mdp_kwargs is None:
+        mdp_kwargs = {}
+    # half-hack: find additional itps in the same directory as the
+    # topology; once this is all a class we will NOT deduce the local
+    # topology directory but just keep it as a class attribute.
+    topology_dir = os.path.dirname(topology)
+    include_dirs = ['.', '..', topology_dir]
+    mdp_includes = ' '.join(['-I%s' % d for d in include_dirs])
+    mdp_kwargs.setdefault('include', mdp_includes)   # modify input in place!
+    return mdp_kwargs
 
 def _setup_MD(dirname,
               deffnm='md', mdp=templates['md_mdp'],
@@ -441,15 +481,28 @@ def _setup_MD(dirname,
 
     mdp_parameters = {'nsteps':nsteps, 'dt':dt}
     mdp_parameters.update(mdp_kwargs)
+
+    add_mdp_includes(topology, mdp_parameters)
     
     with in_dir(dirname):
-        if not mainselection is None:
+        # Automatic adjustment of T-coupling groups
+        if not (mdp_parameters.get('Tcoupl','').lower() == 'no' or mainselection is None):
             # make index file in almost all cases; with None the user
             # takes FULL control and also has to provide the template or ndx
             groups = make_main_index(structure, selection=mainselection,
                                      oldndx=ndx, ndx=mainindex)
             natoms = dict([(g['name'], float(g['natoms'])) for g in groups])
-            x = natoms['__main__']/natoms['__environment__']
+            try:
+                x = natoms['__main__']/natoms['__environment__']
+            except KeyError:
+                x = 0   # force using SYSTEM in code below
+                warnings.warn("Missing __main__ and/or __environment__ index group.\n"
+                              "This probably means that you have an atypical system. You can "
+                              "set mainselection=None and provide your own mdp and index files "
+                              "in order to set up temperature coupling.\n"
+                              "If no T-coupling is required then set Tcoupl='no'.\n"
+                              "For now we will just couple everything to 'System'.",
+                              category=AutoCorrectionWarning)
             if x < 0.1:
                 # TODO: does not handle properly multiple groups in arglist yet
                 tau_t = mdp_parameters.pop('tau_t', 0.1)
@@ -464,7 +517,15 @@ def _setup_MD(dirname,
                               % (x * 100, ref_t, tau_t),
                               category=AutoCorrectionWarning)
             ndx = mainindex
-        
+        if mdp_parameters.get('Tcoupl','').lower() == 'no':
+            mdp_parameters['tc-grps'] = ""
+            mdp_parameters['tau_t'] = ""
+            mdp_parameters['ref_t'] = ""
+        if mdp_parameters.get('Pcoupl','').lower() == 'no':
+            mdp_parameters['tau_p'] = ""
+            mdp_parameters['ref_p'] = ""
+            mdp_parameters['compressibility'] = ""
+
         gromacs.cbook.edit_mdp(mdp_template, new_mdp=mdp, **mdp_parameters)
         gromacs.grompp(f=mdp, p=topology, c=structure, n=ndx, o=tpr)
         gromacs.cbook.edit_txt(sge_template, [('^DEFFNM=','md',deffnm), 
@@ -514,9 +575,8 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
           key/value pairs that should be changed in the 
           template mdp file, eg ``nstxtcout=250, nstfout=250``.
 
-    .. Note:: Additional it files should be in the same directory as the top
-       file; at the moment this only works when this directory can be
-       found as ``../top``.
+    .. Note:: Additional itp files should be in the same directory as the top
+              file.
 
     """
 
@@ -562,9 +622,8 @@ def MD(dirname='MD', **kwargs):
           key/value pairs that should be changed in the 
           template mdp file, eg ``nstxtcout=250, nstfout=250``.
 
-    .. Note:: Additional it files should be in the same directory as the top
-       file; at the moment this only works when this directory can be
-       found as ``../top``.
+    .. Note:: Additional itp files should be in the same directory as the top
+              file.
     """
 
     kwargs.setdefault('struct', 'MD_POSRES/md_posres.pdb')

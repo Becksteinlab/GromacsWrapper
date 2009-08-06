@@ -57,7 +57,8 @@ Functions that help handling Gromacs files:
 
 
 Functions that make working with matplotlib_ easier:
-.. _matplotlib:: http://matplotlib.sourceforge.net/
+
+.. _matplotlib: http://matplotlib.sourceforge.net/
 
 .. autofunction:: activate_subplot
 .. autofunction:: remove_legend

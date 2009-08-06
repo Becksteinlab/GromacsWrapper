@@ -51,6 +51,7 @@ ref_p                    = 1.0
 DispCorr                 = EnerPres
 
 gen_vel                  = yes
+gen-temp                 = 300
 
 constraints              = all-bonds
 constraint-algorithm     = Lincs

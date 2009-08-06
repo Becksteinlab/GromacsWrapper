@@ -313,18 +313,26 @@ def edit_mdp(mdp, new_mdp=None, **substitutions):
     
     By default the template mdp file is **overwritten in place**.
 
+    If a parameter does not exist in the template then it cannot be substituted
+    and the parameter/value pair is returned. The user has to check the
+    returned list in order to make sure that everything worked as expected. At
+    the moment it is not possible to automatically append the new values to the
+    mdp file because of ambiguities when having to replace dashes in parameter
+    names with under scores (see the notes below on dashes/underscores).
+
     :Arguments:
         mdp : filename
             filename of input (and output filename of ``new_mdp=None``)
         new_mdp : filename
             filename of alternative output mdp file [None]
-        substitutions : dict
-            parameter=value pairs, where parameter is defined by the Gromacs mdp file
+        substitutions
+            parameter=value pairs, where parameter is defined by the Gromacs mdp file; 
+            dashes in parameter names have to be replaced by underscores.
 
     :Returns:    
        List of parameters that have NOT been substituted.
 
-    .. note::
+    .. Note::
     
        * Dashes in Gromacs mdp parameters have to be replaced by an underscore
          when supplied as python keyword arguments (a limitation of python). For example
@@ -343,11 +351,12 @@ def edit_mdp(mdp, new_mdp=None, **substitutions):
     params = substitutions.keys()[:]   # list will be reduced for each match
 
     def demangled(p):
+        """Return a RE string that matches the parameter."""
         return p.replace('_', '[-_]')  # must catch either - or _
 
     patterns = dict([(parameter,
                       re.compile("""\
-                       (?P<assignment>\s*%s\s*=\s*)  # everything before the value
+                       (?P<assignment>\s*%s\s*=\s*)  # parameter == everything before the value
                        (?P<value>[^;]*)              # value (stop before comment=;)
                        (?P<comment>\s*;.*)?          # optional comment           
                        """ % demangled(parameter), re.VERBOSE))
@@ -380,7 +389,7 @@ def edit_mdp(mdp, new_mdp=None, **substitutions):
     with open(new_mdp, 'w') as final:
         shutil.copyfileobj(target, final)
     target.close()
-    return params
+    return params     # return all parameters that have NOT been substituted
 
 def edit_txt(filename, substitutions, newname=None):
     """Primitive top editor (sed is better...)::
