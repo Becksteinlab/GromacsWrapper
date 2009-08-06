@@ -30,7 +30,7 @@ nstcomm                  = 1000
 comm-grps                = SYSTEM
 
 ns_type                  = grid
-;; nstlist                  = 10 ;; ??
+nstlist                  = 10
 
 rlist                    = 1.0
 rcoulomb                 = 1.0
@@ -53,7 +53,7 @@ DispCorr                 = EnerPres
 gen_vel                  = yes
 gen-temp                 = 300
 
-constraints              = all-bonds
+constraints              = hbonds
 constraint-algorithm     = Lincs
 lincs-order              = 4
 lincs-iter               = 1
