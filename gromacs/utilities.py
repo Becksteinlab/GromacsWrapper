@@ -42,7 +42,7 @@ directories:
      the directory that was the current directory before entering
      the block.
 
-Functions that improve list processing and which fo *not* treat
+Functions that improve list processing and which do *not* treat
 strings as lists:
 
 .. autofunction:: iterable
@@ -57,7 +57,7 @@ Functions that help handling Gromacs files:
 
 
 Functions that make working with matplotlib_ easier:
-.. _matplotlib: http://matplotlib.sourceforge.net/
+.. _matplotlib:: http://matplotlib.sourceforge.net/
 
 .. autofunction:: activate_subplot
 .. autofunction:: remove_legend

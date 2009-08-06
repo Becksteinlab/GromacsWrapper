@@ -57,6 +57,7 @@ Gromacs tools
 
 __docformat__ = "restructuredtext en"
 
+import os.path
 import tempfile
 
 import config
@@ -116,10 +117,19 @@ for varname in config.load_tools:
 
 class GromacsCommandMultiIndex(GromacsCommand):
         def __init__(self, **kwargs):
+            """Initialize instance.
+
+            1) Sets up the combined index file.
+            2) Inititialize :class:`~gromacs.core.GromacsCommand` with the 
+               new index file.
+            
+            See the documentation for :class:`gromacs.core.GromacsCommand` for details. 
+            """
             kwargs = self._fake_multi_ndx(**kwargs)
             super(GromacsCommandMultiIndex, self).__init__(**kwargs)
 
         def run(self,*args,**kwargs):
+            """Run the command; make a combined multi-index file if necessary."""
             kwargs = self._fake_multi_ndx(**kwargs)            
             return super(GromacsCommandMultiIndex, self).run(*args, **kwargs)
 
@@ -140,13 +150,13 @@ class GromacsCommandMultiIndex(GromacsCommand):
             :Keywords: 
                Only the listed keywords have meaning for the method:
 
-               n : filename or list of filenames
+               *n* : filename or list of filenames
                   possibly multiple index files; *n* is replaced by the name of 
                   the temporary index file.
-               s : filename
+               *s* : filename
                   structure file (tpr, pdb, ...) or ``None``; if a structure file is 
                   supplied then the Gromacs default index groups are automatically added
-                  to the temporrary indexs file.
+                  to the temporary indexs file.
 
             :Example: 
                Used in derived classes that replace the standard
@@ -156,7 +166,7 @@ class GromacsCommandMultiIndex(GromacsCommand):
                       kwargs = self._fake_multi_ndx(**kwargs)            
                       return super(G_mindist, self).run(*args, **kwargs)
 
-                      """
+            """
             ndx = kwargs.get('n')
             if not (ndx is None or type(ndx) is str):
                 if len(ndx) > 1:
@@ -205,9 +215,10 @@ if 'G_dist' in registry:
 # load additional scripts from config
 for rec in config.load_scripts:
     name, clsname, doc = rec
+    exec_name = os.path.basename(name)
     registry[clsname] = type(clsname, (Command,), 
                           {'command_name':name,
-                           '__doc__': "External tool %(name)r\n\n%(doc)s." % vars()})
+                           '__doc__': "External tool %(exec_name)r\n\n%(doc)s." % vars()})
 
 
 # finally, add everything and clean up
