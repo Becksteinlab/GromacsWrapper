@@ -195,7 +195,7 @@ def make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None):
         
     :Returns:
       *groups* is a list of dictionaries that describe the index groups. See
-      ``gromacs.cbook.parse_ndxlist()`` for details.
+      :func:`gromacs.cbook.parse_ndxlist` for details.
 
     :Arguments:    
       *struct* : filename
@@ -527,8 +527,8 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
           integration time step in ps [0.002]
        *sge*
           script to submit to the SGE queuing system; by default
-          uses the template ``gromacs.config.sge_template``, which can 
-          be manually set to another template from ``gromacs.config.templates``
+          uses the template :data:`gromacs.config.sge_template`, which can 
+          be manually set to another template from :data:`gromacs.config.templates`
        *sgename*
           name to be used for the job in the queuing system [PR_GMX]
        *ndx*
