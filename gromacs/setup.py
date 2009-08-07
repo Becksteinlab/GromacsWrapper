@@ -84,14 +84,17 @@ Functions
 ---------
 
 The following functions are provided for the user:
+
 .. autofunction:: topology
 .. autofunction:: solvate
 .. autofunction:: energy_minimize
 .. autofunction:: MD_restrained
 .. autofunction:: MD
-.. autofunction:: make_main_index
 
 Helper functions (mainly of use to developers):
+
+.. autofunction:: make_main_index
+.. autofunction:: trj_compact_main
 .. autofunction:: add_mdp_includes
 .. autofunction:: _setup_MD
 
@@ -136,9 +139,7 @@ rlist        1.4 ?      1.0
 
 def topology(struct=None, protein='protein',
              top='system.top',  dirname='top', **pdb2gmx_args):
-    """Build Gromacs topology files from pdb::
-
-      topology(struct=None[, protein='protein', top='system.top',  dirname='top', **pdb2gmx_args])
+    """Build Gromacs topology files from pdb.
 
     :Keywords:
        *struct*
@@ -180,9 +181,7 @@ trj_compact_main = gromacs.tools.Trjconv(ur='compact', center=True, boxcenter='t
                                          doc="Returns a compact representation of the system centered on the __main__ group")
 
 def make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None):
-    """Make index file with the special groups::
-
-       groups = make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None)    
+    """Make index file with the special groups.
 
     This routine adds the group __main__ and the group __environment__
     to the end of the index file. __main__ contains what the user
