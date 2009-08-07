@@ -8,9 +8,16 @@ are set up in individual directories. For energy minimization one
 should supply appropriate mdp run input files; otherwise example
 templates are used.
 
+.. warning::
 
-Functions
----------
+   You **must** check all simulation parameters for yourself. Do not rely on
+   any defaults provided here. The scripts provided here are provided under the
+   assumption that you know what you are doing and you just want to automate
+   the boring parts of the process.
+
+
+User functions
+--------------
 
 The individual steps of setting up a simple MD simulation are broken down in a
 sequence of functions that depend on the previous step(s):
@@ -73,23 +80,20 @@ the equilibrium MD::
 Run the resulting tpr file on a cluster.
 
 
-.. warning::
-
-   You **must** check all simulation parameters for yourself. Do not
-   rely on any defaults provided here. The scripts provided here are
-   provided under the assumption that you know what you are doing but
-   you want to automate the boring parts of the process.
-
-
 Functions
 ---------
 
+The following functions are provided for the user:
 .. autofunction:: topology
 .. autofunction:: solvate
 .. autofunction:: energy_minimize
 .. autofunction:: MD_restrained
 .. autofunction:: MD
 .. autofunction:: make_main_index
+
+Helper functions (mainly of use to developers):
+.. autofunction:: add_mdp_includes
+.. autofunction:: _setup_MD
 
 """
 
@@ -104,40 +108,15 @@ import re
 import shutil
 import warnings
 
-from pkg_resources import resource_filename
-
 import gromacs
+import gromacs.config as config
 from gromacs import GromacsError, GromacsFailureWarning, GromacsValueWarning, \
      AutoCorrectionWarning, BadParameterWarning
 import gromacs.cbook
 from gromacs.utilities import in_dir
 
-# Templates have to be extracted from the egg because they are used by
-# external code.
-#
-# Gromacs mdp templates
-# ---------------------
-# These are supplied as examples and there is NO GUARANTEE THAT THEY
-# PRODUCE SENSIBLE OUTPUT --- check for yourself!
-# Note that only existing parameter names can be modified with 
-# gromacs.cbook.edit_mdp() at the moment.
-#
-# SGE templates:
-# --------------
-# The sge scripts are highly specific and you will need to add your own.
-# Temmplates should be sh-scripts and contain the following (except '|')
-#
-# |DEFFNM=md        'md' is replaced by kw deffnm
-# |#$ -N GMX_MD     'GMX_MD' is replaced by kw sgename
-#
-templates = {'em_mdp': resource_filename(__name__, 'templates/em.mdp'),
-             'md_mdp': resource_filename(__name__, 'templates/md.mdp'),
-             'deathspud_sge': resource_filename(__name__, 'templates/deathspud.sge'),
-             'neuron_sge': resource_filename(__name__, 'templates/neuron.sge'),
-             }
-sge_template = templates['neuron_sge']
 
-
+# XXX: This is not used anywhere at the moment:
 # parse this table for a usable data structure (and then put it directly in the docs)
 recommended_mdp_table = """\
 Table: recommended mdp parameters for different FF
@@ -145,7 +124,7 @@ Table: recommended mdp parameters for different FF
 mdp          GROMOS     OPLS-AA
 ==========   =========  ================
 rvdw         1.4        1.0
-rlist        1.4        1.0
+rlist        1.4 ?      1.0
 ==========   =========  ================
 """
 
@@ -162,22 +141,21 @@ def topology(struct=None, protein='protein',
       topology(struct=None[, protein='protein', top='system.top',  dirname='top', **pdb2gmx_args])
 
     :Keywords:
-    
-    struct
-        input structure (**required**)
-    protein
-        name of the output files
-    top 
-        name of the topology file
-    dirname
-        directory in which the new topology will be stored
-    pdb2gmxargs
-        arguments for ``pdb2gmx`` such as ``ff``, ``water``, ...
+       *struct*
+           input structure (**required**)
+       *protein*
+           name of the output files
+       *top*
+           name of the topology file
+       *dirname*
+           directory in which the new topology will be stored
+       *pdb2gmxargs*
+           arguments for ``pdb2gmx`` such as ``ff``, ``water``, ...
 
     .. note::
        At the moment this function simply runs ``pdb2gmx`` and uses
        the resulting topology file directly. If you want to create
-       more complicate topologies and maybe also use additional itp
+       more complicated topologies and maybe also use additional itp
        files or make a protein itp file then you will have to do this
        manually.
     """
@@ -193,6 +171,7 @@ def topology(struct=None, protein='protein',
     with in_dir(dirname):
         gromacs.pdb2gmx(**pdb2gmx_args)
         # need some editing  protein_tmp --> system.top and protein.itp
+        # here... for the time being we just copy
         shutil.copy(tmp_top, top)
         return {'top': realpath(top), 'struct': realpath(new_struct)}
 
@@ -221,14 +200,15 @@ def make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None):
       ``gromacs.cbook.parse_ndxlist()`` for details.
 
     :Arguments:    
-      struct : filename
+      *struct* : filename
         structure (tpr, pdb, gro)    
-      selection : string
-        is a ``make_ndx`` command such as ``"Protein"`` or ``r DRG`` which determines what 
-        is considered the main group for centering etc. It is passed directly to ``make_ndx``.
-      ndx : string
+      *selection* : string
+        is a ``make_ndx`` command such as ``"Protein"`` or ``r DRG`` which
+        determines what is considered the main group for centering etc. It is
+        passed directly to ``make_ndx``.
+      *ndx* : string
          name of the final index file
-      oldndx : string
+      *oldndx* : string
          name of index file that should be used as a basis; if None
          then the ``make_ndx`` default groups are used.
                   
@@ -263,17 +243,9 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
             ndx = 'main.ndx', mainselection = '"Protein"',
             dirname='solvate',
             **kwargs):
-    """Put protein into box, add water, add ions::
+    """Put protein into box, add water, add counter-ions.
 
-       solvate(struct='top/protein.pdb', top='top/system.top',
-            distance=0.9, boxtype='dodecahedron',
-            concentration=0, cation='NA+', anion='CL-',
-            water='spc',
-            ndx = 'main.ndx', mainselection = '"Protein"',
-            dirname='solvate',
-            **kwargs)
-
-    At the moment only adding counter ions is implemented; the routine
+    At the moment only adding counter-ions is implemented; the routine
     will raise an exception if concentration > 0.
     """
 
@@ -349,44 +321,41 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
         return {'qtot': qtot, 'struct': realpath('ionized.gro'), 'ndx': realpath(ndx)}
 
 
-def energy_minimize(dirname='em', mdp=templates['em_mdp'],
+def energy_minimize(dirname='em', mdp=config.templates['em_mdp'],
                     struct='solvate/ionized.gro', top='top/system.top',
                     qtot=0,   # only important when passed from solvate()
                     **mdp_kwargs):
-    """Energy minimize the system::
-
-       energy_minimize(**kwargs)
+    """Energy minimize the system.
 
     This sets up the system (creates run input files) and also runs
     ``mdrun_d``. Thus it can take a while.
 
+    Additional itp files should be in the same directory as the top file.
+
     Many of the keyword arguments below already have sensible values. 
 
     :Keywords:
-       dirname
+       *dirname*
           set up under directory dirname [em]
-       struct
+       *struct*
           input structure (gro, pdb, ...) [solvate/ionized.gro]
-       top
+       *top*
           topology file [top/system.top]
-       mdp
+       *mdp*
           mdp file (or use the template) [templates/em.mdp]
-       \*\*mdp_kwargs
-          key/value pairs that should be changed in the 
+       *mdp_kwargs*
+          remaining key/value pairs that should be changed in the 
           template mdp file, eg ``nstxtcout=250, nstfout=250``.
 
-    .. note::
-       If ``mdrun_d`` is not found, the function simply fails with *OSError*.
-    
-       Additional it files should be in the same directory as the top
-       file; at the moment this only works when this directory can be
-       found as ``../top``.
-
+    .. note:: 
+       If ``mdrun_d`` is not found, the function simply fails with
+       :exc:`OSError`; in the future it will fall back to ``mdrun`` instead.    
     """
 
     structure = realpath(struct)
     topology = realpath(top)
-    mdp_template = realpath(mdp)    
+    mdp_template = config.get_template(mdp)
+
     mdp = 'em.mdp'
     tpr = 'em.tpr'
 
@@ -450,11 +419,11 @@ def add_mdp_includes(topology, mdp_kwargs=None):
     return mdp_kwargs
 
 def _setup_MD(dirname,
-              deffnm='md', mdp=templates['md_mdp'],
+              deffnm='md', mdp=config.templates['md_OPLSAA_mdp'],
               struct=None,
               top='top/system.top', ndx=None,
               mainselection='"Protein"',
-              sge=sge_template, sgename=None,
+              sge=config.sge_template, sgename=None,
               dt=0.002, runtime=1e3, **mdp_kwargs):
     """Generic function to set up a ``mdrun`` MD simulation."""
 
@@ -462,8 +431,8 @@ def _setup_MD(dirname,
         raise ValueError('struct must be set to a input structure')
     structure = realpath(struct)
     topology = realpath(top)
-    mdp_template = realpath(mdp)
     sge_template = realpath(sge)
+    mdp_template = config.get_template(mdp)
 
     nsteps = int(float(runtime)/float(dt))
 
@@ -537,46 +506,43 @@ def _setup_MD(dirname,
 
 
 def MD_restrained(dirname='MD_POSRES', **kwargs):
-    """Set up MD with position restraints::
+    """Set up MD with position restraints.
 
-      MD_restrained(**kwargs)
+    Additional itp files should be in the same directory as the top file.
 
     Many of the keyword arguments below already have sensible values. 
 
     :Keywords:
-       dirname
+       *dirname*
           set up under directory dirname [MD_POSRES]
-       struct
+       *struct*
           input structure (gro, pdb, ...) [em/em.pdb]
-       top
+       *top*
           topology file [top/system.top]
-       mdp
+       *mdp*
           mdp file (or use the template) [templates/md.mdp]
-       deffnm
+       *deffnm*
           default filename for Gromacs run [md]
-       runtime
+       *runtime*
           total length of the simulation in ps [1000]
-       dt
+       *dt*
           integration time step in ps [0.002]
-       sge
+       *sge*
           script to submit to the SGE queuing system; by default
           uses the template ``gromacs.setup.sge_template``, which can 
           be manually set to another template from ``gromacs.setup.templates``
-       sgename
+       *sgename*
           name to be used for the job in the queuing system [PR_GMX]
-       ndx
+       *ndx*
           index file
-       mainselection
+       *mainselection*
           `` make_ndx`` selection to select main group ["Protein"]
           (If ``None`` then no canonical index file is generated and
           it is the users responsibility to set 'tc_grps',
           'tau_t', and 'ref_t' via mdp_kwargs.
-       \*\*mdp_kwargs
-          key/value pairs that should be changed in the 
+       *mdp_kwargs*
+          remaining key/value pairs that should be changed in the 
           template mdp file, eg ``nstxtcout=250, nstfout=250``.
-
-    .. Note:: Additional itp files should be in the same directory as the top
-              file.
 
     """
 
@@ -586,44 +552,42 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
     return _setup_MD(dirname, **kwargs)
 
 def MD(dirname='MD', **kwargs):
-    """Set up equilibrium MD::
+    """Set up equilibrium MD.
 
-      MD(**kwargs)
+    Additional itp files should be in the same directory as the top file.
 
     Many of the keyword arguments below already have sensible values. 
 
     :Keywords:
-       dirname        
+       *dirname*
           set up under directory dirname [MD]
-       struct
+       *struct*
           input structure (gro, pdb, ...) [MD_POSRES/md_posres.pdb]
-       top
+       *top*
           topology file [top/system.top]
-       mdp
+       *mdp*
           mdp file (or use the template) [templates/md.mdp]
-       deffnm
+       *deffnm*
           default filename for Gromacs run [md]
-       runtime
+       *runtime*
           total length of the simulation in ps [1000]
-       dt
+       *dt*
           integration time step in ps [0.002]
-       sge
+       *sge*
           script template to submit to the SGE queuing system
-       sgename
+       *sgename*
           name to be used for the job in the queuing system [MD_GMX]
-       ndx
+       *ndx*
           index file
-       mainselection
+       *mainselection*
           ``make_ndx`` selection to select main group ["Protein"]
           (If ``None`` then no canonical idenx file is generated and
           it is the users responsibility to set 'tc_grps',
           'tau_t', and 'ref_t' via mdp_kwargs.    
-       \*\*mdp_kwargs
-          key/value pairs that should be changed in the 
+       *mdp_kwargs*
+          remaining key/value pairs that should be changed in the 
           template mdp file, eg ``nstxtcout=250, nstfout=250``.
 
-    .. Note:: Additional itp files should be in the same directory as the top
-              file.
     """
 
     kwargs.setdefault('struct', 'MD_POSRES/md_posres.pdb')

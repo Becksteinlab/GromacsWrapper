@@ -1,0 +1,61 @@
+; $Id$
+; Template for MD with GROMOS96 G43a1.
+; TODO: Parameters are NOT tested yet. -- OB 2009-08-07
+;
+; ==================================================================
+;      DO NOT USE THIS INPUT FILE WITHOUT CHECKING ALL SETTINGS.
+; *YOU* ARE SOLELY RESPONSIBLE FOR CORRECT INPUT TO YOUR SIMULATION.
+; ==================================================================
+
+include                  = -I. -I.. -I../top
+define                   =
+
+integrator               = md
+tinit                    = 0.0
+dt                       = 0.002
+nsteps                   = 50000000
+
+nstxout                  = 50000
+nstvout                  = 50000
+nstfout                  = 0
+; Output frequency for energies to log file and energy file
+nstlog                   = 500
+nstenergy                = 250
+; Output frequency and precision for xtc file
+nstxtcout                = 500
+xtc-precision            = 1000
+
+
+comm-mode                = Linear
+nstcomm                  = 1000
+comm-grps                = SYSTEM
+
+ns_type                  = grid
+nstlist                  = 10
+
+rlist                    = 1.0
+rcoulomb                 = 1.0
+; GROMOS96 was parametrised with a LJ cut-off of 1.4
+rvdw                     = 1.4      ; TODO: check for GROMOS
+vdwtype                  = cut-off
+coulombtype              = PME
+optimize_fft             = yes
+
+Tcoupl                   = v-rescale
+tau_t                    = 0.1 0.1
+tc-grps                  = __main__ __environment__
+ref_t                    = 300 300
+Pcoupl                   = berendsen
+Pcoupltype               = isotropic
+tau_p                    = 0.5
+compressibility          = 4.5e-5
+ref_p                    = 1.0
+DispCorr                 = EnerPres
+
+gen_vel                  = yes
+gen-temp                 = 300
+
+constraints              = allbonds   ; TODO: check for GROMOS
+constraint-algorithm     = Lincs
+lincs-order              = 4
+lincs-iter               = 1
