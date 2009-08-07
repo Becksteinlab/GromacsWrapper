@@ -94,7 +94,6 @@ The following functions are provided for the user:
 Helper functions (mainly of use to developers):
 
 .. autofunction:: make_main_index
-.. autofunction:: trj_compact_main
 .. autofunction:: add_mdp_includes
 .. autofunction:: _setup_MD
 
