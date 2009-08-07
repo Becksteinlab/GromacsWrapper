@@ -527,8 +527,8 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
           integration time step in ps [0.002]
        *sge*
           script to submit to the SGE queuing system; by default
-          uses the template ``gromacs.setup.sge_template``, which can 
-          be manually set to another template from ``gromacs.setup.templates``
+          uses the template ``gromacs.config.sge_template``, which can 
+          be manually set to another template from ``gromacs.config.templates``
        *sgename*
           name to be used for the job in the queuing system [PR_GMX]
        *ndx*
