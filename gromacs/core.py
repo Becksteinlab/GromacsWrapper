@@ -47,7 +47,7 @@ class Command(object):
         The arguments can always be provided as standard positional
         arguments such as
 
-          ``"-c", "config.conf", "-o". "output.dat", "--repeats=3", "-v", "input.dat"``
+          ``"-c", "config.conf", "-o", "output.dat", "--repeats=3", "-v", "input.dat"``
 
         In addition one can also use keyword arguments such as
 
@@ -183,13 +183,13 @@ class Command(object):
         with the process via the python subprocess module.
         
         :Arguments:
-          input : string, sequence            
+          *input* : string, sequence            
              to be fed to the process' standard input;
              elements of a sequence are concatenated with
              newlines, including a trailing one    [``None``]
-          stdin
+          *stdin*
              ``None`` or automatically set to ``PIPE`` if input given [``None``]
-          stdout
+          *stdout*
              how to handle the program's stdout stream [``None``]
 
              filehandle
@@ -199,7 +199,7 @@ class Command(object):
              ``False`` or ``PIPE``
                      returns the output as a string in  the stdout parameter 
 
-          stderr
+          *stderr*
              how to handle the stderr stream [``STDOUT``]
 
              ``STDOUT``
@@ -270,16 +270,27 @@ class GromacsCommand(Command):
     failuremodes = ('raise', 'warn', None)
 
     def __init__(self,*args,**kwargs):
-        """Set up the command with gromacs flags as keyword arguments::
+        """Set up the command with gromacs flags as keyword arguments.
 
+        The following  are generic instructions; refer  to the Gromacs
+        command  usage information  that should  have  appeared before
+        this generic documentation.
+
+        As an example, a generic Gromacs command could use the following flags::
+     
           cmd = GromacsCommand('v', f=['md1.xtc','md2.xtc'], o='processed.xtc', t=200, ...)
 
-        Gromacs command line arguments
+        which would correspond to running the command in the shell as ::
+
+          GromacsCommand -v -f md1.xtc md2.xtc -o processed.xtc -t 200
+
+        **Gromacs command line arguments**
 
            Gromacs boolean switches (such as ``-v``) are given as python
            positional arguments (``'v'``) or as keyword argument (``v=True``);
-           note the quotes in the first case. Negating at boolean switch can be
-           done with ``'nov'``, ``nov=True`` or ``v=False``.
+           note the quotes in the first case. Negating a boolean switch can be
+           done with ``'nov'``, ``nov=True`` or ``v=False`` (but ``nov=False``
+           does *not* work as expected; please use ``v=True``).
 
            Any Gromacs options that take parameters are handled as keyword
            arguments. If an option takes multiple arguments (such as the
@@ -295,13 +306,13 @@ class GromacsCommand(Command):
            Keywords must be legal python keywords or the interpreter raises a
            :exc:`SyntaxError` but of course Gromacs commandline arguments are
            not required to be legal python. In this case "quote" the option
-           with an underscore (``_``) and the underscore will silently stripped
-           and passed on just fine. For instance, ``-or`` translates to the
-           illegal keyword ``or`` so it must be underscore-quoted::
+           with an underscore (``_``) and the underscore will be silently
+           stripped. For instance, ``-or`` translates to the illegal keyword
+           ``or`` so it must be underscore-quoted::
                
               cmd(...., _or='mindistres.xvg')
 
-        Command execution
+        **Command execution**
 
            The command is executed with the :meth:`~GromacsCommand.run` method or by
            calling it as a function. The two next lines are equivalent::
@@ -310,16 +321,18 @@ class GromacsCommand(Command):
              cmd.run(...)
 
            When the command is run one can override options that were given at
-           initialization or one can add additional ones.
+           initialization or one can add additional ones. The same rules for
+           supplying Gromacs flags apply as described above.
 
-        Non-Gromacs keyword arguments
+        **Non-Gromacs keyword arguments**
 
            The other keyword arguments (listed below) are not passed on to the
-           Gromacs tool but determine how the command class behaves. This is
-           mostly of interest to developers.
+           Gromacs tool but determine how the command class behaves. They are
+           only useful when instantiating a class. This is mostly of interest
+           to developers.
 
         :Keywords:
-           failure
+           *failure*
               determines how a failure of the gromacs command is treated; it
               can be one of the following:
 
@@ -330,7 +343,7 @@ class GromacsCommand(Command):
               ``None``
                    just continue silently
 
-           doc : string
+           *doc* : string
               additional documentation []
         """
 
