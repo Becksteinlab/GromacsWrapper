@@ -13,8 +13,8 @@ produces an instance of a gromacs command with initial default values.
 By convention, a class has the capitalized name of the corresponding Gromacs
 tool; dots are replaced by underscores to make it a valid python identifier.
 
-At the moment the gromacs tools are hard coded in :data:`gromacs.tools.gmx_tools`;
-the list was generated from Gromacs 4.0.2.
+The gromacs list of Gromacs tools to be loaded is configured in
+:data:`gromacs.config.gmx_tool_groups`.
 
 .. autodata:: gmx_tools
 .. autodata:: gmx_extra_tools
@@ -64,32 +64,6 @@ import config
 from core import GromacsCommand, Command
 import utilities
 
-#: Contains the file names of all Gromacs tools for which classes are generated.
-#: Changing this list does *not* add additional classes. Either change the source
-#: or derive new classes manually from :class:`gromacs.core.GromacsCommand`.
-gmx_tools = """\
-anadock      g_current     g_helix        g_rama     g_traj     mdrun_d
-demux.pl     g_density     g_helixorient  g_rdf      g_vanhove  mk_angndx
-do_dssp      g_densmap     g_kinetics     g_rms      g_velacc   pdb2gmx
-editconf     g_dielectric  g_lie          g_rmsdist  g_wham     protonate
-eneconv      g_dih         g_mdmat        g_rmsf     genbox     sigeps
-g_anaeig     g_dipoles     g_mindist      g_rotacf   genconf    tpbconv
-g_analyze    g_disre       g_morph        g_saltbr   genion     trjcat
-g_angle      g_dist        g_msd          g_sas      genrestr   trjconv
-g_bond       g_dyndom      g_nmeig        g_sdf      gmxcheck   trjorder
-g_bundle     g_enemat      g_nmens        g_sgangle  gmxdump    wheel
-g_chi        g_energy      g_nmtraj       g_sham     grompp     x2top
-g_cluster    g_filter      g_order        g_sorient  luck       xplor2gmx.pl
-g_clustsize  g_gyrate      g_polystat     g_spatial  make_edi   xpm2ps
-g_confrms    g_h2order     g_potential    g_spol     make_ndx
-g_covar      g_hbond       g_principal    g_tcaf     mdrun
-"""
-
-#: Additional gromacs tools (see :mod:`gromacs.config` for enabling).
-gmx_extra_tools = """\
-g_count      g_flux
-g_ri3Dc      a_ri3Dc       a_gridcalc
-"""
 
 #: This dict holds all generated classes.
 registry = {}
@@ -98,15 +72,12 @@ registry = {}
 # class g_dist(GromacsCommand):
 #     command_name = 'g_dist'
 
-# clumsy 'load_tools' ... move the whole tool lists into configuration soon.
-for varname in config.load_tools:
-    tool_list = globals()[varname].split()
-    for name in tool_list:
-        # make names valid python identifiers and use convention that class names are capitalized
-        clsname = name.replace('.','_').replace('-','_').capitalize()  
-        cls = type(clsname, (GromacsCommand,), {'command_name':name,
-                                                '__doc__': "Gromacs tool %(name)r." % vars()})
-        registry[clsname] = cls      # registry keeps track of all classes
+for name in config.load_tools:
+    # make names valid python identifiers and use convention that class names are capitalized
+    clsname = name.replace('.','_').replace('-','_').capitalize()  
+    cls = type(clsname, (GromacsCommand,), {'command_name':name,
+                                            '__doc__': "Gromacs tool %(name)r." % vars()})
+    registry[clsname] = cls      # registry keeps track of all classes
 
 
 # modify/fix classes as necessary
@@ -209,7 +180,7 @@ if 'G_dist' in registry:
         command_name = 'g_dist'
     registry['G_dist'] = G_dist
 
-# XXX: generate multi index classes via type(), not copy&paste...
+# TODO: generate multi index classes via type(), not copy&paste as above...
 
 
 # load additional scripts from config
@@ -221,6 +192,11 @@ for rec in config.load_scripts:
                            '__doc__': "External tool %(exec_name)r\n\n%(doc)s." % vars()})
 
 
-# finally, add everything and clean up
+# finally, add everything
 globals().update(registry)        # add classes to module's scope
-del rec, name, cls, clsname, doc
+__all__ = registry.keys()
+
+#  and clean up the module scope
+cls = clsname = name = rec = doc = None  # make sure they exist, because the next line
+del rec, name, cls, clsname, doc  # would throw NameError if no tool was configured
+
