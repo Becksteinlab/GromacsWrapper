@@ -8,16 +8,14 @@
 ================================================
 
 A Gromacs command class can be thought of as a factory function that
-produces an instance of a gromacs command with initial default values.
+produces an instance of a gromacs command
+(:class:`gromacs.core.GromacsCommand`) with initial default values.
 
 By convention, a class has the capitalized name of the corresponding Gromacs
 tool; dots are replaced by underscores to make it a valid python identifier.
 
-The gromacs list of Gromacs tools to be loaded is configured in
+The list of Gromacs tools to be loaded is configured in
 :data:`gromacs.config.gmx_tool_groups`.
-
-.. autodata:: gmx_tools
-.. autodata:: gmx_extra_tools
 
 It is also possible to extend the basic commands and patch in additional
 functionality. For example, the :class:`GromacsCommandMultiIndex` class makes a

@@ -114,8 +114,24 @@ Classes
    :show-inheritance:
 
 .. autoclass:: Plugin
-   :members: __init__, plugin_name, worker_class, register,
-             simulation, worker
+   :members: __init__, worker_class, register
+
+   .. attribute:: Plugin.plugin_name
+
+      Name of the plugin; this must be a *unique* identifier across
+      all plugins of a :class:`Simulation` object. It should also be
+      human understandable and must be a valid python identifier as it
+      is used as a dict key.
+
+   .. attribute:: Plugin.simulation
+
+      The :class:`Simulation` instance who owns the plugin. Can be
+      ``None`` until a successful call to :meth:`~Plugin.register`.
+
+   .. attribute:: Plugin.worker
+
+      The :class:`Worker` instance of the plugin.
+            
 
 .. autoclass:: Worker   
    :members: __init__, topdir, plugindir, savefig, _register_hook
@@ -462,7 +478,7 @@ class Plugin(object):
               instances. Plugins are referred to by this name in all further
               interactions with the user.
     """    
-    #: actual plugin :class:`Worker` class (name with leading underscore)
+    #: actual plugin :class:`gromacs.analysis.core.Worker` class (name with leading underscore)
     worker_class = None
 
     def __init__(self,name=None,simulation=None,**kwargs):
