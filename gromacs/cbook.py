@@ -407,7 +407,7 @@ def edit_txt(filename, substitutions, newname=None):
 
         edit_txt(filename, substitutions, newname=otherfilename)
         
-    .. productionslist::
+    .. productionlist::
        substitutions ::=  "[" search_replace_tuple, ... "]"
        search_replace_tuple ::= "(" line_match_RE "," search_RE "," replacement ")"
        line_match_RE:     regular expression that selects the line (uses match)

@@ -123,8 +123,11 @@ GridMAT_MD = resource_filename(__name__,'external/GridMAT-MD_v1.0.2/GridMAT-MD.p
 os.chmod(GridMAT_MD, 0755)
 
 
-#: 3rd party analysis scripts and tools; triplets of :: 
-#:   (script name/path, command name, doc string)
+#: 3rd party analysis scripts and tools; this is a list of triplets of
+#:
+#:   (*script name/path*, *command name*, *doc string*)
+#:
+#: (See the source code for examples.) 
 load_scripts = [
     (GridMAT_MD,
      'GridMAT_MD',
@@ -188,8 +191,10 @@ by external code. All template filenames are stored in
    Templates should be sh-scripts and contain the following lines only
    up to and not including the vertical bar "|", after which the line
    is described::
+
       #$ -N GMX_MD    | 'GMX_MD' is replaced by kw sgename
       DEFFNM=md       | 'md' is replaced by kw deffnm
+
    These lines should not have any white space at the beginning.
 """
 
