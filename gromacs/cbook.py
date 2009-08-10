@@ -420,8 +420,8 @@ def edit_txt(filename, substitutions, newname=None):
            place [``None``]       
 
     *substitutions* is a list of triplets; the first two elemnents are regular
-     expression strings, the last is the substitution value. It mimics
-     ``sed`` search and replace. The rules for *substitutions*:
+    expression strings, the last is the substitution value. It mimics
+    ``sed`` search and replace. The rules for *substitutions*:
         
     .. productionlist::
        substitutions:        "[" search_replace_tuple, ... "]"
