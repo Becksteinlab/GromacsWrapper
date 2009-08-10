@@ -154,13 +154,19 @@ def trj_fitandcenter(xy=False, **kwargs):
         fitmode = 'rot+trans'
         
     intrj = kwargs.pop('f', None)
-    outtrj = kwargs.pop('o', None)
+    # get the correct suffix for the intermediate step: only trr will
+    # keep velocities/forces!
+    try:
+        suffix = os.path.splitext(intrj)[1]
+    except:
+        suffix = '.xtc'
+    outtrj = kwargs.pop('o', None)    
     inpfit = kwargs.pop('input', ('backbone', 'protein','system'))
     try:
-        inpcompact = inpfit[1:]
+        inpcompact = inpfit[1:]     # use 2nd and 3rd group for compact
     except TypeError:
         inpcompact = None
-    fd, tmptrj = tempfile.mkstemp(suffix='.xtc', prefix='fitted_')
+    fd, tmptrj = tempfile.mkstemp(suffix=suffix, prefix='fitted_')
 
     print "Input trajectory:  %(intrj)r\nOutput trajectory: %(outtrj)r"% vars()
     print "... writing temporary trajectory %(tmptrj)r (will be auto-cleaned)." % vars()
@@ -169,7 +175,7 @@ def trj_fitandcenter(xy=False, **kwargs):
         trj_xyfitted(f=intrj, o=tmptrj, fit=fitmode, input=inpfit, **kwargs)
         trj_compact(f=tmptrj, o=outtrj, input=inpcompact, **kwargs)
     finally:
-        os.unlink(tmptrj)
+        utilities.unlink_gmx(tmptrj)
 
 class Frames(object):
     """A iterator that transparently provides frames from a trajectory.
