@@ -282,11 +282,13 @@ class Frames(object):
             self.cleanup()
 
 def grompp_qtot(*args, **kwargs):
-    """Run ``gromacs.grompp`` and return the total charge of the system::
+    """Run ``gromacs.grompp`` and return the total charge of the  system.
 
-      qtot = grompp_qtot(*args, **kwargs)
+    :Arguments:  
+       The arguments are the ones one would pass to ``gromacs.grompp``.
+    :Returns:
+       The total charge as reported
 
-    where the arguments are the ones one would pass to ``gromacs.grompp``.
 
     .. note::
 
@@ -311,9 +313,7 @@ def grompp_qtot(*args, **kwargs):
 
 
 def edit_mdp(mdp, new_mdp=None, **substitutions):
-    """Change values in a Gromacs mdp file::
-
-      edit_mdp('md.mdp', new_mdp='long_md.mdp', nsteps=100000, nstxtcout=1000, lincs_iter=2)
+    """Change values in a Gromacs mdp file.
 
     Parameters and values are supplied as substitutions, eg ``nsteps=1000``.
     
@@ -324,19 +324,23 @@ def edit_mdp(mdp, new_mdp=None, **substitutions):
     returned list in order to make sure that everything worked as expected. At
     the moment it is not possible to automatically append the new values to the
     mdp file because of ambiguities when having to replace dashes in parameter
-    names with under scores (see the notes below on dashes/underscores).
+    names with underscores (see the notes below on dashes/underscores).
 
     :Arguments:
-        mdp : filename
+        *mdp* : filename
             filename of input (and output filename of ``new_mdp=None``)
-        new_mdp : filename
+        *new_mdp* : filename
             filename of alternative output mdp file [None]
-        substitutions
+        *substitutions*
             parameter=value pairs, where parameter is defined by the Gromacs mdp file; 
             dashes in parameter names have to be replaced by underscores.
 
     :Returns:    
-       List of parameters that have NOT been substituted.
+        Dict of parameters that have *not* been substituted.
+
+    Example::
+
+      edit_mdp('md.mdp', new_mdp='long_md.mdp', nsteps=100000, nstxtcout=1000, lincs_iter=2)
 
     .. Note::
     
@@ -395,29 +399,29 @@ def edit_mdp(mdp, new_mdp=None, **substitutions):
     with open(new_mdp, 'w') as final:
         shutil.copyfileobj(target, final)
     target.close()
-    return params     # return all parameters that have NOT been substituted
+     # return all parameters that have NOT been substituted
+    return dict([(p, substitutions[p]) for p in params])
 
 def edit_txt(filename, substitutions, newname=None):
     """Primitive top editor (sed is better...)::
 
         edit_txt(filename, substitutions, newname=otherfilename)
+        
+    .. productionslist::
+       substitutions ::=  "[" search_replace_tuple, ... "]"
+       search_replace_tuple ::= "(" line_match_RE "," search_RE "," replacement ")"
+       line_match_RE:     regular expression that selects the line (uses match)
+       search_RE:         regular expression that is searched in the line
+       replacement:       replacement string for search_RE
 
-        substitutions ::= [ search_replace_tuple, ... ]
-        search_replace_tuple ::= ( line_match_RE, search_RE, replacement )
 
-        line_match_RE     regular expression that selects the line (uses match)
-        search_RE         regular expression that is searched in the line
-        replacement       replacement string for search_RE
-
-
-    Running :func:`edit_txt()` does pretty much what a simple ::
+    Running :func:`edit_txt` does pretty much what a simple ::
 
          sed /line_match_RE/s/search_RE/replacement/
 
     with repeated substitution commands does.
 
     .. note::
-
        * No sanity checks are performed and the substitutions must be supplied
          exactly as shown.    
        * Only the first matching substitution is applied to a line; thus the order

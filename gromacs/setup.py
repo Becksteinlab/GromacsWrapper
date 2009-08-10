@@ -113,7 +113,7 @@ import warnings
 import gromacs
 import gromacs.config as config
 from gromacs import GromacsError, GromacsFailureWarning, GromacsValueWarning, \
-     AutoCorrectionWarning, BadParameterWarning
+     AutoCorrectionWarning, BadParameterWarning, UsageWarning
 import gromacs.cbook
 from gromacs.utilities import in_dir
 
@@ -319,10 +319,18 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
         return {'qtot': qtot, 'struct': realpath('ionized.gro'), 'ndx': realpath(ndx)}
 
 
+def check_mdpargs(d):
+    """Check if any arguments remain in dict *d*."""
+    if len(d) > 0:
+        warnings.warn("Unprocessed mdp option are interpreted as options for grompp:\n"
+                      +str(d),
+                      category=UsageWarning)        
+    return len(d) == 0
+
 def energy_minimize(dirname='em', mdp=config.templates['em_mdp'],
                     struct='solvate/ionized.gro', top='top/system.top',
                     qtot=0,   # only important when passed from solvate()
-                    **mdp_kwargs):
+                    **kwargs):
     """Energy minimize the system.
 
     This sets up the system (creates run input files) and also runs
@@ -341,7 +349,7 @@ def energy_minimize(dirname='em', mdp=config.templates['em_mdp'],
           topology file [top/system.top]
        *mdp*
           mdp file (or use the template) [templates/em.mdp]
-       *mdp_kwargs*
+       *kwargs*
           remaining key/value pairs that should be changed in the 
           template mdp file, eg ``nstxtcout=250, nstfout=250``.
 
@@ -357,7 +365,7 @@ def energy_minimize(dirname='em', mdp=config.templates['em_mdp'],
     mdp = 'em.mdp'
     tpr = 'em.tpr'
 
-    add_mdp_includes(topology, mdp_kwargs)
+    add_mdp_includes(topology, kwargs)
 
     if qtot != 0:
         # At the moment this is purely user-reported and really only here because 
@@ -367,8 +375,9 @@ def energy_minimize(dirname='em', mdp=config.templates['em_mdp'],
                       category=BadParameterWarning)
 
     with in_dir(dirname):
-        gromacs.cbook.edit_mdp(mdp_template, new_mdp=mdp, **mdp_kwargs)
-        gromacs.grompp(f=mdp, o=tpr, c=structure, p=topology, maxwarn=1)
+        unprocessed = gromacs.cbook.edit_mdp(mdp_template, new_mdp=mdp, **kwargs)
+        check_mdpargs(unprocessed)
+        gromacs.grompp(f=mdp, o=tpr, c=structure, p=topology, **unprocessed)
         # TODO: not clear yet how to run as MPI with mpiexec & friends
         # TODO: fall back to mdrun if no double precision binary
         gromacs.mdrun_d('v', stepout=10, deffnm='em', c='em.pdb')   # or em.pdb ? (box??)
@@ -423,7 +432,10 @@ def _setup_MD(dirname,
               mainselection='"Protein"',
               sge=config.sge_template, sgename=None,
               dt=0.002, runtime=1e3, **mdp_kwargs):
-    """Generic function to set up a ``mdrun`` MD simulation."""
+    """Generic function to set up a ``mdrun`` MD simulation.
+
+    See the user functions for usage.
+    """
 
     if struct is None:
         raise ValueError('struct must be set to a input structure')
@@ -493,8 +505,9 @@ def _setup_MD(dirname,
             mdp_parameters['ref_p'] = ""
             mdp_parameters['compressibility'] = ""
 
-        gromacs.cbook.edit_mdp(mdp_template, new_mdp=mdp, **mdp_parameters)
-        gromacs.grompp(f=mdp, p=topology, c=structure, n=ndx, o=tpr)
+        unprocessed = gromacs.cbook.edit_mdp(mdp_template, new_mdp=mdp, **mdp_parameters)
+        check_mdpargs(unprocessed)
+        gromacs.grompp(f=mdp, p=topology, c=structure, n=ndx, o=tpr, **unprocessed)
         gromacs.cbook.edit_txt(sge_template, [('^DEFFNM=','md',deffnm), 
                                               ('^#$ -N', 'GMX_MD', sgename)], newname=sge)
 
@@ -536,11 +549,12 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
        *mainselection*
           `` make_ndx`` selection to select main group ["Protein"]
           (If ``None`` then no canonical index file is generated and
-          it is the users responsibility to set 'tc_grps',
-          'tau_t', and 'ref_t' via mdp_kwargs.
-       *mdp_kwargs*
-          remaining key/value pairs that should be changed in the 
-          template mdp file, eg ``nstxtcout=250, nstfout=250``.
+          it is the users responsibility to set *tc_grps*,
+          *tau_t*, and *ref_t* as keyword arguments.
+       *kwargs*
+          remaining key/value pairs that should be changed in the template mdp
+          file, eg ``nstxtcout=250, nstfout=250`` or command line options for
+          ``grompp` such as ``maxwarn=1``.
 
     """
 
@@ -582,9 +596,10 @@ def MD(dirname='MD', **kwargs):
           (If ``None`` then no canonical idenx file is generated and
           it is the users responsibility to set 'tc_grps',
           'tau_t', and 'ref_t' via mdp_kwargs.    
-       *mdp_kwargs*
-          remaining key/value pairs that should be changed in the 
-          template mdp file, eg ``nstxtcout=250, nstfout=250``.
+       *kwargs*
+          remaining key/value pairs that should be changed in the template mdp
+          file, eg ``nstxtcout=250, nstfout=250`` or command line options for
+          ``grompp` such as ``maxwarn=1``.
 
     """
 

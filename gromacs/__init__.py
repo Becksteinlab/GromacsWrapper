@@ -152,11 +152,13 @@ class AutoCorrectionWarning(Warning):
 class BadParameterWarning(Warning):
     """Warns if some parameters or variables are unlikely to be appropriate or correct."""
 
+class UsageWarning(Warning):
+    """Warns if usage is unexpected/documentation ambiguous."""
 
 import warnings
 # These warnings should always be displayed because other parameters
 # can have changed, eg during interactive use.
-for w in (AutoCorrectionWarning, BadParameterWarning, 
+for w in (AutoCorrectionWarning, BadParameterWarning, UsageWarning,  
           GromacsFailureWarning, GromacsValueWarning):
     warnings.simplefilter('always', category=w)
 del w
@@ -212,7 +214,7 @@ except OSError, err:
 
 # convenience functions for warnings
 
-less_important_warnings = ['AutoCorrectionWarning']
+less_important_warnings = ['AutoCorrectionWarning', 'UsageWarning']
 
 def filter_gromacs_warnings(action, categories=None):
     """Set the :meth:`warnings.simplefilter` to *action*.
