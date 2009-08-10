@@ -419,16 +419,16 @@ def edit_txt(filename, substitutions, newname=None):
            output filename; if ``None`` then *filename* is changed in
            place [``None``]       
 
-    *substitutions* is a list of triplets; the first two elemnents are regular
+    *substitutions* is a list of triplets; the first two elements are regular
     expression strings, the last is the substitution value. It mimics
     ``sed`` search and replace. The rules for *substitutions*:
         
     .. productionlist::
-       substitutions:        "[" search_replace_tuple, ... "]"
+       substitutions: "[" search_replace_tuple, ... "]"
        search_replace_tuple: "(" line_match_RE "," search_RE "," replacement ")"
-       line_match_RE:     regular expression that selects the line (uses match)
-       search_RE:         regular expression that is searched in the line
-       replacement:       replacement string for search_RE
+       line_match_RE: regular expression that selects the line (uses match)
+       search_RE: regular expression that is searched in the line
+       replacement: replacement string for search_RE
 
     Running :func:`edit_txt` does pretty much what a simple ::
 
