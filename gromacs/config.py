@@ -185,9 +185,12 @@ by external code. All template filenames are stored in
 **SGE templates**
 
    The sge scripts are highly specific and you will need to add your own.
-   Templates should be sh-scripts and contain the following lines::
-      #$ -N GMX_MD     'GMX_MD' is replaced by kw sgename
-      DEFFNM=md        'md' is replaced by kw deffnm
+   Templates should be sh-scripts and contain the following lines only
+   up to and not including the vertical bar "|", after which the line
+   is described::
+      #$ -N GMX_MD    | 'GMX_MD' is replaced by kw sgename
+      DEFFNM=md       | 'md' is replaced by kw deffnm
+   These lines should not have any white space at the beginning.
 """
 
 #: The default template for SGE run scripts.
