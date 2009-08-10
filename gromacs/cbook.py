@@ -403,17 +403,32 @@ def edit_mdp(mdp, new_mdp=None, **substitutions):
     return dict([(p, substitutions[p]) for p in params])
 
 def edit_txt(filename, substitutions, newname=None):
-    """Primitive top editor (sed is better...)::
+    """Primitive text file stream editor.
 
-        edit_txt(filename, substitutions, newname=otherfilename)
+    This function can be used to edit free-form text files such as the
+    topology file. By default it does an **in-place edit** of
+    *filename*. If *newname* is supplied then the edited
+    file is written to *newname*.
+
+    :Arguments:
+       *filename*
+           input text file
+       *substitutions*
+           substitution commands (see below for format)
+       *newname*
+           output filename; if ``None`` then *filename* is changed in
+           place [``None``]       
+
+    *substitutions* is a list of triplets; the first two elemnents are regular
+     expression strings, the last is the substitution value. It mimics
+     ``sed`` search and replace. The rules for *substitutions*:
         
     .. productionlist::
-       substitutions ::=  "[" search_replace_tuple, ... "]"
-       search_replace_tuple ::= "(" line_match_RE "," search_RE "," replacement ")"
+       substitutions:        "[" search_replace_tuple, ... "]"
+       search_replace_tuple: "(" line_match_RE "," search_RE "," replacement ")"
        line_match_RE:     regular expression that selects the line (uses match)
        search_RE:         regular expression that is searched in the line
        replacement:       replacement string for search_RE
-
 
     Running :func:`edit_txt` does pretty much what a simple ::
 
