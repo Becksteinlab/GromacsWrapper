@@ -19,9 +19,13 @@ emtol          = 500
 emstep         = 0.01
 nsteps         = 1000
 nstcgsteep     = 100
+
 constraints              = none
 nstcomm                  = 1
+vdwtype                  = shift   ; use shift for L-BFGS
 coulombtype              = PME
+optimize_fft             = no
+
 ns_type                  = grid
 rlist                    = 1.0
 rcoulomb                 = 1.0
@@ -29,5 +33,5 @@ rvdw                     = 1.0
 Tcoupl                   = no
 Pcoupl                   = no
 gen_vel                  = no
+
 nstxout                  = 0 ; write coords every # step
-optimize_fft             = yes
