@@ -467,7 +467,7 @@ def add_mdp_includes(topology, mdp_kwargs=None):
        exist previously; if the keyword already existed, nothing
        happens.
 
-    .. Note:; This function is a bit of a hack. It might be removed
+    .. Note:: This function is a bit of a hack. It might be removed
               once all setup functions become methods in a nice class.
     """
     if mdp_kwargs is None:
@@ -621,6 +621,9 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
           file, eg ``nstxtcout=250, nstfout=250`` or command line options for
           ``grompp` such as ``maxwarn=1``.
 
+    :Returns: a dict that can be fed into :func:`gromacs.setup.MD`
+              (but check, just in case, especially if you want to
+              change the ``define`` parameter in the mdp file)
     """
 
     kwargs.setdefault('struct', 'em/em.pdb')
@@ -666,9 +669,12 @@ def MD(dirname='MD', **kwargs):
           file, eg ``nstxtcout=250, nstfout=250`` or command line options for
           ``grompp` such as ``maxwarn=1``.
 
+    :Returns: a dict that can be fed into :func:`gromacs.setup.MD`
+              (but check, just in case, especially if you want to
+              change the ``define`` parameter in the mdp file)
     """
 
-    kwargs.setdefault('struct', 'MD_POSRES/md_posres.pdb')
+    kwargs.setdefault('struct', 'MD_POSRES/md.gro')
     kwargs.setdefault('sgename', 'MD_GMX')
     return _setup_MD(dirname, **kwargs)
 
