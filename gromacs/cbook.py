@@ -122,6 +122,23 @@ Note:: Gromacs 4.x only""")
 def trj_fitandcenter(xy=False, **kwargs):
     """Fit the system to a reference (pass 1) and center everything (pass 2).
 
+    :Keywords:
+       *f*
+           input trajectory
+       *o*
+           output trajectory
+       *input*
+           A list with three groups. The default is 
+               ['backbone', 'protein','system']
+           The fit command uses all three (1st for least square fit,
+           2nd for centering, 3rd for output), the centered/make-whole stage use
+           2nd for centering and 3rd for output.
+       *xy* : boolean
+           If ``True`` then only do a rot+trans fit in the xy plane
+           (good for membrane simulations); default is ``False``.
+       *kwargs*
+           All other arguments are passed to :class:`~gromacs.tools.Trjconv`.
+
     Note that here we first do a rotation+translation fit (or
     restricted to the xy plane if *xy* = ``True`` is set) and write
     an intermediate xtc. Then in a second pass this intermediate xtc
@@ -140,8 +157,11 @@ def trj_fitandcenter(xy=False, **kwargs):
     ``trjconv``. An intermediate temporary XTC files is generated which should
     be automatically cleaned up unless bad things happened.
 
+    .. note:: For big trajectories it can **take a very long time**
+              and consume a **large amount of temporary diskspace**.
+
     FYI: The `g_spatial documentation`_ actually recommends the
-    opposite::
+    opposite approach to the one used here::
 
       trjconv -s a.tpr -f a.xtc -o b.xtc -center tric -ur compact -pbc none
       trjconv -s a.tpr -f b.xtc -o c.xtc -fit rot+trans
@@ -156,9 +176,8 @@ def trj_fitandcenter(xy=False, **kwargs):
     intrj = kwargs.pop('f', None)
     # get the correct suffix for the intermediate step: only trr will
     # keep velocities/forces!
-    try:
-        suffix = os.path.splitext(intrj)[1]
-    except:
+    suffix = os.path.splitext(intrj)[1]
+    if not suffix in ('xtc', 'trr'):
         suffix = '.xtc'
     outtrj = kwargs.pop('o', None)    
     inpfit = kwargs.pop('input', ('backbone', 'protein','system'))
