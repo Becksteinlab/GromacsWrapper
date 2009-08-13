@@ -264,7 +264,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
         gromacs.genbox(p=topology, cp='boxed.gro', cs=water, o='solvated.gro')
 
         with open('none.mdp','w') as mdp:
-            mdp.write('; empty mdp file\ninclude = %s(include)s\n' % mdp_kwargs)
+            mdp.write('; empty mdp file\ninclude = %(include)s\n' % mdp_kwargs)
 
         qtot = gromacs.cbook.grompp_qtot(f='none.mdp', o='topol.tpr', c='solvated.gro',
                                          p=topology, stdout=False)
