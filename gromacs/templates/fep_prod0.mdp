@@ -1,3 +1,6 @@
+; David Mobley's Free Energy Tutorial
+; http://www.dillgroup.ucsf.edu/group/wiki/index.php?title=Free_Energy:_Tutorial
+
 ; RUN CONTROL PARAMETERS =
 integrator               = sd
 ; start time and timestep in ps =
