@@ -256,6 +256,11 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
     if water.lower() in ('spc', 'spce'):
         water = 'spc216'
 
+    # By default, grompp should not choke on a few warnings because at
+    # this stage the user cannot do much about it (can be set to any
+    # value but keep undocumented...)
+    grompp_maxwarn = kwargs.pop('maxwarn',10)
+
     # should scrub topology but hard to know what to scrub; for
     # instance, some ions or waters could be part of the crystal structure
     
@@ -264,10 +269,9 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
         gromacs.genbox(p=topology, cp='boxed.gro', cs=water, o='solvated.gro')
 
         with open('none.mdp','w') as mdp:
-            mdp.write('; empty mdp file\ninclude = %(include)s\n' % mdp_kwargs)
-
+            mdp.write('; empty mdp file\ninclude = %(include)s\n' % mdp_kwargs)            
         qtot = gromacs.cbook.grompp_qtot(f='none.mdp', o='topol.tpr', c='solvated.gro',
-                                         p=topology, stdout=False)
+                                         p=topology, stdout=False, maxwarn=grompp_maxwarn)
         print "After solvation: total charge qtot = %(qtot)r" % vars()        
 
         # TODO:
@@ -300,7 +304,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
             os.symlink('solvated.gro', 'ionized.gro')
 
         qtot = gromacs.cbook.grompp_qtot(f='none.mdp', o='ionized.tpr', c='ionized.gro',
-                                         p=topology, stdout=False)
+                                         p=topology, stdout=False, maxwarn=grompp_maxwarn)
 
         # make main index
         try:
