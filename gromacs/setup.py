@@ -243,8 +243,40 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
             **kwargs):
     """Put protein into box, add water, add counter-ions.
 
-    At the moment only adding counter-ions is implemented; the routine
-    will raise an exception if concentration > 0.
+    Currently this really only supports solutes in water. If you need
+    to embedd a protein in a membrane then you will require more
+    sophisticated approaches.
+
+    :Arguments:
+      *struct* : filename
+          pdb or gro input structure
+      *top* : filename
+          Gromacs topology
+      *distance* : float
+          When solvating with water, make the box big enough so that
+          at least *distance* nm water are between the solute *struct*
+          and the box boundary.
+      *boxtype* : string
+          Any of the box types supported by :class:`~gromacs.tools.Genbox`.
+      *concentration* : float
+          Concentration of the free ions in mol/l. Note that counter
+          ions are added in excess of this concentration.
+      *cation* and *anion* : string
+          Molecule names of the ions. This depends on the chosen force field.
+      *water* : string
+          Name of the water model; one of "spc", "spce", "tip3p",
+          "tip4p". This should be appropriate for the chosen force
+          field.
+      *ndx* : filename
+          Custom index file.
+      *mainselection* : string
+          A string that is fed to :class:`~gromacs.tools.Make_ndx` and
+          which should select the solute.
+      *dirname* : directory name
+          Name of the directory in which all files for the solvation stage are stored.
+
+    .. note:: At the moment only adding counter-ions is implemented; the routine
+              will raise an exception if concentration > 0.
     """
 
     structure = realpath(struct)
@@ -320,7 +352,11 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
         except GromacsError, err:
             warnings.warn("Failed to make compact pdb for visualization... pressing on regardless. "
                           "The error message was:\n%s\n" % str(err), category=GromacsFailureWarning)
-        return {'qtot': qtot, 'struct': realpath('ionized.gro'), 'ndx': realpath(ndx)}
+        return {'qtot': qtot, 
+                'struct': realpath('ionized.gro'), 
+                'ndx': realpath(ndx),      # not sure why this is propagated-is it used?
+                'mainselection': mainselection,
+                }
 
 
 def check_mdpargs(d):
@@ -333,7 +369,6 @@ def check_mdpargs(d):
 
 def energy_minimize(dirname='em', mdp=config.templates['em_mdp'],
                     struct='solvate/ionized.gro', top='top/system.top',
-                    qtot=0,   # only important when passed from solvate()
                     **kwargs):
     """Energy minimize the system.
 
@@ -368,9 +403,15 @@ def energy_minimize(dirname='em', mdp=config.templates['em_mdp'],
 
     # filter some kwargs that might come through when feeding output
     # from previous stages such as solvate(); necessary because *all*
-    # args must be *either* substitutions in the mdp file *or* valid
+    # **kwargs must be *either* substitutions in the mdp file *or* valid
     # command line parameters for ``grompp``.
     kwargs.pop('ndx', None)
+    # mainselection is not used but only passed through; right now we
+    # set it to the default that is being used in all argument lists
+    # but that is not pretty. TODO.    
+    mainselection = kwargs.pop('mainselection', '"Protein"')
+    # only interesting when passed from solvate()
+    qtot = kwargs.pop('qtot', 0)
 
     mdp = 'em.mdp'
     tpr = 'em.tpr'
@@ -390,10 +431,15 @@ def energy_minimize(dirname='em', mdp=config.templates['em_mdp'],
         gromacs.grompp(f=mdp, o=tpr, c=structure, p=topology, **unprocessed)
         # TODO: not clear yet how to run as MPI with mpiexec & friends
         # TODO: fall back to mdrun if no double precision binary
-        gromacs.mdrun_d('v', stepout=10, deffnm='em', c='em.pdb')   # or em.pdb ? (box??)
-        # em.gro --> gives 'Bad box in file em.gro' warning ??
+        gromacs.mdrun_d('v', stepout=10, deffnm='em', c='em.pdb')
+        # em.gro --> gives 'Bad box in file em.gro' warning --- why??
+        # --> use em.pdb instead.
+        if not os.path.exists('em.pdb'):
+            raise GromacsFailureWarning("Energy minimized system NOT produced.")
+        final_struct = realpath('em.pdb')
 
-        return {'struct': realpath('em.pdb'), 'top': topology}
+    return {'struct': final_struct, 'top': topology,
+            'mainselection': mainselection}
 
 def add_mdp_includes(topology, mdp_kwargs=None):
     """Add the directory containing *topology* to the dict *mdp_kwargs*.
@@ -459,6 +505,7 @@ def _setup_MD(dirname,
     mdp = deffnm + '.mdp'
     tpr = deffnm + '.tpr'
     mainindex = deffnm + '.ndx'
+    final_structure = deffnm + '.gro'     # guess... really depends on templates
     sge = os.path.basename(sge_template)
     if sgename is None:
         sgename = 'GMX_MD'
@@ -523,8 +570,16 @@ def _setup_MD(dirname,
 
     print "All files set up for a run time of %(runtime)g ps "\
         "(dt=%(dt)g, nsteps=%(nsteps)g)" % vars()
-    return {'dirname':dirname, 'tpr':tpr, 'sge': sge}
 
+    kwargs = { # 'dirname':dirname, 'tpr':tpr,  ## cannot be fed into _setup_MD() again and not used sofar
+              'struct': realpath(os.path.join(dirname, final_structure)),      # guess
+              'top': topology,
+              'ndx': realpath(os.path.join(dirname, ndx)),                     # possibly mainindex
+              'sge': sge,
+              'mainselection': mainselection}
+    kwargs.update(mdp_kwargs)  # return extra mdp args so that one can use them for prod run
+    kwargs.pop('define', None) # but make sure that -DPOSRES does not stay...
+    return kwargs
 
 def MD_restrained(dirname='MD_POSRES', **kwargs):
     """Set up MD with position restraints.
