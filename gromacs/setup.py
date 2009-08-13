@@ -362,6 +362,12 @@ def energy_minimize(dirname='em', mdp=config.templates['em_mdp'],
     topology = realpath(top)
     mdp_template = config.get_template(mdp)
 
+    # filter some kwargs that might come through when feeding output
+    # from previous stages such as solvate(); necessary because *all*
+    # args must be *either* substitutions in the mdp file *or* valid
+    # command line parameters for ``grompp``.
+    kwargs.pop('ndx', None)
+
     mdp = 'em.mdp'
     tpr = 'em.tpr'
 
