@@ -14,9 +14,9 @@ generally superior to shell scripts because of python's better error
 handling and superior data structures. It also allows for
 modularization and code re-use.
 
-See :doc:`INSTALL` for installation instructions. `Documentation`_ is
-primarily provided through the python doc strings (from which most of
-the online documentation is generated).
+See :doc:`INSTALL` for download and installation instructions. `Documentation`_
+is primarily provided through the python doc strings (from which most of the
+online documentation is generated).
 
 There is also auto-generated `online source code documentation`_
 available.

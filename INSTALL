@@ -34,13 +34,26 @@ from the interweb::
 
 This will automatically download and install the latest version.
 
-From a tar ball, eg GromacsWrapper-0.1.tbz::
+If your prefer to download manually, get the latest version from
 
-   easy_install GromacsWrapper-0.1.tbz
+  http://sbcb.bioch.ox.ac.uk/oliver/download/Python
 
-From the unpacked source::
+and use any of the following methods (in increasing order of
+complexity):
 
-  python setup.py install
+- From an egg install file, eg GromacsWrapper-0.1-py2.5.egg::
+
+   easy_install GromacsWrapper-0.1-py2.5.egg
+
+- From a tar ball, eg GromacsWrapper-0.1.tar.gz::
+
+   easy_install GromacsWrapper-0.1.tar.gz
+
+- From the unpacked source::
+
+   tar -zxvf GromacsWrapper-0.1.tar.gz
+   cd GromacsWrapper-0.1
+   python setup.py install
 
 See the `easy_install instructions`__ for explanation of the options
 that allow you to install into non-standard places.
@@ -106,7 +119,7 @@ install this would look like ::
 
 For installation from a downloaded source distribution ::
 
-  easy_install GromacsWrapper-0.1.tbz[analysis]
+  easy_install GromacsWrapper-0.1.tar.gz[analysis]
 
 or from within the unpacked source ::
 
