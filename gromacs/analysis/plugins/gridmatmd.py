@@ -53,7 +53,7 @@ class GridMatMD(object):
     config file. Note that the *bilayer* keyword will be ignored in
     the config file.
 
-    .. pdf: http://www.bevanlab.biochem.vt.edu/GridMAT-MD/doc/GridMAT-MD_ug_v1.0.2.pdf
+    .. _pdf: http://www.bevanlab.biochem.vt.edu/GridMAT-MD/doc/GridMAT-MD_ug_v1.0.2.pdf
     """
     
     # regular expression to pull useful information from output
