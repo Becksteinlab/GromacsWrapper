@@ -31,9 +31,9 @@ The distribution contains third party software that is compatible with
 the package license. This software was modified to work with this
 package. In case of problems please direct error reports to `Oliver
 Beckstein`_ in the first instance as these bug might not have been
-present in the original software.
+present in the original software or files.
 
-Included packages:
+Included third party content:
 
 GridMat-MD
   - Grid-based Membrane Analysis Tool for use with Molecular Dynamics
@@ -43,6 +43,14 @@ GridMat-MD
     Grid-based Membrane Analysis Tool for Use With Molecular
     Dynamics." J. Comput. Chem. 30 (12): 1952-1958.
   - http://bevanlab.biochem.vt.edu/GridMAT-MD/
+
+Free energy perturbation input files
+  ``mdp`` run input files from David Mobley's `Free Energy Tutorial`_
+  are included in the ``templates`` directory as examples for FEP
+  calculations. If you use these files please *read* and *do* David's
+  tutorial and all relevant papers!
+
+  .. _Free Energy Tutorial: http://www.dillgroup.ucsf.edu/group/wiki/index.php?title=Free_Energy:_Tutorial
 
 
 License
