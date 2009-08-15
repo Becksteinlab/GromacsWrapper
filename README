@@ -48,9 +48,9 @@ Included Software
 =================
 
 The distribution contains third party software that is copyrighted by
-the authors but distributed under a licences compatible with this
-package license. Where permitted, software was modified to work with
-GromacsWrapper. 
+the authors but distributed under licences compatible with this
+package license. Where permitted and necessary, software/files were
+modified to integrate with GromacsWrapper.
 
 In case of problems please direct error reports to `Oliver Beckstein`_
 in the first instance as these bugs might not have been present in the
