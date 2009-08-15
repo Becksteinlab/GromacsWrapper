@@ -30,7 +30,7 @@ derive a custom analysis class that pre-defines values for plugins as seen in
 the `Example`_.
 
 .. autoclass:: Simulation
-   :members: __init__, add_plugin, set_plugin, run, analyze, plot
+   :members: add_plugin, set_plugin, run, analyze, plot
 
 Example
 -------

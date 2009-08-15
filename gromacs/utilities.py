@@ -263,8 +263,22 @@ class FileUtils(object):
 
 
 class XVG(FileUtils):
-    """Class that represents a grace xvg file. Read-only at the moment."""
+    """Class that represents a grace xvg file. Read-only at the moment.
+
+    All data must be numerical. :const:`NAN` and :const:`INF` values are
+    supported via python's :func:`float` builtin function.
+
+    Instead of using this function one can also use the :attr:`~XVG.array`
+    attribute to access a cached version of the array.
+
+    .. Note:: Only simple XY or NXY files are currently supported, not
+              Grace files that contain multiple data sets separated by '&'.
+    """
     def __init__(self, filename):
+        """Initialize the class from a xvg file.
+
+        :Arguments: *filename* is the xvg file; it can only be of type XY or NXY.
+        """
         self.filename = filename
         self.real_filename = os.path.realpath(filename)  # use full path for accessing data
         self.__array = None          # cache for array property
@@ -274,15 +288,6 @@ class XVG(FileUtils):
 
         The array is returned with column-first indexing, i.e. for a data file with
         columns X Y1 Y2 Y3 ... the array a will be a[0] = X, a[1] = Y1, ... .
-
-        All data must be numerical. :const:`NAN` and :const:`INF` values are
-        supported via python's :func:`float` builtin function.
-
-        Instead of using this function one can also use the :attr:`~XVG.array`
-        attribute to access a cached version of the array.
-
-        .. Note:: Only simple XY or NXY files are currently supported, not
-                  Grace files that contain multiple data sets separated by '&'.
         """
         with open(self.real_filename) as xvg:
             rows = []
@@ -312,23 +317,23 @@ class XVG(FileUtils):
         In the special case that there is only a single column then this column
         is plotted against the index, i.e. (N, Y).
 
-        :Arguments:
-          columns : list
+        :Keywords:
+          *columns* : list
                Select the columns of the data to be plotted; the list
                is used as a numpy.array extended slice. The default is
                to use all columns. Columns are selected *after* a transform.
-          transform : function
+          *transform* : function
                function ``transform(array) -> array`` which transforms
                the original array; must return a 2D numpy array of
                shape [X, Y1, Y2, ...] where X, Y1, ... are column
                vectors.  By default the transformation is the
                identity [``lambda x: x``].
-          maxpoints : int
+          *maxpoints* : int
                limit the total number of data points; matplotlib has issues processing
                png files with >100,000 points and pdfs take forever to display. Set to
                ``None`` if really all data should be displayed. At the moment we simply
                subsample the data at regular intervals. [10000]
-          kwargs
+          *kwargs*
                All other keyword arguments are passed on to :func:`pylab.plot`.
         """
         import pylab

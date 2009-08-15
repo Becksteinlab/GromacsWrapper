@@ -218,7 +218,7 @@ class CysAccessibility(Plugin):
     closest approach distance should be indicative of the reactivity of the SH
     group with crosslinking agents.
 
-    .. class:: CysAccessibility(cysteines, [cys_cutoff[, name[, simulation]]]])
+    .. class:: CysAccessibility(cysteines, [cys_cutoff[, name[, simulation]]])
     
     :Arguments:
         name : string

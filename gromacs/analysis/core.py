@@ -107,14 +107,14 @@ Classes
 -------
 
 .. autoclass:: Simulation
-   :members: __init__, add_plugin, set_plugin, get_plugin, run,
+   :members: add_plugin, set_plugin, get_plugin, run,
              analyze, plot, run_all, analyze_all, _apply_all,
              topdir, plugindir, check_file, has_plugin,
              check_plugin_name, current_plugin
    :show-inheritance:
 
 .. autoclass:: Plugin
-   :members: __init__, worker_class, register
+   :members: worker_class, register
 
    .. attribute:: Plugin.plugin_name
 
@@ -134,7 +134,7 @@ Classes
             
 
 .. autoclass:: Worker   
-   :members: __init__, topdir, plugindir, savefig, _register_hook
+   :members: topdir, plugindir, savefig, _register_hook
    :show-inheritance:
 
 """
@@ -162,25 +162,23 @@ class Simulation(object):
     4. Plot results with :meth:`Simulation.plot`.
 
 
-    Detailed listing of methods:
-
     """
     def __init__(self, **kwargs):
-        """Set up a Simulation object; analysis is performed via methods.
+        """Set up a Simulation object.
 
         :Keywords:
-           tpr
+           *tpr*
              Gromacs tpr file (**required**)
-           xtc
-             Gromacs trajectory (**required**)
-           ndx
+           *xtc*
+             Gromacs trajectory, can also be a trr (**required**)
+           *ndx*
              Gromacs index file
-           analysisdir
+           *analysisdir*
              directory under which derived data are stored;
              defaults to the directory containing the tpr [None]
-           plugins : list
-             plugin instances or tuples (plugin class, kwarg dict) or tuples
-             (plugin_class_name(strings), kwarg dict) to be used; more can be
+           *plugins* : list
+             plugin instances or tuples (*plugin class*, *kwarg dict*) or tuples
+             (*plugin_class_name*, *kwarg dict*) to be used; more can be
              added later with :meth:`Simulation.add_plugin`.
         """
         super(Simulation, self).__init__(**kwargs)
@@ -232,7 +230,7 @@ class Simulation(object):
           arguments and then registered.
 
         :Arguments:
-            plugin : class or string, or instance
+            *plugin* : class or string, or instance
                If the parameter is a class then it should have been derived
                from :class:`Plugin`. If it is a string then it is taken as a
                plugin name in :mod:`gromacs.analysis.plugins` and the
@@ -241,7 +239,7 @@ class Simulation(object):
 
                If *plugin* is already a :class:`Plugin` instance then the kwargs 
                will be ignored.
-            kwargs
+            *kwargs*
                The kwargs are specific for the plugin and should be
                described in its documentation.
         """
@@ -342,13 +340,13 @@ class Simulation(object):
           plot(plugin_name, **kwargs)
 
         :Arguments:
-           plugin_name   
+           *plugin_name*
               name of the plugin to plot data from
-           figure
-              - True: plot to file with default name.
+           *figure*
+              - ``True``: plot to file with default name.
               - string: use this filename (+extension for format)
-              - False: only display
-           kwargs
+              - ``False``: only display
+           *kwargs*
               arguments for plugin plot function (in many cases
               provided by :meth:`gromacs.utilities.XVG.plot` and
               ultimately by :func:`pylab.plot`)
@@ -382,11 +380,12 @@ class Worker(FileUtils):
         """Set up Worker class.
         
         :Keywords:
-          plugin : instance
-             The :class:`Plugin` instance that owns this worker. *Must be supplied.*
-          simulation
-             A :class:Simulation` object, required for registration.
-          kwargs
+          *plugin* : instance
+             The :class:`Plugin` instance that owns this worker. **Must be supplied.**
+          *simulation*
+             A :class:Simulation` object, required for registration,
+             but can be supplied later.
+          *kwargs*
              All other keyword arguments are passed to the super class.
         """
 
@@ -488,14 +487,14 @@ class Plugin(object):
         are passed through.
 
         :Arguments:
-           name : string
+           *name* : string
                 Name of the plugin. Should differ for different
                 instances. Defaults to the class name.
-           simulation : Simulation instance
+           *simulation* : Simulation instance
                 The :class:`Simulation` instance that owns this plugin instance. Can be
                 ``None`` but then the :meth:`register` method has to be called manually
                 with a simulation instance later.
-           kwargs
+           *kwargs*
                 All other keyword arguments are passed to the Worker.
         """
         if name is None:

@@ -54,7 +54,7 @@ selection expression as available in Charmm, VMD, or MDAnalysis. Some tools
 help in building and interpreting index files.
 
 .. autoclass:: IndexBuilder
-   :members: __init__, combine, gmx_resid
+   :members: combine, gmx_resid
 
 .. autofunction:: parse_ndxlist
 

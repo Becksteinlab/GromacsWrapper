@@ -24,7 +24,7 @@ behaviour mimics Gromacs' "multi-file" input that has not yet been enabled for
 all tools.
 
 .. autoclass:: GromacsCommandMultiIndex
-   :members: __init__, run, _fake_multi_ndx, __del__
+   :members: run, _fake_multi_ndx, __del__
 
 Example
 -------

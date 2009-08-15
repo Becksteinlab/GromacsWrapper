@@ -12,11 +12,11 @@ Gromacs command classes in :mod:`gromacs.tools` are automatically
 generated from it.
 
 .. autoclass:: Command
-   :members: __init__, __call__, run, transform_args, Popen, help,
+   :members:  __call__, run, transform_args, Popen, help,
              command_name
    
 .. autoclass:: GromacsCommand
-   :members: __init__, __call__, run, transform_args, Popen, help,
+   :members: __call__, run, transform_args, Popen, help,
              check_failure, gmxdoc
    :inherited-members:
 

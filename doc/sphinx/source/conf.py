@@ -177,3 +177,14 @@ latex_documents = [
 
 # If false, no module index is generated.
 #latex_use_modindex = True
+
+
+# Options for ext.autodoc
+# -----------------------
+# see http://sphinx.pocoo.org/ext/autodoc.html
+
+# This value selects what content will be inserted into the main body of an autoclass directive.
+# "class", "init", "both"
+autoclass_content = "both"
+
+
