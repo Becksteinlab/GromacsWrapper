@@ -21,14 +21,16 @@ sending it to the `package author`_. You will be acknowledged in the list below.
 
 .. _`package author`: oliver.beckstein@bioch.ox.ac.uk
 
-==========================  =======================  ===============================
+==========================  =======================  =====================================
 plugin                      author                   description
-==========================  =======================  ===============================
+==========================  =======================  =====================================
 :class:`CysAccessibility`   Oliver Beckstein [#OB]_  estimate accessibility of Cys
                                                      residues by water
+                                                     
 :class:`Distances`          Oliver Beckstein [#OB]_  time series of distances
+
 :class:`MinDistances`       Oliver Beckstein [#OB]_  time series of shortest distances
-==========================  =======================  ===============================
+==========================  =======================  =====================================
 
 
 .. rubric:: Footnotes

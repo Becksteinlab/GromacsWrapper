@@ -46,9 +46,9 @@ Classes
 -------
 
 .. autoclass:: Mindist
-   :members: __init__, histogram, hist, dist, edges, midpoints, plot
+   :members: histogram, hist, dist, edges, midpoints, plot
 .. autoclass:: GdistData
-   :members: __init__, __iter__
+   :members: __iter__
 
 """
 __docformat__ = "restructuredtext en"
@@ -69,28 +69,24 @@ class Mindist(object):
     shortest distance is stored (whereas ``g_dist`` provides *all*
     distances below the cutoff).
 
-    .. attribute:: distances
-       Time series (or frame series) of the shortest distances as a
-       numpy array; should only be read.
-
-    .. Note:: :class:`gromacs.tools.G_mindist` is apparently providing
-              exactly the service that is required: a timeseries of
-              the minimum distance between two groups.
-
     :TODO:
       * Save analysis to pickle or data files.
       * Export data as simple data files for plotting in other programs.
+
+    .. Note:: :class:`gromacs.tools.G_mindist` is apparently providing
+              exactly the service that is required: a timeseries of
+              the minimum distance between two groups. Feel free to
+              use that tool instead :-).
+      
     """
 
     def __init__(self,datasource,cutoff=None):
-        """Read mindist data from file or stream::
-
-           M = Mindist(datasource, cutoff=1.0)
+        """Read mindist data from file or stream.
         
         :Arguments:
-          datasource
+          *datasource*
              a filename (plain, gzip, bzip2) or file object
-          cutoff
+          *cutoff*
              the ``-dist CUTOFF`` that was provided to ``g_dist``; if supplied 
              we work around a bug in ``g_dist`` (at least in Gromacs 4.0.2) in which
              sometimes numbers >> CUTOFF are printed.
@@ -113,8 +109,6 @@ class Mindist(object):
     def histogram(self,nbins=None,lo=None,hi=None,midpoints=False,normed=True):
         """Returns a distribution or histogram of the minimum distances::
 
-           hist,edges = histogram(nbins=10, hi=1)
-
         If no values for the bin edges are given then they are set to
         0.1 below and 0.1 above the minimum and maximum values seen in
         the data.
@@ -124,15 +118,15 @@ class Mindist(object):
         histogram only contains a single bin (and then get more data)!
 
         :Keywords:
-           nbins : int
+           *nbins* : int
               number of bins
-           lo : float
+           *lo* : float
               lower edge of histogram
-           hi : float
+           *hi* : float
               upper edge of histogram
-           midpoints : boolean
+           *midpoints* : boolean
               False: return edges. True: return midpoints
-           normed : boolean
+           *normed* : boolean
               True: return probability distribution. False: histogram
         """
         D = self.distances
@@ -205,7 +199,7 @@ class Mindist(object):
 
            plot(**histogramargs, **plotargs)
 
-        Arguments for both histogram() and plot() can be provided (qv).
+        Arguments for both :meth:`Mindist.histogram` and :func:`pylab.plot` can be provided (qv).
         """
         import pylab
         kwargs['midpoints'] = True
@@ -218,7 +212,14 @@ class Mindist(object):
         pylab.xlabel('minimum distance (nm)')
 
 class GdistData(object):
-    """Object that represents the output of ``g_dist -dist CUTOFF``."""
+    """Object that represents the standard output of ``g_dist -dist CUTOFF``.
+
+    Initialize from a stream (e.g. a pipe) and the iterate over the
+    instance to get the data line by line. Each line consists of a
+    tuple
+
+      (*frame*, *distance*)
+    """
     data_pattern = re.compile("""t:\s*                 # marker for beginning of line
                 (?P<FRAME>\d+)\s+                      # frame number (?)
                 (?P<RESID>\d+)\s+(?P<RESNAME>\w+)\s+   # resid and residue name
@@ -227,7 +228,14 @@ class GdistData(object):
                 \s+\(nm\)""", re.VERBOSE)
 
     def __init__(self,stream):
-        """Initialize with an open stream to the data (eg stdin or file)."""
+        """Initialize with an open stream to the data (eg stdin or file).
+
+        :Arguments:
+           *stream*
+              open stream (file or pipe or really any iterator
+              providing the data from ``g_dist``); the *stream* is not
+              closed automatically when the iterator completes.
+        """
         self.stream = stream
 
     def __iter__(self):
