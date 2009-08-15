@@ -123,7 +123,7 @@ internet-thingy at the direct download URI
   http://sbcb.bioch.ox.ac.uk/oliver/download/Python/ 
 
 You can use this URI if you want to install from the network using
-``easy_install``.
+``easy_install`` as described in :doc:`INSTALL`.
 
 
 Its home page is http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/
