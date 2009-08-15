@@ -32,6 +32,10 @@ Module contents
 
 .. autoclass:: GridMatData
    :members:
+   :inherited-members:
+
+.. autoclass:: Grid2D
+   :members: imshow, _midpoints, __add__, __sub__, __mul__, __div__
 
 """
 from __future__ import with_statement
@@ -70,9 +74,9 @@ class GridMatMD(object):
         """Set up GridMAT-MD analysis.
 
         :Arguments:
-          config : filename
+          *config* : filename
              input file for GridMAT-MD (see docs)
-          filenames : list or glob-pattern
+          *filenames* : list or glob-pattern
              list of gro or pdb files, or a glob pattern that creates
              such a list
         """
@@ -179,15 +183,27 @@ class Grid2D(object):
 
     Addition and subtraction of grids is defined for the arrays and
     the bins.  Multiplication and division with scalars is also
-    defined. Each operation returns a new :class:`Grid2D` object."""
+    defined. Each operation returns a new :class:`Grid2D` object.
+
+    (Actually, it should work for arrays of any dimension, not just 2D.)
+    """
 
     def __init__(self, data, bins):
+        """Initialize the Grid2D instance.
+
+        :Arguments:
+          *data*
+             array data, e.g. a list of array
+          *bins*
+             tuple of lists of bin **edges**, one for each dimension
+        """
         self.array = numpy.asarray(data)  # numpy array
         self.shape = self.array.shape
         self.ndim = len(self.shape)
         self.bins = bins
-        if len(bins) == 1:
-            self.bins = (self.bins,)      # bins should be a tuple, one for each dimension
+        if len(self.bins) != self.ndim:
+            raise ValueError("bins must be a list of bin edges, one for each dimension, D=%(ndim)d" %
+                             vars(self))
         self.midpoints = [self._midpoints(x) for x in self.bins]
 
     def _midpoints(self, x):
@@ -212,7 +228,7 @@ class Grid2D(object):
         return Grid2D(data=_array, bins=_bins)
 
     def __sub__(self, other):
-        """Subtract other from self."""
+        """Subtract other from self (also subtracts bins... which is odd but consistent)."""
         if self.array.shape != other.array.shape:
             raise TypeError("arrays are of incompatible shape")
         _bins = [self.bins[dim] - other.bins[dim] for dim in xrange(len(self.bins))]
@@ -220,7 +236,7 @@ class Grid2D(object):
         return Grid2D(data=_array, bins=_bins)
 
     def __mul__(self, x):
-        """Multiply arrays by a scalar *x*."""
+        """Multiply arrays (and bins) by a scalar *x*."""
         _bins = [self.bins[dim] * x for dim in xrange(len(self.bins))]
         _array = self.array * x
         return Grid2D(data=_array, bins=_bins)
@@ -257,6 +273,14 @@ class GridMatData(Grid2D):
         *delta* are optional. The *shape* of the array is parsed from
         the filename if not provided. The spacing is set to (1,1) if
         not provided.
+
+        :Arguments:
+          *filename*
+             2D grid as written by GridMAT-MD
+          *shape*
+             Shape tuple (NX, NY) of the array in filename.
+          *delta*
+             Tuple of bin sizes of grid (DX, DY).
         """
         self.filename = filename
         self.shape = shape
@@ -277,7 +301,6 @@ class GridMatData(Grid2D):
 
         # reconstructed midpoints  (always start at 0,0 as the offset
         # is lost)        
-
 
     def parse_filename(self, filename):
         """Get dimensions from filename"""
