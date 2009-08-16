@@ -24,17 +24,19 @@ sending it to the `package author`_. You will be acknowledged in the list below.
 ==========================  =======================  =====================================
 plugin                      author                   description
 ==========================  =======================  =====================================
-:class:`CysAccessibility`   Oliver Beckstein [#OB]_  estimate accessibility of Cys
+:class:`CysAccessibility`                    [#OB]_  estimate accessibility of Cys
                                                      residues by water
                                                      
-:class:`Distances`          Oliver Beckstein [#OB]_  time series of distances
+:class:`Distances`                           [#OB]_  time series of distances
 
-:class:`MinDistances`       Oliver Beckstein [#OB]_  time series of shortest distances
+:class:`MinDistances`                        [#OB]_  time series of shortest distances
+
+:class:`Dihedrals`                           [#OB]_  analysis of dihedral angles
 ==========================  =======================  =====================================
 
 
 .. rubric:: Footnotes
-.. [#OB] oliver.beckstein@bioch.ox.ac.uk
+.. [#OB] Oliver Beckstein <oliver.beckstein@bioch.ox.ac.uk>
 
 
 Plugin classes
@@ -45,6 +47,8 @@ Plugin classes
 .. autoclass:: Distances
    :members:
 .. autoclass:: MinDistances
+   :members:
+.. autoclass:: Dihedrals
    :members:
 
 
@@ -66,7 +70,7 @@ __docformat__ = "restructuredtext en"
 #: plugin class it contains but in all lower case. For example, the
 #: *Distances* plugin class is contained in the module *distances* (the
 #: file ``plugins/distances.py``).
-__plugins__ = ['CysAccessibility', 'Distances', 'MinDistances']
+__plugins__ = ['CysAccessibility', 'Distances', 'MinDistances', 'Dihedrals']
 __all__ = []
 __all__.extend(__plugins__)
 
