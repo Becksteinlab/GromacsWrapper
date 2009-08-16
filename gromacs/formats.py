@@ -53,8 +53,14 @@ class XVG(utilities.FileUtils):
     All data must be numerical. :const:`NAN` and :const:`INF` values are
     supported via python's :func:`float` builtin function.
 
-    The :attr:`~XVG.array` attribute can be used to access a cached
-    version of the array.
+    The :attr:`~XVG.array` attribute can be used to access the
+    the array once it has been read and parsed.
+
+    Conceptually, the file on disk and the XVG instance are considered the same
+    data. This means that whenever the filename for I/O (:meth:`XVG.read` and
+    :meth:`XVG.write`) is changed then the filename associated with the
+    instance is also changed to reflect the association between file and
+    instance.
 
     .. Note:: Only simple XY or NXY files are currently supported, not
               Grace files that contain multiple data sets separated by '&'.
@@ -62,20 +68,30 @@ class XVG(utilities.FileUtils):
     def __init__(self, filename=None):
         """Initialize the class from a xvg file.
 
-        :Arguments: *filename* is the xvg file; it can only be of type XY or NXY.
+        :Arguments: *filename* is the xvg file; it can only be of type XY or
+                    NXY. If it is supplied then it is read and parsed when
+                    :attr:`XVG.array` is accessed.
         """
-        if not filename is None:
-            self._init_filename(filename)
         self.__array = None          # cache for array property
+        if not filename is None:
+            self._init_filename(filename)  # reading is delayed until required
 
     def _init_filename(self, filename):
+        """Initialize the current filename :attr:`XVG.real_filename` of the object.
+
+        - The first invocation must have ``filename != None``; this will set a
+          default filename with suffix ".xvg" unless another one was supplied.
+        - Subsequent invocations either change the filename accordingly or
+          ensure that the default filename is set with the proper suffix.        
+        """
         f = self.filename(filename, ext='xvg', use_my_ext=True, set_default=True)
-        self.real_filename = os.path.realpath(f)  # use full path for accessing data
+        #: Current full path of the object for reading and writing I/O.
+        self.real_filename = os.path.realpath(f)
 
     def read(self, filename=None):
         """Read and parse xvg file *filename*."""
         self._init_filename(filename)
-        return self.array   # bit of a hack... array is parsed and cached en passant...
+        self.parse()
 
     def write(self, filename=None):
         """Write array to xvg file *filename* in NXY format."""
@@ -116,7 +132,7 @@ class XVG(utilities.FileUtils):
         self.__array = numpy.array(rows).transpose()    # cache result
 
     def set(self, a):
-        """Set the *array* data from *a*.
+        """Set the *array* data from *a* (i.e. completely replace).
 
         No sanity checks at the moment...
         """
@@ -200,19 +216,35 @@ class NDX(dict, utilities.FileUtils):
         print ndx['Protein']       
         ndx['my_group'] = [2, 4, 1, 5]   # add new group
         ndx.write('new.ndx')
-       
+
+      Or quicker (replacing the input file ``system.ndx``)::
+
+        ndx = NDX('system')          # suffix .ndx is automatically added
+        ndx['chi1'] = [2, 7, 8, 10]
+        ndx.write()
+
+    .. Note:: When writing an index file then the order in which groups are
+              written to the filke is undetermined. This is arguably a bug and
+              should be fixed in future releases.
     """
+    # TODO: use a ordered dict to preserve order of groups (important when
+    #       accessing groups by number)
 
     # match:  [ index_groupname ]
     SECTION = re.compile("""\s*\[\s*(?P<name>\S.*\S)\s*\]\s*""")
 
-    # standard ndx file format: 15 x %6d
-    ncol = 15    
-    format = '%6d'  # does this deal with numpy.int64 correctly?
+    #: standard ndx file format: 15 columns
+    ncol = 15
+    #: standard ndx file format: '%6d'
+    format = '%6d'
 
     def __init__(self, **kwargs):
         super(NDX, self).__init__()
-        self._init_filename(kwargs.pop('filename',None))
+
+        filename = kwargs.pop('filename',None)
+        if not filename is None:
+            self._init_filename(filename)
+            self.read()
 
     def _init_filename(self, filename=None):
         filename = self.filename(filename, ext='ndx')
@@ -237,9 +269,8 @@ class NDX(dict, utilities.FileUtils):
                 if not current_section is None:
                     data[current_section].extend(map(int, line.split()))
 
-        super(NDX,self).update(
-            dict([(name, numpy.array(atomnumbers))
-                  for name, atomnumbers in data.items()]))
+        super(NDX,self).update(dict([(name, numpy.array(atomnumbers))
+                                     for name, atomnumbers in data.items()]))
 
     def write(self, filename=None, ncol=ncol, format=format):
         """Write index file to *filename* (or overwrite the file that the index was read from)"""
