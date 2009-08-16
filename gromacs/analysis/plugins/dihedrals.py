@@ -247,8 +247,23 @@ class _Dihedrals(Worker):
 
         # use legend labels from init
         if with_legend and len(self.parameters.labels) > 0:
+            if 'columns' in kwargs:
+                # sneaky option for XVG.plot: selects columns to plot, eg [0,1, 3] so we
+                # need to get the correct labels, namely [0, 2]
+                c = numpy.asarray(kwargs['columns'])
+                not_zero = (c != 0)
+                c = c[not_zero]  # filter 0th column (phi) which does not have a label
+                c -= 1         # it's now an index into labels
+                if numpy.any(not_zero):
+                    # special case when 0th column was not included (eg correlation plots):
+                    # we have to discard the first label (and *should* change the xlabel...)
+                    xlabel(self.parameters.labels[c[0]])
+                    c = c[1:]
+                _labels = tuple([self.parameters.labels[i] for i in c])
+            else:
+                _labels = tuple(self.parameters.labels)
             subplot(211)
-            legend(tuple(self.parameters.labels), loc='best')
+            legend(_labels, loc='best')
 
         # write graphics file(s)
         if figure is True:
