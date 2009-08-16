@@ -46,6 +46,7 @@ import errno
 import numpy
 
 import utilities
+from gromacs import AutoCorrectionWarning
 
 class XVG(utilities.FileUtils):
     """Class that represents the numerical data in a grace xvg file.
@@ -246,7 +247,7 @@ class NDX(dict, utilities.FileUtils):
         filename = kwargs.pop('filename',None)
         if not filename is None:
             self._init_filename(filename)
-            self.read()
+            self.read(filename)
 
     def _init_filename(self, filename=None):
         filename = self.filename(filename, ext='ndx')
@@ -279,7 +280,7 @@ class NDX(dict, utilities.FileUtils):
         with open(self.filename(filename, ext='ndx'), 'w') as ndx:
             for name, atomnumbers in self.items():
                 ndx.write('[ %s ]\n' % name)
-                for k in xrange(0, len(atomnumbers)/ncol + 1):
+                for k in xrange(0, len(atomnumbers), ncol):
                     line = atomnumbers[k:k+ncol].astype(int)   # nice formatting in ncol-blocks
                     n = len(line)
                     ndx.write((" ".join(n*[format])+'\n') % tuple(line))
