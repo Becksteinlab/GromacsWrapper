@@ -126,7 +126,7 @@ The following *warnings* are defined:
 __docformat__ = "restructuredtext en"
 
 # __all__ is extended with all gromacs command instances later
-__all__ = ['config', 'tools', 'cbook', 'setup']
+__all__ = ['config', 'tools', 'cbook']
 
 # Note: analysis not imported by default (requires additional pre-requisites)
 
