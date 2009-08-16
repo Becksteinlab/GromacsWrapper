@@ -98,12 +98,13 @@ class _Dihedrals(Worker):
 
         self.parameters.ndx = P('dih.ndx')
         self.parameters.filenames = {
-            'distribution': P('dih_dist.xvg'),
-            'average': P('dih_avg.xvg'),         # with -all !
-            'transitions': P('dih_trans.xvg'),   # only works for multiplicity 3
+            'comb_distribution': P('dih_combdist.xvg'), # combined distribution from ALL dih!            
+            'timeseries': P('dih_timeseries.xvg'),      # with -all, ie (phi, avg, dh1, dh2, ...)
+            'transitions': P('dih_trans.xvg'),          # only works for multiplicity 3
             'transition_histogram': P('dih_transhisto.xvg'), 
             'acf': P('dih_acf.xvg'),
-            'PMF': P('dih_pmf.xvg'),             # from analyze()
+            'distributions' : P('dih_distributions.xvg'), # from analyze()
+            'PMF': P('dih_pmf.xvg'),                      # from analyze()
             }
         self.parameters.figname = self.figdir('dihedrals_PMF')
 
@@ -124,9 +125,12 @@ class _Dihedrals(Worker):
         
     def run(self, force=False, **gmxargs):
         """Collect dihedral data from trajectory with ``g_angle`` and save to data files.
+
+        Note that the ``-all`` flag is always enabled and hence all time series
+        can be found under the *timeseries* results key.
         """
         if not force and \
-               self.check_file_exists(self.parameters.filenames['distribution'], resolve='warn'):
+               self.check_file_exists(self.parameters.filenames['timeseries'], resolve='warn'):
             return
 
         angle_type = gmxargs.setdefault('type','dihedral')
@@ -134,15 +138,15 @@ class _Dihedrals(Worker):
         if angle_type not in allowed_types:
             raise ValueError("The *type* can not be %r, only be one of\n\t%r\n" %
                              (angle_type, allowed_types))
-        gmxargs.setdefault('all', True)
+        gmxargs['all'] = True   # required because we analyze the time series file
         gmxargs.setdefault('periodic', True)
         F = self.parameters.filenames
         gromacs.g_angle(f=self.simulation.xtc, n=self.parameters.ndx,
-                        od=F['distribution'], ov=F['average'], ot=F['transitions'],
+                        od=F['comb_distribution'], ov=F['timeseries'], ot=F['transitions'],
                         oc=F['acf'], oh=F['transition_histogram'], **gmxargs)
 
 
-    def analyze(self):
+    def analyze(self, **kwargs):
         """Load results from disk into :attr:`_Dihedrals.results` and compute PMF.
 
         The PMF W(phi) in kT is computed from each dihedral
@@ -151,10 +155,16 @@ class _Dihedrals(Worker):
            W(phi) = -kT ln P(phi)
 
         It is stored in :attr:`_Dihedrals.results` with the key *PMF*.
+
+        :Keywords:
+          *bins*
+             bins for histograms (passed to numpy.histogram(new=True))
         
         :Returns: a dictionary of the results and also sets
                   :attr:`_Dihedrals.results`.
         """        
+
+        bins = kwargs.pop('bins', 361)
 
         results = AttributeDict()
 
@@ -165,16 +175,34 @@ class _Dihedrals(Worker):
             except IOError:
                 pass    # either not computed (yet) or some failure
 
-        # compute PMF
-        angdist = results['distribution']
-        phi = angdist.array[0]
-        P = angdist.array[1:]
-        W = -numpy.log(P)
-        W -= W.min(axis=1)[:, numpy.newaxis]
-        pmf = numpy.concatenate((phi[numpy.newaxis, :], W), axis=0)
-        pmf_masked = numpy.ma.MaskedArray(pmf, mask=(pmf == numpy.Inf))        
+        # compute individual distributions
+        ts = results['timeseries'].array    # ts[0] = time, ts[1] = avg
+        dih = ts[2:]
+
+        phi_range = (-180., 180.)
+
+        Ndih = len(dih)
+        p = Ndih * [None]  # histograms (prob. distributions), one for each dihedral i
+        for i in xrange(Ndih):
+            phis = dih[i]
+            p[i],e = numpy.histogram(phis, bins=bins, range=phi_range, normed=True, new=True)
+
+        P = numpy.array(p)
+        phi = 0.5*(e[:-1]+e[1:])   # midpoints of bin edges
+        distributions = numpy.concatenate((phi[numpy.newaxis, :], P))  # phi, P[0], P[1], ...
+
         xvg = XVG()
-        xvg.set(pmf_masked)
+        xvg.set(distributions)
+        xvg.write(self.parameters.filenames['distributions'])
+        results['distributions'] = xvg
+        del xvg
+        
+        # compute PMF (from individual distributions)
+        W = -numpy.log(P)                      # W(phi)/kT = -ln P
+        W -= W.min(axis=1)[:, numpy.newaxis]   # minimum at 0 kT
+        pmf = numpy.concatenate((phi[numpy.newaxis, :], W), axis=0)
+        xvg = XVG()
+        xvg.set(pmf)
         xvg.write(self.parameters.filenames['PMF'])
         results['PMF'] = xvg
         
@@ -191,37 +219,38 @@ class _Dihedrals(Worker):
                - ``False``: only show on screen
            formats : sequence
                sequence of all formats that should be saved [('png', 'pdf')]
+           with_legend : bool
+               add legend from *labels* to graphs
            plotargs    
                keyword arguments for pylab.plot()
         """
 
-        from pylab import plot, subplot, xlabel, ylabel
+        from pylab import subplot, xlabel, ylabel, legend
         figure = kwargs.pop('figure', False)
         extensions = kwargs.pop('formats', ('pdf','png'))
-#         for name,result in self.results.items():
-#             kwargs['label'] = name
-#             try:
-#                 result.plot(**kwargs)      # This requires result classes with a plot() method!!
-#             except AttributeError:
-#                 warnings.warn("Sorry, plotting of result %(name)r is not implemented" % vars(),
-#                               category=UserWarning)
+
+        kwargs.setdefault('linestyle', '-')
+        kwargs.setdefault('linewidth', 3)
+        with_legend = kwargs.pop('with_legend', True)
 
         # data
-        P = self.results['distribution']
+        P = self.results['distributions']
         W = self.results['PMF']
 
         # plot probability and PMF
         subplot(211)
-        P.plot(color='k', linestyle='-', lw=3)
+        P.plot(**kwargs)
         subplot(212)
-        W.plot(color='k', linestyle='-', lw=3)  # do I need a masked array? --- set as MA in analyze()
+        W.plot(**kwargs)
         xlabel('dihedral angle $\phi/\degree$')
         ylabel(r'PMF  $\mathcal{W}/kT$')
 
-        # TODO:
-        # use legend labels from self.parameters.labels
+        # use legend labels from init
+        if with_legend and len(self.parameters.labels) > 0:
+            subplot(211)
+            legend(tuple(self.parameters.labels), loc='best')
 
-        # pylab.legend(loc='best')
+        # write graphics file(s)
         if figure is True:
             for ext in extensions:
                 self.savefig(ext=ext)
