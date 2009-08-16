@@ -45,23 +45,47 @@ class XVG(utilities.FileUtils):
     All data must be numerical. :const:`NAN` and :const:`INF` values are
     supported via python's :func:`float` builtin function.
 
-    Instead of using this function one can also use the :attr:`~XVG.array`
-    attribute to access a cached version of the array.
+    The :attr:`~XVG.array` attribute can be used to access a cached
+    version of the array.
 
     .. Note:: Only simple XY or NXY files are currently supported, not
               Grace files that contain multiple data sets separated by '&'.
     """
-    def __init__(self, filename):
+    def __init__(self, filename=None):
         """Initialize the class from a xvg file.
 
         :Arguments: *filename* is the xvg file; it can only be of type XY or NXY.
         """
-        self.filename = filename
-        self.real_filename = os.path.realpath(filename)  # use full path for accessing data
+        if not filename is None:
+            self._init_filename(filename)
         self.__array = None          # cache for array property
 
-    def asarray(self):
-        """Return data of the file as numpy array.
+    def _init_filename(self, filename):
+        f = self.filename(filename, ext='xvg', use_my_ext=True, set_default=True)
+        self.real_filename = os.path.realpath(f)  # use full path for accessing data
+
+    def read(self, filename=None):
+        """Read and parse xvg file *filename*."""
+        self._init_filename(filename)
+        return self.array   # bit of a hack... array is parsed and cached en passant...
+
+    def write(self, filename=None):
+        """Write xvg file."""
+        raise NotImplementedError
+
+    @property
+    def array(self):
+        """Represent xvg data as a (cached) numpy array. 
+
+        The array is returned with column-first indexing, i.e. for a data file with
+        columns X Y1 Y2 Y3 ... the array a will be a[0] = X, a[1] = Y1, ... .
+        """
+        if self.__array is None:
+            self.parse()
+        return self.__array
+        
+    def parse(self):
+        """Read and cache the file as a numpy array.
 
         The array is returned with column-first indexing, i.e. for a data file with
         columns X Y1 Y2 Y3 ... the array a will be a[0] = X, a[1] = Y1, ... .
@@ -75,15 +99,7 @@ class XVG(utilities.FileUtils):
                 if line.startswith('&'):
                     raise NotImplementedError('Sorry only simple NXY format is supported.')
                 rows.append(map(float, line.split()))
-        return numpy.array(rows).transpose()
-
-    @property
-    def array(self):
-        """Represent xvg data as a (cached) numpy array. 
-           See :meth:`~XVG.asarray` for details."""
-        if self.__array is None:
-            self.__array = self.asarray()
-        return self.__array
+        self.__array = numpy.array(rows).transpose()    # cache result
 
     def plot(self, **kwargs):
         """Plot xvg file data.
