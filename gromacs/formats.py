@@ -48,7 +48,7 @@ import numpy
 import utilities
 
 class XVG(utilities.FileUtils):
-    """Class that represents a grace xvg file.
+    """Class that represents the numerical data in a grace xvg file.
 
     All data must be numerical. :const:`NAN` and :const:`INF` values are
     supported via python's :func:`float` builtin function.
@@ -62,8 +62,9 @@ class XVG(utilities.FileUtils):
     instance is also changed to reflect the association between file and
     instance.
 
-    .. Note:: Only simple XY or NXY files are currently supported, not
-              Grace files that contain multiple data sets separated by '&'.
+    .. Note:: - Only simple XY or NXY files are currently supported, not
+                Grace files that contain multiple data sets separated by '&'.
+              - Any kind of formatting (xmgrace commands) are discarded.
     """
     def __init__(self, filename=None):
         """Initialize the class from a xvg file.
@@ -120,6 +121,7 @@ class XVG(utilities.FileUtils):
         The array is returned with column-first indexing, i.e. for a data file with
         columns X Y1 Y2 Y3 ... the array a will be a[0] = X, a[1] = Y1, ... .
         """
+        # cannot use numpy.loadtxt() because xvg can have two types of 'comment' lines
         with open(self.real_filename) as xvg:
             rows = []
             for line in xvg:
