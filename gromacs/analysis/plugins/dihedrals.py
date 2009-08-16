@@ -33,6 +33,8 @@ __docformat__ = "restructuredtext en"
 import os.path
 import warnings
 
+import numpy
+
 import gromacs
 from gromacs.utilities import AttributeDict
 from gromacs.analysis.core import Worker, Plugin
@@ -75,7 +77,7 @@ class _Dihedrals(Worker):
         super(_Dihedrals, self).__init__(**kwargs)
 
         # process specific parameters now and set instance variables
-        self.parameters.dihedrals = dihedrals
+        self.parameters.dihedrals = dihedralgroups
         self.parameters.labels = labels
 
         # self.simulation might have been set by the super class
@@ -123,7 +125,6 @@ class _Dihedrals(Worker):
     def run(self, force=False, **gmxargs):
         """Collect dihedral data from trajectory with ``g_angle`` and save to data files.
         """
-        force = kwargs.pop('force',False)        
         if not force and \
                self.check_file_exists(self.parameters.filenames['distribution'], resolve='warn'):
             return
@@ -136,43 +137,46 @@ class _Dihedrals(Worker):
         gmxargs.setdefault('all', True)
         gmxargs.setdefault('periodic', True)
         F = self.parameters.filenames
-        gromacs.g_angle(f=self.xtc, n=self.parameters.ndx,
+        gromacs.g_angle(f=self.simulation.xtc, n=self.parameters.ndx,
                         od=F['distribution'], ov=F['average'], ot=F['transitions'],
                         oc=F['acf'], oh=F['transition_histogram'], **gmxargs)
 
 
     def analyze(self):
-        """Load results from disk into :attr:`Dihedrals.results` and compute PMF.
+        """Load results from disk into :attr:`_Dihedrals.results` and compute PMF.
 
         The PMF W(phi) in kT is computed from each dihedral
         probability distribution P(phi) as
 
            W(phi) = -kT ln P(phi)
 
-        It is stored in :attr:`Dihedrals.results` with the key *PMF*.
+        It is stored in :attr:`_Dihedrals.results` with the key *PMF*.
         
         :Returns: a dictionary of the results and also sets
-                  :attr:`Dihedrals.results`.
+                  :attr:`_Dihedrals.results`.
         """        
 
         results = AttributeDict()
+
+        # get graphs that were produced by g_angle 
         for name, f in self.parameters.filenames.items():
             try:
                 results[name] = XVG(f)
             except IOError:
                 pass    # either not computed (yet) or some failure
+
         # compute PMF
         angdist = results['distribution']
         phi = angdist.array[0]
         P = angdist.array[1:]
         W = -numpy.log(P)
         W -= W.min(axis=1)[:, numpy.newaxis]
-        pmf = numpy.concatenate(phi[numpy.newaxis, :], W, axis=0)
+        pmf = numpy.concatenate((phi[numpy.newaxis, :], W), axis=0)
         pmf_masked = numpy.ma.MaskedArray(pmf, mask=(pmf == numpy.Inf))        
         xvg = XVG()
         xvg.set(pmf_masked)
         xvg.write(self.parameters.filenames['PMF'])
-        results = xvg
+        results['PMF'] = xvg
         
         self.results = results
         return results
@@ -191,7 +195,7 @@ class _Dihedrals(Worker):
                keyword arguments for pylab.plot()
         """
 
-        from pylab import plot, subfigure, xlabel, ylabel
+        from pylab import plot, subplot, xlabel, ylabel
         figure = kwargs.pop('figure', False)
         extensions = kwargs.pop('formats', ('pdf','png'))
 #         for name,result in self.results.items():
@@ -210,7 +214,7 @@ class _Dihedrals(Worker):
         subplot(211)
         P.plot(color='k', linestyle='-', lw=3)
         subplot(212)
-        W.plot('k-', lw=3)  # do I need a masked array? --- set as MA in analyze()
+        W.plot(color='k', linestyle='-', lw=3)  # do I need a masked array? --- set as MA in analyze()
         xlabel('dihedral angle $\phi/\degree$')
         ylabel(r'PMF  $\mathcal{W}/kT$')
 
