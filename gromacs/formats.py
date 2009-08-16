@@ -54,8 +54,9 @@ class XVG(utilities.FileUtils):
     All data must be numerical. :const:`NAN` and :const:`INF` values are
     supported via python's :func:`float` builtin function.
 
-    The :attr:`~XVG.array` attribute can be used to access the
-    the array once it has been read and parsed.
+    The :attr:`~XVG.array` attribute can be used to access the the
+    array once it has been read and parsed. The :attr:`~XVG.ma`
+    attribute is a numpy masked array (good for plotting).
 
     Conceptually, the file on disk and the XVG instance are considered the same
     data. This means that whenever the filename for I/O (:meth:`XVG.read` and
@@ -115,6 +116,19 @@ class XVG(utilities.FileUtils):
         if self.__array is None:
             self.parse()
         return self.__array
+
+    @property
+    def ma(self):
+        """Represent data as a masked array.
+
+        The array is returned with column-first indexing, i.e. for a data file with
+        columns X Y1 Y2 Y3 ... the array a will be a[0] = X, a[1] = Y1, ... .
+
+        inf and nan are filtered via :func:`numpy.isfinite`.
+        """
+        a = self.array
+        return numpy.ma.MaskedArray(a, mask=numpy.logical_not(numpy.isfinite(a)))        
+        
         
     def parse(self):
         """Read and cache the file as a numpy array.
@@ -183,7 +197,7 @@ class XVG(utilities.FileUtils):
             # bits at the end or end up with almost twice of maxpoints)
             stepsize = int(ny / maxpoints)
             a = a[..., ::stepsize]
-            if maxpoints == maxpoints_default:
+            if maxpoints == maxpoints_default:  # only warn if user did not set maxpoints
                 warnings.warn("Plot had %d datapoints > maxpoints = %d; subsampled to %d regularly spaced points." 
                               % (ny, maxpoints, a.shape[-1]), category=AutoCorrectionWarning)
 
@@ -192,8 +206,13 @@ class XVG(utilities.FileUtils):
             # we'll just produce our own xdata and pretend that this was X all along
             X = numpy.arange(len(a))
             a = numpy.concatenate([[X], [a]])  # does NOT overwrite original a but make a new one
-        kwargs['xdata'] = a[0]          # abscissa set separately
-        pylab.plot(a[1:].T, **kwargs)   # plot all other columns in parallel
+
+        # now deal with infs, nans etc AFTER all transformations (needed for plotting across inf/nan)
+        ma = numpy.ma.MaskedArray(a, mask=numpy.logical_not(numpy.isfinite(a)))
+
+        # finally plot
+        kwargs['xdata'] = ma[0]          # abscissa set separately
+        pylab.plot(ma[1:].T, **kwargs)   # plot all other columns in parallel
         
 
 class NDX(dict, utilities.FileUtils):
