@@ -36,7 +36,8 @@ import tempfile
 import numpy
 
 import gromacs
-from gromacs.utilities import AttributeDict, XVG, asiterable
+from gromacs.utilities import AttributeDict, asiterable
+from gromacs.formats import XVG
 from gromacs.analysis.core import Worker, Plugin
 
 
@@ -179,7 +180,7 @@ class _Distances(Worker):
                     callback(name=name, axis=ax)
            kwargs
               All other keyword arguments are directly passed to 
-              meth:`gromacs.utilities.XVG.plot`.
+              meth:`gromacs.formats.XVG.plot`.
         """
         import pylab
 

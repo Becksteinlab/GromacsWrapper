@@ -348,7 +348,7 @@ class Simulation(object):
               - ``False``: only display
            *kwargs*
               arguments for plugin plot function (in many cases
-              provided by :meth:`gromacs.utilities.XVG.plot` and
+              provided by :meth:`gromacs.formats.XVG.plot` and
               ultimately by :func:`pylab.plot`)
         """
         kwargs['figure'] = figure

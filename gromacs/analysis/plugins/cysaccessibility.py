@@ -124,7 +124,7 @@ class _CysAccessibility(Worker):
         else:
             self.parameters.cutoff = cutoff    # record cutoff used
 
-        ndx = self.parameters.ndx
+        ndx = self.parameters.ndx     # could move this into _register_hook?
         if not os.path.isfile(ndx):
             warnings.warn("Cysteine index file %r missing: running 'make_index_cys'." % ndx)
             self.make_index_cys()

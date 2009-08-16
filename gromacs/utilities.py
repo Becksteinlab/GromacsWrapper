@@ -21,8 +21,6 @@ class is derived from it.
 
 .. autoclass:: FileUtils
    :members:
-.. autoclass:: XVG
-   :members:   
 .. autoclass:: AttributeDict
 
 Functions
@@ -90,6 +88,7 @@ import numpy
 from gromacs import AutoCorrectionWarning
 
 
+
 def Property(func):
     """Simple decorator wrapper to make full fledged properties.
     See eg http://adam.gomaa.us/blog/2008/aug/11/the-python-property-builtin/
@@ -143,7 +142,9 @@ def _get_stream(filename, openfunction=file):
         stream = None
     return stream
 
-#: translation table for 1-letter codes --> 3-letter codes 
+# TODO: make it work for non-default charge state amino acids.
+#: translation table for 1-letter codes --> 3-letter codes
+#: .. Note: This does not work for HISB and non-default charge state aa!
 amino_acid_codes = {'A':'ALA', 'C':'CYS', 'D':'ASP', 'E':'GLU',
                     'F':'PHE', 'G':'GLY', 'H':'HIS', 'I':'ILE',
                     'K':'LYS', 'L':'LEU', 'M':'MET', 'N':'ASN',
@@ -262,106 +263,6 @@ class FileUtils(object):
             return solutions[resolve](filename)
 
 
-class XVG(FileUtils):
-    """Class that represents a grace xvg file. Read-only at the moment.
-
-    All data must be numerical. :const:`NAN` and :const:`INF` values are
-    supported via python's :func:`float` builtin function.
-
-    Instead of using this function one can also use the :attr:`~XVG.array`
-    attribute to access a cached version of the array.
-
-    .. Note:: Only simple XY or NXY files are currently supported, not
-              Grace files that contain multiple data sets separated by '&'.
-    """
-    def __init__(self, filename):
-        """Initialize the class from a xvg file.
-
-        :Arguments: *filename* is the xvg file; it can only be of type XY or NXY.
-        """
-        self.filename = filename
-        self.real_filename = os.path.realpath(filename)  # use full path for accessing data
-        self.__array = None          # cache for array property
-
-    def asarray(self):
-        """Return data of the file as numpy array.
-
-        The array is returned with column-first indexing, i.e. for a data file with
-        columns X Y1 Y2 Y3 ... the array a will be a[0] = X, a[1] = Y1, ... .
-        """
-        with open(self.real_filename) as xvg:
-            rows = []
-            for line in xvg:
-                line = line.strip()
-                if line.startswith(('#', '@')) or len(line) == 0:
-                    continue
-                if line.startswith('&'):
-                    raise NotImplementedError('Sorry only simple NXY format is supported.')
-                rows.append(map(float, line.split()))
-        return numpy.array(rows).transpose()
-
-    @property
-    def array(self):
-        """Represent xvg data as a (cached) numpy array. 
-           See :meth:`~XVG.asarray` for details."""
-        if self.__array is None:
-            self.__array = self.asarray()
-        return self.__array
-
-    def plot(self, **kwargs):
-        """Plot xvg file data.
-
-        The first column of the data is always taken as the abscissa
-        X. Additional columns are plotted as ordinates Y1, Y2, ...
-
-        In the special case that there is only a single column then this column
-        is plotted against the index, i.e. (N, Y).
-
-        :Keywords:
-          *columns* : list
-               Select the columns of the data to be plotted; the list
-               is used as a numpy.array extended slice. The default is
-               to use all columns. Columns are selected *after* a transform.
-          *transform* : function
-               function ``transform(array) -> array`` which transforms
-               the original array; must return a 2D numpy array of
-               shape [X, Y1, Y2, ...] where X, Y1, ... are column
-               vectors.  By default the transformation is the
-               identity [``lambda x: x``].
-          *maxpoints* : int
-               limit the total number of data points; matplotlib has issues processing
-               png files with >100,000 points and pdfs take forever to display. Set to
-               ``None`` if really all data should be displayed. At the moment we simply
-               subsample the data at regular intervals. [10000]
-          *kwargs*
-               All other keyword arguments are passed on to :func:`pylab.plot`.
-        """
-        import pylab
-
-        maxpoints_default = 10000
-        columns = kwargs.pop('columns', Ellipsis)         # slice for everything
-        maxpoints = kwargs.pop('maxpoints', maxpoints_default)
-        transform = kwargs.pop('transform', lambda x: x)  # default is identity transformation
-        a = numpy.asarray(transform(self.array))[columns] # (slice o transform)(array)
-
-        ny = a.shape[-1]   # assume 1D or 2D array with last dimension varying fastest
-        if not maxpoints is None and ny > maxpoints:
-            # reduce size by subsampling (primitive --- can leave out
-            # bits at the end or end up with almost twice of maxpoints)
-            stepsize = int(ny / maxpoints)
-            a = a[..., ::stepsize]
-            if maxpoints == maxpoints_default:
-                warnings.warn("Plot had %d datapoints > maxpoints = %d; subsampled to %d regularly spaced points." 
-                              % (ny, maxpoints, a.shape[-1]), category=AutoCorrectionWarning)
-
-        if len(a.shape) == 1:
-            # special case: plot against index; plot would do this automatically but 
-            # we'll just produce our own xdata and pretend that this was X all along
-            X = numpy.arange(len(a))
-            a = numpy.concatenate([[X], [a]])  # does NOT overwrite original a but make a new one
-        kwargs['xdata'] = a[0]          # abscissa set separately
-        pylab.plot(a[1:].T, **kwargs)   # plot all other columns in parallel
-        
 
 def iterable(obj):
     """Returns ``True`` if *obj* can be iterated over and is *not* a  string."""
