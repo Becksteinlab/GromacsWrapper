@@ -141,13 +141,18 @@ class _Dihedrals(Worker):
                         oc=F['acf'], oh=F['transition_histogram'], **gmxargs)
 
 
-    def analyze(self,**kwargs):
-        """Short description of postprocessing.
+    def analyze(self):
+        """Load results from disk into :attr:`Dihedrals.results` and compute PMF.
 
-        :Keywords:
-          *kw1*
-             description
-        :Returns:  a dictionary of the results and also sets ``self.results``.
+        The PMF W(phi) in kT is computed from each dihedral
+        probability distribution P(phi) as
+
+           W(phi) = -kT ln P(phi)
+
+        It is stored in :attr:`Dihedrals.results` with the key *PMF*.
+        
+        :Returns: a dictionary of the results and also sets
+                  :attr:`Dihedrals.results`.
         """        
 
         results = AttributeDict()
@@ -158,13 +163,16 @@ class _Dihedrals(Worker):
                 pass    # either not computed (yet) or some failure
         # compute PMF
         angdist = results['distribution']
-        W = -numpy.log(angdist.array[1])
-        W -= W.min()
-        Wm = numpy.ma.MaskedArray(W, mask=(W == numpy.Inf))        
-        Wxvg = XVG()
-        Wxvg.set(Wm)
-        Wxvg.write(self.parameters.filenames['PMF'])
-        results = Wxvg
+        phi = angdist.array[0]
+        P = angdist.array[1:]
+        W = -numpy.log(P)
+        W -= W.min(axis=1)[:, numpy.newaxis]
+        pmf = numpy.concatenate(phi[numpy.newaxis, :], W, axis=0)
+        pmf_masked = numpy.ma.MaskedArray(pmf, mask=(pmf == numpy.Inf))        
+        xvg = XVG()
+        xvg.set(pmf_masked)
+        xvg.write(self.parameters.filenames['PMF'])
+        results = xvg
         
         self.results = results
         return results
