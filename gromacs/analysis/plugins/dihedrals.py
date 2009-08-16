@@ -210,10 +210,12 @@ class _Dihedrals(Worker):
         subplot(211)
         P.plot(color='k', linestyle='-', lw=3)
         subplot(212)
-        W.plot('k-', lw=3)  # do I need a masked array?
+        W.plot('k-', lw=3)  # do I need a masked array? --- set as MA in analyze()
         xlabel('dihedral angle $\phi/\degree$')
         ylabel(r'PMF  $\mathcal{W}/kT$')
-        
+
+        # TODO:
+        # use legend labels from self.parameters.labels
 
         # pylab.legend(loc='best')
         if figure is True:
