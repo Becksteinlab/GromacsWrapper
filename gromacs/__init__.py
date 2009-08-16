@@ -113,6 +113,7 @@ to always report, eg::
 The following *exceptions* are defined:
 
 .. autoexception:: GromacsError
+.. autoexception:: MissingDataError
 
 The following *warnings* are defined:
 
@@ -135,6 +136,14 @@ class GromacsError(EnvironmentError):
 
     Returns error code in the errno attribute and a string in strerror.
     # TODO: return status code and possibly error message
+    """
+
+class MissingDataError(Exception):
+    """Error raised when prerequisite data are not available.
+
+    For analysis with :class:`gromacs.analysis.core.Simulation` this typically
+    means that the :meth:`~gromacs.analysis.core.Simulation.analyze` method has
+    to be run first.
     """
 
 class GromacsFailureWarning(Warning):

@@ -36,6 +36,7 @@ import warnings
 import numpy
 
 import gromacs
+from gromacs import MissingDataError
 from gromacs.utilities import AttributeDict
 from gromacs.analysis.core import Worker, Plugin
 from gromacs.formats import XVG, NDX
@@ -234,8 +235,12 @@ class _Dihedrals(Worker):
         with_legend = kwargs.pop('with_legend', True)
 
         # data
-        P = self.results['distributions']
-        W = self.results['PMF']
+        try:
+            P = self.results['distributions']
+            W = self.results['PMF']
+        except KeyError:
+            raise MissingDataError("No post-processed data available: "
+                                   "Run the analysis() method first.")
 
         # plot probability and PMF
         subplot(211)
@@ -254,7 +259,7 @@ class _Dihedrals(Worker):
                 not_zero = (c != 0)
                 c = c[not_zero]  # filter 0th column (phi) which does not have a label
                 c -= 1         # it's now an index into labels
-                if numpy.any(not_zero):
+                if numpy.all(not_zero):
                     # special case when 0th column was not included (eg correlation plots):
                     # we have to discard the first label (and *should* change the xlabel...)
                     xlabel(self.parameters.labels[c[0]])
