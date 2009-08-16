@@ -7,17 +7,25 @@
 :mod:`gromacs.formats` -- Accessing various files
 =================================================
 
-The module defines some convenience functions and classes that are
-used in other modules; they do *not* make use of :mod:`gromacs.tools`
-or :mod:`gromacs.cbook` and can be safely imported at any time.
+This module contains classes that represent data files on
+disk. Typically one creates an instance and
+
+- reads from a file using a :meth:`read` method, or
+
+- populates the instance (in the simplest case with a :meth:`set`
+  method) and the uses the :meth:`write` method to write the data to
+  disk in the appropriate format.
+
+For function data there typically also exists a :meth:`plot` method
+which produces a graph (using matplotlib).
+
+The module defines some classes that are used in other modules; they
+do *not* make use of :mod:`gromacs.tools` or :mod:`gromacs.cbook` and
+can be safely imported at any time.
 
 
 Classes
 -------
-
-Each class wraps a file format. Ideally such a class should allow both
-reading and writing but at the moment mostly reading is implemented.
-
 
 .. autoclass:: XVG
    :members:   
@@ -40,7 +48,7 @@ import numpy
 import utilities
 
 class XVG(utilities.FileUtils):
-    """Class that represents a grace xvg file. Read-only at the moment.
+    """Class that represents a grace xvg file.
 
     All data must be numerical. :const:`NAN` and :const:`INF` values are
     supported via python's :func:`float` builtin function.
@@ -70,8 +78,14 @@ class XVG(utilities.FileUtils):
         return self.array   # bit of a hack... array is parsed and cached en passant...
 
     def write(self, filename=None):
-        """Write xvg file."""
-        raise NotImplementedError
+        """Write array to xvg file *filename* in NXY format."""
+        self._init_filename(filename)
+        with open(self.real_filename, 'w') as xvg:
+            xvg.write("# xmgrace compatible NXY data file\n"
+                      "# Written by gromacs.formats.XVG()\n")
+            for xyy in self.array.T:
+                xyy.tofile(xvg, sep=" ", format="%-8s")     # quick and dirty ascii output...
+                xvg.write('\n')
 
     @property
     def array(self):
@@ -100,6 +114,13 @@ class XVG(utilities.FileUtils):
                     raise NotImplementedError('Sorry only simple NXY format is supported.')
                 rows.append(map(float, line.split()))
         self.__array = numpy.array(rows).transpose()    # cache result
+
+    def set(self, a):
+        """Set the *array* data from *a*.
+
+        No sanity checks at the moment...
+        """
+        self.__array = numpy.asarray(a)
 
     def plot(self, **kwargs):
         """Plot xvg file data.
@@ -167,7 +188,7 @@ class NDX(dict, utilities.FileUtils):
     :meth:`NDX.set` methods.
 
     Alternatively, simply treat the NDX instance as a
-    dictionarry. Setting a key automatically transforms the new value
+    dictionary. Setting a key automatically transforms the new value
     into a integer 1D numpy array.
 
     Example:
@@ -191,12 +212,15 @@ class NDX(dict, utilities.FileUtils):
 
     def __init__(self, **kwargs):
         super(NDX, self).__init__()
+        self._init_filename(kwargs.pop('filename',None))
+
+    def _init_filename(self, filename=None):
+        filename = self.filename(filename, ext='ndx')
+        self.real_filename = os.path.realpath(filename)  # use full path for accessing data        
 
     def read(self, filename=None):
-        """Read and parse index file *filename*."""
-        
-        filename = self.filename(filename, ext='ndx')
-        self.real_filename = os.path.realpath(filename)  # use full path for accessing data
+        """Read and parse index file *filename*."""        
+        self._init_filename(filename)
         
         with open(self.real_filename) as ndx:
             data = {}
@@ -217,15 +241,15 @@ class NDX(dict, utilities.FileUtils):
             dict([(name, numpy.array(atomnumbers))
                   for name, atomnumbers in data.items()]))
 
-    def write(self, filename=None):
+    def write(self, filename=None, ncol=ncol, format=format):
         """Write index file to *filename* (or overwrite the file that the index was read from)"""
         with open(self.filename(filename, ext='ndx'), 'w') as ndx:
             for name, atomnumbers in self.items():
                 ndx.write('[ %s ]\n' % name)
-                for k in xrange(0, len(atomnumbers)/self.ncol + 1):
-                    line = atomnumbers[k:k+self.ncol].astype(int)  # stupid numpy int64...
+                for k in xrange(0, len(atomnumbers)/ncol + 1):
+                    line = atomnumbers[k:k+ncol].astype(int)   # nice formatting in ncol-blocks
                     n = len(line)
-                    ndx.write((" ".join(n*[self.format])+'\n') % tuple(line))
+                    ndx.write((" ".join(n*[format])+'\n') % tuple(line))
                 ndx.write('\n')
 
     def get(self, name):
