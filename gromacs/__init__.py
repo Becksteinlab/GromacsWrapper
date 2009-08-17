@@ -34,6 +34,15 @@ Modules
      Contains classes that wrap the gromacs tools. They are automatically
      generated from the list of tools in :data:`gromacs.tools.gmx_tools`.
 
+:mod:`gromacs.formats`
+     Classes to represent data files in various formats such as
+     xmgrace graphs. The classes allow reading and writing and for
+     graphs, also plotting of the data.
+
+:mod:`gromacs.utilities`
+     Convenience functions and mixin-classes that are used as helpers
+     in other modules.
+
 :mod:`gromacs.setup`
      Functions to set up a MD simulation, containing tasks such as solvation
      and adding ions, energy minimizqtion, MD with position-restraints, and
