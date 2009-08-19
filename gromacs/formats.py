@@ -68,6 +68,9 @@ class XVG(utilities.FileUtils):
                 Grace files that contain multiple data sets separated by '&'.
               - Any kind of formatting (xmgrace commands) are discarded.
     """
+
+    default_extension = "xvg"
+    
     def __init__(self, filename=None):
         """Initialize the class from a xvg file.
 
@@ -78,18 +81,6 @@ class XVG(utilities.FileUtils):
         self.__array = None          # cache for array property
         if not filename is None:
             self._init_filename(filename)  # reading is delayed until required
-
-    def _init_filename(self, filename):
-        """Initialize the current filename :attr:`XVG.real_filename` of the object.
-
-        - The first invocation must have ``filename != None``; this will set a
-          default filename with suffix ".xvg" unless another one was supplied.
-        - Subsequent invocations either change the filename accordingly or
-          ensure that the default filename is set with the proper suffix.        
-        """
-        f = self.filename(filename, ext='xvg', use_my_ext=True, set_default=True)
-        #: Current full path of the object for reading and writing I/O.
-        self.real_filename = os.path.realpath(f)
 
     def read(self, filename=None):
         """Read and parse xvg file *filename*."""
@@ -249,6 +240,8 @@ class NDX(dict, utilities.FileUtils):
               written to the filke is undetermined. This is arguably a bug and
               should be fixed in future releases.
     """
+    default_extension = "ndx"
+    
     # TODO: use a ordered dict to preserve order of groups (important when
     #       accessing groups by number)
 
@@ -261,16 +254,12 @@ class NDX(dict, utilities.FileUtils):
     format = '%6d'
 
     def __init__(self, **kwargs):
-        super(NDX, self).__init__()
-
         filename = kwargs.pop('filename',None)
+        super(NDX, self).__init__(**kwargs)  # can use kwargs to set dict! (but no sanity checks!)
+
         if not filename is None:
             self._init_filename(filename)
             self.read(filename)
-
-    def _init_filename(self, filename=None):
-        filename = self.filename(filename, ext='ndx')
-        self.real_filename = os.path.realpath(filename)  # use full path for accessing data        
 
     def read(self, filename=None):
         """Read and parse index file *filename*."""        
@@ -338,4 +327,29 @@ class NDX(dict, utilities.FileUtils):
     
     
     
-    
+class GRO(utilities.FileUtils):
+    """Class that represents a GROMOS (gro) structure file.
+
+
+    File format:
+    """
+    default_extension = "gro"
+
+    def __init__(self, **kwargs):
+
+        raise NotImplementedError
+        
+        filename = kwargs.pop('filename',None)
+        super(GRO, self).__init__(**kwargs)
+
+        if not filename is None:
+            self._init_filename(filename)
+            self.read(filename)
+
+    def read(self, filename=None):
+        """Read and parse index file *filename*."""        
+        self._init_filename(filename)
+        
+        with open(self.real_filename) as gro:
+            pass
+        
