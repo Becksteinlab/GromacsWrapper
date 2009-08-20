@@ -118,6 +118,13 @@ import gromacs.cbook
 from gromacs.utilities import in_dir
 
 
+#: Concentration of water at standard conditions in mol/L.
+#: density at 25 degrees C and 1 atmosphere pressure: rho = 997.0480 g/L.
+#: molecular weight: M = 18.015 g/mol
+#: c = n/V = m/(V*M) = rho/M  = 55.345 mol/L
+
+CONC_WATER = 55.345
+
 # XXX: This is not used anywhere at the moment:
 # parse this table for a usable data structure (and then put it directly in the docs)
 recommended_mdp_table = """\
@@ -135,6 +142,7 @@ rlist        1.4 ?      1.0
 # - should be part of a class so that we can store the topology etc !!!
 #   and also store mainselection
 # - full logging would be nice (for provenance)
+#   should include the shell commands executed (probably add code to core.Command)
 
 def topology(struct=None, protein='protein',
              top='system.top',  dirname='top', **pdb2gmx_args):
@@ -306,21 +314,31 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
                                          p=topology, stdout=False, maxwarn=grompp_maxwarn)
         print "After solvation: total charge qtot = %(qtot)r" % vars()        
 
-        # TODO:
-        # - get number of waters <---- ! hold up (grep topol...)
-        # - calculate numbers from concentration
-        # target concentration of free ions: c = 100mM  (c_water = 55M)
-        # N = N_water * c/c_water
-        # add ions for concentration to the counter ions (counter ions are less free)
         if concentration != 0:
-            raise NotImplementedError('only conc = 0 working at moment')
+            # target concentration of free ions c ==>
+            #    N = N_water * c/c_water
+            # add ions for concentration to the counter ions (counter ions are less free)
+            #
+            # get number of waters (count OW ... does this work for all water models?)
+            rc,output,junk = gromacs.make_ndx(f='topol.tpr', o='ow.ndx',
+                                              input=('keep 0', 'del 0', 'a OW*', 'name 0 OW', '', 'q'),
+                                              stdout=False, stderr=True)
+            groups = gromacs.cbook.parse_ndxlist(output)
+            gdict = dict([(g['name'], g) for g in groups])   # overkill... 
+            N_water = gdict['OW']['natoms']                  # ... but dict lookup is nice
+            N_ions = int(N_water * concentration/CONC_WATER) # number of monovalents
+        else:
+            N_ions = 0
 
-        # neutralize (or try -neutral switch of genion)
+        # neutralize (or try -neutral switch of genion???)
         n_cation = n_anion = 0
         if qtot > 0:
             n_anion = int(abs(qtot))
         elif qtot < 0:
             n_cation = int(abs(qtot))
+
+        n_cation += N_ions
+        n_anions += N_ions
 
         if n_cation != 0 or n_anion != 0:
             gromacs.genion(s='topol.tpr', o='ionized.gro', p=topology,
