@@ -525,8 +525,11 @@ def _setup_MD(dirname,
         raise ValueError('struct must be set to a input structure')
     structure = realpath(struct)
     topology = realpath(top)
-    if not ndx is None:
+    try:
         index = realpath(ndx)
+    except AttributeError:  # (that's what realpath(None) throws...) 
+        index = None        # None is handled fine below
+
     sge_template = realpath(sge)
     mdp_template = config.get_template(mdp)
 
@@ -651,6 +654,17 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
           file, eg ``nstxtcout=250, nstfout=250`` or command line options for
           ``grompp` such as ``maxwarn=1``.
 
+          In particular one can also set **define** and activate
+          whichever position restraints have been coded into the itp
+          and top file. For instance one could have
+
+             *define* = "-DPOSRES_MainChain -DPOSRES_LIGAND"
+
+          if these preprocessor constructs exist. Note that there
+          **must not be any space between "-D" and the value.**
+
+          By default *define* is set to "-DPOSRES".
+
     :Returns: a dict that can be fed into :func:`gromacs.setup.MD`
               (but check, just in case, especially if you want to
               change the ``define`` parameter in the mdp file)
@@ -658,7 +672,7 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
 
     kwargs.setdefault('struct', 'em/em.pdb')
     kwargs.setdefault('sgename', 'PR_GMX')
-    kwargs['define'] = '-DPOSRES'
+    kwargs.setdefault('define', '-DPOSRES')
     return _setup_MD(dirname, **kwargs)
 
 def MD(dirname='MD', **kwargs):
