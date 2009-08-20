@@ -181,7 +181,7 @@ def topology(struct=None, protein='protein',
         # need some editing  protein_tmp --> system.top and protein.itp
         # here... for the time being we just copy
         shutil.copy(tmp_top, top)
-        return {'top': realpath(top), 'struct': realpath(new_struct)}
+    return {'top': realpath(dirname, top), 'struct': realpath(dirname, new_struct)}
 
 trj_compact_main = gromacs.tools.Trjconv(ur='compact', center=True, boxcenter='tric', pbc='mol',
                                          input=('__main__','system'),
@@ -276,15 +276,13 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
           "tip4p". This should be appropriate for the chosen force
           field.
       *ndx* : filename
-          Custom index file.
+          The name of the custom index file that is produced here.
       *mainselection* : string
           A string that is fed to :class:`~gromacs.tools.Make_ndx` and
           which should select the solute.
       *dirname* : directory name
           Name of the directory in which all files for the solvation stage are stored.
 
-    .. note:: At the moment only adding counter-ions is implemented; the routine
-              will raise an exception if concentration > 0.
     """
 
     structure = realpath(struct)
@@ -319,7 +317,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
             #    N = N_water * c/c_water
             # add ions for concentration to the counter ions (counter ions are less free)
             #
-            # get number of waters (count OW ... does this work for all water models?)
+            # get number of waters (count OW ... works for SPC*, TIP*P water models)
             rc,output,junk = gromacs.make_ndx(f='topol.tpr', o='ow.ndx',
                                               input=('keep 0', 'del 0', 'a OW*', 'name 0 OW', '', 'q'),
                                               stdout=False, stderr=True)
@@ -356,6 +354,10 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
         qtot = gromacs.cbook.grompp_qtot(f='none.mdp', o='ionized.tpr', c='ionized.gro',
                                          p=topology, stdout=False, maxwarn=grompp_maxwarn)
 
+        if abs(qtot) > 1e-4:
+            warnings.warn("System has non-zero total charge qtot = %(qtot)g e." % vars(),
+                          category=BadParameterWarning)
+
         # make main index
         try:
             make_main_index('ionized.tpr', selection=mainselection, ndx=ndx)
@@ -369,12 +371,13 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
             trj_compact_main(f='ionized.gro', s='ionized.tpr', o='compact.pdb', n=ndx)
         except GromacsError, err:
             warnings.warn("Failed to make compact pdb for visualization... pressing on regardless. "
-                          "The error message was:\n%s\n" % str(err), category=GromacsFailureWarning)
-        return {'qtot': qtot, 
-                'struct': realpath('ionized.gro'), 
-                'ndx': realpath(ndx),      # not sure why this is propagated-is it used?
-                'mainselection': mainselection,
-                }
+                          "The error message was:\n%s\n" % str(err),
+                          category=GromacsFailureWarning)
+    return {'qtot': qtot, 
+            'struct': realpath(dirname, 'ionized.gro'), 
+            'ndx': realpath(dirname, ndx),      # not sure why this is propagated-is it used?
+            'mainselection': mainselection,
+            }
 
 
 def check_mdpargs(d):
@@ -447,13 +450,20 @@ def energy_minimize(dirname='em', mdp=config.templates['em_mdp'],
         unprocessed = gromacs.cbook.edit_mdp(mdp_template, new_mdp=mdp, **kwargs)
         check_mdpargs(unprocessed)
         gromacs.grompp(f=mdp, o=tpr, c=structure, p=topology, **unprocessed)
-        # TODO: not clear yet how to run as MPI with mpiexec & friends
-        # TODO: fall back to mdrun if no double precision binary
-        gromacs.mdrun_d('v', stepout=10, deffnm='em', c='em.pdb')
+        mdrun_args = dict(v=True, stepout=10, deffnm='em', c='em.pdb')
+        # TODO: not clear yet how to run em as MPI with mpiexec & friends
+        try:            
+            gromacs.mdrun_d(**mdrun_args)
+        except (AttributeError, OSError):
+            # fall back to mdrun if no double precision binary
+            warnings.warn("No 'mdrun_d' binary found so trying 'mdrun' instead.\n"
+                          "(Note that energy minimization runs better with mdrun_d.)",
+                          category=AutoCorrectionWarning)
+            gromacs.mdrun(**mdrun_args)
         # em.gro --> gives 'Bad box in file em.gro' warning --- why??
         # --> use em.pdb instead.
         if not os.path.exists('em.pdb'):
-            raise GromacsFailureWarning("Energy minimized system NOT produced.")
+            raise GromacsError("Energy minimized system NOT produced.")
         final_struct = realpath('em.pdb')
 
     return {'struct': final_struct, 'top': topology,
