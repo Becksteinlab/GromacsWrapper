@@ -49,14 +49,21 @@ Working with index files
 ------------------------
 
 Manipulation of index files (``ndx``) can be cumbersome because the
-``make_ndx`` program is not very sophisticated compared to full-fledged atom
-selection expression as available in Charmm, VMD, or MDAnalysis. Some tools
-help in building and interpreting index files.
+``make_ndx`` program is not very sophisticated (yet) compared to
+full-fledged atom selection expression as available in Charmm_, VMD_, or
+MDAnalysis_. Some tools help in building and interpreting index files.
 
 .. autoclass:: IndexBuilder
    :members: combine, gmx_resid
 
 .. autofunction:: parse_ndxlist
+.. autofunction:: get_ndx_groups
+.. autofunction:: make_ndx_captured
+
+
+.. _MDAnalysis: http://mdanalysis.googlecode.com
+.. _VMD: http://www.ks.uiuc.edu/Research/vmd/current/ug/node87.html
+.. _Charmm: http://www.charmm.org/html/documentation/c35b1/select.html
 
 
 File editing functions
@@ -331,6 +338,9 @@ def grompp_qtot(*args, **kwargs):
     return qtot
 
 
+# Editing textual input files
+# ---------------------------
+
 def edit_mdp(mdp, new_mdp=None, **substitutions):
     """Change values in a Gromacs mdp file.
 
@@ -496,6 +506,9 @@ def edit_txt(filename, substitutions, newname=None):
     target.close()
 
 
+# Working with index files and index groups
+# -----------------------------------------
+
 #: compiled regular expression to match a list of index groups
 #: in the output of ``make_ndx``s <Enter> (empty) command.
 NDXLIST = re.compile(r""">\s+\n    # '> ' marker line from '' input (input not echoed)
@@ -516,6 +529,48 @@ NDXGROUP = re.compile(r"""
                      \s*(?P<NATOMS>\d+)\satoms    # number of atoms in group
                      """, re.VERBOSE)
 
+def make_ndx_captured(**kwargs):
+    """make_ndx that captures all output
+
+    Standard :func:`~gromacs.make_ndx` command with the input and
+    output pre-set in such a way that it can be conveniently used for
+    :func:`parse_ndxlist`.
+
+    Example::
+      ndx_groups = parse_ndxlist(make_ndx_captured(n=ndx)[0])
+
+    Note that the convenient :func:`get_ndx_groups` function does exactly
+    that and can probably used in most cases.
+
+    :Arguments: keywords are passed on to :func:`~gromacs.make_ndx`
+    :Returns:   (*returncode*, *output*, ``None``)
+    """
+    kwargs['stdout']=False   # required for proper output as described in doc
+    kwargs['stderr']=True    # ...
+    user_input = kwargs.pop('input',[])
+    user_input = [cmd for cmd in user_input if cmd != 'q']  # filter any quit
+    kwargs['input'] = user_input + ['', 'q']                # necessary commands
+    return gromacs.make_ndx(**kwargs)
+
+def get_ndx_groups(ndx, **kwargs):
+    """Return a list of index groups in the index file *ndx*.
+
+    :Arguments:  
+        - *ndx*  is a Gromacs index file.
+        - kwargs are passed to :func:`make_ndx_captured`.
+        
+    :Returns: list of groups as supplied by :func:`parse_ndxlist`
+
+    Alternatively, load the index file with
+    :class:`gromacs.formats.NDX` for full control.
+    """
+    fd, tmp_ndx = tempfile.mkstemp(suffix='.ndx')
+    kwargs['o'] = tmp_ndx
+    try:
+        g = parse_ndxlist(make_ndx_captured(n=ndx, **kwargs)[1])
+    finally:
+        utilities.unlink_gmx(tmp_ndx)
+    return g
 
 def parse_ndxlist(output):
     """Parse output from make_ndx to build list of index groups::
@@ -525,6 +580,12 @@ def parse_ndxlist(output):
     output should be the standard output from ``make_ndx``, e.g.::
 
        rc,output,junk = gromacs.make_ndx(..., input=('', 'q'), stdout=False, stderr=True)
+
+    (or simply use
+
+       rc,output,junk = cbook.make_ndx_captured(...)
+
+    which presets input, stdout and stderr; of course input can be overriden.)
 
     :Returns:
        The function returns a list of dicts (``groups``) with fields
@@ -552,7 +613,6 @@ def parse_groups(output):
                            'nr': int(d['GROUPNUMBER']),
                            'natoms': int(d['NATOMS'])})
     return groups
-
 
 class IndexBuilder(object):
     """Build an index file with specified groups and the combined group.
@@ -743,7 +803,7 @@ class IndexBuilder(object):
             ##print "DEBUG: combine()"
             ##print out
         finally:
-            os.unlink(tmp_ndx)
+            utilities.unlink_gmx(tmp_ndx)
         
         return name_all, out_ndx
 
@@ -800,7 +860,7 @@ class IndexBuilder(object):
                         "name 0 %s" % name, 'q']
             rc,out,err = self.make_ndx(n=tmp_ndx, o=ndx, input=name_cmd)
         finally:
-            os.unlink(tmp_ndx)
+            utilities.unlink_gmx(tmp_ndx)
 
         return name, ndx
 
