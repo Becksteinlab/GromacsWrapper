@@ -206,10 +206,12 @@ class XVG(utilities.FileUtils):
         pylab.plot(ma[1:].T, **kwargs)   # plot all other columns in parallel
         
 
-class NDX(dict, utilities.FileUtils):
+from odict import odict
+
+class NDX(odict, utilities.FileUtils):
     """Gromacs index file.
 
-    Represented as a dict where the keys are index group names and
+    Represented as a ordered dict where the keys are index group names and
     values are numpy arrays of atom numbers.
 
     Use the :meth:`NDX.read` and :meth:`NDX.write` methods for
@@ -236,15 +238,9 @@ class NDX(dict, utilities.FileUtils):
         ndx['chi1'] = [2, 7, 8, 10]
         ndx.write()
 
-    .. Note:: When writing an index file then the order in which groups are
-              written to the filke is undetermined. This is arguably a bug and
-              should be fixed in future releases.
     """
     default_extension = "ndx"
     
-    # TODO: use a ordered dict to preserve order of groups (important when
-    #       accessing groups by number)
-
     # match:  [ index_groupname ]
     SECTION = re.compile("""\s*\[\s*(?P<name>\S.*\S)\s*\]\s*""")
 
@@ -265,8 +261,8 @@ class NDX(dict, utilities.FileUtils):
         """Read and parse index file *filename*."""        
         self._init_filename(filename)
         
+        data = odict()
         with open(self.real_filename) as ndx:
-            data = {}
             current_section = None
             for line in ndx:
                 line = line.strip()
@@ -280,7 +276,7 @@ class NDX(dict, utilities.FileUtils):
                 if not current_section is None:
                     data[current_section].extend(map(int, line.split()))
 
-        super(NDX,self).update(dict([(name, numpy.array(atomnumbers))
+        super(NDX,self).update(odict([(name, numpy.array(atomnumbers).astype(int))
                                      for name, atomnumbers in data.items()]))
 
     def write(self, filename=None, ncol=ncol, format=format):
@@ -316,16 +312,31 @@ class NDX(dict, utilities.FileUtils):
         """Return a dict with group names and number of entries,"""
         return dict([(name, len(atomnumbers)) for name, atomnumbers in self.items()])
 
+    @property
+    def ndxlist(self):
+        """Return a list of groups in the same format as  :func:`gromacs.cbook.get_ndx_groups`.
+
+        Format:
+           [ {'name': group_name, 'natoms': number_atoms, 'nr':  # group_number}, ....]
+        """
+        return [{'name': name, 'natoms': len(atomnumbers), 'nr': nr+1} for
+                nr,(name,atomnumbers) in enumerate(self.items())]
+        
     def __setitem__(self, k, v):
         super(NDX, self).__setitem__(k, numpy.ravel(v).astype(int))
-
-    def update(self,*args,**kwargs):
-        raise NotImplementedError
 
     def setdefault(*args,**kwargs):
         raise NotImplementedError
     
-    
+
+# or use list of these?
+# class IndexGroup(dict):
+#     def __init__(self, groupnumber=None, name="empty", atomnumbers=None, **kwargs):
+#         atomnumbers = atomnumbers or []
+#         _atomnumbers = numpy.asarray(atomnumbers).astype(int)
+#         super(IndexGroup, self).__init__(name=str(name),
+#                                          atomnumbers=_atomnumbers,
+#                                          nr=groupnumber)
     
 class GRO(utilities.FileUtils):
     """Class that represents a GROMOS (gro) structure file.
