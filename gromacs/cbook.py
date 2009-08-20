@@ -534,7 +534,7 @@ def make_ndx_captured(**kwargs):
 
     Standard :func:`~gromacs.make_ndx` command with the input and
     output pre-set in such a way that it can be conveniently used for
-    :func:`parse_ndxlist`.
+    :func:`parse_ndxlist`.     
 
     Example::
       ndx_groups = parse_ndxlist(make_ndx_captured(n=ndx)[0])
