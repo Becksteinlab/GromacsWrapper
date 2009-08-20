@@ -345,6 +345,8 @@ def edit_mdp(mdp, new_mdp=None, **substitutions):
     mdp file because of ambiguities when having to replace dashes in parameter
     names with underscores (see the notes below on dashes/underscores).
 
+    If a parameter is set to the value ``None`` then it will be ignored.
+
     :Arguments:
         *mdp* : filename
             filename of input (and output filename of ``new_mdp=None``)
@@ -377,6 +379,10 @@ def edit_mdp(mdp, new_mdp=None, **substitutions):
     """
     if new_mdp is None:
         new_mdp = mdp
+
+    # None parameters should be ignored (simple way to keep the template defaults)
+    substitutions = dict([(k,v) for k,v in substitutions.items() if not v is None])
+
     params = substitutions.keys()[:]   # list will be reduced for each match
 
     def demangled(p):

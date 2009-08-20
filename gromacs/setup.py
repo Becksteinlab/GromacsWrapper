@@ -497,6 +497,8 @@ def _setup_MD(dirname,
         raise ValueError('struct must be set to a input structure')
     structure = realpath(struct)
     topology = realpath(top)
+    if not ndx is None:
+        index = realpath(ndx)
     sge_template = realpath(sge)
     mdp_template = config.get_template(mdp)
 
@@ -524,9 +526,9 @@ def _setup_MD(dirname,
         # Automatic adjustment of T-coupling groups
         if not (mdp_parameters.get('Tcoupl','').lower() == 'no' or mainselection is None):
             # make index file in almost all cases; with None the user
-            # takes FULL control and also has to provide the template or ndx
+            # takes FULL control and also has to provide the template or index
             groups = make_main_index(structure, selection=mainselection,
-                                     oldndx=ndx, ndx=mainindex)
+                                     oldndx=index, ndx=mainindex)
             natoms = dict([(g['name'], float(g['natoms'])) for g in groups])
             try:
                 x = natoms['__main__']/natoms['__environment__']
@@ -552,7 +554,7 @@ def _setup_MD(dirname,
                               "tau_t = %g (can be changed in mdp_parameters).\n"
                               % (x * 100, ref_t, tau_t),
                               category=AutoCorrectionWarning)
-            ndx = mainindex
+            index = realpath(mainindex)
         if mdp_parameters.get('Tcoupl','').lower() == 'no':
             mdp_parameters['tc-grps'] = ""
             mdp_parameters['tau_t'] = ""
@@ -564,7 +566,7 @@ def _setup_MD(dirname,
 
         unprocessed = gromacs.cbook.edit_mdp(mdp_template, new_mdp=mdp, **mdp_parameters)
         check_mdpargs(unprocessed)
-        gromacs.grompp(f=mdp, p=topology, c=structure, n=ndx, o=tpr, **unprocessed)
+        gromacs.grompp(f=mdp, p=topology, c=structure, n=index, o=tpr, **unprocessed)
         gromacs.cbook.edit_txt(sge_template, [('^DEFFNM=','md',deffnm), 
                                               ('^#$ -N', 'GMX_MD', sgename)], newname=sge)
 
@@ -574,7 +576,7 @@ def _setup_MD(dirname,
     kwargs = { # 'dirname':dirname, 'tpr':tpr,  ## cannot be fed into _setup_MD() again and not used sofar
               'struct': realpath(os.path.join(dirname, final_structure)),      # guess
               'top': topology,
-              'ndx': realpath(os.path.join(dirname, ndx)),                     # possibly mainindex
+              'ndx': index,            # possibly mainindex
               'sge': sge,
               'mainselection': mainselection}
     kwargs.update(mdp_kwargs)  # return extra mdp args so that one can use them for prod run
