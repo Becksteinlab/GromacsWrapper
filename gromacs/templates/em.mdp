@@ -30,6 +30,8 @@ ns_type                  = grid
 rlist                    = 1.0
 rcoulomb                 = 1.0
 rvdw                     = 1.0
+rvdw-switch              = 0.8
+
 Tcoupl                   = no
 Pcoupl                   = no
 gen_vel                  = no
