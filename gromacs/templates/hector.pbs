@@ -1,0 +1,39 @@
+#!/bin/bash --login
+#PBS -N GMX_MD
+#PBS -l walltime=00:20:00
+#PBS -l mppwidth=16
+#PBS -l mppnppn=4
+#PBS -j oe
+#PBS -A BUDGET
+
+# $Id$
+# PBS template script for HECToR (login.hector.ac.uk)
+# BUDGET has to be replaced with the accounting budget name
+
+# set this to the same value as walltime; mdrun will stop cleanly
+# at 0.99 * WALL_HOURS 
+WALL_HOURS=0.33
+
+# deffnm line is possibly modified by gromacs.setup
+# (leave it as it is in the template)
+DEFFNM=md
+
+TPR=${DEFFNM}.tpr
+OUTPUT=${DEFFNM}.out
+PDB=${DEFFNM}.pdb
+
+# use new gromacs 4.x
+module load gromacs/4.0.4
+
+cd $PBS_O_WORKDIR
+
+export NPROC=`qstat -f $PBS_JOBID | awk '/mppwidth/ {print $3}'`
+export NTASK=`qstat -f $PBS_JOBID | awk '/mppnppn/  {print $3}'`
+
+aprun -n $NPROC -N $NTASK \
+    mdrun_mpi -step 1000 -deffnm ${DEFFNM} -s ${TPR} -c ${PDB} \
+              -cpi -maxh ${WALL_HOURS} > $OUTPUT 
+
+# copy stuff back?
+
+exit 0

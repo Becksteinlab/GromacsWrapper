@@ -171,6 +171,7 @@ templates = {
     'md_OPLSAA_mdp': resource_filename(__name__, 'templates/md_OPLSAA.mdp'),
     'deathspud_sge': resource_filename(__name__, 'templates/deathspud.sge'),
     'neuron_sge': resource_filename(__name__, 'templates/neuron.sge'),
+    'hector_pbs': resource_filename(__name__, 'templates/hector.pbs'),
     }
 """Templates have to be extracted from the egg because they are used
 by external code. All template filenames are stored in
@@ -188,17 +189,19 @@ by external code. All template filenames are stored in
 **SGE templates**
 
    The sge scripts are highly specific and you will need to add your own.
-   Templates should be sh-scripts and contain the following lines only
+   Templates should be sh-scripts and contain the following lines (only
    up to and not including the vertical bar "|", after which the line
-   is described::
+   is described)::
 
-      #$ -N GMX_MD    | 'GMX_MD' is replaced by kw sgename
-      DEFFNM=md       | 'md' is replaced by kw deffnm
+      #$ -N GMX_MD    | 'GMX_MD' is replaced by kw sgename /^#.*-N/
+      DEFFNM=md       | 'md' is replaced by kw deffnm /^DEFFNM=/
 
-   These lines should not have any white space at the beginning.
+   These lines should not have any white space at the beginning. The
+   regular expression pattern is used to find the lines for the
+   replacement.
 """
 
-#: The default template for SGE run scripts.
+#: The default template for SGE/PBS run scripts.
 sge_template = templates['neuron_sge']
 
 

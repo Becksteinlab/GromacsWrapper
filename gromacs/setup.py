@@ -115,7 +115,7 @@ import gromacs.config as config
 from gromacs import GromacsError, GromacsFailureWarning, GromacsValueWarning, \
      AutoCorrectionWarning, BadParameterWarning, UsageWarning
 import gromacs.cbook
-from gromacs.utilities import in_dir
+from gromacs.utilities import in_dir, Timedelta
 
 
 #: Concentration of water at standard conditions in mol/L.
@@ -514,7 +514,7 @@ def _setup_MD(dirname,
               struct=None,
               top='top/system.top', ndx=None,
               mainselection='"Protein"',
-              sge=config.sge_template, sgename=None,
+              sge=config.sge_template, sgename=None, budget="EDIT_ME",walltime=1/3.,
               dt=0.002, runtime=1e3, **mdp_kwargs):
     """Generic function to set up a ``mdrun`` MD simulation.
 
@@ -530,7 +530,7 @@ def _setup_MD(dirname,
     except AttributeError:  # (that's what realpath(None) throws...) 
         index = None        # None is handled fine below
 
-    sge_template = realpath(sge)
+    sge_template = config.get_template(sge)
     mdp_template = config.get_template(mdp)
 
     nsteps = int(float(runtime)/float(dt))
@@ -598,8 +598,17 @@ def _setup_MD(dirname,
         unprocessed = gromacs.cbook.edit_mdp(mdp_template, new_mdp=mdp, **mdp_parameters)
         check_mdpargs(unprocessed)
         gromacs.grompp(f=mdp, p=topology, c=structure, n=index, o=tpr, **unprocessed)
+
+        # set up queuing system run script (simple search and replace in templates)
+        wt = Timedelta(hours=walltime)
+        walltime = wt.strftime("%h:%M:%S")
+        wall_hours = wt.ashours
         gromacs.cbook.edit_txt(sge_template, [('^DEFFNM=','md',deffnm), 
-                                              ('^#$ -N', 'GMX_MD', sgename)], newname=sge)
+                                              ('^#.*-N', 'GMX_MD', sgename),
+                                              ('^#.*walltime=', '00:20:00', walltime),
+                                              ('^WALL_HOURS=', '0.33', wall_hours),
+                                              ('^#.*-A', 'BUDGET', budget),
+                                              ], newname=sge)
 
     print "All files set up for a run time of %(runtime)g ps "\
         "(dt=%(dt)g, nsteps=%(nsteps)g)" % vars()

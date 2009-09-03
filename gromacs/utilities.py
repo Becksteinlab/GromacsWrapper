@@ -22,6 +22,7 @@ class is derived from it.
 .. autoclass:: FileUtils
    :members:
 .. autoclass:: AttributeDict
+.. autoclass:: Timedelta
 
 Functions
 ---------
@@ -84,9 +85,9 @@ import errno
 from contextlib import contextmanager
 import bz2, gzip
 import numpy
+import datetime
 
 from gromacs import AutoCorrectionWarning
-
 
 
 def Property(func):
@@ -352,4 +353,62 @@ def remove_legend(ax=None):
         ax = gca()
     ax.legend_ = None
     draw()
+    
+
+# time functions
+class Timedelta(datetime.timedelta):
+    """Extension of :class:`datetime.timedelta`.
+
+    Provides attributes ddays, dhours, dminutes, dseconds to measure
+    the delta in normal time units.
+
+    ashours gives the total time in fractional hours. 
+    """
+
+    @property
+    def dhours(self):
+        """Hours component of the timedelta."""
+        return self.seconds / 3600
+
+    @property
+    def dminutes(self):
+        """Minutes component of the timedelta."""
+        return self.seconds/60 - 60*self.dhours
+
+    @property
+    def dseconds(self):
+        """Seconds component of the timedelta."""
+        return self.seconds - 3600*self.dhours - 60*self.dminutes
+
+    @property
+    def ashours(self):
+        """Timedelta in (fractional) hours."""
+        return 24*self.days + self.seconds / 3600.0
+
+    def strftime(self, fmt="%d:%H:%M:%S"):
+        """Primitive string formatter.
+
+        The only dirctives understood are the following:
+          ============   ==========================
+          Directive      meaning
+          ============   ==========================
+          %d             day as integer
+          %H             hour  [00-23]
+          %h             hours including days 
+          %M             minute as integer [00-59]
+          %S             second as integer [00-59]
+          ============   ==========================
+        """
+        substitutions = {
+            "%d": str(self.days),
+            "%H": "%02d" % self.dhours,
+            "%h": str(24*self.days + self.dhours),
+            "%M": "%02d" % self.dminutes,
+            "%S": "%02d" % self.dseconds,
+            }
+        s = fmt
+        for search, replacement in substitutions.items():
+            s = s.replace(search, replacement)
+        return s
+
     
