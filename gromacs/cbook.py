@@ -14,11 +14,22 @@ By abstracting and collecting these invocations here, errors can be
 reduced and the code snippets can also serve as canonical examples for
 how to do simple things.
 
-Canned Gromacs commands
------------------------
+Miscellaneous canned Gromacs commands
+-------------------------------------
 
 Simple commands with new default options so that they solve a specific
-problem:
+problem (see also `Manipulating trajectories`_):
+
+.. function:: rmsd_backbone([s="md.tpr", f="md.xtc"[, ...]])
+
+   Computes the RMSD of the "Backbone" atoms after fitting to the
+   "Backbone" (including both translation and rotation).
+
+
+Manipulating trajectories
+-------------------------
+
+Standard invocations for compacting or fitting trajectories.
 
 .. function:: trj_compact([s="md.tpr", f="md.xtc", o="compact.xtc"[, ...]])
 
@@ -26,10 +37,20 @@ problem:
    of the system centered on the protein. It centers on the group
    "Protein" and outputs the whole "System" group.
 
-.. function:: rmsd_backbone([s="md.tpr", f="md.xtc"[, ...]])
 
-   Computes the RMSD of the "Backbone" atoms after fitting to the
-   "Backbone" (including both translation and rotation).
+.. function:: trj_xyfitted([s="md.tpr", f="md.xtc"[, ...]]
+
+    Writes a trajectory centered and fitted to the protein in the XY-plane only.
+
+    This is useful for membrane proteins. The system *must* be oriented so that
+    the membrane is in the XY plane. The protein backbone is used for the least
+    square fit, centering is done for the whole protein., but this can be
+    changed with the *input* = ``('backbone', 'protein','system')`` keyword.
+
+    .. Note:: Gromacs 4.x only
+    
+
+.. autofunction:: trj_fitandcenter
 
 
 Processing output
@@ -124,10 +145,10 @@ This is useful for membrane proteins. The system *must* be oriented so
 that the membrane is in the XY plane. The protein backbone is used
 for the least square fit, centering is done for the whole protein.
 
-Note:: Gromacs 4.x only""")
+.. Note:: Gromacs 4.x only""")
 
 def trj_fitandcenter(xy=False, **kwargs):
-    """Fit the system to a reference (pass 1) and center everything (pass 2).
+    """Center everything and make a compact representation (pass 1) and fit the system to a reference (pass 2).
 
     :Keywords:
        *f*
@@ -146,11 +167,16 @@ def trj_fitandcenter(xy=False, **kwargs):
        *kwargs*
            All other arguments are passed to :class:`~gromacs.tools.Trjconv`.
 
-    Note that here we first do a rotation+translation fit (or
-    restricted to the xy plane if *xy* = ``True`` is set) and write
-    an intermediate xtc. Then in a second pass this intermediate xtc
-    is centered, using ``-pbc mol -ur compact -center -boxcenter
-    tric``.
+    Note that here we first center the protein and create a compact box, using
+    ``-pbc mol -ur compact -center -boxcenter tric`` and write an intermediate
+    xtc. Then in a second pass we perform a rotation+translation fit (or
+    restricted to the xy plane if *xy* = ``True`` is set) on the intermediate
+    xtc to produce the final trajectory. Doing it in this order has the
+    disadvantage that the solvent box is rotating around the protein but the
+    opposite order (with center/compact second) produces strange artifacts
+    where columns of solvent appear cut out from the box---it probably means
+    that after rotation the information for the periodic boundaries is not
+    correct any more.
 
     Most kwargs are passed to both invocations of
     :class:`gromacs.tools.Trjconv` so it does not really make sense to use eg
@@ -164,16 +190,20 @@ def trj_fitandcenter(xy=False, **kwargs):
     ``trjconv``. An intermediate temporary XTC files is generated which should
     be automatically cleaned up unless bad things happened.
 
-    .. note:: For big trajectories it can **take a very long time**
+    The function tries to honour the input/output formats. For instance, if you
+    want trr output you need to supply a trr file as input and explicitly give
+    the output file also a trr suffix.
+
+    .. Note:: For big trajectories it can **take a very long time**
               and consume a **large amount of temporary diskspace**.
 
-    FYI: The `g_spatial documentation`_ actually recommends the
-    opposite approach to the one used here::
+    .. SeeAlso::
+       We follows the `g_spatial documentation`_ in preparing the trajectories::
 
-      trjconv -s a.tpr -f a.xtc -o b.xtc -center tric -ur compact -pbc none
-      trjconv -s a.tpr -f b.xtc -o c.xtc -fit rot+trans
+          trjconv -s a.tpr -f a.xtc -o b.xtc -center tric -ur compact -pbc none
+          trjconv -s a.tpr -f b.xtc -o c.xtc -fit rot+trans
     
-    .. _`g_spatial documentation`: http://oldwiki.gromacs.org/index.php/Manual:g_spatial_4.0.3
+       .. _`g_spatial documentation`: http://oldwiki.gromacs.org/index.php/Manual:g_spatial_4.0.3
     """
     if xy:
         fitmode = 'rotxy+transxy'
@@ -198,10 +228,11 @@ def trj_fitandcenter(xy=False, **kwargs):
     print "... writing temporary trajectory %(tmptrj)r (will be auto-cleaned)." % vars()
     sys.stdout.flush()
     try:
-        trj_xyfitted(f=intrj, o=tmptrj, fit=fitmode, input=inpfit, **kwargs)
-        trj_compact(f=tmptrj, o=outtrj, input=inpcompact, **kwargs)
+        trj_compact(f=intrj, o=tmptrj, input=inpcompact, **kwargs)        
+        trj_xyfitted(f=tmptrj, o=outtrj, fit=fitmode, input=inpfit, **kwargs)
     finally:
         utilities.unlink_gmx(tmptrj)
+
 
 class Frames(object):
     """A iterator that transparently provides frames from a trajectory.
