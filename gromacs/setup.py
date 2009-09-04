@@ -600,15 +600,18 @@ def _setup_MD(dirname,
         gromacs.grompp(f=mdp, p=topology, c=structure, n=index, o=tpr, **unprocessed)
 
         # set up queuing system run script (simple search and replace in templates)
+        # TODO: move this into a function or class or whatever
         wt = Timedelta(hours=walltime)
         walltime = wt.strftime("%h:%M:%S")
         wall_hours = wt.ashours
-        gromacs.cbook.edit_txt(sge_template, [('^DEFFNM=','md',deffnm), 
-                                              ('^#.*-N', 'GMX_MD', sgename),
-                                              ('^#.*walltime=', '00:20:00', walltime),
-                                              ('^WALL_HOURS=', '0.33', wall_hours),
-                                              ('^#.*-A', 'BUDGET', budget),
-                                              ], newname=sge)
+        gromacs.cbook.edit_txt(sge_template,
+                               [('^DEFFNM=','md',deffnm), 
+                                ('^#.*(-N|job_name)', 'GMX_MD', sgename),
+                                ('#.*(-A|account_no)', 'BUDGET', budget),
+                                ('^#.*(-l walltime|wall_clock_limit)', '00:20:00', walltime),
+                                ('^WALL_HOURS=', '0\.33', wall_hours),
+                                ],
+                               newname=sge)
 
     print "All files set up for a run time of %(runtime)g ps "\
         "(dt=%(dt)g, nsteps=%(nsteps)g)" % vars()

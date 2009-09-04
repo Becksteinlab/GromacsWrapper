@@ -165,6 +165,9 @@ Usage:
 # Location of template files
 # --------------------------
 
+# TODO: This is becoming unwieldy: should be more abstract/automatic.
+#       Maybe simply use filename as key? This would require some cleaning up
+#       in gromacs.setup but would not be too bad.
 templates = {
     'em_mdp': resource_filename(__name__, 'templates/em.mdp'),
     'md_G43a1_mdp': resource_filename(__name__, 'templates/md_G43a1.mdp'),
@@ -172,6 +175,7 @@ templates = {
     'deathspud_sge': resource_filename(__name__, 'templates/deathspud.sge'),
     'neuron_sge': resource_filename(__name__, 'templates/neuron.sge'),
     'hector_pbs': resource_filename(__name__, 'templates/hector.pbs'),
+    'hpcx_ll': resource_filename(__name__, 'templates/hpcx.ll'),    
     }
 """Templates have to be extracted from the egg because they are used
 by external code. All template filenames are stored in
@@ -188,17 +192,32 @@ by external code. All template filenames are stored in
 
 **SGE templates**
 
-   The sge scripts are highly specific and you will need to add your own.
-   Templates should be sh-scripts and contain the following lines (only
-   up to and not including the vertical bar "|", after which the line
-   is described)::
+   (This is a misnomer --- there are also scripts for PBS and
+   LoadLeveller but we call them all SGE scripts... apologies).
 
-      #$ -N GMX_MD    | 'GMX_MD' is replaced by kw sgename /^#.*-N/
-      DEFFNM=md       | 'md' is replaced by kw deffnm /^DEFFNM=/
+   The sge scripts are highly specific and you will need to add your
+   own.  Templates should be sh-scripts and can contain the following
+   patterns; these are either shell variable assignments or batch
+   submission system commands. The table shows SGE commands but PBS
+   and LoadLeveller have similar constructs; e.g. PBS commands start
+   with ``#PBS`` and LoadLeveller uses ``#@`` with its own comman
+   keywords):
+
+
+   ===============  ===========  ================ ================= =====================================
+   command          default      replacement      description       regex
+   ===============  ===========  ================ ================= =====================================
+   #$ -N            GMX_MD       *sgename*        job name          /^#.*(-N|job_name)/
+   #$ -l walltime=  00:20:00     *walltime*       max run time      /^#.*(-l walltime|wall_clock_limit)/
+   #$ -A            BUDGET       *budget*         account           /^#.*(-A|account_no)/
+   DEFFNM=          md           *deffnm*         default gmx name  /^DEFFNM=/
+   WALL_HOURS=      0.33         *walltime* h     mdrun's -maxh     /^WALL+HOURS=/
+   ===============  ===========  ================ ================= =====================================
 
    These lines should not have any white space at the beginning. The
    regular expression pattern is used to find the lines for the
-   replacement.
+   replacement and the default values are replaced.
+
 """
 
 #: The default template for SGE/PBS run scripts.
@@ -211,11 +230,14 @@ sge_template = templates['neuron_sge']
 def get_template(t):
     """Find template file *t* and return its real path.
 
-    *t* can be a relative or absolute path, a filename in the package template
-    directory (defined in the template dictionary
-    :data:`gromacs.config.templates`) or a key into
-    :data:`~gromacs.config.templates`. The first match (in this order) is
-    returned.
+    *t* can be
+
+    1. a relative or absolute path,
+    2. a filename in the package template directory (defined in the template dictionary
+       :data:`gromacs.config.templates`) or
+    3. a key into :data:`~gromacs.config.templates`.
+
+    The first match (in this order) is returned.
 
     :Arguments: *t* : template file or key
     :Returns:   os.path.realpath(*t*)
