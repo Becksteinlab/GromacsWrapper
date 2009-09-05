@@ -5,6 +5,8 @@
 #
 #@ job_type = parallel
 #@ cpus = 64
+#@ requirements = ( Feature == "SMT" )
+#@ tasks_per_node = 32
 #@ node_usage = not_shared
 #
 #@ network.MPI = csss,shared,US
@@ -21,8 +23,13 @@
 
 # Basic LoadLeveller script for HPCx from
 # http://www.hpcx.ac.uk/support/documentation/UserGuide/HPCxuser/Batch_Processing.html#SECTION00082100000000000000
+# - SMT is enabled as it gives a 1/3 speedup for free (tested on a 65k system with Gromacs 4.0.5)
+# - The job reads from and writes in the directory in which it was launched. Used 
+#   'initialdir = STARTDIR' to change  this behaviour.
 
-# set this to the same value as walltime
+
+# Set this to the same value as walltime; it ensures that Gromacs shuts down in time
+# to write continuation files.
 WALL_HOURS=0.33
 
 
