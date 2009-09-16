@@ -1,0 +1,84 @@
+.. $Id$
+
+==============================
+Alternatives to GromacsWrapper
+==============================
+
+*GromacsWrapper* is simplistic; in particular it does not directly
+link to the Gromacs libraries but relies on python wrappers to call
+gromacs tools. Some people find this very crude (the author
+included). Other people have given more thought to the problem and you
+are eoncouraged to see if their efforts speed up your work more than
+does *GromacsWrapper*.
+
+pymacs_ (Daniel Seeliger)
+   pymacs is a python module for dealing with structure files and
+   trajectory data from the GROMACS molecular dynamics package. It has
+   interfaces to some gromacs functions and uses gromacs routines for
+   command line parsing, reading and writing of structure files
+   (pdb,gro,...) and for reading trajectory data (only xtc at the
+   moment). It is quite useful to write python scripts for simulation
+   setup and analysis that can be combined with other powerful python
+   packages like numpy, scipy or plotting libraries like pylab. It has
+   an intuitive data structure (Model --> Chain --> Molecule
+   --> Atom) and allows modifications at all levels like
+
+   - Changing of atom, residue and chain properties (name, coordinate, b-factor,...
+   - Deleting and inserting atoms, residues, chains
+   - Straightforward selection of structure subsets
+   - Structure building from sequence
+   - Handling gromacs index files
+
+various implementations of python wrappers
+   See the discussion on the gmx-developers mailinglist: check the
+   thread  `[gmx-developers] Python interface for Gromacs`_  
+
+grompy_ (Martin Höfling, Roland Schulz)
+   uses ctypes_ to wrap **libgmx**:
+
+      "Here's a bunch of code I wrote to wrap libgmx with ctypes and make use  
+      of parts of gromacs functionality. My application for this was the  
+      processing of a trajectories using gromac's pbc removal and fitting  
+      routines as well as reading in index groups etc. It's very incomplete  
+      atm and also focused on wrapping libgmx with all gromacs types and  
+      definitions...
+
+      ... so python here feels a bit like lightweight c-code glueing  
+      together gromacs library functions :-)
+
+      The attached code lacks a bit of documentation, but I included a  
+      test.py as an example using it."
+
+   Roland Schulz added code:
+
+     "I added a little bit wrapper code to easily access the atom
+     information in tpx. I attached the version. It is backward
+     compatible ..."
+
+   A working `grompy tar ball`_ (with Roland's enhancements) is cached
+   at gmane.org.
+
+
+VMD_ (Schulten lab at UIUC)
+  VMD is a great analysis tool; the only downside is that (at the
+  moment) trajectories have to fit into memory. In some cases this can
+  be circumvented by reading a trajectory frame by frame using the
+  `bigdcd`_ script (which might also work for Gromacs xtcs).
+
+MDAnalysis_ (N. Michaud-Agrawal and O. Beckstein)
+  Will `soon
+  <http://code.google.com/p/mdanalysis/issues/detail?id=1>`_ also read
+  Gromacs xtcs but does not use the gromacs tools themselves.
+
+Please let `me`_ know of other efforts so that I can add them here. Thanks.
+
+.. _pymacs: http://www.mpibpc.mpg.de/groups/de_groot/dseelig/pymacs.html
+.. _[gmx-developers] Python interface for Gromacs:
+    http://lists.gromacs.org/pipermail/gmx-developers/2009-March/003179.html
+.. _ctypes: http://docs.python.org/library/ctypes.html
+.. _grompy: http://lists.gromacs.org/pipermail/gmx-developers/2009-March/003183.html
+.. _grompy tar ball: http://article.gmane.org/gmane.science.biology.gromacs.devel/1185
+.. _VMD: http://www.ks.uiuc.edu/Research/vmd/
+.. _bigdcd: http://www.ks.uiuc.edu/Research/vmd/script_library/scripts/bigdcd/
+.. _MDAnalysis: http://mdanalysis.googlecode.com
+.. _me: http://sbcb.bioch.ox.ac.uk/oliver/
