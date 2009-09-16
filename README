@@ -61,12 +61,22 @@ Included third party content:
 GridMat-MD
   - Grid-based Membrane Analysis Tool for use with Molecular Dynamics
     [Allen2009]_
-  - version 1.0.2
-  - available under GPL 3.0  
+  - version: 1.0.2
+  - license: GPL 3.0  
   - W. J. Allen, J. A. Lemkul, and D. R. Bevan. (2009) "GridMAT-MD: A
     Grid-based Membrane Analysis Tool for Use With Molecular
     Dynamics." J. Comput. Chem. 30 (12): 1952-1958.
   - http://bevanlab.biochem.vt.edu/GridMAT-MD/
+
+
+``odict.py``
+  - a simple implementation of an ordered dictionary as proposed in :pep:`0372`
+  - copyright: (c) 2008 by Armin Ronacher and PEP 273 authors.
+  - license: modified BSD license (`compatible with GPL`_)
+  - http://dev.pocoo.org/hg/sandbox/raw-file/tip/odict.py
+
+  .. _compatible with GPL: http://www.fsf.org/licensing/licenses/index_html
+
 
 Free energy perturbation input files
   ``mdp`` run input files from David Mobley's `Free Energy Tutorial`_
@@ -93,8 +103,8 @@ or in the Acknowledgements section.
 If you use the ``gridmatmd`` plugin also cite [Allen2009]_.
 
 The free energy parameters in David Mobley's FEP example files are
-similar to the ones used in [Mobley2007]_ so you might consider citing
-this paper.
+similar to the ones used in [Mobley2007]_ so you might want to
+consider citing this paper.
 
 Thank you.
 

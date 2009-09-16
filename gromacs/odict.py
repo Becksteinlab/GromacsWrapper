@@ -1,7 +1,47 @@
 # -*- coding: utf-8 -*-
 # Discussed in PEP 0327: http://www.python.org/dev/peps/pep-0372/
 # Downloaded from http://dev.pocoo.org/hg/sandbox/raw-file/tip/odict.py
-# License: ?
+# copyright: (c) 2008 by Armin Ronacher and PEP 273 authors.
+# license: modified BSD license.
+#          compatible with GPL, see http://www.fsf.org/licensing/licenses/index_html
+
+# "Modified BSD license"
+# (License text added from http://www.xfree86.org/3.3.6/COPYRIGHT2.html#5)
+
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+#
+#    1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+#    2. Redistributions in binary form must reproduce the above
+#    copyright notice, this list of conditions and the following
+#    disclaimer in the documentation and/or other materials provided
+#    with the distribution.
+#    3. The name of the author may not be used to endorse or promote
+#    products derived from this software without specific prior
+#    written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+# IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+# DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+# GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+# IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+# OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+# IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+# GromacsWrapper notes:
+#
+# We are using this odict in GromacsWrapper because this should make
+# it easier to switch to a native odict once it is implemented in the
+# python core. Performance is not an issue at the moment. --- OB
+# 2009-09-14
+
 
 """
     odict
