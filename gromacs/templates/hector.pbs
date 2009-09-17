@@ -1,7 +1,7 @@
 #!/bin/bash --login
 #PBS -N GMX_MD
 #PBS -l walltime=00:20:00
-#PBS -l mppwidth=16
+#PBS -l mppwidth=32
 #PBS -l mppnppn=4
 #PBS -j oe
 #PBS -A BUDGET

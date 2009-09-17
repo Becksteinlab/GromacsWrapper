@@ -186,7 +186,7 @@ by external code. All template filenames are stored in
    These are supplied as examples and there is *NO GUARANTEE THAT THEY
    PRODUCE SENSIBLE OUTPUT* --- check for yourself!  Note that only
    existing parameter names can be modified with
-   :func:`gromacs.cbook.edit_mdp` at the moment; if in doubt add the the
+   :func:`gromacs.cbook.edit_mdp` at the moment; if in doubt add the
    parameter with its gromacs default value (or empty values) and
    modify later with :func:`~gromacs.cbook.edit_mdp`.
 
@@ -211,7 +211,7 @@ by external code. All template filenames are stored in
    #$ -l walltime=  00:20:00     *walltime*       max run time      /^#.*(-l walltime|wall_clock_limit)/
    #$ -A            BUDGET       *budget*         account           /^#.*(-A|account_no)/
    DEFFNM=          md           *deffnm*         default gmx name  /^DEFFNM=/
-   WALL_HOURS=      0.33         *walltime* h     mdrun's -maxh     /^WALL+HOURS=/
+   WALL_HOURS=      0.33         *walltime* h     mdrun's -maxh     /^WALL_HOURS=/
    ===============  ===========  ================ ================= =====================================
 
    These lines should not have any white space at the beginning. The
