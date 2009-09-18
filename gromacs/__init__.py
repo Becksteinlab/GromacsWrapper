@@ -19,8 +19,9 @@ Modules
 -------
 
 :mod:`gromacs`
-     The top level module contains all gromacs tools; each tool can be run
-     directly or queried for its documentation.
+     The top level module contains all gromacs tools; each tool can be
+     run directly or queried for its documentation. It also defines
+     the root logger class (name *gromacs* by default).
 
 :mod:`gromacs.config`
      Configuration options. Not really used much at the moment.
@@ -132,6 +133,20 @@ The following *warnings* are defined:
 .. autoexception:: AutoCorrectionWarning
 .. autoexception:: BadParameterWarning
 
+
+Logging
+-------
+
+The library uses python's logging_ module to keep a history of what it has been
+doing. In particular, every wrapped Gromacs command logs its command line
+(including piped input) to the log file (configured in
+:data:`gromacs.config.logfilename`). This facilitates debugging or simple
+re-use of command lines for very quick and dirty work. The logging facilty
+appends to the log file and time-stamps every entry. See :mod:`gromacs.config`
+for more details on configuration.
+
+.. _logging: http://docs.python.org/library/logging.html
+
 """
 __docformat__ = "restructuredtext en"
 
@@ -182,6 +197,10 @@ for w in (AutoCorrectionWarning, BadParameterWarning, UsageWarning,
 del w
 
 
+# Import configuration before anything else
+import config
+
+
 import logging
 # Logging to a file and the console.
 #
@@ -205,14 +224,15 @@ logger = logging.getLogger('gromacs')
 
 logger.setLevel(logging.DEBUG)
 
-logfile = logging.FileHandler('gromacs.log')
+logfile = logging.FileHandler(config.logfilename)
+logfile.setLevel(config.loglevel_file)
 logfile_formatter = logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
 logfile.setFormatter(logfile_formatter)
 logger.addHandler(logfile)
 
 # define a Handler which writes INFO messages or higher to the sys.stderr
 console = logging.StreamHandler()
-console.setLevel(logging.INFO)
+console.setLevel(config.loglevel_console)
 # set a format which is simpler for console use
 formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
 console.setFormatter(formatter)
@@ -237,9 +257,6 @@ class NullHandler(logging.Handler):
 #del h
 
 
-
-# configuration
-import config
 
 # Add gromacs command **instances** to the top level.
 # These serve as the equivalence of running commands in the shell.

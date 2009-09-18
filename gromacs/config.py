@@ -15,6 +15,19 @@ located. If the user wants to change anything they will still have to do it
 here in source until a better mechanism with rc files has been implemented.
 
 
+Logging
+-------
+
+Gromacs commands log their invocation to a log file; typically at
+loglevel *INFO* (see the python `logging module`_ for details).
+
+.. autodata:: logfilename
+.. autodata:: loglevel_console
+.. autodata:: loglevel_file
+
+.. _logging module: http://docs.python.org/library/logging.html
+
+
 Gromacs tools and scripts
 -------------------------
 
@@ -60,6 +73,22 @@ The following functions can be used to access configuration data.
 
 import os
 from pkg_resources import resource_filename
+
+
+# Logging
+# -------
+import logging
+
+#: File name for the log file; all gromacs command and many utility functions (e.g. in
+#: :mod:`gromacs.cbook` and :mod:`gromacs.setup`) append messages there. Warnings and
+#: errors are also recorded here. The default is *gromacs.log*.
+logfilename = "gromacs.log"
+
+#: The default loglevel that is still printed to the console.
+loglevel_console = logging.INFO
+
+#: The default loglevel that is still written to the :data:`logfilename`.
+loglevel_file = logging.INFO
 
 
 # Gromacs tools

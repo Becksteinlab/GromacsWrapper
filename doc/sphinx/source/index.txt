@@ -12,7 +12,9 @@ Gromacs_ tools into thin classes. This allows for fairly seamless
 integration of the gromacs tools into python_ scripts. This is
 generally superior to shell scripts because of python's better error
 handling and superior data structures. It also allows for
-modularization and code re-use.
+modularization and code re-use. In addition, commands, warnings and
+error are logged to a file so that there exists a complete history of
+what has been done.
 
 See :doc:`INSTALL` for download and installation instructions. `Documentation`_
 is primarily provided through the python doc strings (from which most of the
