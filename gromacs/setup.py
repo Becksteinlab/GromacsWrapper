@@ -110,6 +110,10 @@ import re
 import shutil
 import warnings
 
+import logging
+logger = logging.getLogger('gromacs.setup')
+
+
 import gromacs
 import gromacs.config as config
 from gromacs import GromacsError, GromacsFailureWarning, GromacsValueWarning, \
@@ -177,6 +181,7 @@ def topology(struct=None, protein='protein',
     pdb2gmx_args.update({'f': structure, 'o': new_struct, 'p': tmp_top, 'i': posres})
 
     with in_dir(dirname):
+        logger.info("[%(dirname)s] Building topology %(top)r from struct = %(struct)r" % vars())
         gromacs.pdb2gmx(**pdb2gmx_args)
         # need some editing  protein_tmp --> system.top and protein.itp
         # here... for the time being we just copy
@@ -221,6 +226,8 @@ def make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None):
     This routine is very dumb at the moment; maybe some heuristics will be
     added later as could be other symbolic groups such as __membrane__.
     """
+
+    logger.info("Building the main index file %(ndx)r..." % vars())
 
     # pass 1: select
     # empty command '' important to get final list of groups
@@ -303,6 +310,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
     # instance, some ions or waters could be part of the crystal structure
     
     with in_dir(dirname):
+        logger.info("[%(dirname)s] Solvating with water %(water)r..." % vars())
         gromacs.editconf(f=structure, o='boxed.gro', bt=boxtype, d=distance)
         gromacs.genbox(p=topology, cp='boxed.gro', cs=water, o='solvated.gro')
 
@@ -310,9 +318,10 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
             mdp.write('; empty mdp file\ninclude = %(include)s\n' % mdp_kwargs)            
         qtot = gromacs.cbook.grompp_qtot(f='none.mdp', o='topol.tpr', c='solvated.gro',
                                          p=topology, stdout=False, maxwarn=grompp_maxwarn)
-        print "After solvation: total charge qtot = %(qtot)r" % vars()        
+        logger.info("[%(dirname)s] After solvation: total charge qtot = %(qtot)r" % vars())
 
         if concentration != 0:
+            logger.info("[%(dirname)s] Adding ions for c = %(concentration)f M..." % vars())
             # target concentration of free ions c ==>
             #    N = N_water * c/c_water
             # add ions for concentration to the counter ions (counter ions are less free)
@@ -339,6 +348,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
         n_anions += N_ions
 
         if n_cation != 0 or n_anion != 0:
+            logger.info("[%(dirname)s] Adding n_cation = %(n_cation)d and n_anion = %(n_anion)d ions..." % vars())
             gromacs.genion(s='topol.tpr', o='ionized.gro', p=topology,
                            pname=cation, nname=anion, np=n_cation, nn=n_anion,
                            input='SOL')
@@ -355,24 +365,27 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
                                          p=topology, stdout=False, maxwarn=grompp_maxwarn)
 
         if abs(qtot) > 1e-4:
-            warnings.warn("System has non-zero total charge qtot = %(qtot)g e." % vars(),
-                          category=BadParameterWarning)
+            wmsg = "System has non-zero total charge qtot = %(qtot)g e." % vars()
+            warnings.warn(wmsg, category=BadParameterWarning)
+            logger.warn(wmsg)
 
         # make main index
         try:
             make_main_index('ionized.tpr', selection=mainselection, ndx=ndx)
         except GromacsError, err:
             # or should I rather fail here?
-            warnings.warn("Failed to make main index file %r ... maybe set mainselection='...'.\n"
-                          "The error message was:\n%s\n" % (ndx, str(err)), 
-                          category=GromacsFailureWarning)
-
+            wmsg = "Failed to make main index file %r ... maybe set mainselection='...'.\n"
+                          "The error message was:\n%s\n" % (ndx, str(err))
+            logger.warn(wmsg)
+            warnings.warn(wmsg, category=GromacsFailureWarning)
         try:
             trj_compact_main(f='ionized.gro', s='ionized.tpr', o='compact.pdb', n=ndx)
         except GromacsError, err:
-            warnings.warn("Failed to make compact pdb for visualization... pressing on regardless. "
-                          "The error message was:\n%s\n" % str(err),
-                          category=GromacsFailureWarning)
+            wmsg = "Failed to make compact pdb for visualization... pressing on regardless. "
+                          "The error message was:\n%s\n" % str(err)
+            logger.warn(wmsg)
+            warnings.warn(wmsg, category=GromacsFailureWarning)
+
     return {'qtot': qtot, 
             'struct': realpath(dirname, 'ionized.gro'), 
             'ndx': realpath(dirname, ndx),      # not sure why this is propagated-is it used?
@@ -383,9 +396,9 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
 def check_mdpargs(d):
     """Check if any arguments remain in dict *d*."""
     if len(d) > 0:
-        warnings.warn("Unprocessed mdp option are interpreted as options for grompp:\n"
-                      +str(d),
-                      category=UsageWarning)        
+        wmsg = "Unprocessed mdp option are interpreted as options for grompp:\n"+str(d)
+        logger.warn(wmsg)
+        warnings.warn(wmsg, category=UsageWarning)
     return len(d) == 0
 
 def energy_minimize(dirname='em', mdp=config.templates['em_mdp'],
@@ -437,14 +450,17 @@ def energy_minimize(dirname='em', mdp=config.templates['em_mdp'],
     mdp = 'em.mdp'
     tpr = 'em.tpr'
 
+    logger.info("[%(dirname)s] Energy minimization of struct=%(struct)r, top=%(top)r, mdp=%(mdp)r ..." % vars())
+
     add_mdp_includes(topology, kwargs)
 
     if qtot != 0:
         # At the moment this is purely user-reported and really only here because 
         # it might get fed into the function when using the keyword-expansion pipeline
         # usage paradigm.
-        warnings.warn("Total charge was reported as qtot = %(qtot)g <> 0; probably a problem." % vars(),
-                      category=BadParameterWarning)
+        wmsg = "Total charge was reported as qtot = %(qtot)g <> 0; probably a problem." % vars()
+        logger.warn(wmsg)
+        warnings.warn(wmsg, category=BadParameterWarning)
 
     with in_dir(dirname):
         unprocessed = gromacs.cbook.edit_mdp(mdp_template, new_mdp=mdp, **kwargs)
@@ -456,16 +472,20 @@ def energy_minimize(dirname='em', mdp=config.templates['em_mdp'],
             gromacs.mdrun_d(**mdrun_args)
         except (AttributeError, OSError):
             # fall back to mdrun if no double precision binary
-            warnings.warn("No 'mdrun_d' binary found so trying 'mdrun' instead.\n"
-                          "(Note that energy minimization runs better with mdrun_d.)",
-                          category=AutoCorrectionWarning)
+            wmsg = "No 'mdrun_d' binary found so trying 'mdrun' instead.\n"\
+                   "(Note that energy minimization runs better with mdrun_d.)"
+            logger.warn(wmsg)
+            warnings.warn(wmsg, category=AutoCorrectionWarning)
             gromacs.mdrun(**mdrun_args)
         # em.gro --> gives 'Bad box in file em.gro' warning --- why??
         # --> use em.pdb instead.
         if not os.path.exists('em.pdb'):
-            raise GromacsError("Energy minimized system NOT produced.")
+            errmsg = "Energy minimized system NOT produced."
+            logger.error(errmsg)
+            raise GromacsError(errmsg)
         final_struct = realpath('em.pdb')
 
+    logger.info("[%(dirname)s] energy minimized structure %(final_struct)r" % vars())
     return {'struct': final_struct, 'top': topology,
             'mainselection': mainselection}
 
@@ -545,17 +565,19 @@ def _setup_MD(dirname,
     elif not re.match('[a-zA-Z]', sgename[0]):
         # fix illegal SGE name
         sgename = 'md_'+sgename
-        warnings.warn("Illegal SGE name fixed: new=%r" % sgename, 
-                      category=AutoCorrectionWarning)
+        wmsg = "Illegal SGE name fixed: new=%r" % sgename
+        logger.warn(wmsg)
+        warnings.warn(wmsg, category=AutoCorrectionWarning)
 
     mdp_parameters = {'nsteps':nsteps, 'dt':dt}
     mdp_parameters.update(mdp_kwargs)
 
     add_mdp_includes(topology, mdp_parameters)
     
-    with in_dir(dirname):
-        # Automatic adjustment of T-coupling groups
+    with in_dir(dirname):        
         if not (mdp_parameters.get('Tcoupl','').lower() == 'no' or mainselection is None):
+            logger.info("[%(dirname)s] Automatic adjustment of T-coupling groups" % vars())
+            
             # make index file in almost all cases; with None the user
             # takes FULL control and also has to provide the template or index
             groups = make_main_index(structure, selection=mainselection,
@@ -565,13 +587,14 @@ def _setup_MD(dirname,
                 x = natoms['__main__']/natoms['__environment__']
             except KeyError:
                 x = 0   # force using SYSTEM in code below
-                warnings.warn("Missing __main__ and/or __environment__ index group.\n"
-                              "This probably means that you have an atypical system. You can "
-                              "set mainselection=None and provide your own mdp and index files "
-                              "in order to set up temperature coupling.\n"
-                              "If no T-coupling is required then set Tcoupl='no'.\n"
-                              "For now we will just couple everything to 'System'.",
-                              category=AutoCorrectionWarning)
+                wmsg = "Missing __main__ and/or __environment__ index group.\n" \
+                       "This probably means that you have an atypical system. You can " \
+                       "set mainselection=None and provide your own mdp and index files " \
+                       "in order to set up temperature coupling.\n" \
+                       "If no T-coupling is required then set Tcoupl='no'.\n" \
+                       "For now we will just couple everything to 'System'."
+                logger.warn(wmsg)
+                warnings.warn(wmsg, category=AutoCorrectionWarning)
             if x < 0.1:
                 # TODO: does not handle properly multiple groups in arglist yet
                 tau_t = mdp_parameters.pop('tau_t', 0.1)
@@ -580,17 +603,20 @@ def _setup_MD(dirname,
                 mdp_parameters['tc-grps'] = 'System'
                 mdp_parameters['tau_t'] = tau_t   # this overrides the commandline!
                 mdp_parameters['ref_t'] = ref_t   # this overrides the commandline!
-                warnings.warn("Size of __main__ is only %.1f%% of __environment__ so "
-                              "we use 'System' for T-coupling and ref_t = %g and "
-                              "tau_t = %g (can be changed in mdp_parameters).\n"
-                              % (x * 100, ref_t, tau_t),
-                              category=AutoCorrectionWarning)
+                wmsg = "Size of __main__ is only %.1f%% of __environment__ so " \
+                       "we use 'System' for T-coupling and ref_t = %g and " \
+                       "tau_t = %g (can be changed in mdp_parameters).\n" \
+                       % (x * 100, ref_t, tau_t)
+                logger.warn(wmsg)
+                warnings.warn(wmsg, category=AutoCorrectionWarning)
             index = realpath(mainindex)
         if mdp_parameters.get('Tcoupl','').lower() == 'no':
+            logger.info("Tcoupl == no: disabling all temperature coupling mdp options")
             mdp_parameters['tc-grps'] = ""
             mdp_parameters['tau_t'] = ""
             mdp_parameters['ref_t'] = ""
         if mdp_parameters.get('Pcoupl','').lower() == 'no':
+            logger.info("Pcoupl == no: disabling all pressure coupling mdp options")
             mdp_parameters['tau_p'] = ""
             mdp_parameters['ref_p'] = ""
             mdp_parameters['compressibility'] = ""
@@ -601,6 +627,7 @@ def _setup_MD(dirname,
 
         # set up queuing system run script (simple search and replace in templates)
         # TODO: move this into a function or class or whatever
+        logger.info("[%(dirname)s] Setting up queuing system script %(sge)r..." % vars())
         wt = Timedelta(hours=walltime)
         walltime = wt.strftime("%h:%M:%S")
         wall_hours = wt.ashours
@@ -613,8 +640,8 @@ def _setup_MD(dirname,
                                 ],
                                newname=sge)
 
-    print "All files set up for a run time of %(runtime)g ps "\
-        "(dt=%(dt)g, nsteps=%(nsteps)g)" % vars()
+    logger.info("[%(dirname)s] All files set up for a run time of %(runtime)g ps "
+                "(dt=%(dt)g, nsteps=%(nsteps)g)" % vars())
 
     kwargs = { # 'dirname':dirname, 'tpr':tpr,  ## cannot be fed into _setup_MD() again and not used sofar
               'struct': realpath(os.path.join(dirname, final_structure)),      # guess
@@ -682,6 +709,7 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
               change the ``define`` parameter in the mdp file)
     """
 
+    logger.info("[%(dirname)s] Setting up MD with position restraints..." % vars())
     kwargs.setdefault('struct', 'em/em.pdb')
     kwargs.setdefault('sgename', 'PR_GMX')
     kwargs.setdefault('define', '-DPOSRES')
@@ -730,6 +758,7 @@ def MD(dirname='MD', **kwargs):
               change the ``define`` parameter in the mdp file)
     """
 
+    logger.info("[%(dirname)s] Setting up MD..." % vars())
     kwargs.setdefault('struct', 'MD_POSRES/md.gro')
     kwargs.setdefault('sgename', 'MD_GMX')
     return _setup_MD(dirname, **kwargs)

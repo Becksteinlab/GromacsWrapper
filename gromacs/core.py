@@ -32,6 +32,10 @@ from subprocess import STDOUT, PIPE
 import warnings
 import errno
 
+import logging
+logger = logging.getLogger('gromacs.core')
+
+
 from gromacs import GromacsError, GromacsFailureWarning
 
 class Command(object):
@@ -74,10 +78,15 @@ class Command(object):
 
     def run(self,*args,**kwargs):
         """Run the command; args/kwargs are added or replace the ones given to the constructor."""
+        _args, _kwargs = self._combine_arglist(args, kwargs)
+        return self._run_command(*_args, **_kwargs)
+
+    def _combine_arglist(self, args, kwargs):
+        """Combine the default values and the supplied values."""
         _args = self.args + args
         _kwargs = self.kwargs.copy()
         _kwargs.update(kwargs)
-        return self._run_command(*_args, **_kwargs)
+        return _args, _kwargs
 
     def _run_command(self,*args,**kwargs):
         """Execute the command; see the docs for __call__."""
@@ -87,6 +96,17 @@ class Command(object):
         rc = p.returncode
         result = rc, out, err
         return result
+
+    def _commandline(self, *args, **kwargs):
+        """Returns the command line (without pipes) as a list."""
+         # transform_args() is a hook (used in GromacsCommand very differently!)
+        return [self.command_name] + self.transform_args(*args,**kwargs)
+
+    def commandline(self, *args, **kwargs):
+        """Returns the commandline that run() uses (without pipes)."""
+        # this mirrors the setup in run()
+        _args, _kwargs = self._combine_arglist(args, kwargs)
+        return self._commandline(*_args, **_kwargs)
 
     def Popen(self, *args,**kwargs):
         """Returns a special Popen instance (:class:`PopenWithInput`).
@@ -127,19 +147,22 @@ class Command(object):
                 except TypeError:
                     # so maybe we are a file or something ... and hope for the best
                     pass
-
-        # transform_args() is a hook (used in GromacsCommand very differently!)
-        cmd = [self.command_name] + self.transform_args(*args,**kwargs)
+                
+        cmd = self._commandline(*args, **kwargs)   # lots of magic happening here 
+                                                   # (cannot move out of method because filtering of stdin etc)
         try:
             p = PopenWithInput(cmd, stdin=stdin, stderr=stderr, stdout=stdout,
                                universal_newlines=True, input=input)
         except OSError,err:
+            logger.error(" ".join(cmd))            # log command line
             if err.errno == errno.ENOENT:
-                raise OSError("Failed to find command '%r', "
-                              "maybe its not on PATH or GMXRC must be sourced?" %
-                              self.command_name)
+                errmsg = "Failed to find command %r, maybe its not on PATH or GMXRC must be sourced?" % self.command_name
+                logger.fatal(errmsg)
+                raise OSError(errmsg)
             else:
+                logger.exception("Setting up command %r raised an exception." % self.command_name)
                 raise
+        logger.info(p.command_string)
         return p
 
     def transform_args(self, *args, **kwargs):
@@ -354,11 +377,11 @@ class GromacsCommand(Command):
         self.gmxargs = self._combineargs(*args, **kwargs)
         self.__doc__ = self.gmxdoc
 
-    def run(self,*args,**kwargs):
-        """Run the command; kwargs are added or replace the ones given to the constructor."""
+    def _combine_arglist(self, args, kwargs):
+        """Combine the default values and the supplied values."""
         gmxargs = self.gmxargs.copy()
         gmxargs.update(self._combineargs(*args,**kwargs))
-        return self._run_command(**gmxargs)
+        return (), gmxargs    # Gromacs tools don't have positional args --> args = ()
 
     def check_failure(self, result, msg='Gromacs tool failed', command_string=None):
         rc, out, err = result
@@ -383,7 +406,6 @@ class GromacsCommand(Command):
                 raise ValueError('unknown failure mode %r' % self.failuremode)
         return had_success
             
-
     def _combineargs(self,*args,**kwargs):
         """Add switches as 'options' with value True to the options dict."""
         d = dict([(arg, True) for arg in args])   # switches are kwargs with value True
@@ -424,12 +446,10 @@ class GromacsCommand(Command):
         self.check_failure(result, command_string=p.command_string)
         return result
 
-
     def transform_args(self,*args,**kwargs):
         """Combine arguments and turn them into gromacs tool arguments."""
         newargs = self._combineargs(*args,**kwargs)
         return self._build_arg_list(**newargs)
-        
 
     def _get_gmx_docs(self):
         """Extract standard gromacs doc by running the program and chopping the header."""        
@@ -437,13 +457,17 @@ class GromacsCommand(Command):
         # are accurately reflected. Might be a problem when these invocations
         # supply wrong arguments... TODO: maybe check rc for that?
         # use_input=False needed for running commands in cbook that have input pre-defined
-        rc,docs,nothing = self.run('h', stdout=PIPE, use_input=False)
+        old_level = logger.getEffectiveLevel()   # temporarily throttle logger to avoid
+        logger.setLevel(logging.ERROR)           # reading about the help function invocation
+        try:
+            rc,docs,nothing = self.run('h', stdout=PIPE, use_input=False)
+        finally:
+            logger.setLevel(old_level)           # ALWAYS restore logging....
         m = re.match(self.doc_pattern, docs, re.DOTALL)    # keep from DESCRIPTION onwards
         if m is None:
             return "(No Gromacs documentation available)"
         return m.group('DOCS')
         
-
     def gmxdoc():
         doc = """Usage for the underlying Gromacs tool (cached)."""
         def fget(self):
@@ -461,7 +485,10 @@ class GromacsCommand(Command):
 
 
 class PopenWithInput(subprocess.Popen):
-    """Popen class that knows its input; simply call communicate() later.
+    """Popen class that knows its input.
+
+    1. Set up the instance, including all the input it shoould receive.
+    2. Call :meth:`PopenWithInput.communicate` later.
 
     .. Note:: Some versions of python have a bug in the subprocess module
               ( `issue 5179`_ ) which does not clean up open file
@@ -478,7 +505,10 @@ class PopenWithInput(subprocess.Popen):
     """
 
     def __init__(self,*args,**kwargs):
-        """Initialize with the standard :class:`subprocess.Popen` arguments and *input*.
+        """Initialize with the standard :class:`subprocess.Popen` arguments.
+
+        :Keywords:
+        - *input* : string that is piped into the command
         """
         self.input = kwargs.pop('input',None)
         self.command = args[0]
@@ -490,6 +520,7 @@ class PopenWithInput(subprocess.Popen):
         self.command_string = input_string + " ".join(self.command)
         super(PopenWithInput,self).__init__(*args,**kwargs)
     def communicate(self, use_input=True):
+        """Run the command, using the input that was set up on __init__ (for *use_input* = ``True``)"""
         if use_input:
             return super(PopenWithInput,self).communicate(self.input)
         else:

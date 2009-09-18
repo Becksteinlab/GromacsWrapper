@@ -182,6 +182,62 @@ for w in (AutoCorrectionWarning, BadParameterWarning, UsageWarning,
 del w
 
 
+import logging
+# Logging to a file and the console.
+#
+# See http://docs.python.org/library/logging.html?#logging-to-multiple-destinations
+#
+# The top level logger of the library is named 'gromacs'.
+# Note that we are configuring this looger with console output. If the root logger also
+# does this then we will get two output lines to the console. We'll live with this because
+# this is a simple convenience library and most people will not bother with a logger (I think...)
+#
+# In modules that use loggers get a logger like so:
+#     import logging
+#     logger = logging.getLogger('gromacs.MODULENAME')
+
+#------------------------------------------------------------
+# (Application-level logger code)
+#
+logger = logging.getLogger('gromacs')
+# clean out handlers in the library top level logger (only important for reload/debug cycles...)
+[logger.removeHandler(h) for h in logger.handlers]
+
+logger.setLevel(logging.DEBUG)
+
+logfile = logging.FileHandler('gromacs.log')
+logfile_formatter = logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
+logfile.setFormatter(logfile_formatter)
+logger.addHandler(logfile)
+
+# define a Handler which writes INFO messages or higher to the sys.stderr
+console = logging.StreamHandler()
+console.setLevel(logging.INFO)
+# set a format which is simpler for console use
+formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+console.setFormatter(formatter)
+# configure for Mhp1 only
+logger.addHandler(console)
+#
+#------------------------------------------------------------
+
+# NOTE: logging is still iffy; when I reload I add a new logger each
+# time and output is repeated for each reload. Probably should heed
+# the advice on logging and libraries in
+# http://docs.python.org/library/logging.html?#configuring-logging-for-a-library
+class NullHandler(logging.Handler):
+    def emit(self, record):
+        pass
+# this clashes conceptually with the console stuff above: really the
+# above needs to be done in application code; in that case the following
+# would be enabled:
+#
+#h = NullHandler()
+#logging.getLogger("Mhp1").addHandler(h)
+#del h
+
+
+
 # configuration
 import config
 

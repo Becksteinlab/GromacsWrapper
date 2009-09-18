@@ -119,6 +119,9 @@ import tempfile
 import shutil
 import glob
 
+import logging
+logger = logging.getLogger('gromacs.cbook')
+
 import gromacs
 from gromacs import GromacsError, BadParameterWarning
 import tools
@@ -366,6 +369,7 @@ def grompp_qtot(*args, **kwargs):
         if m:
             qtot = float(m.group('qtot'))
             break
+    logger.info("system total charge qtot = %(qtot)r" % vars())
     return qtot
 
 
@@ -440,6 +444,7 @@ def edit_mdp(mdp, new_mdp=None, **substitutions):
 
     target = tempfile.TemporaryFile()
     with open(mdp) as src:
+        logger.info("editing mdp = %r: %r" % (mdp, substitutions.keys()))
         for line in src:
             new_line = line.strip()  # \n must be stripped to ensure that new line is built without break
             for p in params[:]:
@@ -466,6 +471,8 @@ def edit_mdp(mdp, new_mdp=None, **substitutions):
         shutil.copyfileobj(target, final)
     target.close()
      # return all parameters that have NOT been substituted
+    if len(params) > 0:
+        logger.warn("Not substituted in %(new_mdp)r: %(params)r" % vars())
     return dict([(p, substitutions[p]) for p in params])
 
 def edit_txt(filename, substitutions, newname=None):
@@ -520,14 +527,15 @@ def edit_txt(filename, substitutions, newname=None):
 
     target = tempfile.TemporaryFile()
     with open(filename) as src:
+        logger.info("editing txt = %r (%d substitutions)" % (filename, len(substitutions)))
         for line in src:
             new_line = line[:]
             for subst in _substitutions:
                 m = subst['lRE'].match(line)    
                 if m:              # apply substition to this line?
-                    #print 'match:    '+line
+                    logger.debug('match:    '+line)
                     new_line = subst['sRE'].sub(subst['repl'], line)
-                    #print 'replaced: '+new_line
+                    logger.debug('replaced: '+new_line)
                     break   # only apply the first matching substitution!
             target.write(new_line)
     target.seek(0)
@@ -535,6 +543,7 @@ def edit_txt(filename, substitutions, newname=None):
     with open(newname, 'w') as final:
         shutil.copyfileobj(target, final)
     target.close()
+    logger.info("edited txt = %(newname)r" % vars())
 
 
 # Working with index files and index groups
@@ -985,4 +994,4 @@ class IndexBuilder(object):
             # AttributeError: when reloading the module, OSError: when file disappeared
             pass
 
-        
+
