@@ -39,7 +39,7 @@ argument, but it should be safe and convenient to use the defaults). Other
 arguments assume the default locations so typically not much should have to be
 set manually.
 
-One can supply non-standard itp files in the topology director. In
+One can supply non-standard itp files in the topology directory. In
 some cases one does not use the :func:`topology` function at all but
 sets up the topology manually. In this case it is safest to call the
 topology directory ``top`` and make sure that it contains all relevant
@@ -374,15 +374,15 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
             make_main_index('ionized.tpr', selection=mainselection, ndx=ndx)
         except GromacsError, err:
             # or should I rather fail here?
-            wmsg = "Failed to make main index file %r ... maybe set mainselection='...'.\n"
-                          "The error message was:\n%s\n" % (ndx, str(err))
+            wmsg = "Failed to make main index file %r ... maybe set mainselection='...'.\n"\
+                   "The error message was:\n%s\n" % (ndx, str(err))
             logger.warn(wmsg)
             warnings.warn(wmsg, category=GromacsFailureWarning)
         try:
             trj_compact_main(f='ionized.gro', s='ionized.tpr', o='compact.pdb', n=ndx)
         except GromacsError, err:
-            wmsg = "Failed to make compact pdb for visualization... pressing on regardless. "
-                          "The error message was:\n%s\n" % str(err)
+            wmsg = "Failed to make compact pdb for visualization... pressing on regardless. "\
+                   "The error message was:\n%s\n" % str(err)
             logger.warn(wmsg)
             warnings.warn(wmsg, category=GromacsFailureWarning)
 
@@ -427,8 +427,7 @@ def energy_minimize(dirname='em', mdp=config.templates['em_mdp'],
           template mdp file, eg ``nstxtcout=250, nstfout=250``.
 
     .. note:: 
-       If ``mdrun_d`` is not found, the function simply fails with
-       :exc:`OSError`; in the future it will fall back to ``mdrun`` instead.    
+       If ``mdrun_d`` is not found, the function falls back to ``mdrun`` instead.
     """
 
     structure = realpath(struct)
@@ -486,8 +485,10 @@ def energy_minimize(dirname='em', mdp=config.templates['em_mdp'],
         final_struct = realpath('em.pdb')
 
     logger.info("[%(dirname)s] energy minimized structure %(final_struct)r" % vars())
-    return {'struct': final_struct, 'top': topology,
-            'mainselection': mainselection}
+    return {'struct': final_struct,
+            'top': topology,
+            'mainselection': mainselection,
+            }
 
 def add_mdp_includes(topology, mdp_kwargs=None):
     """Add the directory containing *topology* to the dict *mdp_kwargs*.

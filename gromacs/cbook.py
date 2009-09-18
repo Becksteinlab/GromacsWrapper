@@ -38,7 +38,7 @@ Standard invocations for compacting or fitting trajectories.
    "Protein" and outputs the whole "System" group.
 
 
-.. function:: trj_xyfitted([s="md.tpr", f="md.xtc"[, ...]]
+.. function:: trj_xyfitted([s="md.tpr", f="md.xtc"[, ...]])
 
     Writes a trajectory centered and fitted to the protein in the XY-plane only.
 
@@ -73,6 +73,10 @@ Manipulation of index files (``ndx``) can be cumbersome because the
 ``make_ndx`` program is not very sophisticated (yet) compared to
 full-fledged atom selection expression as available in Charmm_, VMD_, or
 MDAnalysis_. Some tools help in building and interpreting index files.
+
+.. SeeAlso:: The :class:`gromacs.formats.NDX` class can solve a number
+             of index problems in a cleaner way than the classes and
+             functions here.
 
 .. autoclass:: IndexBuilder
    :members: combine, gmx_resid
@@ -201,9 +205,10 @@ def trj_fitandcenter(xy=False, **kwargs):
               and consume a **large amount of temporary diskspace**.
 
     .. SeeAlso::
-       We follows the `g_spatial documentation`_ in preparing the trajectories::
+       We follow the `g_spatial documentation`_ in preparing the trajectories::
 
           trjconv -s a.tpr -f a.xtc -o b.xtc -center tric -ur compact -pbc none
+          
           trjconv -s a.tpr -f b.xtc -o c.xtc -fit rot+trans
     
        .. _`g_spatial documentation`: http://oldwiki.gromacs.org/index.php/Manual:g_spatial_4.0.3
@@ -227,8 +232,8 @@ def trj_fitandcenter(xy=False, **kwargs):
         inpcompact = None
     fd, tmptrj = tempfile.mkstemp(suffix=suffix, prefix='fitted_')
 
-    print "Input trajectory:  %(intrj)r\nOutput trajectory: %(outtrj)r"% vars()
-    print "... writing temporary trajectory %(tmptrj)r (will be auto-cleaned)." % vars()
+    logger.info("Input trajectory:  %(intrj)r\nOutput trajectory: %(outtrj)r"% vars())
+    logger.info("... writing temporary trajectory %(tmptrj)r (will be auto-cleaned)." % vars())
     sys.stdout.flush()
     try:
         trj_compact(f=intrj, o=tmptrj, input=inpcompact, **kwargs)        
@@ -345,10 +350,9 @@ def grompp_qtot(*args, **kwargs):
     """Run ``gromacs.grompp`` and return the total charge of the  system.
 
     :Arguments:  
-       The arguments are the ones one would pass to ``gromacs.grompp``.
+       The arguments are the ones one would pass to :func:`gromacs.grompp`.
     :Returns:
        The total charge as reported
-
 
     .. note::
 
@@ -357,6 +361,7 @@ def grompp_qtot(*args, **kwargs):
          analyze the output if the debugging messages are not sufficient.
        * Check that ``qtot`` is correct; because the function is based on pattern 
          matching of the output it can break when the output format changes.
+
     """
 
     # match '  System has non-zero total charge: -4.000001e+00',
@@ -406,7 +411,7 @@ def edit_mdp(mdp, new_mdp=None, **substitutions):
 
     Example::
 
-      edit_mdp('md.mdp', new_mdp='long_md.mdp', nsteps=100000, nstxtcout=1000, lincs_iter=2)
+       edit_mdp('md.mdp', new_mdp='long_md.mdp', nsteps=100000, nstxtcout=1000, lincs_iter=2)
 
     .. Note::
     
@@ -417,7 +422,7 @@ def edit_mdp(mdp, new_mdp=None, **substitutions):
        * If the keyword is set as a dict key, eg ``mdp_params['lincs-iter']=4`` then one
          does not have to substitute.
        * Parameters *aa_bb* and *aa-bb* are considered the same (although this should not be 
-         a problem in practice because there are no mdp parameters that only differe by a underscore).
+         a problem in practice because there are no mdp parameters that only differ by a underscore).
        * This code is more compact in ``Perl`` as one can use ``s///`` operators:
          ``s/^(\s*${key}\s*=\s*).*/$1${val}/``
 
@@ -510,6 +515,7 @@ def edit_txt(filename, substitutions, newname=None):
     with repeated substitution commands does.
 
     .. note::
+    
        * No sanity checks are performed and the substitutions must be supplied
          exactly as shown.    
        * Only the first matching substitution is applied to a line; thus the order
@@ -582,8 +588,10 @@ def make_ndx_captured(**kwargs):
     Note that the convenient :func:`get_ndx_groups` function does exactly
     that and can probably used in most cases.
 
-    :Arguments: keywords are passed on to :func:`~gromacs.make_ndx`
-    :Returns:   (*returncode*, *output*, ``None``)
+    :Arguments:
+        keywords are passed on to :func:`~gromacs.make_ndx`
+    :Returns:
+        (*returncode*, *output*, ``None``)
     """
     kwargs['stdout']=False   # required for proper output as described in doc
     kwargs['stderr']=True    # ...
@@ -599,7 +607,8 @@ def get_ndx_groups(ndx, **kwargs):
         - *ndx*  is a Gromacs index file.
         - kwargs are passed to :func:`make_ndx_captured`.
         
-    :Returns: list of groups as supplied by :func:`parse_ndxlist`
+    :Returns:
+        list of groups as supplied by :func:`parse_ndxlist`
 
     Alternatively, load the index file with
     :class:`gromacs.formats.NDX` for full control.
@@ -636,6 +645,7 @@ def parse_ndxlist(output):
            number of the group (starts at 0)
        natoms
            number of atoms in the group
+           
     """
     
     m = NDXLIST.search(output)    # make sure we pick up a proper full list
@@ -691,7 +701,8 @@ class IndexBuilder(object):
           Command invocation: make_ndx -o /tmp/tmp_Na1__NK7cT3.ndx -f md_posres.tpr
 
        In this case run the command invocation manually to see what the problem
-       could be.       
+       could be.
+       
     """
 
     def __init__(self, struct=None, selections=None, names=None, name_all=None,
@@ -741,7 +752,8 @@ class IndexBuilder(object):
               Optional input index file(s).
 
            out_ndx : filename
-              Output index file.  
+              Output index file.
+              
         """
         self.structure = struct
         self.ndx = ndx

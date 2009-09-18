@@ -28,11 +28,13 @@ Classes
 -------
 
 .. autoclass:: XVG
-   :members:   
+   :members:
 .. autoclass:: NDX
-   :members:   
+   :members:
+.. autoclass:: GRO
+   :members:
 
-
+   (Not implemented yet)
 """
 from __future__ import with_statement
 

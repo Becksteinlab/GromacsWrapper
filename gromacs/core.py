@@ -458,7 +458,7 @@ class GromacsCommand(Command):
         # supply wrong arguments... TODO: maybe check rc for that?
         # use_input=False needed for running commands in cbook that have input pre-defined
         old_level = logger.getEffectiveLevel()   # temporarily throttle logger to avoid
-        logger.setLevel(logging.ERROR)           # reading about the help function invocation
+        logger.setLevel(9999)                    # reading about the help function invocation or not found
         try:
             rc,docs,nothing = self.run('h', stdout=PIPE, use_input=False)
         finally:
