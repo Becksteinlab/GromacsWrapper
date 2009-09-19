@@ -1,6 +1,7 @@
 # $Id$
 # Copyright (c) 2009 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the GNU Public License 3 (or higher, your choice)
+# See the file COPYING for details.
 
 """
 :mod:`gromacs.simulation` -- Running simulations
@@ -12,26 +13,37 @@ Helper functions and classes around :class:`gromacs.tools.mdrun`.
    :members:
 .. autoclass:: MDrunnerOpenMP
 .. autoclass:: MDrunnerOpenMP64
+.. autoclass:: MDrunnerMpich2Smpd
 
 .. function:: check_mdrun_success
 
 """
+from __future__ import with_statement
+__docformat__ = "restructuredtext en"
 
-import core
 import subprocess
-import logging
+import os.path
 
 # logging
+import logging
 logger = logging.getLogger('gromacs.simulation')
 
+
+# gromacs modules
+import core
 import utilities
 
 class MDrunner(utilities.FileUtils):
     """A class to run ``mdrun`` in various ways.
 
-    The keyword arguments supplied on initialization are used to
-    construct the :class:`~gromacs.tools.mdrun` commandline. Note that
-    only keyword arguments are allowed.
+    :Keywords:
+        *dirname*
+            Change to this directory before launching the job. Input
+            files must be supplied relative to this directory.
+        *keywords*
+            All other keword arguments are used to construct the
+            :class:`~gromacs.tools.mdrun` commandline. Note that only
+            keyword arguments are allowed.
     
     In order to do complicated multiprocessor runs with mpiexec or
     similar you need to derive from this class and override
@@ -51,12 +63,18 @@ class MDrunner(utilities.FileUtils):
     #: path to the MPI launcher (e.g. :program:`mpiexec`)
     mpiexec = None
 
-    def __init__(self, **kwargs):
+    def __init__(self, dirname=os.path.curdir, **kwargs):
         """Set up a simple run with ``mdrun``.
 
         Use the *kwargs* in order to set :class:`gromacs.tools.mdrun`
         options such as *deffnm* = "md" etc.
+
+        *dirname* changes to that directory to run the simulations;
+        input files must be supplied relative to this directory.        
         """
+        # run MD in this directory (input files must be relative to this dir!)
+        self.dirname = dirname
+        
         # use a GromacsCommand class for handling arguments
         cls = type('MDRUN', (core.GromacsCommand,), 
                    {'command_name': self.mdrun,
@@ -132,15 +150,17 @@ class MDrunner(utilities.FileUtils):
             post = {}
         
         cmd = self.commandline(**mpiargs)    
-        logger.info(" ".join(cmd))
-        try:
-            self.prehook(**pre)
-            rc = subprocess.call(cmd)
-        except:
-            logger.exception("Failed MD run for unknown reasons.")
-            raise
-        finally:
-            self.posthook(**post)
+
+        with utilities.in_dir(self.dirname, create=False):
+           try:
+               self.prehook(**pre)
+               logger.info(" ".join(cmd))               
+               rc = subprocess.call(cmd)
+           except:
+               logger.exception("Failed MD run for unknown reasons.")
+               raise
+           finally:
+               self.posthook(**post)
         if rc == 0:
             logger.info("MDrun completed ok, returncode = %d" % rc)
         else:
@@ -156,14 +176,13 @@ class MDrunner(utilities.FileUtils):
         
         :Arguments:
            *kwargs* are keyword arguments that are passed on to
-            :meth:`run` (typically used for mpi things)
+           :meth:`run` (typically used for mpi things)
            
         :Returns:
            - ``True`` if run conmpleted successfully
            - ``False`` otherwise
         """
-
-        rc = None
+        rc = None   # set to something in case we ever want to look at it later (and bomb in the try block)
         try:
             rc = self.run(**kwargs)
         except:
