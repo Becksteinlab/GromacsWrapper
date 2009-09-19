@@ -345,7 +345,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
             n_cation = int(abs(qtot))
 
         n_cation += N_ions
-        n_anions += N_ions
+        n_anion  += N_ions
 
         if n_cation != 0 or n_anion != 0:
             logger.info("[%(dirname)s] Adding n_cation = %(n_cation)d and n_anion = %(n_anion)d ions..." % vars())
