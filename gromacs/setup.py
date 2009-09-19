@@ -125,7 +125,6 @@ from gromacs.utilities import in_dir, Timedelta
 #: density at 25 degrees C and 1 atmosphere pressure: rho = 997.0480 g/L.
 #: molecular weight: M = 18.015 g/mol
 #: c = n/V = m/(V*M) = rho/M  = 55.345 mol/L
-
 CONC_WATER = 55.345
 
 # XXX: This is not used anywhere at the moment:
@@ -144,11 +143,10 @@ def realpath(*args):
     """Join all args and return the real path, rooted at /"""
     return os.path.realpath(os.path.join(*args))
 
+
 # TODO:
 # - should be part of a class so that we can store the topology etc !!!
 #   and also store mainselection
-# - full logging would be nice (for provenance)
-#   should include the shell commands executed (probably add code to core.Command)
 
 def topology(struct=None, protein='protein',
              top='system.top',  dirname='top', **pdb2gmx_args):
@@ -469,6 +467,7 @@ def energy_minimize(dirname='em', mdp=config.templates['em_mdp'],
         gromacs.grompp(f=mdp, o=tpr, c=structure, p=topology, **unprocessed)
         mdrun_args = dict(v=True, stepout=10, deffnm='em', c='em.pdb')
         # TODO: not clear yet how to run em as MPI with mpiexec & friends
+        #       (could be using gromacs.simulation.MDrunner)
         try:            
             gromacs.mdrun_d(**mdrun_args)
         except (AttributeError, OSError):
