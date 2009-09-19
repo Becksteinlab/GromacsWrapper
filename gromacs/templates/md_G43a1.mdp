@@ -36,7 +36,7 @@ nstlist                  = 10
 rlist                    = 1.0
 rcoulomb                 = 1.0
 ; GROMOS96 was parametrised with a LJ cut-off of 1.4
-rvdw                     = 1.4      ; TODO: check for GROMOS
+rvdw                     = 1.4
 vdwtype                  = cut-off
 coulombtype              = PME
 optimize_fft             = yes
@@ -55,7 +55,7 @@ DispCorr                 = EnerPres
 gen_vel                  = yes
 gen-temp                 = 300
 
-constraints              = allbonds   ; TODO: check for GROMOS
+constraints              = hbonds
 constraint-algorithm     = Lincs
 lincs-order              = 4
 lincs-iter               = 1
