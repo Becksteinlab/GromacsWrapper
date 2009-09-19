@@ -104,7 +104,6 @@ from __future__ import with_statement
 __docformat__ = "restructuredtext en"
 
 import os
-from os.path import realpath
 import errno
 import re
 import shutil
@@ -141,6 +140,9 @@ rlist        1.4 ?      1.0
 ==========   =========  ================
 """
 
+def realpath(*args):
+    """Join all args and return the real path, rooted at /"""
+    return os.path.realpath(os.path.join(*args))
 
 # TODO:
 # - should be part of a class so that we can store the topology etc !!!
