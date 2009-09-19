@@ -128,7 +128,7 @@ class MDrunner(utilities.FileUtils):
 
         if pre is None:
             pre = {}
-        if pose is None:
+        if post is None:
             post = {}
         
         cmd = self.commandline(**mpiargs)    
@@ -165,7 +165,7 @@ class MDrunner(utilities.FileUtils):
 
         rc = None
         try:
-            rc = self.run(**mpiargs)
+            rc = self.run(**kwargs)
         except:
             logger.exception("run_check: caught exception")
         status = self.check_success()
