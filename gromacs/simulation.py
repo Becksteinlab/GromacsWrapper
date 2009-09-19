@@ -85,7 +85,8 @@ class MDrunner(utilities.FileUtils):
             deffnm = kwargs.get('deffnm', None)
             if not deffnm is None:
                 logname = deffnm
-        self.logname = self.filename(logname, ext='log')
+        self.logname = os.path.realpath(
+            os.path.join(self.dirname, self.filename(logname, ext='log')))
     
     def commandline(self, **mpiargs):
         """Returns simple command line to invoke mdrun.
