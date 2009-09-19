@@ -501,14 +501,16 @@ class PopenWithInput(subprocess.Popen):
               file descriptors with ``ulimit -n 2048`` and run analysis in
               different scripts.
 
-    _`issue 5179`: http://bugs.python.org/issue5179
+    .. _issue 5179: http://bugs.python.org/issue5179
     """
 
     def __init__(self,*args,**kwargs):
         """Initialize with the standard :class:`subprocess.Popen` arguments.
 
         :Keywords:
-        - *input* : string that is piped into the command
+           *input*
+               string that is piped into the command
+           
         """
         self.input = kwargs.pop('input',None)
         self.command = args[0]

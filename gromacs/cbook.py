@@ -6,7 +6,7 @@
 :mod:`gromacs.cbook` -- Gromacs Cook Book
 =========================================
 
-The :mod:`cbook` (cook book) module contains short recipes for tasks
+The :mod:`~gromacs.cbook` (cook book) module contains short recipes for tasks
 that are often repeated. In the simplest case this is just one of the
 gromacs tools with a certain set of default command line options.
 
@@ -40,14 +40,14 @@ Standard invocations for compacting or fitting trajectories.
 
 .. function:: trj_xyfitted([s="md.tpr", f="md.xtc"[, ...]])
 
-    Writes a trajectory centered and fitted to the protein in the XY-plane only.
+   Writes a trajectory centered and fitted to the protein in the XY-plane only.
 
-    This is useful for membrane proteins. The system *must* be oriented so that
-    the membrane is in the XY plane. The protein backbone is used for the least
-    square fit, centering is done for the whole protein., but this can be
-    changed with the *input* = ``('backbone', 'protein','system')`` keyword.
+   This is useful for membrane proteins. The system *must* be oriented so that
+   the membrane is in the XY plane. The protein backbone is used for the least
+   square fit, centering is done for the whole protein., but this can be
+   changed with the *input* = ``('backbone', 'protein','system')`` keyword.
 
-    .. Note:: Gromacs 4.x only
+   .. Note:: Gromacs 4.x only
     
 
 .. autofunction:: trj_fitandcenter
@@ -204,14 +204,12 @@ def trj_fitandcenter(xy=False, **kwargs):
     .. Note:: For big trajectories it can **take a very long time**
               and consume a **large amount of temporary diskspace**.
 
-    .. SeeAlso::
-       We follow the `g_spatial documentation`_ in preparing the trajectories::
+    We follow the `g_spatial documentation`_ in preparing the trajectories::
 
-          trjconv -s a.tpr -f a.xtc -o b.xtc -center tric -ur compact -pbc none
-          
-          trjconv -s a.tpr -f b.xtc -o c.xtc -fit rot+trans
+       trjconv -s a.tpr -f a.xtc -o b.xtc -center tric -ur compact -pbc none
+       trjconv -s a.tpr -f b.xtc -o c.xtc -fit rot+trans
     
-       .. _`g_spatial documentation`: http://oldwiki.gromacs.org/index.php/Manual:g_spatial_4.0.3
+    .. _`g_spatial documentation`: http://oldwiki.gromacs.org/index.php/Manual:g_spatial_4.0.3
     """
     if xy:
         fitmode = 'rotxy+transxy'
@@ -260,8 +258,8 @@ class Frames(object):
               up a disk, though.
 
     .. Warning:: The *maxframes* option is not implemented yet; use
-              the *dt* option or similar to keep the number of frames
-              manageable.
+                 the *dt* option or similar to keep the number of frames
+                 manageable.
     """
     
     def __init__(self, structure, trj, maxframes=None, format='pdb', **kwargs):
@@ -282,6 +280,7 @@ class Frames(object):
              All other arguments are passed to
              `class:~gromacs.tools.Trjconv`; the only options that
              cannot be changed are *sep* and the output file name *o*.
+             
         """
         self.structure = structure  # tpr or equivalent
         self.trj = trj              # xtc, trr, ...

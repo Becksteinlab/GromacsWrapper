@@ -34,17 +34,8 @@ import core
 import utilities
 
 class MDrunner(utilities.FileUtils):
-    """A class to run ``mdrun`` in various ways.
+    """A class to manage running :program:`mdrun` in various ways.
 
-    :Keywords:
-        *dirname*
-            Change to this directory before launching the job. Input
-            files must be supplied relative to this directory.
-        *keywords*
-            All other keword arguments are used to construct the
-            :class:`~gromacs.tools.mdrun` commandline. Note that only
-            keyword arguments are allowed.
-    
     In order to do complicated multiprocessor runs with mpiexec or
     similar you need to derive from this class and override
 
@@ -66,11 +57,15 @@ class MDrunner(utilities.FileUtils):
     def __init__(self, dirname=os.path.curdir, **kwargs):
         """Set up a simple run with ``mdrun``.
 
-        Use the *kwargs* in order to set :class:`gromacs.tools.mdrun`
-        options such as *deffnm* = "md" etc.
+        :Keywords:
+           *dirname*
+               Change to this directory before launching the job. Input
+               files must be supplied relative to this directory.
+           *keywords*
+               All other keword arguments are used to construct the
+               :class:`~gromacs.tools.mdrun` commandline. Note that only
+               keyword arguments are allowed.
 
-        *dirname* changes to that directory to run the simulations;
-        input files must be supplied relative to this directory.        
         """
         # run MD in this directory (input files must be relative to this dir!)
         self.dirname = dirname
@@ -139,7 +134,7 @@ class MDrunner(utilities.FileUtils):
           *pre*
              a dictionary containing keyword arguments for the :meth:`prehook`
           *post*
-             a dictionary containing keyword arguments for the :meth:`prehook`
+             a dictionary containing keyword arguments for the :meth:`posthook`
           *mpiargs*
              keyword arguments that are processed by :meth:`mpicommand`
         """
@@ -168,7 +163,7 @@ class MDrunner(utilities.FileUtils):
         return rc
 
     def run_check(self, **kwargs):
-        """Run ``mdrun`` and check if run completed when it finishes.
+        """Run :program:`mdrun` and check if run completed when it finishes.
 
         This works by looking at the mdrun log file for 'Finished
         mdrun on node'. It is useful to implement robust simulation
@@ -179,7 +174,7 @@ class MDrunner(utilities.FileUtils):
            :meth:`run` (typically used for mpi things)
            
         :Returns:
-           - ``True`` if run conmpleted successfully
+           - ``True`` if run completed successfully
            - ``False`` otherwise
         """
         rc = None   # set to something in case we ever want to look at it later (and bomb in the try block)
@@ -195,22 +190,34 @@ class MDrunner(utilities.FileUtils):
         return status
 
     def check_success(self):
-        """Check if ``mdrun`` finished successfully.
+        """Check if :program:`mdrun` finished successfully.
 
-        .. SeeAlso:: func:`check_mdrun_success`
+        (See :func:`check_mdrun_success` for details)
         """
         return check_mdrun_success(self.logname)
             
         
 class MDrunnerOpenMP(MDrunner):
+    """Manage running :program:`mdrun` as an OpenMP_ multiprocessor job.
+
+    .. _OpenMP: http://openmp.org/wp/
+    """
     mdrun = "mdrun_openmp"
     mpiexec = "mpiexec"
 
 class MDrunnerOpenMP64(MDrunner):
+    """Manage running :program:`mdrun` as an OpenMP_ multiprocessor job (64-bit executable).
+
+    .. _OpenMP: http://openmp.org/wp/
+    """
     mdrun = "mdrun_openmp64"
     mpiexec = "mpiexec"
 
 class MDrunnerMpich2Smpd(MDrunner):
+    """Manage running :program:`mdrun` as mpich2_ multiprocessor job with the SMPD mechanism.
+
+    .. _mpich2: http://www.mcs.anl.gov/research/projects/mpich2/
+    """
     mdrun = "mdrun_mpich2"
     mpiexec = "mpiexec"
 
