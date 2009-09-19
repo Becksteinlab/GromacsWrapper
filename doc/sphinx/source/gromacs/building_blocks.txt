@@ -11,3 +11,4 @@ as "library" for common tasks.
 
 .. automodule:: gromacs.cbook
 .. automodule:: gromacs.setup
+.. automodule:: gromacs.simulation
