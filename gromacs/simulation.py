@@ -9,6 +9,11 @@
 Helper functions and classes around :class:`gromacs.tools.mdrun`.
 
 .. autoclass:: MDrunner
+   :members:
+.. autoclass:: MDrunnerOpenMP
+.. autoclass:: MDrunnerOpenMP64
+
+.. function:: check_mdrun_success
 
 """
 
@@ -19,9 +24,14 @@ import logging
 # logging
 logger = logging.getLogger('gromacs.simulation')
 
+import utilities
 
-class MDrunner(object):
+class MDrunner(utilities.FileUtils):
     """A class to run ``mdrun`` in various ways.
+
+    The keyword arguments supplied on initialization are used to
+    construct the :class:`~gromacs.tools.mdrun` commandline. Note that
+    only keyword arguments are allowed.
     
     In order to do complicated multiprocessor runs with mpiexec or
     similar you need to derive from this class and override
@@ -29,11 +39,16 @@ class MDrunner(object):
     - :attr:`MDrunner.mdrun` with the path to the ``mdrun`` executable
     - :attr:`MDrunner.mpiexec` with the path to the MPI launcher
     - :meth:`MDrunner.mpicommand` with a function that returns the mpi command as a list
+
+    In addition there are two methods named :meth:`prehook` and
+    :meth:`posthook` that are called right before and after the
+    process is started. If they are overriden appropriately then they
+    can be used to set up a mpi environment.
     """
 
-    #: path to the mdrun executable (or the name when on :envvar:`PATH`)
+    #: path to the :program:`mdrun` executable (or the name if it can be found on :envvar:`PATH`)
     mdrun = "mdrun"
-    #: path to the MPI launcher (e.g. ``mpiexec``)
+    #: path to the MPI launcher (e.g. :program:`mpiexec`)
     mpiexec = None
 
     def __init__(self, **kwargs):
@@ -49,12 +64,27 @@ class MDrunner(object):
 
         kwargs['failure'] = 'raise'    # failure mode of class
         self.MDRUN = cls(**kwargs)  # might fail for mpi binaries? .. -h?
+
+        # analyze command line to deduce logfile name
+        logname = kwargs.get('g', None)    # explicit
+        if logname in (True, None):        # implicit
+            logname = 'md'             # mdrun default
+            deffnm = kwargs.get('deffnm', None)
+            if not deffnm is None:
+                logname = deffnm
+        self.logname = self.filename(logname, ext='log')
     
     def commandline(self, **mpiargs):
         """Returns simple command line to invoke mdrun.
-        
-        Only allows primitive mpi at the moment:
-           *mpiexec* -n *ncores* *mdrun* *mdrun-args*
+
+        If :attr:`mpiexec` is set then :meth:`mpicommand` provides the mpi
+        launcher command that prefixes the actual ``mdrun`` invocation:
+
+           :attr:`mpiexec` [*mpiargs*]  :attr:`mdrun` [*mdrun-args*] 
+
+        The *mdrun-args* are set on initializing the class. Override
+        :meth:`mpicommand` to fit your system if the simple default
+        OpenMP launcher is not appropriate.
         """
         cmd = self.MDRUN.commandline()
         if self.mpiexec:
@@ -64,28 +94,94 @@ class MDrunner(object):
     def mpicommand(self, *args, **kwargs):
         """Return a list of the mpi command portion of the commandline.
 
+        Only allows primitive mpi at the moment:
+           *mpiexec* -n *ncores* *mdrun* *mdrun-args*
+
         (This is a primitive example for OpenMP. Override it for more
         complicated cases.)
         """
+        if self.mpiexec is None:
+            raise NotImplementedError("Override mpiexec to enable the simple OpenMP launcher")
         # example implementation
         ncores = kwargs.pop('ncores', 8)
         return [self.mpiexec, '-n', str(ncores)]
 
-    def run(self, **mpiargs):
-        cmd = self.commandline(**mpiargs)
+    def prehook(self, **kwargs):
+        """Called directly before launching the process."""
+        return
+
+    def posthook(self, **kwargs):
+        """Called directly after the process terminated (also if it failed)."""
+        return
+    
+    def run(self, pre=None, post=None, **mpiargs):
+        """Execute the mdrun command (possibly as a MPI command) and run the simulation.
+
+        :Keywords:
+          *pre*
+             a dictionary containing keyword arguments for the :meth:`prehook`
+          *post*
+             a dictionary containing keyword arguments for the :meth:`prehook`
+          *mpiargs*
+             keyword arguments that are processed by :meth:`mpicommand`
+        """
+
+        if pre is None:
+            pre = {}
+        if pose is None:
+            post = {}
         
+        cmd = self.commandline(**mpiargs)    
         logger.info(" ".join(cmd))
         try:
+            self.prehook(**pre)
             rc = subprocess.call(cmd)
         except:
-            logger.fatal("Failed MD run for unknown reasons.")
+            logger.exception("Failed MD run for unknown reasons.")
             raise
+        finally:
+            self.posthook(**post)
         if rc == 0:
             logger.info("MDrun completed ok, returncode = %d" % rc)
         else:
             logger.critical("Failure in MDrun, returncode = %d" % rc)
-
         return rc
+
+    def run_check(self, **kwargs):
+        """Run ``mdrun`` and check if run completed when it finishes.
+
+        This works by looking at the mdrun log file for 'Finished
+        mdrun on node'. It is useful to implement robust simulation
+        techniques.
+        
+        :Arguments:
+           *kwargs* are keyword arguments that are passed on to
+            :meth:`run` (typically used for mpi things)
+           
+        :Returns:
+           - ``True`` if run conmpleted successfully
+           - ``False`` otherwise
+        """
+
+        rc = None
+        try:
+            rc = self.run(**mpiargs)
+        except:
+            logger.exception("run_check: caught exception")
+        status = self.check_success()
+        if status:
+            logger.info("run_check: Hooray! mdrun finished successfully")
+        else:
+            logger.error("run_check: mdrun failed to complete run")
+        return status
+
+    def check_success(self):
+        """Check if ``mdrun`` finished successfully.
+
+        .. SeeAlso:: func:`check_mdrun_success`
+        """
+        return check_mdrun_success(self.logname)
+            
         
 class MDrunnerOpenMP(MDrunner):
     mdrun = "mdrun_openmp"
@@ -95,7 +191,25 @@ class MDrunnerOpenMP64(MDrunner):
     mdrun = "mdrun_openmp64"
     mpiexec = "mpiexec"
 
+class MDrunnerMpich2Smpd(MDrunner):
+    mdrun = "mdrun_mpich2"
+    mpiexec = "mpiexec"
 
+    def prehook(self, **kwargs):
+        """Launch local smpd."""
+        cmd = ['smpd', '-s']
+        logger.info("Starting smpd: "+" ".join(cmd))
+        rc = subprocess.call(cmd)
+        return rc
+
+    def posthook(self, **kwargs):
+        """Shut down smpd"""
+        cmd = ['smpd', '-shutdown']
+        logger.info("Shutting down smpd: "+" ".join(cmd))        
+        rc = subprocess.call(cmd)
+        return rc
+        
+    
 
 def check_mdrun_success(logfile):
     """Check if ``mdrun`` finished successfully.
