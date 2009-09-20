@@ -15,7 +15,7 @@ Helper functions and classes around :class:`gromacs.tools.mdrun`.
 .. autoclass:: MDrunnerOpenMP64
 .. autoclass:: MDrunnerMpich2Smpd
 
-.. function:: check_mdrun_success
+.. autofunction:: check_mdrun_success
 
 """
 from __future__ import with_statement
