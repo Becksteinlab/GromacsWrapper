@@ -302,6 +302,13 @@ class FileUtils(object):
         else:
             return solutions[resolve](filename)
 
+    def infix_filename(self, name, default, infix, ext):
+        """Unless *name* is provided,  *infix* before the extension *ext* of *default*."""
+        if name is None:
+            p, ext = os.path.splitext(default)
+            name = self.filename(p+infix, ext=ext)
+        return name
+
 
 
 def iterable(obj):

@@ -159,6 +159,8 @@ def trj_fitandcenter(xy=False, **kwargs):
     """Center everything and make a compact representation (pass 1) and fit the system to a reference (pass 2).
 
     :Keywords:
+       *s*
+           input structure file (tpr file required to make molecule whole)
        *f*
            input trajectory
        *o*
@@ -214,8 +216,9 @@ def trj_fitandcenter(xy=False, **kwargs):
     """
     if xy:
         fitmode = 'rotxy+transxy'
+        kwargs.pop('fit')
     else:
-        fitmode = 'rot+trans'
+        fitmode = kwargs.pop('fit', 'rot+trans')  # user can use progressive, too
         
     intrj = kwargs.pop('f', None)
     # get the correct suffix for the intermediate step: only trr will
@@ -1057,7 +1060,10 @@ class IndexBuilder(object):
 class Transformer(utilities.FileUtils):
     """Class to handle transformations of trajectories.
 
-    1. Write compact xtc and tpr with water removed.
+    1. Center, compact, and fit to reference structure in tpr
+       (optionally, only center in the xy plane): :meth:`~Transformer.center_fit`
+    2. Write compact xtc and tpr with water removed: :meth:`~Transformer.strip_water`
+
     """
 
     def __init__(self, s="topol.tpr", f="traj.xtc", n=None, dirname=os.path.curdir):
@@ -1084,6 +1090,22 @@ class Transformer(utilities.FileUtils):
         self.ndx = n
         self.dirname = dirname
 
+    def center_fit(self, **kwargs):
+        """Write compact xtc that is fitted to the tpr reference structure.
+
+        See :func:gromacs.cbook.trj_fitandcenter` for details and
+        description of *kwargs*.        
+        """
+        kwargs.setdefault('s', self.tpr)
+        kwargs.setdefault('n', self.ndx)
+        kwargs['f'] = self.xtc
+        kwargs.setdefault('o', self.infix_filename(None, self.xtc, '_centfit', 'xtc'))
+
+        logger.info("Center and fit trajectory %(f)r..." % kwargs)
+        with utilities.in_dir(self.dirname):
+            trj_fitandcenter(**kwargs)
+            logger.info("Centered and fit trajectory in %(o)r." % kwargs)
+
     def strip_water(self, s=None, o=None, resn="SOL", groupname="notwater", **kwargs):
         """Write compact xtc and tpr with water (by resname) removed.
 
@@ -1092,7 +1114,7 @@ class Transformer(utilities.FileUtils):
               Name of the output tpr file; by default use the original but
               insert "nowater" before suffix.
            *o*
-              Name of the output trajectory; by default use the original but
+              Name of the output trajectory; by default use the original name but
               insert "nowater" before suffix.
            *resn*
               Residue name of the water molecules; all these residues are excluded.
@@ -1115,14 +1137,8 @@ class Transformer(utilities.FileUtils):
                      (This appears to be a bug in Gromacs 4.x.)
         """
         
-        def newname(name, ext, default):
-            if name is None:
-                p, ext = os.path.splitext(default)
-                name = self.filename(p+"_nowater", ext=ext)
-            return name
-
-        newtpr = newname(s, 'tpr', self.tpr)
-        newxtc = newname(o, 'xtc', self.xtc)
+        newtpr = self.infix_filename(s, self.tpr, '_nowater', 'tpr')
+        newxtc = self.infix_filename(o, self.xtc, '_nowater', 'xtc')
 
         nowater_ndx = "nowater.ndx"
 
