@@ -53,7 +53,7 @@ Functions that help handling Gromacs files:
 .. autofunction:: unlink_f
 .. autofunction:: unlink_gmx
 .. autofunction:: unlink_gmx_backups
-
+.. autofunction:: number_pdbs
 
 Functions that make working with matplotlib_ easier:
 
@@ -80,12 +80,16 @@ __docformat__ = "restructuredtext en"
 
 import os
 import glob
+import re
 import warnings
 import errno
 from contextlib import contextmanager
 import bz2, gzip
 import numpy
 import datetime
+
+import logging
+logger = logging.getLogger('gromacs.utilities')
 
 from gromacs import AutoCorrectionWarning
 
@@ -177,11 +181,14 @@ def in_dir(directory, create=True):
     try:
         try:
             os.chdir(directory)
+            logger.info("Working in %(directory)r..." % vars())
         except OSError, err:
             if create and err.errno == errno.ENOENT:
                 os.makedirs(directory)
                 os.chdir(directory)
+                logger.info("Working in %(directory)r (newly created)..." % vars())
             else:
+                logger.exception("Failed to start working in %(directory)r." % vars())
                 raise
         yield os.getcwd()
     finally:
@@ -412,3 +419,31 @@ class Timedelta(datetime.timedelta):
         return s
 
     
+NUMBERED_PDB = re.compile(r"(?P<PREFIX>.*\D)(?P<NUMBER>\d+)\.(?P<SUFFIX>pdb)")
+
+def number_pdbs(*args, **kwargs):
+    """Rename pdbs x1.pdb ... x345.pdb --> x0001.pdb ... x0345.pdb
+
+    :Arguments:
+       - *args*: filenames or glob patterns (such as "pdb/md*.pdb")
+       - *format*: format string including keyword *num* ["%(num)04d"]
+    """
+
+    format = kwargs.pop('format', "%(num)04d")
+    name_format = "%(prefix)s" + format +".%(suffix)s"
+    filenames = []
+    map(filenames.append, map(glob.glob, args))  # concatenate all filename lists
+    filenames = filenames[0]                     # ... ugly
+    for f in filenames:
+        m = NUMBERED_PDB.search(f)
+        if m is None:
+            continue
+        num = int(m.group('NUMBER'))
+        prefix = m.group('PREFIX')
+        suffix = m.group('SUFFIX')
+        newname = name_format % vars()
+        logger.info("Renaming %(f)r --> %(newname)r" % vars())
+        try:
+            os.rename(f, newname)
+        except OSError:
+            logger.exception("renaming failed")
