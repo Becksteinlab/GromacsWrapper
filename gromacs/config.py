@@ -96,8 +96,8 @@ loglevel_file = logging.INFO
 
 #: List of the variables in gromacs.tools that should be loaded. Possible values:
 #: *gmx_tools*, *gmx_extra_tools*. Right now these are variable names in
-#: :mod:`gromacs.config`, referencing data:`gromacs.config.gmx_tools` and
-#: data:`gromacs.config.gmx_extra_tools`.
+#: :mod:`gromacs.config`, referencing :data:`gromacs.config.gmx_tools` and
+#: :data:`gromacs.config.gmx_extra_tools`.
 gmx_tool_groups = ['gmx_tools', ]
 
 #: Contains the file names of all Gromacs tools for which classes are generated.
