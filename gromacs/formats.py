@@ -259,8 +259,7 @@ class NDX(odict, utilities.FileUtils):
     #: standard ndx file format: '%6d'
     format = '%6d'
 
-    def __init__(self, **kwargs):
-        filename = kwargs.pop('filename',None)
+    def __init__(self, filename=None, **kwargs):
         super(NDX, self).__init__(**kwargs)  # can use kwargs to set dict! (but no sanity checks!)
 
         if not filename is None:
