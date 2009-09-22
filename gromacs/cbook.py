@@ -1067,7 +1067,9 @@ class Transformer(utilities.FileUtils):
 
         :Keywords:
            *s* 
-              tpr file (or similar)
+              tpr file (or similar); note that this should not contain
+              position restraints if it is to be used with a reduced
+              system (see :meth:`~Transformer.strip_water`)
            *f*
               trajectory (xtc, trr, ...)
            *n*
@@ -1081,7 +1083,6 @@ class Transformer(utilities.FileUtils):
         self.xtc = f
         self.ndx = n
         self.dirname = dirname
-
 
     def strip_water(self, s=None, o=None, resn="SOL", groupname="notwater", **kwargs):
         """Write compact xtc and tpr with water (by resname) removed.
