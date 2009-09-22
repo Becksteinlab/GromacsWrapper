@@ -118,7 +118,7 @@ import gromacs.config as config
 from gromacs import GromacsError, GromacsFailureWarning, GromacsValueWarning, \
      AutoCorrectionWarning, BadParameterWarning, UsageWarning
 import gromacs.cbook
-from gromacs.utilities import in_dir, Timedelta
+from gromacs.utilities import in_dir, realpath, Timedelta
 
 
 #: Concentration of water at standard conditions in mol/L.
@@ -138,10 +138,6 @@ rvdw         1.4        1.0
 rlist        1.4 ?      1.0
 ==========   =========  ================
 """
-
-def realpath(*args):
-    """Join all args and return the real path, rooted at /"""
-    return os.path.realpath(os.path.join(*args))
 
 
 # TODO:

@@ -31,6 +31,7 @@ Some additional convenience functions that deal with files and
 directories:
 
 .. autofunction:: anyopen
+.. autofunction:: realpath
 .. function:: in_dir(directory[,create=True])
 
    Context manager to execute a code block in a directory.
@@ -193,6 +194,15 @@ def in_dir(directory, create=True):
         yield os.getcwd()
     finally:
         os.chdir(startdir)
+
+def realpath(*args):
+    """Join all args and return the real path, rooted at /.
+
+    Returns ``None`` if any of the args is none.
+    """
+    if None in args:
+        return None
+    return os.path.realpath(os.path.join(*args))
 
 class FileUtils(object):
     """Mixin class to provide additional file-related capabilities."""
