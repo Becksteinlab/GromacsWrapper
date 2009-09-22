@@ -7,7 +7,7 @@
 :mod:`gromacs.simulation` -- Running simulations
 ================================================
 
-Helper functions and classes around :class:`gromacs.tools.mdrun`.
+Helper functions and classes around :class:`gromacs.tools.Mdrun`.
 
 .. autoclass:: MDrunner
    :members:
