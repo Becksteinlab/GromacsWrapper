@@ -1085,8 +1085,8 @@ class Transformer(utilities.FileUtils):
            
         """
 
-        self.tpr = s
-        self.xtc = f
+        self.tpr = self.filename(s, ext="tpr", use_my_ext=True)
+        self.xtc = self.filename(f, ext="xtc", use_my_ext=True)
         self.ndx = n
         self.dirname = dirname
 
@@ -1106,16 +1106,22 @@ class Transformer(utilities.FileUtils):
             trj_fitandcenter(**kwargs)
             logger.info("Centered and fit trajectory in %(o)r." % kwargs)
 
-    def strip_water(self, s=None, o=None, resn="SOL", groupname="notwater", **kwargs):
-        """Write compact xtc and tpr with water (by resname) removed.
+    def strip_water(self, os=None, o=None, on=None, compact=False, 
+                    resn="SOL", groupname="notwater", **kwargs):
+        """Write xtc and tpr with water (by resname) removed.
 
         :Keywords:
-           *s*
+           *os*
               Name of the output tpr file; by default use the original but
               insert "nowater" before suffix.
            *o*
               Name of the output trajectory; by default use the original name but
               insert "nowater" before suffix.
+           *on*
+              Name of a new index file (without water).
+           *compact*
+              ``True``: write a compact and centered trajectory
+              ``False``: use trajectory as it is [``False``]
            *resn*
               Residue name of the water molecules; all these residues are excluded.
            *groupname*
@@ -1137,14 +1143,20 @@ class Transformer(utilities.FileUtils):
                      (This appears to be a bug in Gromacs 4.x.)
         """
         
-        newtpr = self.infix_filename(s, self.tpr, '_nowater', 'tpr')
-        newxtc = self.infix_filename(o, self.xtc, '_nowater', 'xtc')
+        newtpr = self.infix_filename(os, self.tpr, '_nowater')
+        newxtc = self.infix_filename(o, self.xtc, '_nowater')
+        newndx = self.infix_filename(on, self.tpr, '_nowater', 'ndx')
 
-        nowater_ndx = "nowater.ndx"
+        nowater_ndx = "nowater.ndx"    # refers to original tpr
 
-        _input = kwargs.get('input', ['Protein'])
-        kwargs['input'] = [_input[0], groupname]  # [center group, write-out selection]
-        del _input
+        if compact:
+            TRJCONV = trj_compact
+            _input = kwargs.get('input', ['Protein'])
+            kwargs['input'] = [_input[0], groupname]  # [center group, write-out selection]
+            del _input
+        else:
+            TRJCONV = gromacs.trjconv
+            kwargs['input'] = [groupname]
 
         NOTwater = "! r %(resn)s" % vars()  # make_ndx selection ("not water residues")
         with utilities.in_dir(self.dirname):
@@ -1156,19 +1168,22 @@ class Transformer(utilities.FileUtils):
             logger.info("TPR file without water %(newtpr)r" % vars())
             gromacs.tpbconv(s=self.tpr, o=newtpr, n=nowater_ndx, input=[groupname])
 
+            logger.info("NDX of the new system %(newndx)r")
+            gromacs.make_ndx(f=newtpr, o=newndx, input=['q'], stderr=False, stdout=False)
+
             logger.info("Trajectory without water %(newxtc)r" % vars())
             kwargs['s'] = self.tpr
             kwargs['f'] = self.xtc
             kwargs['n'] = nowater_ndx
             kwargs['o'] = newxtc
-            trj_compact(**kwargs)
+            TRJCONV(**kwargs)
 
             logger.info("pdb and gro for visualization")            
             for ext in 'pdb', 'gro':
                 try:
                     # see warning in doc ... so we don't use the new xtc but the old one
                     kwargs['o'] = self.filename(newtpr, ext=ext)
-                    trj_compact(dump=0, stdout=False, stderr=False, **kwargs)  # silent
+                    TRJCONV(dump=0, stdout=False, stderr=False, **kwargs)  # silent
                 except:
                     logger.exception("Failed building the water-less %(ext)s. "
                                      "Position restraints in tpr file (see docs)?" % vars())
