@@ -49,8 +49,9 @@ Standard invocations for compacting or fitting trajectories.
 
    .. Note:: Gromacs 4.x only
     
-
 .. autofunction:: trj_fitandcenter
+.. autoclass:: Transformer
+   :members:
 
 
 Processing output
@@ -669,7 +670,8 @@ class IndexBuilder(object):
     This is *not* a full blown selection parser a la Charmm, VMD or
     MDAnalysis but a very quick hack.
 
-    :Example:
+    **Example**
+
        How to use the :class:`IndexBuilder`::
  
           G = gromacs.cbook.IndexBuilder('md_posres.pdb', 
@@ -682,7 +684,13 @@ class IndexBuilder(object):
        sequence or pdb. *offset=-9* says that one calculates Gromacs topology
        resids by subtracting 9 from the canonical resid. 
 
-       The combined selection is ``OR`` ed by default and written to *selection.ndx*.
+       The combined selection is ``OR`` ed by default and written to
+       *selection.ndx*. One can also add all the groups in the initial *ndx*
+       file (or the :program:`make_ndx` default groups) to the output (see the
+       *defaultgroups* keyword for :meth:`IndexBuilder.combine`).
+
+       Generating an index file always requires calling
+       :meth:`~IndexBuilder.combine` even if there is only a single group.
 
        Deleting the class removes all temporary files associated with it (see
        :attr:`IndexBuilder.indexfiles`).
@@ -701,7 +709,11 @@ class IndexBuilder(object):
 
        In this case run the command invocation manually to see what the problem
        could be.
-       
+
+
+    .. SeeAlso:: In some cases it might be more straightforward to use
+                 :class:`gromacs.formats.NDX`.
+
     """
 
     def __init__(self, struct=None, selections=None, names=None, name_all=None,
@@ -710,7 +722,7 @@ class IndexBuilder(object):
 
         If selections and a structure file are supplied then the individual
         selections are constructed with separate calls to
-        :func:`gromacs.make_ndx`. Use :meth:`IndexBuilder.combines` to combine
+        :func:`gromacs.make_ndx`. Use :meth:`IndexBuilder.combine` to combine
         them into a joint selection.
 
         :Arguments:
@@ -773,6 +785,7 @@ class IndexBuilder(object):
             selections = []
         if not utilities.iterable(selections):
             selections = [selections]
+        self.selections = selections
         if names is None:
             names = [None] * len(selections)
         
@@ -798,7 +811,7 @@ class IndexBuilder(object):
             raise KeyError("offset must be a dict that contains the gmx resid for %d" % resid)
         return gmx_resid
 
-    def combine(self, name_all=None, out_ndx=None, operation='|'):
+    def combine(self, name_all=None, out_ndx=None, operation='|', defaultgroups=False):
         """Combine individual groups into a single one and write output.
 
         :Keywords:         
@@ -811,6 +824,11 @@ class IndexBuilder(object):
            operation : character
               Logical operation that is used to generate the combined group from
               the individual groups: "|" (OR) or "&" (AND) ["|"]
+           defaultgroups : bool
+              ``True``: append everything to the default groups produced by 
+              :program:`make_ndx` (or rather, the groups provided in the ndx file on
+              initialization --- if this was ``None`` then these are truly default groups);
+              ``False``: only use the generated groups
 
         :Returns:
            ``(combinedgroup_name, output_ndx)``, a tuple showing the
@@ -820,6 +838,7 @@ class IndexBuilder(object):
                      *not* guaranteed to be the same as the selections on input because
                      ``make_ndx`` sorts them ascending. Thus you should be careful when
                      using these index files for calculations of angles and dihedrals.
+                     Use :class:`gromacs.formats.NDX` in these cases.
         """
         if name_all is None:
             name_all = self.name_all
@@ -830,31 +849,60 @@ class IndexBuilder(object):
                              operation)
         if out_ndx is None:
             out_ndx = self.output
+            
+        if defaultgroups:
+            # make a default file (using the original ndx where provided!!)
+            fd, default_ndx = tempfile.mkstemp(suffix='.ndx', prefix='default__')
+            try:
+                self.make_ndx(o=default_ndx, input=['q'])
+            except:
+                utilities.unlink_gmx(default_ndx)
+                raise
+            ndxfiles = [default_ndx]
+        else:
+            ndxfiles = []
 
-        try:
-            fd, tmp_ndx = tempfile.mkstemp(suffix='.ndx', prefix='combined__')
-            # combine all selections by loading ALL temporary index files
-            operation = ' '+operation.strip()+' '
-            cmd = [operation.join(['"%s"' % gname for gname in self.indexfiles]),
-                   '', 'q']
-            rc,out,err = self.make_ndx(n=self.indexfiles.values(), o=tmp_ndx, input=cmd)
-            if self._is_empty_group(out):
-                warnings.warn("No atoms found for %(cmd)r" % vars(), 
-                              category=BadParameterWarning)
+        ndxfiles.extend(self.indexfiles.values())
 
-            # second pass for naming, sigh
-            groups = parse_ndxlist(out)
-            last = groups[-1]
-            # name this group
-            name_cmd = ["name %d %s" % (last['nr'], name_all), 
-                        'q']
-            rc,out,err = self.make_ndx(n=tmp_ndx, o=out_ndx, input=name_cmd)
-            # For debugging, look at out and err or set stdout=True, stderr=True
-            # TODO: check out if at least 1 atom selected
-            ##print "DEBUG: combine()"
-            ##print out
-        finally:
-            utilities.unlink_gmx(tmp_ndx)
+        if len(self.selections) == 1:
+            # no need to combine selections
+            try:
+                cmd = ['', 'q']
+                rc,out,err = self.make_ndx(n=ndxfiles, o=out_ndx, input=cmd)
+                if self._is_empty_group(out):
+                    warnings.warn("No atoms found for %(cmd)r" % vars(), 
+                                  category=BadParameterWarning)
+            finally:
+                if defaultgroups:
+                    utilities.unlink_gmx(default_ndx)
+        else:
+            # multiple selections: combine them and name them
+            try:
+                fd, tmp_ndx = tempfile.mkstemp(suffix='.ndx', prefix='combined__')
+                # combine all selections by loading ALL temporary index files
+                operation = ' '+operation.strip()+' '
+                cmd = [operation.join(['"%s"' % gname for gname in self.indexfiles]),
+                       '', 'q']
+                rc,out,err = self.make_ndx(n=ndxfiles, o=tmp_ndx, input=cmd)
+                if self._is_empty_group(out):
+                    warnings.warn("No atoms found for %(cmd)r" % vars(), 
+                                  category=BadParameterWarning)
+
+                # second pass for naming, sigh (or: use NDX ?)
+                groups = parse_ndxlist(out)
+                last = groups[-1]
+                # name this group
+                name_cmd = ["name %d %s" % (last['nr'], name_all), 
+                            'q']
+                rc,out,err = self.make_ndx(n=tmp_ndx, o=out_ndx, input=name_cmd)
+                # For debugging, look at out and err or set stdout=True, stderr=True
+                # TODO: check out if at least 1 atom selected
+                ##print "DEBUG: combine()"
+                ##print out
+            finally:
+                utilities.unlink_gmx(tmp_ndx)
+                if defaultgroups:
+                    utilities.unlink_gmx(default_ndx)
         
         return name_all, out_ndx
 
@@ -1006,3 +1054,106 @@ class IndexBuilder(object):
             pass
 
 
+class Transformer(utilities.FileUtils):
+    """Class to handle transformations of trajectories.
+
+    1. Write compact xtc and tpr with water removed.
+    """
+
+    def __init__(self, s="topol.tpr", f="traj.xtc", n=None, dirname=os.path.curdir):
+        """Set up Transformer with structure and trajectory.
+
+        Supply *n* = tpr, *f* = xtc (and *n* = ndx) relative to dirname.
+
+        :Keywords:
+           *s* 
+              tpr file (or similar)
+           *f*
+              trajectory (xtc, trr, ...)
+           *n*
+              index file (it is typically safe to leave this as ``None``; in
+              cases where a trajectory needs to be centered on non-standard
+              groups this should contain those groups)
+           
+        """
+
+        self.tpr = s
+        self.xtc = f
+        self.ndx = n
+        self.dirname = dirname
+
+
+    def strip_water(self, s=None, o=None, resn="SOL", groupname="notwater", **kwargs):
+        """Write compact xtc and tpr with water (by resname) removed.
+
+        :Keywords:
+           *s*
+              Name of the output tpr file; by default use the original but
+              insert "nowater" before suffix.
+           *o*
+              Name of the output trajectory; by default use the original but
+              insert "nowater" before suffix.
+           *resn*
+              Residue name of the water molecules; all these residues are excluded.
+           *groupname*
+              Name of the group that is generated by subtracting all waters
+              from the system.
+           *kwargs* 
+              are passed on to :func:`gromacs.cbook.trj_compact` (unless the
+              values have to be set to certain values such as s, f, n, o
+              keywords). The *input* keyword is always mangled: Only the first
+              entry (the group to centre the trajectory on) is kept, and as a
+              second group (the output group) *groupname* is used.
+
+        .. warning:: The input tpr file should *not* have *any position restraints*;
+                     otherwise Gromacs will throw a hissy-fit and say 
+
+                     *Software inconsistency error: Position restraint coordinates are
+                     missing*
+
+                     (This appears to be a bug in Gromacs 4.x.)
+        """
+        
+        def newname(name, ext, default):
+            if name is None:
+                p, ext = os.path.splitext(default)
+                name = self.filename(p+"_nowater", ext=ext)
+            return name
+
+        newtpr = newname(s, 'tpr', self.tpr)
+        newxtc = newname(o, 'xtc', self.xtc)
+
+        nowater_ndx = "nowater.ndx"
+
+        _input = kwargs.get('input', ['Protein'])
+        kwargs['input'] = [_input[0], groupname]  # [center group, write-out selection]
+        del _input
+
+        NOTwater = "! r %(resn)s" % vars()  # make_ndx selection ("not water residues")
+        with utilities.in_dir(self.dirname):
+            # make no water index
+            B = IndexBuilder(struct=self.tpr, selections=['@'+NOTwater], names=[groupname],
+                             ndx=self.ndx, out_ndx=nowater_ndx)
+            B.combine(defaultgroups=True)
+
+            logger.info("TPR file without water %(newtpr)r" % vars())
+            gromacs.tpbconv(s=self.tpr, o=newtpr, n=nowater_ndx, input=[groupname])
+
+            logger.info("Trajectory without water %(newxtc)r" % vars())
+            kwargs['s'] = self.tpr
+            kwargs['f'] = self.xtc
+            kwargs['n'] = nowater_ndx
+            kwargs['o'] = newxtc
+            trj_compact(**kwargs)
+
+            logger.info("pdb and gro for visualization")            
+            for ext in 'pdb', 'gro':
+                try:
+                    # see warning in doc ... so we don't use the new xtc but the old one
+                    kwargs['o'] = self.filename(newtpr, ext=ext)
+                    trj_compact(dump=0, stdout=False, stderr=False, **kwargs)  # silent
+                except:
+                    logger.exception("Failed building the water-less %(ext)s. "
+                                     "Position restraints in tpr file (see docs)?" % vars())
+            
+            logger.info("strip_water() complete")
