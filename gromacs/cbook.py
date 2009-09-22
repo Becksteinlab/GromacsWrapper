@@ -1090,21 +1090,41 @@ class Transformer(utilities.FileUtils):
         self.ndx = n
         self.dirname = dirname
 
+    def rp(self, *args):
+        """Return canonical path to files under *dirname*"""
+        return utilities.realpath(self.dirname, *args)
+
     def center_fit(self, **kwargs):
         """Write compact xtc that is fitted to the tpr reference structure.
 
         See :func:gromacs.cbook.trj_fitandcenter` for details and
-        description of *kwargs*.        
+        description of *kwargs*. The most important ones are listed
+        here but in most cases the defaults should work.
+
+        :Keywords:
+           *s*
+             Input structure (typically the default tpr file but can be set to
+             some other file with a different conformation for fitting)
+           *n*
+             Alternative index file.           
+           *o*
+             Name of the output trajectory.
+
+        :Returns: 
+              dictionary with keys *tpr*, *xtc*, which are the names of the
+              the new files              
         """
         kwargs.setdefault('s', self.tpr)
         kwargs.setdefault('n', self.ndx)
         kwargs['f'] = self.xtc
         kwargs.setdefault('o', self.infix_filename(None, self.xtc, '_centfit', 'xtc'))
 
-        logger.info("Center and fit trajectory %(f)r..." % kwargs)
+        logger.info("Centering and fitting trajectory %(f)r..." % kwargs)
         with utilities.in_dir(self.dirname):
             trj_fitandcenter(**kwargs)
-            logger.info("Centered and fit trajectory in %(o)r." % kwargs)
+            logger.info("Centered and fit trajectory: %(o)r." % kwargs)
+        return {'tpr': self.rp(kwargs['s']), 'xtc': self.rp(kwargs['o'])}
+
 
     def strip_water(self, os=None, o=None, on=None, compact=False, 
                     resn="SOL", groupname="notwater", **kwargs):
@@ -1134,6 +1154,10 @@ class Transformer(utilities.FileUtils):
               entry (the group to centre the trajectory on) is kept, and as a
               second group (the output group) *groupname* is used.
 
+        :Returns: 
+              dictionary with keys *tpr*, *xtc*, *ndx* which are the names of the
+              the new files
+              
         .. warning:: The input tpr file should *not* have *any position restraints*;
                      otherwise Gromacs will throw a hissy-fit and say 
 
@@ -1187,5 +1211,5 @@ class Transformer(utilities.FileUtils):
                 except:
                     logger.exception("Failed building the water-less %(ext)s. "
                                      "Position restraints in tpr file (see docs)?" % vars())
-            
-            logger.info("strip_water() complete")
+            logger.info("strip_water() complete")            
+        return {'tpr': self.rp(newtpr), 'xtc': self.rp(newxtc), 'ndx': self.rp(newndx)}
