@@ -92,7 +92,7 @@ class XVG(utilities.FileUtils):
     def write(self, filename=None):
         """Write array to xvg file *filename* in NXY format."""
         self._init_filename(filename)
-        with open(self.real_filename, 'w') as xvg:
+        with utilities.openany(self.real_filename, 'w') as xvg:
             xvg.write("# xmgrace compatible NXY data file\n"
                       "# Written by gromacs.formats.XVG()\n")
             for xyy in self.array.T:
@@ -130,7 +130,7 @@ class XVG(utilities.FileUtils):
         columns X Y1 Y2 Y3 ... the array a will be a[0] = X, a[1] = Y1, ... .
         """
         # cannot use numpy.loadtxt() because xvg can have two types of 'comment' lines
-        with open(self.real_filename) as xvg:
+        with utilities.openany(self.real_filename) as xvg:
             rows = []
             for line in xvg:
                 line = line.strip()
