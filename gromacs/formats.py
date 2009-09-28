@@ -90,13 +90,16 @@ class XVG(utilities.FileUtils):
         self.parse()
 
     def write(self, filename=None):
-        """Write array to xvg file *filename* in NXY format."""
+        """Write array to xvg file *filename* in NXY format.
+
+        .. Note:: Only plain files working at the moment, not compressed.
+        """
         self._init_filename(filename)
         with utilities.openany(self.real_filename, 'w') as xvg:
             xvg.write("# xmgrace compatible NXY data file\n"
                       "# Written by gromacs.formats.XVG()\n")
             for xyy in self.array.T:
-                xyy.tofile(xvg, sep=" ", format="%-8s")     # quick and dirty ascii output...
+                xyy.tofile(xvg, sep=" ", format="%-8s")  # quick and dirty ascii output...--no compression!
                 xvg.write('\n')
 
     @property
@@ -206,6 +209,56 @@ class XVG(utilities.FileUtils):
         # finally plot
         kwargs['xdata'] = ma[0]          # abscissa set separately
         pylab.plot(ma[1:].T, **kwargs)   # plot all other columns in parallel
+        
+    def errorbar(self, **kwargs):
+        """Quick hack: errorbar plot.
+        
+        Set columns to select [x, y, dy].
+        """
+        import pylab
+
+        kwargs.setdefault('capsize', 0)
+        kwargs.setdefault('elinewidth', 1)
+        kwargs.setdefault('alpha', 0.3)
+        kwargs.setdefault('fmt', None)
+
+        maxpoints_default = 10000
+        columns = kwargs.pop('columns', Ellipsis)         # slice for everything
+        maxpoints = kwargs.pop('maxpoints', maxpoints_default)
+        transform = kwargs.pop('transform', lambda x: x)  # default is identity transformation
+        a = numpy.asarray(transform(self.array))[columns] # (slice o transform)(array)
+
+        ny = a.shape[-1]   # assume 1D or 2D array with last dimension varying fastest
+        if not maxpoints is None and ny > maxpoints:
+            # reduce size by subsampling (primitive --- can leave out
+            # bits at the end or end up with almost twice of maxpoints)
+            stepsize = int(ny / maxpoints)
+            a = a[..., ::stepsize]
+            if maxpoints == maxpoints_default:  # only warn if user did not set maxpoints
+                warnings.warn("Plot had %d datapoints > maxpoints = %d; subsampled to %d regularly spaced points." 
+                              % (ny, maxpoints, a.shape[-1]), category=AutoCorrectionWarning)
+
+        if len(a.shape) == 1:
+            # special case: plot against index; plot would do this automatically but 
+            # we'll just produce our own xdata and pretend that this was X all along
+            X = numpy.arange(len(a))
+            a = numpy.concatenate([[X], [a]])  # does NOT overwrite original a but make a new one
+
+        # now deal with infs, nans etc AFTER all transformations (needed for plotting across inf/nan)
+        ma = numpy.ma.MaskedArray(a, mask=numpy.logical_not(numpy.isfinite(a)))
+
+        # finally plot
+        X = ma[0]          # abscissa set separately
+        Y = ma[1]
+        try:
+            kwargs['yerr'] = ma[3]
+            kwargs['xerr'] = ma[2]
+        except IndexError:
+            kwargs['yerr'] = ma[2]
+
+        pylab.errorbar(X, Y, **kwargs)        
+
+        
         
 
 from odict import odict
