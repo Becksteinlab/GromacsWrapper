@@ -123,8 +123,8 @@ class AttributeDict(dict):
 @contextmanager
 def openany(datasource, mode='r'):
     """Open the datasource and close it when the context extits."""
+    stream, filename = anyopen(datasource, mode=mode)
     try:
-        stream, filename = anyopen(datasource, mode=mode)
         yield stream
     finally:
         stream.close()
@@ -168,7 +168,7 @@ def anyopen(datasource, mode='r'):
             if not ext in ('bz2', 'gz'):
                 ext = ''   # anything else but bz2 or gz is just a normal file
             openfunc = handlers[ext]
-            stream = _get_stream(datasource, openfunc, mode=mode)
+            stream = openfunc(datasource, mode=mode)
             if stream is None:
                 raise IOError("Cannot open %(filename)r in mode=%(mode)r with type %(ext)r." % vars())
     else:
