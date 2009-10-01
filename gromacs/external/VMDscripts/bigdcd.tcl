@@ -1,7 +1,11 @@
-# BigDCD-v2
-# Justin Gullingsrud
+# $Id$
+# BigDCD-v2/GromacsWrapper
+# Justin Gullingsrud 
 # updates by Axel Kohlmeyer
-# vmd@ks.uiuc.edu
+# hacked by Oliver Beckstein to use in GromacsWrapper 
+# - changed so that frame is not deleted but all frames are
+#   deleted when the next dcd is loaded
+# - allows writing of dcd chunks
 ################################################################################
 # Purpose: Use this script to analyze one or more trajectory files that 
 # don't fit into memory.  The script will arrage for your analysis function 
@@ -24,6 +28,11 @@
 # of analysis script. By construction bigdcd executes in the background 
 # and will return the control to VMD after the last trajectory file has 
 # been scheduled for reading. Thus analysis scripts will terminate prematurely.
+#
+# New in version v2/GromacsWrapper
+#
+# - bigdcd2dcd: apply function to frames and then write one chunk
+#               as a new dcd
 ################################################################################
 
 # Example 1: 
@@ -57,6 +66,44 @@
 # bigdcd myrmsd xyz eq01.xyz eq02.xyz eq03.xyz
 # bigdcd_wait
 # quit
+
+package provide bigdcd_GW 2.0
+
+proc bigdcd2dcd { script type step prefix args } {
+    global bigdcd_frame bigdcd_proc bigdcd_firstframe vmd_frame bigdcd_running
+  
+    set bigdcd_running 1
+    set bigdcd_frame 0
+    set bigdcd_firstframe [molinfo top get numframes]
+    set bigdcd_proc $script
+
+    # backwards "compatibility". type flag is omitted.
+    if {[file exists $type]} { 
+        set args [linsert $args 0 $type] 
+        set type auto
+    }
+
+    # currently we write everything to the new dcd
+    set system [atomselect top {all}]
+    set idcd 0
+
+    uplevel #0 trace variable vmd_frame w bigdcd_callback_keeepframes
+    foreach dcd $args {	
+        if { $type == "auto" } {
+            mol addfile $dcd waitfor 0 step $step
+        } else {
+            mol addfile $dcd type $type waitfor 0 step $step
+        }
+	# wait so that we can write a chunk of dcd
+	#after idle bigdcd_wait
+	bigdcd_wait
+
+	set dcdname [format "%s%03d.dcd" $prefix $idcd] 
+	$system writedcd $dcdname
+	puts "Wrote trajectory chunk $dcd --> $dcdname"
+	incr idcd
+    }
+}
 
 proc bigdcd { script type args } {
     global bigdcd_frame bigdcd_proc bigdcd_firstframe vmd_frame bigdcd_running
@@ -105,6 +152,31 @@ proc bigdcd_callback { tracedvar mol op } {
     animate delete beg $thisframe end $thisframe $mol
     return $msg
 }
+
+proc bigdcd_callback_keepframes { tracedvar mol op } {
+    global bigdcd_frame bigdcd_proc bigdcd_firstframe vmd_frame
+    set msg {}
+ 
+    # If we're out of frames, we're also done 
+    # AK: (can this happen at all these days???). XXX
+    set thisframe $vmd_frame($mol)
+    if { $thisframe < $bigdcd_firstframe } {
+        puts "end of frames"
+        bigdcd_done
+        return
+    }
+ 
+    incr bigdcd_frame
+    if { [catch {uplevel #0 $bigdcd_proc $bigdcd_frame} msg] } { 
+        puts stderr "bigdcd aborting at frame $bigdcd_frame\n$msg"
+        bigdcd_done
+        return
+    }
+    ## keep frames to write dcd
+    ## animate delete beg $thisframe end $thisframe $mol
+    return $msg
+}
+
 
 proc bigdcd_done { } {
     global bigdcd_running
