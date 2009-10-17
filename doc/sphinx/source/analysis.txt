@@ -17,6 +17,7 @@ analyze `Gromacs`_ MD simulations.
    :maxdepth: 2
 
    analysis/core
+   analysis/support
    analysis/plugins
    
 
