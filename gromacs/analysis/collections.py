@@ -18,15 +18,15 @@ class Collection(list):
 
     Attribute lookup does not work.
     """
-    # note: do not use multiple inheritance because __init__ is iffy
+    # note: do not use with multiple inheritance
 
-    def __init__(self, *args):
-        """Build the Collection from Simulation objects."""
-        super(Collection, self).__init__(args) 
+    def __init__(self, sequence):
+        """Build the Collection from a single sequence of Simulation objects."""
+        list.__init__(self,sequence) 
 
     def __getattribute__(self, attr):
         try:
-            return super(Collection, self).__getattribute__(attr)
+            return list.__getattribute__(self, attr)
         except AttributeError:
             pass
         
