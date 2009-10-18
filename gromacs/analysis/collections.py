@@ -41,4 +41,6 @@ class Collection(list):
         def runall(*args, **kwargs):
             return [o.__getattribute__(attr)(*args, **kwargs) for o in self]                
         return runall
-        
+
+    def __add__(self, x):
+        return Collection(list.__add__(self,x))
