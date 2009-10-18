@@ -20,10 +20,6 @@ class Collection(list):
     """
     # note: do not use with multiple inheritance
 
-    def __init__(self, sequence):
-        """Build the Collection from a single sequence of Simulation objects."""
-        list.__init__(self,sequence) 
-
     def __getattribute__(self, attr):
         try:
             return list.__getattribute__(self, attr)
