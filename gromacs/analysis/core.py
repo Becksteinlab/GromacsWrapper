@@ -160,9 +160,9 @@ class Simulation(object):
     3. Analyze the output from :meth:`run` with :meth:`Simulation.analyze`; results are stored 
        in the plugin's :attr:`~Worker.results` dictionary.
     4. Plot results with :meth:`Simulation.plot`.
-
-
     """
+    # NOTE: not suitable for multiple inheritance
+
     def __init__(self, **kwargs):
         """Set up a Simulation object.
 
@@ -181,8 +181,6 @@ class Simulation(object):
              (*plugin_class_name*, *kwarg dict*) to be used; more can be
              added later with :meth:`Simulation.add_plugin`.
         """
-        super(Simulation, self).__init__(**kwargs)
-
         # required files
         self.tpr = kwargs.pop('tpr',None)
         self.xtc = kwargs.pop('xtc',None)
@@ -216,6 +214,11 @@ class Simulation(object):
         # convenience: if only a single plugin was registered we default to that one
         if len(self.plugins) == 1:
             self.set_plugin(self.plugins.keys()[0])
+
+        # Is this needed? kwargs should be empty now BUT because the same list is re-used for
+        # all plugins I cannot pop them. I don't think multiple inheritance would work with
+        # this setup so let's not pretend it does: hence comment out the super-init call:
+        ## super(Simulation, self).__init__(**kwargs)
 
     def add_plugin(self, plugin, **kwargs):
         """Add a plugin to the registry.
