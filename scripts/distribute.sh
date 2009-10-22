@@ -29,6 +29,7 @@ Options
 -h           help
 -n           do not copy
 -s DIR       server dir [${SERVERDIR}]
+-p VERSION   python version, eg 2.5
 "
 
 function die () {
@@ -43,8 +44,8 @@ RSYNC () {
 }
 
 distribution () {
-  python setup.py sdist \
-      && python setup.py bdist_egg \
+  $PYTHON setup.py sdist \
+      && $PYTHON setup.py bdist_egg \
       && RSYNC -v --checksum dist/* $PACKAGES \
       || die "Failed distribution"
 }
@@ -69,11 +70,12 @@ docs () {
 
 
 COPY=1
-while getopts hns: OPT; do
+while getopts hns:p: OPT; do
     case "$OPT" in
 	h) echo "$usage"; exit 0;;
 	n) COPY=0;;
 	s) SERVERDIR=$OPTARG;;
+	p) PYVERSION=$OPTARG;;
 	[?]) echo "Illegal option. See -h for usage.";
 	     exit 1;;
     esac
@@ -83,6 +85,12 @@ shift $((OPTIND-1))
 PACKAGES=$SERVERDIR/download/Python
 DOCS=$SERVERDIR/software/$PACKAGE
 
+case "$PYVERSION" in
+   2.5|2.5.*)  PYTHON=python2.5;;
+   2.6|2.6.*)  PYTHON=python2.6;;
+   2.[0-4])    die "pyversion $PYVERSION not supported";;
+   *)          PYTHON=python;;
+esac
 
 commands="$@"
 [ -n "$commands" ] || commands="distribution docs"
