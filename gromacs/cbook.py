@@ -171,6 +171,14 @@ def trj_fitandcenter(xy=False, **kwargs):
            The fit command uses all three (1st for least square fit,
            2nd for centering, 3rd for output), the centered/make-whole stage use
            2nd for centering and 3rd for output.
+       *input1*
+           If *input1* is supplied then *input* is used exclusively
+           for the fitting stage (pass 2) and *input1* for the centering (pass 1).
+       *n*
+           Index file used for pass 1 and pass 2.
+       *n1*
+           If *n1* is supplied then index *n1* is only used for pass 1
+           (centering) and *n* for pass 2 (fitting).
        *xy* : boolean
            If ``True`` then only do a rot+trans fit in the xy plane
            (good for membrane simulations); default is ``False``.
@@ -226,20 +234,27 @@ def trj_fitandcenter(xy=False, **kwargs):
     suffix = os.path.splitext(intrj)[1]
     if not suffix in ('xtc', 'trr'):
         suffix = '.xtc'
-    outtrj = kwargs.pop('o', None)    
-    inpfit = kwargs.pop('input', ('backbone', 'protein','system'))
+    outtrj = kwargs.pop('o', None)
+
+    ndx = kwargs.pop('n', None)
+    ndxcompact = kwargs.pop('n1', ndx)
+    
+
+    inpfit = kwargs.pop('input', ('backbone', 'protein','system'))    
     try:
-        inpcompact = inpfit[1:]     # use 2nd and 3rd group for compact
+        _inpcompact = inpfit[1:]     # use 2nd and 3rd group for compact
     except TypeError:
-        inpcompact = None
+        _inpcompact = None
+    inpcompact = kwargs.pop('input1', _inpcompact)  # ... or the user supplied ones
+
     fd, tmptrj = tempfile.mkstemp(suffix=suffix, prefix='fitted_')
 
     logger.info("Input trajectory:  %(intrj)r\nOutput trajectory: %(outtrj)r"% vars())
     logger.info("... writing temporary trajectory %(tmptrj)r (will be auto-cleaned)." % vars())
     sys.stdout.flush()
     try:
-        trj_compact(f=intrj, o=tmptrj, input=inpcompact, **kwargs)        
-        trj_xyfitted(f=tmptrj, o=outtrj, fit=fitmode, input=inpfit, **kwargs)
+        trj_compact(f=intrj, o=tmptrj, n=ndxcompact, input=inpcompact, **kwargs)
+        trj_xyfitted(f=tmptrj, o=outtrj, n=ndx, fit=fitmode, input=inpfit, **kwargs)
     finally:
         utilities.unlink_gmx(tmptrj)
 
