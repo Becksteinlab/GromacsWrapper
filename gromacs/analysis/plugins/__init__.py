@@ -32,6 +32,8 @@ plugin                      author                   description
 :class:`MinDistances`                        [#OB]_  time series of shortest distances
 
 :class:`Dihedrals`                           [#OB]_  analysis of dihedral angles
+
+:class:`Trajectories`                        [#OB]_  write xy-fitted trajectories
 ==========================  =======================  =====================================
 
 
@@ -49,6 +51,8 @@ Plugin classes
 .. autoclass:: MinDistances
    :members:
 .. autoclass:: Dihedrals
+   :members:
+.. autoclass:: Trajectories
    :members:
 
 
@@ -70,7 +74,8 @@ __docformat__ = "restructuredtext en"
 #: plugin class it contains but in all lower case. For example, the
 #: *Distances* plugin class is contained in the module *distances* (the
 #: file ``plugins/distances.py``).
-__plugins__ = ['CysAccessibility', 'Distances', 'MinDistances', 'Dihedrals']
+__plugins__ = ['CysAccessibility', 'Distances', 'MinDistances', 'Dihedrals',
+               'Trajectories']
 __all__ = []
 __all__.extend(__plugins__)
 
