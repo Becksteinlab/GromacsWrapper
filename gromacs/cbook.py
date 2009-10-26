@@ -224,7 +224,7 @@ def trj_fitandcenter(xy=False, **kwargs):
     """
     if xy:
         fitmode = 'rotxy+transxy'
-        kwargs.pop('fit')
+        kwargs.pop('fit', None)
     else:
         fitmode = kwargs.pop('fit', 'rot+trans')  # user can use progressive, too
         
