@@ -43,6 +43,8 @@ import gromacs
 from gromacs.utilities import AttributeDict
 from gromacs.analysis.core import Worker, Plugin
 
+import logging
+logger = logging.getLogger('gromacs.analysis.plugins.trajectories')
 
 # Worker classes that are registered via Plugins (see below)
 # ----------------------------------------------------------
@@ -103,8 +105,6 @@ class _Trajectories(Worker):
             'fitxy': fitxy_xtc,
             'fitxydt': fitxydt_xtc,
             }
-        self.parameters.ndx = self.plugindir('nowater.ndx')
-        self.parameters.groups = {'nowater': 'nowater'}
 
     # override 'API' methods of base class
         
@@ -112,20 +112,20 @@ class _Trajectories(Worker):
         """Write new trajectories"""
 
         logger.info("Writing fitted GRO file...")
-        gromacs.cbook.trj_fitandcenter(xy=True, s=self.simulation.tpr, f=self.simulations.xtc, 
+        gromacs.cbook.trj_fitandcenter(xy=True, s=self.simulation.tpr, f=self.simulation.xtc, 
                                        o=self.parameters.filenames['gro'], dump=0)
 
         logger.info("Writing fitted PDB file...")
-        gromacs.cbook.trj_fitandcenter(xy=True, s=self.simulation.tpr, f=self.simulations.xtc, 
+        gromacs.cbook.trj_fitandcenter(xy=True, s=self.simulation.tpr, f=self.simulation.xtc, 
                                        o=self.parameters.filenames['pdb'], dump=0)
 
         logger.info("Writing fitted xtc file (frame every %d ps)..." % self.parameters.dt)
-        gromacs.cbook.trj_fitandcenter(xy=True, s=self.simulation.tpr, f=self.simulations.xtc, 
+        gromacs.cbook.trj_fitandcenter(xy=True, s=self.simulation.tpr, f=self.simulation.xtc, 
                                        o=self.parameters.filenames['fitxydt'],
                                        dt=self.parameters.dt)
 
         logger.info("Writing fitted xtc file (all frames)...")
-        gromacs.cbook.trj_fitandcenter(xy=True, s=self.simulation.tpr, f=self.simulations.xtc, 
+        gromacs.cbook.trj_fitandcenter(xy=True, s=self.simulation.tpr, f=self.simulation.xtc, 
                                        o=self.parameters.filenames['fitxy'])
 
         logger.info("New trajectories can be found in %r." % self.parameters.trjdir)
