@@ -78,6 +78,8 @@ class _TEMPLATEplugin(Worker):
 
         # process specific parameters now and set instance variables
         # ....
+        # self.parameters.filenames = { 'xxx': 'yyy', ....}
+        # ....
 
         # self.simulation might have been set by the super class
         # already; just leave this snippet at the end. Do all
@@ -110,6 +112,10 @@ class _TEMPLATEplugin(Worker):
 
         The run method typically processes trajectories and writes data files.
         """
+        # filename = self.parameters.filenames['XXXX']
+        # if not self.check_file_exists(filename, resolve='warning') or force:
+        #    logger.info("Analyzing TEMPLATE...")
+
         pass
 
 
@@ -128,6 +134,7 @@ class _TEMPLATEplugin(Worker):
              description
         :Returns:  a dictionary of the results and also sets ``self.results``.
         """        
+        from gromacs.utilities import XVG
 
         results = AttributeDict()
 
@@ -136,7 +143,7 @@ class _TEMPLATEplugin(Worker):
         #   but *must* be provided so that other functions can uniformly access results.
         # - You are encouraged to store class instances with a plot() method; if you do
         #   this then you can just don't have to change the plot() method below.
-        #   For instance you can use gromacs.utilities.XVG(filename) to create
+        #   For instance you can use gromacs.formats.XVG(filename) to create
         #   a object from a xvg file that knows how to plot itself.
 
         self.results = results

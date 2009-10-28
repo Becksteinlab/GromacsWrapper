@@ -113,8 +113,8 @@ class _Distances(Worker):
 
         # output filenames for g_dist
         self.parameters.filenames = {
-                                     'distance': self.plugindir('distance.xvg'),
-                                     }
+            'distance': self.plugindir('distance.xvg'),
+            }
 
         # default filename for the combined plot
         self.parameters.figname = self.figdir('distances')
