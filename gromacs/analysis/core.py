@@ -251,6 +251,7 @@ class Simulation(object):
         try:
             plugin.register(simulation=self)
         except (TypeError, AttributeError):
+            # NOTE: this except clause can mask bugs in the plugin code!!
             if type(plugin) is str:
                 import plugins            # We should be able to import this safely now...
                 plugin = plugins.__plugin_classes__[plugin]
