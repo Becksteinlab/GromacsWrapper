@@ -162,7 +162,7 @@ class Command(object):
             else:
                 logger.exception("Setting up command %r raised an exception." % self.command_name)
                 raise
-        logger.info(p.command_string)
+        logger.debug(p.command_string)
         return p
 
     def transform_args(self, *args, **kwargs):
