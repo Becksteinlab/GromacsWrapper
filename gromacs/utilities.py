@@ -329,10 +329,14 @@ class FileUtils(object):
               raise :exc:`IOError` if it exists
         """
         def _warn(x):
-            warnings.warn("File %r already exists." % x)
+            msg = "File %r already exists." % x
+            logger.warn(msg)
+            warnings.warn(msg)
             return True
         def _raise(x):
-            raise IOError("File %r already exists." % x)
+            msg = "File %r already exists." % x
+            logger.error(msg)
+            raise IOError(msg)
         solutions = {'ignore': lambda x: False,      # file exists, but we pretend that it doesn't
                      'indicate': lambda x: True,     # yes, file exists
                      'warn': _warn,
