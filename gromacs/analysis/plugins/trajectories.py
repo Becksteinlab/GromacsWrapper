@@ -111,22 +111,29 @@ class _Trajectories(Worker):
     def run(self, force=False, **gmxargs):
         """Write new trajectories"""
 
-        logger.info("Writing fitted GRO file...")
-        gromacs.cbook.trj_fitandcenter(xy=True, s=self.simulation.tpr, f=self.simulation.xtc, 
-                                       o=self.parameters.filenames['gro'], dump=0)
+        filename = self.parameters.filenames['gro']
+        if not self.check_file_exists(filename, resolve='warning') or force:
+            logger.info("Writing fitted GRO file...")
+            gromacs.cbook.trj_fitandcenter(xy=True, s=self.simulation.tpr, f=self.simulation.xtc, 
+                                           o=filename, dump=0)
 
-        logger.info("Writing fitted PDB file...")
-        gromacs.cbook.trj_fitandcenter(xy=True, s=self.simulation.tpr, f=self.simulation.xtc, 
-                                       o=self.parameters.filenames['pdb'], dump=0)
+        filename = self.parameters.filenames['pdb']
+        if not self.check_file_exists(filename, resolve='warning') or force:
+            logger.info("Writing fitted PDB file...")
+            gromacs.cbook.trj_fitandcenter(xy=True, s=self.simulation.tpr, f=self.simulation.xtc, 
+                                           o=filename, dump=0)
 
-        logger.info("Writing fitted xtc file (frame every %d ps)..." % self.parameters.dt)
-        gromacs.cbook.trj_fitandcenter(xy=True, s=self.simulation.tpr, f=self.simulation.xtc, 
-                                       o=self.parameters.filenames['fitxydt'],
-                                       dt=self.parameters.dt)
+        filename = self.parameters.filenames['fitxydt']
+        if not self.check_file_exists(filename, resolve='warning') or force:
+            logger.info("Writing fitted xtc file (frame every %d ps)..." % self.parameters.dt)
+            gromacs.cbook.trj_fitandcenter(xy=True, s=self.simulation.tpr, f=self.simulation.xtc, 
+                                           o=filename, dt=self.parameters.dt)
 
-        logger.info("Writing fitted xtc file (all frames)...")
-        gromacs.cbook.trj_fitandcenter(xy=True, s=self.simulation.tpr, f=self.simulation.xtc, 
-                                       o=self.parameters.filenames['fitxy'])
+        filename = self.parameters.filenames['fitxy']
+        if not self.check_file_exists(filename, resolve='warning') or force:
+            logger.info("Writing fitted xtc file (all frames)...")
+            gromacs.cbook.trj_fitandcenter(xy=True, s=self.simulation.tpr, f=self.simulation.xtc, 
+                                           o=filename)
 
         logger.info("New trajectories can be found in %r." % self.parameters.trjdir)
 
