@@ -198,7 +198,7 @@ def trj_fitandcenter(xy=False, **kwargs):
 
     Most kwargs are passed to both invocations of
     :class:`gromacs.tools.Trjconv` so it does not really make sense to use eg
-    *dump*, *timestep*; in this case do things manually.
+    *skip*; in this case do things manually.
 
     By default the *input* to the fit command is ('backbone',
     'protein','system'); the compact command always uses the second and third
