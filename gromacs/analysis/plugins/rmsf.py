@@ -37,6 +37,8 @@ import gromacs
 from gromacs.utilities import AttributeDict
 from gromacs.analysis.core import Worker, Plugin
 
+import logging
+logger = logging.getLogger('gromacs.analysis.plugins.rmsf')
 
 # Worker classes that are registered via Plugins (see below)
 # ----------------------------------------------------------
@@ -82,8 +84,7 @@ class _RMSF(Worker):
         super(_RMSF, self)._register_hook(**kwargs)
         assert not self.simulation is None
 
-        # filename of the index file that we generate for the cysteines
-        self.prameters.filenames = {
+        self.parameters.filenames = {
             'RMSF': self.plugindir('rmsf.xvg'),
             'RMSD': self.plugindir('rmsdev.xvg'),
             }
@@ -114,6 +115,7 @@ class _RMSF(Worker):
         """        
         from gromacs.formats import XVG
 
+        logger.info("Preparing RMSF graphs as XVG objects.")
         results = AttributeDict(RMSF=XVG(self.parameters.filenames['RMSF']),
                                 RMSD=XVG(self.parameters.filenames['RMSD']))
         self.results = results
