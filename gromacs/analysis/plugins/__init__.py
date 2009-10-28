@@ -28,11 +28,10 @@ plugin                      author                   description
                                                      residues by water
                                                      
 :class:`Distances`                           [#OB]_  time series of distances
-
 :class:`MinDistances`                        [#OB]_  time series of shortest distances
-
 :class:`Dihedrals`                           [#OB]_  analysis of dihedral angles
-
+:class:`RMSF`                                [#OB]_  calculate root mean square fluctuations
+:class:`RMSD`                                [#OB]_  calculate root mean square distance
 :class:`Trajectories`                        [#OB]_  write xy-fitted trajectories
 ==========================  =======================  =====================================
 
@@ -51,6 +50,10 @@ Plugin classes
 .. autoclass:: MinDistances
    :members:
 .. autoclass:: Dihedrals
+   :members:
+.. autoclass:: RMSF
+   :members:
+.. autoclass:: RMSD
    :members:
 .. autoclass:: Trajectories
    :members:
@@ -75,7 +78,7 @@ __docformat__ = "restructuredtext en"
 #: *Distances* plugin class is contained in the module *distances* (the
 #: file ``plugins/distances.py``).
 __plugins__ = ['CysAccessibility', 'Distances', 'MinDistances', 'Dihedrals',
-               'Trajectories', 'RMSF']
+               'Trajectories', 'RMSF', 'RMSD']
 __all__ = []
 __all__.extend(__plugins__)
 
