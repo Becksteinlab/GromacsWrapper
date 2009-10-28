@@ -88,7 +88,7 @@ logfilename = "gromacs.log"
 loglevel_console = logging.INFO
 
 #: The default loglevel that is still written to the :data:`logfilename`.
-loglevel_file = logging.INFO
+loglevel_file = logging.DEBUG
 
 
 # Gromacs tools
