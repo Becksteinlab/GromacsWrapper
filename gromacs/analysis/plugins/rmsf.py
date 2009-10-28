@@ -90,21 +90,22 @@ class _RMSF(Worker):
         # default filename for the plot
         self.parameters.figname = self.figdir('rmsf')
 
-
-    # override 'API' methods of base class
-        
-    def run(self, force=False, **gmxargs):
+    def run(self, force=False, group='C-alpha', **gmxargs):
         """Analyze trajectory and write RMSF files.
 
         The run method typically processes trajectories and writes data files.
+
+        :Arguments:
+          - *group*: index group (eg C-alpha or Protein)
+          - *force*: do analysis and overwrite existing files
+          - *gmxargs*: additional keyword arguments for :func:`gromacs.g_rmsf` (e.g. res=True)
         """
         if not self.check_file_exists(self.parameters.filenames['RMSF'], resolve='warning') or force:
             logger.info("Analyzing RMSF...")
-        
             gromacs.g_rmsf(s=self.simulation.tpr, f=self.simulation.xtc, fit=True, 
-                           o=self.parameters.filenames['RMSF'], 
-                           od=self.parameters.filenames['RMSD'], input=['C-alpha'],
-                           **gmxargs)
+                           o=self.parameters.filenames['RMSF'],
+                           od=self.parameters.filenames['RMSD'], 
+                           input=[group], **gmxargs)
 
     def analyze(self,**kwargs):
         """Collect output xvg files as :class:`gromacs.formats.XVG` objects.
@@ -115,7 +116,6 @@ class _RMSF(Worker):
 
         results = AttributeDict(RMSF=XVG(self.parameters.filenames['RMSF']),
                                 RMSD=XVG(self.parameters.filenames['RMSD']))
-
         self.results = results
         return results
 
