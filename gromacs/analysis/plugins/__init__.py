@@ -75,7 +75,7 @@ __docformat__ = "restructuredtext en"
 #: *Distances* plugin class is contained in the module *distances* (the
 #: file ``plugins/distances.py``).
 __plugins__ = ['CysAccessibility', 'Distances', 'MinDistances', 'Dihedrals',
-               'Trajectories']
+               'Trajectories', 'RMSF']
 __all__ = []
 __all__.extend(__plugins__)
 
