@@ -105,8 +105,26 @@ gmx_tool_groups = ['gmx_tools', ]
 #: additional tools then add the, to the source (``config.py``) or derive new
 #: classes manually from :class:`gromacs.core.GromacsCommand`.  (Eventually, this
 #: functionality will be in a per-user configurable file.)  The current list was
-#: generated from Gromacs 4.0.2.
+#: generated from Gromacs 4.0.99 (git).
 gmx_tools = """\
+anadock      g_current     g_helix        g_rama     g_traj     mdrun_d
+             g_density     g_helixorient  g_rdf      g_vanhove  mk_angndx
+do_dssp      g_densmap     g_kinetics     g_rms      g_velacc   pdb2gmx
+editconf     g_dielectric  g_lie                     g_wham     protonate
+eneconv      g_dih         g_mdmat        g_rmsf     genbox     sigeps
+g_anaeig     g_dipoles     g_mindist      g_rotacf   genconf    tpbconv
+g_analyze    g_disre       g_morph        g_saltbr   genion     trjcat
+g_angle      g_dist        g_msd          g_sas      genrestr   trjconv
+g_bond       g_dyndom      g_nmeig        g_sdf      gmxcheck   trjorder
+g_bundle     g_enemat      g_nmens        g_sgangle  gmxdump    wheel
+g_chi        g_energy      g_nmtraj       g_sham     grompp     x2top
+g_cluster    g_filter      g_order        g_sorient  luck       
+g_clustsize  g_gyrate      g_polystat     g_spatial  make_edi   xpm2ps
+g_confrms    g_h2order     g_potential    g_spol     make_ndx
+g_covar      g_hbond       g_principal    g_tcaf     mdrun
+"""
+
+gmx_tools_402 = """\
 anadock      g_current     g_helix        g_rama     g_traj     mdrun_d
 demux.pl     g_density     g_helixorient  g_rdf      g_vanhove  mk_angndx
 do_dssp      g_densmap     g_kinetics     g_rms      g_velacc   pdb2gmx
