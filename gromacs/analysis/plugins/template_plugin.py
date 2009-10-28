@@ -47,6 +47,8 @@ import gromacs
 from gromacs.utilities import AttributeDict
 from gromacs.analysis.core import Worker, Plugin
 
+import logging
+logger = logging.getLogger('gromacs.analysis.plugins.TEMPLATE')
 
 # Worker classes that are registered via Plugins (see below)
 # ----------------------------------------------------------
