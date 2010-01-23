@@ -122,7 +122,7 @@ class AttributeDict(dict):
 
 @contextmanager
 def openany(datasource, mode='r'):
-    """Open the datasource and close it when the context extits."""
+    """Open the datasource and close it when the context exits."""
     stream, filename = anyopen(datasource, mode=mode)
     try:
         yield stream
