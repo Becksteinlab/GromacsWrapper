@@ -223,6 +223,7 @@ templates = {
     'neuron_sge': resource_filename(__name__, 'templates/neuron.sge'),
     'hector_pbs': resource_filename(__name__, 'templates/hector.pbs'),
     'hpcx_ll': resource_filename(__name__, 'templates/hpcx.ll'),    
+    'jade_pbs': resource_filename(__name__, 'templates/jade.pbs'),
     }
 """Templates have to be extracted from the egg because they are used
 by external code. All template filenames are stored in

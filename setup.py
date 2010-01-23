@@ -9,7 +9,7 @@ use_setuptools()
 from setuptools import setup, find_packages
 
 setup(name="GromacsWrapper",
-      version="0.0.20",
+      version="0.0.21",
       description="A python wrapper around the gromacs tools.",
       long_description="""\
 A primitive wrapper around the Gromacs tools until we have proper
@@ -24,7 +24,8 @@ more complicated analysis tasks.
       download_url="http://sbcb.bioch.ox.ac.uk/oliver/download/Python/",
       keywords="science Gromacs analysis 'molecular dynamics'",
       packages=find_packages(exclude=['tests','extras','doc/examples']),
-      package_data={'gromacs': ['templates/*.sge', 'templates/*.mdp'], # template files
+      package_data={'gromacs': ['templates/*.sge', 'templates/*.mdp',  # template files                    
+                                'external/GridMat-MD_v1.0.2/*'],       # external bundled scripts
                     'vmd': ['*.tcl'],                                  # server start in VMD
                     },
       install_requires = ['numpy>=1.0',
