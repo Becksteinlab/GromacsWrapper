@@ -399,7 +399,7 @@ def grompp_qtot(*args, **kwargs):
 # Editing textual input files
 # ---------------------------
 
-def edit_mdp(mdp, new_mdp=None, **substitutions):
+def edit_mdp(mdp, new_mdp=None, extend_parameters=None, **substitutions):
     """Change values in a Gromacs mdp file.
 
     Parameters and values are supplied as substitutions, eg ``nsteps=1000``.
@@ -420,6 +420,11 @@ def edit_mdp(mdp, new_mdp=None, **substitutions):
             filename of input (and output filename of ``new_mdp=None``)
         *new_mdp* : filename
             filename of alternative output mdp file [None]
+        *extend_parameters* : string or list of strings
+            single parameter or list of parameters for which the new values 
+            should be appended to the existing value in the mdp file. This 
+            makes mostly sense for a single parameter, namely 'include', which
+            is set as the default. Set to ``[]`` to disable. ['include']
         *substitutions*
             parameter=value pairs, where parameter is defined by the Gromacs mdp file; 
             dashes in parameter names have to be replaced by underscores.
@@ -439,14 +444,19 @@ def edit_mdp(mdp, new_mdp=None, **substitutions):
          ``lincs_iter = 4``.
        * If the keyword is set as a dict key, eg ``mdp_params['lincs-iter']=4`` then one
          does not have to substitute.
-       * Parameters *aa_bb* and *aa-bb* are considered the same (although this should not be 
-         a problem in practice because there are no mdp parameters that only differ by a underscore).
+       * Parameters *aa_bb* and *aa-bb* are considered the same (although this should
+         not be a problem in practice because there are no mdp parameters that only 
+         differ by a underscore). 
        * This code is more compact in ``Perl`` as one can use ``s///`` operators:
          ``s/^(\s*${key}\s*=\s*).*/$1${val}/``
 
     """
     if new_mdp is None:
         new_mdp = mdp
+    if extend_parameters is None:
+        extend_parameters = ['include']
+    else:
+        extend_parameters = list(utilities.asiterable(extend_parameters))
 
     # None parameters should be ignored (simple way to keep the template defaults)
     substitutions = dict([(k,v) for k,v in substitutions.items() if not v is None])
@@ -484,7 +494,12 @@ def edit_mdp(mdp, new_mdp=None, **substitutions):
                     assignment = m.group('assignment')
                     if not assignment.endswith(' '):
                         assignment += ' '
-                    new_line = assignment + str(substitutions[p]) + comment
+                    # build new line piece-wise:
+                    new_line = assignment
+                    if p in extend_parameters:
+                        # keep original value and add new stuff at end
+                        new_line += str(m.group('value')) + ' '
+                    new_line += str(substitutions[p]) + comment
                     params.remove(p)
                     break
             target.write(new_line+'\n')
