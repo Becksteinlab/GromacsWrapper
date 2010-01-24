@@ -289,7 +289,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
           which should select the solute.
       *dirname* : directory name
           Name of the directory in which all files for the solvation stage are stored.
-      *include* : list of additional directories to add to the mdp include path
+      *includes* : list of additional directories to add to the mdp include path
     """
 
     structure = realpath(struct)
@@ -298,7 +298,8 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
     # needed only for the include keyword
     mdp_kwargs = add_mdp_includes(topology)
     # add additional paths with include='-I/my/path -I.....'
-    mdp_kwargs['include'] += ' -I'.join(['']+asiterable(kwargs.pop('include',[])))
+    include_paths = [os.path.expanduser(p) for p in asiterable(kwargs.pop('includes',[]))]
+    mdp_kwargs['include'] += ' -I'.join([''] + include_paths)
 
     if water.lower() in ('spc', 'spce'):
         water = 'spc216'
