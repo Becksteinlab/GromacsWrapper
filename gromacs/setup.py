@@ -599,7 +599,7 @@ def _setup_MD(dirname,
         if not (mdp_parameters.get('Tcoupl','').lower() == 'no' or mainselection is None):
             logger.info("[%(dirname)s] Automatic adjustment of T-coupling groups" % vars())
             
-            # make index file in almost all cases; with None the user
+            # make index file in almost all cases; with mainselection == None the user
             # takes FULL control and also has to provide the template or index
             groups = make_main_index(structure, selection=mainselection,
                                      oldndx=index, ndx=mainindex)
@@ -708,7 +708,9 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
           `` make_ndx`` selection to select main group ["Protein"]
           (If ``None`` then no canonical index file is generated and
           it is the users responsibility to set *tc_grps*,
-          *tau_t*, and *ref_t* as keyword arguments.
+          *tau_t*, and *ref_t* as keyword arguments, or provide the mdp template
+          with all parameter pre-set in *mdp* and probably also your own *ndx* 
+          index file.)
        *kwargs*
           remaining key/value pairs that should be changed in the template mdp
           file, eg ``nstxtcout=250, nstfout=250`` or command line options for
@@ -766,9 +768,11 @@ def MD(dirname='MD', **kwargs):
           index file
        *mainselection*
           ``make_ndx`` selection to select main group ["Protein"]
-          (If ``None`` then no canonical idenx file is generated and
-          it is the users responsibility to set 'tc_grps',
-          'tau_t', and 'ref_t' via mdp_kwargs.    
+          (If ``None`` then no canonical index file is generated and
+          it is the users responsibility to set *tc_grps*,
+          *tau_t*, and *ref_t* as keyword arguments, or provide the mdp template
+          with all parameter pre-set in *mdp* and probably also your own *ndx* 
+          index file.)
        *kwargs*
           remaining key/value pairs that should be changed in the template mdp
           file, eg ``nstxtcout=250, nstfout=250`` or command line options for

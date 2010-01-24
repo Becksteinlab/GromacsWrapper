@@ -276,14 +276,14 @@ class NDX(odict, utilities.FileUtils):
     Alternatively, simply treat the :class:`NDX` instance as a
     dictionary. Setting a key automatically transforms the new value
     into a integer 1D numpy array (*not* a set, as would be the
-    :program:`grompp` behaviour).
+    :program:`make_ndx` behaviour).
 
     .. Note:: The index entries themselves are ordered and can contain 
               duplicates so that output from NDX can be easily used for 
               :program:`g_dih` and friends. If you need set-like behaviour
               you will have do this yourself (e.g. derive from NDX and override 
               __setitem__) or use :class:`gromacs.cbook.IndexBuilder`, which
-              uses :program:`grompp` throughout.
+              uses :program:`make_ndx` throughout.
 
     **Example**
 
