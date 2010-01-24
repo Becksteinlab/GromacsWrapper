@@ -116,9 +116,9 @@ logger = logging.getLogger('gromacs.setup')
 import gromacs
 import gromacs.config as config
 from gromacs import GromacsError, GromacsFailureWarning, GromacsValueWarning, \
-     AutoCorrectionWarning, BadParameterWarning, UsageWarning
+     AutoCorrectionWarning, BadParameterWarning, UsageWarning, MissingDataError
 import gromacs.cbook
-from gromacs.utilities import in_dir, realpath, Timedelta
+from gromacs.utilities import in_dir, realpath, Timedelta, asiterable
 
 
 #: Concentration of water at standard conditions in mol/L.
@@ -267,8 +267,12 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
           When solvating with water, make the box big enough so that
           at least *distance* nm water are between the solute *struct*
           and the box boundary.
+          Set this to ``None`` in order to use a box size in the input
+          file (gro or pdb).
       *boxtype* : string
           Any of the box types supported by :class:`~gromacs.tools.Genbox`.
+          If set to ``None`` it will also ignore *distance* and use the box
+          inside the *struct* file.
       *concentration* : float
           Concentration of the free ions in mol/l. Note that counter
           ions are added in excess of this concentration.
@@ -285,7 +289,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
           which should select the solute.
       *dirname* : directory name
           Name of the directory in which all files for the solvation stage are stored.
-
+      *include* : list of additional directories to add to the mdp include path
     """
 
     structure = realpath(struct)
@@ -293,6 +297,8 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
 
     # needed only for the include keyword
     mdp_kwargs = add_mdp_includes(topology)
+    # add additional paths with include='-I/my/path -I.....'
+    mdp_kwargs['include'] += ' -I'.join(['']+asiterable(kwargs.pop('include',[])))
 
     if water.lower() in ('spc', 'spce'):
         water = 'spc216'
@@ -307,6 +313,22 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
     
     with in_dir(dirname):
         logger.info("[%(dirname)s] Solvating with water %(water)r..." % vars())
+        if distance is None or boxtype is None:
+            hasBox = False
+            ext = os.path.splitext(structure)[1]
+            if ext == '.gro':
+                hasBox = True
+            elif ext == '.pdb':
+                with open(structure) as struct:                
+                    for line in struct:
+                        if line.startswith('CRYST'):
+                            hasBox = True
+                            break
+            if not hasBox:
+                msg = "No box data in the input structure %(structure)r and distance or boxtype is set to None" % vars()
+                logger.exception(msg)
+                raise MissingDataError(msg)
+            distance = boxtype = None   # ensures that editconf just converts
         gromacs.editconf(f=structure, o='boxed.gro', bt=boxtype, d=distance)
         gromacs.genbox(p=topology, cp='boxed.gro', cs=water, o='solvated.gro')
 
