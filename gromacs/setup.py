@@ -656,7 +656,10 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
 
     Additional itp files should be in the same directory as the top file.
 
-    Many of the keyword arguments below already have sensible values. 
+    Many of the keyword arguments below already have sensible
+    values. Note that setting *mainselection* = ``None`` will disable
+    many of the automated choices and is often recommended when using
+    your own mdp file.
 
     :Keywords:
        *dirname*
@@ -667,6 +670,13 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
           topology file [top/system.top]
        *mdp*
           mdp file (or use the template) [templates/md.mdp]
+       *ndx*
+          index file (supply when using a custom mdp)
+       *mainselection*
+          `` make_ndx`` selection to select main group ["Protein"]
+          (If ``None`` then no canonical index file is generated and
+          it is the users responsibility to set *tc_grps*,
+          *tau_t*, and *ref_t* as keyword arguments.
        *deffnm*
           default filename for Gromacs run [md]
        *runtime*
@@ -679,13 +689,6 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
           be manually set to another template from :data:`gromacs.config.templates`
        *sgename*
           name to be used for the job in the queuing system [PR_GMX]
-       *ndx*
-          index file
-       *mainselection*
-          `` make_ndx`` selection to select main group ["Protein"]
-          (If ``None`` then no canonical index file is generated and
-          it is the users responsibility to set *tc_grps*,
-          *tau_t*, and *ref_t* as keyword arguments.
        *kwargs*
           remaining key/value pairs that should be changed in the template mdp
           file, eg ``nstxtcout=250, nstfout=250`` or command line options for
@@ -718,7 +721,10 @@ def MD(dirname='MD', **kwargs):
 
     Additional itp files should be in the same directory as the top file.
 
-    Many of the keyword arguments below already have sensible values. 
+    Many of the keyword arguments below already have sensible
+    values. Note that setting *mainselection*=``None`` will disable
+    many of the automated choices and is often recommended when using
+    your own mdp file.
 
     :Keywords:
        *dirname*
@@ -729,6 +735,13 @@ def MD(dirname='MD', **kwargs):
           topology file [top/system.top]
        *mdp*
           mdp file (or use the template) [templates/md.mdp]
+       *ndx*
+          index file (supply when using a custom mdp)
+       *mainselection*
+          ``make_ndx`` selection to select main group ["Protein"]
+          (If ``None`` then no canonical idenx file is generated and
+          it is the users responsibility to set 'tc_grps',
+          'tau_t', and 'ref_t' via mdp_kwargs.
        *deffnm*
           default filename for Gromacs run [md]
        *runtime*
@@ -739,13 +752,6 @@ def MD(dirname='MD', **kwargs):
           script template to submit to the SGE queuing system
        *sgename*
           name to be used for the job in the queuing system [MD_GMX]
-       *ndx*
-          index file
-       *mainselection*
-          ``make_ndx`` selection to select main group ["Protein"]
-          (If ``None`` then no canonical idenx file is generated and
-          it is the users responsibility to set 'tc_grps',
-          'tau_t', and 'ref_t' via mdp_kwargs.    
        *kwargs*
           remaining key/value pairs that should be changed in the template mdp
           file, eg ``nstxtcout=250, nstfout=250`` or command line options for
