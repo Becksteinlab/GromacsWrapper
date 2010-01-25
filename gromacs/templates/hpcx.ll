@@ -21,6 +21,9 @@
 #
 #@ queue
 
+# host: hpcx.ac.uk
+# queuing system: LoadLeveller
+
 # Basic LoadLeveller script for HPCx from
 # http://www.hpcx.ac.uk/support/documentation/UserGuide/HPCxuser/Batch_Processing.html#SECTION00082100000000000000
 # - SMT is enabled as it gives a 1/3 speedup for free (tested on a 65k system with Gromacs 4.0.5)

@@ -18,6 +18,9 @@
 # Get LD_LIBRRARY_PATH (and the rest)
 #$ -V
 
+# host: deathspud.local
+# queuing system: SGE
+
 # qsub flags (set with -V FLAG=1)
 #    DEBUG          more debug output
 #    WITH_SCRIPTS   create house keeping scripts

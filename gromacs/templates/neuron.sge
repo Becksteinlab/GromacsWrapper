@@ -5,6 +5,9 @@
 #$ -pe openmpi_singlenode 8
 #$ -q all.q -cwd -r y -j y -V
 
+# host: neuron.bioch.ox.ac.uk
+# queuing system: SGE
+
 DEFFNM=md
 
 TPR=${DEFFNM}.tpr

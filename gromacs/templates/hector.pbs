@@ -6,6 +6,9 @@
 #PBS -j oe
 #PBS -A BUDGET
 
+# host: hector.ac.uk
+# queuing system: PBS
+
 # $Id$
 # PBS template script for HECToR (login.hector.ac.uk)
 # BUDGET has to be replaced with the accounting budget name
