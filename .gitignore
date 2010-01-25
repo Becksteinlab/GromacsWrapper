@@ -1,2 +1,3 @@
 *.pyc
 .#*
+GromacsWrapper.egg-info
