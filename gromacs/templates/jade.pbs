@@ -20,6 +20,7 @@ OUTPUT=${DEFFNM}.out
 PDB=${DEFFNM}.pdb
 
 # use this for, e.g. optimum number of pme nodes (-npme N)
+# NOTE: This is system dependent; you MUST benchmark your system!!
 MDRUN_OPTIONS="-npme 28"
 
 echo "--- PBS_NODEFILE"
@@ -38,6 +39,7 @@ APPLICATION=$GMXBIN/mdrun_mpi
 
 
 $MPIRUN $APPLICATION -step 1000 -deffnm ${DEFFNM} -s ${TPR} -c ${PDB} -cpi \
+                     -append \
                      $MDRUN_OPTIONS \
                      -maxh ${WALL_HOURS} > $OUTPUT
 
