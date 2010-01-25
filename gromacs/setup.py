@@ -118,6 +118,7 @@ import gromacs.config as config
 from gromacs import GromacsError, GromacsFailureWarning, GromacsValueWarning, \
      AutoCorrectionWarning, BadParameterWarning, UsageWarning, MissingDataError
 import gromacs.cbook
+import gromacs.utilities
 from gromacs.utilities import in_dir, realpath, Timedelta, asiterable
 
 
@@ -245,10 +246,61 @@ def make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None):
     return gromacs.cbook.parse_ndxlist(out)
 
 
+#: Hard-coded lipid residue names for a ``vdwradii.dat`` file. Use together with
+#: :data:`~gromacs.setup.vdw_lipid_atoms` in :func:`~gromacs.setup.get_lipid_vdwradii`.
+vdw_lipid_resnames = ["POPC", "POPE", "POPG", "DOPC", "DPPC", "DLPC", "DMPC", "DPPG"]
+#: Increased atom radii for lipid atoms; these are simply the standard values from
+#: ``GMXLIB/vdwradii.dat`` increased by 0.1 nm (C) or 0.05 (N, O, H).
+vdw_lipid_atoms = {'C': 0.25, 'N': 0.16, 'O': 0.155, 'H': 0.09}
+
+def get_lipid_vdwradii(outdir=os.path.curdir, libdir=None):
+    """Find vdwradii.dat and add special entries for lipids.
+    
+    See :data:`gromacs.setup.vdw_lipid_resnames` for lipid
+    resnames. Add more if necessary.
+    """
+    vdwradii_dat = os.path.join(outdir, "vdwradii.dat")
+
+    if not libdir is None:
+        filename = os.path.join(libdir, 'vdwradii.dat')  # canonical name
+        if not os.path.exists(filename):
+            msg = 'No VDW database file found in %(filename)r.' % vars()
+            logger.exception(msg)
+            raise OSError(msg, errno.ENOENT)
+    else:
+        try:
+            filename = os.path.join(os.environ['GMXLIB'], 'vdwradii.dat')
+        except KeyError:
+            try:
+                filename = os.path.join(os.environ['GMXDATA'], 'gromacs', 'top', 'vdwradii.dat')
+            except KeyError:
+                msg = "Cannot find vdwradii.dat. Set GMXLIB or GMXDATA."
+                logger.exception(msg)
+                raise OSError(msg, errno.ENOENT)
+    if not os.path.exists(filename):
+        msg = "Cannot find %r; something is wrong with the Gromacs installation." % vars()
+        logger.exception(msg, errno.ENOENT)
+        raise OSError(msg)
+
+    # make sure to catch 3 and 4 letter resnames
+    patterns = vdw_lipid_resnames + list(set([x[:3] for x in vdw_lipid_resnames]))
+    # TODO: should do a tempfile...    
+    with open(vdwradii_dat, 'w') as outfile:
+        # write lipid stuff before general 
+        outfile.write('; Special larger vdw radii for solvating lipid membranes\n')
+        for resname in patterns:
+            for atom,radius in vdw_lipid_atoms.items():
+                outfile.write('%(resname)4s %(atom)-5s %(radius)5.3f\n' % vars())
+        with open(filename, 'r') as infile:
+            for line in infile:
+                outfile.write(line)
+    logger.debug('Created lipid vdW radii file %(vdwradii_dat)r.' % vars())
+    return realpath(vdwradii_dat)
+
 def solvate(struct='top/protein.pdb', top='top/system.top',
             distance=0.9, boxtype='dodecahedron',
             concentration=0, cation='NA+', anion='CL-',
-            water='spc',
+            water='spc', with_membrane=False,
             ndx = 'main.ndx', mainselection = '"Protein"',
             dirname='solvate',
             **kwargs):
@@ -257,6 +309,12 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
     Currently this really only supports solutes in water. If you need
     to embedd a protein in a membrane then you will require more
     sophisticated approaches.
+
+    However, you *can* supply a protein already inserted in a
+    bilayer. In this case you will probably want to set *distance* =
+    ``None`` and also enable *with_membrane* = ``True`` (using extra
+    big vdw radii for typical lipids).
+
 
     :Arguments:
       *struct* : filename
@@ -282,6 +340,9 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
           Name of the water model; one of "spc", "spce", "tip3p",
           "tip4p". This should be appropriate for the chosen force
           field.
+      *with_membrane* : bool
+           ``True``: use special ``vdwradii.dat`` with 0.1nm-increased radii on 
+           lipids. Default is ``False``.
       *ndx* : filename
           The name of the custom index file that is produced here.
       *mainselection* : string
@@ -331,7 +392,19 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
                 raise MissingDataError(msg)
             distance = boxtype = None   # ensures that editconf just converts
         gromacs.editconf(f=structure, o='boxed.gro', bt=boxtype, d=distance)
-        gromacs.genbox(p=topology, cp='boxed.gro', cs=water, o='solvated.gro')
+
+        if with_membrane:
+            vdwradii_dat = get_lipid_vdwradii()  # need to clean up afterwards
+            logger.info("Using special vdW radii for lipids %r" % vdw_lipid_resnames)
+
+        try:
+            gromacs.genbox(p=topology, cp='boxed.gro', cs=water, o='solvated.gro')
+        except:
+            if with_membrane:
+                # remove so that it's not picked up accidentally
+                gromacs.utilities.unlink_f(vdwradii_dat)
+            raise
+
 
         with open('none.mdp','w') as mdp:
             mdp.write('; empty mdp file\ninclude = %(include)s\n' % mdp_kwargs)            
