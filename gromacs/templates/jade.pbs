@@ -7,6 +7,11 @@
 # host: jade.cines.fr
 # queuing system: SGE
 
+# chain jobs with 
+#    NEWID=$(qsub -N GMXMD_00  jade.pbs)
+#    NEWID=$(qsub -N GMXMD_01 -W depend=afterok:$NEWID jade.pbs)
+#    NEWID=$(qsub -N GMXMD_02 -W depend=afterok:$NEWID jade.pbs)
+
 # set this to the same value as walltime; mdrun will stop cleanly
 # at 0.99 * WALL_HOURS 
 WALL_HOURS=0.33
@@ -27,6 +32,7 @@ echo "--- PBS_NODEFILE"
 cat $PBS_NODEFILE
 cd $PBS_O_WORKDIR
 
+# avoids some failures
 export MPI_GROUP_MAX=1024
 
 #module load gromacs
@@ -39,8 +45,9 @@ APPLICATION=$GMXBIN/mdrun_mpi
 
 
 $MPIRUN $APPLICATION -step 1000 -deffnm ${DEFFNM} -s ${TPR} -c ${PDB} -cpi \
-                     -append \
                      $MDRUN_OPTIONS \
                      -maxh ${WALL_HOURS} > $OUTPUT
+rc=$?
 
-exit 0
+# dependent jobs will only start if rc == 0
+exit $rc
