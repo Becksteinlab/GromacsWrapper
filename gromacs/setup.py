@@ -806,12 +806,23 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
     :Returns: a dict that can be fed into :func:`gromacs.setup.MD`
               (but check, just in case, especially if you want to
               change the ``define`` parameter in the mdp file)
+
+    .. Note:: The output frequency is drastically reduce for position
+              restraints runs by default. Set the corresponding ``nst*``
+              variables if you require more output.
     """
 
     logger.info("[%(dirname)s] Setting up MD with position restraints..." % vars())
     kwargs.setdefault('struct', 'em/em.pdb')
     kwargs.setdefault('sgename', 'PR_GMX')
     kwargs.setdefault('define', '-DPOSRES')
+    # reduce size of output files
+    kwargs.setdefault('nstxout', '50000')   # trr pos
+    kwargs.setdefault('nstvout', '50000')   # trr veloc
+    kwargs.setdefault('nstfout', '0')       # trr forces
+    kwargs.setdefault('nstlog', '500')      # log file
+    kwargs.setdefault('nstenergy', '2500')  # edr energy
+    kwargs.setdefault('nstxtcout', '5000')  # xtc pos
     return _setup_MD(dirname, **kwargs)
 
 def MD(dirname='MD', **kwargs):
