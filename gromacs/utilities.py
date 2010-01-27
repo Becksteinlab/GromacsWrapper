@@ -89,6 +89,7 @@ import glob
 import re
 import warnings
 import errno
+import subprocess
 from contextlib import contextmanager
 import bz2, gzip
 import numpy
@@ -388,7 +389,7 @@ def unlink_f(path):
     try:
         os.unlink(path)
     except OSError, err:
-        if err.errno <> errno.ENOENT:
+        if err.errno != errno.ENOENT:
             raise
 
 def unlink_gmx(*args):
@@ -404,6 +405,33 @@ def unlink_gmx_backups(*args):
         fbaks = glob.glob(os.path.join(dirname, '#'+filename+'.*#'))
         for bak in fbaks:
             unlink_f(bak)
+
+def mkdir_p(path):
+    """Create a directory *path* with subdirs but do not complain if it exists.
+
+    This is like GNU ``mkdir -p path``.
+    """
+    try:
+        os.makedirs(path)
+    except OSError, err:
+        if err.errno != errno.EEXIST:
+            raise
+
+def cat(f=None, o=None):
+    """Concatenate files *f*=[...] and write to *o*"""
+    # need f, o to be compatible with trjcat and eneconv
+    if f is None or o is None:
+        return
+    target = o
+    infiles = asiterable(f)
+    logger.debug("cat %s > %s " % (" ".join(infiles), target))
+    with open(target, 'w') as out:
+        rc = subprocess.call(['cat'] + infiles, stdout=out)
+    if rc != 0:
+        msg = "failed with return code %d: cat %r > %r " % (rc, " ".join(infiles), target)
+        logger.exception(msg)
+        raise OSError(errno.EIO, msg, target)
+        
 
 # helpers for matplotlib
 def activate_subplot(numPlot):

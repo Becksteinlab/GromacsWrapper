@@ -50,6 +50,9 @@ Standard invocations for compacting or fitting trajectories.
    .. Note:: Gromacs 4.x only
     
 .. autofunction:: trj_fitandcenter
+.. autofunction:: cat
+.. autoclass:: Frames
+   :members:
 .. autoclass:: Transformer
    :members:
 
@@ -257,6 +260,69 @@ def trj_fitandcenter(xy=False, **kwargs):
         trj_xyfitted(f=tmptrj, o=outtrj, n=ndx, fit=fitmode, input=inpfit, **kwargs)
     finally:
         utilities.unlink_gmx(tmptrj)
+
+def cat(prefix="md", dirname=os.path.curdir, partsdir="parts"):
+    """Concatenate all parts of a simulation.
+
+    The xtc, trr, and edr files in *dirname* such as prefix.xtc,
+    prefix.part0002.xtc, prefix.part0003.xtc, ... are
+
+       1) moved to the *partsdir* (under *dirname*)
+       2) concatenated with the Gromacs tools to yield prefix.xtc, prefix.trr, 
+          prefix.edr, prefix.gro (or prefix.md) in *dirname*
+
+    .. Note:: Trajectory files are *never* deleted by this function to avoid 
+              data loss in case of bugs. You will have to clean up yourself
+              by deleting *dirname*/*partsdir*.
+    """
+
+    gmxcat = {'xtc': gromacs.trjcat,
+              'trr': gromacs.trjcat,
+              'edr': gromacs.eneconv,
+              'log': utilities.cat,
+              }
+
+    def _cat(prefix, ext, partsdir=partsdir):
+        filenames = glob_parts(prefix, ext)
+        if ext.startswith('.'):
+            ext = ext[1:]
+        outfile = prefix + '.' + ext
+        if not filenames:
+            return None
+        for f in filenames:
+            shutil.move(f, partsdir)
+        filepaths = [os.path.join(partsdir, f) for f in filenames]
+        gmxcat[ext](f=filepaths, o=outfile)
+        return outfile
+
+    with utilities.in_dir(dirname, create=False):
+        utilities.mkdir_p(partsdir)
+        for ext in ('log', 'edr', 'trr', 'xtc'):
+            logger.info("[%(dirname)s] concatenating %(ext)s files...", vars())
+            outfile = _cat(prefix, ext, partsdir)
+            logger.info("[%(dirname)s] created %(outfile)r", vars())
+        for ext in ('gro', 'pdb'):
+            filenames = glob_parts(prefix, ext)
+            if len(filenames) == 0:
+                continue
+            elif len(filenames) == 1:
+                # only case we're dealing with right now
+                final = prefix + '.' + ext
+                shutil.copy(filenames[0], final)  # copy2 fails on nfs with Darwin at least
+                shutil.move(filenames[0], partsdir)
+                logger.info("[%(dirname)s] collected final structure %(final)r", vars())
+            else:
+                logger.warning("[%(dirname)s] too many output structures %(filenames)r, "
+                               "cannot decide which one, resolve manually ", vars())
+    partsdirpath = utilities.realpath(dirname, partsdir)
+    logger.warn("[%(dirname)s] cat complete but original files in %(partsdirpath)r "
+                "must be manually removed", vars())
+
+def glob_parts(prefix, ext):
+    """Find files from a continuation run"""
+    if ext.startswith('.'):
+        ext = ext[1:]
+    return glob.glob(prefix+'.'+ext) + glob.glob(prefix+'.part[0-9][0-9][0-9][0-9].'+ext)
 
 
 class Frames(object):
