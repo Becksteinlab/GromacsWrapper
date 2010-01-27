@@ -697,6 +697,7 @@ def _setup_MD(dirname,
                 mdp_parameters['tc-grps'] = 'System'
                 mdp_parameters['tau_t'] = tau_t   # this overrides the commandline!
                 mdp_parameters['ref_t'] = ref_t   # this overrides the commandline!
+                mdp_parameters['gen-temp'] = ref_t
                 wmsg = "Size of __main__ is only %.1f%% of __environment__ so " \
                        "we use 'System' for T-coupling and ref_t = %g and " \
                        "tau_t = %g (can be changed in mdp_parameters).\n" \
@@ -709,6 +710,7 @@ def _setup_MD(dirname,
             mdp_parameters['tc-grps'] = ""
             mdp_parameters['tau_t'] = ""
             mdp_parameters['ref_t'] = ""
+            mdp_parameters['gen-temp'] = ""
         if mdp_parameters.get('Pcoupl','').lower() == 'no':
             logger.info("Pcoupl == no: disabling all pressure coupling mdp options")
             mdp_parameters['tau_p'] = ""
