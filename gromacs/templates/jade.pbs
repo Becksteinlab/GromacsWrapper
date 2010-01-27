@@ -26,7 +26,10 @@ PDB=${DEFFNM}.pdb
 
 # use this for, e.g. optimum number of pme nodes (-npme N)
 # NOTE: This is system dependent; you MUST benchmark your system!!
-MDRUN_OPTIONS="-npme 28"
+# 24 pme on 64 cores best for 65k atom system
+##MDRUN_OPTIONS="-npme 24"
+# 16 pme on 64 cores best for 80k atom system
+MDRUN_OPTIONS="-npme 16"
 
 echo "--- PBS_NODEFILE"
 cat $PBS_NODEFILE
