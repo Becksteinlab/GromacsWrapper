@@ -31,6 +31,8 @@ Classes
    :members:
 .. autoclass:: NDX
    :members:
+.. autoclass:: uniqueNDX
+   :members:
 .. autoclass:: GRO
    :members:
 
@@ -44,8 +46,11 @@ import os
 import re
 import warnings
 import errno
+import operator
 
 import numpy
+
+from odict import odict
 
 import utilities
 from gromacs import AutoCorrectionWarning
@@ -259,9 +264,6 @@ class XVG(utilities.FileUtils):
         pylab.errorbar(X, Y, **kwargs)        
 
         
-        
-
-from odict import odict
 
 class NDX(odict, utilities.FileUtils):
     """Gromacs index file.
@@ -281,9 +283,9 @@ class NDX(odict, utilities.FileUtils):
     .. Note:: The index entries themselves are ordered and can contain 
               duplicates so that output from NDX can be easily used for 
               :program:`g_dih` and friends. If you need set-like behaviour
-              you will have do this yourself (e.g. derive from NDX and override 
-              __setitem__) or use :class:`gromacs.cbook.IndexBuilder`, which
-              uses :program:`make_ndx` throughout.
+              you will have do use :class:`gromacs.formats.uniqueNDX` or
+              :class:`gromacs.cbook.IndexBuilder` (which uses
+              :program:`make_ndx` throughout).
 
     **Example**
 
@@ -338,13 +340,14 @@ class NDX(odict, utilities.FileUtils):
                 if not current_section is None:
                     data[current_section].extend(map(int, line.split()))
 
-        super(NDX,self).update(odict([(name, numpy.array(atomnumbers).astype(int))
+        super(NDX,self).update(odict([(name, self._transform(atomnumbers))
                                      for name, atomnumbers in data.items()]))
 
     def write(self, filename=None, ncol=ncol, format=format):
         """Write index file to *filename* (or overwrite the file that the index was read from)"""
         with open(self.filename(filename, ext='ndx'), 'w') as ndx:
-            for name, atomnumbers in self.items():
+            for name in self:
+                atomnumbers = self._getarray(name)  # allows overriding
                 ndx.write('[ %s ]\n' % name)
                 for k in xrange(0, len(atomnumbers), ncol):
                     line = atomnumbers[k:k+ncol].astype(int)   # nice formatting in ncol-blocks
@@ -353,7 +356,7 @@ class NDX(odict, utilities.FileUtils):
                 ndx.write('\n')
 
     def get(self, name):
-        """Return index array for idnex group *name*."""
+        """Return index array for index group *name*."""
         return self[name]
 
     def set(self, name, value):
@@ -383,12 +386,72 @@ class NDX(odict, utilities.FileUtils):
         """
         return [{'name': name, 'natoms': len(atomnumbers), 'nr': nr+1} for
                 nr,(name,atomnumbers) in enumerate(self.items())]
+
+    def _getarray(self, name):
+        """Helper getter that is used in write(). 
+        Override when using a _transform that stores something that
+        cannot be indexed, e.g. when using set()s.
+        """
+        return self[name]
+
+    def _transform(self, v):
+        """Transform input to the stored representation.
+        
+        Override eg with ``return set(v)`` for index lists as sets.
+        """
+        return numpy.ravel(v).astype(int)
         
     def __setitem__(self, k, v):
-        super(NDX, self).__setitem__(k, numpy.ravel(v).astype(int))
+        super(NDX, self).__setitem__(k, self._transform(v))
 
     def setdefault(*args,**kwargs):
         raise NotImplementedError
+
+
+class IndexSet(set):
+    """set which defines '+' as union (OR) and '-' as intersection  (AND)."""
+    def __add__(self, x):
+        return self.union(x)
+    def __sub__(self, x):
+        return self.intersection(x)
+
+class uniqueNDX(NDX):
+    """Index that behaves like make_ndx, i.e. entries behaves as sets,
+    not lists.
+
+    The index lists behave like sets:
+    - adding sets with '+' is equivalent to a logical OR: x + y == "x | y"
+    - subtraction '-' is AND: x - y == "x & y"
+    - see :meth:`~gromacs.formats.join` for ORing multiple groups (x+y+z+...)
+
+    **Example** ::
+       I = uniqueNDX('system.ndx')
+       I['SOLVENT'] = I['SOL'] + I['NA+'] + I['CL-']    
+    """
+
+    def join(self, *groupnames):
+        """Return an index group that contains atoms from all  *groupnames*.
+
+        The method will silently ignore any groups that are not in the
+        index.
+
+        **Example**
+
+        Always make a solvent group from water and ions, even if not
+        all ions are present in all simulations::
+        
+           I['SOLVENT'] = I.join('SOL', 'NA+', 'K+', 'CL-')        
+        """
+        return self._sum([self[k] for k in groupnames if k in self])
+
+    def _sum(self, sequence):
+        return reduce(operator.add, sequence)
+
+    def _transform(self, v):
+        return IndexSet(v)
+
+    def _getarray(self, k):
+        return numpy.sort(numpy.fromiter(self[k],dtype=int,count=len(self[k])))
     
 
 # or use list of these?
