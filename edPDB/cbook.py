@@ -107,4 +107,29 @@ def extract_residue(pdbname, output, resname):
     structure = xpdb.get_structure(pdbname)
     residues = xpdb.residues_by_resname(structure, resname)
     xpdb.write_pdb(structure, output, inclusions=residues)
+
+def extract_protein(pdbname, output):
+    """Write a pdb file with the protein (i.e. all amino acids) extracted.
+    """
+    logger.debug("extract_protein(%(pdbname)r, %(output)r)" % vars())
+    structure = xpdb.get_structure(pdbname)
+    residues = xpdb.residues_by_selection(structure, xpdb.ProteinSelect())
+    xpdb.write_pdb(structure, output, inclusions=residues)
+
+def extract_lipids(pdbname, output, lipid_resnames='POPC|POPG|POPE|DMPC|DPPE|DOPE'):
+    """Write a pdb file with the lipids extracted.
+
+    Note that resnames are also tried truncated to the first three
+    characters, which means that POPE and POPG are identical and
+    cannot be distinguished.
+    """
+    logger.debug("extract_lipids(%(pdbname)r, %(output)r, lipid_resnames=%(lipid_resnames)r)" % vars())
+    resnames = lipid_resnames.split('|')
+    resnames.extend([r[:3] for r in resnames])
+
+    structure = xpdb.get_structure(pdbname)
+    residues = xpdb.residues_by_selection(structure, xpdb.ResnameSelect(resnames))
+    xpdb.write_pdb(structure, output, inclusions=residues)
+
+
     

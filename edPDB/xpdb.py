@@ -21,43 +21,57 @@ import Bio.PDB.StructureBuilder
 from Bio.PDB.PDBIO import Select
 from Bio.PDB.Residue import Residue
 
+from  utilities import asiterable
+
 import logging
 logger = logging.getLogger('edPDB.xpdb')
 
 #: How to recognize a protein.
-PROTEIN_RESNAMES = ['ALA', 'ARG', 'ASN', 'ASP', 'CYS', 'GLN', 'GLU', 'GLY', 'HIS', 'HSD',
-                    'HSE', 'HSP', 'ILE', 'LEU', 'LYS', 'MET', 'PHE', 'PRO', 'SER', 'THR',
-                    'TRP', 'TYR', 'VAL', 'ALAD',
-                    'CHO', 'EAM']
+PROTEIN_RESNAMES = {'ALA':'A', 'ARG':'R', 'ASN':'N', 'ASP':'D',
+                    'CYS':'C', 'GLN':'Q', 'GLU':'E', 'GLY':'G', 
+                    'HIS':'H', 'HSD':'H', 'HSE':'H', 'HSP':'H', 
+                    'ILE':'I', 'LEU':'L', 'LYS':'K', 'MET':'M', 
+                    'PHE':'F', 'PRO':'P', 'SER':'S', 'THR':'T',
+                    'TRP':'W', 'TYR':'Y', 'VAL':'V', 
+                    'ALAD':'AA', 'CHO':'?', 'EAM':'?'}
+
+def canonical(resname):
+    """Return canonical representation of resname.
+    
+    space stripped and  upper case
+    """
+    return resname.strip().upper()
 
 class ResnameSelect(Select):
     """Select all atoms that match *resname*."""
-    def __init__(self,resname):
-        """Supply a *resname*, e.g. 'SOL' or 'PHE'."""
-        self.resname = resname.strip().upper()
+    def __init__(self,resnames):
+        """Supply a *resname*, e.g. 'SOL' or 'PHE' or a list."""
+        self.resnames = dict([(canonical(r),True) for r in asiterable(resnames)])
     def accept_residue(self,residue):
-        return residue.resname.strip().upper() == self.resname
+        # use a dict --- 'in' is probably faster on dict keys than on
+        # lists ... TODO = check ;-)
+        return canonical(residue.resname) in self.resnames
 
 class ResidueSelect(Select):
     """Select all atoms that are in the residue list."""
     def __init__(self,residues):
         """Supply a list of Bio.PDB residues for the search."""        
-        self.residues = [r.strip() for r in residues]
+        self.residues = residues
     def accept_residue(self,residue):
-        return residue.strip() in self.residues
+        return residue in self.residues
 
 class NotResidueSelect(Select):
     """Select all atoms that are *not* in the residue list."""
     def __init__(self,residues):
         """Supply a list of Bio.PDB residues for the search."""        
-        self.residues = [r.strip() for r in residues]
+        self.residues = residues
     def accept_residue(self,residue):
-        return not residue.strip() in self.residues
+        return not residue in self.residues
 
 class ProteinSelect(Select):
     """Select all amino acid residues."""
     def accept_residue(self,residue):
-        return residue.resname.strip().upper() in PROTEIN_RESNAMES
+        return canonical(residue.resname) in PROTEIN_RESNAMES
 
 class SloppyStructureBuilder(Bio.PDB.StructureBuilder.StructureBuilder):
     """Cope with resSeq < 10,000 limitation by just incrementing internally.
@@ -176,10 +190,14 @@ class AtomGroup(set):
     def __repr__(self):
         return "[" + ", ".join(["%s%d:%s" % x for x in self.identifiers]) + "]"
 
-def residues_by_resname(structure, resname):
-    """Return a list of residue instances that match *resname*."""
-    return [r for r in Bio.PDB.Selection.unfold_entities(structure, 'R')
-            if r.resname.strip() == resname]
+def residues_by_resname(structure, resnames):
+    """Return a list of residue instances that match *resnames*.
+
+    *resnames* can be a single string or a list of strings.
+    """
+    #return [r for r in Bio.PDB.Selection.unfold_entities(structure, 'R')
+    #        if r.resname.strip() == resname]
+    return residues_by_selection(structure, ResnameSelect(resnames))
 
 def residues_by_selection(structure, selection):
     """General residue selection: supply a Bio.PDB.PDBIO.Select instance."""
