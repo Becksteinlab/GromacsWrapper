@@ -9,8 +9,14 @@
 
 A collection of python snippets to quickly edit pdb files. This is
 typically used for setting up system for MD simulations. Of course,
-one could use any number of more elegant or powerful tools that
+one could use any number of more elegant or powerful tools than
 this...
+
+Future plans
+------------
+
+Eventually using this module should become as intuitive as ``grep``,
+``sed`` and ``cat`` of pdb files.
 
 Modules
 -------

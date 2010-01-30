@@ -36,28 +36,28 @@ class ResnameSelect(Select):
         """Supply a *resname*, e.g. 'SOL' or 'PHE'."""
         self.resname = resname.strip().upper()
     def accept_residue(self,residue):
-        return residue.resname.upper() == self.resname
+        return residue.resname.strip().upper() == self.resname
 
 class ResidueSelect(Select):
     """Select all atoms that are in the residue list."""
     def __init__(self,residues):
         """Supply a list of Bio.PDB residues for the search."""        
-        self.residues = residues
+        self.residues = [r.strip() for r in residues]
     def accept_residue(self,residue):
-        return residue in self.residues
+        return residue.strip() in self.residues
 
 class NotResidueSelect(Select):
     """Select all atoms that are *not* in the residue list."""
     def __init__(self,residues):
         """Supply a list of Bio.PDB residues for the search."""        
-        self.residues = residues
+        self.residues = [r.strip() for r in residues]
     def accept_residue(self,residue):
-        return not residue in self.residues
+        return not residue.strip() in self.residues
 
 class ProteinSelect(Select):
     """Select all amino acid residues."""
     def accept_residue(self,residue):
-        return residue.resname.upper() in PROTEIN_RESNAMES
+        return residue.resname.strip().upper() in PROTEIN_RESNAMES
 
 class SloppyStructureBuilder(Bio.PDB.StructureBuilder.StructureBuilder):
     """Cope with resSeq < 10,000 limitation by just incrementing internally.
@@ -179,7 +179,7 @@ class AtomGroup(set):
 def residues_by_resname(structure, resname):
     """Return a list of residue instances that match *resname*."""
     return [r for r in Bio.PDB.Selection.unfold_entities(structure, 'R')
-            if r.resname == resname]
+            if r.resname.strip() == resname]
 
 def residues_by_selection(structure, selection):
     """General residue selection: supply a Bio.PDB.PDBIO.Select instance."""
