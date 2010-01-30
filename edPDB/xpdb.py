@@ -21,11 +21,30 @@ import Bio.PDB.StructureBuilder
 from Bio.PDB.PDBIO import Select
 from Bio.PDB.Residue import Residue
 
+import logging
+logger = logging.getLogger('edPDB.xpdb')
+
+#: How to recognize a protein.
+PROTEIN_RESNAMES = ['ALA', 'ARG', 'ASN', 'ASP', 'CYS', 'GLN', 'GLU', 'GLY', 'HIS', 'HSD',
+                    'HSE', 'HSP', 'ILE', 'LEU', 'LYS', 'MET', 'PHE', 'PRO', 'SER', 'THR',
+                    'TRP', 'TYR', 'VAL', 'ALAD',
+                    'CHO', 'EAM']
+
 class ResnameSelect(Select):
+    """Select all atoms that match *resname*."""
     def __init__(self,resname):
+        """Supply a *resname*, e.g. 'SOL' or 'PHE'."""
         self.resname = resname.strip().upper()
     def accept_residue(self,residue):
         return residue.resname.upper() == self.resname
+
+class ResidueSelect(Select):
+    """Select all atoms that are in the residue list."""
+    def __init__(self,residues):
+        """Supply a list of Bio.PDB residues for the search."""        
+        self.residues = residues
+    def accept_residue(self,residue):
+        return residue in self.residues
 
 class NotResidueSelect(Select):
     """Select all atoms that are *not* in the residue list."""
@@ -35,6 +54,10 @@ class NotResidueSelect(Select):
     def accept_residue(self,residue):
         return not residue in self.residues
 
+class ProteinSelect(Select):
+    """Select all amino acid residues."""
+    def accept_residue(self,residue):
+        return residue.resname.upper() in PROTEIN_RESNAMES
 
 class SloppyStructureBuilder(Bio.PDB.StructureBuilder.StructureBuilder):
     """Cope with resSeq < 10,000 limitation by just incrementing internally.
@@ -92,9 +115,9 @@ class SloppyStructureBuilder(Bio.PDB.StructureBuilder.StructureBuilder):
                 fudged_resseq = True
                 
             if fudged_resseq and self.verbose:
-                sys.stderr.write("Residues are wrapping (Residue ('%s', %i, '%s') at line %i)." 
-                                 % (field, resseq, icode, self.line_counter) +
-                                 ".... assigning new resid %d.\n" % self.max_resseq)
+                logger.debug("Residues are wrapping (Residue ('%s', %i, '%s') at line %i)." 
+                             % (field, resseq, icode, self.line_counter) +
+                             ".... assigning new resid %d.\n" % self.max_resseq)
         residue=Residue(res_id, resname, self.segid)
         self.chain.add(residue)
         self.residue=residue
@@ -142,7 +165,8 @@ def get_structure(pdbfile,pdbid='system'):
 
 
 class AtomGroup(set):
-    def __init__(self, atoms=[]):        
+    def __init__(self, atoms=None):
+        atoms = atoms or []
         super(AtomGroup, self).__init__(atoms)
 
     @property
@@ -156,6 +180,12 @@ def residues_by_resname(structure, resname):
     """Return a list of residue instances that match *resname*."""
     return [r for r in Bio.PDB.Selection.unfold_entities(structure, 'R')
             if r.resname == resname]
+
+def residues_by_selection(structure, selection):
+    """General residue selection: supply a Bio.PDB.PDBIO.Select instance."""
+    return [r for r in Bio.PDB.Selection.unfold_entities(structure, 'R')
+            if selection.accept_residue(r)]
+    
 
 def find_water(structure, ligand, radius=3.0, water='SOL'):
     """Find all water (SOL) molecules within radius of ligand.
@@ -196,12 +226,12 @@ def find_water(structure, ligand, radius=3.0, water='SOL'):
     water_shell = AtomGroup()
     for name,center in names_centers:
         _shell = AtomGroup(ns.search(center, radius))
-        print "around %6r: %3d OW = " % (name, len(_shell)) + str(_shell)
+        logger.debug("around %6r: %3d OW = " % (name, len(_shell)) + str(_shell))
         water_shell.update(_shell)  # keep unique residues only
     return sorted([a.parent for a in water_shell])
 
 
-def write_pdb(structure, filename, exclusions=None):
+def write_pdb(structure, filename, exclusions=None, inclusions=None):
     """Write Bio.PDB molecule *structure* to *filename*.
     
     :Arguments:
@@ -211,17 +241,28 @@ def write_pdb(structure, filename, exclusions=None):
          pdb file
        exclusions
          list of **residue** instances that will *not* be included
-    
+       inclusions
+         list of **residue** instances that will be included
+
     Typical use is to supply a list of water molecules that should not
-    be written.
+    be written or a ligand that should be include.
+
+    .. Note:: Currently only either *exclusions* or *inclusions* is 
+              supported.
     """
-    exclusions = exclusions or []
-    excl = NotResidueSelect(exclusions)
-    
+    if exclusions and inclusions:
+        raise NotImplementedError("Sorry, only either exclusions OR "
+                                  "inclusions are supported")
+    if exclusions:
+        selection = NotResidueSelect(exclusions)
+    else:
+        inclusions = inclusions or []
+        selection = ResidueSelect(inclusions)
+
     io = SloppyPDBIO()     # deals with resSeq > 9999
     io.set_structure(structure)
-    io.save(filename, select=excl)
+    io.save(filename, select=selection)
 
-    print "Wrote pdb %(filename)r." % vars()
+    logger.info("Wrote pdb %(filename)r." % vars())
 
 

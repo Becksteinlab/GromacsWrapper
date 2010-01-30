@@ -10,6 +10,7 @@ error checking and might have to be altered for your purpose.
 
 .. autofunction:: align_ligand
 .. autofunction:: remove_overlap_water
+.. autofunction:: extract_residue
 
 """
 
@@ -18,8 +19,9 @@ import os.path
 import Bio.PDB
 
 import xpdb
-import config
 
+import logging
+logger = logging.getLogger('edPDB.cbook')
 
 def align_ligand(protein_struct, ligand_struct, ligand_resname, output='ligand_aligned.pdb'):
     """Align a ligand to the same ligand in a protein, based on the heavy atoms.
@@ -41,8 +43,9 @@ def align_ligand(protein_struct, ligand_struct, ligand_resname, output='ligand_a
 
     .. Warning:: Assumes only heavy atoms in PDB (I think... check source!) 
     """
+    logger.debug("align_ligand(%(protein_struct)r, %(ligand_struct)r, "
+                "%(ligand_resname)r, output=%(output)r)" % vars())
 
-    # XXX: untested since I changed the code to use xpdb
     prot = xpdb.get_structure('prot', protein_struct)
     lig = xpdb.get_structure('lig', ligand_struct)
     plig = xpdb.residues_by_resname(prot, ligand_resname)
@@ -58,7 +61,7 @@ def align_ligand(protein_struct, ligand_struct, ligand_resname, output='ligand_a
     io.set_structure(lig)
     io.save(output)
 
-    print "Wrote aligned ligand  %r (RMSD = %g A)" % (ligand_aligned, S.rms)
+    logger.info("Wrote aligned ligand  %r (RMSD = %g A)" % (ligand_aligned, S.rms))
     return S.rms
 
 
@@ -85,15 +88,23 @@ def remove_overlap_water(pdbname, output, ligand_resname, distance=3.0):
               residue blocks migh become reordered. (This is due to the
               way the Bio.PDB.PDBIO writes files.)
     """
+    logger.debug("remove_overlap_water(%(pdbname)r, %(output)r, %(ligand_resname), "
+                "distance=%(distance)r)" % vars())
 
     structure = xpdb.get_structure(pdbname)
     ligand = xpdb.residues_by_resname(structure, ligand_resname)
 
     w = xpdb.find_water(structure, ligand, radius=distance)
-    print "w = %r" % w
+    logger.debug("waters found: %r" % w)
 
     xpdb.write_pdb(structure, output, exclusions=w)
 
+def extract_residue(pdbname, output, resname):
+    """Write a pdb file with *resname* extracted.
 
-    
+    """
+    logger.debug("extract_residue(%(pdbname)r, %(output)r, %(resname)r)" % vars())
+    structure = xpdb.get_structure(pdbname)
+    residues = xpdb.residues_by_resname(structure, resname)
+    xpdb.write_pdb(structure, output, inclusions=residues)
     

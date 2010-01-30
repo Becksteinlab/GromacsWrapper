@@ -28,6 +28,28 @@ try:
 except ImportError:
     raise ImportError("Biopython's Bio.PDB is absolutely essential. Please install it.")
 
+import logging
+# NOTE: logging is still iffy; when I reload I add a new logger each
+# time and output is repeated for each reload. Probably should heed
+# the advice on logging and libraries in
+# http://docs.python.org/library/logging.html?#configuring-logging-for-a-library
+class NullHandler(logging.Handler):
+    def emit(self, record):
+        pass
+
+# this clashes conceptually with the console stuff above: really the
+# above needs to be done in application code; in that case the following
+# would be enabled:
+#
+h = NullHandler()
+logging.getLogger("edPDB").addHandler(h)
+del h
+
+# add standard logging
+import log
+logger = log.create()
+
+
 import xpdb
 import cbook
 
