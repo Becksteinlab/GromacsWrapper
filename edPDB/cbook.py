@@ -65,7 +65,7 @@ def align_ligand(protein_struct, ligand_struct, ligand_resname, output='ligand_a
     return S.rms
 
 
-def remove_overlap_water(pdbname, output, ligand_resname, distance=3.0):
+def remove_overlap_water(pdbname, output, ligand_resname, distance=3.0, water="SOL"):
     """Remove water (SOL) molecules overlapping with ligand.
 
     :Arguments:
@@ -88,15 +88,16 @@ def remove_overlap_water(pdbname, output, ligand_resname, distance=3.0):
               residue blocks migh become reordered. (This is due to the
               way the Bio.PDB.PDBIO writes files.)
     """
-    logger.debug("remove_overlap_water(%(pdbname)r, %(output)r, %(ligand_resname), "
+    logger.debug("remove_overlap_water(%(pdbname)r, %(output)r, %(ligand_resname)r, "
                 "distance=%(distance)r)" % vars())
 
     structure = xpdb.get_structure(pdbname)
     ligand = xpdb.residues_by_resname(structure, ligand_resname)
 
-    w = xpdb.find_water(structure, ligand, radius=distance)
+    w = xpdb.find_water(structure, ligand, radius=distance, water=water)
     logger.debug("waters found: %r" % w)
-
+    logger.info("removed %d %r molecules overlapping %r", 
+                len(w), water, ligand_resname)
     xpdb.write_pdb(structure, output, exclusions=w)
 
 def extract_residue(pdbname, output, resname):
