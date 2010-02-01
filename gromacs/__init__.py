@@ -136,6 +136,8 @@ The following *warnings* are defined:
 .. autoexception:: GromacsValueWarning
 .. autoexception:: AutoCorrectionWarning
 .. autoexception:: BadParameterWarning
+.. autoexception:: MissingDataWarning
+.. autoexception:: UsageWarning
 
 
 Logging
@@ -188,6 +190,9 @@ class AutoCorrectionWarning(Warning):
 
 class BadParameterWarning(Warning):
     """Warns if some parameters or variables are unlikely to be appropriate or correct."""
+
+class MissingDataWarning(Warning):
+    """Warns when prerequisite data/files are not available."""
 
 class UsageWarning(Warning):
     """Warns if usage is unexpected/documentation ambiguous."""

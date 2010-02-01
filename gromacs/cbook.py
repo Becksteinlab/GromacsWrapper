@@ -131,7 +131,7 @@ import logging
 logger = logging.getLogger('gromacs.cbook')
 
 import gromacs
-from gromacs import GromacsError, BadParameterWarning
+from gromacs import GromacsError, BadParameterWarning, MissingDataWarning
 import tools
 import utilities
 
@@ -1044,8 +1044,9 @@ class IndexBuilder(object):
         try:
             fd, tmp_ndx = tempfile.mkstemp(suffix='.ndx', prefix='tmp_'+name+'__')
             cmd = [command, '', 'q']   # empty command '' necessary to get list
+            # This sometimes fails with 'OSError: Broken Pipe' --- hard to debug
             rc,out,err = self.make_ndx(o=tmp_ndx, input=cmd)
-            self.check_output(out, "Not atoms found for selection %(command)r." % vars())
+            self.check_output(out, "No atoms found for selection %(command)r." % vars(), err=err)
             # For debugging, look at out and err or set stdout=True, stderr=True
             # TODO: check '  0 r_300_&_ALA_&_O     :     1 atoms' has at least 1 atom
             ##print "DEBUG: _process_command()"
@@ -1109,7 +1110,7 @@ class IndexBuilder(object):
 
         return name, ndx
 
-    def check_output(self, make_ndx_output, message=None):
+    def check_output(self, make_ndx_output, message=None, err=None):
         """Simple tests to flag problems with a ``make_ndx`` run."""
         if message is None:
             message = ""
@@ -1117,7 +1118,7 @@ class IndexBuilder(object):
             message = '\n' + message
         def format(output, w=60):
             hrule = "====[ GromacsError (diagnostic output) ]".ljust(w,"=")
-            return hrule + '\n' + output + hrule
+            return hrule + '\n' + str(output) + hrule
 
         rc = True
         if self._is_empty_group(make_ndx_output):
@@ -1129,6 +1130,11 @@ class IndexBuilder(object):
             out_formatted = format(make_ndx_output)
             raise GromacsError("make_ndx encountered a Syntax Error, "
                                "%(message)s\noutput:\n%(out_formatted)s" % vars())
+        if make_ndx_output.strip() == "":
+            rc = False
+            out_formatted = format(err)
+            raise GromacsError("make_ndx produced no output, "
+                               "%(message)s\nerror output:\n%(out_formatted)s" % vars())
         return rc
 
     def _is_empty_group(self, make_ndx_output):
@@ -1185,9 +1191,19 @@ class Transformer(utilities.FileUtils):
         self.xtc = self.filename(f, ext="xtc", use_my_ext=True)
         self.ndx = n
         self.dirname = dirname
+        self.nowater = {}     # data for trajectory stripped from water
+
+        with utilities.in_dir(self.dirname, create=False):
+            for f in (self.tpr, self.xtc, self.ndx):
+                if f is None:
+                    continue
+                if not os.path.exists(f):
+                    msg = "Possible problem: File %(f)r not found in %(dirname)r." % vars()
+                    warnings.warn(msg, category=MissingDataWarning)
+                    logger.warn(msg)
 
     def rp(self, *args):
-        """Return canonical path to files under *dirname*"""
+        """Return canonical path to file under *dirname* with components *args*"""
         return utilities.realpath(self.dirname, *args)
 
     def center_fit(self, **kwargs):
@@ -1205,6 +1221,9 @@ class Transformer(utilities.FileUtils):
              Alternative index file.           
            *o*
              Name of the output trajectory.
+           *xy* : Boolean
+             If ``True`` then only fit in xy-plane (useful for a membrane normal
+             to z). The default is ``False``.
 
         :Returns: 
               dictionary with keys *tpr*, *xtc*, which are the names of the
@@ -1221,6 +1240,48 @@ class Transformer(utilities.FileUtils):
             logger.info("Centered and fit trajectory: %(o)r." % kwargs)
         return {'tpr': self.rp(kwargs['s']), 'xtc': self.rp(kwargs['o'])}
 
+    def fit(self, xy=False, **kwargs):
+        """Write xtc that is fitted to the tpr reference structure.
+
+        See :func:`gromacs.cbook.trj_xyfitted` for details and
+        description of *kwargs*. The most important ones are listed
+        here but in most cases the defaults should work.
+
+        :Keywords:
+           *s*
+             Input structure (typically the default tpr file but can be set to
+             some other file with a different conformation for fitting)
+           *n*
+             Alternative index file.           
+           *o*
+             Name of the output trajectory.
+          *xy* : boolean
+             If ``True`` then only do a rot+trans fit in the xy plane
+             (good for membrane simulations); default is ``False``.
+          *kwargs*
+             kwargs are passed to :func:`~gromacs.cbook.trj_xyfitted`           
+
+        :Returns: 
+              dictionary with keys *tpr*, *xtc*, which are the names of the
+              the new files              
+        """
+        kwargs.setdefault('s', self.tpr)
+        kwargs.setdefault('n', self.ndx)
+        kwargs['f'] = self.xtc
+        if xy:
+            fitmode = 'rotxy+transxy'
+            kwargs.pop('fit', None)
+            infix_default = '_fitxy'
+        else:
+            fitmode = kwargs.pop('fit', 'rot+trans')  # user can use 'progressive', too
+            infix_default = '_fit'
+        kwargs.setdefault('o', self.infix_filename(None, self.xtc, infix_default, 'xtc'))
+
+        logger.info("Fitting trajectory %r to with xy=%r...", kwargs['f'], xy)
+        with utilities.in_dir(self.dirname):
+            trj_xyfitted(fit=fitmode, **kwargs)
+            logger.info("Fitted trajectory (fitmode=%s): %r.", fitmode, kwargs['o'])
+        return {'tpr': self.rp(kwargs['s']), 'xtc': self.rp(kwargs['o'])}
 
     def strip_water(self, os=None, o=None, on=None, compact=False, 
                     resn="SOL", groupname="notwater", **kwargs):
@@ -1288,7 +1349,7 @@ class Transformer(utilities.FileUtils):
             logger.info("TPR file without water %(newtpr)r" % vars())
             gromacs.tpbconv(s=self.tpr, o=newtpr, n=nowater_ndx, input=[groupname])
 
-            logger.info("NDX of the new system %(newndx)r")
+            logger.info("NDX of the new system %(newndx)r" % vars())
             gromacs.make_ndx(f=newtpr, o=newndx, input=['q'], stderr=False, stdout=False)
 
             logger.info("Trajectory without water %(newxtc)r" % vars())
@@ -1307,5 +1368,11 @@ class Transformer(utilities.FileUtils):
                 except:
                     logger.exception("Failed building the water-less %(ext)s. "
                                      "Position restraints in tpr file (see docs)?" % vars())
-            logger.info("strip_water() complete")            
-        return {'tpr': self.rp(newtpr), 'xtc': self.rp(newxtc), 'ndx': self.rp(newndx)}
+            logger.info("strip_water() complete")
+        self.nowater[newxtc] = Transformer(dirname=self.dirname, tpr=newtpr, 
+                                           xtc=newxtc, ndx=newndx)
+        return {'tpr':self.rp(newtpr), 'xtc':self.rp(newxtc), 'ndx':self.rp(newndx)}
+
+
+        
+        
