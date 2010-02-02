@@ -1369,8 +1369,8 @@ class Transformer(utilities.FileUtils):
                     logger.exception("Failed building the water-less %(ext)s. "
                                      "Position restraints in tpr file (see docs)?" % vars())
             logger.info("strip_water() complete")
-        self.nowater[newxtc] = Transformer(dirname=self.dirname, tpr=newtpr, 
-                                           xtc=newxtc, ndx=newndx)
+        self.nowater[newxtc] = Transformer(dirname=self.dirname, s=newtpr, 
+                                           f=newxtc, n=newndx)
         return {'tpr':self.rp(newtpr), 'xtc':self.rp(newxtc), 'ndx':self.rp(newndx)}
 
 
