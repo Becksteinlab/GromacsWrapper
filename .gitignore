@@ -1,3 +1,9 @@
 *.pyc
 .#*
 GromacsWrapper.egg-info
+.fuse_hidden*
+doc/epydoc/
+doc/sphinx/build/
+build/
+dist
+gromacs.log
