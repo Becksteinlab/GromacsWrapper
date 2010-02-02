@@ -52,29 +52,8 @@ class _RMSF(Worker):
 
         This is the worker class; this is where all the real analysis is done.
 
-        :Arguments:
-           *keyword_1*
-               description
-           *keyword_2*
-               description
-
         """
-        # specific arguments: take them before calling the super class that
-        # does not know what to do with them
-        ## x1 = kwargs.pop('keyword_1',None) 
-        ## x2 = kwargs.pop('keyword_1', 1.234)   # nm
-
-        # super class init: do this before doing anything else
-        # (also sets up self.parameters and self.results)
         super(_RMSF, self).__init__(**kwargs)
-
-        # process specific parameters now and set instance variables
-        # ....
-
-        # self.simulation might have been set by the super class
-        # already; just leave this snippet at the end. Do all
-        # initialization that requires the simulation class in the
-        # _register_hook() method.
         if not self.simulation is None:
             self._register_hook()
 
@@ -165,7 +144,7 @@ class RMSF(Plugin):
     atoms. The trajectory is always fitted to the reference structure
     in the tpr file.
 
-    .. class:: RMSD([name[, simulation]])
+    .. class:: RMSF([name[, simulation]])
     
     :Arguments:
         *name* : string

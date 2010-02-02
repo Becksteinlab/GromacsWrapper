@@ -9,6 +9,9 @@ StripWater
 
 Write a trajectory with all water removed.
 
+.. Note:: Maybe better use
+          :meth:`gromacs.cbook.Transformer.strip_water`; that works
+          pretty well.
 
 Plugin class
 ------------
