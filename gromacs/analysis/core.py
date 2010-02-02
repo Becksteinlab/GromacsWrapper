@@ -167,10 +167,17 @@ class Simulation(object):
         """Set up a Simulation object.
 
         :Keywords:
+           *sim*
+             Any object that contains the attributes *tpr*, *xtc*,
+             and optionally *ndx*
+             (e.g. :class:`gromacs.cbook.Transformer`). The individual keywrods such
+             as *xtc* override the values in *sim*.
            *tpr*
              Gromacs tpr file (**required**)
            *xtc*
              Gromacs trajectory, can also be a trr (**required**)
+           *edr*
+             Gromacs energy file (only required for some plugins)
            *ndx*
              Gromacs index file
            *analysisdir*
@@ -181,13 +188,30 @@ class Simulation(object):
              (*plugin_class_name*, *kwarg dict*) to be used; more can be
              added later with :meth:`Simulation.add_plugin`.
         """
+        sim = kwargs.pop('sim', None)
+        def getpop(attr, required=False):
+            """Return attribute from from kwargs or sim or None"""
+            val = kwargs.pop(attr, None)  # must pop from kwargs to clean it
+            if not val is None:
+                return val
+            try:
+                return sim.__getattribute__(attr)
+            except AttributeError:
+                if required:
+                    raise TypeError("Required attribute %r not found in kwargs or sim" % attr)
+                return None
+
         # required files
-        self.tpr = kwargs.pop('tpr',None)
-        self.xtc = kwargs.pop('xtc',None)
-        for v in ('tpr', 'xtc'):            
+        self.tpr = getpop('tpr', required=True)
+        self.xtc = getpop('xtc', required=True)
+
+        self.ndx = getpop('ndx')
+        self.edr = getpop('edr')
+
+        # check existence of required files
+        for v in ('tpr', 'xtc'):
             self.check_file(v, self.__getattribute__(v))
 
-        self.ndx = kwargs.pop('ndx',None)
         self.analysis_dir = kwargs.pop('analysisdir', os.path.dirname(self.tpr))
 
         #: Registry for plugins: This dict is central.
@@ -215,9 +239,11 @@ class Simulation(object):
         if len(self.plugins) == 1:
             self.set_plugin(self.plugins.keys()[0])
 
-        # Is this needed? kwargs should be empty now BUT because the same list is re-used for
-        # all plugins I cannot pop them. I don't think multiple inheritance would work with
-        # this setup so let's not pretend it does: hence comment out the super-init call:
+        # Is this needed? If done properly, kwargs should be empty by now BUT
+        # because the same list is re-used for all plugins I cannot pop them in
+        # the plugins. I don't think multiple inheritance would work with this
+        # setup so let's not pretend it does: hence comment out the super-init
+        # call:
         ## super(Simulation, self).__init__(**kwargs)
 
     def add_plugin(self, plugin, **kwargs):

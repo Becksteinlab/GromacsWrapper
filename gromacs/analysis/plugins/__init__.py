@@ -32,6 +32,7 @@ plugin                      author                   description
 :class:`Dihedrals`                           [#OB]_  analysis of dihedral angles
 :class:`RMSF`                                [#OB]_  calculate root mean square fluctuations
 :class:`RMSD`                                [#OB]_  calculate root mean square distance
+:class:`Energy`                              [#OB]_  terms from the energy file
 :class:`Trajectories`                        [#OB]_  write xy-fitted trajectories
 ==========================  =======================  =====================================
 
@@ -54,6 +55,8 @@ Plugin classes
 .. autoclass:: RMSF
    :members:
 .. autoclass:: RMSD
+   :members:
+.. autoclass:: Energy
    :members:
 .. autoclass:: Trajectories
    :members:
@@ -78,7 +81,7 @@ __docformat__ = "restructuredtext en"
 #: *Distances* plugin class is contained in the module *distances* (the
 #: file ``plugins/distances.py``).
 __plugins__ = ['CysAccessibility', 'Distances', 'MinDistances', 'Dihedrals',
-               'Trajectories', 'RMSF', 'RMSD']
+               'Trajectories', 'RMSF', 'RMSD', 'Energy']
 __all__ = []
 __all__.extend(__plugins__)
 
