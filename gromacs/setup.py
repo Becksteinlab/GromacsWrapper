@@ -628,7 +628,7 @@ def _setup_MD(dirname,
               struct=None,
               top='top/system.top', ndx=None,
               mainselection='"Protein"',
-              sge=config.sge_template, sgename=None, budget="EDIT_ME",walltime=1/3.,
+              sge=config.sge_template, sgename=None, mdrun_opts="", budget="EDIT_ME", walltime=1/3.,
               dt=0.002, runtime=1e3, **mdp_kwargs):
     """Generic function to set up a ``mdrun`` MD simulation.
 
@@ -653,7 +653,6 @@ def _setup_MD(dirname,
     tpr = deffnm + '.tpr'
     mainindex = deffnm + '.ndx'
     final_structure = deffnm + '.gro'     # guess... really depends on templates
-    sge = os.path.basename(sge_template)
     if sgename is None:
         sgename = 'GMX_MD'
     elif not re.match('[a-zA-Z]', sgename[0]):
@@ -723,18 +722,21 @@ def _setup_MD(dirname,
 
         # set up queuing system run script (simple search and replace in templates)
         # TODO: move this into a function or class or whatever
-        logger.info("[%(dirname)s] Setting up queuing system script %(sge)r..." % vars())
         wt = Timedelta(hours=walltime)
         walltime = wt.strftime("%h:%M:%S")
         wall_hours = wt.ashours
-        gromacs.cbook.edit_txt(sge_template,
-                               [('^DEFFNM=','md',deffnm), 
-                                ('^#.*(-N|job_name)', 'GMX_MD', sgename),
-                                ('#.*(-A|account_no)', 'BUDGET', budget),
-                                ('^#.*(-l walltime|wall_clock_limit)', '00:20:00', walltime),
-                                ('^WALL_HOURS=', '0\.33', wall_hours),
-                                ],
-                               newname=sge)
+        for template in asiterable(sge_template):
+            sgefile = os.path.basename(template)
+            logger.info("[%(dirname)s] Setting up queuing system script %(sgefile)r..." % vars())
+            gromacs.cbook.edit_txt(template,
+                                   [('^DEFFNM=','md',deffnm), 
+                                    ('^#.*(-N|job_name)', 'GMX_MD', sgename),
+                                    ('#.*(-A|account_no)', 'BUDGET', budget),
+                                    ('^#.*(-l walltime|wall_clock_limit)', '00:20:00', walltime),
+                                    ('^WALL_HOURS=', '0\.33', wall_hours),
+                                    ('^MDRUN_OPTS=', '""', '"'+mdrun_opts+'"'),
+                                    ],
+                                   newname=sgefile)
 
     logger.info("[%(dirname)s] All files set up for a run time of %(runtime)g ps "
                 "(dt=%(dt)g, nsteps=%(nsteps)g)" % vars())
@@ -743,7 +745,7 @@ def _setup_MD(dirname,
               'struct': realpath(os.path.join(dirname, final_structure)),      # guess
               'top': topology,
               'ndx': index,            # possibly mainindex
-              'sge': sge,
+              'sge': sgefile,
               'mainselection': mainselection}
     kwargs.update(mdp_kwargs)  # return extra mdp args so that one can use them for prod run
     kwargs.pop('define', None) # but make sure that -DPOSRES does not stay...
@@ -786,9 +788,13 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
        *sge*
           script to submit to the SGE queuing system; by default
           uses the template :data:`gromacs.config.sge_template`, which can 
-          be manually set to another template from :data:`gromacs.config.templates`
+          be manually set to another template from :data:`gromacs.config.templates`; 
+          can also be a list of template names.
        *sgename*
           name to be used for the job in the queuing system [PR_GMX]
+       *mdrun_opts*
+          option flags for the :program:`mdrun` command in the queuing system
+          scripts such as "-stepout 100". [""]
        *kwargs*
           remaining key/value pairs that should be changed in the template mdp
           file, eg ``nstxtcout=250, nstfout=250`` or command line options for
@@ -862,9 +868,15 @@ def MD(dirname='MD', **kwargs):
        *dt*
           integration time step in ps [0.002]
        *sge*
-          script template to submit to the SGE queuing system
+          script to submit to the SGE queuing system; by default
+          uses the template :data:`gromacs.config.sge_template`, which can 
+          be manually set to another template from :data:`gromacs.config.templates`; 
+          can also be a list of template names.
        *sgename*
           name to be used for the job in the queuing system [MD_GMX]
+       *mdrun_opts*
+          option flags for the :program:`mdrun` command in the queuing system
+          scripts such as "-stepout 100 -dgdl". [""]
        *kwargs*
           remaining key/value pairs that should be changed in the template mdp
           file, eg ``nstxtcout=250, nstfout=250`` or command line options for

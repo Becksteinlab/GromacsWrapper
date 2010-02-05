@@ -34,6 +34,7 @@
 # 
 DEFFNM=md
 TPR=${DEFFNM}.tpr
+MDRUN_OPTS=""
 #
 #------------------------------------------------------------
 
@@ -123,7 +124,7 @@ echo "Running in PWD=$PWD, start: $(date)"
 export MPIEXEC_RSH=rsh
 ${mpiexec} -rsh -nopm -n ${NSLOTS} -machinefile ${TMPDIR}/machines -wdir ${temp_dir} \
           ${gromacs_mpi} -step 1000 -deffnm ${DEFFNM} -s ${TPR} -c ${PDB} \
-                         -cpi > $OUTPUT
+                         -cpi $MDRUN_OPTS > $OUTPUT
 
 echo "Run complete: $(date)"
 

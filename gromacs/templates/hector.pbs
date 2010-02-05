@@ -25,6 +25,8 @@ TPR=${DEFFNM}.tpr
 OUTPUT=${DEFFNM}.out
 PDB=${DEFFNM}.pdb
 
+MDRUN_OPTS=""
+
 # use new gromacs 4.x
 module load gromacs/4.0.4
 
@@ -35,7 +37,7 @@ export NTASK=`qstat -f $PBS_JOBID | awk '/mppnppn/  {print $3}'`
 
 aprun -n $NPROC -N $NTASK \
     mdrun_mpi -step 1000 -deffnm ${DEFFNM} -s ${TPR} -c ${PDB} \
-              -cpi -maxh ${WALL_HOURS} > $OUTPUT 
+              $MDRUN_OPTS -cpi -maxh ${WALL_HOURS} > $OUTPUT 
 
 # copy stuff back?
 
