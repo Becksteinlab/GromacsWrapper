@@ -638,13 +638,13 @@ def edit_txt(filename, substitutions, newname=None):
             for subst in _substitutions:
                 m = subst['lRE'].match(line)    
                 if m:              # apply substition to this line?
-                    logger.debug('match:    '+line)
+                    logger.debug('match:    '+line.rstrip())
                     new_line = subst['sRE'].sub(subst['repl'], line)
-                    logger.debug('replaced: '+new_line)
+                    logger.debug('replaced: '+new_line.rstrip())
                     break   # only apply the first matching substitution!
             target.write(new_line)
-    target.seek(0)
 
+    target.seek(0)
     with open(newname, 'w') as final:
         shutil.copyfileobj(target, final)
     target.close()
@@ -666,7 +666,7 @@ NDXLIST = re.compile(r""">\s+\n    # '> ' marker line from '' input (input not e
                     \n
                    )+              # multiple repeats
                   )""", re.VERBOSE)
-#: compiler regular expression to match a single line of 
+#: compiled regular expression to match a single line of 
 #: ``make_ndx`` output (e.g. after a successful group creation)
 NDXGROUP = re.compile(r"""
                      \s*(?P<GROUPNUMBER>\d+)      # group number
