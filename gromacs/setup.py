@@ -628,7 +628,7 @@ def _setup_MD(dirname,
               struct=None,
               top='top/system.top', ndx=None,
               mainselection='"Protein"',
-              sge=config.sge_template, sgename=None, mdrun_opts="", budget="EDIT_ME", walltime=1/3.,
+              sge=config.sge_template, sgename=None, mdrun_opts="", budget=None, walltime=1/3.,
               dt=0.002, runtime=1e3, **mdp_kwargs):
     """Generic function to set up a ``mdrun`` MD simulation.
 
@@ -653,14 +653,6 @@ def _setup_MD(dirname,
     tpr = deffnm + '.tpr'
     mainindex = deffnm + '.ndx'
     final_structure = deffnm + '.gro'     # guess... really depends on templates
-    if sgename is None:
-        sgename = 'GMX_MD'
-    elif not re.match('[a-zA-Z]', sgename[0]):
-        # fix illegal SGE name
-        sgename = 'md_'+sgename
-        wmsg = "Illegal SGE name fixed: new=%r" % sgename
-        logger.warn(wmsg)
-        warnings.warn(wmsg, category=AutoCorrectionWarning)
 
     mdp_parameters = {'nsteps':nsteps, 'dt':dt}
     mdp_parameters.update(mdp_kwargs)
@@ -720,23 +712,8 @@ def _setup_MD(dirname,
         check_mdpargs(unprocessed)
         gromacs.grompp(f=mdp, p=topology, c=structure, n=index, o=tpr, **unprocessed)
 
-        # set up queuing system run script (simple search and replace in templates)
-        # TODO: move this into a function or class or whatever
-        wt = Timedelta(hours=walltime)
-        walltime = wt.strftime("%h:%M:%S")
-        wall_hours = wt.ashours
-        for template in asiterable(sge_template):
-            sgefile = os.path.basename(template)
-            logger.info("[%(dirname)s] Setting up queuing system script %(sgefile)r..." % vars())
-            gromacs.cbook.edit_txt(template,
-                                   [('^DEFFNM=','md',deffnm), 
-                                    ('^#.*(-N|job_name)', 'GMX_MD', sgename),
-                                    ('#.*(-A|account_no)', 'BUDGET', budget),
-                                    ('^#.*(-l walltime|wall_clock_limit)', '00:20:00', walltime),
-                                    ('^WALL_HOURS=', '0\.33', wall_hours),
-                                    ('^MDRUN_OPTS=', '""', '"'+mdrun_opts+'"'),
-                                    ],
-                                   newname=sgefile)
+        runscripts = generate_submit_scripts(sge_template, deffnm=deffnm, jobname=sgename, budget=budget,
+                                             mdrun_opts=mdrun_opts, walltime=walltime)
 
     logger.info("[%(dirname)s] All files set up for a run time of %(runtime)g ps "
                 "(dt=%(dt)g, nsteps=%(nsteps)g)" % vars())
@@ -745,11 +722,64 @@ def _setup_MD(dirname,
               'struct': realpath(os.path.join(dirname, final_structure)),      # guess
               'top': topology,
               'ndx': index,            # possibly mainindex
-              'sge': sgefile,
+              'sge': runscripts,
               'mainselection': mainselection}
     kwargs.update(mdp_kwargs)  # return extra mdp args so that one can use them for prod run
     kwargs.pop('define', None) # but make sure that -DPOSRES does not stay...
     return kwargs
+
+def generate_submit_scripts(templates, deffnm='md', jobname='MD', budget=None, 
+                            mdrun_opts=None, walltime=1.0):
+    """Write scripts for queuing systems.
+
+    :Arguments:
+      *templates*
+          Template file or list of template files. The "files" can also be names
+          or symbolic names for templates in the templates directory. See
+          :mod:`gromacs.config` for details and rules for writing templates.
+      *deffnm*
+          Default filename prefix for :program:`mdrun` ``-deffnm`` [md]
+      *jobname*
+          Name of the job in the queuing system. [MD]
+      *budget*
+          Which budget to book the runtime on [None]
+      *mdrun_opts*
+          String of additional options for :program:`mdrun`.
+      *walltime*
+          Maximum runtime of the job in hours. [1]
+
+    :Returns: list of generated run scripts
+
+    This sets up queuing system run scripts with a simple search and replace in
+    templates. See :func:`gromacs.cbook.edit_txt` for details.
+    """
+    if not jobname[0].isalpha():
+        jobname = 'MD_'+jobname
+        wmsg = "To make the jobname legal it must start with a letter: changed to %r" % jobname
+        logger.warn(wmsg)
+        warnings.warn(wmsg, category=AutoCorrectionWarning)
+
+    wt = Timedelta(hours=walltime)
+    walltime = wt.strftime("%h:%M:%S")
+    wall_hours = wt.ashours
+
+    def write_script(template):
+        submitscript = os.path.basename(template)
+        logger.info("Setting up queuing system script %(submitscript)r..." % vars())
+        # These substitution rules are documented for the user in gromacs.config:
+        gromacs.cbook.edit_txt(template,
+                               [('^ *DEFFNM=','md',deffnm), 
+                                ('^#.*(-N|job_name)', 'GMX_MD', jobname),
+                                ('^#.*(-A|account_no)', 'BUDGET', budget),
+                                ('^#.*(-l walltime|wall_clock_limit)', '00:20:00', walltime),
+                                ('^ *WALL_HOURS=', '0\.33', wall_hours),
+                                ('^ *MDRUN_OPTS=', '""', '"'+mdrun_opts+'"'),
+                                ],
+                               newname=submitscript)
+        return submitscript
+
+    return [write_script(template) for template in asiterable(templates)]
+
 
 def MD_restrained(dirname='MD_POSRES', **kwargs):
     """Set up MD with position restraints.
@@ -775,7 +805,7 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
        *mainselection*
           `` make_ndx`` selection to select main group ["Protein"]
           (If ``None`` then no canonical index file is generated and
-          it is the users responsibility to set *tc_grps*,
+          it is the user's responsibility to set *tc_grps*,
           *tau_t*, and *ref_t* as keyword arguments, or provide the mdp template
           with all parameter pre-set in *mdp* and probably also your own *ndx* 
           index file.)
@@ -857,7 +887,7 @@ def MD(dirname='MD', **kwargs):
        *mainselection*
           ``make_ndx`` selection to select main group ["Protein"]
           (If ``None`` then no canonical index file is generated and
-          it is the users responsibility to set *tc_grps*,
+          it is the user's responsibility to set *tc_grps*,
           *tau_t*, and *ref_t* as keyword arguments, or provide the mdp template
           with all parameter pre-set in *mdp* and probably also your own *ndx* 
           index file.)

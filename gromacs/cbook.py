@@ -616,10 +616,14 @@ def edit_txt(filename, substitutions, newname=None):
     .. note::
     
        * No sanity checks are performed and the substitutions must be supplied
-         exactly as shown.    
+         exactly as shown.
        * Only the first matching substitution is applied to a line; thus the order
          of the substitution commands matters. This behaviour was chosen to avoid
          ambiguity when a substitution would create a match for a subsequent rule.
+       * If replacement is set to ``None`` then the whole expression is ignored and
+         whatever is in the template is used. To unset values you must provided an
+         empty string or similar.
+       * Deleting a matching line is not implemented. (TODO: use replacement=``False``?)
     """
     if newname is None:
         newname = filename
@@ -628,7 +632,7 @@ def edit_txt(filename, substitutions, newname=None):
     _substitutions = [{'lRE': re.compile(str(lRE)),
                        'sRE': re.compile(str(sRE)),
                        'repl': str(repl)}
-                      for lRE,sRE,repl in substitutions]
+                      for lRE,sRE,repl in substitutions if not repl is None]
 
     target = tempfile.TemporaryFile()
     with open(filename) as src:
