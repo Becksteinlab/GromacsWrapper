@@ -78,16 +78,6 @@ GridMat-MD
   .. _compatible with GPL: http://www.fsf.org/licensing/licenses/index_html
 
 
-Free energy perturbation input files
-  ``mdp`` run input files from David Mobley's `Free Energy Tutorial`_
-  are included in the ``templates`` directory as examples for FEP
-  calculations. If you use these files please *read* David's
-  tutorial and all relevant papers [Mobley2007]_ and *do* the tutorial first!
-
-  .. _Free Energy Tutorial: 
-     http://www.dillgroup.ucsf.edu/group/wiki/index.php?title=Free_Energy:_Tutorial
-
-
 
 Citing
 ======
@@ -115,11 +105,6 @@ Thank you.
                  "GridMAT-MD: A Grid-based Membrane Analysis Tool for
                  Use With Molecular Dynamics."  J. Comput. Chem. 30,
                  1952-1958.
-
-.. [Mobley2007]  D L Mobley, E Dumont, J Chodera, and K A Dill. (2007) 
-                 "Comparison of charge models for fixed-charge force
-                 fields: small molecule hydration free energies in
-                 explicit solvent." J Phys Chem B 111, 2242-2254
 
 
 
