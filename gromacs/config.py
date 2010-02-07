@@ -68,6 +68,7 @@ Functions
 The following functions can be used to access configuration data.
 
 .. autofunction:: get_template
+.. autofunction:: get_templates
 
 """
 
@@ -270,6 +271,8 @@ by external code. All template filenames are stored in
    regular expression pattern is used to find the lines for the
    replacement and the default values are replaced.
 
+   The line ``# JOB_ARRAY_PLACEHOLDER`` can be replaced by code to run
+   multiple jobs (a job array) from different sub # directories.
 """
 
 #: The default template for SGE/PBS run scripts.
@@ -290,10 +293,12 @@ def get_template(t):
        :data:`gromacs.config.templates`) or
     3. a key into :data:`~gromacs.config.templates`.
 
-    The first match (in this order) is returned.
+    The first match (in this order) is returned. If the argument is a
+    single string then a single string is returned, otherwise a list
+    of strings.
 
-    :Arguments: *t* : template file or key
-    :Returns:   os.path.realpath(*t*)
+    :Arguments: *t* : template file or key (string or list of strings)
+    :Returns:   os.path.realpath(*t*) (or a list thereof)
     :Raises:    :exc:`ValueError` if no file can be located.
        
     """
@@ -301,6 +306,26 @@ def get_template(t):
     if len(templates) == 1:
          return templates[0]
     return templates
+
+def get_templates(t):
+    """Find template file(s) *t* and return their real paths.
+
+    *t* can be a single string or a list of strings. A string should
+    be one of
+
+    1. a relative or absolute path,
+    2. a filename in the package template directory (defined in the template dictionary
+       :data:`gromacs.config.templates`) or
+    3. a key into :data:`~gromacs.config.templates`.
+
+    The first match (in this order) is returned for each input argument.
+
+    :Arguments: *t* : template file or key (string or list of strings)
+    :Returns:   list of os.path.realpath(*t*) 
+    :Raises:    :exc:`ValueError` if no file can be located.
+       
+    """
+    return [_get_template(s) for s in utilities.asiterable(t)]
 
 def _get_template(t):
     """Return a single template *t*."""

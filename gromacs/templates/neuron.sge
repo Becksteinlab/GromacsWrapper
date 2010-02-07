@@ -19,6 +19,9 @@ MDRUN_OPTS=""
 MPIRUN=/packages/opt/openmpi-1.2.8/intel9/bin/mpirun
 APPLICATION=/packages/opt/gromacs-4.0.3/intel9/fftw-3.2/openmpi-1.2.8/bin/mdrun_mpi
 
+# JOB_ARRAY_PLACEHOLDER
+
+
 $MPIRUN $APPLICATION -step 1000 -deffnm ${DEFFNM} -s ${TPR} -c ${PDB} \
                      -cpi $MDRUN_OPTS  > $OUTPUT
 

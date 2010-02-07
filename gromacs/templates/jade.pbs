@@ -5,7 +5,10 @@
 #PBS -l walltime=00:20:00
 
 # host: jade.cines.fr
-# queuing system: SGE
+# queuing system: PBS
+
+# array jobs: 
+#    -J N-M:S --> PBS_ARRAY_INDEX
 
 # chain jobs with 
 #    NEWID=$(qsub -N GMXMD_00  jade.pbs)
@@ -32,6 +35,8 @@ MDRUN_OPTS=""
 ##MDRUN_OPTIONS="-npme 24"
 # 16 pme on 64 cores best for 80k atom system
 MDRUN_OPTS="$MDRUN_OPTS -npme 16"
+
+# JOB_ARRAY_PLACEHOLDER
 
 echo "--- PBS_NODEFILE"
 cat $PBS_NODEFILE

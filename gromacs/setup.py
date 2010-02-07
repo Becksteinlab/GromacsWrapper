@@ -118,6 +118,7 @@ import gromacs.config as config
 from gromacs import GromacsError, GromacsFailureWarning, GromacsValueWarning, \
      AutoCorrectionWarning, BadParameterWarning, UsageWarning, MissingDataError
 import gromacs.cbook
+import gromacs.qsub
 import gromacs.utilities
 from gromacs.utilities import in_dir, realpath, Timedelta, asiterable
 
@@ -712,8 +713,9 @@ def _setup_MD(dirname,
         check_mdpargs(unprocessed)
         gromacs.grompp(f=mdp, p=topology, c=structure, n=index, o=tpr, **unprocessed)
 
-        runscripts = generate_submit_scripts(sge_template, deffnm=deffnm, jobname=sgename, budget=budget,
-                                             mdrun_opts=mdrun_opts, walltime=walltime)
+        runscripts = gromacs.qsub.generate_submit_scripts(
+            sge_template, deffnm=deffnm, jobname=sgename, budget=budget, 
+            mdrun_opts=mdrun_opts, walltime=walltime)
 
     logger.info("[%(dirname)s] All files set up for a run time of %(runtime)g ps "
                 "(dt=%(dt)g, nsteps=%(nsteps)g)" % vars())
@@ -727,58 +729,6 @@ def _setup_MD(dirname,
     kwargs.update(mdp_kwargs)  # return extra mdp args so that one can use them for prod run
     kwargs.pop('define', None) # but make sure that -DPOSRES does not stay...
     return kwargs
-
-def generate_submit_scripts(templates, deffnm='md', jobname='MD', budget=None, 
-                            mdrun_opts=None, walltime=1.0):
-    """Write scripts for queuing systems.
-
-    :Arguments:
-      *templates*
-          Template file or list of template files. The "files" can also be names
-          or symbolic names for templates in the templates directory. See
-          :mod:`gromacs.config` for details and rules for writing templates.
-      *deffnm*
-          Default filename prefix for :program:`mdrun` ``-deffnm`` [md]
-      *jobname*
-          Name of the job in the queuing system. [MD]
-      *budget*
-          Which budget to book the runtime on [None]
-      *mdrun_opts*
-          String of additional options for :program:`mdrun`.
-      *walltime*
-          Maximum runtime of the job in hours. [1]
-
-    :Returns: list of generated run scripts
-
-    This sets up queuing system run scripts with a simple search and replace in
-    templates. See :func:`gromacs.cbook.edit_txt` for details.
-    """
-    if not jobname[0].isalpha():
-        jobname = 'MD_'+jobname
-        wmsg = "To make the jobname legal it must start with a letter: changed to %r" % jobname
-        logger.warn(wmsg)
-        warnings.warn(wmsg, category=AutoCorrectionWarning)
-
-    wt = Timedelta(hours=walltime)
-    walltime = wt.strftime("%h:%M:%S")
-    wall_hours = wt.ashours
-
-    def write_script(template):
-        submitscript = os.path.basename(template)
-        logger.info("Setting up queuing system script %(submitscript)r..." % vars())
-        # These substitution rules are documented for the user in gromacs.config:
-        gromacs.cbook.edit_txt(template,
-                               [('^ *DEFFNM=','md',deffnm), 
-                                ('^#.*(-N|job_name)', 'GMX_MD', jobname),
-                                ('^#.*(-A|account_no)', 'BUDGET', budget),
-                                ('^#.*(-l walltime|wall_clock_limit)', '00:20:00', walltime),
-                                ('^ *WALL_HOURS=', '0\.33', wall_hours),
-                                ('^ *MDRUN_OPTS=', '""', '"'+mdrun_opts+'"'),
-                                ],
-                               newname=submitscript)
-        return submitscript
-
-    return [write_script(template) for template in asiterable(templates)]
 
 
 def MD_restrained(dirname='MD_POSRES', **kwargs):
