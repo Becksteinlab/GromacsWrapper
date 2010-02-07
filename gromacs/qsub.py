@@ -38,6 +38,28 @@ from gromacs.utilities import asiterable, Timedelta
 import logging
 logger = logging.getLogger('gromacs.qsub')
 
+try:
+    from os.path import relpath
+except ImportError:
+    # appeared in python 2.6
+    def relpath(path, start=os.path.curdir):
+        """Return a relative version of a path (from posixpath 2.6)"""
+
+        if not path:
+            raise ValueError("no path specified")
+
+        start_list = os.path.abspath(start).split(os.path.sep)
+        path_list = os.path.abspath(path).split(os.path.sep)
+
+        # Work out how much of the filepath is shared by start and path.
+        i = len(os.path.commonprefix([start_list, path_list]))
+
+        rel_list = [os.path.pardir] * (len(start_list)-i) + path_list[i:]
+        if not rel_list:
+            return os.path.curdir
+        return os.path.join(*rel_list)
+    
+
 class QueuingSystem(object):
     """Class that represents minimum information about a batch submission system."""
 
@@ -229,7 +251,7 @@ def generate_submit_array(templates, directories, **kwargs):
           See :func:`gromacs.setup.generate_submit_script` for details.
     """
     dirname = kwargs.setdefault('dirname', os.path.curdir)
-    reldirs = [os.path.relpath(p, start=dirname) for p in asiterable(directories)]
+    reldirs = [relpath(p, start=dirname) for p in asiterable(directories)]
     missing = [p for p in (os.path.join(dirname, subdir) for subdir in reldirs)
                if not os.path.exists(p)]
     if len(missing) > 0:

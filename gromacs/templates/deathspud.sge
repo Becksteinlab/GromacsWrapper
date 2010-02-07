@@ -5,7 +5,7 @@
 #$ -N GMX_MD
 #
 # Set the Parallel Environment and number of procs.
-#$ -pe mpich2 4
+#$ -pe mpich2 1
 #$ -R y
 #$ -cwd
 # merge error and standard out
@@ -41,21 +41,22 @@ MDRUN_OPTS=""
 OUTPUT=$DEFFNM.out
 PDB=$DEFFNM.pdb
 
-function die () {
-   local msg="$1" err=${2:-1}
-   echo 1>&2 "EE   Fatal ERROR: $msg"
-   exit $err
-} 
+# JOB_ARRAY_PLACEHOLDER
 
 #------------------------------------------------
 #  Job commands (using SGE)
 #------------------------------------------------
 
-
-export LD_LIBRARY_PATH=/opt/gromacs/4.0/lib:/opt/intel/cce/10.1.018/lib:/opt/intel/mkl/10.0.5.025/lib/em64t
+GMXVERSION=4.0.5
+export LD_LIBRARY_PATH=/opt/gromacs/$GMXVERSION/lib:/opt/intel/cce/10.1.018/lib:/opt/intel/mkl/10.0.5.025/lib/em64t
 mpiexec=/opt/mpich2/intel/bin/mpiexec 
-gromacs_mpi=/opt/gromacs/4.0/bin/mdrun_mpich2
+gromacs_mpi=/opt/gromacs/$GMXVERSION/bin/mdrun_mpich2
 
+function die () {
+   local msg="$1" err=${2:-1}
+   echo 1>&2 "EE   Fatal ERROR: $msg"
+   exit $err
+} 
 
 echo "Starting calculation (using $NSLOTS processors)"
 echo "input:  $TPR"
@@ -96,7 +97,11 @@ fi
 cp ${orig_dir}/${TPR} ${temp_dir}    || die "Failed to cp ${TPR}"
 cd ${temp_dir}                       || die "Failed to cd ${temp_dir}"
 
-[ "$PWD" == "${temp_dir}" ] || echo "WARNING: we maybe in the wrong directory (PWD=$PWD)"
+# necessary because of my brain-damaged mpich2 installation which will not
+# change directory to tempdir
+temp_DEFFNM=${temp_dir}/${DEFFNM}
+
+[ "$PWD" == "${temp_dir}" ] || echo "WARNING: we may be in the wrong directory (PWD=$PWD)"
 
 
 # debugging
@@ -121,9 +126,10 @@ cp  ${TMPDIR}/machines ${orig_dir}/machines
 
 echo "Running in PWD=$PWD, start: $(date)"
 
+# ignores -wdir ... grmbl ... use temp_DEFFNM
 export MPIEXEC_RSH=rsh
 ${mpiexec} -rsh -nopm -n ${NSLOTS} -machinefile ${TMPDIR}/machines -wdir ${temp_dir} \
-          ${gromacs_mpi} -step 1000 -deffnm ${DEFFNM} -s ${TPR} -c ${PDB} \
+          ${gromacs_mpi} -step 1000 -deffnm ${temp_DEFFNM} \
                          -cpi $MDRUN_OPTS > $OUTPUT
 
 echo "Run complete: $(date)"
