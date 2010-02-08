@@ -261,7 +261,7 @@ def trj_fitandcenter(xy=False, **kwargs):
     finally:
         utilities.unlink_gmx(tmptrj)
 
-def cat(prefix="md", dirname=os.path.curdir, partsdir="parts"):
+def cat(prefix="md", dirname=os.path.curdir, partsdir="parts", fulldir="full"):
     """Concatenate all parts of a simulation.
 
     The xtc, trr, and edr files in *dirname* such as prefix.xtc,
@@ -270,10 +270,21 @@ def cat(prefix="md", dirname=os.path.curdir, partsdir="parts"):
        1) moved to the *partsdir* (under *dirname*)
        2) concatenated with the Gromacs tools to yield prefix.xtc, prefix.trr, 
           prefix.edr, prefix.gro (or prefix.md) in *dirname*
+       3) Store these trajectories in *fulldir*
 
     .. Note:: Trajectory files are *never* deleted by this function to avoid 
               data loss in case of bugs. You will have to clean up yourself
               by deleting *dirname*/*partsdir*.
+
+              Symlinks for the trajectories are *not* handled well and
+              break the function. Use hard links instead.
+
+    .. Warning:: If an exception occurs when running this function then make
+                 doubly and triply sure where your files are before running
+                 this function again; otherwise you might **overwrite data**.
+                 Possibly you will need to manually move the files from *partsdir*
+                 back into the working directory *dirname*; this should onlu overwrite
+                 generated files so far but *check carefully*!
     """
 
     gmxcat = {'xtc': gromacs.trjcat,
@@ -282,21 +293,38 @@ def cat(prefix="md", dirname=os.path.curdir, partsdir="parts"):
               'log': utilities.cat,
               }
 
-    def _cat(prefix, ext, partsdir=partsdir):
+    def _cat(prefix, ext, partsdir=partsdir, fulldir=fulldir):
         filenames = glob_parts(prefix, ext)
         if ext.startswith('.'):
             ext = ext[1:]
-        outfile = prefix + '.' + ext
+        outfile = os.path.join(fulldir, prefix + '.' + ext)
         if not filenames:
             return None
+        nonempty_files = []
         for f in filenames:
+            if os.stat(f).st_size == 0:                
+                logger.warn("File %(f)r is empty, skipping" % vars())
+                continue
+            if os.path.islink(f):
+                # TODO: re-write the symlink to point to the original file
+                errmsg = "Symbolic links do not work (file %(f)r), sorry. " \
+                    "CHECK LOCATION OF FILES MANUALLY BEFORE RUNNING gromacs.cbook.cat() AGAIN!" % vars()
+                logger.exception(errmsg)
+                raise NotImplementedError(errmsg)
             shutil.move(f, partsdir)
-        filepaths = [os.path.join(partsdir, f) for f in filenames]
+            nonempty_files.append(f)
+        filepaths = [os.path.join(partsdir, f) for f in nonempty_files]
         gmxcat[ext](f=filepaths, o=outfile)
         return outfile
 
+    if fulldir == os.path.curdir:
+        wmsg = "Using the current directory as fulldir can potentially lead to data loss if you run this function multiple times."
+        logger.warning(wmsg)
+        warnings.warn(wmsg, category=BadParameterWarning)
+
     with utilities.in_dir(dirname, create=False):
         utilities.mkdir_p(partsdir)
+        utilities.mkdir_p(fulldir)
         for ext in ('log', 'edr', 'trr', 'xtc'):
             logger.info("[%(dirname)s] concatenating %(ext)s files...", vars())
             outfile = _cat(prefix, ext, partsdir)
