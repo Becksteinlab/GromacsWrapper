@@ -5,7 +5,10 @@
 #PBS -l walltime=00:20:00
 
 # host: jade.cines.fr
-# queuing system: SGE
+# queuing system: PBS
+
+# array jobs: 
+#    -J N-M:S --> PBS_ARRAY_INDEX
 
 # chain jobs with 
 #    NEWID=$(qsub -N GMXMD_00  jade.pbs)
@@ -24,12 +27,16 @@ TPR=${DEFFNM}.tpr
 OUTPUT=${DEFFNM}.out
 PDB=${DEFFNM}.pdb
 
+MDRUN_OPTS=""
+
 # use this for, e.g. optimum number of pme nodes (-npme N)
 # NOTE: This is system dependent; you MUST benchmark your system!!
 # 24 pme on 64 cores best for 65k atom system
 ##MDRUN_OPTIONS="-npme 24"
 # 16 pme on 64 cores best for 80k atom system
-MDRUN_OPTIONS="-npme 16"
+MDRUN_OPTS="$MDRUN_OPTS -npme 16"
+
+# JOB_ARRAY_PLACEHOLDER
 
 echo "--- PBS_NODEFILE"
 cat $PBS_NODEFILE
@@ -48,7 +55,7 @@ APPLICATION=$GMXBIN/mdrun_mpi
 
 
 $MPIRUN $APPLICATION -step 1000 -deffnm ${DEFFNM} -s ${TPR} -c ${PDB} -cpi \
-                     $MDRUN_OPTIONS \
+                     $MDRUN_OPTS \
                      -maxh ${WALL_HOURS} > $OUTPUT
 rc=$?
 

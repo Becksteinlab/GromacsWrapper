@@ -68,12 +68,14 @@ Functions
 The following functions can be used to access configuration data.
 
 .. autofunction:: get_template
+.. autofunction:: get_templates
 
 """
 
 import os
 from pkg_resources import resource_filename
 
+import utilities
 
 # Logging
 # -------
@@ -219,7 +221,9 @@ templates = {
     'em_mdp': resource_filename(__name__, 'templates/em.mdp'),
     'md_G43a1_mdp': resource_filename(__name__, 'templates/md_G43a1.mdp'),
     'md_OPLSAA_mdp': resource_filename(__name__, 'templates/md_OPLSAA.mdp'),
+    'local_sh': resource_filename(__name__, 'templates/local.sh'),
     'deathspud_sge': resource_filename(__name__, 'templates/deathspud.sge'),
+    'astrocyte_sge': resource_filename(__name__, 'templates/astrocyte.sge'),
     'neuron_sge': resource_filename(__name__, 'templates/neuron.sge'),
     'hector_pbs': resource_filename(__name__, 'templates/hector.pbs'),
     'hpcx_ll': resource_filename(__name__, 'templates/hpcx.ll'),    
@@ -260,16 +264,19 @@ by external code. All template filenames are stored in
    #$ -A            BUDGET       *budget*         account           /^#.*(-A|account_no)/
    DEFFNM=          md           *deffnm*         default gmx name  /^DEFFNM=/
    WALL_HOURS=      0.33         *walltime* h     mdrun's -maxh     /^WALL_HOURS=/
+   MDRUN_OPTS=      ""           *mdrun_opts*     add.options       /^MDRUN_OPTS=/
    ===============  ===========  ================ ================= =====================================
 
    These lines should not have any white space at the beginning. The
    regular expression pattern is used to find the lines for the
    replacement and the default values are replaced.
 
+   The line ``# JOB_ARRAY_PLACEHOLDER`` can be replaced by code to run
+   multiple jobs (a job array) from different sub # directories.
 """
 
 #: The default template for SGE/PBS run scripts.
-sge_template = templates['neuron_sge']
+sge_template = templates['local_sh']
 
 
 # Functions to access configuration data
@@ -278,20 +285,50 @@ sge_template = templates['neuron_sge']
 def get_template(t):
     """Find template file *t* and return its real path.
 
-    *t* can be
+    *t* can be a single string or a list of strings. A string
+    should be one of
 
     1. a relative or absolute path,
     2. a filename in the package template directory (defined in the template dictionary
        :data:`gromacs.config.templates`) or
     3. a key into :data:`~gromacs.config.templates`.
 
-    The first match (in this order) is returned.
+    The first match (in this order) is returned. If the argument is a
+    single string then a single string is returned, otherwise a list
+    of strings.
 
-    :Arguments: *t* : template file or key
-    :Returns:   os.path.realpath(*t*)
+    :Arguments: *t* : template file or key (string or list of strings)
+    :Returns:   os.path.realpath(*t*) (or a list thereof)
     :Raises:    :exc:`ValueError` if no file can be located.
        
     """
+    templates = [_get_template(s) for s in utilities.asiterable(t)]
+    if len(templates) == 1:
+         return templates[0]
+    return templates
+
+def get_templates(t):
+    """Find template file(s) *t* and return their real paths.
+
+    *t* can be a single string or a list of strings. A string should
+    be one of
+
+    1. a relative or absolute path,
+    2. a filename in the package template directory (defined in the template dictionary
+       :data:`gromacs.config.templates`) or
+    3. a key into :data:`~gromacs.config.templates`.
+
+    The first match (in this order) is returned for each input argument.
+
+    :Arguments: *t* : template file or key (string or list of strings)
+    :Returns:   list of os.path.realpath(*t*) 
+    :Raises:    :exc:`ValueError` if no file can be located.
+       
+    """
+    return [_get_template(s) for s in utilities.asiterable(t)]
+
+def _get_template(t):
+    """Return a single template *t*."""
     if os.path.exists(t):           # 1) Is it an accessible file?
         pass
     else:                           # 2) check the packaged template files

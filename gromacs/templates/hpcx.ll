@@ -35,6 +35,8 @@
 # to write continuation files.
 WALL_HOURS=0.33
 
+# additional options for mdrun
+MDRUN_OPTS=""
 
 # suggested environment settings (only change after benchmarking)
 export MP_EAGER_LIMIT=65536
@@ -48,7 +50,7 @@ MDRUN=/usr/local/packages/gromacs/g_4.0.5/bin/mdrun_mpi
 
 
 # run gromacs
-$MPIRUN $MDRUN -v -deffnm md -maxh ${WALL_HOURS}  -cpi
+$MPIRUN $MDRUN -v -deffnm md -maxh ${WALL_HOURS} -cpi $MDRUN_OPTS
 
 
 #########

@@ -16,6 +16,7 @@ TPR=${DEFFNM}.tpr
 OUTPUT=${DEFFNM}.out
 PDB=${DEFFNM}.pdb
 
+MDRUN_OPTS=""
 
 source /cvos/shared/apps/opt/gromacs/4.0.5-openmpi/bin/GMXRC
 source /etc/profile.d/modules.sh
@@ -29,7 +30,7 @@ cat $TMPDIR/machines
 
 
 $LAUNCHER mpirun $MDRUN -step 1000 -deffnm ${DEFFNM} -s ${TPR} -c ${PDB} \
-                 -cpi -append > $OUTPUT 
+                 $MDRUN_OPTS -cpi -append > $OUTPUT 
 
 exit 0
 

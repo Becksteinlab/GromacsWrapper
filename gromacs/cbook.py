@@ -461,6 +461,19 @@ def grompp_qtot(*args, **kwargs):
     logger.info("system total charge qtot = %(qtot)r" % vars())
     return qtot
 
+def get_volume(f):
+    """Return the volume in nm^3 of structure file *f*.
+
+    (Uses :func:`gromacs.editconf`; error handling is not good)
+    """
+    fd, temp = tempfile.mkstemp('.gro')
+    try:
+        rc,out,err = gromacs.editconf(f=f, o=temp, stdout=False)
+    finally:
+        os.unlink(temp)
+    return [float(x.split()[1]) for x in out.splitlines()
+            if x.startswith('Volume:')][0]
+
 
 # Editing textual input files
 # ---------------------------
@@ -616,10 +629,14 @@ def edit_txt(filename, substitutions, newname=None):
     .. note::
     
        * No sanity checks are performed and the substitutions must be supplied
-         exactly as shown.    
+         exactly as shown.
        * Only the first matching substitution is applied to a line; thus the order
          of the substitution commands matters. This behaviour was chosen to avoid
          ambiguity when a substitution would create a match for a subsequent rule.
+       * If replacement is set to ``None`` then the whole expression is ignored and
+         whatever is in the template is used. To unset values you must provided an
+         empty string or similar.
+       * Deleting a matching line is not implemented. (TODO: use replacement=``False``?)
     """
     if newname is None:
         newname = filename
@@ -628,7 +645,7 @@ def edit_txt(filename, substitutions, newname=None):
     _substitutions = [{'lRE': re.compile(str(lRE)),
                        'sRE': re.compile(str(sRE)),
                        'repl': str(repl)}
-                      for lRE,sRE,repl in substitutions]
+                      for lRE,sRE,repl in substitutions if not repl is None]
 
     target = tempfile.TemporaryFile()
     with open(filename) as src:
@@ -638,13 +655,13 @@ def edit_txt(filename, substitutions, newname=None):
             for subst in _substitutions:
                 m = subst['lRE'].match(line)    
                 if m:              # apply substition to this line?
-                    logger.debug('match:    '+line)
+                    logger.debug('match:    '+line.rstrip())
                     new_line = subst['sRE'].sub(subst['repl'], line)
-                    logger.debug('replaced: '+new_line)
+                    logger.debug('replaced: '+new_line.rstrip())
                     break   # only apply the first matching substitution!
             target.write(new_line)
-    target.seek(0)
 
+    target.seek(0)
     with open(newname, 'w') as final:
         shutil.copyfileobj(target, final)
     target.close()
@@ -666,7 +683,7 @@ NDXLIST = re.compile(r""">\s+\n    # '> ' marker line from '' input (input not e
                     \n
                    )+              # multiple repeats
                   )""", re.VERBOSE)
-#: compiler regular expression to match a single line of 
+#: compiled regular expression to match a single line of 
 #: ``make_ndx`` output (e.g. after a successful group creation)
 NDXGROUP = re.compile(r"""
                      \s*(?P<GROUPNUMBER>\d+)      # group number

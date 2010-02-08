@@ -49,6 +49,9 @@ Modules
      and adding ions, energy minimizqtion, MD with position-restraints, and
      equilibrium MD.
 
+:mod:`gromacs.qsub`
+     Functions to handle batch submission queuing systems.
+
 :mod:`gromacs.simulation`
      Classes to run :program:`mdrun` in various way, including on
      multiprocessor systems.
