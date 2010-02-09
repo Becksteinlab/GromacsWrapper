@@ -119,7 +119,13 @@ class AttributeDict(dict):
         try:
             super(AttributeDict,self).__setitem__(name, value)
         except KeyError:
-            super(AttributeDict,self).__setattr__(name, value)            
+            super(AttributeDict,self).__setattr__(name, value)
+
+    def __getstate__(self):
+        return self
+
+    def __setstate__(self, state):
+        self.update(state)
 
 @contextmanager
 def openany(datasource, mode='r'):
@@ -490,7 +496,7 @@ class Timedelta(datetime.timedelta):
     def strftime(self, fmt="%d:%H:%M:%S"):
         """Primitive string formatter.
 
-        The only dirctives understood are the following:
+        The only directives understood are the following:
           ============   ==========================
           Directive      meaning
           ============   ==========================
