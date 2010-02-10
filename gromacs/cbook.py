@@ -334,17 +334,17 @@ def cat(prefix="md", dirname=os.path.curdir, partsdir="parts", fulldir="full"):
             if len(filenames) == 0:
                 continue
             elif len(filenames) == 1:
-                # only case we're dealing with right now
-                final = prefix + '.' + ext
+                # Can only deal with a single file right now... TODO: something clever
+                final = os.path.join(fulldir, prefix + '.' + ext)
                 shutil.copy(filenames[0], final)  # copy2 fails on nfs with Darwin at least
                 shutil.move(filenames[0], partsdir)
                 logger.info("[%(dirname)s] collected final structure %(final)r", vars())
             else:
                 logger.warning("[%(dirname)s] too many output structures %(filenames)r, "
-                               "cannot decide which one, resolve manually ", vars())
+                               "cannot decide which one --- resolve manually!", vars())
     partsdirpath = utilities.realpath(dirname, partsdir)
-    logger.warn("[%(dirname)s] cat complete but original files in %(partsdirpath)r "
-                "must be manually removed", vars())
+    logger.warn("[%(dirname)s] cat() complete in %(fulldir)r but original files "
+                "in %(partsdirpath)r must be manually removed", vars())
 
 def glob_parts(prefix, ext):
     """Find files from a continuation run"""
