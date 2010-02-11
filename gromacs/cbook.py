@@ -435,7 +435,7 @@ class Frames(object):
         frames = self.all_frames
         if len(frames) == 0:
             self.extract()
-        frames = self.all_frames
+            frames = self.all_frames
 
         # filenames are 'Frame0.pdb', 'Frame11.pdb', ... so I must
         # order manually because glob does not give it in sequence.        
