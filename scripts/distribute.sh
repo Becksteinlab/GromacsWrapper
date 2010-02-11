@@ -59,7 +59,7 @@ make_epydocs() {
 }
 
 make_sphinx () {
-  (cd doc/sphinx && make html) || die "Failed making sphinx docs"
+  (cd doc/sphinx && make clean && make html) || die "Failed making sphinx docs"
   RSYNC -vrP --delete doc/sphinx/build/html $DOCS
 }
 
