@@ -312,8 +312,8 @@ class GromacsCommand(Command):
            Gromacs boolean switches (such as ``-v``) are given as python
            positional arguments (``'v'``) or as keyword argument (``v=True``);
            note the quotes in the first case. Negating a boolean switch can be
-           done with ``'nov'``, ``nov=True`` or ``v=False`` (but ``nov=False``
-           does *not* work as expected; please use ``v=True``).
+           done with ``'nov'``, ``nov=True`` or ``v=False`` (and even ``nov=False``
+           works as expected: it is the same as ``v=True``).
 
            Any Gromacs options that take parameters are handled as keyword
            arguments. If an option takes multiple arguments (such as the
@@ -421,12 +421,15 @@ class GromacsCommand(Command):
             if flag.startswith('_'):
                 flag = flag[1:]                 # python-illegal keywords are '_'-quoted
             if not flag.startswith('-'):
-                flag = '-' + flag
+                flag = '-' + flag               # now flag is guaranteed to start with '-'
             if value is True:
                 arglist.append(flag)            # simple command line flag
             elif value is False:
-                # XXX: does not work for '-noXXX False' ... but who uses that?
-                arglist.append('-no'+flag[1:])  # gromacs switches booleans by prefixing 'no'
+                if flag.startswith('-no'):
+                    # negate a negated flag ('noX=False' --> X=True --> -X ... but who uses that?)
+                    arglist.append('-'+flag[3:])
+                else:
+                    arglist.append('-no'+flag[1:])  # gromacs switches booleans by prefixing 'no'
             elif value is None:
                 pass                            # ignore flag = None
             else:
