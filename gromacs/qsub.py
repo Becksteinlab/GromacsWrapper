@@ -34,6 +34,7 @@ import warnings
 import gromacs.config
 import gromacs.cbook
 from gromacs.utilities import asiterable, Timedelta
+from gromacs import AutoCorrectionWarning
 
 import logging
 logger = logging.getLogger('gromacs.qsub')
