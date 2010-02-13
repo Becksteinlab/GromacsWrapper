@@ -95,6 +95,7 @@ Helper functions (mainly of use to developers):
 
 .. autofunction:: make_main_index
 .. autofunction:: add_mdp_includes
+.. autofunction:: _mdp_include_string
 .. autofunction:: _setup_MD
 
 """
@@ -140,6 +141,71 @@ rvdw         1.4        1.0
 rlist        1.4 ?      1.0
 ==========   =========  ================
 """
+
+
+def _mdp_include_string(dirs):
+    """Generate a string that can be added to a mdp 'include = ' line."""
+    include_paths = [os.path.expanduser(p) for p in dirs]
+    return ' -I'.join([''] + include_paths)
+
+def add_mdp_includes(topology=None, kwargs=None):
+    """Set the mdp *include* key in the *kwargs* dict.
+
+    1. Add the directory containing *topology*.
+    2. Add all directories appearing under the key *includes*
+    3. Generate a string of the form "-Idir1 -Idir2 ..." that
+       is stored under the key *include* (the corresponding
+       mdp parameter)
+
+    By default, the directories ``.`` and ``..`` are also added to the
+    *include* string for the mdp; when fed into
+    :func:`gromacs.cbook.edit_mdp` it will result in a line such as ::
+
+      include = -I. -I.. -I../topology_dir ....
+
+    Note that the user can always override the behaviour by setting
+    the *include* keyword herself; in this case this function does
+    nothing.
+
+    If no *kwargs* were supplied then a dict is generated with the
+    single *include* entry.
+
+    :Arguments:
+       *topology* : top filename
+          Topology file; the name of the enclosing directory is added
+          to the include path (if supplied) [``None``]
+       *kwargs* : dict
+          Optional dictionary of mdp keywords; will be modified in place.
+          If it contains the *includes* keyword with either a single string
+          or a list of strings then these paths will be added to the
+          include statement.
+    :Returns: 
+       *kwargs* with the *include* keyword added if it did not
+       exist previously; if the keyword already existed, nothing
+       happens.
+
+    .. Note:: The *kwargs* dict is **modified in place**.
+
+              This function is a bit of a hack. It might be removed
+              once all setup functions become methods in a nice class.
+    """
+    if kwargs is None:
+        kwargs = {}
+
+    if not topology is None:
+        # half-hack: find additional itps in the same directory as the
+        # topology; once this is all a class we will NOT deduce the local
+        # topology directory but just keep it as a class attribute.
+        topology_dir = os.path.dirname(topology)
+        include_dirs = ['.', '..', topology_dir]   # should . & .. always be added?
+
+    include_dirs.extend(asiterable(kwargs.pop('includes', [])))  # includes can be a list or a string    
+
+    # 1. setdefault: we do nothing if user defined include
+    # 2. modify input in place!
+    kwargs.setdefault('include', _mdp_include_string(include_dirs))
+    return kwargs
+    
 
 
 # TODO:
@@ -357,11 +423,8 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
     structure = realpath(struct)
     topology = realpath(top)
 
-    # needed only for the include keyword
-    mdp_kwargs = add_mdp_includes(topology)
-    # add additional paths with include='-I/my/path -I.....'
-    include_paths = [os.path.expanduser(p) for p in asiterable(kwargs.pop('includes',[]))]
-    mdp_kwargs['include'] += ' -I'.join([''] + include_paths)
+    # handle additional include directories (kwargs are also modified!)
+    mdp_kwargs = add_mdp_includes(topology, kwargs)
 
     if water.lower() in ('spc', 'spce'):
         water = 'spc216'
@@ -515,6 +578,8 @@ def energy_minimize(dirname='em', mdp=config.templates['em_mdp'],
           topology file [top/system.top]
        *mdp*
           mdp file (or use the template) [templates/em.mdp]
+       *includes*
+          additional directories to search for itp files
        *kwargs*
           remaining key/value pairs that should be changed in the 
           template mdp file, eg ``nstxtcout=250, nstfout=250``.
@@ -583,46 +648,6 @@ def energy_minimize(dirname='em', mdp=config.templates['em_mdp'],
             'top': topology,
             'mainselection': mainselection,
             }
-
-def add_mdp_includes(topology, mdp_kwargs=None):
-    """Add the directory containing *topology* to the dict *mdp_kwargs*.
-
-    By default, the directories ``.`` and ``..`` are also added to the
-    *include* list for the mdp; when fed into
-    :func:`gromacs.cbook.edit_mdp` it will result in a line such as ::
-
-      include = -I. -I.. -I../topology_dir
-
-    Note that the user can always override the behaviour by setting
-    the *include* keyword herself.
-
-    If no *mdp_kwargs* were supplied then a dict is generated with the
-    single *include* entry.
-
-    :Arguments:
-       *topology* : top filename
-          Topology file; the name of the enclosing directory is added
-          to the include path.
-       *mdp_kwargs* : dict
-          Optional dictionary of mdp keywords; will be modified in place.
-    :Returns: 
-       *mdp_kwargs* with the *include* keyword added if it did not
-       exist previously; if the keyword already existed, nothing
-       happens.
-
-    .. Note:: This function is a bit of a hack. It might be removed
-              once all setup functions become methods in a nice class.
-    """
-    if mdp_kwargs is None:
-        mdp_kwargs = {}
-    # half-hack: find additional itps in the same directory as the
-    # topology; once this is all a class we will NOT deduce the local
-    # topology directory but just keep it as a class attribute.
-    topology_dir = os.path.dirname(topology)
-    include_dirs = ['.', '..', topology_dir]
-    mdp_includes = ' '.join(['-I%s' % d for d in include_dirs])
-    mdp_kwargs.setdefault('include', mdp_includes)   # modify input in place!
-    return mdp_kwargs
 
 def _setup_MD(dirname,
               deffnm='md', mdp=config.templates['md_OPLSAA_mdp'],
@@ -752,6 +777,8 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
           mdp file (or use the template) [templates/md.mdp]
        *ndx*
           index file (supply when using a custom mdp)
+       *includes*
+          additional directories to search for itp files          
        *mainselection*
           `` make_ndx`` selection to select main group ["Protein"]
           (If ``None`` then no canonical index file is generated and
@@ -834,6 +861,8 @@ def MD(dirname='MD', **kwargs):
           mdp file (or use the template) [templates/md.mdp]
        *ndx*
           index file (supply when using a custom mdp)
+       *includes*
+          additional directories to search for itp files          
        *mainselection*
           ``make_ndx`` selection to select main group ["Protein"]
           (If ``None`` then no canonical index file is generated and

@@ -9,7 +9,7 @@ use_setuptools()
 from setuptools import setup, find_packages
 
 setup(name="GromacsWrapper",
-      version="0.1.0",
+      version="0.1.1",
       description="A python wrapper around the gromacs tools.",
       long_description="""\
 A primitive wrapper around the Gromacs tools until we have proper
