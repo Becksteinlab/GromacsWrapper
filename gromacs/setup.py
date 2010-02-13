@@ -494,7 +494,7 @@ def check_mdpargs(d):
         warnings.warn(wmsg, category=UsageWarning)
     return len(d) == 0
 
-def energy_minimize(dirname='em', mdp=config.templates['em_mdp'],
+def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
                     struct='solvate/ionized.gro', top='top/system.top',
                     **kwargs):
     """Energy minimize the system.
@@ -587,7 +587,7 @@ def energy_minimize(dirname='em', mdp=config.templates['em_mdp'],
             }
 
 def _setup_MD(dirname,
-              deffnm='md', mdp=config.templates['md_OPLSAA_mdp'],
+              deffnm='md', mdp=config.templates['md_OPLSAA.mdp'],
               struct=None,
               top='top/system.top', ndx=None,
               mainselection='"Protein"',

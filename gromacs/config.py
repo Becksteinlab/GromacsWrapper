@@ -73,7 +73,7 @@ The following functions can be used to access configuration data.
 """
 
 import os
-from pkg_resources import resource_filename
+from pkg_resources import resource_filename, resource_listdir
 
 import utilities
 
@@ -214,21 +214,19 @@ Usage:
 # Location of template files
 # --------------------------
 
-# TODO: This is becoming unwieldy: should be more abstract/automatic.
-#       Maybe simply use filename as key? This would require some cleaning up
-#       in gromacs.setup but would not be too bad.
-templates = {
-    'em_mdp': resource_filename(__name__, 'templates/em.mdp'),
-    'md_G43a1_mdp': resource_filename(__name__, 'templates/md_G43a1.mdp'),
-    'md_OPLSAA_mdp': resource_filename(__name__, 'templates/md_OPLSAA.mdp'),
-    'local_sh': resource_filename(__name__, 'templates/local.sh'),
-    'deathspud_sge': resource_filename(__name__, 'templates/deathspud.sge'),
-    'astrocyte_sge': resource_filename(__name__, 'templates/astrocyte.sge'),
-    'neuron_sge': resource_filename(__name__, 'templates/neuron.sge'),
-    'hector_pbs': resource_filename(__name__, 'templates/hector.pbs'),
-    'hpcx_ll': resource_filename(__name__, 'templates/hpcx.ll'),    
-    'jade_pbs': resource_filename(__name__, 'templates/jade.pbs'),
-    }
+def _generate_template_dict(dirname):
+    """Generate a list of included files *and* extract them to a temp space.
+
+    Templates have to be extracted from the egg because they are used
+    by external code. All template filenames are stored in
+    :data:`config.templates` or :data:`config.topfiles`.
+    """
+    # XXX: should not use os.path.basename for resources; '/' not sep on Win
+    return dict((os.path.basename(fn), resource_filename(__name__, dirname+'/'+fn))
+                for fn in resource_listdir(__name__, dirname)
+                if not fn.endswith('~'))
+
+templates = _generate_template_dict('templates')
 """Templates have to be extracted from the egg because they are used
 by external code. All template filenames are stored in
 :data:`gromacs.config.templates`.
@@ -272,11 +270,11 @@ by external code. All template filenames are stored in
    replacement and the default values are replaced.
 
    The line ``# JOB_ARRAY_PLACEHOLDER`` can be replaced by code to run
-   multiple jobs (a job array) from different sub # directories.
+   multiple jobs (a job array) from different sub directories.
 """
 
 #: The default template for SGE/PBS run scripts.
-sge_template = templates['local_sh']
+sge_template = templates['local.sh']
 
 
 # Functions to access configuration data
