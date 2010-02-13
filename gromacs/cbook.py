@@ -26,10 +26,10 @@ problem (see also `Manipulating trajectories`_):
    "Backbone" (including both translation and rotation).
 
 
-Manipulating trajectories
--------------------------
+Manipulating trajectories and structures
+----------------------------------------
 
-Standard invocations for compacting or fitting trajectories.
+Standard invocations for manipulating trajectories. 
 
 .. function:: trj_compact([s="md.tpr", f="md.xtc", o="compact.xtc"[, ...]])
 
@@ -55,7 +55,7 @@ Standard invocations for compacting or fitting trajectories.
    :members:
 .. autoclass:: Transformer
    :members:
-
+.. autofunction:: get_volume
 
 Processing output
 -----------------
@@ -67,7 +67,17 @@ For instance, a common case is to check the total charge after
 grompping a tpr file. The ``grompp_qtot`` function does just that.
 
 .. autofunction:: grompp_qtot
+.. autofunction:: get_volume
 .. autofunction:: parse_ndxlist
+
+
+Working with topologies and mdp files
+-------------------------------------
+
+.. autofunction:: create_portable_topology
+.. autofunction:: edit_mdp
+.. autofunction:: add_mdp_includes
+.. autofunction:: grompp_qtot
 
 
 Working with index files
@@ -134,6 +144,7 @@ import gromacs
 from gromacs import GromacsError, BadParameterWarning, MissingDataWarning
 import tools
 import utilities
+from utilities import asiterable
 
 trj_compact = tools.Trjconv(ur='compact', center=True, boxcenter='tric', pbc='mol',
                             input=('protein','system'),
@@ -458,6 +469,9 @@ class Frames(object):
         if not self.framedir is None:
             self.cleanup()
 
+# Working with topologies
+# -----------------------
+
 def grompp_qtot(*args, **kwargs):
     """Run ``gromacs.grompp`` and return the total charge of the  system.
 
@@ -488,6 +502,105 @@ def grompp_qtot(*args, **kwargs):
             break
     logger.info("system total charge qtot = %(qtot)r" % vars())
     return qtot
+
+def _mdp_include_string(dirs):
+    """Generate a string that can be added to a mdp 'include = ' line."""
+    include_paths = [os.path.expanduser(p) for p in dirs]
+    return ' -I'.join([''] + include_paths)
+
+def add_mdp_includes(topology=None, kwargs=None):
+    """Set the mdp *include* key in the *kwargs* dict.
+
+    1. Add the directory containing *topology*.
+    2. Add all directories appearing under the key *includes*
+    3. Generate a string of the form "-Idir1 -Idir2 ..." that
+       is stored under the key *include* (the corresponding
+       mdp parameter)
+
+    By default, the directories ``.`` and ``..`` are also added to the
+    *include* string for the mdp; when fed into
+    :func:`gromacs.cbook.edit_mdp` it will result in a line such as ::
+
+      include = -I. -I.. -I../topology_dir ....
+
+    Note that the user can always override the behaviour by setting
+    the *include* keyword herself; in this case this function does
+    nothing.
+
+    If no *kwargs* were supplied then a dict is generated with the
+    single *include* entry.
+
+    :Arguments:
+       *topology* : top filename
+          Topology file; the name of the enclosing directory is added
+          to the include path (if supplied) [``None``]
+       *kwargs* : dict
+          Optional dictionary of mdp keywords; will be modified in place.
+          If it contains the *includes* keyword with either a single string
+          or a list of strings then these paths will be added to the
+          include statement.
+    :Returns: 
+       *kwargs* with the *include* keyword added if it did not
+       exist previously; if the keyword already existed, nothing
+       happens.
+
+    .. Note:: The *kwargs* dict is **modified in place**.
+
+              This function is a bit of a hack. It might be removed
+              once all setup functions become methods in a nice class.
+    """
+    if kwargs is None:
+        kwargs = {}
+
+    if not topology is None:
+        # half-hack: find additional itps in the same directory as the
+        # topology
+        topology_dir = os.path.dirname(topology)
+        include_dirs = ['.', '..', topology_dir]   # should . & .. always be added?
+
+    include_dirs.extend(asiterable(kwargs.pop('includes', [])))  # includes can be a list or a string    
+
+    # 1. setdefault: we do nothing if user defined include
+    # 2. modify input in place!
+    kwargs.setdefault('include', _mdp_include_string(include_dirs))
+    return kwargs
+
+
+def create_portable_topology(topol, struct, **kwargs):
+    """Create a processed topology.
+
+    The processed (or portable) topology file does not contain any
+    ``#include`` statements and hence can be easily copied around. It
+    also makes it possible to re-grompp without having any special itp
+    files available.
+
+    :Arguments:
+      *topol*
+          topology file
+      *struct*
+          coordinat (structure) file
+
+    :Keywords:
+      *processed*
+          name of the new topology file; if not set then it is named like
+          *topol* but with 'pp_' prepended
+      *includes*
+          path or list of paths of directories in which itp files are
+          searched for
+
+    :Returns: full path to the processed trajectory
+    """
+    _topoldir, _topol = os.path.split(topol)
+    processed = kwargs.pop('processed', os.path.join(_topoldir, 'pp_'+_topol))
+    mdp_kwargs = add_mdp_includes(topol, kwargs)
+    with tempfile.NamedTemporaryFile(suffix='.mdp') as mdp:
+        mdp.write('; empty mdp file\ninclude = %(include)s\n' % mdp_kwargs)
+        mdp.flush()
+        try:
+            gromacs.grompp(v=False, f=mdp.name, p=topol, c=struct, pp=processed)
+        finally:
+            utilities.unlink_gmx('topol.tpr', 'mdout.mdp')            
+    return utilities.realpath(processed)
 
 def get_volume(f):
     """Return the volume in nm^3 of structure file *f*.
@@ -563,7 +676,7 @@ def edit_mdp(mdp, new_mdp=None, extend_parameters=None, **substitutions):
     if extend_parameters is None:
         extend_parameters = ['include']
     else:
-        extend_parameters = list(utilities.asiterable(extend_parameters))
+        extend_parameters = list(asiterable(extend_parameters))
 
     # None parameters should be ignored (simple way to keep the template defaults)
     substitutions = dict([(k,v) for k,v in substitutions.items() if not v is None])
