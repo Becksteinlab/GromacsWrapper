@@ -108,10 +108,12 @@ gmx_tool_groups = ['gmx_tools', ]
 #: classes manually from :class:`gromacs.core.GromacsCommand`.  (Eventually, this
 #: functionality will be in a per-user configurable file.)  The current list was
 #: generated from Gromacs 4.0.99 (git).
+#: Removed (because of various issues)
+#:   - g_kinetics
 gmx_tools = """\
 anadock      g_current     g_helix        g_rama     g_traj     mdrun_d
              g_density     g_helixorient  g_rdf      g_vanhove  mk_angndx
-do_dssp      g_densmap     g_kinetics     g_rms      g_velacc   pdb2gmx
+do_dssp      g_densmap                    g_rms      g_velacc   pdb2gmx
 editconf     g_dielectric  g_lie                     g_wham     protonate
 eneconv      g_dih         g_mdmat        g_rmsf     genbox     sigeps
 g_anaeig     g_dipoles     g_mindist      g_rotacf   genconf    tpbconv

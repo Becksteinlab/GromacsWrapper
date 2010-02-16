@@ -131,6 +131,7 @@ The following *exceptions* are defined:
 
 .. autoexception:: GromacsError
 .. autoexception:: MissingDataError
+.. autoexception:: ParseError
 
 The following *warnings* are defined:
 
@@ -178,6 +179,9 @@ class MissingDataError(Exception):
     means that the :meth:`~gromacs.analysis.core.Simulation.analyze` method has
     to be run first.
     """
+
+class ParseError(Exception):
+    """Error raised when parsing of a file failed."""
 
 class GromacsFailureWarning(Warning):
     """Warning about failure of a Gromacs tool."""
