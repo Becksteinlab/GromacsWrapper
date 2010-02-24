@@ -141,7 +141,7 @@ import logging
 logger = logging.getLogger('gromacs.cbook')
 
 import gromacs
-from gromacs import GromacsError, BadParameterWarning, MissingDataWarning
+from gromacs import GromacsError, BadParameterWarning, MissingDataWarning, GromacsValueWarning
 import tools
 import utilities
 from utilities import asiterable
@@ -1283,7 +1283,7 @@ class IndexBuilder(object):
         rc = True
         if self._is_empty_group(make_ndx_output):
             warnings.warn("Selection produced empty group.%(message)s" 
-                          % vars(), category=GromacsWarning)
+                          % vars(), category=GromacsValueWarning)
             rc = False
         if self._has_syntax_error(make_ndx_output):
             rc = False
