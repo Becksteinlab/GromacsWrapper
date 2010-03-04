@@ -339,7 +339,7 @@ class FileUtils(object):
         ignores *resolve*):
 
         ``True``
-              same as *resolve* = "warn" (will allow overwriting of files)
+              same as *resolve* = "ignore" (will allow overwriting of files)
         ``False``
               same as *resolve* = "exception" (will prevent overwriting of files)
         ``None``
@@ -363,7 +363,7 @@ class FileUtils(object):
                      }
 
         if force is True:
-            resolve = 'warn'
+            resolve = 'ignore'
         elif force is False:
             resolve = 'exception'
             
