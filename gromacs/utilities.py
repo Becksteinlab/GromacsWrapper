@@ -321,7 +321,7 @@ class FileUtils(object):
             filename = filename + '.' + ext
         return filename
 
-    def check_file_exists(self, filename, resolve='exception'):
+    def check_file_exists(self, filename, resolve='exception', force=None):
         """If a file exists then continue with the action specified in ``resolve``.
 
         ``resolve`` must be one of
@@ -334,6 +334,16 @@ class FileUtils(object):
               indicate and issue a :exc:`UserWarning`
         "exception"
               raise :exc:`IOError` if it exists
+
+        Alternatively, set *force* for the following behaviour (which
+        ignores *resolve*):
+
+        ``True``
+              same as *resolve* = "warn" (will allow overwriting of files)
+        ``False``
+              same as *resolve* = "exception" (will prevent overwriting of files)
+        ``None``
+              ignored, do whatever *resolve* says
         """
         def _warn(x):
             msg = "File %r already exists." % x
@@ -343,7 +353,7 @@ class FileUtils(object):
         def _raise(x):
             msg = "File %r already exists." % x
             logger.error(msg)
-            raise IOError(msg)
+            raise IOError(errno.EEXIST, msg)
         solutions = {'ignore': lambda x: False,      # file exists, but we pretend that it doesn't
                      'indicate': lambda x: True,     # yes, file exists
                      'warn': _warn,
@@ -351,6 +361,12 @@ class FileUtils(object):
                      'exception': _raise,
                      'raise': _raise,
                      }
+
+        if force is True:
+            resolve = 'warn'
+        elif force is False:
+            resolve = 'exception'
+            
         if not os.path.isfile(filename):
             return False
         else:

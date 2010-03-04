@@ -427,8 +427,8 @@ class Worker(FileUtils):
 
         self.simulation = kwargs.pop('simulation',None)  # eventually needed but can come after init
         self.location = self.plugin_name                 # directory name under analysisdir
-        self.results = AttributeDict()
-        self.parameters = AttributeDict()
+        self.results = AttributeDict()                   # store results
+        self.parameters = AttributeDict()                # container for options, filenames, etc...
         super(Worker,self).__init__(**kwargs)
 
         # note: We are NOT calling self._register_hook() here; subclasses do this
