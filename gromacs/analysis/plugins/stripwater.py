@@ -1,4 +1,4 @@
-# $Id$
+# plugin for GromacsWrapper: stripwater.py
 # Copyright (c) 2009 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
@@ -7,11 +7,8 @@
 StripWater
 ==========
 
-Write a trajectory with all water removed.
-
-.. Note:: Maybe better use
-          :meth:`gromacs.cbook.Transformer.strip_water`; that works
-          pretty well.
+Write a trajectory with all water removed. This uses
+:meth:`gromacs.cbook.Transformer.strip_water`.
 
 Plugin class
 ------------
@@ -38,6 +35,7 @@ import os.path
 import warnings
 
 import gromacs
+import gromacs.cbook
 from gromacs.utilities import AttributeDict
 from gromacs.analysis.core import Worker, Plugin
 
@@ -47,11 +45,10 @@ from gromacs.analysis.core import Worker, Plugin
 # These must be defined before the plugins.
 
 class _StripWater(Worker):
-    """TEMPLATE worker class."""
+    """StripWater worker class."""
 
     def __init__(self,**kwargs):
         """Set up  StripWater
-
 
         :Arguments:
            *fit*
@@ -60,16 +57,20 @@ class _StripWater(Worker):
         # specific arguments: take them before calling the super class that
         # does not know what to do with them
         _fitvalues = ("xy", "all", None)
-        if not fit in _fitvalues:
-            raise ValueError("*fit* must be one of %(_fitvalues)r, not %(fit)r." % vars())
-        self.fit = kwargs.pop('fit',None)
+        parameters = {}
+        parameters['fit'] = kwargs.pop('fit',None)            # fitting algorithm
+        if not parameters['fit'] in _fitvalues:
+            raise ValueError("StripWater: *fit* must be one of %(_fitvalues)r, not %(fit)r." % vars())
+        parameters['compact'] = kwargs.pop('compact', False)  # compact+centered ?
+        parameters['resn'] = kwargs.pop('resn', 'SOL')        # residue name to be stripped
 
         # super class init: do this before doing anything else
         # (also sets up self.parameters and self.results)
         super(_StripWater, self).__init__(**kwargs)
 
-        # process specific parameters now and set instance variables
-        # ....
+        # self.parameters is set up by the base Worker class...
+        self.parameters.filenames = AttributeDict()
+        self.parameters.update(parameters)
 
         # self.simulation might have been set by the super class
         # already; just leave this snippet at the end. Do all
@@ -82,39 +83,36 @@ class _StripWater(Worker):
         """Run when registering; requires simulation."""
 
         super(_StripWater, self)._register_hook(**kwargs)
-        assert not self.simulation is None        
+        assert not self.simulation is None
 
-        xtcdir,xtcname = os.path.split(self.simulation.xtc)
-        xtcbasename, xtcext = os.path.splitext(xtcname)
-        newxtc = os.path.join(xtcdir, xtcbasename+'_nowater'+xtcext)
-        
-        self.parameters.filenames = {'newxtc': newxtc}
-        self.parameters.ndx = self.plugindir('nowater.ndx')
-        self.parameters.groups = {'nowater': 'nowater'}
+        self.transformer = gromacs.cbook.Transformer(
+            s=self.simulation.tpr, f=self.simulation.xtc, n=self.simulation.ndx)
 
     # override 'API' methods of base class
         
-    def run(self, force=False, **gmxargs):
+    def run(self, force=False, **kwargs):
         """Write new trajectory with water index group stripped.
-        """
-        # make ndx without water
-        # TODO: ! SOL hard coded
 
-        B = gromacs.cbook.IndexBuilder(struct=self.simulation.tpr, selections=['@! "SOL"'], 
-                                       names=[self.groups['nowater']], out_ndx=self.parameters.ndx)
-        B.combine()
-        if self.fit == None:
-            # just strip water
-            gromacs.trjconv(s=self.simulation.tpr, f=self.simulation.xtc, n=self.parameters.ndx,
-                            o=self.parameters.filenames['newxtc'], input=[self.parameters.groups])
-        else:
-            # fit and center, then strip water
-            xy = {'xy': True, 'all': False}
-            gromacs.cbook.trj_fitandcenter(
-                xy=xy[self.fit],
-                s=self.simulation.tpr, f=self.simulation.xtc, o=self.parameters.filenames['newxtc'],
-                n1=self.parameters.ndx, input1=['protein', self.parameters.groups],
-                n=None, input=['backbone', 'protein', 'system'])
+        kwargs are passed to :meth:`gromacs.cbook.Transformer.strip_water`.
+
+        .. Note:: If set, *dt* is only applied to a fit step; the
+                  no-water trajectory is always generated for all time
+                  steps of the input.
+        """
+        dt = kwargs.pop('dt', None)
+                
+        kwargs.setdefault('compact', self.parameters.compact)
+        kwargs.setdefault('resn', self.parameters.resn)
+
+        newfiles = self.transformer.strip_water(**kwargs)
+        self.parameters.filenames.update(newfiles)
+
+        if self.parameters.fit != None:
+            if self.parameters.fit == "xy": xy = True
+            else: xy = False
+            
+            transformer_nowater = self.transformer.nowater.values()[0]
+            transformer_nowater.fit(xy=xy, dt=dt)
 
     def analyze(self,**kwargs):
         """No postprocessing."""        

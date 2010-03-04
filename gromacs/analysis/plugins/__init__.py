@@ -34,6 +34,7 @@ plugin                      author                   description
 :class:`RMSD`                                [#OB]_  calculate root mean square distance
 :class:`Energy`                              [#OB]_  terms from the energy file
 :class:`Trajectories`                        [#OB]_  write xy-fitted trajectories
+:class:`StripWater`                          [#OB]_  remove solvent (and optionally fit to reference)
 ==========================  =======================  =====================================
 
 
@@ -60,6 +61,8 @@ Plugin classes
    :members:
 .. autoclass:: Trajectories
    :members:
+.. autoclass:: StripWater
+   :members:
 
 
 Developer notes
@@ -81,7 +84,7 @@ __docformat__ = "restructuredtext en"
 #: *Distances* plugin class is contained in the module *distances* (the
 #: file ``plugins/distances.py``).
 __plugins__ = ['CysAccessibility', 'Distances', 'MinDistances', 'Dihedrals',
-               'Trajectories', 'RMSF', 'RMSD', 'Energy']
+               'Trajectories', 'StripWater', 'RMSF', 'RMSD', 'Energy']
 __all__ = []
 __all__.extend(__plugins__)
 
