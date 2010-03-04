@@ -33,6 +33,7 @@ plugin                      author                   description
 :class:`RMSF`                                [#OB]_  calculate root mean square fluctuations
 :class:`RMSD`                                [#OB]_  calculate root mean square distance
 :class:`Energy`                              [#OB]_  terms from the energy file
+:class:`HelixBundle`                         [#OB]_  g_bundle analysis of helices
 :class:`Trajectories`                        [#OB]_  write xy-fitted trajectories
 :class:`StripWater`                          [#OB]_  remove solvent (and optionally fit to reference)
 ==========================  =======================  =====================================
@@ -84,7 +85,7 @@ __docformat__ = "restructuredtext en"
 #: *Distances* plugin class is contained in the module *distances* (the
 #: file ``plugins/distances.py``).
 __plugins__ = ['CysAccessibility', 'Distances', 'MinDistances', 'Dihedrals',
-               'Trajectories', 'StripWater', 'RMSF', 'RMSD', 'Energy']
+               'Trajectories', 'StripWater', 'RMSF', 'RMSD', 'Energy', 'HelixBundle']
 __all__ = []
 __all__.extend(__plugins__)
 

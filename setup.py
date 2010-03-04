@@ -1,15 +1,16 @@
-# $Id$
 # setuptools installation of GromacsWrapper
 # Copyright (c) 2008-2010 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the GNU Public License 3 (or higher, your choice)
-
+#
+# See the files INSTALL and README for details or visit 
+# http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/
 
 from ez_setup import use_setuptools
 use_setuptools()
 from setuptools import setup, find_packages
 
 setup(name="GromacsWrapper",
-      version="0.1.1",
+      version="0.1.2",
       description="A python wrapper around the gromacs tools.",
       long_description="""\
 A primitive wrapper around the Gromacs tools until we have proper
@@ -34,7 +35,7 @@ more complicated analysis tasks.
                           ],              # basic package (w/o analysis)
       extras_require = {
                 'analysis': ['matplotlib>=0.91.3', 
-                             'RecSQL>=0.3',            
+                             'RecSQL>=0.7',            
                              ],
                 'edPDB': ['Bio'],
                 },
