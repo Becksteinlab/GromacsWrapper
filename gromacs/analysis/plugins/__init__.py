@@ -1,5 +1,5 @@
-# $Id$
-# Copyright (c) 2009 Oliver Beckstein <orbeckst@gmail.com>
+# GromacsWrapper plugins
+# Copyright (c) 2009-2010 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
 """
@@ -21,6 +21,7 @@ sending it to the `package author`_. You will be acknowledged in the list below.
 
 .. _`package author`: oliver.beckstein@bioch.ox.ac.uk
 
+For analysis:
 ==========================  =======================  =====================================
 plugin                      author                   description
 ==========================  =======================  =====================================
@@ -34,8 +35,16 @@ plugin                      author                   description
 :class:`RMSD`                                [#OB]_  calculate root mean square distance
 :class:`Energy`                              [#OB]_  terms from the energy file
 :class:`HelixBundle`                         [#OB]_  g_bundle analysis of helices
+==========================  =======================  =====================================
+
+
+For trajectory manipulation and status:
+==========================  =======================  =====================================
+plugin                      author                   description
+==========================  =======================  =====================================
 :class:`Trajectories`                        [#OB]_  write xy-fitted trajectories
 :class:`StripWater`                          [#OB]_  remove solvent (and optionally fit to reference)
+:class: Ls                                   [#OB]_  simple :program:`ls` (for testing)
 ==========================  =======================  =====================================
 
 
@@ -85,7 +94,9 @@ __docformat__ = "restructuredtext en"
 #: *Distances* plugin class is contained in the module *distances* (the
 #: file ``plugins/distances.py``).
 __plugins__ = ['CysAccessibility', 'Distances', 'MinDistances', 'Dihedrals',
-               'Trajectories', 'StripWater', 'RMSF', 'RMSD', 'Energy', 'HelixBundle']
+               'RMSF', 'RMSD', 'Energy', 'HelixBundle',
+               'Trajectories', 'StripWater', 'Ls',
+               ]
 __all__ = []
 __all__.extend(__plugins__)
 

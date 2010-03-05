@@ -1,4 +1,7 @@
-# $Id$
+# GromacsWrapper: collections.py
+# Copyright (c) 2009 Oliver Beckstein <orbeckst@gmail.com>
+# Released under GPL3+
+
 """
 :mod:`analysis.collections` -- Handling of groups of simulation instances
 =========================================================================
