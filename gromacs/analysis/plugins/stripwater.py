@@ -36,7 +36,7 @@ import warnings
 
 import gromacs
 import gromacs.cbook
-from gromacs.utilities import AttributeDict
+from gromacs.utilities import AttributeDict, asiterable
 from gromacs.analysis.core import Worker, Plugin
 
 
@@ -51,8 +51,29 @@ class _StripWater(Worker):
         """Set up  StripWater
 
         :Arguments:
-           *fit*
-               one of "xy", "all", ``None``
+          *force*
+             ``True`` will always regenerate trajectories even if they 
+             already exist, ``False`` raises an exception, ``None``
+             does the sensible thing in most cases (i.e. notify and
+             then move on).
+          *dt* : float or list of floats
+             only write every dt timestep (in ps); if a list of floats is 
+             supplied, write multiple trajectories, one for each dt.             
+          *compact* : bool
+             write a compact representation
+          *fit*          
+             Create an additional trajectory from the stripped one in which
+             the Protein group is rms-fitted to the initial structure. See
+             :meth:`gromacs.cbook.Transformer.fit` for details. Useful 
+             values:
+               - "xy" : perform a rot+trans fit in the x-y plane
+               - "all": rot+trans
+               - ``None``: no fitting
+             If *fit* is not supplied then the constructore-default is used
+             (:attr:`_StripWater.parameters.fit`).
+          *resn*
+             name of the residues that are stripped (typically it is
+             safe to leave this at the default 'SOL')
         """
         # specific arguments: take them before calling the super class that
         # does not know what to do with them
@@ -63,6 +84,8 @@ class _StripWater(Worker):
             raise ValueError("StripWater: *fit* must be one of %(_fitvalues)r, not %(fit)r." % vars())
         parameters['compact'] = kwargs.pop('compact', False)  # compact+centered ?
         parameters['resn'] = kwargs.pop('resn', 'SOL')        # residue name to be stripped
+        parameters['dt'] = kwargs.pop('dt', None)
+        parameters['force'] = kwargs.pop('force', None)
 
         # super class init: do this before doing anything else
         # (also sets up self.parameters and self.results)
@@ -90,29 +113,60 @@ class _StripWater(Worker):
 
     # override 'API' methods of base class
         
-    def run(self, force=False, **kwargs):
+    def run(self, **kwargs):
         """Write new trajectory with water index group stripped.
 
-        kwargs are passed to :meth:`gromacs.cbook.Transformer.strip_water`.
+        kwargs are passed to
+        :meth:`gromacs.cbook.Transformer.strip_water`. Important
+        parameters:
+
+        :Keywords:
+          *force*
+             ``True`` will always regenerate trajectories even if they 
+             already exist, ``False`` raises an exception, ``None``
+             does the sensible thing in most cases (i.e. notify and
+             then move on).
+          *dt* : float or list of floats
+             only write every dt timestep (in ps); if a list of floats is 
+             supplied, write multiple trajectories, one for each dt.             
+          *compact* : bool
+             write a compact representation
+          *fit*          
+             Create an additional trajectory from the stripped one in which
+             the Protein group is rms-fitted to the initial structure. See
+             :meth:`gromacs.cbook.Transformer.fit` for details. Useful 
+             values:
+               - "xy" : perform a rot+trans fit in the x-y plane
+               - "all": rot+trans
+               - ``None``: no fitting
+             If *fit* is not supplied then the constructore-default is used
+             (:attr:`_StripWater.parameters.fit`).
+          *resn*
+             name of the residues that are stripped (typically it is
+             safe to leave this at the default 'SOL')
 
         .. Note:: If set, *dt* is only applied to a fit step; the
                   no-water trajectory is always generated for all time
                   steps of the input.
         """
-        dt = kwargs.pop('dt', None)
+        dt = kwargs.pop('dt', self.parameters.dt)
+        fit = kwargs.pop('fit', self.parameters.fit)
                 
         kwargs.setdefault('compact', self.parameters.compact)
         kwargs.setdefault('resn', self.parameters.resn)
+        kwargs.setdefault('force', self.parameters.force)
 
         newfiles = self.transformer.strip_water(**kwargs)
         self.parameters.filenames.update(newfiles)
 
-        if self.parameters.fit != None:
-            if self.parameters.fit == "xy": xy = True
-            else: xy = False
-            
+        if fit != None:
+            if self.parameters.fit == "xy":
+                xy = True
+            else:
+                xy = False        
             transformer_nowater = self.transformer.nowater.values()[0]
-            transformer_nowater.fit(xy=xy, dt=dt)
+            for delta_t in asiterable(dt):
+                transformer_nowater.fit(xy=xy, dt=delta_t, force=kwargs['force'])
 
     def analyze(self,**kwargs):
         """No postprocessing."""        
