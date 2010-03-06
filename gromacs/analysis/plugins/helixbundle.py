@@ -91,7 +91,7 @@ class _HelixBundle(Worker):
         """
         helixndx = kwargs.pop('helixndx', None)
         helixtable = kwargs.pop('helixtable', None)
-        na = kwargs.pop('nhelices', None)
+        na = kwargs.pop('na', None)
         offset = kwargs.pop('offset', 0)
 
         if helixndx is None:
@@ -165,6 +165,10 @@ class _HelixBundle(Worker):
                            "use force = True to rebuild", self.helixndx)
             return self.helixndx
 
+        logger.info("Making index file for %d helices %r", len(self.helices), self.helixndx)
+        logger.debug("make_index: tpr = %r", self.simulation.tpr)
+        logger.debug("make_index: offset = %r", self.parameters.offset)
+
         # quick'n'crappy...
         tops = []
         bottoms = []
@@ -212,6 +216,8 @@ class _HelixBundle(Worker):
 
         if self.check_file_exists(self.parameters.filenames['tilt'], resolve='warning', force=force):
             return
+
+        self.make_index(force=force)
 
         logger.info("Analyzing HelixBundle...")
         f = self.parameters.filenames
