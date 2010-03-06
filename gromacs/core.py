@@ -1,4 +1,4 @@
-# $Id$
+# GromacsWrapper: core.py
 # Copyright (c) 2009 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
@@ -515,6 +515,7 @@ class PopenWithInput(subprocess.Popen):
                string that is piped into the command
            
         """
+        kwargs.setdefault('close_fds', True)   # fixes 'Too many open fds' with 2.6
         self.input = kwargs.pop('input',None)
         self.command = args[0]
         try:
