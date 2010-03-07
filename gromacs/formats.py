@@ -1,5 +1,5 @@
-# $Id$
-# Copyright (c) 2009 Oliver Beckstein <orbeckst@gmail.com>
+# GromacsWrapper: formats.py
+# Copyright (c) 2009-2010 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
 
@@ -129,7 +129,16 @@ class XVG(utilities.FileUtils):
         """
         a = self.array
         return numpy.ma.MaskedArray(a, mask=numpy.logical_not(numpy.isfinite(a)))        
-        
+    
+    @property
+    def mean(self):
+        """Mean value of all data columns."""
+        return self.array[1:].mean(axis=1)
+
+    @property
+    def std(self):
+        """Standard deviation from the mean of all data columns."""
+        return self.array[1:].std(axis=1)        
         
     def parse(self):
         """Read and cache the file as a numpy array.
