@@ -27,14 +27,15 @@ plugin                      author                   description
 ==========================  =======================  =====================================
 :class:`CysAccessibility`                    [#OB]_  estimate accessibility of Cys
                                                      residues by water
-                                                     
+
+:class:`HelixBundle`                         [#OB]_  g_bundle analysis of helices
 :class:`Distances`                           [#OB]_  time series of distances
 :class:`MinDistances`                        [#OB]_  time series of shortest distances
+:class:`COM`                                 [#OB]_  time series of centres of mass
 :class:`Dihedrals`                           [#OB]_  analysis of dihedral angles
 :class:`RMSF`                                [#OB]_  calculate root mean square fluctuations
 :class:`RMSD`                                [#OB]_  calculate root mean square distance
 :class:`Energy`                              [#OB]_  terms from the energy file
-:class:`HelixBundle`                         [#OB]_  g_bundle analysis of helices
 ==========================  =======================  =====================================
 
 
@@ -57,9 +58,13 @@ Plugin classes
 
 .. autoclass:: CysAccessibility
    :members:
+.. autoclass:: HelixBundle
+   :members:
 .. autoclass:: Distances
    :members:
 .. autoclass:: MinDistances
+   :members:
+.. autoclass:: COM
    :members:
 .. autoclass:: Dihedrals
    :members:
@@ -72,6 +77,8 @@ Plugin classes
 .. autoclass:: Trajectories
    :members:
 .. autoclass:: StripWater
+   :members:
+.. autoclass:: Ls
    :members:
 
 
@@ -94,7 +101,7 @@ __docformat__ = "restructuredtext en"
 #: *Distances* plugin class is contained in the module *distances* (the
 #: file ``plugins/distances.py``).
 __plugins__ = ['CysAccessibility', 'Distances', 'MinDistances', 'Dihedrals',
-               'RMSF', 'RMSD', 'Energy', 'HelixBundle',
+               'COM', 'RMSF', 'RMSD', 'Energy', 'HelixBundle',
                'Trajectories', 'StripWater', 'Ls',
                ]
 __all__ = []
