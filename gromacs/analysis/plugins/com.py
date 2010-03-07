@@ -143,10 +143,14 @@ class _COM(Worker):
         """Plot all results in one graph, labelled by the result keys.
 
         :Keywords:
+           observables
+              select one or more of the stored results. Can be a list
+              or a string (a key into the results dict). ``None``
+              plots everything [``None``]           
            figure
                - ``True``: save figures in the given formats
                - "name.ext": save figure under this filename (``ext`` -> format)
-               - ``False``: only show on screen
+               - ``False``: only show on screen [``False``]
            formats : sequence
                sequence of all formats that should be saved [('png', 'pdf')]
            plotargs    
@@ -155,8 +159,11 @@ class _COM(Worker):
 
         import pylab
         figure = kwargs.pop('figure', False)
+        observables = asiterable(kwargs.pop('observables', self.results.keys()))
         extensions = kwargs.pop('formats', ('pdf','png'))
-        for name,result in self.results.items():
+
+        for name in observables:
+            result = self.results[name]
             try:
                 result.plot(**kwargs)      # This requires result classes with a plot() method!!
             except AttributeError:
