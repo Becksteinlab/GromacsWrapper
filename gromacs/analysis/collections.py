@@ -21,14 +21,15 @@ from numpy import all, any
 class Collection(list):
     """Multiple objects (organized as a list).
 
-    Methods are applied to all objects in the Collection
+    Methods are applied to all objects in the Collection and returned
+    as new Collection:
 
       >>> from gromacs.analysis.collections import Collection
       >>> animals = Collection(['ant', 'boar', 'ape', 'gnu'])
       >>> animals.startswith('a')
-      [True, False, True, False]
+      Collection([True, False, True, False])
 
-    Similarly, attributes are returned as a list.
+    Similarly, attributes are returned as a Collection.
 
     Using :meth:`Collection.save` one can save the whole collection to
     disk and restore it later with the :meth:`Collection.load` method
@@ -65,6 +66,10 @@ class Collection(list):
             self[:] = tmp[:]
         del tmp
 
+    def tolist(self):
+        """Return contents as a simple list."""
+        return self[:]
+
     def _canonicalize(self, filename):
         """Use .collection as extension unless provided"""
         path, ext = os.path.splitext(filename)
@@ -74,7 +79,7 @@ class Collection(list):
 
     def __getnewargs__(self, *args, **kwargs):
         """Provide proper initialization to make pickling with protocol 2 work"""
-        return (self[:],)
+        return (self.tolist(),)
 
     def __getattribute__(self, attr):
         try:
@@ -96,14 +101,17 @@ class Collection(list):
         iscallable = [hasattr(o.__getattribute__(attr), '__call__') for o in self]
         if all(iscallable):
             def runall(*args, **kwargs):
-                return [o.__getattribute__(attr)(*args, **kwargs) for o in self]
+                """Apply function to all members and return a new Collection"""
+                return Collection([o.__getattribute__(attr)(*args, **kwargs) for o in self])
             runall.__name__ = attr
             return runall
         elif any(iscallable):
             raise TypeError("Attribute %r is callable only for some objects" % attr)
 
-        return [o.__getattribute__(attr) for o in self]
-
+        return Collection([o.__getattribute__(attr) for o in self])
 
     def __add__(self, x):
-        return Collection(list.__add__(self,x))
+        return Collection(super(Collection, self).__add__(x))
+
+    def __repr__(self):
+        return self.__class__.__name__+"(%s)" % super(Collection, self).__repr__()
