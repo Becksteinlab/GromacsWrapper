@@ -87,12 +87,31 @@ class _HelixBundle(Worker):
     def __init__(self,**kwargs):
         """Set up HelixBundle analysis.
 
-        This is the worker class; this is where all the real analysis is done.
+        :Keywords:
+           *helixtable*
+               reST table with columns "name", "top", "bottom",
+               "kink"; see :mod:`gromacs.analysis.plugins.helixbundle`
+               for details
+           *offset*
+               add the *offset* to the residue numbers in *helixtable* [0]
+           *helixndx*
+               provide a index file with the appropriate groups
+               instead of the table; also requires *na*
+           *na*
+               number of helices
+           *with_kinks*
+               take kinks into account [True]
+           *name*
+               plugin name [HelixBundle]
+           *simulation*
+               The :class:`gromacs.analysis.Simulation` instance that
+               owns the plugin [None]
         """
         helixndx = kwargs.pop('helixndx', None)
         helixtable = kwargs.pop('helixtable', None)
         na = kwargs.pop('na', None)
         offset = kwargs.pop('offset', 0)
+        with_kinks = kwargs.pop('with_kinks', True)
 
         if helixndx is None:
             if helixtable is None:
@@ -110,6 +129,7 @@ class _HelixBundle(Worker):
         
         self.parameters.na = na
         self.parameters.offset = offset
+        self.parameters.with_kinks = with_kinks
 
         if not self.simulation is None:
             self._register_hook()
@@ -129,12 +149,15 @@ class _HelixBundle(Worker):
             'tilt': self.plugindir('tilt.xvg'),
             'tilt_radial': self.plugindir('tilt_radial.xvg'),
             'tilt_lateral': self.plugindir('tilt_lateral.xvg'),
-            'kink': self.plugindir('kink.xvg'),
-            'kink_radial': self.plugindir('kink_radial.xvg'),
-            'kink_lateral': self.plugindir('kink_lateral.xvg'),
             }
+        if self.parameters.with_kinks:
+            self.parameters.filenames.update(
+                {'kink': self.plugindir('kink.xvg'),
+                 'kink_radial': self.plugindir('kink_radial.xvg'),
+                 'kink_lateral': self.plugindir('kink_lateral.xvg'),
+                 })
 
-        # default filename for the plots
+        # default filename for the plots -- not used
         self.parameters.fignames = {
             'z': self.figdir('z'),
             'tilt': self.figdir('tilt'),
@@ -219,14 +242,22 @@ class _HelixBundle(Worker):
 
         self.make_index(force=force)
 
-        logger.info("Analyzing HelixBundle...")
+        logger.info("Analyzing HelixBundle (with_kinks=%r)...", self.parameters.with_kinks)
         f = self.parameters.filenames
-        gromacs.g_bundle(s=self.simulation.tpr, f=self.simulation.xtc, n=self.helixndx,
-                         ol=f['length'], od=f['distance'], oz=f['z'], 
-                         ot=f['tilt'], otr=f['tilt_radial'], otl=f['tilt_lateral'],
-                         ok=f['kink'], okr=f['kink_radial'], okl=f['kink_lateral'],
-                         input=['top','bottom', 'kink'],
-                         **gmxargs)
+        if self.parameters.with_kinks:
+            gromacs.g_bundle(s=self.simulation.tpr, f=self.simulation.xtc, n=self.helixndx,
+                             ol=f['length'], od=f['distance'], oz=f['z'], 
+                             ot=f['tilt'], otr=f['tilt_radial'], otl=f['tilt_lateral'],
+                             ok=f['kink'], okr=f['kink_radial'], okl=f['kink_lateral'],
+                             input=['top','bottom', 'kink'],
+                             **gmxargs)
+        else:
+            gromacs.g_bundle(s=self.simulation.tpr, f=self.simulation.xtc, n=self.helixndx,
+                             ol=f['length'], od=f['distance'], oz=f['z'], 
+                             ot=f['tilt'], otr=f['tilt_radial'], otl=f['tilt_lateral'],
+                             input=['top','bottom'],
+                             **gmxargs)
+
 
     def analyze(self,**kwargs):
         """Collect output xvg files as :class:`gromacs.formats.XVG` objects.
@@ -282,14 +313,27 @@ class HelixBundle(Plugin):
 
     :func:`gromacs.g_bundle` helix analysis
 
-    .. class:: HelixBundle([name[, simulation]])
+    .. class:: HelixBundle([helixtable, offset, with_kinks, [name[, simulation]]])
     
     :Arguments:
-        *name* : string
-            plugin name (used to access it)
-        *simulation* : instance
-            The :class:`gromacs.analysis.Simulation` instance that owns the plugin.
-
+       *helixtable*
+           reST table with columns "name", "top", "bottom",
+           "kink"; see :mod:`gromacs.analysis.plugins.helixbundle`
+           for details
+       *offset*
+           add the *offset* to the residue numbers in *helixtable* [0]
+       *helixndx*
+           provide a index file with the appropriate groups
+           instead of the table; also requires *na*
+       *na*
+           number of helices
+       *with_kinks*
+           take kinks into account [True]
+       *name*
+           plugin name [HelixBundle]
+       *simulation*
+           The :class:`gromacs.analysis.Simulation` instance that owns
+           the plugin. [None]
     """
     worker_class = _HelixBundle
 
