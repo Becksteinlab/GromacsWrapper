@@ -139,6 +139,16 @@ class XVG(utilities.FileUtils):
     def std(self):
         """Standard deviation from the mean of all data columns."""
         return self.array[1:].std(axis=1)        
+
+    @property
+    def min(self):
+        """Minimum of the data columns."""
+        return self.array[1:].min(axis=1)        
+
+    @property
+    def max(self):
+        """Maximum of the data columns."""
+        return self.array[1:].max(axis=1)        
         
     def parse(self):
         """Read and cache the file as a numpy array.
