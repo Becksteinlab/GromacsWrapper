@@ -1,4 +1,4 @@
-# $Id$
+# GromacsWrapper: cbook.py
 """
 :mod:`gromacs.setup` -- Setting up a Gromacs MD run
 ===================================================
@@ -409,9 +409,10 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
 
         with open('none.mdp','w') as mdp:
             mdp.write('; empty mdp file\ninclude = %(include)s\n' % mdp_kwargs)            
-        qtot = gromacs.cbook.grompp_qtot(f='none.mdp', o='topol.tpr', c='solvated.gro',
-                                         p=topology, stdout=False, maxwarn=grompp_maxwarn)
-        logger.info("[%(dirname)s] After solvation: total charge qtot = %(qtot)r" % vars())
+        qtotgmx = gromacs.cbook.grompp_qtot(f='none.mdp', o='topol.tpr', c='solvated.gro',
+                                            p=topology, stdout=False, maxwarn=grompp_maxwarn)
+        qtot = round(qtotgmx)
+        logger.info("[%(dirname)s] After solvation: total charge qtot = %(qtotgmx)r = %(qtot)r" % vars())
 
         if concentration != 0:
             logger.info("[%(dirname)s] Adding ions for c = %(concentration)f M..." % vars())
@@ -431,7 +432,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
             N_ions = 0
 
         # neutralize (or try -neutral switch of genion???)
-        n_cation = n_anion = 0
+        n_cation = n_anion = 0        
         if qtot > 0:
             n_anion = int(abs(qtot))
         elif qtot < 0:
@@ -441,6 +442,8 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
         n_anion  += N_ions
 
         if n_cation != 0 or n_anion != 0:
+            # sanity check:
+            assert qtot + n_cation - n_anion < 1e-6
             logger.info("[%(dirname)s] Adding n_cation = %(n_cation)d and n_anion = %(n_anion)d ions..." % vars())
             gromacs.genion(s='topol.tpr', o='ionized.gro', p=topology,
                            pname=cation, nname=anion, np=n_cation, nn=n_anion,
