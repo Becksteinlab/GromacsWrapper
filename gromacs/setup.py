@@ -520,6 +520,10 @@ def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
           mdp file (or use the template) [templates/em.mdp]
        *includes*
           additional directories to search for itp files
+       *mdrunner*
+          :class:`gromacs.simulation.MDrunner` class; by defauly we
+          try :func:`gromacs.mdrun_` and :func:`gromacs,mdrun` but a
+          MDrunner gives the user the ability to run mpi jobs etc [None]
        *kwargs*
           remaining key/value pairs that should be changed in the 
           template mdp file, eg ``nstxtcout=250, nstfout=250``.
@@ -566,15 +570,22 @@ def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
         mdrun_args = dict(v=True, stepout=10, deffnm='em', c='em.pdb')
         # TODO: not clear yet how to run em as MPI with mpiexec & friends
         #       (could be using gromacs.simulation.MDrunner)
-        try:            
-            gromacs.mdrun_d(**mdrun_args)
-        except (AttributeError, OSError):
-            # fall back to mdrun if no double precision binary
-            wmsg = "No 'mdrun_d' binary found so trying 'mdrun' instead.\n"\
-                   "(Note that energy minimization runs better with mdrun_d.)"
-            logger.warn(wmsg)
-            warnings.warn(wmsg, category=AutoCorrectionWarning)
-            gromacs.mdrun(**mdrun_args)
+        if mdrunner is None:
+            try:
+                gromacs.mdrun_d(**mdrun_args)
+            except (AttributeError, OSError):
+                # fall back to mdrun if no double precision binary
+                wmsg = "No 'mdrun_d' binary found so trying 'mdrun' instead.\n"\
+                    "(Note that energy minimization runs better with mdrun_d.)"
+                logger.warn(wmsg)
+                warnings.warn(wmsg, category=AutoCorrectionWarning)
+                gromacs.mdrun(**mdrun_args)
+        else:
+            # user wants full control and provides simulation.MDrunner **class**
+            # NO CHECKING --- in principle user can supply any callback they like
+            mdrun = mdrunner(**mdrun_args)
+            mdrun.run()
+
         # em.gro --> gives 'Bad box in file em.gro' warning --- why??
         # --> use em.pdb instead.
         if not os.path.exists('em.pdb'):

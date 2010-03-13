@@ -1,4 +1,4 @@
-# $Id$
+# GromacsWrapper: simulation.py
 # Copyright (c) 2009 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
@@ -196,7 +196,11 @@ class MDrunner(utilities.FileUtils):
         (See :func:`check_mdrun_success` for details)
         """
         return check_mdrun_success(self.logname)
-            
+
+class MDrunnerDoublePrecision(MDrunner):
+    """Manage running :program:`mdrun_d`.
+    """
+    mdrun = "mdrun_d"
         
 class MDrunnerOpenMP(MDrunner):
     """Manage running :program:`mdrun` as an OpenMP_ multiprocessor job.
