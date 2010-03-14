@@ -499,7 +499,8 @@ def check_mdpargs(d):
 
 def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
                     struct='solvate/ionized.gro', top='top/system.top',
-                    **kwargs):
+                    output='em.pdb', deffnm="em", 
+                    mdrunner=None, **kwargs):
     """Energy minimize the system.
 
     This sets up the system (creates run input files) and also runs
@@ -514,6 +515,10 @@ def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
           set up under directory dirname [em]
        *struct*
           input structure (gro, pdb, ...) [solvate/ionized.gro]
+       *output*
+          output structure (will be put under dirname) [em.pdb]
+       *deffnm*
+          default name for mdrun-related files [em]
        *top*
           topology file [top/system.top]
        *mdp*
@@ -521,20 +526,22 @@ def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
        *includes*
           additional directories to search for itp files
        *mdrunner*
-          :class:`gromacs.simulation.MDrunner` class; by defauly we
-          try :func:`gromacs.mdrun_` and :func:`gromacs,mdrun` but a
-          MDrunner gives the user the ability to run mpi jobs etc [None]
+          :class:`gromacs.run.MDrunner` class; by defauly we
+          just try :func:`gromacs.mdrun_d` and :func:`gromacs.mdrun` but a
+          MDrunner class gives the user the ability to run mpi jobs
+          etc. [None]
        *kwargs*
           remaining key/value pairs that should be changed in the 
           template mdp file, eg ``nstxtcout=250, nstfout=250``.
 
-    .. note:: 
-       If ``mdrun_d`` is not found, the function falls back to ``mdrun`` instead.
+    .. note:: If :func:`~gromacs.mdrun_d` is not found, the function
+              falls back to :func:`~gromacs.mdrun` instead.
     """
 
     structure = realpath(struct)
     topology = realpath(top)
     mdp_template = config.get_template(mdp)
+    deffnm = deffnm.strip()
 
     # filter some kwargs that might come through when feeding output
     # from previous stages such as solvate(); necessary because *all*
@@ -548,8 +555,8 @@ def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
     # only interesting when passed from solvate()
     qtot = kwargs.pop('qtot', 0)
 
-    mdp = 'em.mdp'
-    tpr = 'em.tpr'
+    mdp = deffnm+'.mdp'
+    tpr = deffnm+'.tpr'
 
     logger.info("[%(dirname)s] Energy minimization of struct=%(struct)r, top=%(top)r, mdp=%(mdp)r ..." % vars())
 
@@ -567,9 +574,7 @@ def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
         unprocessed = gromacs.cbook.edit_mdp(mdp_template, new_mdp=mdp, **kwargs)
         check_mdpargs(unprocessed)
         gromacs.grompp(f=mdp, o=tpr, c=structure, p=topology, **unprocessed)
-        mdrun_args = dict(v=True, stepout=10, deffnm='em', c='em.pdb')
-        # TODO: not clear yet how to run em as MPI with mpiexec & friends
-        #       (could be using gromacs.simulation.MDrunner)
+        mdrun_args = dict(v=True, stepout=10, deffnm=deffnm, c=output)
         if mdrunner is None:
             try:
                 gromacs.mdrun_d(**mdrun_args)
@@ -588,17 +593,81 @@ def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
 
         # em.gro --> gives 'Bad box in file em.gro' warning --- why??
         # --> use em.pdb instead.
-        if not os.path.exists('em.pdb'):
+        if not os.path.exists(output):
             errmsg = "Energy minimized system NOT produced."
             logger.error(errmsg)
             raise GromacsError(errmsg)
-        final_struct = realpath('em.pdb')
+        final_struct = realpath(output)
 
     logger.info("[%(dirname)s] energy minimized structure %(final_struct)r" % vars())
     return {'struct': final_struct,
             'top': topology,
             'mainselection': mainselection,
             }
+
+def em_schedule(**kwargs):
+    """Run multiple ebergy minimizations one after each other.
+
+    :Keywords:
+      *integrators*
+           list of integrators (from 'l-bfgs', 'cg', 'steep')
+           [['bfgs', 'steep']]
+      *nsteps*
+           list of maximum number of steps; one for each integrator in
+           in the *integrators* list [[100,1000]]
+      *kwargs*
+           mostly passed to :func:`gromacs.setup.energy_minimize`
+
+    :Returns: dictionary with paths to final structure ('struct') and 
+              other files        
+
+    :Example:
+       Conduct three minimizations:
+         1. low memory Broyden-Goldfar-Fletcher-Shannon for 30 steps
+         2. steepest descent for 200 steps
+         3. finish with BFGS for another 30 steps
+       We also do a multi-processor minimization when possible (i.e. for steep (and conjugate
+       gradient) by using a :class:`gromacs.run.MDrunner` class for a
+       :program:`mdrun` executable compiled for OpenMP in 64 bit (see
+       :mod:`gromacs.run` for details).
+
+          import gromacs.run
+          gromacs.setup.em_schedule(struct='solvate/ionized.gro',
+                    mdrunner=gromacs.run.MDrunnerOpenMP64,  
+                    integrators=['l-bfgs', 'steep', 'l-bfgs'], 
+                    nsteps=[30,200, 30])
+
+    .. Note:: You might have to prepare the mdp file carefully because at the
+              moment one can only modify the *nsteps* parameter on a
+              per-minimizer basis.
+    """
+
+    mdrunner = kwargs.pop('mdrunner', None)
+    integrators = kwargs.pop('integrators', ['l-bfgs', 'steep'])
+    kwargs.pop('integrator', None)
+    nsteps = kwargs.pop('nsteps', [100, 1000])
+
+    outputs = ['em%03d_%s.pdb' % (i,integrator) for i,integrator in enumerate(integrators)]
+    outputs[-1] = kwargs.pop('output', 'em.pdb')
+
+    files = {'struct': kwargs.pop('struct', None)}  # fake output from energy_minimize()
+
+    for i, integrator in enumerate(integrators):
+        struct = files['struct']
+        logger.info("[em %d] energy minimize with %s for maximum %d steps", i, integrator, nsteps[i])
+        kwargs.update({'struct':struct, 'output':outputs[i], 
+                       'integrator':integrator, 'nsteps': nsteps[i]})
+        if not integrator == 'l-bfgs':
+            kwargs['mdrunner'] = mdrunner
+        else:
+            kwargs['mdrunner'] = None
+            logger.warning("[em %d]  Not using mdrunner for L-BFGS because it cannot "
+                           "do parallel runs.", i)
+
+        files = energy_minimize(**kwargs)
+
+    return files
+
 
 def _setup_MD(dirname,
               deffnm='md', mdp=config.templates['md_OPLSAA.mdp'],
