@@ -52,7 +52,7 @@ Modules
 :mod:`gromacs.qsub`
      Functions to handle batch submission queuing systems.
 
-:mod:`gromacs.simulation`
+:mod:`gromacs.run`
      Classes to run :program:`mdrun` in various way, including on
      multiprocessor systems.
 

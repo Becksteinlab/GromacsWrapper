@@ -1,11 +1,11 @@
-# GromacsWrapper: simulation.py
+# GromacsWrapper: run.py
 # Copyright (c) 2009 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
 
 """
-:mod:`gromacs.simulation` -- Running simulations
-================================================
+:mod:`gromacs.run` -- Running simulations
+=========================================
 
 Helper functions and classes around :class:`gromacs.tools.Mdrun`.
 
@@ -26,7 +26,7 @@ import os.path
 
 # logging
 import logging
-logger = logging.getLogger('gromacs.simulation')
+logger = logging.getLogger('gromacs.run')
 
 
 # gromacs modules
