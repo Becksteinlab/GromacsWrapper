@@ -635,7 +635,7 @@ def em_schedule(**kwargs):
           gromacs.setup.em_schedule(struct='solvate/ionized.gro',
                     mdrunner=gromacs.run.MDrunnerOpenMP64,  
                     integrators=['l-bfgs', 'steep', 'l-bfgs'], 
-                    nsteps=[30,200, 30])
+                    nsteps=[50,200, 50])
 
     .. Note:: You might have to prepare the mdp file carefully because at the
               moment one can only modify the *nsteps* parameter on a
