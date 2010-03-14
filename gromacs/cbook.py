@@ -690,7 +690,7 @@ def edit_mdp(mdp, new_mdp=None, extend_parameters=None, **substitutions):
     :Returns:    
         Dict of parameters that have *not* been substituted.
 
-    Example::
+    **Example** ::
 
        edit_mdp('md.mdp', new_mdp='long_md.mdp', nsteps=100000, nstxtcout=1000, lincs_iter=2)
 
@@ -708,6 +708,8 @@ def edit_mdp(mdp, new_mdp=None, extend_parameters=None, **substitutions):
        * This code is more compact in ``Perl`` as one can use ``s///`` operators:
          ``s/^(\s*${key}\s*=\s*).*/$1${val}/``
 
+    .. SeeAlso:: One can also load the mdp file with
+                :class:`gromacs.formats.MDP`, edit the object (a dict), and save it again.
     """
     if new_mdp is None:
         new_mdp = mdp

@@ -525,6 +525,10 @@ class MDP(odict, utilities.FileUtils):
 
     Currently, comments after a parameter on the same line are
     discarded. Leading and trailing spaces are always stripped.
+
+    .. SeeAlso:: For editing a mdp file one can also use
+                :func:`gromacs.cbook.edit_mdp` (which works like a
+                poor replacement for sed).
     """
     default_extension = "mdp"
 
