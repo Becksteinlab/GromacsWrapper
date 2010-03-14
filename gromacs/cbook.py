@@ -272,7 +272,8 @@ def trj_fitandcenter(xy=False, **kwargs):
     finally:
         utilities.unlink_gmx(tmptrj)
 
-def cat(prefix="md", dirname=os.path.curdir, partsdir="parts", fulldir="full"):
+def cat(prefix="md", dirname=os.path.curdir, partsdir="parts", fulldir="full", 
+        resolve_multi="pass"):
     """Concatenate all parts of a simulation.
 
     The xtc, trr, and edr files in *dirname* such as prefix.xtc,
@@ -296,6 +297,24 @@ def cat(prefix="md", dirname=os.path.curdir, partsdir="parts", fulldir="full"):
                  Possibly you will need to manually move the files from *partsdir*
                  back into the working directory *dirname*; this should onlu overwrite
                  generated files so far but *check carefully*!
+
+    :Keywords:
+        *prefix*
+            deffnm of the trajectories [md]
+        *resolve_multi"
+            how to deal with multiple "final" gro or pdb files: normally there should
+            only be one but in case of restarting from the checkpoint of a finished
+            simulation one can end up with multiple identical ones.
+              - "pass" : do nothing and log a warning
+              - "guess" : take prefix.pdb or prefix.gro if it exists, otherwise the one of
+                          prefix.partNNNN.gro|pdb with the highes NNNN
+        *dirname*
+            change to *dirname* and assume all tarjectories are located there [.]
+        *partsdir*
+             directory where to store the input files (they are moved out of the way);
+             *partsdir* must be manually deleted [parts]
+        *fulldir*
+             directory where to store the final results [full]           
     """
 
     gmxcat = {'xtc': gromacs.trjcat,
@@ -328,6 +347,11 @@ def cat(prefix="md", dirname=os.path.curdir, partsdir="parts", fulldir="full"):
         gmxcat[ext](f=filepaths, o=outfile)
         return outfile
 
+    _resolve_options = ("pass", "guess")
+    if not resolve_multi in _resolve_options:
+        raise ValueError("resolve_multi must be one of %(_resolve_options)r, "
+                         "not %(resolve_multi)r" % vars())
+
     if fulldir == os.path.curdir:
         wmsg = "Using the current directory as fulldir can potentially lead to data loss if you run this function multiple times."
         logger.warning(wmsg)
@@ -340,19 +364,31 @@ def cat(prefix="md", dirname=os.path.curdir, partsdir="parts", fulldir="full"):
             logger.info("[%(dirname)s] concatenating %(ext)s files...", vars())
             outfile = _cat(prefix, ext, partsdir)
             logger.info("[%(dirname)s] created %(outfile)r", vars())
-        for ext in ('gro', 'pdb'):
+        for ext in ('gro', 'pdb'):              # XXX: ugly, make method out of parts?
             filenames = glob_parts(prefix, ext)
             if len(filenames) == 0:
-                continue
+                continue                        # goto next ext
             elif len(filenames) == 1:
-                # Can only deal with a single file right now... TODO: something clever
-                final = os.path.join(fulldir, prefix + '.' + ext)
-                shutil.copy(filenames[0], final)  # copy2 fails on nfs with Darwin at least
-                shutil.move(filenames[0], partsdir)
-                logger.info("[%(dirname)s] collected final structure %(final)r", vars())
+                pick = filenames[0]
             else:
-                logger.warning("[%(dirname)s] too many output structures %(filenames)r, "
-                               "cannot decide which one --- resolve manually!", vars())
+                if resolve_multi == "pass":
+                    logger.warning("[%(dirname)s] too many output structures %(filenames)r, "
+                                   "cannot decide which one --- resolve manually!", vars())
+                    for f in filenames:
+                        shutil.move(f, partsdir)
+                    continue                    # goto next ext
+                elif resolve_multi == "guess":
+                    pick = prefix + '.' + ext
+                    if not pick in filenames:
+                        pick = filenames[-1]  # filenames are ordered with highest parts at end
+            final = os.path.join(fulldir, prefix + '.' + ext)
+            shutil.copy(pick, final)  # copy2 fails on nfs with Darwin at least
+            for f in filenames:
+                shutil.move(f, partsdir)
+            logger.info("[%(dirname)s] collected final structure %(final)r "
+                        "(from %(pick)r)", vars())
+
+                        
     partsdirpath = utilities.realpath(dirname, partsdir)
     logger.warn("[%(dirname)s] cat() complete in %(fulldir)r but original files "
                 "in %(partsdirpath)r must be manually removed", vars())
