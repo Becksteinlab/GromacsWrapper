@@ -249,7 +249,7 @@ def find_water(structure, ligand, radius=3.0, water='SOL'):
     return sorted([a.parent for a in water_shell])
 
 
-def write_pdb(structure, filename, exclusions=None, inclusions=None):
+def write_pdb(structure, filename, exclusions=None, inclusions=None, **kwargs):
     """Write Bio.PDB molecule *structure* to *filename*.
     
     :Arguments:
@@ -261,6 +261,10 @@ def write_pdb(structure, filename, exclusions=None, inclusions=None):
          list of **residue** instances that will *not* be included
        inclusions
          list of **residue** instances that will be included
+       chain
+         set the chain identifier for **all** atoms written; most
+         useful is probably simply ' ' to erase it
+       
 
     Typical use is to supply a list of water molecules that should not
     be written or a ligand that should be include.
@@ -276,6 +280,12 @@ def write_pdb(structure, filename, exclusions=None, inclusions=None):
     else:
         inclusions = inclusions or []
         selection = ResidueSelect(inclusions)
+
+    chain = kwargs.pop('chain',None)
+    if not chain is None:
+        logger.info("Setting the chain id for ALL atoms to %(chain)r",  vars())
+        for c in structure.get_chains():
+            c.id = chain
 
     io = SloppyPDBIO()     # deals with resSeq > 9999
     io.set_structure(structure)

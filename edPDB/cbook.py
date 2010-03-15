@@ -65,7 +65,7 @@ def align_ligand(protein_struct, ligand_struct, ligand_resname, output='ligand_a
     return S.rms
 
 
-def remove_overlap_water(pdbname, output, ligand_resname, distance=3.0, water="SOL"):
+def remove_overlap_water(pdbname, output, ligand_resname, distance=3.0, water="SOL", **kwargs):
     """Remove water (SOL) molecules overlapping with ligand.
 
     :Arguments:
@@ -98,26 +98,26 @@ def remove_overlap_water(pdbname, output, ligand_resname, distance=3.0, water="S
     logger.debug("waters found: %r" % w)
     logger.info("removed %d %r molecules overlapping %r", 
                 len(w), water, ligand_resname)
-    xpdb.write_pdb(structure, output, exclusions=w)
+    xpdb.write_pdb(structure, output, exclusions=w, **kwargs)
 
-def extract_residue(pdbname, output, resname):
+def extract_residue(pdbname, output, resname, **kwargs):
     """Write a pdb file with *resname* extracted.
 
     """
     logger.debug("extract_residue(%(pdbname)r, %(output)r, %(resname)r)" % vars())
     structure = xpdb.get_structure(pdbname)
     residues = xpdb.residues_by_resname(structure, resname)
-    xpdb.write_pdb(structure, output, inclusions=residues)
+    xpdb.write_pdb(structure, output, inclusions=residues, **kwargs)
 
-def extract_protein(pdbname, output):
+def extract_protein(pdbname, output, **kwargs):
     """Write a pdb file with the protein (i.e. all amino acids) extracted.
     """
     logger.debug("extract_protein(%(pdbname)r, %(output)r)" % vars())
     structure = xpdb.get_structure(pdbname)
     residues = xpdb.residues_by_selection(structure, xpdb.ProteinSelect())
-    xpdb.write_pdb(structure, output, inclusions=residues)
+    xpdb.write_pdb(structure, output, inclusions=residues, **kwargs)
 
-def extract_lipids(pdbname, output, lipid_resnames='POPC|POPG|POPE|DMPC|DPPE|DOPE'):
+def extract_lipids(pdbname, output, lipid_resnames='POPC|POPG|POPE|DMPC|DPPE|DOPE', **kwargs):
     """Write a pdb file with the lipids extracted.
 
     Note that resnames are also tried truncated to the first three
@@ -130,7 +130,7 @@ def extract_lipids(pdbname, output, lipid_resnames='POPC|POPG|POPE|DMPC|DPPE|DOP
 
     structure = xpdb.get_structure(pdbname)
     residues = xpdb.residues_by_selection(structure, xpdb.ResnameSelect(resnames))
-    xpdb.write_pdb(structure, output, inclusions=residues)
+    xpdb.write_pdb(structure, output, inclusions=residues, **kwargs)
 
 
 class PDB(object):
@@ -146,19 +146,19 @@ class PDB(object):
         
         self.logger("Loaded pdb file %(pdbname)r." % vars())
 
-    def extract_residue(self, output, resname):
+    def extract_residue(self, output, resname, **kwargs):
         """Write a pdb file with *resname* extracted."""
         self.logger.debug("extract_residue(%(output)r, %(resname)r)" % vars())
         residues = xpdb.residues_by_resname(self.structure, resname)
-        xpdb.write_pdb(self.structure, output, inclusions=residues)
+        xpdb.write_pdb(self.structure, output, inclusions=residues, **kwargs)
 
-    def extract_protein(self, output):
+    def extract_protein(self, output, **kwargs):
         """Write a pdb file with the protein (i.e. all amino acids) extracted."""
         self.logger.debug("extract_protein(%(output)r)" % vars())
         residues = xpdb.residues_by_selection(self.structure, xpdb.ProteinSelect())
-        xpdb.write_pdb(self.structure, output, inclusions=residues)
+        xpdb.write_pdb(self.structure, output, inclusions=residues, **kwargs)
 
-    def extract_lipids(self, output, lipid_resnames='POPC|POPG|POPE|DMPC|DPPE|DOPE'):
+    def extract_lipids(self, output, lipid_resnames='POPC|POPG|POPE|DMPC|DPPE|DOPE', **kwargs):
         """Write a pdb file with the lipids extracted.
 
         Note that resnames are also tried truncated to the first three
@@ -169,7 +169,7 @@ class PDB(object):
         resnames = lipid_resnames.split('|')
         resnames.extend([r[:3] for r in resnames])
         residues = xpdb.residues_by_selection(self.structure, xpdb.ResnameSelect(resnames))
-        xpdb.write_pdb(self.structure, output, inclusions=residues)
+        xpdb.write_pdb(self.structure, output, inclusions=residues, **kwargs)
         
 
     
