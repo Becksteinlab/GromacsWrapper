@@ -16,6 +16,7 @@ error checking and might have to be altered for your purpose.
 """
 
 import os.path
+from warnings import warn
 
 import Bio.PDB
 
@@ -101,18 +102,22 @@ def remove_overlap_water(pdbname, output, ligand_resname, distance=3.0, water="S
                 len(w), water, ligand_resname)
     xpdb.write_pdb(structure, output, exclusions=w, **kwargs)
 
-def extract_residue(pdbname, output, resname, **kwargs):
+# the following are deprecated
+
+def extract_resnames(pdbname, output, resnames, **kwargs):
     """Write a pdb file with *resname* extracted.
 
     """
-    logger.debug("extract_residue(%(pdbname)r, %(output)r, %(resname)r)" % vars())
+    warn("extract_resname() will be removed", category=DeprecationWarning)
+    logger.debug("extract_residue(%(pdbname)r, %(output)r, %(resnames)r)" % vars())
     structure = xpdb.get_structure(pdbname)
-    residues = xpdb.residues_by_resname(structure, resname)
+    residues = xpdb.residues_by_resname(structure, resnames)
     xpdb.write_pdb(structure, output, inclusions=residues, **kwargs)
 
 def extract_protein(pdbname, output, **kwargs):
     """Write a pdb file with the protein (i.e. all amino acids) extracted.
     """
+    warn("extract_protein() will be removed", category=DeprecationWarning)
     logger.debug("extract_protein(%(pdbname)r, %(output)r)" % vars())
     structure = xpdb.get_structure(pdbname)
     residues = xpdb.residues_by_selection(structure, xpdb.ProteinSelect())
@@ -125,6 +130,7 @@ def extract_lipids(pdbname, output, lipid_resnames='POPC|POPG|POPE|DMPC|DPPE|DOP
     characters, which means that POPE and POPG are identical and
     cannot be distinguished.
     """
+    warn("extract_lipids() will be removed", category=DeprecationWarning)
     logger.debug("extract_lipids(%(pdbname)r, %(output)r, lipid_resnames=%(lipid_resnames)r)" % vars())
     resnames = lipid_resnames.split('|')
     resnames.extend([r[:3] for r in resnames])
@@ -137,7 +143,14 @@ def extract_lipids(pdbname, output, lipid_resnames='POPC|POPG|POPE|DMPC|DPPE|DOP
 class PDB(object):
     """Class that represents a PDB file and allows extractions of interesting parts.
     
-    (Note that extraction tends to be much slower than a simple grep...)
+    The structure itself is never changed. In order to extract
+    sub-parts of a structure one selects and write as new pdb file.
+
+    .. Note:: Extraction tends to be *much* slower than a simple
+              :program:`grep` but at least you will be able to read any odd pdb
+              file and you will also able to do things like
+              :meth:`~edPDB.cbook.PDB.extract_protein` or
+              :meth:`~edPDB.cbook.PDB.extract_lipids`.
     """
 
     def __init__(self, pdbname):
@@ -145,15 +158,36 @@ class PDB(object):
         self.pdbname = pdbname
         self.structure = xpdb.get_structure(pdbname)
         self.logger = logging.getLogger('edPDB.PDB')
-        
         self.logger.info("Loaded pdb file %(pdbname)r." % vars())
 
-    def residues_by_resname(self, resname, **kwargs):
-        """Return a list of BioPDB residues that match *resname*.
+    def write(self, filename, **kwargs):
+        """Write pdbfile which includes or excludes residues.
 
-        *resname* can be a list.
+        :Arguments:
+          *filename*
+              output pdb filename
+          *inclusions*
+              list of residues to include
+          *exclusions*
+              list of residues to exclude
+          *chain*
+              relabel the selection with a new chain identifier
+
+         Residues must be BioPDB residues as returned by, for
+         instance, :meth:`~edPDB.cbook.PDB.residues_by_resname`.
+
+         .. Note:: Currently only either *inclusions* or *exclusions* can be
+                   supplied, not both.
         """
-        return xpdb.residues_by_resname(self.structure, resname)
+        self.logger.debug("write(): file %r, args %r", filename, kwargs.keys())
+        xpdb.write_pdb(self.structure, filename, **kwargs)
+        
+    def residues_by_resname(self, resnames, **kwargs):
+        """Return a list of BioPDB residues that match *resnames*.
+
+        *resnames* can be a string or a list.
+        """
+        return xpdb.residues_by_resname(self.structure, resnames)
 
     def residues_by_selection(self, selection):
         """Return  a list of BioPDB residues that are selected by *selection*.
@@ -163,39 +197,30 @@ class PDB(object):
         """
         return xpdb.residues_by_selection(self.structure, selection)
 
-    def _extract_residues(self, output, residues, **kwargs):
-        """Write pdbfile which only includes the *residues*.
-
-        *residues* should be a list as obtained from
-         :meth:`~edPDB.cbook.PDB.residues_by_resname`.
-        """
-        self.logger.debug("_extract_residues(%(output)r, %(residues)r)" % vars())
-        xpdb.write_pdb(self.structure, output, inclusions=residues, **kwargs)
-        
-    def extract_resnames(self, output, resnames, **kwargs):
+    def extract_resnames(self, filename, resnames, **kwargs):
         """Write a pdb file with *resnames* extracted."""
-        self.logger.info("extract_resnames(%(output)r, %(resnames)r)" % vars())
-        residues = xpdb.residues_by_resname(self.structure, resnames)
-        self._extract_residues(output, residues, **kwargs)
+        self.logger.info("extract_resnames(%(filename)r, %(resnames)r)" % vars())
+        kwargs['inclusions'] = xpdb.residues_by_resname(self.structure, resnames)
+        self.write(filename, **kwargs)
 
-    def extract_protein(self, output, **kwargs):
+    def extract_protein(self, filename, **kwargs):
         """Write a pdb file with the protein (i.e. all amino acids) extracted."""
-        self.logger.info("extract_protein(%(output)r)" % vars())
-        residues = self.residues_by_selection(xpdb.ProteinSelect())
-        self._extract_residues(output, residues, **kwargs)
+        self.logger.info("extract_protein(%(filename)r)" % vars())
+        kwargs['inclusions'] = self.residues_by_selection(xpdb.ProteinSelect())
+        self.write(filename, **kwargs)
 
-    def extract_lipids(self, output, lipid_resnames='POPC|POPG|POPE|DMPC|DPPE|DOPE', **kwargs):
+    def extract_lipids(self, filename, lipid_resnames='POPC|POPG|POPE|DMPC|DPPE|DOPE', **kwargs):
         """Write a pdb file with the lipids extracted.
 
         Note that resnames are also tried truncated to the first three
         characters, which means that POPE and POPG are identical and
         cannot be distinguished.
         """
-        self.logger.info("extract_lipids(%(output)r, lipid_resnames=%(lipid_resnames)r)" % vars())
+        self.logger.info("extract_lipids(%(filename)r, lipid_resnames=%(lipid_resnames)r)" % vars())
         resnames = lipid_resnames.split('|')
         resnames.extend([r[:3] for r in resnames])
-        residues = self.residues_by_selection(xpdb.ResnameSelect(resnames))
-        self._extract_residues(output, residues, **kwargs)
+        kwargs['inclusions'] = self.residues_by_selection(xpdb.ResnameSelect(resnames))
+        self.write(filename, **kwargs)
         
 
     

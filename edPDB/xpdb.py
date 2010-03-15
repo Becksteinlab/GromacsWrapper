@@ -49,7 +49,7 @@ class ResnameSelect(Select):
         self.resnames = dict([(canonical(r),True) for r in asiterable(resnames)])
     def accept_residue(self,residue):
         # use a dict --- 'in' is probably faster on dict keys than on
-        # lists ... TODO = check ;-)
+        # lists ... TODO = check ;-) --- this seems to be a bottle neck
         return canonical(residue.resname) in self.resnames
 
 class ResidueSelect(Select):
@@ -248,23 +248,22 @@ def find_water(structure, ligand, radius=3.0, water='SOL'):
         water_shell.update(_shell)  # keep unique residues only
     return sorted([a.parent for a in water_shell])
 
-
+writelogger = logging.getLogger('edPDB.write_pdb')
 def write_pdb(structure, filename, exclusions=None, inclusions=None, **kwargs):
     """Write Bio.PDB molecule *structure* to *filename*.
     
     :Arguments:
-       structure
+       *structure*
          Bio.PDB structure instance
-       filename
+       *filename*
          pdb file
-       exclusions
+       *exclusions*
          list of **residue** instances that will *not* be included
-       inclusions
+       *inclusions*
          list of **residue** instances that will be included
-       chain
-         set the chain identifier for **all** atoms written; most
-         useful is probably simply ' ' to erase it
-       
+       *chain*
+         set the chain identifier for **all** atoms written; this can be
+         useful to  simply to erase all chain ids by setting it to ' '
 
     Typical use is to supply a list of water molecules that should not
     be written or a ligand that should be include.
@@ -283,14 +282,15 @@ def write_pdb(structure, filename, exclusions=None, inclusions=None, **kwargs):
 
     chain = kwargs.pop('chain',None)
     if not chain is None:
-        logger.info("Setting the chain id for ALL atoms to %(chain)r",  vars())
+        writelogger.info("Setting the chain id for ALL atoms to %(chain)r",  vars())
         for c in structure.get_chains():
             c.id = chain
 
+    writelogger.debug("Starting PDBIO...")
     io = SloppyPDBIO()     # deals with resSeq > 9999
     io.set_structure(structure)
     io.save(filename, select=selection)
 
-    logger.info("Wrote pdb %(filename)r." % vars())
+    writelogger.info("Wrote pdb %(filename)r." % vars())
 
 
