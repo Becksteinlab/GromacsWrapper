@@ -16,4 +16,4 @@ visualization and analysis tasks.
 .. _VMD Tcl Text Commands: http://www.ks.uiuc.edu/Research/vmd/current/ug/node107.html
 
 
-.. automodule:: vmd.control
+.. automodule:: vmd

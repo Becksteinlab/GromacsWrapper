@@ -6,37 +6,6 @@
 # using asynchat/asyncore to talk to a VMD server process
 # (see http://www.python.org/doc/current/lib/module-asyncore.html & 
 # http://squirl.nightmare.com/medusa/async_sockets.html)
-"""
-VMD control
-===========
-
-Simple client to transmit Tcl commands to a server running in `VMD`_.
-
-VMD and the server run locally and can be started from the module. Once the
-server is running, one can use :class:`vmd.client` to communicate with the server
-process via a local socket.
-
-Example
--------
-
-Start a VMD server and connect::
-
-  from vmd.control import *
-  VMD = server()
-  VMD.command('molecule new load 1AKE')
-
-or start an interactive `Tcl`_ session connected to a running VMD 
-server process::
-
-  interactive(host)
-  asyncore.loop()      # necessary
-
-See `VMD Tcl Text Commands`_ for all available commands.
-
-.. _VMD: http://www.ks.uiuc.edu/Research/vmd/
-.. _Tcl: http://www.tcl.tk/man/
-.. _VMD Tcl Text Commands: http://www.ks.uiuc.edu/Research/vmd/current/ug/node107.html
-"""
 __docformat__ = "restructuredtext en"
 
 import asynchat, asyncore, socket
