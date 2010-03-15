@@ -7,7 +7,8 @@ The cook book contains short python functions that deomstrate how to
 implemen basic PDB editing functionality. They do not do exhaustive
 error checking and might have to be altered for your purpose.
 
-
+.. autoclass:: PDB
+   :members:
 .. autofunction:: align_ligand
 .. autofunction:: remove_overlap_water
 .. autofunction:: extract_residue
@@ -134,8 +135,9 @@ def extract_lipids(pdbname, output, lipid_resnames='POPC|POPG|POPE|DMPC|DPPE|DOP
 
 
 class PDB(object):
-    """Class that represents a PDB file and allows extractions of
-    interesting parts.
+    """Class that represents a PDB file and allows extractions of interesting parts.
+    
+    (Note that extraction tends to be much slower than a simple grep...)
     """
 
     def __init__(self, pdbname):
@@ -144,19 +146,43 @@ class PDB(object):
         self.structure = xpdb.get_structure(pdbname)
         self.logger = logging.getLogger('edPDB.PDB')
         
-        self.logger("Loaded pdb file %(pdbname)r." % vars())
+        self.logger.info("Loaded pdb file %(pdbname)r." % vars())
 
-    def extract_residue(self, output, resname, **kwargs):
-        """Write a pdb file with *resname* extracted."""
-        self.logger.debug("extract_residue(%(output)r, %(resname)r)" % vars())
-        residues = xpdb.residues_by_resname(self.structure, resname)
+    def residues_by_resname(self, resname, **kwargs):
+        """Return a list of BioPDB residues that match *resname*.
+
+        *resname* can be a list.
+        """
+        return xpdb.residues_by_resname(self.structure, resname)
+
+    def residues_by_selection(self, selection):
+        """Return  a list of BioPDB residues that are selected by *selection*.
+
+        *selection* must be BioPDB.PDB.PDBIO.Select instance (see for
+        example :class:`edPDB.xpdb.ProteinSelect`).
+        """
+        return xpdb.residues_by_selection(self.structure, selection)
+
+    def _extract_residues(self, output, residues, **kwargs):
+        """Write pdbfile which only includes the *residues*.
+
+        *residues* should be a list as obtained from
+         :meth:`~edPDB.cbook.PDB.residues_by_resname`.
+        """
+        self.logger.debug("_extract_residues(%(output)r, %(residues)r)" % vars())
         xpdb.write_pdb(self.structure, output, inclusions=residues, **kwargs)
+        
+    def extract_resnames(self, output, resnames, **kwargs):
+        """Write a pdb file with *resnames* extracted."""
+        self.logger.info("extract_resnames(%(output)r, %(resnames)r)" % vars())
+        residues = xpdb.residues_by_resname(self.structure, resnames)
+        self._extract_residues(output, residues, **kwargs)
 
     def extract_protein(self, output, **kwargs):
         """Write a pdb file with the protein (i.e. all amino acids) extracted."""
-        self.logger.debug("extract_protein(%(output)r)" % vars())
-        residues = xpdb.residues_by_selection(self.structure, xpdb.ProteinSelect())
-        xpdb.write_pdb(self.structure, output, inclusions=residues, **kwargs)
+        self.logger.info("extract_protein(%(output)r)" % vars())
+        residues = self.residues_by_selection(xpdb.ProteinSelect())
+        self._extract_residues(output, residues, **kwargs)
 
     def extract_lipids(self, output, lipid_resnames='POPC|POPG|POPE|DMPC|DPPE|DOPE', **kwargs):
         """Write a pdb file with the lipids extracted.
@@ -165,11 +191,11 @@ class PDB(object):
         characters, which means that POPE and POPG are identical and
         cannot be distinguished.
         """
-        self.logger.debug("extract_lipids(%(output)r, lipid_resnames=%(lipid_resnames)r)" % vars())
+        self.logger.info("extract_lipids(%(output)r, lipid_resnames=%(lipid_resnames)r)" % vars())
         resnames = lipid_resnames.split('|')
         resnames.extend([r[:3] for r in resnames])
-        residues = xpdb.residues_by_selection(self.structure, xpdb.ResnameSelect(resnames))
-        xpdb.write_pdb(self.structure, output, inclusions=residues, **kwargs)
+        residues = self.residues_by_selection(xpdb.ResnameSelect(resnames))
+        self._extract_residues(output, residues, **kwargs)
         
 
     
