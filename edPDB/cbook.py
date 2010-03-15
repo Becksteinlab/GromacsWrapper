@@ -1,4 +1,4 @@
-# build module
+# edPDB.cbook
 """
 :mod:`edPDB.cbook` -- Recipes for editing PDB files
 ===================================================
@@ -21,6 +21,7 @@ from warnings import warn
 import Bio.PDB
 
 import xpdb
+import selections
 
 import logging
 logger = logging.getLogger('edPDB.cbook')
@@ -50,7 +51,7 @@ def align_ligand(protein_struct, ligand_struct, ligand_resname, output='ligand_a
 
     prot = xpdb.get_structure('prot', protein_struct)
     lig = xpdb.get_structure('lig', ligand_struct)
-    plig = xpdb.residues_by_resname(prot, ligand_resname)
+    plig = selections.residues_by_resname(prot, ligand_resname)
 
     heavyMoving = [a for a in lig.get_atoms() if a.name[0] != 'H']
     heavyFixed = Bio.PDB.Selection.unfold_entities(plig, 'A')  # only heavies in pdb
@@ -94,7 +95,7 @@ def remove_overlap_water(pdbname, output, ligand_resname, distance=3.0, water="S
                 "distance=%(distance)r)" % vars())
 
     structure = xpdb.get_structure(pdbname)
-    ligand = xpdb.residues_by_resname(structure, ligand_resname)
+    ligand = selections.residues_by_resname(structure, ligand_resname)
 
     w = xpdb.find_water(structure, ligand, radius=distance, water=water)
     logger.debug("waters found: %r" % w)
@@ -111,7 +112,7 @@ def extract_resnames(pdbname, output, resnames, **kwargs):
     warn("extract_resname() will be removed", category=DeprecationWarning)
     logger.debug("extract_residue(%(pdbname)r, %(output)r, %(resnames)r)" % vars())
     structure = xpdb.get_structure(pdbname)
-    residues = xpdb.residues_by_resname(structure, resnames)
+    residues = selections.residues_by_resname(structure, resnames)
     xpdb.write_pdb(structure, output, inclusions=residues, **kwargs)
 
 def extract_protein(pdbname, output, **kwargs):
@@ -120,7 +121,7 @@ def extract_protein(pdbname, output, **kwargs):
     warn("extract_protein() will be removed", category=DeprecationWarning)
     logger.debug("extract_protein(%(pdbname)r, %(output)r)" % vars())
     structure = xpdb.get_structure(pdbname)
-    residues = xpdb.residues_by_selection(structure, xpdb.ProteinSelect())
+    residues = selections.residues_by_selection(structure, xpdb.ProteinSelect())
     xpdb.write_pdb(structure, output, inclusions=residues, **kwargs)
 
 def extract_lipids(pdbname, output, lipid_resnames='POPC|POPG|POPE|DMPC|DPPE|DOPE', **kwargs):
@@ -136,7 +137,7 @@ def extract_lipids(pdbname, output, lipid_resnames='POPC|POPG|POPE|DMPC|DPPE|DOP
     resnames.extend([r[:3] for r in resnames])
 
     structure = xpdb.get_structure(pdbname)
-    residues = xpdb.residues_by_selection(structure, xpdb.ResnameSelect(resnames))
+    residues = selections.residues_by_selection(structure, xpdb.ResnameSelect(resnames))
     xpdb.write_pdb(structure, output, inclusions=residues, **kwargs)
 
 
@@ -146,11 +147,10 @@ class PDB(object):
     The structure itself is never changed. In order to extract
     sub-parts of a structure one selects and write as new pdb file.
 
-    .. Note:: Extraction tends to be *much* slower than a simple
-              :program:`grep` but at least you will be able to read any odd pdb
-              file and you will also able to do things like
-              :meth:`~edPDB.cbook.PDB.extract_protein` or
-              :meth:`~edPDB.cbook.PDB.extract_lipids`.
+    The advantage over a simple :program:`grep` is that you will be able to
+    read any odd pdb file and you will also able to do things like
+    :meth:`~edPDB.cbook.PDB.extract_protein` or
+    :meth:`~edPDB.cbook.PDB.extract_lipids`.
     """
 
     def __init__(self, pdbname):
@@ -187,7 +187,7 @@ class PDB(object):
 
         *resnames* can be a string or a list.
         """
-        return xpdb.residues_by_resname(self.structure, resnames)
+        return selections.residues_by_resname(self.structure, resnames)
 
     def residues_by_selection(self, selection):
         """Return  a list of BioPDB residues that are selected by *selection*.
@@ -195,18 +195,18 @@ class PDB(object):
         *selection* must be BioPDB.PDB.PDBIO.Select instance (see for
         example :class:`edPDB.xpdb.ProteinSelect`).
         """
-        return xpdb.residues_by_selection(self.structure, selection)
+        return selections.residues_by_selection(self.structure, selection)
 
     def extract_resnames(self, filename, resnames, **kwargs):
         """Write a pdb file with *resnames* extracted."""
         self.logger.info("extract_resnames(%(filename)r, %(resnames)r)" % vars())
-        kwargs['inclusions'] = xpdb.residues_by_resname(self.structure, resnames)
+        kwargs['selection'] = selections.ResnameSelect(resnames)
         self.write(filename, **kwargs)
 
     def extract_protein(self, filename, **kwargs):
         """Write a pdb file with the protein (i.e. all amino acids) extracted."""
         self.logger.info("extract_protein(%(filename)r)" % vars())
-        kwargs['inclusions'] = self.residues_by_selection(xpdb.ProteinSelect())
+        kwargs['selection'] = selections.ProteinSelect()
         self.write(filename, **kwargs)
 
     def extract_lipids(self, filename, lipid_resnames='POPC|POPG|POPE|DMPC|DPPE|DOPE', **kwargs):
@@ -219,7 +219,7 @@ class PDB(object):
         self.logger.info("extract_lipids(%(filename)r, lipid_resnames=%(lipid_resnames)r)" % vars())
         resnames = lipid_resnames.split('|')
         resnames.extend([r[:3] for r in resnames])
-        kwargs['inclusions'] = self.residues_by_selection(xpdb.ResnameSelect(resnames))
+        kwargs['selection'] = selections.ResnameSelect(resnames)
         self.write(filename, **kwargs)
         
 

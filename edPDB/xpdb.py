@@ -1,4 +1,4 @@
-# $Id: xpdb.py 467 2009-08-19 15:34:56Z oliver $
+# edPDB.xpdb
 """
 :mod:`edPDB.xpdb`
 =================
@@ -18,60 +18,11 @@ Module content
 import sys
 import Bio.PDB
 import Bio.PDB.StructureBuilder
-from Bio.PDB.PDBIO import Select
-from Bio.PDB.Residue import Residue
 
 from  utilities import asiterable
 
 import logging
 logger = logging.getLogger('edPDB.xpdb')
-
-#: How to recognize a protein.
-PROTEIN_RESNAMES = {'ALA':'A', 'ARG':'R', 'ASN':'N', 'ASP':'D',
-                    'CYS':'C', 'GLN':'Q', 'GLU':'E', 'GLY':'G', 
-                    'HIS':'H', 'HSD':'H', 'HSE':'H', 'HSP':'H', 
-                    'ILE':'I', 'LEU':'L', 'LYS':'K', 'MET':'M', 
-                    'PHE':'F', 'PRO':'P', 'SER':'S', 'THR':'T',
-                    'TRP':'W', 'TYR':'Y', 'VAL':'V', 
-                    'ALAD':'AA', 'CHO':'?', 'EAM':'?'}
-
-def canonical(resname):
-    """Return canonical representation of resname.
-    
-    space stripped and  upper case
-    """
-    return resname.strip().upper()
-
-class ResnameSelect(Select):
-    """Select all atoms that match *resname*."""
-    def __init__(self,resnames):
-        """Supply a *resname*, e.g. 'SOL' or 'PHE' or a list."""
-        self.resnames = dict([(canonical(r),True) for r in asiterable(resnames)])
-    def accept_residue(self,residue):
-        # use a dict --- 'in' is probably faster on dict keys than on
-        # lists ... TODO = check ;-) --- this seems to be a bottle neck
-        return canonical(residue.resname) in self.resnames
-
-class ResidueSelect(Select):
-    """Select all atoms that are in the residue list."""
-    def __init__(self,residues):
-        """Supply a list of Bio.PDB residues for the search."""        
-        self.residues = residues
-    def accept_residue(self,residue):
-        return residue in self.residues
-
-class NotResidueSelect(Select):
-    """Select all atoms that are *not* in the residue list."""
-    def __init__(self,residues):
-        """Supply a list of Bio.PDB residues for the search."""        
-        self.residues = residues
-    def accept_residue(self,residue):
-        return not residue in self.residues
-
-class ProteinSelect(Select):
-    """Select all amino acid residues."""
-    def accept_residue(self,residue):
-        return canonical(residue.resname) in PROTEIN_RESNAMES
 
 class SloppyStructureBuilder(Bio.PDB.StructureBuilder.StructureBuilder):
     """Cope with resSeq < 10,000 limitation by just incrementing internally.
@@ -132,7 +83,7 @@ class SloppyStructureBuilder(Bio.PDB.StructureBuilder.StructureBuilder):
                 logger.debug("Residues are wrapping (Residue ('%s', %i, '%s') at line %i)." 
                              % (field, resseq, icode, self.line_counter) +
                              ".... assigning new resid %d.\n" % self.max_resseq)
-        residue=Residue(res_id, resname, self.segid)
+        residue=Bio.PDB.Residue.Residue(res_id, resname, self.segid)
         self.chain.add(residue)
         self.residue=residue
 
@@ -177,7 +128,6 @@ def get_structure(pdbfile,pdbid='system'):
     return sloppyparser.get_structure(pdbid,pdbfile)
 
 
-
 class AtomGroup(set):
     def __init__(self, atoms=None):
         atoms = atoms or []
@@ -190,66 +140,11 @@ class AtomGroup(set):
     def __repr__(self):
         return "[" + ", ".join(["%s%d:%s" % x for x in self.identifiers]) + "]"
 
-def residues_by_resname(structure, resnames):
-    """Return a list of residue instances that match *resnames*.
 
-    *resnames* can be a single string or a list of strings.
-    """
-    #return [r for r in Bio.PDB.Selection.unfold_entities(structure, 'R')
-    #        if r.resname.strip() == resname]
-    return residues_by_selection(structure, ResnameSelect(resnames))
-
-def residues_by_selection(structure, selection):
-    """General residue selection: supply a Bio.PDB.PDBIO.Select instance."""
-    return [r for r in Bio.PDB.Selection.unfold_entities(structure, 'R')
-            if selection.accept_residue(r)]
-    
-
-def find_water(structure, ligand, radius=3.0, water='SOL'):
-    """Find all water (SOL) molecules within radius of ligand.
-
-    :Arguments:
-        structure
-            Bio.PDB structure of Mhp1 system with water
-         ligand : list
-            Bio.PDB list of atoms of the ligand (Bio.PDB.Atom.Atom
-            instances)
-         radius : float
-            Find waters for which the ligand-atom - OW  distance is <
-            radius.
-         water : string
-            resname of a water molecule
-
-    :Returns: list of residue instances
-    """
-    
-    # get all SOL (water)
-    solvent = residues_by_resname(structure, water)
-    # NOT working in script (but in ipython) ?!?!
-    #solvent_OW = [a for a in r.get_list() for r in solvent if a.name == 'OW']
-    solvent_OW = []
-    for r in solvent:
-        for a in r.get_list():
-            if a.name == "OW":
-                solvent_OW.append(a)
-    # sanity check:
-    assert len(solvent) == len(solvent_OW)
-    
-    # set up KDtree neighbour search (use the biggest group for the
-    # tree, i.e. solvent not the ligand)
-    ns = Bio.PDB.NeighborSearch(solvent_OW)
-
-    names_centers = [(a.name, a.get_coord())
-                     for a in Bio.PDB.Selection.unfold_entities(ligand, 'A')]
-    water_shell = AtomGroup()
-    for name,center in names_centers:
-        _shell = AtomGroup(ns.search(center, radius))
-        logger.debug("around %6r: %3d OW = " % (name, len(_shell)) + str(_shell))
-        water_shell.update(_shell)  # keep unique residues only
-    return sorted([a.parent for a in water_shell])
+from selections import ResidueSelect, NotResidueSelect
 
 writelogger = logging.getLogger('edPDB.write_pdb')
-def write_pdb(structure, filename, exclusions=None, inclusions=None, **kwargs):
+def write_pdb(structure, filename, **kwargs):
     """Write Bio.PDB molecule *structure* to *filename*.
     
     :Arguments:
@@ -257,6 +152,8 @@ def write_pdb(structure, filename, exclusions=None, inclusions=None, **kwargs):
          Bio.PDB structure instance
        *filename*
          pdb file
+       *selection*
+         Bio.PDB.Selection
        *exclusions*
          list of **residue** instances that will *not* be included
        *inclusions*
@@ -268,16 +165,21 @@ def write_pdb(structure, filename, exclusions=None, inclusions=None, **kwargs):
     Typical use is to supply a list of water molecules that should not
     be written or a ligand that should be include.
 
-    .. Note:: Currently only either *exclusions* or *inclusions* is 
-              supported.
+    .. Note:: Currently only one of *selection,  *exclusions* or 
+              *inclusions* is supported.
     """
+    exclusions = kwargs.pop('exclusions', None)
+    inclusions = kwargs.pop('inclusions', None)
+    selection = kwargs.pop('selection', None)
+
+    if selection and (exclusions or inclusions):
+        raise NotImplementedError("only use selection on its own")
     if exclusions and inclusions:
         raise NotImplementedError("Sorry, only either exclusions OR "
                                   "inclusions are supported")
     if exclusions:
         selection = NotResidueSelect(exclusions)
-    else:
-        inclusions = inclusions or []
+    elif inclusions:
         selection = ResidueSelect(inclusions)
 
     chain = kwargs.pop('chain',None)
