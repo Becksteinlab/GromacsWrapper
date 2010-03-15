@@ -18,22 +18,9 @@ The cook book :mod:`edPDB.cbook` contains some more specialized
 functions that are not integrated into :class:`~edPDB.cbook.PDB` yet;
 study the source and use them as examples.
 
-.. SeeAlso: :mod:`edPDB` is built on top of the great work done in
-            the Biopython_ Bio.PDB module.
-
-            Andrew Dahlke's pdbcat_ tools might also be a useful
-            alternative if you prefer shell to python.
+Built on top of :mod:`Bio.PDB` from Biopython_.
 
 .. _Biopython: http://biopython.org
-.. _pdbcat: http://www.ks.uiuc.edu/Development/MDTools/pdbcat/
-
-
-Future plans
-------------
-
-Eventually using this module should become as intuitive as ``grep``,
-``sed`` and ``cat`` of pdb files.
-
 
 Modules
 -------
@@ -47,6 +34,14 @@ Modules
 
 :mod:`edPDB.selections`
     Selections that can be used to extract parts of a pdb.
+
+
+Future plans
+------------
+
+Eventually using this module should become as intuitive as ``grep``,
+``sed`` and ``cat`` of pdb files.
+
 """
 
 try:
