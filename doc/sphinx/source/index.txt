@@ -56,8 +56,10 @@ Contents
    INSTALL
    gromacs
    analysis
-   vmd
    alternatives
+   vmd
+   edpdb
+
 
 
 Indices and tables

@@ -1,0 +1,6 @@
+==================
+  Helper modules
+==================
+
+.. automodule:: edPDB.utilities
+.. automodule:: edPDB.log

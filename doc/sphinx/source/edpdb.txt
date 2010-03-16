@@ -1,0 +1,41 @@
+==================================================
+ :mod:`edPDB` --- Simple processing of PDB files
+==================================================
+
+The :mod:`edPDB` module contains extensions to the Biopython_
+:mod:`Bio.PDB` module that help with editing PDB_ files in preparation
+for molecular dynamics simulations.
+
+This module is completely independent from :mod:`gromacs` and
+distributed with *GromacsWrapper* as a convenience. As all other code,
+it is in a steady state of development and flux...
+
+The :mod:`edPDB` module is distributed under the `Biopython licence`_ .
+
+.. _Biopython: http://biopython.org
+.. _Biopython licence: http://www.biopython.org/DIST/LICENSE
+.. _PDB: http://www.rcsb.org/pdb/static.do?p=file_formats/pdb/index.html
+
+Contents:
+
+.. toctree::
+   :maxdepth: 2
+
+   edpdb/init
+   edpdb/cbook
+   edpdb/xpdb
+   edpdb/selections
+   edpdb/helpers
+
+
+.. seealso:: 
+
+   :mod:`Bio.PDB` in Biopython_
+      :mod:`edPDB` is built on top of the great work done in the Bio.PDB module
+
+   pdbcat_
+      Andrew Dahlke's pdbcat_ tools might also be a useful alternative if you prefer shell to python.
+
+.. _pdbcat: http://www.ks.uiuc.edu/Development/MDTools/pdbcat/
+
+

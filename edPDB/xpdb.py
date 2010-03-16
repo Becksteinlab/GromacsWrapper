@@ -1,9 +1,10 @@
 # edPDB.xpdb
 """
-:mod:`edPDB.xpdb`
-=================
+:mod:`edPDB.xpdb` -- Extensions to :mod:`Bio.PDB`
+=================================================
 
-Extensions to Bio.PDB, such as handling of large pdb files and some useful selections.
+Extensions to Bio.PDB, such as handling of large pdb files and some
+useful selections (see :mod:`edPDB.selections`).
 
 Partly published on http://biopython.org/wiki/Reading_large_PDB_files
 
@@ -12,7 +13,12 @@ License: like Biopython
 Module content
 --------------
 
-.. automodule:: edPDB.xpdb
+.. autoclass:: SloppyStructureBuilder
+.. autoclass:: SloppyPDBIO
+.. autoclass:: AtomGroup
+
+.. autofunction:: get_structure
+.. autofunction:: write_pdb
 """
 
 import sys
@@ -27,16 +33,16 @@ logger = logging.getLogger('edPDB.xpdb')
 class SloppyStructureBuilder(Bio.PDB.StructureBuilder.StructureBuilder):
     """Cope with resSeq < 10,000 limitation by just incrementing internally.
 
-    # Q: What's wrong here??
-    #   Some atoms or residues will be missing in the data structure.
-    #   WARNING: Residue (' ', 8954, ' ') redefined at line 74803.
-    #   PDBConstructionException: Blank altlocs in duplicate residue SOL (' ', 8954, ' ') at line 74803.
-    #
-    # A: resSeq only goes to 9999 --> goes back to 0 (PDB format is not really good here)
-    """
+    Solves the follwing problem with :class:`Bio.PDB.StructureBuilder.StructureBuilder`:
+    Q: What's wrong here??
+       Some atoms or residues will be missing in the data structure.
+       WARNING: Residue (' ', 8954, ' ') redefined at line 74803.
+       PDBConstructionException: Blank altlocs in duplicate residue SOL (' ', 8954, ' ') at line 74803.
+    
+    A: resSeq only goes to 9999 --> goes back to 0 (PDB format is not really good here)
 
-    # NOTE/TODO:
-    # - H and W records are probably not handled yet (don't have examples to test)
+    .. warning::  H and W records are probably not handled yet (don't have examples to test)
+    """
 
     def __init__(self,verbose=False):
         Bio.PDB.StructureBuilder.StructureBuilder.__init__(self)

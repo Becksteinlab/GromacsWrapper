@@ -1,7 +1,7 @@
 # edPDB.selections 
 """
-:mod:`edPDB.selections`
-=================
+:mod:`edPDB.selections` --- Selections
+======================================
 
 Extensions to Bio.PDB, some useful selections.
 
@@ -9,10 +9,32 @@ Partly published on http://biopython.org/wiki/Reading_large_PDB_files
 
 License: like Biopython
 
-Module content
---------------
+Selection classes
+-----------------
 
-.. automodule:: edPDB.selections
+Provide an instance to PDBIO to select a subset of a structure or use
+it with :func:`residues_by_selection` to obtain a list of residues.
+
+.. autoclass:: ResnameSelect
+.. autoclass:: ResidueSelect
+.. autoclass:: NotResidueSelect
+.. autoclass:: ProteinSelect
+
+Selection functions
+-------------------
+
+Functions always act on a structure and return a list of residues.
+
+.. autofunction::  residues_by_resname
+.. autofunction::  residues_by_selection
+.. autofunction::  find_water
+
+
+Utility functions
+-----------------
+
+.. autofunction::  canonical
+.. autodata::      PROTEIN_RESNAMES
 """
 
 import Bio.PDB
@@ -22,7 +44,8 @@ from Bio.PDB.Residue import Residue
 from  utilities import asiterable
 
 
-#: How to recognize a protein.
+#: List of residue names that determine what is recognized as a
+#: protein with :class:`ProteinSelect`. Can be extended with non-standard residues.
 PROTEIN_RESNAMES = {'ALA':'A', 'ARG':'R', 'ASN':'N', 'ASP':'D',
                     'CYS':'C', 'GLN':'Q', 'GLU':'E', 'GLY':'G', 
                     'HIS':'H', 'HSD':'H', 'HSE':'H', 'HSP':'H', 
@@ -111,16 +134,16 @@ def find_water(structure, ligand, radius=3.0, water='SOL'):
     """Find all water (SOL) molecules within radius of ligand.
 
     :Arguments:
-        structure
-            Bio.PDB structure of Mhp1 system with water
-         ligand : list
+         *structure*
+            Bio.PDB structure of system with water
+         *ligand* : list
             Bio.PDB list of atoms of the ligand (Bio.PDB.Atom.Atom
             instances)
-         radius : float
+         *radius* : float
             Find waters for which the ligand-atom - OW  distance is <
-            radius.
-         water : string
-            resname of a water molecule
+            radius [3.0]
+         *water* : string
+            resname of a water molecule [SOL]
 
     :Returns: list of residue instances
     """
