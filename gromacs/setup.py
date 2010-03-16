@@ -546,6 +546,9 @@ def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
     mdp_template = config.get_template(mdp)
     deffnm = deffnm.strip()
 
+    # write the processed topology to the default output
+    kwargs.setdefault('pp', 'processed.top')
+
     # filter some kwargs that might come through when feeding output
     # from previous stages such as solvate(); necessary because *all*
     # **kwargs must be *either* substitutions in the mdp file *or* valid
@@ -703,7 +706,8 @@ def _setup_MD(dirname,
     mainindex = deffnm + '.ndx'
     final_structure = deffnm + '.gro'     # guess... really depends on templates
 
-    mdp_parameters = {'nsteps':nsteps, 'dt':dt}
+    # write the processed topology to the default output
+    mdp_parameters = {'nsteps':nsteps, 'dt':dt, 'pp': 'processed.top'}
     mdp_parameters.update(mdp_kwargs)
 
     add_mdp_includes(topology, mdp_parameters)
