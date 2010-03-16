@@ -343,9 +343,10 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
       *water* : string
           Name of the water model; one of "spc", "spce", "tip3p",
           "tip4p". This should be appropriate for the chosen force
-          field.
+          field. If no water is requird, simply supply the path to a box with solvent
+          molecules (used by :func:`gromacs.genbox`'s  *cs* argument).
       *with_membrane* : bool
-           ``True``: use special ``vdwradii.dat`` with 0.1nm-increased radii on 
+           ``True``: use special ``vdwradii.dat`` with 0.1 nm-increased radii on 
            lipids. Default is ``False``.
       *ndx* : filename
           The name of the custom index file that is produced here.
@@ -355,6 +356,8 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
       *dirname* : directory name
           Name of the directory in which all files for the solvation stage are stored.
       *includes* : list of additional directories to add to the mdp include path
+
+    .. Note:: non-water solvents only work if the molecules are named SOL.
     """
 
     structure = realpath(struct)
@@ -405,7 +408,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
                 # remove so that it's not picked up accidentally
                 gromacs.utilities.unlink_f(vdwradii_dat)
             raise
-
+        logger.info("Solvated system with %s", water)
 
         with open('none.mdp','w') as mdp:
             mdp.write('; empty mdp file\ninclude = %(include)s\n' % mdp_kwargs)            
