@@ -21,32 +21,44 @@ sending it to the `package author`_. You will be acknowledged in the list below.
 
 .. _`package author`: oliver.beckstein@bioch.ox.ac.uk
 
-For analysis:
-==========================  =======================  =====================================
-plugin                      author                   description
-==========================  =======================  =====================================
-:class:`CysAccessibility`                    [#OB]_  estimate accessibility of Cys
-                                                     residues by water
+.. table:: Plugins for analysis.
 
-:class:`HelixBundle`                         [#OB]_  g_bundle analysis of helices
-:class:`Distances`                           [#OB]_  time series of distances
-:class:`MinDistances`                        [#OB]_  time series of shortest distances
-:class:`COM`                                 [#OB]_  time series of centres of mass
-:class:`Dihedrals`                           [#OB]_  analysis of dihedral angles
-:class:`RMSF`                                [#OB]_  calculate root mean square fluctuations
-:class:`RMSD`                                [#OB]_  calculate root mean square distance
-:class:`Energy`                              [#OB]_  terms from the energy file
-==========================  =======================  =====================================
+   ==========================  =========  ========================================
+   plugin                      author     description
+   ==========================  =========  ========================================
+   :class:`CysAccessibility`      [#OB]_  estimate accessibility of Cys
+                                          residues by water
+
+   :class:`HelixBundle`           [#OB]_  g_bundle analysis of helices
+
+   :class:`Distances`             [#OB]_  time series of distances
+
+   :class:`MinDistances`          [#OB]_  time series of shortest distances
+
+   :class:`COM`                   [#OB]_  time series of centres of mass
+
+   :class:`Dihedrals`             [#OB]_  analysis of dihedral angles
+
+   :class:`RMSF`                  [#OB]_  calculate root mean square fluctuations
+
+   :class:`RMSD`                  [#OB]_  calculate root mean square distance
+
+   :class:`Energy`                [#OB]_  terms from the energy file
+   ==========================  =========  ========================================
 
 
-For trajectory manipulation and status:
-==========================  =======================  =====================================
-plugin                      author                   description
-==========================  =======================  =====================================
-:class:`Trajectories`                        [#OB]_  write xy-fitted trajectories
-:class:`StripWater`                          [#OB]_  remove solvent (and optionally fit to reference)
-:class: Ls                                   [#OB]_  simple :program:`ls` (for testing)
-==========================  =======================  =====================================
+.. table:: Plugins for trajectory manipulation and status queries.
+
+   ==========================  =========  ========================================
+   plugin                      author     description
+   ==========================  =========  ========================================
+   :class:`Trajectories`          [#OB]_  write xy-fitted trajectories
+
+   :class:`StripWater`            [#OB]_  remove solvent (and optionally fit to 
+                                          reference)
+
+   :class:`Ls`                    [#OB]_  simple :program:`ls` (for testing)
+   ==========================  =========  ========================================
 
 
 .. rubric:: Footnotes

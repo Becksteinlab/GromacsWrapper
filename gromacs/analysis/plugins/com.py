@@ -59,7 +59,7 @@ class _COM(Worker):
            *ndx*
                index file if groups are not in the default index
            *offset*
-               add the *offset* to the residue numbers in *helixtable* [0]
+               add the *offset* to the residue numbers [0]
            *name*
                plugin name [COM]
            *simulation*
@@ -196,18 +196,12 @@ class _COM(Worker):
 
 class COM(Plugin):
     """*COM* plugin.
+ 
+    Calculate the centre of mass (COM) of various index groups.
+     
+    .. class:: COM(group_names, [ndx[, offset [, name[, simulation]]]])
 
-    :func:`gromacs.g_bundle` helix analysis
-
-    .. class:: COM([name[, simulation]]])
-    
-    :Arguments:
-       *name*
-           plugin name [COM]
-       *simulation*
-           The :class:`gromacs.analysis.Simulation` instance that owns
-           the plugin. [None]
-    """
+  """
     worker_class = _COM
 
 
