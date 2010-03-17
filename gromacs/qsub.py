@@ -27,7 +27,37 @@ projects.
 
 .. autodata:: queuing_systems
 
+
+Queuing system templates
+------------------------
+
+The queing system scripts are highly specific and you will need to add
+your own.  Templates should be sh-scripts and can contain the
+following patterns; these are either shell variable assignments or
+batch submission system commands. The table shows SGE commands but PBS
+and LoadLeveller have similar constructs; e.g. PBS commands start with
+``#PBS`` and LoadLeveller uses ``#@`` with its own comman keywords):
+
+===============  ===========  ================ ================= =====================================
+command          default      replacement      description       regex
+===============  ===========  ================ ================= =====================================
+#$ -N            GMX_MD       *sgename*        job name          /^#.*(-N|job_name)/
+#$ -l walltime=  00:20:00     *walltime*       max run time      /^#.*(-l walltime|wall_clock_limit)/
+#$ -A            BUDGET       *budget*         account           /^#.*(-A|account_no)/
+DEFFNM=          md           *deffnm*         default gmx name  /^DEFFNM=/
+WALL_HOURS=      0.33         *walltime* h     mdrun's -maxh     /^WALL_HOURS=/
+MDRUN_OPTS=      ""           *mdrun_opts*     add.options       /^MDRUN_OPTS=/
+===============  ===========  ================ ================= =====================================
+
+These lines should not have any white space at the beginning. The
+regular expression pattern is used to find the lines for the
+replacement and the default values are replaced.
+
+The line ``# JOB_ARRAY_PLACEHOLDER`` can be replaced by code to run
+multiple jobs (a job array) from different sub directories.
+
 """
+
 import os.path
 import warnings
 

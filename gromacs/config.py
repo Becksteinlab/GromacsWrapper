@@ -1,4 +1,4 @@
-# $Id$
+# GromacsWrapper config.py
 # Copyright (c) 2009 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
@@ -59,7 +59,7 @@ egg we actually have to unwrap these files at this stage but this is
 completely transparent to the user.
 
 .. autodata:: templates
-.. autodata:: sge_template
+.. autodata:: qscript_template
 
 
 Functions
@@ -221,62 +221,51 @@ def _generate_template_dict(dirname):
 
     Templates have to be extracted from the egg because they are used
     by external code. All template filenames are stored in
-    :data:`config.templates` or :data:`config.topfiles`.
+    :data:`config.templates`.
     """
-    # XXX: should not use os.path.basename for resources; '/' not sep on Win
-    return dict((os.path.basename(fn), resource_filename(__name__, dirname+'/'+fn))
+    return dict((resource_basename(fn), resource_filename(__name__, dirname+'/'+fn))
                 for fn in resource_listdir(__name__, dirname)
                 if not fn.endswith('~'))
 
+def resource_basename(resource):
+     """Last component of a resource (which always uses '/' as sep)."""
+     if resource.endswith('/'):
+          resource = resource[:-1]
+     parts = resource.split('/')
+     return parts[-1]
+
 templates = _generate_template_dict('templates')
-"""Templates have to be extracted from the egg because they are used
-by external code. All template filenames are stored in
-:data:`gromacs.config.templates`.
+"""*GromacsWrapper* comes with a number of templates for run input files
+and queuing system scripts. They are provided as a convenience and
+examples but **WITHOUT ANY GUARANTEE FOR CORRECTNESS OR SUITABILITY FOR
+ANY PURPOSE**.
+
+All template filenames are stored in
+:data:`gromacs.config.templates`. Templates have to be extracted from
+the GromacsWrapper python egg file because they are used by external
+code: find the actual file locations from this variable.
 
 **Gromacs mdp templates**
 
-   These are supplied as examples and there is *NO GUARANTEE THAT THEY
-   PRODUCE SENSIBLE OUTPUT* --- check for yourself!  Note that only
+   These are supplied as examples and there is **NO GUARANTEE THAT THEY
+   PRODUCE SENSIBLE OUTPUT** --- check for yourself!  Note that only
    existing parameter names can be modified with
    :func:`gromacs.cbook.edit_mdp` at the moment; if in doubt add the
    parameter with its gromacs default value (or empty values) and
    modify later with :func:`~gromacs.cbook.edit_mdp`.
 
-**SGE templates**
+   The safest bet is to use one of the ``mdout.mdp`` files produced by
+   :func:`gromacs.grompp` as a template as this mdp contains all
+   parameters that are legal in the current version of Gromacs.
 
-   (This is a misnomer --- there are also scripts for PBS and
-   LoadLeveller but we call them all SGE scripts... apologies).
+**Queuing system templates**
 
-   The sge scripts are highly specific and you will need to add your
-   own.  Templates should be sh-scripts and can contain the following
-   patterns; these are either shell variable assignments or batch
-   submission system commands. The table shows SGE commands but PBS
-   and LoadLeveller have similar constructs; e.g. PBS commands start
-   with ``#PBS`` and LoadLeveller uses ``#@`` with its own comman
-   keywords):
-
-
-   ===============  ===========  ================ ================= =====================================
-   command          default      replacement      description       regex
-   ===============  ===========  ================ ================= =====================================
-   #$ -N            GMX_MD       *sgename*        job name          /^#.*(-N|job_name)/
-   #$ -l walltime=  00:20:00     *walltime*       max run time      /^#.*(-l walltime|wall_clock_limit)/
-   #$ -A            BUDGET       *budget*         account           /^#.*(-A|account_no)/
-   DEFFNM=          md           *deffnm*         default gmx name  /^DEFFNM=/
-   WALL_HOURS=      0.33         *walltime* h     mdrun's -maxh     /^WALL_HOURS=/
-   MDRUN_OPTS=      ""           *mdrun_opts*     add.options       /^MDRUN_OPTS=/
-   ===============  ===========  ================ ================= =====================================
-
-   These lines should not have any white space at the beginning. The
-   regular expression pattern is used to find the lines for the
-   replacement and the default values are replaced.
-
-   The line ``# JOB_ARRAY_PLACEHOLDER`` can be replaced by code to run
-   multiple jobs (a job array) from different sub directories.
+   The queing system scripts are highly specific and you will need to add your
+   own. See :mod:`gromacs.qsub` for how these files are processed.
 """
 
 #: The default template for SGE/PBS run scripts.
-sge_template = templates['local.sh']
+qscript_template = templates['local.sh']
 
 
 # Functions to access configuration data

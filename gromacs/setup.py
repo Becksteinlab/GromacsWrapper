@@ -680,7 +680,7 @@ def _setup_MD(dirname,
               struct=None,
               top='top/system.top', ndx=None,
               mainselection='"Protein"',
-              sge=config.sge_template, sgename=None, mdrun_opts="", budget=None, walltime=1/3.,
+              qscript=config.qscript_template, qname=None, mdrun_opts="", budget=None, walltime=1/3.,
               dt=0.002, runtime=1e3, **mdp_kwargs):
     """Generic function to set up a ``mdrun`` MD simulation.
 
@@ -695,8 +695,10 @@ def _setup_MD(dirname,
         index = realpath(ndx)
     except AttributeError:  # (that's what realpath(None) throws...) 
         index = None        # None is handled fine below
-
-    sge_template = config.get_template(sge)
+    
+    qname = mdp_kwargs.pop('sgename', qname)    # compatibility for old scripts
+    qscript = mdp_kwargs.pop('sge', qscript)    # compatibility for old scripts
+    qscript_template = config.get_template(qscript)
     mdp_template = config.get_template(mdp)
 
     nsteps = int(float(runtime)/float(dt))
@@ -766,17 +768,16 @@ def _setup_MD(dirname,
         gromacs.grompp(f=mdp, p=topology, c=structure, n=index, o=tpr, **unprocessed)
 
         runscripts = gromacs.qsub.generate_submit_scripts(
-            sge_template, deffnm=deffnm, jobname=sgename, budget=budget, 
+            qscript_template, deffnm=deffnm, jobname=qname, budget=budget, 
             mdrun_opts=mdrun_opts, walltime=walltime)
 
     logger.info("[%(dirname)s] All files set up for a run time of %(runtime)g ps "
                 "(dt=%(dt)g, nsteps=%(nsteps)g)" % vars())
 
-    kwargs = { # 'dirname':dirname, 'tpr':tpr,  ## cannot be fed into _setup_MD() again and not used sofar
-              'struct': realpath(os.path.join(dirname, final_structure)),      # guess
+    kwargs = {'struct': realpath(os.path.join(dirname, final_structure)),      # guess
               'top': topology,
               'ndx': index,            # possibly mainindex
-              'sge': runscripts,
+              'qscript': runscripts,
               'mainselection': mainselection}
     kwargs.update(mdp_kwargs)  # return extra mdp args so that one can use them for prod run
     kwargs.pop('define', None) # but make sure that -DPOSRES does not stay...
@@ -819,12 +820,12 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
           total length of the simulation in ps [1000]
        *dt*
           integration time step in ps [0.002]
-       *sge*
-          script to submit to the SGE queuing system; by default
-          uses the template :data:`gromacs.config.sge_template`, which can 
+       *qscript*
+          script to submit to the queuing system; by default
+          uses the template :data:`gromacs.config.qscript_template`, which can 
           be manually set to another template from :data:`gromacs.config.templates`; 
           can also be a list of template names.
-       *sgename*
+       *qname*
           name to be used for the job in the queuing system [PR_GMX]
        *mdrun_opts*
           option flags for the :program:`mdrun` command in the queuing system
@@ -856,7 +857,7 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
 
     logger.info("[%(dirname)s] Setting up MD with position restraints..." % vars())
     kwargs.setdefault('struct', 'em/em.pdb')
-    kwargs.setdefault('sgename', 'PR_GMX')
+    kwargs.setdefault('qname', 'PR_GMX')
     kwargs.setdefault('define', '-DPOSRES')
     # reduce size of output files
     kwargs.setdefault('nstxout', '50000')   # trr pos
@@ -903,12 +904,12 @@ def MD(dirname='MD', **kwargs):
           total length of the simulation in ps [1000]
        *dt*
           integration time step in ps [0.002]
-       *sge*
-          script to submit to the SGE queuing system; by default
-          uses the template :data:`gromacs.config.sge_template`, which can 
+       *qscript*
+          script to submit to the queuing system; by default
+          uses the template :data:`gromacs.config.qscript_template`, which can 
           be manually set to another template from :data:`gromacs.config.templates`; 
           can also be a list of template names.
-       *sgename*
+       *qname*
           name to be used for the job in the queuing system [MD_GMX]
        *mdrun_opts*
           option flags for the :program:`mdrun` command in the queuing system
@@ -925,7 +926,7 @@ def MD(dirname='MD', **kwargs):
 
     logger.info("[%(dirname)s] Setting up MD..." % vars())
     kwargs.setdefault('struct', 'MD_POSRES/md.gro')
-    kwargs.setdefault('sgename', 'MD_GMX')
+    kwargs.setdefault('qname', 'MD_GMX')
     return _setup_MD(dirname, **kwargs)
 
 
