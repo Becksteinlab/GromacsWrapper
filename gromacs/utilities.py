@@ -383,6 +383,14 @@ class FileUtils(object):
             name = self.filename(p+infix, ext=ext)
         return name
 
+    def __repr__(self):
+        fmt = "%s(filename=%%r)" % self.__class__.__name__
+        try:
+            fn =  self.filename()
+        except ValueError:
+            fn = None
+        return fmt % fn
+
 
 def iterable(obj):
     """Returns ``True`` if *obj* can be iterated over and is *not* a  string."""

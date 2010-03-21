@@ -280,8 +280,7 @@ class XVG(utilities.FileUtils):
         except IndexError:
             kwargs['yerr'] = ma[2]
 
-        pylab.errorbar(X, Y, **kwargs)        
-
+        pylab.errorbar(X, Y, **kwargs)
         
 
 class NDX(odict, utilities.FileUtils):
@@ -434,6 +433,7 @@ class IndexSet(set):
     def __sub__(self, x):
         return self.intersection(x)
 
+
 class uniqueNDX(NDX):
     """Index that behaves like make_ndx, i.e. entries behaves as sets,
     not lists.
@@ -471,6 +471,7 @@ class uniqueNDX(NDX):
 
     def _getarray(self, k):
         return numpy.sort(numpy.fromiter(self[k],dtype=int,count=len(self[k])))
+
     
 
 # or use list of these?
@@ -630,6 +631,7 @@ class MDP(odict, utilities.FileUtils):
                     if skipempty and (v == '' or v is None):
                         continue
                     mdp.write("%(k)s = %(v)s\n" % vars())
+
 
 def autoconvert(s):
     """Convert input to a numerical type if possible.
