@@ -429,6 +429,7 @@ class Worker(FileUtils):
         self.location = self.plugin_name                 # directory name under analysisdir
         self.results = AttributeDict()                   # store results
         self.parameters = AttributeDict()                # container for options, filenames, etc...
+        self.parameters.filenames = AttributeDict()
         super(Worker,self).__init__(**kwargs)
 
         # note: We are NOT calling self._register_hook() here; subclasses do this
@@ -481,6 +482,17 @@ class Worker(FileUtils):
         _filename = self.filename(filename, ext=ext, use_my_ext=True)
         pylab.savefig(_filename)
         print "Saved figure as %(_filename)r." % vars()
+
+    def store_xvg(self, name, a):
+        """Store array *a* as XVG as result *name*."""
+        from gromacs.formats import XVG
+        xvg = XVG()
+        xvg.set(a)
+        filename = self.plugindir(name+'.xvg')
+        xvg.write(filename)
+        self.results[name] = xvg
+        self.parameters.filenames[name] = filename        
+        return filename
             
 
 # plugins:
@@ -569,6 +581,10 @@ class Plugin(object):
         self.simulation = simulation                   # update our own
         self.worker._register_hook(simulation=simulation)    # HACK!!! patch simulation into worker & do more
         simulation.plugins[self.plugin_name] = self.worker  # add the worker to simulation
+
+        # improve help by changing the worker class doc to the plugin
+        # one: the user mostly sees the worker via simulation.plugins
+        self.worker.__doc__ = self.__doc__
 
         self.__is_registered = True
         
