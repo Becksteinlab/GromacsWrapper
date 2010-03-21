@@ -3,8 +3,8 @@
 :mod:`edPDB.cbook` -- Recipes for editing PDB files
 ===================================================
 
-The cook book contains short python functions that deomstrate how to
-implemen basic PDB editing functionality. They do not do exhaustive
+The cook book contains short python functions that demonstrate how to
+implement basic PDB editing functionality. They do not do exhaustive
 error checking and might have to be altered for your purpose.
 
 .. autoclass:: PDB
@@ -145,7 +145,8 @@ class PDB(object):
     """Class that represents a PDB file and allows extractions of interesting parts.
     
     The structure itself is never changed. In order to extract
-    sub-parts of a structure one selects and write as new pdb file.
+    sub-parts of a structure one selects these parts and writes them
+    as new pdb file.
 
     The advantage over a simple :program:`grep` is that you will be able to
     read any odd pdb file and you will also able to do things like
@@ -164,14 +165,15 @@ class PDB(object):
         """Write pdbfile which includes or excludes residues.
 
         :Arguments:
-          *filename*
-              output pdb filename
-          *inclusions*
-              list of residues to include
-          *exclusions*
-              list of residues to exclude
-          *chain*
-              relabel the selection with a new chain identifier
+            *filename*
+                output pdb filename
+            *inclusions*
+                list of residues to include
+            *exclusions*
+                list of residues to exclude
+            *chain*
+                relabel the selection with a new chain identifier
+
 
          Residues must be BioPDB residues as returned by, for
          instance, :meth:`~edPDB.cbook.PDB.residues_by_resname`.
