@@ -807,42 +807,51 @@ def edit_txt(filename, substitutions, newname=None):
 
     with repeated substitution commands does.
 
+    Special replacement values:
+    - ``None``: the rule is ignored
+    - ``False``: the line is deleted (even if other rules match)
+
     .. note::
     
        * No sanity checks are performed and the substitutions must be supplied
          exactly as shown.
-       * Only the first matching substitution is applied to a line; thus the order
-         of the substitution commands matters. This behaviour was chosen to avoid
-         ambiguity when a substitution would create a match for a subsequent rule.
+       * All substitutions are applied to a line; thus the order of the substitution 
+         commands may matter when one substitution generates a match for a subsequent rule.
        * If replacement is set to ``None`` then the whole expression is ignored and
          whatever is in the template is used. To unset values you must provided an
          empty string or similar.
-       * Deleting a matching line is not implemented. (TODO: use replacement=``False``?)
+       * Delete a matching line if replacement=``False``.
     """
     if newname is None:
         newname = filename
 
-    # no sanity checks (figure out later how to give decent diagnostics)
+    # No sanity checks (figure out later how to give decent diagnostics).
+    # Filter out any rules that have None in replacement.
     _substitutions = [{'lRE': re.compile(str(lRE)),
                        'sRE': re.compile(str(sRE)),
-                       'repl': str(repl)}
+                       'repl': repl}
                       for lRE,sRE,repl in substitutions if not repl is None]
 
     target = tempfile.TemporaryFile()
     with open(filename) as src:
         logger.info("editing txt = %r (%d substitutions)" % (filename, len(substitutions)))
         for line in src:
-            new_line = line[:]
+            keep_line = True
             for subst in _substitutions:
                 m = subst['lRE'].match(line)    
                 if m:              # apply substition to this line?
                     logger.debug('match:    '+line.rstrip())
-                    new_line = subst['sRE'].sub(subst['repl'], line)
-                    logger.debug('replaced: '+new_line.rstrip())
-                    break   # only apply the first matching substitution!
-            target.write(new_line)
+                    if subst['repl'] is False:   # special rule: delete line
+                        keep_line = False
+                    else:                        # standard replacement
+                        line = subst['sRE'].sub(str(subst['repl']), line)
+                        logger.debug('replaced: '+line.rstrip())
+            if keep_line:
+                target.write(line)
+            else:
+                logger.debug("Deleting line %r", line)
 
-    target.seek(0)
+    target.seek(0L)
     with open(newname, 'w') as final:
         shutil.copyfileobj(target, final)
     target.close()

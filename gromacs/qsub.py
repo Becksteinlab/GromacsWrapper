@@ -204,6 +204,11 @@ def generate_submit_scripts(templates, prefix=None, deffnm='md', jobname='MD', b
                             **kwargs):
     """Write scripts for queuing systems.
 
+
+    This sets up queuing system run scripts with a simple search and replace in
+    templates. See :func:`gromacs.cbook.edit_txt` for details. Shell scripts
+    are made executable.
+
     :Arguments:
       *templates*
           Template file or list of template files. The "files" can also be names
@@ -231,9 +236,6 @@ def generate_submit_scripts(templates, prefix=None, deffnm='md', jobname='MD', b
           all other kwargs are ignored
 
     :Returns: list of generated run scripts
-
-    This sets up queuing system run scripts with a simple search and replace in
-    templates. See :func:`gromacs.cbook.edit_txt` for details.
     """
     if not jobname[0].isalpha():
         jobname = 'MD_'+jobname
@@ -265,6 +267,9 @@ def generate_submit_scripts(templates, prefix=None, deffnm='md', jobname='MD', b
                                 ('^# JOB_ARRAY_PLACEHOLDER', '^.*$', jobarray_string), 
                                 ],
                                newname=submitscript)
+        ext = os.path.splitext(submitscript)[1]
+        if ext in ('.sh', '.csh', '.bash'):
+            os.chmod(submitscript, 0755)
         return submitscript
 
     return [write_script(template) for template in gromacs.config.get_templates(templates)]

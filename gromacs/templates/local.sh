@@ -1,12 +1,8 @@
 #!/bin/sh
 #
-# Run a gromacs MD job on the local machine.
+# Run a gromacs MD job on the local machine -- THIS IS JUST AN EXAMPLE
 # This script is very simplistic and assumes that you can simply run
 # gromacs with mpiexec (see below)
-
-# set this to the same value as walltime; mdrun will stop cleanly
-# at 0.99 * WALL_HOURS 
-WALL_HOURS=0.33
 
 NCORES=8
 
@@ -20,6 +16,6 @@ PDB=${DEFFNM}.pdb
 
 MDRUN_OPTS=""
 
-mpiexec -n $NCORES mdrun_mpi -nice 19 -v -deffnm ${DEFFNM} -c ${PDB} -cpi \
-    $MDRUN_OPTS \
-    -maxh ${WALL_HOURS} > $OUTPUT
+mpiexec -n $NCORES mdrun_mpi -nice 19 -v -deffnm ${DEFFNM} -c ${PDB} -cpi -append \
+    $MDRUN_OPTS >$OUTPUT 2>&1
+

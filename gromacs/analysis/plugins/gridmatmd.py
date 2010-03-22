@@ -208,7 +208,7 @@ class Grid2D(object):
 
     def _midpoints(self, x):
         _x = numpy.asarray(x)
-        return 0.5*(x[1:] + x[:-1])
+        return 0.5*(_x[1:] + _x[:-1])
 
     def imshow(self, **kwargs):
         """Display data as a 2D image using :func:`pylab.imshow`."""
@@ -242,7 +242,7 @@ class Grid2D(object):
         return Grid2D(data=_array, bins=_bins)
 
     def __div__(self, x):
-        """Divide arrays by a scalar *x*."""
+        """Divide arrays (and bins) by a scalar *x*."""
         _bins = [self.bins[dim] / x for dim in xrange(len(self.bins))]
         _array = self.array / x
         return Grid2D(data=_array, bins=_bins)
