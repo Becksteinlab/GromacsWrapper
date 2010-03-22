@@ -475,7 +475,10 @@ class Worker(FileUtils):
         raise NotImplementedError
 
     def savefig(self, filename=None, ext='png'):
-        """Save the current figure under the default name, using the supplied format and extension."""
+        """Save the current figure under the default name or *filename*.
+
+        Uses the supplied format and extension *ext*.
+        """
         import pylab
         if filename is None:
             filename = self.parameters.figname
@@ -483,12 +486,22 @@ class Worker(FileUtils):
         pylab.savefig(_filename)
         print "Saved figure as %(_filename)r." % vars()
 
-    def store_xvg(self, name, a):
-        """Store array *a* as XVG as result *name*."""
+    def store_xvg(self, name, a, **kwargs):
+        """Store array *a* as :class:`~gromacs.formats.XVG` in result *name*.
+       
+        kwargs are passed to :class:`gromacs.formats.XVG`.
+
+        This is a helper method that simplifies the task of storing
+        results in the form of a numpy array as a data file on disk in
+        the xmgrace format and also as a :class:`~gromacs.formats.XVG`
+        instance in the :attr:`gromacs.analysis.core.Worker.results`
+        dictionary.
+        """
         from gromacs.formats import XVG
-        xvg = XVG()
-        xvg.set(a)
+        kwargs.pop('filename',None)     # ignore filename
         filename = self.plugindir(name+'.xvg')
+        xvg = XVG(**kwargs)
+        xvg.set(a)
         xvg.write(filename)
         self.results[name] = xvg
         self.parameters.filenames[name] = filename        
@@ -517,7 +530,9 @@ class Plugin(object):
     .. Note:: If multiple Plugin instances are added to a Simulation one *must*
               set the *name* keyword argument to distinguish the
               instances. Plugins are referred to by this name in all further
-              interactions with the user.
+              interactions with the user. There are no sanity checks:
+              A newer plugin with the same *name* simply replaces the
+              previous one.
     """    
     #: actual plugin :class:`gromacs.analysis.core.Worker` class (name with leading underscore)
     worker_class = None

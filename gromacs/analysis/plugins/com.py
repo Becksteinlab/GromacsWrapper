@@ -130,14 +130,83 @@ class _COM(Worker):
     def analyze(self,**kwargs):
         """Collect output xvg files as :class:`gromacs.formats.XVG` objects.
 
-        :Returns:  a dictionary of the results and also sets ``self.results``.
+        - Make COM as a function of time available as XVG files and
+          objects.
+        - Compute RMSD of the COM of each group (from average
+          position, "rmsd").
+        - Compute distance whic encompasses 50% of observations ("median")
+        - Compute drift of COM, i.e. length of the vector between
+          initial and final position. Initial and final position are
+          computed as averages over *nframesavg* frames ("drift").
+      
+        RMSD, median, and drift are columns in an xvg file. The rows correspond
+        to the groups in :attr:`gromacs.analysis.plugins.com.Worker.results.group_names`.
+
+        :Keywords:
+          *nframesavg*
+              number of initial and final frames that are averaged in
+              order to compute the drift of the COM of each group
+              [5000]
+          *refgroup*
+              group name whose com is taken as the reference and subtracted from
+              all other coms for the distance calculations. If supplied,
+              additional result 'com_relative_*refgroup*' is created.
+        
+        :Returns:  a dictionary of the results and also sets
+                  :attr:`gromacs.analysis.plugins.com.Worker.results`. 
         """        
         from gromacs.formats import XVG
 
         logger.info("Preparing COM graphs as XVG objects.")        
-        results = AttributeDict( (k, XVG(fn)) for k,fn in self.parameters.filenames.items() )
-        self.results = results
-        return results
+        self.results = AttributeDict( (k, XVG(fn)) for k,fn in self.parameters.filenames.items() )
+
+        # compute RMSD of COM and shift of COM (drift) between avg pos
+        # over first/last 5,000 frames
+        nframesavg = kwargs.pop('nframesavg', 5000)
+        ngroups = len(self.parameters.group_names)
+        xcom = self.results['com'].array
+
+        refgroup = kwargs.pop('refgroup', None)
+        if not refgroup is None:
+            if not refgroup in self.parameters.group_names:
+                errmsg = "refgroup=%s must be one of %r" % (refgroup, self.parameters.group_names)
+                logger.error(errmsg)
+                raise ValueError(errmsg)
+            nreference = 1 + 3 * self.parameters.group_names.index(refgroup) # 1-based !!
+            reference_com = xcom[nreference:nreference+3]
+            xcom[1:] -= numpy.vstack(ngroups * [reference_com])  # can't use broadcast
+            logger.debug("distances computed with refgroup %r", refgroup)
+
+            self.store_xvg('com_relative_%s' % refgroup, xcom, 
+                           names=['time']+self.parameters.group_names)
+
+
+        def vlength(v):
+            return numpy.sqrt(numpy.sum(v**2, axis=0))  # distances over time step
+
+        logger.debug("drift calculated between %d-frame averages at beginning and end",nframesavg)
+        records = []
+        for i in xrange(1, 3*ngroups+1, 3):
+            x = xcom[i:i+3]
+            r  = vlength(x - x.mean(axis=1)[:,numpy.newaxis])  # distances over time step
+            #r0 = vlength(r - r[:,0][:,numpy.newaxis])         # distances over time step from r(t=0)
+            #h,edges = numpy.histogram(r, bins=kwargs.get('bins', 100), normed=True)
+            #m = 0.5*(edges[1:]+edges[:-1])
+            #c = h.cumsum(dtype=float)    # integral
+            #c /= c[-1]                   # normalized (0 to 1)
+            #median = m[c < 0.5][-1]
+            #g =  h/(4*numpy.pi*m**2)
+            #import scipy.integrate
+            #radint = lambda y: 4*numpy.pi*scipy.integrate.simps(m**2*y, x=m)
+            #g /= radint(g)  # properly normalized radial distribution function
+            rmsd = numpy.sqrt(numpy.mean(r**2))  # radial spread sqrt(radint(m**2 * g))
+            median = numpy.median(r)             # radius that contains 50% of the observations
+            dx = x[:,:nframesavg].mean(axis=1) - x[:,-nframesavg:].mean(axis=1)
+            drift = vlength(dx)
+            records.append((rmsd, median, drift))
+        self.store_xvg('distance', numpy.transpose(records), names="rmsd,median,drift")
+
+        return self.results
 
     def plot(self, **kwargs):
         """Plot all results in one graph, labelled by the result keys.

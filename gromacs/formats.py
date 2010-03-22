@@ -78,16 +78,29 @@ class XVG(utilities.FileUtils):
 
     default_extension = "xvg"
     
-    def __init__(self, filename=None):
+    def __init__(self, filename=None, names=None):
         """Initialize the class from a xvg file.
 
-        :Arguments: *filename* is the xvg file; it can only be of type XY or
-                    NXY. If it is supplied then it is read and parsed when
-                    :attr:`XVG.array` is accessed.
+        :Arguments: 
+              *filename* 
+                    is the xvg file; it can only be of type XY or
+                    NXY. If it is supplied then it is read and parsed
+                    when :attr:`XVG.array` is accessed.
+              *names*
+                    optional labels for the columns (currently only
+                    written as comments to file); string with columns
+                    separated by commas or a list of strings
         """
         self.__array = None          # cache for array property
         if not filename is None:
-            self._init_filename(filename)  # reading is delayed until required
+            self._init_filename(filename)  # reading from file is delayed until required
+        if names is None:
+            self.names = []
+        else:
+            try:
+                self.names = names.split(',')
+            except AttributeError:
+                self.names = names
 
     def read(self, filename=None):
         """Read and parse xvg file *filename*."""
@@ -103,6 +116,7 @@ class XVG(utilities.FileUtils):
         with utilities.openany(self.real_filename, 'w') as xvg:
             xvg.write("# xmgrace compatible NXY data file\n"
                       "# Written by gromacs.formats.XVG()\n")
+            xvg.write("# :columns: %r" % self.names)
             for xyy in self.array.T:
                 xyy.tofile(xvg, sep=" ", format="%-8s")  # quick and dirty ascii output...--no compression!
                 xvg.write('\n')
