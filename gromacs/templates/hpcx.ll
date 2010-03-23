@@ -1,4 +1,4 @@
-#  $Id$
+#  LoadLeveller run script (on hpcx)
 #@ shell = /bin/bash
 #
 #@ job_name = GMX_MD

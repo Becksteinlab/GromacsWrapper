@@ -14,6 +14,12 @@ tools and other scripts are offered in the package and where template files are
 located. If the user wants to change anything they will still have to do it
 here in source until a better mechanism with rc files has been implemented.
 
+User-supplied templates are stored under
+:data:`gromacs.config.configdir`. Eventually this will also contain the
+configuration options currently hard-coded in :mod:`gromacs.config`.
+
+.. autodata:: configdir
+.. autodata:: path
 
 Logging
 -------
@@ -58,6 +64,8 @@ templates such as run input files. Because the package can be a zipped
 egg we actually have to unwrap these files at this stage but this is
 completely transparent to the user.
 
+.. autodata:: qscriptdir
+.. autodata:: templatesdir
 .. autodata:: templates
 .. autodata:: qscript_template
 
@@ -65,7 +73,9 @@ completely transparent to the user.
 Functions
 ---------
 
-The following functions can be used to access configuration data.
+The following functions can be used to access configuration data. Note that
+files are searched first with their full filename, then in all directories
+listed in :data:`gromacs.config.path`, and finally within the package itself.
 
 .. autofunction:: get_template
 .. autofunction:: get_templates
@@ -91,6 +101,30 @@ loglevel_console = logging.INFO
 
 #: The default loglevel that is still written to the :data:`logfilename`.
 loglevel_file = logging.DEBUG
+
+
+# User-accessible configuration
+# -----------------------------
+
+#: Directory to store user templates and rc files.
+configdir = os.path.expanduser(os.path.join("~",".gromacswrapper"))
+utilities.mkdir_p(configdir)
+
+#: Directory to store user supplied queuing system scripts.
+qscriptdir = os.path.join(configdir, 'qscripts')
+utilities.mkdir_p(qscriptdir)
+
+#: Directory to store user supplied template files such as mdp files.
+templatesdir = os.path.join(configdir, 'templates')
+utilities.mkdir_p(templatesdir)
+
+#: Search path for queuing scripts and templates. The internal package-supplied
+#: templates are always searcheded last via :func:`gromacs.config.get_templates`. 
+#: Modify :data:`gromacs.config.path` directly in order to customize the template 
+#: and qscript searching.
+#: (Note that it is not a good idea to have templates and qscripts with the
+#: same name as they are both searched on the same path.)
+path = [os.path.curdir, qscriptdir, templatesdir]
 
 
 # Gromacs tools
@@ -167,7 +201,7 @@ del g
 # Adding additional 3rd party scripts
 # -----------------------------------
 
-# XXX: install script via setup.py ... this is a hack:
+# HACK-Alert: we're temporarily "installing" scripts from the egg  ... this is a hack:
 # Must extract because it is part of a zipped python egg;
 # see http://peak.telecommunity.com/DevCenter/PythonEggs#accessing-package-resources
 GridMAT_MD = resource_filename(__name__,'external/GridMAT-MD_v1.0.2/GridMAT-MD.pl')
@@ -218,7 +252,7 @@ Usage:
 
 def _generate_template_dict(dirname):
     """Generate a list of included files *and* extract them to a temp space.
-
+    
     Templates have to be extracted from the egg because they are used
     by external code. All template filenames are stored in
     :data:`config.templates`.
@@ -228,11 +262,11 @@ def _generate_template_dict(dirname):
                 if not fn.endswith('~'))
 
 def resource_basename(resource):
-     """Last component of a resource (which always uses '/' as sep)."""
-     if resource.endswith('/'):
-          resource = resource[:-1]
-     parts = resource.split('/')
-     return parts[-1]
+    """Last component of a resource (which always uses '/' as sep)."""
+    if resource.endswith('/'):
+         resource = resource[:-1]
+    parts = resource.split('/')
+    return parts[-1]
 
 templates = _generate_template_dict('templates')
 """*GromacsWrapper* comes with a number of templates for run input files
@@ -261,7 +295,8 @@ code: find the actual file locations from this variable.
 **Queuing system templates**
 
    The queing system scripts are highly specific and you will need to add your
-   own. See :mod:`gromacs.qsub` for how these files are processed.
+   own into :data:`gromacs.config.qscriptdir`. 
+   See :mod:`gromacs.qsub` for the format and how these files are processed.
 """
 
 #: The default template for SGE/PBS run scripts.
@@ -278,9 +313,10 @@ def get_template(t):
     should be one of
 
     1. a relative or absolute path,
-    2. a filename in the package template directory (defined in the template dictionary
+    2. a file in one of the directories listed in :data:`gromacs.config.path`,
+    3. a filename in the package template directory (defined in the template dictionary
        :data:`gromacs.config.templates`) or
-    3. a key into :data:`~gromacs.config.templates`.
+    4. a key into :data:`~gromacs.config.templates`.
 
     The first match (in this order) is returned. If the argument is a
     single string then a single string is returned, otherwise a list
@@ -303,9 +339,10 @@ def get_templates(t):
     be one of
 
     1. a relative or absolute path,
-    2. a filename in the package template directory (defined in the template dictionary
+    2. a file in one of the directories listed in :data:`gromacs.config.path`,
+    3. a filename in the package template directory (defined in the template dictionary
        :data:`gromacs.config.templates`) or
-    3. a key into :data:`~gromacs.config.templates`.
+    4. a key into :data:`~gromacs.config.templates`.
 
     The first match (in this order) is returned for each input argument.
 
@@ -319,23 +356,31 @@ def get_templates(t):
 def _get_template(t):
     """Return a single template *t*."""
     if os.path.exists(t):           # 1) Is it an accessible file?
-        pass
-    else:                           # 2) check the packaged template files
-        _t = os.path.basename(t)
-        _t_found = False
-        for p in templates.values():
-            if _t == os.path.basename(p):
-                t = p
-                _t_found = True     # NOTE: in principle this could match multiple
-                break               #       times if more than one template dir existed.
-        if not _t_found:            # 3) try it as a key into templates
-            try:
-                t = templates[t]
-            except KeyError:
-                pass
-            else:
-                _t_found = True
-        if not _t_found:            # 4) nothing else to try... or introduce a PATH?
-            raise ValueError("Failed to locate the template file %(t)r." % vars())
+         pass
+    else:                         
+         _t = t
+         _t_found = False
+         for d in path:              # 2) search config.path
+              p = os.path.join(d, _t)
+              if os.path.exists(p):
+                   t = p
+                   _t_found = True
+                   break
+         _t = os.path.basename(t)
+         if not _t_found:            # 3) try template dirs
+              for p in templates.values():
+                   if _t == os.path.basename(p):
+                        t = p
+                        _t_found = True     # NOTE: in principle this could match multiple
+                        break               #       times if more than one template dir existed.
+         if not _t_found:            # 4) try it as a key into templates
+              try:
+                   t = templates[t]
+              except KeyError:
+                   pass
+              else:
+                   _t_found = True
+         if not _t_found:            # 5) nothing else to try...
+              raise ValueError("Failed to locate the template file %(t)r." % vars())
     return os.path.realpath(t)
 
