@@ -1,0 +1,71 @@
+.. $Id$
+.. GromacsWrapper documentation master file, created by sphinx-quickstart on Tue Jun 23 19:38:56 2009.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+====================================================
+  GromacsWrapper --- a python framework for Gromacs
+====================================================
+
+**GromacsWrapper** is a python package that wraps system calls to
+Gromacs_ tools into thin classes. This allows for fairly seamless
+integration of the gromacs tools into python_ scripts. This is
+generally superior to shell scripts because of python's better error
+handling and superior data structures. It also allows for
+modularization and code re-use. In addition, commands, warnings and
+errors are logged to a file so that there exists a complete history of
+what has been done.
+
+See :doc:`INSTALL` for download and installation instructions. `Documentation`_
+is primarily provided through the python doc strings (from which most of the
+online documentation is generated).
+
+There is also auto-generated `online source code documentation`_
+available.
+
+.. warning:: Please be aware that this is **alpha** software that most
+  definitely contains bugs. The API is not stable and can change
+  between releases.
+  
+  It is *your* responsibility to ensure that you are running
+  simulations with sensible parameters.
+
+The package and the documentation are still in flux and any feedback,
+bug reports, suggestions and contributions are very welcome. See the
+package :doc:`README` for contact details.
+
+For other approaches to interfacing python_ and Gromacs_ see
+:doc:`alternatives`.
+
+
+.. _Gromacs: http://www.gromacs.org
+.. _python: http://www.python.org
+.. _Documentation: 
+   http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/html/index.html
+.. _online source code documentation:
+   http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/epydoc/index.html
+
+
+Contents
+--------
+
+.. toctree::
+   :maxdepth: 2
+
+   README
+   INSTALL
+   gromacs
+   analysis
+   alternatives
+   vmd
+   edpdb
+
+
+
+Indices and tables
+------------------
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+

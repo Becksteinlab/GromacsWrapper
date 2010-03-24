@@ -1,0 +1,10 @@
+.. $Id$
+
+========================
+  Support modules
+========================
+
+Support modules contain code that simplifies working with
+:class:`~gromacs.analysis.core.Simulation` instances.
+
+.. automodule:: gromacs.analysis.collections

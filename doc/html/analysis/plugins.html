@@ -1,0 +1,1444 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Analysis plugins &mdash; GromacsWrapper v0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="GromacsWrapper v0.1 documentation" href="../index.html" />
+    <link rel="up" title="Analysis" href="../analysis.html" />
+    <link rel="next" title="Alternatives to GromacsWrapper" href="../alternatives.html" />
+    <link rel="prev" title="Support modules" href="support.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="../alternatives.html" title="Alternatives to GromacsWrapper"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="support.html" title="Support modules"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">GromacsWrapper v0.1 documentation</a> &raquo;</li>
+          <li><a href="../analysis.html" accesskey="U">Analysis</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="analysis-plugins">
+<h1>Analysis plugins<a class="headerlink" href="#analysis-plugins" title="Permalink to this headline">¶</a></h1>
+<p>Analysis plugins consist of a book-keeping class derived from
+<a title="gromacs.analysis.core.Plugin" class="reference external" href="core.html#gromacs.analysis.core.Plugin"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.core.Plugin</span></tt></a> and a &#8220;worker&#8221; class (a child of
+<a title="gromacs.analysis.core.Worker" class="reference external" href="core.html#gromacs.analysis.core.Worker"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.core.Worker</span></tt></a>), which contains the actual
+analysis code.</p>
+<div class="section" id="module-gromacs.analysis.plugins">
+<h2>Plugins<a class="headerlink" href="#module-gromacs.analysis.plugins" title="Permalink to this headline">¶</a></h2>
+<p>Plugin modules are named like the plugin class but the filename is all
+lower case. All plugin classes are available in the
+<tt class="xref docutils literal"><span class="pre">gromacs.analysis.plugins</span></tt> name space.</p>
+<div class="section" id="analysis-plugins-plugin-modules">
+<h3><tt class="xref docutils literal"><span class="pre">analysis.plugins</span></tt> &#8211; Plugin Modules<a class="headerlink" href="#analysis-plugins-plugin-modules" title="Permalink to this headline">¶</a></h3>
+<p>Classes for <a title="gromacs.analysis.core.Simulation" class="reference external" href="core.html#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.core.Simulation</span></tt></a> that provide
+code to analyze trajectory data.</p>
+<p>New analysis plugins should follow the API sketched out in
+<a title="" class="reference external" href="core.html#module-gromacs.analysis.core"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.core</span></tt></a>; see an example for use there.</p>
+<div class="section" id="list-of-plugins">
+<h4>List of plugins<a class="headerlink" href="#list-of-plugins" title="Permalink to this headline">¶</a></h4>
+<p>Right now the number of plugins is limited. Feel free to contribute your own by
+sending it to the <a class="reference external" href="mailto:oliver&#46;beckstein&#37;&#52;&#48;bioch&#46;ox&#46;ac&#46;uk">package author</a>. You will be acknowledged in the list below.</p>
+<table border="1" class="docutils">
+<caption>Plugins for analysis.</caption>
+<colgroup>
+<col width="35%" />
+<col width="12%" />
+<col width="53%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">plugin</th>
+<th class="head">author</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><a title="gromacs.analysis.plugins.CysAccessibility" class="reference internal" href="#gromacs.analysis.plugins.CysAccessibility"><tt class="xref docutils literal"><span class="pre">CysAccessibility</span></tt></a></td>
+<td><a class="footnote-reference" href="#ob" id="id1">[1]</a></td>
+<td>estimate accessibility of Cys
+residues by water</td>
+</tr>
+<tr><td><a title="gromacs.analysis.plugins.HelixBundle" class="reference internal" href="#gromacs.analysis.plugins.HelixBundle"><tt class="xref docutils literal"><span class="pre">HelixBundle</span></tt></a></td>
+<td><a class="footnote-reference" href="#ob" id="id2">[1]</a></td>
+<td>g_bundle analysis of helices</td>
+</tr>
+<tr><td><a title="gromacs.analysis.plugins.Distances" class="reference internal" href="#gromacs.analysis.plugins.Distances"><tt class="xref docutils literal"><span class="pre">Distances</span></tt></a></td>
+<td><a class="footnote-reference" href="#ob" id="id3">[1]</a></td>
+<td>time series of distances</td>
+</tr>
+<tr><td><a title="gromacs.analysis.plugins.MinDistances" class="reference internal" href="#gromacs.analysis.plugins.MinDistances"><tt class="xref docutils literal"><span class="pre">MinDistances</span></tt></a></td>
+<td><a class="footnote-reference" href="#ob" id="id4">[1]</a></td>
+<td>time series of shortest distances</td>
+</tr>
+<tr><td><a title="gromacs.analysis.plugins.COM" class="reference internal" href="#gromacs.analysis.plugins.COM"><tt class="xref docutils literal"><span class="pre">COM</span></tt></a></td>
+<td><a class="footnote-reference" href="#ob" id="id5">[1]</a></td>
+<td>time series of centres of mass</td>
+</tr>
+<tr><td><a title="gromacs.analysis.plugins.Dihedrals" class="reference internal" href="#gromacs.analysis.plugins.Dihedrals"><tt class="xref docutils literal"><span class="pre">Dihedrals</span></tt></a></td>
+<td><a class="footnote-reference" href="#ob" id="id6">[1]</a></td>
+<td>analysis of dihedral angles</td>
+</tr>
+<tr><td><a title="gromacs.analysis.plugins.RMSF" class="reference internal" href="#gromacs.analysis.plugins.RMSF"><tt class="xref docutils literal"><span class="pre">RMSF</span></tt></a></td>
+<td><a class="footnote-reference" href="#ob" id="id7">[1]</a></td>
+<td>calculate root mean square fluctuations</td>
+</tr>
+<tr><td><a title="gromacs.analysis.plugins.RMSD" class="reference internal" href="#gromacs.analysis.plugins.RMSD"><tt class="xref docutils literal"><span class="pre">RMSD</span></tt></a></td>
+<td><a class="footnote-reference" href="#ob" id="id8">[1]</a></td>
+<td>calculate root mean square distance</td>
+</tr>
+<tr><td><a title="gromacs.analysis.plugins.Energy" class="reference internal" href="#gromacs.analysis.plugins.Energy"><tt class="xref docutils literal"><span class="pre">Energy</span></tt></a></td>
+<td><a class="footnote-reference" href="#ob" id="id9">[1]</a></td>
+<td>terms from the energy file</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<caption>Plugins for trajectory manipulation and status queries.</caption>
+<colgroup>
+<col width="35%" />
+<col width="12%" />
+<col width="53%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">plugin</th>
+<th class="head">author</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><a title="gromacs.analysis.plugins.Trajectories" class="reference internal" href="#gromacs.analysis.plugins.Trajectories"><tt class="xref docutils literal"><span class="pre">Trajectories</span></tt></a></td>
+<td><a class="footnote-reference" href="#ob" id="id10">[1]</a></td>
+<td>write xy-fitted trajectories</td>
+</tr>
+<tr><td><a title="gromacs.analysis.plugins.StripWater" class="reference internal" href="#gromacs.analysis.plugins.StripWater"><tt class="xref docutils literal"><span class="pre">StripWater</span></tt></a></td>
+<td><a class="footnote-reference" href="#ob" id="id11">[1]</a></td>
+<td>remove solvent (and optionally fit to
+reference)</td>
+</tr>
+<tr><td><a title="gromacs.analysis.plugins.Ls" class="reference internal" href="#gromacs.analysis.plugins.Ls"><tt class="xref docutils literal"><span class="pre">Ls</span></tt></a></td>
+<td><a class="footnote-reference" href="#ob" id="id12">[1]</a></td>
+<td>simple <strong>ls</strong> (for testing)</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Footnotes</p>
+<table class="docutils footnote" frame="void" id="ob" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>, <a class="fn-backref" href="#id3">3</a>, <a class="fn-backref" href="#id4">4</a>, <a class="fn-backref" href="#id5">5</a>, <a class="fn-backref" href="#id6">6</a>, <a class="fn-backref" href="#id7">7</a>, <a class="fn-backref" href="#id8">8</a>, <a class="fn-backref" href="#id9">9</a>, <a class="fn-backref" href="#id10">10</a>, <a class="fn-backref" href="#id11">11</a>, <a class="fn-backref" href="#id12">12</a>)</em> Oliver Beckstein &lt;<a class="reference external" href="mailto:oliver&#46;beckstein&#37;&#52;&#48;bioch&#46;ox&#46;ac&#46;uk">oliver<span>&#46;</span>beckstein<span>&#64;</span>bioch<span>&#46;</span>ox<span>&#46;</span>ac<span>&#46;</span>uk</a>&gt;</td></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="plugin-classes">
+<h4>Plugin classes<a class="headerlink" href="#plugin-classes" title="Permalink to this headline">¶</a></h4>
+<dl class="class">
+<dt id="gromacs.analysis.plugins.CysAccessibility">
+<em class="property">class </em><tt class="descclassname">gromacs.analysis.plugins.</tt><tt class="descname">CysAccessibility</tt><big>(</big><em>name=None</em>, <em>simulation=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.CysAccessibility" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>CysAccessibility</em> plugin.</p>
+<p>For each frame of a trajectory, the shortest distance of all water oxygens
+to all cysteine sulphur atoms is computed. For computational efficiency,
+only distances smaller than a cutoff are taken into account. A histogram of
+the distances shows how close water molecules can get to cysteines. The
+closest approach distance should be indicative of the reactivity of the SH
+group with crosslinking agents.</p>
+<dl class="class">
+<dt id="gromacs.analysis.plugins.CysAccessibility.CysAccessibility">
+<em class="property">class </em><tt class="descname">CysAccessibility</tt><big>(</big><em>cysteines</em><span class="optional">[</span>, <em>cys_cutoff</em><span class="optional">[</span>, <em>name</em><span class="optional">[</span>, <em>simulation</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.CysAccessibility.CysAccessibility" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt>name <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">plugin name (used to access it)</p>
+</dd>
+<dt>simulation <span class="classifier-delimiter">:</span> <span class="classifier">instance</span></dt>
+<dd><p class="first last">The <a title="gromacs.analysis.Simulation" class="reference external" href="core.html#gromacs.analysis.Simulation"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.Simulation</span></tt></a> instance that owns the plugin.</p>
+</dd>
+<dt>cysteines <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">list of <em>all</em> resids (eg from the sequence) that are used as
+labels or in the form &#8216;Cys&lt;resid&gt;&#8217;. (<strong>required</strong>)</p>
+</dd>
+<dt>cys_cutoff <span class="classifier-delimiter">:</span> <span class="classifier">number</span></dt>
+<dd><p class="first last">cutoff in nm for the minimum S-OW distance [1.0]</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Note that <em>all</em> Cys residues in the protein are analyzed. Therefore, the
+list of cysteine labels <em>must</em> contain as many entries as there are
+cysteines in the protein. There are no sanity checks.</p>
+<p>Registers the plugin with the simulation class.</p>
+<p>Specific keyword arguments are listed below, all other kwargs
+are passed through.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Name of the plugin. Should differ for different
+instances. Defaults to the class name.</p>
+</dd>
+<dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">Simulation instance</span></dt>
+<dd><p class="first last">The <tt class="xref docutils literal"><span class="pre">Simulation</span></tt> instance that owns this plugin instance. Can be
+<tt class="xref docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref docutils literal"><span class="pre">register()</span></tt> method has to be called manually
+with a simulation instance later.</p>
+</dd>
+<dt><em>kwargs</em></dt>
+<dd><p class="first last">All other keyword arguments are passed to the Worker.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="gromacs.analysis.plugins.CysAccessibility.worker_class">
+<tt class="descclassname">CysAccessibility.</tt><tt class="descname">worker_class</tt><a class="headerlink" href="#gromacs.analysis.plugins.CysAccessibility.worker_class" title="Permalink to this definition">¶</a></dt>
+<dd>alias of <tt class="xref docutils literal"><span class="pre">_CysAccessibility</span></tt></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gromacs.analysis.plugins.HelixBundle">
+<em class="property">class </em><tt class="descclassname">gromacs.analysis.plugins.</tt><tt class="descname">HelixBundle</tt><big>(</big><em>name=None</em>, <em>simulation=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.HelixBundle" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>HelixBundle</em> plugin.</p>
+<p><tt class="xref docutils literal"><span class="pre">gromacs.g_bundle()</span></tt> helix analysis</p>
+<dl class="class">
+<dt id="gromacs.analysis.plugins.HelixBundle.HelixBundle">
+<em class="property">class </em><tt class="descname">HelixBundle</tt><big>(</big><span class="optional">[</span><em>helixtable</em>, <em>offset</em>, <em>with_kinks</em><span class="optional">[</span>, <em>name</em><span class="optional">[</span>, <em>simulation</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.HelixBundle.HelixBundle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>helixtable</em></dt>
+<dd><p class="first last">reST table with columns &#8220;name&#8221;, &#8220;top&#8221;, &#8220;bottom&#8221;,
+&#8220;kink&#8221;; see <tt class="xref docutils literal"><span class="pre">gromacs.analysis.plugins.helixbundle</span></tt>
+for details</p>
+</dd>
+<dt><em>offset</em></dt>
+<dd><p class="first last">add the <em>offset</em> to the residue numbers in <em>helixtable</em> [0]</p>
+</dd>
+<dt><em>helixndx</em></dt>
+<dd><p class="first last">provide a index file with the appropriate groups
+instead of the table; also requires <em>na</em></p>
+</dd>
+<dt><em>na</em></dt>
+<dd><p class="first last">number of helices</p>
+</dd>
+<dt><em>with_kinks</em></dt>
+<dd><p class="first last">take kinks into account [True]</p>
+</dd>
+<dt><em>name</em></dt>
+<dd><p class="first last">plugin name [HelixBundle]</p>
+</dd>
+<dt><em>simulation</em></dt>
+<dd><p class="first last">The <a title="gromacs.analysis.Simulation" class="reference external" href="core.html#gromacs.analysis.Simulation"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.Simulation</span></tt></a> instance that owns
+the plugin. [None]</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Registers the plugin with the simulation class.</p>
+<p>Specific keyword arguments are listed below, all other kwargs
+are passed through.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Name of the plugin. Should differ for different
+instances. Defaults to the class name.</p>
+</dd>
+<dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">Simulation instance</span></dt>
+<dd><p class="first last">The <tt class="xref docutils literal"><span class="pre">Simulation</span></tt> instance that owns this plugin instance. Can be
+<tt class="xref docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref docutils literal"><span class="pre">register()</span></tt> method has to be called manually
+with a simulation instance later.</p>
+</dd>
+<dt><em>kwargs</em></dt>
+<dd><p class="first last">All other keyword arguments are passed to the Worker.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="gromacs.analysis.plugins.HelixBundle.worker_class">
+<tt class="descclassname">HelixBundle.</tt><tt class="descname">worker_class</tt><a class="headerlink" href="#gromacs.analysis.plugins.HelixBundle.worker_class" title="Permalink to this definition">¶</a></dt>
+<dd>alias of <tt class="xref docutils literal"><span class="pre">_HelixBundle</span></tt></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gromacs.analysis.plugins.Distances">
+<em class="property">class </em><tt class="descclassname">gromacs.analysis.plugins.</tt><tt class="descname">Distances</tt><big>(</big><em>name=None</em>, <em>simulation=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.Distances" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Distances</em> plugin.</p>
+<p>The distance between the center of mass of two index groups are
+calculated for each time step and written to files.</p>
+<dl class="class">
+<dt id="gromacs.analysis.plugins.Distances.Distances">
+<em class="property">class </em><tt class="descname">Distances</tt><big>(</big><em>groups</em>, <em>ndx</em><span class="optional">[</span>, <em>cutoff</em><span class="optional">[</span>, <em>name</em><span class="optional">[</span>, <em>simulation</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.Distances.Distances" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt>name <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">plugin name (used to access it)</p>
+</dd>
+<dt>simulation <span class="classifier-delimiter">:</span> <span class="classifier">instance</span></dt>
+<dd><p class="first last">The <a title="gromacs.analysis.Simulation" class="reference external" href="core.html#gromacs.analysis.Simulation"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.Simulation</span></tt></a> instance that owns the plugin.</p>
+</dd>
+<dt>groups <span class="classifier-delimiter">:</span> <span class="classifier">list of index group names</span></dt>
+<dd><p class="first last">The first entry is the <em>primary group</em>, the second is the
+<a href="#id13"><span class="problematic" id="id14">*</span></a>secondary group.</p>
+</dd>
+<dt>ndx <span class="classifier-delimiter">:</span> <span class="classifier">index filename or list</span></dt>
+<dd><p class="first last">All index files that contain the listed groups.</p>
+</dd>
+<dt>cutoff <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">A contact is recorded if the distance is &lt;cutoff [0.6 nm]</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<p>Generate index files with the groups of interest, for instance
+with <a title="gromacs.cbook.IndexBuilder" class="reference external" href="../gromacs/blocks/cbook.html#gromacs.cbook.IndexBuilder"><tt class="xref docutils literal"><span class="pre">gromacs.cbook.IndexBuilder</span></tt></a>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">gromacs.cbook</span> <span class="kn">import</span> <span class="n">IndexBuilder</span>
+<span class="n">A_grp</span><span class="p">,</span> <span class="n">A_ndx</span> <span class="o">=</span> <span class="n">IndexBuilder</span><span class="p">(</span><span class="n">tpr</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;@a 62549 &amp; r NA&#39;</span><span class="p">],</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;Na1_ion&#39;</span><span class="p">],</span> <span class="n">offset</span><span class="o">=-</span><span class="mi">9</span><span class="p">,</span> 
+                            <span class="n">out_ndx</span><span class="o">=</span><span class="s">&#39;Na1.ndx&#39;</span><span class="p">,</span> <span class="n">name_all</span><span class="o">=</span><span class="s">&quot;Na1&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">combine</span><span class="p">()</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">IndexBuilder</span><span class="p">(</span><span class="n">tpr</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;S312:OG&#39;</span><span class="p">,</span><span class="s">&#39;T313:OG1&#39;</span><span class="p">,</span><span class="s">&#39;A38:O&#39;</span><span class="p">,</span><span class="s">&#39;I41:O&#39;</span><span class="p">,</span><span class="s">&#39;A309:O&#39;</span><span class="p">],</span> <span class="n">offset</span><span class="o">=-</span><span class="mi">9</span><span class="p">,</span> 
+                      <span class="n">out_ndx</span><span class="o">=</span><span class="s">&#39;Na1_site.ndx&#39;</span><span class="p">,</span> <span class="n">name_all</span><span class="o">=</span><span class="s">&quot;Na1_site&quot;</span><span class="p">)</span>
+<span class="n">B_grp</span><span class="p">,</span> <span class="n">B_ndx</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">combine</span><span class="p">()</span>                            
+<span class="n">all_ndx_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">A_ndx</span><span class="p">,</span> <span class="n">B_ndx</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>To calculate the distance between &#8220;Na1&#8221; and the &#8220;Na1_site&#8221;, create an instance with
+the appropriate parameters and add them to a <a title="gromacs.analysis.Simulation" class="reference external" href="core.html#gromacs.analysis.Simulation"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.Simulation</span></tt></a> instance:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">dist_Na1_site</span> <span class="o">=</span> <span class="n">Distances</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Dsite&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;Na1&#39;</span><span class="p">,</span> <span class="s">&#39;Na1_site&#39;</span><span class="p">],</span> <span class="n">ndx</span><span class="o">=</span><span class="n">all_ndx_files</span><span class="p">)</span>
+<span class="n">S</span><span class="o">.</span><span class="n">add_plugin</span><span class="p">(</span><span class="n">dist_Na1_site</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Registers the plugin with the simulation class.</p>
+<p>Specific keyword arguments are listed below, all other kwargs
+are passed through.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Name of the plugin. Should differ for different
+instances. Defaults to the class name.</p>
+</dd>
+<dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">Simulation instance</span></dt>
+<dd><p class="first last">The <tt class="xref docutils literal"><span class="pre">Simulation</span></tt> instance that owns this plugin instance. Can be
+<tt class="xref docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref docutils literal"><span class="pre">register()</span></tt> method has to be called manually
+with a simulation instance later.</p>
+</dd>
+<dt><em>kwargs</em></dt>
+<dd><p class="first last">All other keyword arguments are passed to the Worker.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="gromacs.analysis.plugins.Distances.worker_class">
+<tt class="descclassname">Distances.</tt><tt class="descname">worker_class</tt><a class="headerlink" href="#gromacs.analysis.plugins.Distances.worker_class" title="Permalink to this definition">¶</a></dt>
+<dd>alias of <tt class="xref docutils literal"><span class="pre">_Distances</span></tt></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gromacs.analysis.plugins.MinDistances">
+<em class="property">class </em><tt class="descclassname">gromacs.analysis.plugins.</tt><tt class="descname">MinDistances</tt><big>(</big><em>name=None</em>, <em>simulation=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.MinDistances" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>MinDistances</em> plugin.</p>
+<p>The minimum distances between the members of at least two index
+groups and the number of contacts are calculated for each time
+step and written to files.</p>
+<dl class="class">
+<dt id="gromacs.analysis.plugins.MinDistances.Distances">
+<em class="property">class </em><tt class="descname">Distances</tt><big>(</big><em>groups</em>, <em>ndx</em><span class="optional">[</span>, <em>cutoff</em><span class="optional">[</span>, <em>name</em><span class="optional">[</span>, <em>simulation</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.MinDistances.Distances" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt>name <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">plugin name (used to access it)</p>
+</dd>
+<dt>simulation <span class="classifier-delimiter">:</span> <span class="classifier">instance</span></dt>
+<dd><p class="first last">The <a title="gromacs.analysis.Simulation" class="reference external" href="core.html#gromacs.analysis.Simulation"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.Simulation</span></tt></a> instance that owns the plugin.</p>
+</dd>
+<dt>groups <span class="classifier-delimiter">:</span> <span class="classifier">list of index group names</span></dt>
+<dd><p class="first last">The first entry is the <em>primary group</em>. All other entries
+are <em>secondary groups</em> and the plugin calculates the minimum distance
+between members of the primary group and the members of each
+secondary group.</p>
+</dd>
+<dt>ndx <span class="classifier-delimiter">:</span> <span class="classifier">index filename or list</span></dt>
+<dd><p class="first last">All index files that contain the listed groups.</p>
+</dd>
+<dt>cutoff <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">A contact is recorded if the distance is &lt;cutoff [0.6 nm]</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<p>Generate index files with the groups of interest, for instance
+with <a title="gromacs.cbook.IndexBuilder" class="reference external" href="../gromacs/blocks/cbook.html#gromacs.cbook.IndexBuilder"><tt class="xref docutils literal"><span class="pre">gromacs.cbook.IndexBuilder</span></tt></a>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">gromacs.cbook</span> <span class="kn">import</span> <span class="n">IndexBuilder</span>
+<span class="n">A_grp</span><span class="p">,</span> <span class="n">A_ndx</span> <span class="o">=</span> <span class="n">IndexBuilder</span><span class="p">(</span><span class="n">tpr</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;@a 62549 &amp; r NA&#39;</span><span class="p">],</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;Na1_ion&#39;</span><span class="p">],</span> <span class="n">offset</span><span class="o">=-</span><span class="mi">9</span><span class="p">,</span> 
+                            <span class="n">out_ndx</span><span class="o">=</span><span class="s">&#39;Na1.ndx&#39;</span><span class="p">,</span> <span class="n">name_all</span><span class="o">=</span><span class="s">&quot;Na1&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">combine</span><span class="p">()</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">IndexBuilder</span><span class="p">(</span><span class="n">tpr</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;S312:OG&#39;</span><span class="p">,</span><span class="s">&#39;T313:OG1&#39;</span><span class="p">,</span><span class="s">&#39;A38:O&#39;</span><span class="p">,</span><span class="s">&#39;I41:O&#39;</span><span class="p">,</span><span class="s">&#39;A309:O&#39;</span><span class="p">],</span> <span class="n">offset</span><span class="o">=-</span><span class="mi">9</span><span class="p">,</span> 
+                      <span class="n">out_ndx</span><span class="o">=</span><span class="s">&#39;Na1_site.ndx&#39;</span><span class="p">,</span> <span class="n">name_all</span><span class="o">=</span><span class="s">&quot;Na1_site&quot;</span><span class="p">)</span>
+<span class="n">B_grp</span><span class="p">,</span> <span class="n">B_ndx</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">combine</span><span class="p">()</span>                            
+<span class="n">all_ndx_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">A_ndx</span><span class="p">,</span> <span class="n">B_ndx</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>To calculate the distance between &#8220;Na1&#8221; and the &#8220;Na1_site&#8221;, create an instance with
+the appropriate parameters and add them to a <a title="gromacs.analysis.Simulation" class="reference external" href="core.html#gromacs.analysis.Simulation"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.Simulation</span></tt></a> instance:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">dist_Na1_site</span> <span class="o">=</span> <span class="n">Distances</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Dsite&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;Na1&#39;</span><span class="p">,</span> <span class="s">&#39;Na1_site&#39;</span><span class="p">],</span> <span class="n">ndx</span><span class="o">=</span><span class="n">all_ndx_files</span><span class="p">)</span>
+<span class="n">S</span><span class="o">.</span><span class="n">add_plugin</span><span class="p">(</span><span class="n">dist_Na1_site</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To calculate the individual distances:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">dist_Na1_res</span> <span class="o">=</span> <span class="n">Distances</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Dres&#39;</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;Na1&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">B</span><span class="o">.</span><span class="n">names</span><span class="p">,</span> <span class="n">ndx</span><span class="o">=</span><span class="n">all_ndx_files</span><span class="p">)</span>
+<span class="n">S</span><span class="o">.</span><span class="n">add_plugin</span><span class="p">(</span><span class="n">dist_Na1_res</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(Keeping the second IndexBuilder instance <tt class="docutils literal"><span class="pre">B</span></tt> allows us to directly
+use all groups without typing them, <tt class="docutils literal"><span class="pre">B.names</span> <span class="pre">=</span> <span class="pre">['A309_O',</span> <span class="pre">'S312_OG',</span> <span class="pre">'I41_O',</span>
+<span class="pre">'T313_OG1',</span> <span class="pre">'A38_O']</span></tt>.)</p>
+<p>Registers the plugin with the simulation class.</p>
+<p>Specific keyword arguments are listed below, all other kwargs
+are passed through.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Name of the plugin. Should differ for different
+instances. Defaults to the class name.</p>
+</dd>
+<dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">Simulation instance</span></dt>
+<dd><p class="first last">The <tt class="xref docutils literal"><span class="pre">Simulation</span></tt> instance that owns this plugin instance. Can be
+<tt class="xref docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref docutils literal"><span class="pre">register()</span></tt> method has to be called manually
+with a simulation instance later.</p>
+</dd>
+<dt><em>kwargs</em></dt>
+<dd><p class="first last">All other keyword arguments are passed to the Worker.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="gromacs.analysis.plugins.MinDistances.worker_class">
+<tt class="descclassname">MinDistances.</tt><tt class="descname">worker_class</tt><a class="headerlink" href="#gromacs.analysis.plugins.MinDistances.worker_class" title="Permalink to this definition">¶</a></dt>
+<dd>alias of <tt class="xref docutils literal"><span class="pre">_MinDistances</span></tt></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gromacs.analysis.plugins.COM">
+<em class="property">class </em><tt class="descclassname">gromacs.analysis.plugins.</tt><tt class="descname">COM</tt><big>(</big><em>name=None</em>, <em>simulation=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.COM" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>COM</em> plugin.</p>
+<p>Calculate the centre of mass (COM) of various index groups.</p>
+<dl class="class">
+<dt id="gromacs.analysis.plugins.COM.COM">
+<em class="property">class </em><tt class="descname">COM</tt><big>(</big><em>group_names</em><span class="optional">[</span>, <em>ndx</em><span class="optional">[</span>, <em>offset</em><span class="optional">[</span>, <em>name</em><span class="optional">[</span>, <em>simulation</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.COM.COM" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Registers the plugin with the simulation class.</p>
+<p>Specific keyword arguments are listed below, all other kwargs
+are passed through.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Name of the plugin. Should differ for different
+instances. Defaults to the class name.</p>
+</dd>
+<dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">Simulation instance</span></dt>
+<dd><p class="first last">The <tt class="xref docutils literal"><span class="pre">Simulation</span></tt> instance that owns this plugin instance. Can be
+<tt class="xref docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref docutils literal"><span class="pre">register()</span></tt> method has to be called manually
+with a simulation instance later.</p>
+</dd>
+<dt><em>kwargs</em></dt>
+<dd><p class="first last">All other keyword arguments are passed to the Worker.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="gromacs.analysis.plugins.COM.worker_class">
+<tt class="descclassname">COM.</tt><tt class="descname">worker_class</tt><a class="headerlink" href="#gromacs.analysis.plugins.COM.worker_class" title="Permalink to this definition">¶</a></dt>
+<dd>alias of <tt class="xref docutils literal"><span class="pre">_COM</span></tt></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gromacs.analysis.plugins.Dihedrals">
+<em class="property">class </em><tt class="descclassname">gromacs.analysis.plugins.</tt><tt class="descname">Dihedrals</tt><big>(</big><em>name=None</em>, <em>simulation=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.Dihedrals" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Dihedrals</em> plugin.</p>
+<dl class="class">
+<dt id="gromacs.analysis.plugins.Dihedrals.Dihedrals">
+<em class="property">class </em><tt class="descname">Dihedrals</tt><big>(</big><em>dihedrals</em><span class="optional">[</span>, <em>labels</em><span class="optional">[</span>, <em>name</em><span class="optional">[</span>, <em>simulation</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.Dihedrals.Dihedrals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>dihedrals</em>        </dt>
+<dd><p class="first last">list of tuples; each tuple contains atom indices that define the dihedral.</p>
+</dd>
+<dt><em>labels</em></dt>
+<dd><p class="first last">optional list of labels for the dihedrals. Must have as many entries as
+<em>dihedrals</em>.</p>
+</dd>
+<dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">plugin name (used to access it)</p>
+</dd>
+<dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">instance</span></dt>
+<dd><p class="first last">The <a title="gromacs.analysis.Simulation" class="reference external" href="core.html#gromacs.analysis.Simulation"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.Simulation</span></tt></a> instance that owns the plugin.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Registers the plugin with the simulation class.</p>
+<p>Specific keyword arguments are listed below, all other kwargs
+are passed through.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Name of the plugin. Should differ for different
+instances. Defaults to the class name.</p>
+</dd>
+<dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">Simulation instance</span></dt>
+<dd><p class="first last">The <tt class="xref docutils literal"><span class="pre">Simulation</span></tt> instance that owns this plugin instance. Can be
+<tt class="xref docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref docutils literal"><span class="pre">register()</span></tt> method has to be called manually
+with a simulation instance later.</p>
+</dd>
+<dt><em>kwargs</em></dt>
+<dd><p class="first last">All other keyword arguments are passed to the Worker.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="gromacs.analysis.plugins.Dihedrals.worker_class">
+<tt class="descclassname">Dihedrals.</tt><tt class="descname">worker_class</tt><a class="headerlink" href="#gromacs.analysis.plugins.Dihedrals.worker_class" title="Permalink to this definition">¶</a></dt>
+<dd>alias of <tt class="xref docutils literal"><span class="pre">_Dihedrals</span></tt></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gromacs.analysis.plugins.RMSF">
+<em class="property">class </em><tt class="descclassname">gromacs.analysis.plugins.</tt><tt class="descname">RMSF</tt><big>(</big><em>name=None</em>, <em>simulation=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.RMSF" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>RMSF</em> plugin.</p>
+<p>Compute the root mean square fluctuations (RMSF) of the C-alpha
+atoms. The trajectory is always fitted to the reference structure
+in the tpr file.</p>
+<dl class="class">
+<dt id="gromacs.analysis.plugins.RMSF.RMSF">
+<em class="property">class </em><tt class="descname">RMSF</tt><big>(</big><span class="optional">[</span><em>name</em><span class="optional">[</span>, <em>simulation</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.RMSF.RMSF" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">plugin name (used to access it)</p>
+</dd>
+<dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">instance</span></dt>
+<dd><p class="first last">The <a title="gromacs.analysis.Simulation" class="reference external" href="core.html#gromacs.analysis.Simulation"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.Simulation</span></tt></a> instance that owns the plugin.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Registers the plugin with the simulation class.</p>
+<p>Specific keyword arguments are listed below, all other kwargs
+are passed through.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Name of the plugin. Should differ for different
+instances. Defaults to the class name.</p>
+</dd>
+<dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">Simulation instance</span></dt>
+<dd><p class="first last">The <tt class="xref docutils literal"><span class="pre">Simulation</span></tt> instance that owns this plugin instance. Can be
+<tt class="xref docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref docutils literal"><span class="pre">register()</span></tt> method has to be called manually
+with a simulation instance later.</p>
+</dd>
+<dt><em>kwargs</em></dt>
+<dd><p class="first last">All other keyword arguments are passed to the Worker.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="gromacs.analysis.plugins.RMSF.worker_class">
+<tt class="descclassname">RMSF.</tt><tt class="descname">worker_class</tt><a class="headerlink" href="#gromacs.analysis.plugins.RMSF.worker_class" title="Permalink to this definition">¶</a></dt>
+<dd>alias of <tt class="xref docutils literal"><span class="pre">_RMSF</span></tt></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gromacs.analysis.plugins.RMSD">
+<em class="property">class </em><tt class="descclassname">gromacs.analysis.plugins.</tt><tt class="descname">RMSD</tt><big>(</big><em>name=None</em>, <em>simulation=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.RMSD" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>RMSD</em> plugin.</p>
+<p>Calculation of the root mean square distance (RMSD) of a protein
+structure over the course of a MD simulation.</p>
+<p>The trajectory is always fitted to the reference structure in the
+tpr file.</p>
+<dl class="class">
+<dt id="gromacs.analysis.plugins.RMSD.RMSD">
+<em class="property">class </em><tt class="descname">RMSD</tt><big>(</big><span class="optional">[</span><em>name</em><span class="optional">[</span>, <em>simulation</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.RMSD.RMSD" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">plugin name (used to access it)</p>
+</dd>
+<dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">instance</span></dt>
+<dd><p class="first last">The <a title="gromacs.analysis.Simulation" class="reference external" href="core.html#gromacs.analysis.Simulation"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.Simulation</span></tt></a> instance that owns the plugin.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Registers the plugin with the simulation class.</p>
+<p>Specific keyword arguments are listed below, all other kwargs
+are passed through.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Name of the plugin. Should differ for different
+instances. Defaults to the class name.</p>
+</dd>
+<dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">Simulation instance</span></dt>
+<dd><p class="first last">The <tt class="xref docutils literal"><span class="pre">Simulation</span></tt> instance that owns this plugin instance. Can be
+<tt class="xref docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref docutils literal"><span class="pre">register()</span></tt> method has to be called manually
+with a simulation instance later.</p>
+</dd>
+<dt><em>kwargs</em></dt>
+<dd><p class="first last">All other keyword arguments are passed to the Worker.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="gromacs.analysis.plugins.RMSD.worker_class">
+<tt class="descclassname">RMSD.</tt><tt class="descname">worker_class</tt><a class="headerlink" href="#gromacs.analysis.plugins.RMSD.worker_class" title="Permalink to this definition">¶</a></dt>
+<dd>alias of <tt class="xref docutils literal"><span class="pre">_RMSD</span></tt></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gromacs.analysis.plugins.Energy">
+<em class="property">class </em><tt class="descclassname">gromacs.analysis.plugins.</tt><tt class="descname">Energy</tt><big>(</big><em>name=None</em>, <em>simulation=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.Energy" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Energy</em> plugin.</p>
+<p>Analysis of terms in the Gromacs energy (edr) file.</p>
+<dl class="class">
+<dt id="gromacs.analysis.plugins.Energy.Energy">
+<em class="property">class </em><tt class="descname">Energy</tt><big>(</big><span class="optional">[</span><em>name</em><span class="optional">[</span>, <em>simulation</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.Energy.Energy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">plugin name (used to access it)</p>
+</dd>
+<dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">instance</span></dt>
+<dd><p class="first last">The <a title="gromacs.analysis.Simulation" class="reference external" href="core.html#gromacs.analysis.Simulation"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.Simulation</span></tt></a> instance that owns the plugin.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Registers the plugin with the simulation class.</p>
+<p>Specific keyword arguments are listed below, all other kwargs
+are passed through.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Name of the plugin. Should differ for different
+instances. Defaults to the class name.</p>
+</dd>
+<dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">Simulation instance</span></dt>
+<dd><p class="first last">The <tt class="xref docutils literal"><span class="pre">Simulation</span></tt> instance that owns this plugin instance. Can be
+<tt class="xref docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref docutils literal"><span class="pre">register()</span></tt> method has to be called manually
+with a simulation instance later.</p>
+</dd>
+<dt><em>kwargs</em></dt>
+<dd><p class="first last">All other keyword arguments are passed to the Worker.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="gromacs.analysis.plugins.Energy.worker_class">
+<tt class="descclassname">Energy.</tt><tt class="descname">worker_class</tt><a class="headerlink" href="#gromacs.analysis.plugins.Energy.worker_class" title="Permalink to this definition">¶</a></dt>
+<dd>alias of <tt class="xref docutils literal"><span class="pre">_Energy</span></tt></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gromacs.analysis.plugins.Trajectories">
+<em class="property">class </em><tt class="descclassname">gromacs.analysis.plugins.</tt><tt class="descname">Trajectories</tt><big>(</big><em>name=None</em>, <em>simulation=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.Trajectories" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Trajectories</em> plugin.</p>
+<p>Write new xy-fitted trajectories (see <a title="gromacs.cbook.trj_fitandcenter" class="reference external" href="../gromacs/blocks/cbook.html#gromacs.cbook.trj_fitandcenter"><tt class="xref docutils literal"><span class="pre">gromacs.cbook.trj_fitandcenter()</span></tt></a>),</p>
+<dl class="class">
+<dt id="gromacs.analysis.plugins.Trajectories.Trajectories">
+<em class="property">class </em><tt class="descname">Trajectories</tt><big>(</big><span class="optional">[</span><em>name</em><span class="optional">[</span>, <em>simulation</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.Trajectories.Trajectories" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">plugin name (used to access it)</p>
+</dd>
+<dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">instance</span></dt>
+<dd><p class="first last">The <a title="gromacs.analysis.Simulation" class="reference external" href="core.html#gromacs.analysis.Simulation"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.Simulation</span></tt></a> instance that owns the plugin.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Registers the plugin with the simulation class.</p>
+<p>Specific keyword arguments are listed below, all other kwargs
+are passed through.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Name of the plugin. Should differ for different
+instances. Defaults to the class name.</p>
+</dd>
+<dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">Simulation instance</span></dt>
+<dd><p class="first last">The <tt class="xref docutils literal"><span class="pre">Simulation</span></tt> instance that owns this plugin instance. Can be
+<tt class="xref docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref docutils literal"><span class="pre">register()</span></tt> method has to be called manually
+with a simulation instance later.</p>
+</dd>
+<dt><em>kwargs</em></dt>
+<dd><p class="first last">All other keyword arguments are passed to the Worker.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="gromacs.analysis.plugins.Trajectories.worker_class">
+<tt class="descclassname">Trajectories.</tt><tt class="descname">worker_class</tt><a class="headerlink" href="#gromacs.analysis.plugins.Trajectories.worker_class" title="Permalink to this definition">¶</a></dt>
+<dd>alias of <tt class="xref docutils literal"><span class="pre">_Trajectories</span></tt></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gromacs.analysis.plugins.StripWater">
+<em class="property">class </em><tt class="descclassname">gromacs.analysis.plugins.</tt><tt class="descname">StripWater</tt><big>(</big><em>name=None</em>, <em>simulation=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.StripWater" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>StripWater</em> plugin.</p>
+<p>Write a new trajectory which has the water index group removed.</p>
+<dl class="class">
+<dt id="gromacs.analysis.plugins.StripWater.StripWater">
+<em class="property">class </em><tt class="descname">StripWater</tt><big>(</big><span class="optional">[</span><em>selection</em><span class="optional">[</span>, <em>name</em><span class="optional">[</span>, <em>simulation</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.StripWater.StripWater" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>selection</em></dt>
+<dd><p class="first last">optional selection for the water instead of &#8220;SOL&#8221;</p>
+</dd>
+<dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">plugin name (used to access it)</p>
+</dd>
+<dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">instance</span></dt>
+<dd><p class="first last">The <a title="gromacs.analysis.Simulation" class="reference external" href="core.html#gromacs.analysis.Simulation"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.Simulation</span></tt></a> instance that owns the plugin.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Registers the plugin with the simulation class.</p>
+<p>Specific keyword arguments are listed below, all other kwargs
+are passed through.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Name of the plugin. Should differ for different
+instances. Defaults to the class name.</p>
+</dd>
+<dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">Simulation instance</span></dt>
+<dd><p class="first last">The <tt class="xref docutils literal"><span class="pre">Simulation</span></tt> instance that owns this plugin instance. Can be
+<tt class="xref docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref docutils literal"><span class="pre">register()</span></tt> method has to be called manually
+with a simulation instance later.</p>
+</dd>
+<dt><em>kwargs</em></dt>
+<dd><p class="first last">All other keyword arguments are passed to the Worker.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="gromacs.analysis.plugins.StripWater.worker_class">
+<tt class="descclassname">StripWater.</tt><tt class="descname">worker_class</tt><a class="headerlink" href="#gromacs.analysis.plugins.StripWater.worker_class" title="Permalink to this definition">¶</a></dt>
+<dd>alias of <tt class="xref docutils literal"><span class="pre">_StripWater</span></tt></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gromacs.analysis.plugins.Ls">
+<em class="property">class </em><tt class="descclassname">gromacs.analysis.plugins.</tt><tt class="descname">Ls</tt><big>(</big><em>name=None</em>, <em>simulation=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.Ls" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>ls</em> plugin.</p>
+<p>This simply lists the files on disk. It is useful for testing the
+plugin architecture.</p>
+<dl class="class">
+<dt id="gromacs.analysis.plugins.Ls.Ls">
+<em class="property">class </em><tt class="descname">Ls</tt><big>(</big><span class="optional">[</span><em>name</em><span class="optional">[</span>, <em>simulation</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.Ls.Ls" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">plugin name (used to access it)</p>
+</dd>
+<dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">instance</span></dt>
+<dd><p class="first last">The <a title="gromacs.analysis.Simulation" class="reference external" href="core.html#gromacs.analysis.Simulation"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.Simulation</span></tt></a> instance that owns the plugin.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Registers the plugin with the simulation class.</p>
+<p>Specific keyword arguments are listed below, all other kwargs
+are passed through.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Name of the plugin. Should differ for different
+instances. Defaults to the class name.</p>
+</dd>
+<dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">Simulation instance</span></dt>
+<dd><p class="first last">The <tt class="xref docutils literal"><span class="pre">Simulation</span></tt> instance that owns this plugin instance. Can be
+<tt class="xref docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref docutils literal"><span class="pre">register()</span></tt> method has to be called manually
+with a simulation instance later.</p>
+</dd>
+<dt><em>kwargs</em></dt>
+<dd><p class="first last">All other keyword arguments are passed to the Worker.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="gromacs.analysis.plugins.Ls.worker_class">
+<tt class="descclassname">Ls.</tt><tt class="descname">worker_class</tt><a class="headerlink" href="#gromacs.analysis.plugins.Ls.worker_class" title="Permalink to this definition">¶</a></dt>
+<dd>alias of <tt class="xref docutils literal"><span class="pre">_Ls</span></tt></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="developer-notes">
+<h4>Developer notes<a class="headerlink" href="#developer-notes" title="Permalink to this headline">¶</a></h4>
+<p>In principle all that needs to be done to automatically load plugins
+is to add their name to <a title="gromacs.analysis.plugins.__plugins__" class="reference internal" href="#gromacs.analysis.plugins.__plugins__"><tt class="xref docutils literal"><span class="pre">__plugins__</span></tt></a>. See the source code for
+further comments and how the auto loading of plugins is done.</p>
+<dl class="data">
+<dt id="gromacs.analysis.plugins.__plugins__">
+<tt class="descclassname">gromacs.analysis.plugins.</tt><tt class="descname">__plugins__</tt><a class="headerlink" href="#gromacs.analysis.plugins.__plugins__" title="Permalink to this definition">¶</a></dt>
+<dd>All available plugin names are listed here. Because this is used to
+automatically set up imports a module file <em>must</em> be named like the
+plugin class it contains but in all lower case. For example, the
+<em>Distances</em> plugin class is contained in the module <em>distances</em> (the
+file <tt class="docutils literal"><span class="pre">plugins/distances.py</span></tt>).</dd></dl>
+
+<dl class="data">
+<dt id="gromacs.analysis.plugins.__plugin_classes__">
+<tt class="descclassname">gromacs.analysis.plugins.</tt><tt class="descname">__plugin_classes__</tt><a class="headerlink" href="#gromacs.analysis.plugins.__plugin_classes__" title="Permalink to this definition">¶</a></dt>
+<dd>Gives access to all available plugin classes (or use the module __dict__)</dd></dl>
+
+</div>
+</div>
+</div>
+<div class="section" id="module-gromacs.analysis.plugins.gridmatmd">
+<h2>Helper modules<a class="headerlink" href="#module-gromacs.analysis.plugins.gridmatmd" title="Permalink to this headline">¶</a></h2>
+<p>Various helper classes that can be used by plugins. Because they are
+not necessarily restricted to a single plugin they have been moved
+into separate modules for code reuse.</p>
+<div class="section" id="analysis-plugins-dist-helper-class-for-g-dist">
+<h3><tt class="docutils literal"><span class="pre">analysis.plugins.dist</span></tt> &#8212; Helper Class for <tt class="docutils literal"><span class="pre">g_dist</span></tt><a class="headerlink" href="#analysis-plugins-dist-helper-class-for-g-dist" title="Permalink to this headline">¶</a></h3>
+<p><tt class="xref docutils literal"><span class="pre">dist</span></tt> contains helper classes for other analysis plugins that
+want to make use of the Gromacs command <tt class="docutils literal"><span class="pre">g_dist</span></tt>.</p>
+<div class="section" id="overview">
+<h4>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h4>
+<p>The task we are solving is to analyze output from</p>
+<div class="highlight-python"><pre>g_dist -f md.xtc -s md.tpr -n cys_ow.ndx -dist 1.0 | bzip2 -vc &gt; mindist_C60_OW_1nm.dat.bz2 </pre>
+</div>
+<p>and produce a histogram of minimum contact distances. This should
+provide an estimate for water accessibility of the atom (here: SG of
+Cys60).</p>
+</div>
+<div class="section" id="file-format">
+<h4>File format<a class="headerlink" href="#file-format" title="Permalink to this headline">¶</a></h4>
+<p><tt class="docutils literal"><span class="pre">g_dist</span></tt> with the <tt class="docutils literal"><span class="pre">-dist</span> <span class="pre">CUTOFF</span></tt> option writes to stdout the
+identity of all atoms within the cutoff distance and the distance
+itself:</p>
+<div class="highlight-python"><pre>Selected 22: 'CYSH_CYSH_60_&amp;_SG'
+Selected 25: 'OW'
+....
+t: 184  6682 SOL 35993 OW  0.955138 (nm)
+t: 184  10028 SOL 46031 OW  0.803889 (nm)
+t: 185  6682 SOL 35993 OW  0.879949 (nm)
+t: 185  10028 SOL 46031 OW  0.738299 (nm)
+t: 186  6682 SOL 35993 OW  0.897016 (nm)
+t: 186  10028 SOL 46031 OW  0.788268 (nm)
+t: 187  6682 SOL 35993 OW  0.997688 (nm)
+....</pre>
+</div>
+</div>
+<div class="section" id="classes">
+<h4>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h4>
+<dl class="class">
+<dt id="gromacs.analysis.plugins.dist.Mindist">
+<em class="property">class </em><tt class="descclassname">gromacs.analysis.plugins.dist.</tt><tt class="descname">Mindist</tt><big>(</big><em>datasource</em>, <em>cutoff=None</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.dist.Mindist" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Mindist class allows analysis of the output from <tt class="docutils literal"><span class="pre">g_dist</span> <span class="pre">-dist</span> <span class="pre">CUTOFF</span></tt>.</p>
+<p>Output is read from a file or stream. The raw data is transformed
+into a true &#8216;mindist&#8217; time series (available in the
+<tt class="xref docutils literal"><span class="pre">Mindist.distances</span></tt> attribute): for each frame only the
+shortest distance is stored (whereas <tt class="docutils literal"><span class="pre">g_dist</span></tt> provides <em>all</em>
+distances below the cutoff).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Todo:</th><td class="field-body"><ul class="first last simple">
+<li>Save analysis to pickle or data files.</li>
+<li>Export data as simple data files for plotting in other programs.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><a title="gromacs.tools.G_mindist" class="reference external" href="../gromacs/tools.html#gromacs.tools.G_mindist"><tt class="xref docutils literal"><span class="pre">gromacs.tools.G_mindist</span></tt></a> is apparently providing
+exactly the service that is required: a timeseries of
+the minimum distance between two groups. Feel free to
+use that tool instead :-).</p>
+</div>
+<p>Read mindist data from file or stream.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>datasource</em></dt>
+<dd><p class="first last">a filename (plain, gzip, bzip2) or file object</p>
+</dd>
+<dt><em>cutoff</em></dt>
+<dd><p class="first last">the <tt class="docutils literal"><span class="pre">-dist</span> <span class="pre">CUTOFF</span></tt> that was provided to <tt class="docutils literal"><span class="pre">g_dist</span></tt>; if supplied 
+we work around a bug in <tt class="docutils literal"><span class="pre">g_dist</span></tt> (at least in Gromacs 4.0.2) in which
+sometimes numbers &gt;&gt; CUTOFF are printed.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="gromacs.analysis.plugins.dist.Mindist.histogram">
+<tt class="descname">histogram</tt><big>(</big><em>nbins=None</em>, <em>lo=None</em>, <em>hi=None</em>, <em>midpoints=False</em>, <em>normed=True</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.dist.Mindist.histogram" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a distribution or histogram of the minimum distances:</p>
+<p>If no values for the bin edges are given then they are set to
+0.1 below and 0.1 above the minimum and maximum values seen in
+the data.</p>
+<p>If the number of bins is not provided then it is set so that
+on average 100 counts come to a bin. Set nbins manually if the
+histogram only contains a single bin (and then get more data)!</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>nbins</em> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">number of bins</p>
+</dd>
+<dt><em>lo</em> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">lower edge of histogram</p>
+</dd>
+<dt><em>hi</em> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">upper edge of histogram</p>
+</dd>
+<dt><em>midpoints</em> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
+<dd><p class="first last">False: return edges. True: return midpoints</p>
+</dd>
+<dt><em>normed</em> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
+<dd><p class="first last">True: return probability distribution. False: histogram</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.analysis.plugins.dist.Mindist.hist">
+<tt class="descname">hist</tt><a class="headerlink" href="#gromacs.analysis.plugins.dist.Mindist.hist" title="Permalink to this definition">¶</a></dt>
+<dd>Histogram of the minimum distances.</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.analysis.plugins.dist.Mindist.dist">
+<tt class="descname">dist</tt><a class="headerlink" href="#gromacs.analysis.plugins.dist.Mindist.dist" title="Permalink to this definition">¶</a></dt>
+<dd>Distribution of the minimum distances.</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.analysis.plugins.dist.Mindist.edges">
+<tt class="descname">edges</tt><a class="headerlink" href="#gromacs.analysis.plugins.dist.Mindist.edges" title="Permalink to this definition">¶</a></dt>
+<dd>Edges of the histogram of the minimum distances.</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.analysis.plugins.dist.Mindist.midpoints">
+<tt class="descname">midpoints</tt><a class="headerlink" href="#gromacs.analysis.plugins.dist.Mindist.midpoints" title="Permalink to this definition">¶</a></dt>
+<dd>Midpoints of the histogram of the minimum distances.</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.analysis.plugins.dist.Mindist.plot">
+<tt class="descname">plot</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.dist.Mindist.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot histograms with matplotlib&#8217;s plot() function:</p>
+<div class="highlight-python"><pre>plot(**histogramargs, **plotargs)</pre>
+</div>
+<p>Arguments for both <a title="gromacs.analysis.plugins.dist.Mindist.histogram" class="reference internal" href="#gromacs.analysis.plugins.dist.Mindist.histogram"><tt class="xref docutils literal"><span class="pre">Mindist.histogram()</span></tt></a> and <tt class="xref docutils literal"><span class="pre">pylab.plot()</span></tt> can be provided (qv).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gromacs.analysis.plugins.dist.GdistData">
+<em class="property">class </em><tt class="descclassname">gromacs.analysis.plugins.dist.</tt><tt class="descname">GdistData</tt><big>(</big><em>stream</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.dist.GdistData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Object that represents the standard output of <tt class="docutils literal"><span class="pre">g_dist</span> <span class="pre">-dist</span> <span class="pre">CUTOFF</span></tt>.</p>
+<p>Initialize from a stream (e.g. a pipe) and the iterate over the
+instance to get the data line by line. Each line consists of a
+tuple</p>
+<blockquote>
+(<em>frame</em>, <em>distance</em>)</blockquote>
+<p>Initialize with an open stream to the data (eg stdin or file).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>stream</em></dt>
+<dd><p class="first last">open stream (file or pipe or really any iterator
+providing the data from <tt class="docutils literal"><span class="pre">g_dist</span></tt>); the <em>stream</em> is not
+closed automatically when the iterator completes.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="gromacs.analysis.plugins.dist.GdistData.__iter__">
+<tt class="descname">__iter__</tt><big>(</big><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.dist.GdistData.__iter__" title="Permalink to this definition">¶</a></dt>
+<dd>Iterator that filters the input stream and returns (frame, distance) tuples.</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="gromacs-analysis-plugins-gridmatmd-lipid-bilayer-analysis-helper">
+<h3><tt class="xref docutils literal"><span class="pre">gromacs.analysis.plugins.gridmatmd</span></tt> &#8212; Lipid bilayer analysis helper<a class="headerlink" href="#gromacs-analysis-plugins-gridmatmd-lipid-bilayer-analysis-helper" title="Permalink to this headline">¶</a></h3>
+<p>This helper module contains code to drive <tt class="docutils literal"><span class="pre">GridMAT-MD.pl</span></tt>, available
+from the <a class="reference external" href="http://www.bevanlab.biochem.vt.edu/GridMAT-MD/index.html">GridMAT-MD</a> home page and written by WJ Allen et al
+<a class="reference internal" href="#allen2009">[Allen2009]</a> . The GromacsWrapper distribution comes with version
+1.0.2 of <tt class="docutils literal"><span class="pre">GridMAT-MD.pl</span></tt> and includes a small patch so that it can
+accept filenames on the command line.</p>
+<div class="section" id="references">
+<h4>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h4>
+<table class="docutils citation" frame="void" id="allen2009" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id15">[Allen2009]</a></td><td>W. J. Allen, J. A. Lemkul, and D. R. Bevan. (2009) &#8220;GridMAT-MD: A
+Grid-based Membrane Analysis Tool for Use With Molecular Dynamics.&#8221;
+J. Comput. Chem. 30 (12): 1952-1958.</td></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="module-contents">
+<h4>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h4>
+<dl class="class">
+<dt id="gromacs.analysis.plugins.gridmatmd.GridMatMD">
+<em class="property">class </em><tt class="descclassname">gromacs.analysis.plugins.gridmatmd.</tt><tt class="descname">GridMatMD</tt><big>(</big><em>config</em>, <em>filenames</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatMD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Analysis of lipid bilayers with GridMAT-MD.</p>
+<p>It requires a configuration file and a list of structure files
+(gro or pdb) as input. See the documentation (<a class="reference external" href="http://www.bevanlab.biochem.vt.edu/GridMAT-MD/doc/GridMAT-MD_ug_v1.0.2.pdf">pdf</a>) for the format of the
+config file. Note that the <em>bilayer</em> keyword will be ignored in
+the config file.</p>
+<p>Set up GridMAT-MD analysis.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>config</em> <span class="classifier-delimiter">:</span> <span class="classifier">filename</span></dt>
+<dd><p class="first last">input file for GridMAT-MD (see docs)</p>
+</dd>
+<dt><em>filenames</em> <span class="classifier-delimiter">:</span> <span class="classifier">list or glob-pattern</span></dt>
+<dd><p class="first last">list of gro or pdb files, or a glob pattern that creates
+such a list</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="gromacs.analysis.plugins.gridmatmd.GridMatMD.imshow">
+<tt class="descname">imshow</tt><big>(</big><em>name</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatMD.imshow" title="Permalink to this definition">¶</a></dt>
+<dd>Display array <em>name</em> with <tt class="docutils literal"><span class="pre">pylab.imshow</span></tt>.</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.analysis.plugins.gridmatmd.GridMatMD.run">
+<tt class="descname">run</tt><big>(</big><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatMD.run" title="Permalink to this definition">¶</a></dt>
+<dd>Run analysis on all files and average results.</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.analysis.plugins.gridmatmd.GridMatMD.run_frame">
+<tt class="descname">run_frame</tt><big>(</big><em>frame</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatMD.run_frame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run GridMAT-MD on a single <em>frame</em> and return results.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><em>frame</em> is a filename (gro or pdb)</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">a dict of <tt class="xref docutils literal"><span class="pre">GridMapData</span></tt> objects; the keys
+are &#8220;top&#8221;, &#8220;bottom&#8221;, &#8220;average&#8221;</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.analysis.plugins.gridmatmd.GridMatMD.save">
+<tt class="descname">save</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatMD.save" title="Permalink to this definition">¶</a></dt>
+<dd>Save object as pickle.</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gromacs.analysis.plugins.gridmatmd.GridMatData">
+<em class="property">class </em><tt class="descclassname">gromacs.analysis.plugins.gridmatmd.</tt><tt class="descname">GridMatData</tt><big>(</big><em>filename</em>, <em>shape=None</em>, <em>delta=None</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represent GridMatMD data file.</p>
+<p>The loaded array data is accessible as a numpy array in
+<tt class="xref docutils literal"><span class="pre">GridMatData.array</span></tt> and bins and midpoints as
+<tt class="xref docutils literal"><span class="pre">GridMatData.bins</span></tt> and <tt class="xref docutils literal"><span class="pre">GridMatData.midpoints</span></tt>
+respectively.</p>
+<p>Load the data into a numpy array.</p>
+<p>The <em>filename</em> is an output file from GridMAT-MD. <em>shape</em> and
+<em>delta</em> are optional. The <em>shape</em> of the array is parsed from
+the filename if not provided. The spacing is set to (1,1) if
+not provided.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>filename</em></dt>
+<dd><p class="first last">2D grid as written by GridMAT-MD</p>
+</dd>
+<dt><em>shape</em></dt>
+<dd><p class="first last">Shape tuple (NX, NY) of the array in filename.</p>
+</dd>
+<dt><em>delta</em></dt>
+<dd><p class="first last">Tuple of bin sizes of grid (DX, DY).</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="gromacs.analysis.plugins.gridmatmd.GridMatData.imshow">
+<tt class="descname">imshow</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatData.imshow" title="Permalink to this definition">¶</a></dt>
+<dd>Display data as a 2D image using <tt class="xref docutils literal"><span class="pre">pylab.imshow()</span></tt>.</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.analysis.plugins.gridmatmd.GridMatData.parse_filename">
+<tt class="descname">parse_filename</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatData.parse_filename" title="Permalink to this definition">¶</a></dt>
+<dd>Get dimensions from filename</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gromacs.analysis.plugins.gridmatmd.Grid2D">
+<em class="property">class </em><tt class="descclassname">gromacs.analysis.plugins.gridmatmd.</tt><tt class="descname">Grid2D</tt><big>(</big><em>data</em>, <em>bins</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.Grid2D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a 2D array with bin sizes.</p>
+<p>Addition and subtraction of grids is defined for the arrays and
+the bins.  Multiplication and division with scalars is also
+defined. Each operation returns a new <a title="gromacs.analysis.plugins.gridmatmd.Grid2D" class="reference internal" href="#gromacs.analysis.plugins.gridmatmd.Grid2D"><tt class="xref docutils literal"><span class="pre">Grid2D</span></tt></a> object.</p>
+<p>(Actually, it should work for arrays of any dimension, not just 2D.)</p>
+<p>Initialize the Grid2D instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>data</em></dt>
+<dd><p class="first last">array data, e.g. a list of array</p>
+</dd>
+<dt><em>bins</em></dt>
+<dd><p class="first last">tuple of lists of bin <strong>edges</strong>, one for each dimension</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="gromacs.analysis.plugins.gridmatmd.Grid2D.imshow">
+<tt class="descname">imshow</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.Grid2D.imshow" title="Permalink to this definition">¶</a></dt>
+<dd>Display data as a 2D image using <tt class="xref docutils literal"><span class="pre">pylab.imshow()</span></tt>.</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.analysis.plugins.gridmatmd.Grid2D.__add__">
+<tt class="descname">__add__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.Grid2D.__add__" title="Permalink to this definition">¶</a></dt>
+<dd>Add arrays and bins (really only makes sense when averaging).</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.analysis.plugins.gridmatmd.Grid2D.__sub__">
+<tt class="descname">__sub__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.Grid2D.__sub__" title="Permalink to this definition">¶</a></dt>
+<dd>Subtract other from self (also subtracts bins... which is odd but consistent).</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.analysis.plugins.gridmatmd.Grid2D.__mul__">
+<tt class="descname">__mul__</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.Grid2D.__mul__" title="Permalink to this definition">¶</a></dt>
+<dd>Multiply arrays (and bins) by a scalar <em>x</em>.</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.analysis.plugins.gridmatmd.Grid2D.__div__">
+<tt class="descname">__div__</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.Grid2D.__div__" title="Permalink to this definition">¶</a></dt>
+<dd>Divide arrays (and bins) by a scalar <em>x</em>.</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">Analysis plugins</a><ul>
+<li><a class="reference external" href="#module-gromacs.analysis.plugins">Plugins</a><ul>
+<li><a class="reference external" href="#analysis-plugins-plugin-modules"><tt class="docutils literal"><span class="pre">analysis.plugins</span></tt> &#8211; Plugin Modules</a><ul>
+<li><a class="reference external" href="#list-of-plugins">List of plugins</a></li>
+<li><a class="reference external" href="#plugin-classes">Plugin classes</a></li>
+<li><a class="reference external" href="#developer-notes">Developer notes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference external" href="#module-gromacs.analysis.plugins.gridmatmd">Helper modules</a><ul>
+<li><a class="reference external" href="#analysis-plugins-dist-helper-class-for-g-dist"><tt class="docutils literal"><span class="pre">analysis.plugins.dist</span></tt> &#8212; Helper Class for <tt class="docutils literal"><span class="pre">g_dist</span></tt></a><ul>
+<li><a class="reference external" href="#overview">Overview</a></li>
+<li><a class="reference external" href="#file-format">File format</a></li>
+<li><a class="reference external" href="#classes">Classes</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#gromacs-analysis-plugins-gridmatmd-lipid-bilayer-analysis-helper"><tt class="docutils literal"><span class="pre">gromacs.analysis.plugins.gridmatmd</span></tt> &#8212; Lipid bilayer analysis helper</a><ul>
+<li><a class="reference external" href="#references">References</a></li>
+<li><a class="reference external" href="#module-contents">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="support.html"
+                                  title="previous chapter">Support modules</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="../alternatives.html"
+                                  title="next chapter">Alternatives to GromacsWrapper</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/analysis/plugins.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../alternatives.html" title="Alternatives to GromacsWrapper"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="support.html" title="Support modules"
+             >previous</a> |</li>
+        <li><a href="../index.html">GromacsWrapper v0.1 documentation</a> &raquo;</li>
+          <li><a href="../analysis.html" >Analysis</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009-2010, Oliver Beckstein.
+      Last updated on Mar 24, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

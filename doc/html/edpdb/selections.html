@@ -1,0 +1,226 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>edPDB.selections — Selections &mdash; GromacsWrapper v0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="GromacsWrapper v0.1 documentation" href="../index.html" />
+    <link rel="up" title="edPDB — Simple processing of PDB files" href="../edpdb.html" />
+    <link rel="next" title="Helper modules" href="helpers.html" />
+    <link rel="prev" title="edPDB.xpdb – Extensions to Bio.PDB" href="xpdb.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="helpers.html" title="Helper modules"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="xpdb.html" title="edPDB.xpdb – Extensions to Bio.PDB"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">GromacsWrapper v0.1 documentation</a> &raquo;</li>
+          <li><a href="../edpdb.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">edPDB</span></tt> &#8212; Simple processing of PDB files</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="edpdb-selections-selections">
+<span id="module-edPDB.selections"></span><h1><tt class="xref docutils literal"><span class="pre">edPDB.selections</span></tt> &#8212; Selections<a class="headerlink" href="#edpdb-selections-selections" title="Permalink to this headline">¶</a></h1>
+<p>Extensions to Bio.PDB, some useful selections.</p>
+<p>Partly published on <a class="reference external" href="http://biopython.org/wiki/Reading_large_PDB_files">http://biopython.org/wiki/Reading_large_PDB_files</a></p>
+<p>License: like Biopython</p>
+<div class="section" id="selection-classes">
+<h2>Selection classes<a class="headerlink" href="#selection-classes" title="Permalink to this headline">¶</a></h2>
+<p>Provide an instance to PDBIO to select a subset of a structure or use
+it with <a title="edPDB.selections.residues_by_selection" class="reference internal" href="#edPDB.selections.residues_by_selection"><tt class="xref docutils literal"><span class="pre">residues_by_selection()</span></tt></a> to obtain a list of residues.</p>
+<dl class="class">
+<dt id="edPDB.selections.ResnameSelect">
+<em class="property">class </em><tt class="descclassname">edPDB.selections.</tt><tt class="descname">ResnameSelect</tt><big>(</big><em>resnames</em>, <em>complement=False</em><big>)</big><a class="headerlink" href="#edPDB.selections.ResnameSelect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select all atoms that match <em>resnames</em>.</p>
+<p>Supply a <em>resname</em>, e.g. &#8216;SOL&#8217; or &#8216;PHE&#8217; or a list.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="edPDB.selections.ResidueSelect">
+<em class="property">class </em><tt class="descclassname">edPDB.selections.</tt><tt class="descname">ResidueSelect</tt><big>(</big><em>residues</em>, <em>complement=False</em><big>)</big><a class="headerlink" href="#edPDB.selections.ResidueSelect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select all atoms that are in the <em>residues</em> list.</p>
+<p>Supply a list of Bio.PDB residues for the search.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="edPDB.selections.NotResidueSelect">
+<em class="property">class </em><tt class="descclassname">edPDB.selections.</tt><tt class="descname">NotResidueSelect</tt><big>(</big><em>residues</em>, <em>complement=False</em><big>)</big><a class="headerlink" href="#edPDB.selections.NotResidueSelect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select all atoms that are <em>not</em> in the <em>residues</em> list.</p>
+<p>(Same as <tt class="xref docutils literal"><span class="pre">ResidueSelect(residues,</span> <span class="pre">complement=True)</span></tt>.)</p>
+<p>Supply a list of Bio.PDB residues for the search.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="edPDB.selections.ProteinSelect">
+<em class="property">class </em><tt class="descclassname">edPDB.selections.</tt><tt class="descname">ProteinSelect</tt><big>(</big><em>complement=False</em><big>)</big><a class="headerlink" href="#edPDB.selections.ProteinSelect" title="Permalink to this definition">¶</a></dt>
+<dd>Select all amino acid residues.</dd></dl>
+
+</div>
+<div class="section" id="selection-functions">
+<h2>Selection functions<a class="headerlink" href="#selection-functions" title="Permalink to this headline">¶</a></h2>
+<p>Functions always act on a structure and return a list of residues.</p>
+<dl class="function">
+<dt id="edPDB.selections.residues_by_resname">
+<tt class="descclassname">edPDB.selections.</tt><tt class="descname">residues_by_resname</tt><big>(</big><em>structure</em>, <em>resnames</em><big>)</big><a class="headerlink" href="#edPDB.selections.residues_by_resname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of residue instances that match <em>resnames</em>.</p>
+<p><em>resnames</em> can be a single string or a list of strings.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="edPDB.selections.residues_by_selection">
+<tt class="descclassname">edPDB.selections.</tt><tt class="descname">residues_by_selection</tt><big>(</big><em>structure</em>, <em>selection</em><big>)</big><a class="headerlink" href="#edPDB.selections.residues_by_selection" title="Permalink to this definition">¶</a></dt>
+<dd>General residue selection: supply a Bio.PDB.PDBIO.Select instance.</dd></dl>
+
+<dl class="function">
+<dt id="edPDB.selections.find_water">
+<tt class="descclassname">edPDB.selections.</tt><tt class="descname">find_water</tt><big>(</big><em>structure</em>, <em>ligand</em>, <em>radius=3.0</em>, <em>water='SOL'</em><big>)</big><a class="headerlink" href="#edPDB.selections.find_water" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find all water (SOL) molecules within radius of ligand.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<dt><em>structure</em></dt>
+<dd><p class="first last">Bio.PDB structure of system with water</p>
+</dd>
+<dt><em>ligand</em> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">Bio.PDB list of atoms of the ligand (Bio.PDB.Atom.Atom
+instances)</p>
+</dd>
+<dt><em>radius</em> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Find waters for which the ligand-atom - OW  distance is &lt;
+radius [3.0]</p>
+</dd>
+<dt><em>water</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">resname of a water molecule [SOL]</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of residue instances</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="utility-functions">
+<h2>Utility functions<a class="headerlink" href="#utility-functions" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="edPDB.selections.canonical">
+<tt class="descclassname">edPDB.selections.</tt><tt class="descname">canonical</tt><big>(</big><em>resname</em><big>)</big><a class="headerlink" href="#edPDB.selections.canonical" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return canonical representation of resname.</p>
+<p>space stripped and  upper case</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="edPDB.selections.PROTEIN_RESNAMES">
+<tt class="descclassname">edPDB.selections.</tt><tt class="descname">PROTEIN_RESNAMES</tt><a class="headerlink" href="#edPDB.selections.PROTEIN_RESNAMES" title="Permalink to this definition">¶</a></dt>
+<dd>List of residue names that determine what is recognized as a
+protein with <a title="edPDB.selections.ProteinSelect" class="reference internal" href="#edPDB.selections.ProteinSelect"><tt class="xref docutils literal"><span class="pre">ProteinSelect</span></tt></a>. Can be extended with non-standard residues.</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#"><tt class="docutils literal"><span class="pre">edPDB.selections</span></tt> &#8212; Selections</a><ul>
+<li><a class="reference external" href="#selection-classes">Selection classes</a></li>
+<li><a class="reference external" href="#selection-functions">Selection functions</a></li>
+<li><a class="reference external" href="#utility-functions">Utility functions</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="xpdb.html"
+                                  title="previous chapter"><tt class="docutils literal docutils literal"><span class="pre">edPDB.xpdb</span></tt> &#8211; Extensions to <tt class="docutils literal docutils literal"><span class="pre">Bio.PDB</span></tt></a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="helpers.html"
+                                  title="next chapter">Helper modules</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/edpdb/selections.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="helpers.html" title="Helper modules"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="xpdb.html" title="edPDB.xpdb – Extensions to Bio.PDB"
+             >previous</a> |</li>
+        <li><a href="../index.html">GromacsWrapper v0.1 documentation</a> &raquo;</li>
+          <li><a href="../edpdb.html" ><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">edPDB</span></tt> &#8212; Simple processing of PDB files</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009-2010, Oliver Beckstein.
+      Last updated on Mar 24, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

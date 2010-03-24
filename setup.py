@@ -9,8 +9,11 @@ from ez_setup import use_setuptools
 use_setuptools()
 from setuptools import setup, find_packages
 
+# Dynamically calculate the version based on mdpow.VERSION.
+version = __import__('gromacs').get_version()
+
 setup(name="GromacsWrapper",
-      version="0.1.8",
+      version=version,
       description="A python wrapper around the gromacs tools.",
       long_description="""\
 A primitive wrapper around the Gromacs tools until we have proper

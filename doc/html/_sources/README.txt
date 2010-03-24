@@ -1,0 +1,129 @@
+.. $Id$
+.. -*- mode: rst -*-
+.. The whole GromacsWrapper package is Copyright (c) 2009 Oliver Beckstein,
+.. except where noted otherwise.
+
+
+========
+ README
+========
+
+See :doc:`INSTALL` for installation instructions. `Documentation`_ is
+mostly provided through the python doc strings. See `Download and
+Availability`_ for download instructions if the instructions in
+:doc:`INSTALL` are not sufficient.
+
+There is also auto-generated `online source code documentation`_
+available.
+
+Please be aware that this is **alpha** software that most definitely
+contains bugs. It is *your* responsibility to ensure that you are
+running simulations with sensible parameters.
+
+
+.. _Documentation: 
+   http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/html/index.html
+.. _online source code documentation:
+   http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/epydoc/index.html
+
+
+
+License
+=======
+
+The **GromacsWrapper** package is made available under the terms of the
+`GNU Public License v3`_ (or any higher version at your choice). 
+
+See the file COPYING for the licensing terms for all modules except
+the **vmd** module, which is made available under the `LGPL v3`_ (see
+COPYING and COPYING.LESSER).
+
+
+.. _GNU Public License v3: http://www.gnu.org/licenses/gpl.html
+.. _LGPL v3: http://www.gnu.org/licenses/lgpl.html
+
+
+
+Included Software
+=================
+
+The distribution contains third party software that is copyrighted by
+the authors but distributed under licences compatible with this
+package license. Where permitted and necessary, software/files were
+modified to integrate with GromacsWrapper.
+
+In case of problems please direct error reports to `Oliver Beckstein`_
+in the first instance as these bugs might not have been present in the
+original software or files.
+
+Included third party content:
+
+GridMat-MD
+  - Grid-based Membrane Analysis Tool for use with Molecular Dynamics
+    [Allen2009]_
+  - version: 1.0.2
+  - license: GPL 3.0  
+  - W. J. Allen, J. A. Lemkul, and D. R. Bevan. (2009) "GridMAT-MD: A
+    Grid-based Membrane Analysis Tool for Use With Molecular
+    Dynamics." J. Comput. Chem. 30 (12): 1952-1958.
+  - http://bevanlab.biochem.vt.edu/GridMAT-MD/
+
+
+``odict.py``
+  - a simple implementation of an ordered dictionary as proposed in :pep:`0372`
+  - copyright: (c) 2008 by Armin Ronacher and PEP 273 authors.
+  - license: modified BSD license (`compatible with GPL`_)
+  - http://dev.pocoo.org/hg/sandbox/raw-file/tip/odict.py
+
+  .. _compatible with GPL: http://www.fsf.org/licensing/licenses/index_html
+
+
+
+Citing
+======
+
+If you find this package useful and use it in published work I'd be
+grateful if it was acknowledged in text as
+
+  "... used GromacsWrapper (Oliver Beckstein,
+  http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/)"
+
+or in the Acknowledgements section.
+
+If you use the ``gridmatmd`` plugin also cite [Allen2009]_.
+
+Thank you.
+
+
+.. rubric:: References
+
+.. [Allen2009]   W. J. Allen, J. A. Lemkul, and D. R. Bevan. (2009)
+                 "GridMAT-MD: A Grid-based Membrane Analysis Tool for
+                 Use With Molecular Dynamics."  J. Comput. Chem. 30,
+                 1952-1958.
+
+
+
+
+Download and Availability
+=========================
+
+The latest version of the package is being made available via the
+internet-thingy at the direct download URI 
+
+  http://sbcb.bioch.ox.ac.uk/oliver/download/Python/ 
+
+You can use this URI if you want to install from the network using
+``easy_install`` as described in :doc:`INSTALL`.
+
+
+Its home page is http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/
+
+
+
+Contact
+=======
+
+Please send feedback to `Oliver Beckstein`_.
+
+.. _Oliver Beckstein: oliver.beckstein@bioch.ox.ac.uk
