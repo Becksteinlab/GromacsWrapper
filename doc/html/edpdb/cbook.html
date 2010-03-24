@@ -1,0 +1,280 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>edPDB.cbook – Recipes for editing PDB files &mdash; GromacsWrapper v0.1.8 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1.8',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="GromacsWrapper v0.1.8 documentation" href="../index.html" />
+    <link rel="up" title="edPDB — Simple processing of PDB files" href="../edpdb.html" />
+    <link rel="next" title="edPDB.xpdb – Extensions to Bio.PDB" href="xpdb.html" />
+    <link rel="prev" title="edPDB – editing PDB files" href="init.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="xpdb.html" title="edPDB.xpdb – Extensions to Bio.PDB"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="init.html" title="edPDB – editing PDB files"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">GromacsWrapper v0.1.8 documentation</a> &raquo;</li>
+          <li><a href="../edpdb.html" accesskey="U"><tt class="docutils literal docutils literal"><span class="pre">edPDB</span></tt> &#8212; Simple processing of PDB files</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="edpdb-cbook-recipes-for-editing-pdb-files">
+<span id="module-edPDB.cbook"></span><h1><tt class="xref docutils literal"><span class="pre">edPDB.cbook</span></tt> &#8211; Recipes for editing PDB files<a class="headerlink" href="#edpdb-cbook-recipes-for-editing-pdb-files" title="Permalink to this headline">¶</a></h1>
+<p>The cook book contains short python functions that demonstrate how to
+implement basic PDB editing functionality. They do not do exhaustive
+error checking and might have to be altered for your purpose.</p>
+<dl class="class">
+<dt id="edPDB.cbook.PDB">
+<em class="property">class </em><tt class="descclassname">edPDB.cbook.</tt><tt class="descname">PDB</tt><big>(</big><em>pdbname</em><big>)</big><a class="headerlink" href="#edPDB.cbook.PDB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that represents a PDB file and allows extractions of interesting parts.</p>
+<p>The structure itself is never changed. In order to extract
+sub-parts of a structure one selects these parts and writes them
+as new pdb file.</p>
+<p>The advantage over a simple <strong>grep</strong> is that you will be able to
+read any odd pdb file and you will also able to do things like
+<a title="edPDB.cbook.PDB.extract_protein" class="reference internal" href="#edPDB.cbook.PDB.extract_protein"><tt class="xref docutils literal"><span class="pre">extract_protein()</span></tt></a> or
+<a title="edPDB.cbook.PDB.extract_lipids" class="reference internal" href="#edPDB.cbook.PDB.extract_lipids"><tt class="xref docutils literal"><span class="pre">extract_lipids()</span></tt></a>.</p>
+<p>Load structure from file <em>pdbname</em>.</p>
+<dl class="method">
+<dt id="edPDB.cbook.PDB.extract_lipids">
+<tt class="descname">extract_lipids</tt><big>(</big><em>filename</em>, <em>lipid_resnames='POPC|POPG|POPE|DMPC|DPPE|DOPE'</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#edPDB.cbook.PDB.extract_lipids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a pdb file with the lipids extracted.</p>
+<p>Note that resnames are also tried truncated to the first three
+characters, which means that POPE and POPG are identical and
+cannot be distinguished.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="edPDB.cbook.PDB.extract_protein">
+<tt class="descname">extract_protein</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#edPDB.cbook.PDB.extract_protein" title="Permalink to this definition">¶</a></dt>
+<dd>Write a pdb file with the protein (i.e. all amino acids) extracted.</dd></dl>
+
+<dl class="method">
+<dt id="edPDB.cbook.PDB.extract_resnames">
+<tt class="descname">extract_resnames</tt><big>(</big><em>filename</em>, <em>resnames</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#edPDB.cbook.PDB.extract_resnames" title="Permalink to this definition">¶</a></dt>
+<dd>Write a pdb file with <em>resnames</em> extracted.</dd></dl>
+
+<dl class="method">
+<dt id="edPDB.cbook.PDB.residues_by_resname">
+<tt class="descname">residues_by_resname</tt><big>(</big><em>resnames</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#edPDB.cbook.PDB.residues_by_resname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of BioPDB residues that match <em>resnames</em>.</p>
+<p><em>resnames</em> can be a string or a list.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="edPDB.cbook.PDB.residues_by_selection">
+<tt class="descname">residues_by_selection</tt><big>(</big><em>selection</em><big>)</big><a class="headerlink" href="#edPDB.cbook.PDB.residues_by_selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return  a list of BioPDB residues that are selected by <em>selection</em>.</p>
+<p><em>selection</em> must be BioPDB.PDB.PDBIO.Select instance (see for
+example <tt class="xref docutils literal"><span class="pre">edPDB.xpdb.ProteinSelect</span></tt>).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="edPDB.cbook.PDB.write">
+<tt class="descname">write</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#edPDB.cbook.PDB.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write pdbfile which includes or excludes residues.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><blockquote class="first">
+<dl class="docutils">
+<dt><em>filename</em></dt>
+<dd><p class="first last">output pdb filename</p>
+</dd>
+<dt><em>inclusions</em></dt>
+<dd><p class="first last">list of residues to include</p>
+</dd>
+<dt><em>exclusions</em></dt>
+<dd><p class="first last">list of residues to exclude</p>
+</dd>
+<dt><em>chain</em></dt>
+<dd><p class="first last">relabel the selection with a new chain identifier</p>
+</dd>
+</dl>
+</blockquote>
+<p>Residues must be BioPDB residues as returned by, for
+instance, <a title="edPDB.cbook.PDB.residues_by_resname" class="reference internal" href="#edPDB.cbook.PDB.residues_by_resname"><tt class="xref docutils literal"><span class="pre">residues_by_resname()</span></tt></a>.</p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Currently only either <em>inclusions</em> or <em>exclusions</em> can be
+supplied, not both.</p>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="edPDB.cbook.align_ligand">
+<tt class="descclassname">edPDB.cbook.</tt><tt class="descname">align_ligand</tt><big>(</big><em>protein_struct</em>, <em>ligand_struct</em>, <em>ligand_resname</em>, <em>output='ligand_aligned.pdb'</em><big>)</big><a class="headerlink" href="#edPDB.cbook.align_ligand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Align a ligand to the same ligand in a protein, based on the heavy atoms.</p>
+<p>This is useful when a new ligand was generated with hydrogens but
+the position in space changed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<dt><em>protein_struct</em></dt>
+<dd><p class="first last">protein + ligand pdb</p>
+</dd>
+<dt><em>ligand_struct</em></dt>
+<dd><p class="first last">ligand pdb</p>
+</dd>
+<dt><em>ligand_resname</em></dt>
+<dd><p class="first last">residue name of the ligand in the file <em>protein_struct</em></p>
+</dd>
+<dt><em>ligand_aligned</em></dt>
+<dd><p class="first last">output</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">RMSD of the fit in Angstroem.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Assumes only heavy atoms in PDB (I think... check source!)</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="edPDB.cbook.remove_overlap_water">
+<tt class="descclassname">edPDB.cbook.</tt><tt class="descname">remove_overlap_water</tt><big>(</big><em>pdbname</em>, <em>output</em>, <em>ligand_resname</em>, <em>distance=3.0</em>, <em>water='SOL'</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#edPDB.cbook.remove_overlap_water" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove water (SOL) molecules overlapping with ligand.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt>pdbname</dt>
+<dd><p class="first last">pdb file that contains the ligand and the water</p>
+</dd>
+<dt>output</dt>
+<dd><p class="first last">pdb output filename</p>
+</dd>
+<dt>ligand_resname</dt>
+<dd><p class="first last">name of the ligand residue(s) in the pdb</p>
+</dd>
+<dt>distance</dt>
+<dd><p class="first last">overlap is defined as a centre-centre distance of any solvent
+OW atom with any ligand atom of less than <em>distance</em></p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The residue and atom numbering will be fairly
+meaningless in the final PDB because it wraps at 100,000
+or 10,000.</p>
+<p class="last">Also make sure that there are either consistent chain
+identifiers or none (blank) because otherwise the
+residue blocks migh become reordered. (This is due to the
+way the Bio.PDB.PDBIO writes files.)</p>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="init.html"
+                                  title="previous chapter"><tt class="docutils literal docutils literal"><span class="pre">edPDB</span></tt> &#8211; editing PDB files</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="xpdb.html"
+                                  title="next chapter"><tt class="docutils literal"><span class="pre">edPDB.xpdb</span></tt> &#8211; Extensions to <tt class="docutils literal"><span class="pre">Bio.PDB</span></tt></a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/edpdb/cbook.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="xpdb.html" title="edPDB.xpdb – Extensions to Bio.PDB"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="init.html" title="edPDB – editing PDB files"
+             >previous</a> |</li>
+        <li><a href="../index.html">GromacsWrapper v0.1.8 documentation</a> &raquo;</li>
+          <li><a href="../edpdb.html" ><tt class="docutils literal docutils literal"><span class="pre">edPDB</span></tt> &#8212; Simple processing of PDB files</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009-2010, Oliver Beckstein.
+      Last updated on Mar 24, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

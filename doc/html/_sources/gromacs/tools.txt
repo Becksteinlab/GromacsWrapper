@@ -1,0 +1,13 @@
+=========================
+  Wrapped Gromacs tools
+=========================
+
+This is the auto-generated list of all Gromacs tools that were
+available when this documentation was built. They are part of the
+:doc:`Gromacs core modules <core>`.
+
+
+.. automodule:: gromacs.tools
+   :members:
+
+.. How can I make this *not* list the doc strings but just the members?   

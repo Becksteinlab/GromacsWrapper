@@ -157,8 +157,22 @@ for more details on configuration.
 
 .. _logging: http://docs.python.org/library/logging.html
 
+Version
+-------
+
+The package version can be queried with the :func:`gromacs.get_version` function.
+
+.. autofunction:: get_version
+
 """
 __docformat__ = "restructuredtext en"
+
+#: Package version; this is the only place where it is set.
+VERSION = "0.1.8"
+
+def get_version():
+    """Return current package version as a string."""
+    return VERSION
 
 # __all__ is extended with all gromacs command instances later
 __all__ = ['config', 'tools', 'cbook']

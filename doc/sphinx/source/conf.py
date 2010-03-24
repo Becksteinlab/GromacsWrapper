@@ -23,7 +23,7 @@ import sys, os
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['.templates']
@@ -41,10 +41,13 @@ copyright = u'2009-2010, Oliver Beckstein'
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
 #
+# Dynamically calculate the version based on mdpow.VERSION.
+packageversion = __import__('gromacs').get_version()
+
 # The short X.Y version.
-version = '0.1'
+version = '.'.join(packageversion.split('.')[:2])
 # The full version, including alpha/beta/rc tags.
-release = '0.1.7'
+release = packageversion
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
@@ -177,6 +180,14 @@ latex_documents = [
 
 # If false, no module index is generated.
 #latex_use_modindex = True
+
+
+# Options for ext.intersphinx
+# ---------------------------
+# intersphinx: reference standard lib and RecSQL
+# http://sphinx.pocoo.org/latest/ext/intersphinx.html
+intersphinx_mapping = {'http://docs.python.org/': None,
+                       'http://sbcb.bioch.ox.ac.uk/oliver/software/RecSQL/html/': None}
 
 
 # Options for ext.autodoc

@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Alternatives to GromacsWrapper &mdash; GromacsWrapper v0.1.8 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '#',
+        VERSION:     '0.1.8',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="GromacsWrapper v0.1.8 documentation" href="index.html" />
+    <link rel="next" title="vmd — Remote Tcl commands in VMD" href="vmd.html" />
+    <link rel="prev" title="Analysis plugins" href="analysis/plugins.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="vmd.html" title="vmd — Remote Tcl commands in VMD"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="analysis/plugins.html" title="Analysis plugins"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">GromacsWrapper v0.1.8 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="alternatives-to-gromacswrapper">
+<h1>Alternatives to GromacsWrapper<a class="headerlink" href="#alternatives-to-gromacswrapper" title="Permalink to this headline">¶</a></h1>
+<p><em>GromacsWrapper</em> is simplistic; in particular it does not directly
+link to the Gromacs libraries but relies on python wrappers to call
+gromacs tools. Some people find this very crude (the author
+included). Other people have given more thought to the problem and you
+are eoncouraged to see if their efforts speed up your work more than
+does <em>GromacsWrapper</em>.</p>
+<dl class="docutils">
+<dt><a class="reference external" href="http://www.mpibpc.mpg.de/groups/de_groot/dseelig/pymacs.html">pymacs</a> (Daniel Seeliger)</dt>
+<dd><p class="first">pymacs is a python module for dealing with structure files and
+trajectory data from the GROMACS molecular dynamics package. It has
+interfaces to some gromacs functions and uses gromacs routines for
+command line parsing, reading and writing of structure files
+(pdb,gro,...) and for reading trajectory data (only xtc at the
+moment). It is quite useful to write python scripts for simulation
+setup and analysis that can be combined with other powerful python
+packages like numpy, scipy or plotting libraries like pylab. It has
+an intuitive data structure (Model &#8211;&gt; Chain &#8211;&gt; Molecule
+&#8211;&gt; Atom) and allows modifications at all levels like</p>
+<ul class="last simple">
+<li>Changing of atom, residue and chain properties (name, coordinate, b-factor,...</li>
+<li>Deleting and inserting atoms, residues, chains</li>
+<li>Straightforward selection of structure subsets</li>
+<li>Structure building from sequence</li>
+<li>Handling gromacs index files</li>
+</ul>
+</dd>
+<dt>various implementations of python wrappers</dt>
+<dd>See the discussion on the gmx-developers mailinglist: check the
+thread  <a class="reference external" href="http://lists.gromacs.org/pipermail/gmx-developers/2009-March/003179.html">[gmx-developers] Python interface for Gromacs</a></dd>
+<dt><a class="reference external" href="http://lists.gromacs.org/pipermail/gmx-developers/2009-March/003183.html">grompy</a> (Martin H?ng, Roland Schulz)</dt>
+<dd><p class="first">uses <a class="reference external" href="http://docs.python.org/library/ctypes.html">ctypes</a> to wrap <strong>libgmx</strong>:</p>
+<blockquote>
+<p>&#8220;Here&#8217;s a bunch of code I wrote to wrap libgmx with ctypes and make use
+of parts of gromacs functionality. My application for this was the
+processing of a trajectories using gromac&#8217;s pbc removal and fitting
+routines as well as reading in index groups etc. It&#8217;s very incomplete
+atm and also focused on wrapping libgmx with all gromacs types and
+definitions...</p>
+<p>... so python here feels a bit like lightweight c-code glueing
+together gromacs library functions :-)</p>
+<p>The attached code lacks a bit of documentation, but I included a
+test.py as an example using it.&#8221;</p>
+</blockquote>
+<p>Roland Schulz added code:</p>
+<blockquote>
+&#8220;I added a little bit wrapper code to easily access the atom
+information in tpx. I attached the version. It is backward
+compatible ...&#8221;</blockquote>
+<p class="last">A working <a class="reference external" href="http://article.gmane.org/gmane.science.biology.gromacs.devel/1185">grompy tar ball</a> (with Roland&#8217;s enhancements) is cached
+at gmane.org.</p>
+</dd>
+<dt><a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a> (Schulten lab at UIUC)</dt>
+<dd>VMD is a great analysis tool; the only downside is that (at the
+moment) trajectories have to fit into memory. In some cases this can
+be circumvented by reading a trajectory frame by frame using the
+<a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/script_library/scripts/bigdcd/">bigdcd</a> script (which might also work for Gromacs xtcs).</dd>
+<dt><a class="reference external" href="http://mdanalysis.googlecode.com">MDAnalysis</a> (N. Michaud-Agrawal and O. Beckstein)</dt>
+<dd>Will <a class="reference external" href="http://code.google.com/p/mdanalysis/issues/detail?id=1">soon</a> also read
+Gromacs xtcs but does not use the gromacs tools themselves.</dd>
+</dl>
+<p>Please let <a class="reference external" href="http://sbcb.bioch.ox.ac.uk/oliver/">me</a> know of other efforts so that I can add them here. Thanks.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="analysis/plugins.html"
+                                  title="previous chapter">Analysis plugins</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="vmd.html"
+                                  title="next chapter"><tt class="docutils literal"><span class="pre">vmd</span></tt> &#8212; Remote Tcl commands in VMD</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/alternatives.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="vmd.html" title="vmd — Remote Tcl commands in VMD"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="analysis/plugins.html" title="Analysis plugins"
+             >previous</a> |</li>
+        <li><a href="index.html">GromacsWrapper v0.1.8 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009-2010, Oliver Beckstein.
+      Last updated on Mar 24, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

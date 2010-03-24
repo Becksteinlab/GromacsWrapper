@@ -18,7 +18,7 @@ Miscellaneous canned Gromacs commands
 -------------------------------------
 
 Simple commands with new default options so that they solve a specific
-problem (see also `Manipulating trajectories`_):
+problem (see also `Manipulating trajectories and structures`_):
 
 .. function:: rmsd_backbone([s="md.tpr", f="md.xtc"[, ...]])
 
@@ -518,14 +518,13 @@ def grompp_qtot(*args, **kwargs):
     :Returns:
        The total charge as reported
 
-    .. note::
+    Some things to keep in mind:
 
-       * The stdout output of grompp is not shown. This can make debugging
-         pretty hard.  Try running the normal :func:`gromacs.grompp` command and
-         analyze the output if the debugging messages are not sufficient.
-       * Check that ``qtot`` is correct; because the function is based on pattern 
-         matching of the output it can break when the output format changes.
-
+    * The stdout output of grompp is not shown. This can make debugging
+      pretty hard.  Try running the normal :func:`gromacs.grompp` command and
+      analyze the output if the debugging messages are not sufficient.
+    * Check that ``qtot`` is correct; because the function is based on pattern 
+      matching of the output it can break when the output format changes.
     """
 
     # match '  System has non-zero total charge: -4.000001e+00',
@@ -577,15 +576,13 @@ def add_mdp_includes(topology=None, kwargs=None):
           If it contains the *includes* keyword with either a single string
           or a list of strings then these paths will be added to the
           include statement.
-    :Returns: 
-       *kwargs* with the *include* keyword added if it did not
-       exist previously; if the keyword already existed, nothing
-       happens.
+    :Returns: *kwargs* with the *include* keyword added if it did not
+              exist previously; if the keyword already existed, nothing
+              happens.
 
-    .. Note:: The *kwargs* dict is **modified in place**.
-
-              This function is a bit of a hack. It might be removed
-              once all setup functions become methods in a nice class.
+    .. Note:: The *kwargs* dict is **modified in place**. This
+              function is a bit of a hack. It might be removed once
+              all setup functions become methods in a nice class.
     """
     if kwargs is None:
         kwargs = {}
@@ -621,7 +618,7 @@ def create_portable_topology(topol, struct, **kwargs):
     :Keywords:
       *processed*
           name of the new topology file; if not set then it is named like
-          *topol* but with 'pp_' prepended
+          *topol* but with ``pp_`` prepended
       *includes*
           path or list of paths of directories in which itp files are
           searched for

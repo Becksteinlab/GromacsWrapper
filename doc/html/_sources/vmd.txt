@@ -1,0 +1,20 @@
+===========================================
+ :mod:`vmd` --- Remote Tcl commands in VMD
+===========================================
+
+The :mod:`vmd` module contains a very simple client that can connect to a
+locally running server process in `VMD`_. This allows running VMD
+`Tcl`_ commands remotely. See `VMD Tcl Text Commands`_ for all
+available commands.
+
+The :mod:`vmd` module is independent from :mod:`gromacs` and
+distribute for convenience. It can be used to implement additional
+visualization and analysis tasks.
+
+.. _VMD: http://www.ks.uiuc.edu/Research/vmd/
+.. _Tcl: http://www.tcl.tk/man/
+.. _VMD Tcl Text Commands: http://www.ks.uiuc.edu/Research/vmd/current/ug/node107.html
+
+
+.. automodule:: vmd
+.. automodule:: vmd.control

@@ -1,0 +1,16 @@
+=========================
+ Gromacs building blocks
+=========================
+
+*Building blocks* are small classes or functions that can be freely combined
+in setup or analysis scripts or used interactively. These modules act
+as "library" for common tasks.
+
+.. toctree::
+   :maxdepth: 2
+
+   blocks/cbook
+   blocks/setup
+   blocks/qsub
+   blocks/simulation
+

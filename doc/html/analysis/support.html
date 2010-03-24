@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Support modules &mdash; GromacsWrapper v0.1.8 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1.8',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="GromacsWrapper v0.1.8 documentation" href="../index.html" />
+    <link rel="up" title="Analysis" href="../analysis.html" />
+    <link rel="next" title="Analysis plugins" href="plugins.html" />
+    <link rel="prev" title="Analysis core modules" href="core.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="plugins.html" title="Analysis plugins"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="core.html" title="Analysis core modules"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">GromacsWrapper v0.1.8 documentation</a> &raquo;</li>
+          <li><a href="../analysis.html" accesskey="U">Analysis</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-gromacs.analysis.collections">
+<h1>Support modules<a class="headerlink" href="#module-gromacs.analysis.collections" title="Permalink to this headline">¶</a></h1>
+<p>Support modules contain code that simplifies working with
+<a title="gromacs.analysis.core.Simulation" class="reference external" href="core.html#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> instances.</p>
+<div class="section" id="analysis-collections-handling-of-groups-of-simulation-instances">
+<h2><tt class="xref docutils literal"><span class="pre">analysis.collections</span></tt> &#8211; Handling of groups of simulation instances<a class="headerlink" href="#analysis-collections-handling-of-groups-of-simulation-instances" title="Permalink to this headline">¶</a></h2>
+<p>This module contains classes and functions that combine multiple
+<a title="gromacs.analysis.core.Simulation" class="reference external" href="core.html#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.core.Simulation</span></tt></a> objects. In this way the
+same kind of analysis or plotting task can be carried out
+simultaneously for all simulations in the collection.</p>
+<dl class="class">
+<dt id="gromacs.analysis.collections.Collection">
+<em class="property">class </em><tt class="descclassname">gromacs.analysis.collections.</tt><tt class="descname">Collection</tt><a class="headerlink" href="#gromacs.analysis.collections.Collection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multiple objects (organized as a list).</p>
+<p>Methods are applied to all objects in the Collection and returned
+as new Collection:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">gromacs.analysis.collections</span> <span class="kn">import</span> <span class="n">Collection</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">animals</span> <span class="o">=</span> <span class="n">Collection</span><span class="p">([</span><span class="s">&#39;ant&#39;</span><span class="p">,</span> <span class="s">&#39;boar&#39;</span><span class="p">,</span> <span class="s">&#39;ape&#39;</span><span class="p">,</span> <span class="s">&#39;gnu&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">animals</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;a&#39;</span><span class="p">)</span>
+<span class="go">Collection([True, False, True, False])</span>
+</pre></div>
+</div>
+<p>Similarly, attributes are returned as a Collection.</p>
+<p>Using <tt class="xref docutils literal"><span class="pre">Collection.save()</span></tt> one can save the whole collection to
+disk and restore it later with the <tt class="xref docutils literal"><span class="pre">Collection.load()</span></tt> method</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">animals</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;zoo&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">arc</span> <span class="o">=</span> <span class="n">Collection</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">arc</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;zoo&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">arc</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;zoo&#39;</span><span class="p">,</span> <span class="n">append</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">arc</span>
+<span class="go">[&#39;ant&#39;, &#39;boar&#39;, &#39;ape&#39;, &#39;gnu&#39;, &#39;ant&#39;, &#39;boar&#39;, &#39;ape&#39;, &#39;gnu&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">Support modules</a><ul>
+<li><a class="reference external" href="#analysis-collections-handling-of-groups-of-simulation-instances"><tt class="docutils literal"><span class="pre">analysis.collections</span></tt> &#8211; Handling of groups of simulation instances</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="core.html"
+                                  title="previous chapter">Analysis core modules</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="plugins.html"
+                                  title="next chapter">Analysis plugins</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/analysis/support.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="plugins.html" title="Analysis plugins"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="core.html" title="Analysis core modules"
+             >previous</a> |</li>
+        <li><a href="../index.html">GromacsWrapper v0.1.8 documentation</a> &raquo;</li>
+          <li><a href="../analysis.html" >Analysis</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009-2010, Oliver Beckstein.
+      Last updated on Mar 24, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

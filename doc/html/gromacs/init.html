@@ -1,0 +1,310 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>gromacs – GromacsWrapper Package Overview &mdash; GromacsWrapper v0.1.8 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1.8',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="GromacsWrapper v0.1.8 documentation" href="../index.html" />
+    <link rel="up" title="Gromacs package" href="../gromacs.html" />
+    <link rel="next" title="Gromacs core modules" href="core.html" />
+    <link rel="prev" title="Gromacs package" href="../gromacs.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="core.html" title="Gromacs core modules"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../gromacs.html" title="Gromacs package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">GromacsWrapper v0.1.8 documentation</a> &raquo;</li>
+          <li><a href="../gromacs.html" accesskey="U">Gromacs package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="gromacs-gromacswrapper-package-overview">
+<span id="module-gromacs"></span><h1><tt class="xref docutils literal"><span class="pre">gromacs</span></tt> &#8211; GromacsWrapper Package Overview<a class="headerlink" href="#gromacs-gromacswrapper-package-overview" title="Permalink to this headline">¶</a></h1>
+<p><strong>GromacsWrapper</strong> (package <tt class="xref docutils literal"><span class="pre">gromacs</span></tt>) is a thin shell around the <a class="reference external" href="http://www.gromacs.org">Gromacs</a>
+tools for light-weight integration into python scripts or interactive use in
+<a class="reference external" href="http://ipython.scipy.org">ipython</a>.</p>
+<div class="section" id="modules">
+<h2>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt><tt class="xref docutils literal"><span class="pre">gromacs</span></tt></dt>
+<dd>The top level module contains all gromacs tools; each tool can be
+run directly or queried for its documentation. It also defines
+the root logger class (name <em>gromacs</em> by default).</dd>
+<dt><a title="" class="reference external" href="core.html#module-gromacs.config"><tt class="xref docutils literal"><span class="pre">gromacs.config</span></tt></a></dt>
+<dd>Configuration options. Not really used much at the moment.</dd>
+<dt><a title="" class="reference external" href="blocks/cbook.html#module-gromacs.cbook"><tt class="xref docutils literal"><span class="pre">gromacs.cbook</span></tt></a></dt>
+<dd>The Gromacs cook book contains typical applications of the tools. In many
+cases this not more than just an often-used combination of parameters for
+a tool.</dd>
+<dt><a title="" class="reference external" href="tools.html#module-gromacs.tools"><tt class="xref docutils literal"><span class="pre">gromacs.tools</span></tt></a></dt>
+<dd>Contains classes that wrap the gromacs tools. They are automatically
+generated from the list of tools in <tt class="xref docutils literal"><span class="pre">gromacs.tools.gmx_tools</span></tt>.</dd>
+<dt><a title="" class="reference external" href="core.html#module-gromacs.formats"><tt class="xref docutils literal"><span class="pre">gromacs.formats</span></tt></a></dt>
+<dd>Classes to represent data files in various formats such as
+xmgrace graphs. The classes allow reading and writing and for
+graphs, also plotting of the data.</dd>
+<dt><a title="" class="reference external" href="core.html#module-gromacs.utilities"><tt class="xref docutils literal"><span class="pre">gromacs.utilities</span></tt></a></dt>
+<dd>Convenience functions and mixin-classes that are used as helpers
+in other modules.</dd>
+<dt><a title="" class="reference external" href="blocks/setup.html#module-gromacs.setup"><tt class="xref docutils literal"><span class="pre">gromacs.setup</span></tt></a></dt>
+<dd>Functions to set up a MD simulation, containing tasks such as solvation
+and adding ions, energy minimizqtion, MD with position-restraints, and
+equilibrium MD.</dd>
+<dt><a title="" class="reference external" href="blocks/qsub.html#module-gromacs.qsub"><tt class="xref docutils literal"><span class="pre">gromacs.qsub</span></tt></a></dt>
+<dd>Functions to handle batch submission queuing systems.</dd>
+<dt><a title="" class="reference external" href="blocks/simulation.html#module-gromacs.run"><tt class="xref docutils literal"><span class="pre">gromacs.run</span></tt></a></dt>
+<dd>Classes to run <strong>mdrun</strong> in various way, including on
+multiprocessor systems.</dd>
+<dt><a title="" class="reference external" href="../analysis/core.html#module-gromacs.analysis"><tt class="xref docutils literal"><span class="pre">gromacs.analysis</span></tt></a></dt>
+<dd>A package that collects whole analysis tasks. It uses the gromacs but is
+otherwise only loosely coupled with the rest. At the moment it only
+contains the infrastructure and an example application. See the package
+documentation.</dd>
+</dl>
+</div>
+<div class="section" id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p>The following examples should simply convey the flavour of using the
+package. See the individual modules for more examples.</p>
+<div class="section" id="getting-help">
+<h3>Getting help<a class="headerlink" href="#getting-help" title="Permalink to this headline">¶</a></h3>
+<p>In python:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">help</span><span class="p">(</span><span class="n">gromacs</span><span class="o">.</span><span class="n">g_dist</span><span class="p">)</span>
+<span class="n">gromacs</span><span class="o">.</span><span class="n">g_dist</span><span class="o">.</span><span class="n">help</span><span class="p">()</span>
+<span class="n">gromacs</span><span class="o">.</span><span class="n">g_dist</span><span class="o">.</span><span class="n">help</span><span class="p">(</span><span class="nb">long</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In <tt class="docutils literal"><span class="pre">ipython</span></tt>:</p>
+<div class="highlight-python"><pre>gromacs.g_dist ?</pre>
+</div>
+</div>
+<div class="section" id="simple-usage">
+<h3>Simple usage<a class="headerlink" href="#simple-usage" title="Permalink to this headline">¶</a></h3>
+<p>Gromacs flags are given as python keyword arguments:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">gromacs</span><span class="o">.</span><span class="n">g_dist</span><span class="p">(</span><span class="n">v</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="s">&#39;topol.tpr&#39;</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="s">&#39;md.xtc&#39;</span><span class="p">,</span> <span class="n">o</span><span class="o">=</span><span class="s">&#39;dist.xvg&#39;</span><span class="p">,</span> <span class="n">dist</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Input to stdin of the command can be supplied:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">gromacs</span><span class="o">.</span><span class="n">make_ndx</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="s">&#39;topol.tpr&#39;</span><span class="p">,</span> <span class="n">o</span><span class="o">=</span><span class="s">&#39;md.ndx&#39;</span><span class="p">,</span> 
+                 <span class="nb">input</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;keep &quot;SOL&quot;&#39;</span><span class="p">,</span> <span class="s">&#39;&quot;SOL&quot; | r NA | r CL&#39;</span><span class="p">,</span> <span class="s">&#39;name 2 solvent&#39;</span><span class="p">,</span> <span class="s">&#39;q&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Output of the command can be caught in a variable and analyzed:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">rc</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">junk</span> <span class="o">=</span> <span class="n">gromacs</span><span class="o">.</span><span class="n">grompp</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>        <span class="c"># collects command output</span>
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">output</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">):</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;System has non-zero total charge:&#39;</span><span class="p">):</span>
+          <span class="n">qtot</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">34</span><span class="p">:])</span>
+          <span class="k">break</span>
+</pre></div>
+</div>
+<p>(See <a title="gromacs.cbook.grompp_qtot" class="reference external" href="blocks/cbook.html#gromacs.cbook.grompp_qtot"><tt class="xref docutils literal"><span class="pre">gromacs.cbook.grompp_qtot()</span></tt></a> for a more robust implementation of this
+application.)</p>
+</div>
+</div>
+<div class="section" id="warnings-and-exceptions">
+<h2>Warnings and Exceptions<a class="headerlink" href="#warnings-and-exceptions" title="Permalink to this headline">¶</a></h2>
+<p>A number of package-specific exceptions (<a title="gromacs.GromacsError" class="reference internal" href="#gromacs.GromacsError"><tt class="xref docutils literal"><span class="pre">GromacsError</span></tt></a>) and
+warnings (<tt class="xref docutils literal"><span class="pre">Gromacs*Warning</span></tt>, <a title="gromacs.AutoCorrectionWarning" class="reference internal" href="#gromacs.AutoCorrectionWarning"><tt class="xref docutils literal"><span class="pre">AutoCorrectionWarning</span></tt></a>,
+<a title="gromacs.BadParameterWarning" class="reference internal" href="#gromacs.BadParameterWarning"><tt class="xref docutils literal"><span class="pre">BadParameterWarning</span></tt></a>) can be raised.</p>
+<p>If you want to stop execution at, for instance, a <a title="gromacs.AutoCorrectionWarning" class="reference internal" href="#gromacs.AutoCorrectionWarning"><tt class="xref docutils literal"><span class="pre">AutoCorrectionWarning</span></tt></a> or
+<a title="gromacs.BadParameterWarning" class="reference internal" href="#gromacs.BadParameterWarning"><tt class="xref docutils literal"><span class="pre">BadParameterWarning</span></tt></a> then use the python <a title="(in Python v2.6)" class="reference external" href="http://docs.python.org/library/warnings.html#module-warnings"><tt class="xref docutils literal"><span class="pre">warnings</span></tt></a> filter:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s">&#39;error&#39;</span><span class="p">,</span> <span class="n">gromacs</span><span class="o">.</span><span class="n">AutoCorrectionWarning</span><span class="p">)</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s">&#39;error&#39;</span><span class="p">,</span> <span class="n">gromacs</span><span class="o">.</span><span class="n">BadParameterWarning</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This will make python raise an exception instead of moving on. The default is
+to always report, eg:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s">&#39;always&#39;</span><span class="p">,</span> <span class="n">gromacs</span><span class="o">.</span><span class="n">BadParameterWarning</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The following <em>exceptions</em> are defined:</p>
+<dl class="exception">
+<dt id="gromacs.GromacsError">
+<em class="property">exception </em><tt class="descclassname">gromacs.</tt><tt class="descname">GromacsError</tt><a class="headerlink" href="#gromacs.GromacsError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Error raised when a gromacs tool fails.</p>
+<p>Returns error code in the errno attribute and a string in strerror.
+# TODO: return status code and possibly error message</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="gromacs.MissingDataError">
+<em class="property">exception </em><tt class="descclassname">gromacs.</tt><tt class="descname">MissingDataError</tt><a class="headerlink" href="#gromacs.MissingDataError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Error raised when prerequisite data are not available.</p>
+<p>For analysis with <a title="gromacs.analysis.core.Simulation" class="reference external" href="../analysis/core.html#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.core.Simulation</span></tt></a> this typically
+means that the <a title="gromacs.analysis.core.Simulation.analyze" class="reference external" href="../analysis/core.html#gromacs.analysis.core.Simulation.analyze"><tt class="xref docutils literal"><span class="pre">analyze()</span></tt></a> method has
+to be run first.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="gromacs.ParseError">
+<em class="property">exception </em><tt class="descclassname">gromacs.</tt><tt class="descname">ParseError</tt><a class="headerlink" href="#gromacs.ParseError" title="Permalink to this definition">¶</a></dt>
+<dd>Error raised when parsing of a file failed.</dd></dl>
+
+<p>The following <em>warnings</em> are defined:</p>
+<dl class="exception">
+<dt id="gromacs.GromacsFailureWarning">
+<em class="property">exception </em><tt class="descclassname">gromacs.</tt><tt class="descname">GromacsFailureWarning</tt><a class="headerlink" href="#gromacs.GromacsFailureWarning" title="Permalink to this definition">¶</a></dt>
+<dd>Warning about failure of a Gromacs tool.</dd></dl>
+
+<dl class="exception">
+<dt id="gromacs.GromacsImportWarning">
+<em class="property">exception </em><tt class="descclassname">gromacs.</tt><tt class="descname">GromacsImportWarning</tt><a class="headerlink" href="#gromacs.GromacsImportWarning" title="Permalink to this definition">¶</a></dt>
+<dd>Warns about problems with using a gromacs tool.</dd></dl>
+
+<dl class="exception">
+<dt id="gromacs.GromacsValueWarning">
+<em class="property">exception </em><tt class="descclassname">gromacs.</tt><tt class="descname">GromacsValueWarning</tt><a class="headerlink" href="#gromacs.GromacsValueWarning" title="Permalink to this definition">¶</a></dt>
+<dd>Warns about problems with the value of an option or variable.</dd></dl>
+
+<dl class="exception">
+<dt id="gromacs.AutoCorrectionWarning">
+<em class="property">exception </em><tt class="descclassname">gromacs.</tt><tt class="descname">AutoCorrectionWarning</tt><a class="headerlink" href="#gromacs.AutoCorrectionWarning" title="Permalink to this definition">¶</a></dt>
+<dd>Warns about cases when the code is choosing new values automatically.</dd></dl>
+
+<dl class="exception">
+<dt id="gromacs.BadParameterWarning">
+<em class="property">exception </em><tt class="descclassname">gromacs.</tt><tt class="descname">BadParameterWarning</tt><a class="headerlink" href="#gromacs.BadParameterWarning" title="Permalink to this definition">¶</a></dt>
+<dd>Warns if some parameters or variables are unlikely to be appropriate or correct.</dd></dl>
+
+<dl class="exception">
+<dt id="gromacs.MissingDataWarning">
+<em class="property">exception </em><tt class="descclassname">gromacs.</tt><tt class="descname">MissingDataWarning</tt><a class="headerlink" href="#gromacs.MissingDataWarning" title="Permalink to this definition">¶</a></dt>
+<dd>Warns when prerequisite data/files are not available.</dd></dl>
+
+<dl class="exception">
+<dt id="gromacs.UsageWarning">
+<em class="property">exception </em><tt class="descclassname">gromacs.</tt><tt class="descname">UsageWarning</tt><a class="headerlink" href="#gromacs.UsageWarning" title="Permalink to this definition">¶</a></dt>
+<dd>Warns if usage is unexpected/documentation ambiguous.</dd></dl>
+
+</div>
+<div class="section" id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Permalink to this headline">¶</a></h2>
+<p>The library uses python&#8217;s <a class="reference external" href="http://docs.python.org/library/logging.html">logging</a> module to keep a history of what it has been
+doing. In particular, every wrapped Gromacs command logs its command line
+(including piped input) to the log file (configured in
+<a title="gromacs.config.logfilename" class="reference external" href="core.html#gromacs.config.logfilename"><tt class="xref docutils literal"><span class="pre">gromacs.config.logfilename</span></tt></a>). This facilitates debugging or simple
+re-use of command lines for very quick and dirty work. The logging facilty
+appends to the log file and time-stamps every entry. See <a title="" class="reference external" href="core.html#module-gromacs.config"><tt class="xref docutils literal"><span class="pre">gromacs.config</span></tt></a>
+for more details on configuration.</p>
+</div>
+<div class="section" id="version">
+<h2>Version<a class="headerlink" href="#version" title="Permalink to this headline">¶</a></h2>
+<p>The package version can be queried with the <a title="gromacs.get_version" class="reference internal" href="#gromacs.get_version"><tt class="xref docutils literal"><span class="pre">gromacs.get_version()</span></tt></a> function.</p>
+<dl class="function">
+<dt id="gromacs.get_version">
+<tt class="descclassname">gromacs.</tt><tt class="descname">get_version</tt><big>(</big><big>)</big><a class="headerlink" href="#gromacs.get_version" title="Permalink to this definition">¶</a></dt>
+<dd>Return current package version as a string.</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#"><tt class="docutils literal"><span class="pre">gromacs</span></tt> &#8211; GromacsWrapper Package Overview</a><ul>
+<li><a class="reference external" href="#modules">Modules</a></li>
+<li><a class="reference external" href="#examples">Examples</a><ul>
+<li><a class="reference external" href="#getting-help">Getting help</a></li>
+<li><a class="reference external" href="#simple-usage">Simple usage</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#warnings-and-exceptions">Warnings and Exceptions</a></li>
+<li><a class="reference external" href="#logging">Logging</a></li>
+<li><a class="reference external" href="#version">Version</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="../gromacs.html"
+                                  title="previous chapter">Gromacs package</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="core.html"
+                                  title="next chapter">Gromacs core modules</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/gromacs/init.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="core.html" title="Gromacs core modules"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../gromacs.html" title="Gromacs package"
+             >previous</a> |</li>
+        <li><a href="../index.html">GromacsWrapper v0.1.8 documentation</a> &raquo;</li>
+          <li><a href="../gromacs.html" >Gromacs package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009-2010, Oliver Beckstein.
+      Last updated on Mar 24, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

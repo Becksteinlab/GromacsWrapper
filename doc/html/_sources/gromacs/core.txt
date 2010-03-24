@@ -1,0 +1,27 @@
+======================
+ Gromacs core modules
+======================
+
+This section documents the modules, classes, and functions on which
+the other parts of the package rely. The information is probably
+mostly relevant to anyone who wants to extend the package.
+
+.. automodule:: gromacs.core
+.. automodule:: gromacs.config   
+.. automodule:: gromacs.tools
+   :members: Mdrun, GridMAT_MD
+   
+   The documentation of all wrapped gromacs tools is auto-generated
+   and can be found in :doc:`Wrapped Gromacs Tools <tools>`. Here only
+   two examples (:class:`~gromacs.tools.Mdrun` and
+   :class:`~gromacs.tools.GridMAT_MD`) are shown.
+
+.. automodule:: gromacs.formats
+.. automodule:: gromacs.utilities
+
+Related contents:
+
+.. toctree::
+   :maxdepth: 1
+
+   tools.txt

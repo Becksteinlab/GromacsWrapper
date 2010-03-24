@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>edPDB – editing PDB files &mdash; GromacsWrapper v0.1.8 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1.8',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="GromacsWrapper v0.1.8 documentation" href="../index.html" />
+    <link rel="up" title="edPDB — Simple processing of PDB files" href="../edpdb.html" />
+    <link rel="next" title="edPDB.cbook – Recipes for editing PDB files" href="cbook.html" />
+    <link rel="prev" title="edPDB — Simple processing of PDB files" href="../edpdb.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="cbook.html" title="edPDB.cbook – Recipes for editing PDB files"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../edpdb.html" title="edPDB — Simple processing of PDB files"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">GromacsWrapper v0.1.8 documentation</a> &raquo;</li>
+          <li><a href="../edpdb.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">edPDB</span></tt> &#8212; Simple processing of PDB files</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="edpdb-editing-pdb-files">
+<span id="module-edPDB"></span><h1><tt class="xref docutils literal"><span class="pre">edPDB</span></tt> &#8211; editing PDB files<a class="headerlink" href="#edpdb-editing-pdb-files" title="Permalink to this headline">¶</a></h1>
+<p>A collection of python snippets to quickly edit pdb files. This is
+typically used for setting up system for MD simulations.</p>
+<p>Typically, one instantiates a <a title="edPDB.cbook.PDB" class="reference external" href="cbook.html#edPDB.cbook.PDB"><tt class="xref docutils literal"><span class="pre">edPDB.cbook.PDB</span></tt></a> object (which
+can also be accessed as <tt class="xref docutils literal"><span class="pre">edPDB.PDB</span></tt>) and uses the methods
+defined on it to write new pdb files.</p>
+<p>The cook book <a title="" class="reference external" href="cbook.html#module-edPDB.cbook"><tt class="xref docutils literal"><span class="pre">edPDB.cbook</span></tt></a> contains some more specialized
+functions that are not integrated into <a title="edPDB.cbook.PDB" class="reference external" href="cbook.html#edPDB.cbook.PDB"><tt class="xref docutils literal"><span class="pre">PDB</span></tt></a> yet;
+study the source and use them as examples.</p>
+<p>Built on top of <tt class="xref docutils literal"><span class="pre">Bio.PDB</span></tt> from <a class="reference external" href="http://biopython.org">Biopython</a>.</p>
+<div class="section" id="modules">
+<h2>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt><a title="" class="reference external" href="cbook.html#module-edPDB.cbook"><tt class="xref docutils literal"><span class="pre">edPDB.cbook</span></tt></a></dt>
+<dd>Cook-book with short functions that show how to implement basic
+functionality.</dd>
+<dt><a title="" class="reference external" href="xpdb.html#module-edPDB.xpdb"><tt class="xref docutils literal"><span class="pre">edPDB.xpdb</span></tt></a></dt>
+<dd>Extensions to the Bio.PDB class.</dd>
+<dt><a title="" class="reference external" href="selections.html#module-edPDB.selections"><tt class="xref docutils literal"><span class="pre">edPDB.selections</span></tt></a></dt>
+<dd>Selections that can be used to extract parts of a pdb.</dd>
+</dl>
+</div>
+<div class="section" id="future-plans">
+<h2>Future plans<a class="headerlink" href="#future-plans" title="Permalink to this headline">¶</a></h2>
+<p>Eventually using this module should become as intuitive as <tt class="docutils literal"><span class="pre">grep</span></tt>,
+<tt class="docutils literal"><span class="pre">sed</span></tt> and <tt class="docutils literal"><span class="pre">cat</span></tt> of pdb files.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#"><tt class="docutils literal"><span class="pre">edPDB</span></tt> &#8211; editing PDB files</a><ul>
+<li><a class="reference external" href="#modules">Modules</a></li>
+<li><a class="reference external" href="#future-plans">Future plans</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="../edpdb.html"
+                                  title="previous chapter"><tt class="docutils literal docutils literal docutils literal docutils literal"><span class="pre">edPDB</span></tt> &#8212; Simple processing of PDB files</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="cbook.html"
+                                  title="next chapter"><tt class="docutils literal docutils literal"><span class="pre">edPDB.cbook</span></tt> &#8211; Recipes for editing PDB files</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/edpdb/init.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cbook.html" title="edPDB.cbook – Recipes for editing PDB files"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../edpdb.html" title="edPDB — Simple processing of PDB files"
+             >previous</a> |</li>
+        <li><a href="../index.html">GromacsWrapper v0.1.8 documentation</a> &raquo;</li>
+          <li><a href="../edpdb.html" ><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">edPDB</span></tt> &#8212; Simple processing of PDB files</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009-2010, Oliver Beckstein.
+      Last updated on Mar 24, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

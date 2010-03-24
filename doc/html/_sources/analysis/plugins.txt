@@ -1,0 +1,31 @@
+.. $Id$
+
+====================
+  Analysis plugins
+====================
+
+Analysis plugins consist of a book-keeping class derived from
+:class:`gromacs.analysis.core.Plugin` and a "worker" class (a child of
+:class:`gromacs.analysis.core.Worker`), which contains the actual
+analysis code.
+
+----------
+ Plugins
+----------
+
+Plugin modules are named like the plugin class but the filename is all
+lower case. All plugin classes are available in the
+:mod:`gromacs.analysis.plugins` name space.
+
+.. automodule:: gromacs.analysis.plugins
+
+-----------------
+ Helper modules	
+-----------------
+
+Various helper classes that can be used by plugins. Because they are
+not necessarily restricted to a single plugin they have been moved
+into separate modules for code reuse.
+
+.. automodule:: gromacs.analysis.plugins.dist
+.. automodule:: gromacs.analysis.plugins.gridmatmd
