@@ -139,7 +139,7 @@ submission system commands. The table shows <a class="reference" href="SunGriden
 regular expression pattern (&#8220;regex&#8221;) is used to find the lines for the
 replacement and the literal default values (&#8220;default&#8221;) are replaced. Not all
 place holders have to occur in a template; for instance, if a queue has no run
-time limitation then one would probably not include <em>walltime</em> and <em>WALL_HOUR</em>
+time limitation then one would probably not include <em>walltime</em> and <em>WALL_HOURS</em>
 place holders.</p>
 <p>The line <tt class="docutils literal"><span class="pre">#</span> <span class="pre">JOB_ARRAY_PLACEHOLDER</span></tt> can be replaced by
 <a title="gromacs.qsub.generate_submit_array" class="reference" href="#gromacs.qsub.generate_submit_array"><tt class="xref docutils literal"><span class="pre">generate_submit_array()</span></tt></a> to produce a &#8220;job array&#8221;
@@ -453,7 +453,7 @@ directory.</p>
 <h2>Queuing system Manager<a class="headerlink" href="#queuing-system-manager" title="Permalink to this headline">¶</a></h2>
 <p>The <a title="gromacs.qsub.Manager" class="reference" href="#gromacs.qsub.Manager"><tt class="xref docutils literal"><span class="pre">Manager</span></tt></a> class must be customized for each system such as
 a cluster or a super computer. It then allows submission and control of
-jobs remotely (using ssh).</p>
+jobs remotely (using <a class="reference" href="http://www.openssh.com/">ssh</a>).</p>
 <dl class="class">
 <dt id="gromacs.qsub.Manager">
 <em class="property">class </em><tt class="descclassname">gromacs.qsub.</tt><tt class="descname">Manager</tt><big>(</big><em>dirname='.'</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.qsub.Manager" title="Permalink to this definition">¶</a></dt>
@@ -462,11 +462,11 @@ jobs remotely (using ssh).</p>
 <p>Derive a class from <a title="gromacs.qsub.Manager" class="reference" href="#gromacs.qsub.Manager"><tt class="xref docutils literal"><span class="pre">Manager</span></tt></a> and override the attributes</p>
 <blockquote>
 <ul class="simple">
-<li><tt class="xref docutils literal"><span class="pre">Manager._hostname</span></tt> (hostname of the machine)</li>
-<li><tt class="xref docutils literal"><span class="pre">Manager._scratchdir</span></tt> (all files and directories will be created under 
+<li><a title="gromacs.qsub.Manager._hostname" class="reference" href="#gromacs.qsub.Manager._hostname"><tt class="xref docutils literal"><span class="pre">Manager._hostname</span></tt></a> (hostname of the machine)</li>
+<li><a title="gromacs.qsub.Manager._scratchdir" class="reference" href="#gromacs.qsub.Manager._scratchdir"><tt class="xref docutils literal"><span class="pre">Manager._scratchdir</span></tt></a> (all files and directories will be created under 
 this scratch directory; it must be a path on the remote host)</li>
-<li><tt class="xref docutils literal"><span class="pre">Manager._qscript</span></tt> (the default queuing system script template)</li>
-<li><tt class="xref docutils literal"><span class="pre">Manager._walltime</span></tt> (if there is a limit to the run time
+<li><a title="gromacs.qsub.Manager._qscript" class="reference" href="#gromacs.qsub.Manager._qscript"><tt class="xref docutils literal"><span class="pre">Manager._qscript</span></tt></a> (the default queuing system script template)</li>
+<li><a title="gromacs.qsub.Manager._walltime" class="reference" href="#gromacs.qsub.Manager._walltime"><tt class="xref docutils literal"><span class="pre">Manager._walltime</span></tt></a> (if there is a limit to the run time
 of a job; in hours)</li>
 </ul>
 </blockquote>
@@ -500,14 +500,51 @@ be different for different jobs)  [basename(CWD)]</p>
 </tr>
 </tbody>
 </table>
+<dl class="attribute">
+<dt id="gromacs.qsub.Manager._hostname">
+<tt class="descname">_hostname</tt><a class="headerlink" href="#gromacs.qsub.Manager._hostname" title="Permalink to this definition">¶</a></dt>
+<dd>hostname of the super computer (<strong>required</strong>)</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.qsub.Manager._scratchdir">
+<tt class="descname">_scratchdir</tt><a class="headerlink" href="#gromacs.qsub.Manager._scratchdir" title="Permalink to this definition">¶</a></dt>
+<dd>scratch dir on hostname (<strong>required</strong>)</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.qsub.Manager._qscript">
+<tt class="descname">_qscript</tt><a class="headerlink" href="#gromacs.qsub.Manager._qscript" title="Permalink to this definition">¶</a></dt>
+<dd>name of the template submission script appropriate for the
+queuing system on <a title="gromacs.qsub.Manager._hostname" class="reference" href="#gromacs.qsub.Manager._hostname"><tt class="xref docutils literal"><span class="pre">Manager._hostname</span></tt></a>; can be a path to a
+local file or a template stored in
+<a title="gromacs.config.qscriptdir" class="reference" href="../core.html#gromacs.config.qscriptdir"><tt class="xref docutils literal"><span class="pre">gromacs.config.qscriptdir</span></tt></a> or a key for <a title="gromacs.config.templates" class="reference" href="../core.html#gromacs.config.templates"><tt class="xref docutils literal"><span class="pre">gromacs.config.templates</span></tt></a> (<strong>required</strong>)</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.qsub.Manager._walltime">
+<tt class="descname">_walltime</tt><a class="headerlink" href="#gromacs.qsub.Manager._walltime" title="Permalink to this definition">¶</a></dt>
+<dd>maximum run time of script in hours; the queuing system script
+<a title="gromacs.qsub.Manager._qscript" class="reference" href="#gromacs.qsub.Manager._qscript"><tt class="xref docutils literal"><span class="pre">Manager._qscript</span></tt></a> is supposed to stop <strong>mdrun</strong>
+after 99% of this time via the <tt class="docutils literal"><span class="pre">-maxh</span></tt> option. A value of
+<tt class="xref docutils literal"><span class="pre">None</span></tt> or <tt class="docutils literal"><span class="pre">inf</span></tt> indicates no limit.</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.qsub.Manager.job_done">
+<tt class="descname">job_done</tt><big>(</big><big>)</big><a class="headerlink" href="#gromacs.qsub.Manager.job_done" title="Permalink to this definition">¶</a></dt>
+<dd>alias for <a title="gromacs.qsub.Manager.get_status" class="reference" href="#gromacs.qsub.Manager.get_status"><tt class="xref docutils literal"><span class="pre">get_status()</span></tt></a></dd></dl>
+
+<dl class="method">
+<dt id="gromacs.qsub.Manager.qstat">
+<tt class="descname">qstat</tt><big>(</big><big>)</big><a class="headerlink" href="#gromacs.qsub.Manager.qstat" title="Permalink to this definition">¶</a></dt>
+<dd>alias for <a title="gromacs.qsub.Manager.get_status" class="reference" href="#gromacs.qsub.Manager.get_status"><tt class="xref docutils literal"><span class="pre">get_status()</span></tt></a></dd></dl>
+
 <dl class="method">
 <dt id="gromacs.qsub.Manager.cat">
 <tt class="descname">cat</tt><big>(</big><em>dirname</em>, <em>prefix='md'</em>, <em>cleanup=True</em><big>)</big><a class="headerlink" href="#gromacs.qsub.Manager.cat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Concatenate parts of a run in <em>dirname</em>.</p>
-<p>Always uses <tt class="xref docutils literal"><span class="pre">gromacs.cbook.cat(resolve_multi='guess')()</span></tt>.</p>
+<p>Always uses <a title="gromacs.cbook.cat" class="reference" href="cbook.html#gromacs.cbook.cat"><tt class="xref docutils literal"><span class="pre">gromacs.cbook.cat()</span></tt></a> with <em>resolve_multi</em> = &#8216;guess&#8217;.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The default is to immediately delete the original files.</p>
+<p class="last">The default is to immediately delete the original files
+(<em>cleanup</em> = <tt class="xref docutils literal"><span class="pre">True</span></tt>).</p>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -521,7 +558,7 @@ be different for different jobs)  [basename(CWD)]</p>
 <dd><p class="first last">prefix (deffnm) of the files [md]</p>
 </dd>
 <dt><em>cleanup</em> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
-<dd><p class="first last">if <tt class="xref docutils literal"><span class="pre">True</span></tt>, remove all used files [True]</p>
+<dd><p class="first last">if <tt class="xref docutils literal"><span class="pre">True</span></tt>, remove all used files [<tt class="xref docutils literal"><span class="pre">True</span></tt>]</p>
 </dd>
 </dl>
 </td>
@@ -570,41 +607,7 @@ available (which is saved in <tt class="xref docutils literal"><span class="pre"
 <tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
 <li><em>dirname</em></li>
 <li><em>logfilename</em> can be a shell glob pattern [md*.log]</li>
-<li><em>silent</em> = True/False; True suppreses log.info messages</li>
-</ul>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt> is job is done, <tt class="xref docutils literal"><span class="pre">False</span></tt> if still running
-<tt class="xref docutils literal"><span class="pre">None</span></tt> if no log file found to look at</p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Also returns <tt class="xref docutils literal"><span class="pre">False</span></tt> if the connection failed.</p>
-</div>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">This is an important but somewhat  <strong>fragile</strong> method. It
-needs to be improved to be more robust.</p>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="gromacs.qsub.Manager.job_done">
-<tt class="descname">job_done</tt><big>(</big><em>dirname</em>, <em>logfilename='md*.log'</em>, <em>silent=False</em><big>)</big><a class="headerlink" href="#gromacs.qsub.Manager.job_done" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check status of remote job by looking into the logfile.</p>
-<p>Report on the status of the job and extracts the performance in ns/d if
-available (which is saved in <tt class="xref docutils literal"><span class="pre">Manager.performance</span></tt>).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
-<li><em>dirname</em></li>
-<li><em>logfilename</em> can be a shell glob pattern [md*.log]</li>
-<li><em>silent</em> = True/False; True suppreses log.info messages</li>
+<li><em>silent</em> = True/False; True suppresses log.info messages</li>
 </ul>
 </td>
 </tr>
@@ -645,7 +648,8 @@ remote host.</p>
 <dl class="attribute">
 <dt id="gromacs.qsub.Manager.log_RE">
 <tt class="descname">log_RE</tt><a class="headerlink" href="#gromacs.qsub.Manager.log_RE" title="Permalink to this definition">¶</a></dt>
-<dd>used by <a title="gromacs.qsub.Manager.get_status" class="reference" href="#gromacs.qsub.Manager.get_status"><tt class="xref docutils literal"><span class="pre">Manager.get_status()</span></tt></a></dd></dl>
+<dd>Regular expression used by <a title="gromacs.qsub.Manager.get_status" class="reference" href="#gromacs.qsub.Manager.get_status"><tt class="xref docutils literal"><span class="pre">Manager.get_status()</span></tt></a> to parse
+the logfile from <strong>mdrun</strong>.</dd></dl>
 
 <dl class="method">
 <dt id="gromacs.qsub.Manager.ndependent">
@@ -712,48 +716,15 @@ n = ceil(runtime/(performance*0.99*walltime)</blockquote>
 </dd></dl>
 
 <dl class="method">
-<dt id="gromacs.qsub.Manager.qstat">
-<tt class="descname">qstat</tt><big>(</big><em>dirname</em>, <em>logfilename='md*.log'</em>, <em>silent=False</em><big>)</big><a class="headerlink" href="#gromacs.qsub.Manager.qstat" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check status of remote job by looking into the logfile.</p>
-<p>Report on the status of the job and extracts the performance in ns/d if
-available (which is saved in <tt class="xref docutils literal"><span class="pre">Manager.performance</span></tt>).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
-<li><em>dirname</em></li>
-<li><em>logfilename</em> can be a shell glob pattern [md*.log]</li>
-<li><em>silent</em> = True/False; True suppreses log.info messages</li>
-</ul>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt> is job is done, <tt class="xref docutils literal"><span class="pre">False</span></tt> if still running
-<tt class="xref docutils literal"><span class="pre">None</span></tt> if no log file found to look at</p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Also returns <tt class="xref docutils literal"><span class="pre">False</span></tt> if the connection failed.</p>
-</div>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">This is an important but somewhat  <strong>fragile</strong> method. It
-needs to be improved to be more robust.</p>
-</div>
-</dd></dl>
-
-<dl class="method">
 <dt id="gromacs.qsub.Manager.qsub">
 <tt class="descname">qsub</tt><big>(</big><em>dirname</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.qsub.Manager.qsub" title="Permalink to this definition">¶</a></dt>
-<dd><p>Submit remotely on host.</p>
-<dl class="docutils">
-<dt>This is simplest implementation: it just runs the commands::</dt>
-<dd>cd &lt;remotedir&gt;
-qsub &lt;qscript&gt;</dd>
-</dl>
+<dd><p>Submit job remotely on host.</p>
+<p>This is the most primitive implementation: it just runs the commands</p>
+<div class="highlight-python"><pre>cd remotedir &amp;&amp; qsub qscript</pre>
+</div>
+<p>on <a title="gromacs.qsub.Manager._hostname" class="reference" href="#gromacs.qsub.Manager._hostname"><tt class="xref docutils literal"><span class="pre">Manager._hostname</span></tt></a>. <em>remotedir</em> is <em>dirname</em> under
+<a title="gromacs.qsub.Manager._scratchdir" class="reference" href="#gromacs.qsub.Manager._scratchdir"><tt class="xref docutils literal"><span class="pre">Manager._scratchdir</span></tt></a> and <em>qscript</em> defaults to the queuing system
+script hat was produced from the template <a title="gromacs.qsub.Manager._qscript" class="reference" href="#gromacs.qsub.Manager._qscript"><tt class="xref docutils literal"><span class="pre">Manager._qscript</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">

@@ -128,6 +128,7 @@ gromacs.cbook.trj_compact function gromacs/blocks/cbook.html
 edPDB.selections.find_water function edpdb/selections.html
 gromacs.tools.G_bond class gromacs/tools.html
 gromacs.tools.GridMAT_MD.GridMAT_MD class gromacs/tools.html
+gromacs.qsub.Manager._qscript attribute gromacs/blocks/qsub.html
 gromacs.cbook.IndexBuilder class gromacs/blocks/cbook.html
 gromacs.core.GromacsCommand.failuremodes attribute gromacs/core.html
 gromacs.run.MDrunner.prehook method gromacs/blocks/simulation.html
@@ -156,6 +157,7 @@ gromacs.tools.G_covar class gromacs/tools.html
 gromacs.qsub.Manager.remoteuri method gromacs/blocks/qsub.html
 gromacs.analysis.core.Plugin.worker attribute analysis/core.html
 gromacs.analysis.plugins.RMSD.worker_class attribute analysis/plugins.html
+gromacs.qsub.Manager._hostname attribute gromacs/blocks/qsub.html
 gromacs.tools.G_filter class gromacs/tools.html
 gromacs.formats.XVG.errorbar method gromacs/core.html
 gromacs.core.PopenWithInput.communicate method gromacs/core.html
@@ -205,6 +207,7 @@ gromacs.formats.uniqueNDX class gromacs/core.html
 gromacs.analysis.core.Simulation.add_plugin method analysis/core.html
 gromacs.formats.XVG.write method gromacs/core.html
 gromacs.tools.GromacsCommandMultiIndex class gromacs/tools.html
+gromacs.qsub.Manager._walltime attribute gromacs/blocks/qsub.html
 gromacs.tools.G_polystat class gromacs/tools.html
 gromacs.utilities.find_first function gromacs/core.html
 gromacs.formats.XVG class gromacs/core.html
@@ -234,6 +237,7 @@ gromacs.analysis.core.Simulation.check_plugin_name method analysis/core.html
 gromacs.analysis.plugins.Trajectories class analysis/plugins.html
 gromacs.config.loglevel_file data gromacs/core.html
 gromacs.tools.G_msd class gromacs/tools.html
+gromacs.qsub.Manager._scratchdir attribute gromacs/blocks/qsub.html
 gromacs.cbook.Frames class gromacs/blocks/cbook.html
 edPDB.selections.canonical function edpdb/selections.html
 gromacs.formats.NDX.set method gromacs/core.html

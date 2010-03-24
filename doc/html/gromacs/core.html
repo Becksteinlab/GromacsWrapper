@@ -409,16 +409,18 @@ configuration options currently hard-coded in <tt class="xref docutils literal">
 <dl class="data">
 <dt id="gromacs.config.configdir">
 <tt class="descclassname">gromacs.config.</tt><tt class="descname">configdir</tt><a class="headerlink" href="#gromacs.config.configdir" title="Permalink to this definition">¶</a></dt>
-<dd>Directory to store user templates and rc files.</dd></dl>
+<dd>Directory to store user templates and rc files.
+The default value is <tt class="docutils literal"><span class="pre">~/.gromacswrapper</span></tt>.</dd></dl>
 
 <dl class="data">
 <dt id="gromacs.config.path">
 <tt class="descclassname">gromacs.config.</tt><tt class="descname">path</tt><a class="headerlink" href="#gromacs.config.path" title="Permalink to this definition">¶</a></dt>
-<dd>Search path for queuing scripts and templates. The internal package-supplied
-templates are always searcheded last via <a title="gromacs.config.get_templates" class="reference" href="#gromacs.config.get_templates"><tt class="xref docutils literal"><span class="pre">gromacs.config.get_templates()</span></tt></a>.
+<dd>Search path for user queuing scripts and templates. The internal package-supplied
+templates are always searched last via <a title="gromacs.config.get_templates" class="reference" href="#gromacs.config.get_templates"><tt class="xref docutils literal"><span class="pre">gromacs.config.get_templates()</span></tt></a>.
 Modify <a title="gromacs.config.path" class="reference" href="#gromacs.config.path"><tt class="xref docutils literal"><span class="pre">gromacs.config.path</span></tt></a> directly in order to customize the template
-and qscript searching.
-(Note that it is not a good idea to have templates and qscripts with the
+and qscript searching. By default it has the value <tt class="docutils literal"><span class="pre">['.',</span> <span class="pre">qscriptdir,</span>
+<span class="pre">templatesdir]</span></tt>.
+(Note that it is not a good idea to have template files and qscripts with the
 same name as they are both searched on the same path.)</dd></dl>
 
 <div class="section" id="logging">
@@ -510,12 +512,14 @@ completely transparent to the user.</p>
 <dl class="data">
 <dt id="gromacs.config.qscriptdir">
 <tt class="descclassname">gromacs.config.</tt><tt class="descname">qscriptdir</tt><a class="headerlink" href="#gromacs.config.qscriptdir" title="Permalink to this definition">¶</a></dt>
-<dd>Directory to store user supplied queuing system scripts.</dd></dl>
+<dd>Directory to store user supplied queuing system scripts.
+The default value is <tt class="docutils literal"><span class="pre">~/.gromacswrapper/qscripts</span></tt>.</dd></dl>
 
 <dl class="data">
 <dt id="gromacs.config.templatesdir">
 <tt class="descclassname">gromacs.config.</tt><tt class="descname">templatesdir</tt><a class="headerlink" href="#gromacs.config.templatesdir" title="Permalink to this definition">¶</a></dt>
-<dd>Directory to store user supplied template files such as mdp files.</dd></dl>
+<dd>Directory to store user supplied template files such as mdp files.
+The default value is <tt class="docutils literal"><span class="pre">~/.gromacswrapper/templates</span></tt>.</dd></dl>
 
 <dl class="data">
 <dt id="gromacs.config.templates">

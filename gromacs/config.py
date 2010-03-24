@@ -107,22 +107,26 @@ loglevel_file = logging.DEBUG
 # -----------------------------
 
 #: Directory to store user templates and rc files.
+#: The default value is ``~/.gromacswrapper``.
 configdir = os.path.expanduser(os.path.join("~",".gromacswrapper"))
 utilities.mkdir_p(configdir)
 
 #: Directory to store user supplied queuing system scripts.
+#: The default value is ``~/.gromacswrapper/qscripts``.
 qscriptdir = os.path.join(configdir, 'qscripts')
 utilities.mkdir_p(qscriptdir)
 
 #: Directory to store user supplied template files such as mdp files.
+#: The default value is ``~/.gromacswrapper/templates``.
 templatesdir = os.path.join(configdir, 'templates')
 utilities.mkdir_p(templatesdir)
 
-#: Search path for queuing scripts and templates. The internal package-supplied
-#: templates are always searcheded last via :func:`gromacs.config.get_templates`. 
+#: Search path for user queuing scripts and templates. The internal package-supplied
+#: templates are always searched last via :func:`gromacs.config.get_templates`. 
 #: Modify :data:`gromacs.config.path` directly in order to customize the template 
-#: and qscript searching.
-#: (Note that it is not a good idea to have templates and qscripts with the
+#: and qscript searching. By default it has the value ``['.', qscriptdir,
+#: templatesdir]``. 
+#: (Note that it is not a good idea to have template files and qscripts with the
 #: same name as they are both searched on the same path.)
 path = [os.path.curdir, qscriptdir, templatesdir]
 

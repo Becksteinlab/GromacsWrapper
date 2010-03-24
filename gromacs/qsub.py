@@ -201,12 +201,19 @@ jobs remotely (using ssh_).
 
 .. autoclass:: Manager
    :members:
-   :exclude-members: job_done get_status
+   :exclude-members: job_done, qstat
 
    .. autoattribute:: _hostname
    .. autoattribute:: _scratchdir
    .. autoattribute:: _qscript
    .. autoattribute:: _walltime
+   .. method:: job_done
+
+               alias for :meth:`get_status`
+
+   .. method:: qstat
+
+               alias for :meth:`get_status`
 
 
 .. _ssh: http://www.openssh.com/
@@ -504,15 +511,17 @@ class Manager(object):
     _scratchdir = None
     #: name of the template submission script appropriate for the
     #: queuing system on :attr:`Manager._hostname`; can be a path to a
-    #: local file or a key for :data:`gromacs.config.templates` (**required**)
+    #: local file or a template stored in
+    #: :data:`gromacs.config.qscriptdir` or a key for :data:`gromacs.config.templates` (**required**)
     _qscript = None
     #: maximum run time of script in hours; the queuing system script
-    #: attr:`Manager._qscript` is supposed to stop :program:`mdrun`
+    #: :attr:`Manager._qscript` is supposed to stop :program:`mdrun`
     #: after 99% of this time via the ``-maxh`` option. A value of
-    #: ``None`` or ``inf`` indicates to limit.
+    #: ``None`` or ``inf`` indicates no limit.
     _walltime = None
 
-    #: used by :meth:`Manager.get_status`
+    #: Regular expression used by :meth:`Manager.get_status` to parse
+    #: the logfile from :program:`mdrun`.
     log_RE = re.compile(r"""
                 Run\stime\sexceeded\s+(?P<exceeded>.*)\s+hours,\swill\sterminate\sthe\srun
                                                                 # another part to come
@@ -666,20 +675,25 @@ class Manager(object):
             shutil.rmtree(partsdir)
     
     def qsub(self, dirname, **kwargs):
-        """Submit remotely on host.
+        """Submit job remotely on host.
 
-        This is simplest implementation: it just runs the commands::
-           cd <remotedir>
-           qsub <qscript>
+        This is the most primitive implementation: it just runs the commands ::
+
+           cd remotedir && qsub qscript
+
+        on :attr:`Manager._hostname`. *remotedir* is *dirname* under
+        :attr:`Manager._scratchdir` and *qscript* defaults to the queuing system
+        script hat was produced from the template :attr:`Manager._qscript`.
         """
 
-        remotedir = self.remotepath(dirname)
-        rc = call(['ssh', self.hostname, 'cd %s && qsub %s' % (remotedir, self.qscript)])
+        remotedir = kwargs.pop('remotedir', self.remotepath(dirname))
+        qscript = kwargs.pop('qscript', os.path.basename(self.qscript))
+        rc = call(['ssh', self.hostname, 'cd %s && qsub %s' % (remotedir, qscript)])
         if rc == 0:
-            self.logger.info("Submitted job on %(hostname)s." % vars(self))
+            self.logger.info("Submitted job %r on %s.", qscript, self.hostname )
         else:
-            self.logger.error("Failed running job on on %s in %r.",
-                           self.hostname, remotedir)
+            self.logger.error("Failed running job %s on %s in %r.",
+                              qscript, self.hostname, remotedir)
         return rc == 0
 
     def get_status(self, dirname, logfilename='md*.log', silent=False):
@@ -691,7 +705,7 @@ class Manager(object):
         :Arguments:
           - *dirname*
           - *logfilename* can be a shell glob pattern [md*.log]
-          - *silent* = True/False; True suppreses log.info messages
+          - *silent* = True/False; True suppresses log.info messages
 
         :Returns: ``True`` is job is done, ``False`` if still running
                   ``None`` if no log file found to look at
