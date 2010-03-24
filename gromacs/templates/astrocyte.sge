@@ -18,6 +18,8 @@ PDB=${DEFFNM}.pdb
 
 MDRUN_OPTS=""
 
+# JOB_ARRAY_PLACEHOLDER
+
 source /cvos/shared/apps/opt/gromacs/4.0.5-openmpi/bin/GMXRC
 source /etc/profile.d/modules.sh
 module add shared openmpi/gcc/64/1.2.8

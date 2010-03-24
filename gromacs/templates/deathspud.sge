@@ -1,4 +1,3 @@
-# $Id$
 # Sun Gridengine run script for 'deathspud'
 #
 #$ -S /bin/bash

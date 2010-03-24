@@ -27,6 +27,8 @@ PDB=${DEFFNM}.pdb
 
 MDRUN_OPTS=""
 
+# JOB_ARRAY_PLACEHOLDER
+
 # use new gromacs 4.x
 module load gromacs/4.0.4
 

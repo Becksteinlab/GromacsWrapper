@@ -1,6 +1,3 @@
-.. $Id$
-
-
 =========================
  Gromacs building blocks
 =========================
@@ -9,7 +6,11 @@
 in setup or analysis scripts or used interactively. These modules act
 as "library" for common tasks.
 
-.. automodule:: gromacs.cbook
-.. automodule:: gromacs.setup
-.. automodule:: gromacs.qsub
-.. automodule:: gromacs.simulation
+.. toctree::
+   :maxdepth: 2
+
+   blocks/cbook
+   blocks/setup
+   blocks/qsub
+   blocks/simulation
+

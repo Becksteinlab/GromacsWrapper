@@ -17,3 +17,4 @@ visualization and analysis tasks.
 
 
 .. automodule:: vmd
+.. automodule:: vmd.control

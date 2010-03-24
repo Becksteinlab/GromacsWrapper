@@ -12,8 +12,12 @@ queuing systems. The known ones are listed stored as
 :data:`~gromacs.qsub.queuing_systems`; append new ones to this list.
 
 The working paradigm is that template scripts are provided (see
-:data:`gromacs.config.templates` for details on the template scripts) and only
-a few place holders are substituted (using :func:`gromacs.cbook.edit_txt`).
+:data:`gromacs.config.templates`) and only a few place holders are substituted
+(using :func:`gromacs.cbook.edit_txt`).
+
+*User-supplied template scripts* can be stored in
+:data:`gromacs.config.qscriptdir` (by default ``~/.gromacswrapper/qscripts``)
+and they will be picked up before the package-supplied ones.
 
 The :class:`~gromacs.qsub.Manager` handles setup and control of jobs
 in a queuing system on a remote system via :program:`ssh`.
@@ -22,8 +26,9 @@ At the moment, some of the functions in :mod:`gromacs.setup` use this module
 but it is fairly independent and could conceivably be used for a wider range of
 projects.
 
-.. autoclass:: Manager
-   :members:
+Classes and functions
+---------------------
+
 .. autoclass:: QueuingSystem
    :members:
 .. autofunction:: generate_submit_scripts
@@ -31,13 +36,6 @@ projects.
 .. autofunction:: detect_queuing_system
 
 .. autodata:: queuing_systems
-
-Queuing system Manager
-----------------------
-
-The :class:`Manager` class must be customized for each system such as
-a cluster or a super computer. It then allows submission and control of
-jobs remotely (using ssh).
 
 
 Queuing system templates
@@ -50,6 +48,7 @@ batch submission system commands. The table shows SGE commands but PBS
 and LoadLeveller have similar constructs; e.g. PBS commands start with
 ``#PBS`` and LoadLeveller uses ``#@`` with its own comman keywords):
 
+.. Table:: Substitutions in queuing system templates.
 ===============  ===========  ================ ================= =====================================
 command          default      replacement      description       regex
 ===============  ===========  ================ ================= =====================================
@@ -58,15 +57,113 @@ command          default      replacement      description       regex
 #$ -A            BUDGET       *budget*         account           /^#.*(-A|account_no)/
 DEFFNM=          md           *deffnm*         default gmx name  /^DEFFNM=/
 WALL_HOURS=      0.33         *walltime* h     mdrun's -maxh     /^WALL_HOURS=/
-MDRUN_OPTS=      ""           *mdrun_opts*     add.options       /^MDRUN_OPTS=/
+MDRUN_OPTS=      ""           *mdrun_opts*     more options      /^MDRUN_OPTS=/
 ===============  ===========  ================ ================= =====================================
 
-These lines should not have any white space at the beginning. The
-regular expression pattern is used to find the lines for the
-replacement and the default values are replaced.
+These lines should not have any white space at the beginning. The regular
+expression pattern is used to find the lines for the replacement and the
+default values are replaced.
 
-The line ``# JOB_ARRAY_PLACEHOLDER`` can be replaced by code to run
-multiple jobs (a job array) from different sub directories.
+The line ``# JOB_ARRAY_PLACEHOLDER`` can be replaced by code to run multiple
+jobs (a job array) from different sub directories. Only queuing system scripts
+that are using the :program:`bash` shell are supported for job arrays at the
+moment.
+
+A queuing system script *must* have the appropriate suffix to be properly
+recognized.
+
+.. Table:: Suffices for queuing system templates. Shell-scripts are only used to run locally.
+==============================  ===========  ===========================
+Queuing system                  suffix       notes
+==============================  ===========  ===========================
+Sun Gridengine                  .sge         Sun's `Sun Gridengine`_
+Portable Batch queuing system   .pbs         OpenPBS_ and `PBS Pro`_
+LoadLeveler                     .ll          IBM's `LoadLeveler`_
+bash script                     .bash, .sh   `Advanced bash scripting`_
+csh script                      .csh         avoid_ csh_
+==============================  ===========  ===========================
+
+.. _OpenPBS: http://www.mcs.anl.gov/research/projects/openpbs/
+.. _PBS Pro: http://www.pbsworks.com/Product.aspx?id=1
+.. _Sun Gridengine: http://gridengine.sunsource.net/
+.. _LoadLeveler: http://www-03.ibm.com/systems/software/loadleveler/index.html
+.. _ABS: http://tldp.org/LDP/abs/html/
+.. _avoid: http://www.grymoire.com/Unix/CshTop10.txt
+.. _csh: http://www.faqs.org/faqs/unix-faq/shell/csh-whynot/
+
+Example queuing system script template for PBS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The following script is a usable PBS_ script. It contains almost all of the
+replacement tokens listed in the table (indicated by ++++++; these values
+should be kept in the template as they are). ::
+
+   #!/bin/bash
+   #PBS -N GMX_MD
+   #       ++++++
+   #PBS -j oe
+   #PBS -l select=8:ncpus=8:mpiprocs=8
+   #PBS -l walltime=00:20:00
+   #                ++++++++
+
+   # host: cluster.somewhere.fr
+   # queuing system: PBS
+
+   # set this to the same value as walltime; mdrun will stop cleanly
+   # at 0.99 * WALL_HOURS 
+   WALL_HOURS=0.33
+   #          ++++
+
+   # deffnm line is possibly modified by gromacs.setup
+   # (leave it as it is in the template)
+   DEFFNM=md
+   #      ++
+
+   TPR=${DEFFNM}.tpr
+   OUTPUT=${DEFFNM}.out
+   PDB=${DEFFNM}.pdb
+
+   MDRUN_OPTS=""
+   #          ++
+
+   # If you always want to add additional MDRUN options in this script the
+   # you can either do this directly in the mdrun commandline below or by
+   # constructs such as the following:
+   ## MDRUN_OPTIONS="-npme 24 $MDRUN_OPTIONS"
+
+   # JOB_ARRAY_PLACEHOLDER
+   #++++++++++++++++++++++   leave the full commented line intact!
+
+   # avoids some failures
+   export MPI_GROUP_MAX=1024
+   # use hard coded path for time being
+   GMXBIN="/opt/software/SGI/gromacs/4.0.3/bin"
+   MPIRUN=/usr/pbs/bin/mpiexec
+   APPLICATION=$GMXBIN/mdrun_mpi
+   
+   $MPIRUN $APPLICATION -step 1000 -deffnm ${DEFFNM} -s ${TPR} -c ${PDB} -cpi \
+                        $MDRUN_OPTS \
+                        -maxh ${WALL_HOURS} > $OUTPUT
+   rc=$?
+
+   # dependent jobs will only start if rc == 0
+   exit $rc
+
+Currently there is no good way to specify the number of preocessors when
+creating run scripts. You will need to provided scripts with different numbers
+of cores hard coded or set them when submitting the scripts.
+
+
+Queuing system Manager
+----------------------
+
+The :class:`Manager` class must be customized for each system such as
+a cluster or a super computer. It then allows submission and control of
+jobs remotely (using ssh).
+
+.. autoclass:: Manager
+   :members:
+
 
 """
 
@@ -258,7 +355,7 @@ def generate_submit_scripts(templates, prefix=None, deffnm='md', jobname='MD', b
         logger.info("Setting up queuing system script %(submitscript)r..." % vars())
         # These substitution rules are documented for the user in gromacs.config:
         gromacs.cbook.edit_txt(template,
-                               [('^ *DEFFNM=','md',deffnm), 
+                               [('^ *DEFFNM=','md', deffnm), 
                                 ('^#.*(-N|job_name)', 'GMX_MD', jobname),
                                 ('^#.*(-A|account_no)', 'BUDGET', budget),
                                 ('^#.*(-l walltime|wall_clock_limit)', '00:20:00', walltime),

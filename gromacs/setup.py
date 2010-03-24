@@ -706,7 +706,7 @@ def _setup_MD(dirname,
     mdp = deffnm + '.mdp'
     tpr = deffnm + '.tpr'
     mainindex = deffnm + '.ndx'
-    final_structure = deffnm + '.gro'     # guess... really depends on templates
+    final_structure = deffnm + '.gro'   # guess... really depends on templates,could also be DEFFNM.pdb
 
     # write the processed topology to the default output
     mdp_parameters = {'nsteps':nsteps, 'dt':dt, 'pp': 'processed.top'}
