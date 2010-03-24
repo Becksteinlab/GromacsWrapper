@@ -57,7 +57,7 @@ Lines with place holders should not have any white space at the beginning. The
 regular expression pattern ("regex") is used to find the lines for the
 replacement and the literal default values ("default") are replaced. Not all
 place holders have to occur in a template; for instance, if a queue has no run
-time limitation then one would probably not include *walltime* and *WALL_HOUR*
+time limitation then one would probably not include *walltime* and *WALL_HOURS*
 place holders.
 
 The line ``# JOB_ARRAY_PLACEHOLDER`` can be replaced by
@@ -197,12 +197,20 @@ Queuing system Manager
 
 The :class:`Manager` class must be customized for each system such as
 a cluster or a super computer. It then allows submission and control of
-jobs remotely (using ssh).
+jobs remotely (using ssh_).
 
 .. autoclass:: Manager
    :members:
+   :exclude-members: job_done get_status
+
+   .. autoattribute:: _hostname
+   .. autoattribute:: _scratchdir
+   .. autoattribute:: _qscript
+   .. autoattribute:: _walltime
 
 
+.. _ssh: http://www.openssh.com/
+.. _~/.ssh/config: http://linux.die.net/man/5/ssh_config
 """
 
 import os, errno
@@ -487,10 +495,6 @@ class Manager(object):
 
     in ``~/.ssh/config`` and also set up public-key authentication in
     order to avoid typing your password all the time.
-
-    .. _ssh: http://www.openssh.com/
-    .. _~/.ssh/config: http://linux.die.net/man/5/ssh_config
-
     """
 
     # override
@@ -634,9 +638,10 @@ class Manager(object):
     def cat(self, dirname, prefix='md', cleanup=True):
         """Concatenate parts of a run in *dirname*.
 
-        Always uses :func:`gromacs.cbook.cat(resolve_multi='guess')`.
+        Always uses :func:`gromacs.cbook.cat` with *resolve_multi* = 'guess'.
 
-        .. Note:: The default is to immediately delete the original files.
+        .. Note:: The default is to immediately delete the original files
+                  (*cleanup* = ``True``).
 
         :Keywords:
            *dirname*
@@ -644,7 +649,7 @@ class Manager(object):
            *prefix*
               prefix (deffnm) of the files [md]
            *cleanup* : boolean
-              if ``True``, remove all used files [True]
+              if ``True``, remove all used files [``True``]
         """
         gromacs.cbook.cat(prefix, dirname=dirname, resolve_multi='guess')
         # cleanup/get stuff back
