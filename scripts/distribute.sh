@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# XXX: would be nice to get version from setup.py and patch it into
-# XXX: doc/sphinx/source/conf.py
-
 PACKAGE=GromacsWrapper
 EPYDOC_DIRS="gromacs gromacs/analysis/plugins/ vmd/ edPDB/"
 PDF=GromacsWrapper.pdf

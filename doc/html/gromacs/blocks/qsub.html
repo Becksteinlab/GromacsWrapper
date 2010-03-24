@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.qsub – utilities for batch submission systems &mdash; GromacsWrapper v0.1 documentation</title>
+    <title>gromacs.qsub – utilities for batch submission systems &mdash; GromacsWrapper v0.1.8 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.1',
+        VERSION:     '0.1.8',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,9 +19,9 @@
     </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.1 documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper v0.1.8 documentation" href="../../index.html" />
     <link rel="up" title="Gromacs building blocks" href="../building_blocks.html" />
-    <link rel="next" title="<no title>" href="simulation.html" />
+    <link rel="next" title="gromacs.run – Running simulations" href="simulation.html" />
     <link rel="prev" title="gromacs.setup – Setting up a Gromacs MD run" href="setup.html" /> 
   </head>
   <body>
@@ -35,12 +35,12 @@
           <a href="../../modindex.html" title="Global Module Index"
              accesskey="M">modules</a> |</li>
         <li class="right" >
-          <a href="simulation.html" title="<no title>"
+          <a href="simulation.html" title="gromacs.run – Running simulations"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="setup.html" title="gromacs.setup – Setting up a Gromacs MD run"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.1.8 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" accesskey="U">Gromacs building blocks</a> &raquo;</li> 
       </ul>
@@ -68,6 +68,202 @@ in a queuing system on a remote system via <strong>ssh</strong>.</p>
 <p>At the moment, some of the functions in <a title="" class="reference external" href="setup.html#module-gromacs.setup"><tt class="xref docutils literal"><span class="pre">gromacs.setup</span></tt></a> use this module
 but it is fairly independent and could conceivably be used for a wider range of
 projects.</p>
+<div class="section" id="queuing-system-templates">
+<h2>Queuing system templates<a class="headerlink" href="#queuing-system-templates" title="Permalink to this headline">¶</a></h2>
+<p>The queuing system scripts are highly specific and you will need to add
+your own.  Templates should be shell scripts. Some parts of the
+templates are modified by the
+<a title="gromacs.qsub.generate_submit_scripts" class="reference internal" href="#gromacs.qsub.generate_submit_scripts"><tt class="xref docutils literal"><span class="pre">generate_submit_scripts()</span></tt></a> function. The &#8220;place
+holders&#8221; that can be replaced are shown in the table below. Typically,
+the place holders are either shell variable assignments or batch
+submission system commands. The table shows <a class="reference external" href="SunGridengine_">SGE</a> commands but <a class="reference external" href="http://www.mcs.anl.gov/research/projects/openpbs/">PBS</a> and
+<a class="reference external" href="http://www-03.ibm.com/systems/software/loadleveler/index.html">LoadLeveler</a> have similar constructs; e.g. PBS commands start with
+<tt class="docutils literal"><span class="pre">#PBS</span></tt> and LoadLeveller uses <tt class="docutils literal"><span class="pre">#&#64;</span></tt> with its own command keywords).</p>
+<table border="1" class="docutils">
+<caption>Substitutions in queuing system templates.</caption>
+<colgroup>
+<col width="16%" />
+<col width="11%" />
+<col width="17%" />
+<col width="18%" />
+<col width="39%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">place holder</th>
+<th class="head">default</th>
+<th class="head">replacement</th>
+<th class="head">description</th>
+<th class="head">regex</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>#$ -N</td>
+<td>GMX_MD</td>
+<td><em>sgename</em></td>
+<td>job name</td>
+<td>/^#.*(-N|job_name)/</td>
+</tr>
+<tr><td>#$ -l walltime=</td>
+<td>00:20:00</td>
+<td><em>walltime</em></td>
+<td>max run time</td>
+<td>/^#.*(-l walltime|wall_clock_limit)/</td>
+</tr>
+<tr><td>#$ -A</td>
+<td>BUDGET</td>
+<td><em>budget</em></td>
+<td>account</td>
+<td>/^#.*(-A|account_no)/</td>
+</tr>
+<tr><td>DEFFNM=</td>
+<td>md</td>
+<td><em>deffnm</em></td>
+<td>default gmx name</td>
+<td>/^DEFFNM=/</td>
+</tr>
+<tr><td>WALL_HOURS=</td>
+<td>0.33</td>
+<td><em>walltime</em> h</td>
+<td>mdrun&#8217;s -maxh</td>
+<td>/^WALL_HOURS=/</td>
+</tr>
+<tr><td>MDRUN_OPTS=</td>
+<td>&#8220;&#8221;</td>
+<td><em>mdrun_opts</em></td>
+<td>more options</td>
+<td>/^MDRUN_OPTS=/</td>
+</tr>
+</tbody>
+</table>
+<p>Lines with place holders should not have any white space at the beginning. The
+regular expression pattern (&#8220;regex&#8221;) is used to find the lines for the
+replacement and the literal default values (&#8220;default&#8221;) are replaced. Not all
+place holders have to occur in a template; for instance, if a queue has no run
+time limitation then one would probably not include <em>walltime</em> and <em>WALL_HOUR</em>
+place holders.</p>
+<p>The line <tt class="docutils literal"><span class="pre">#</span> <span class="pre">JOB_ARRAY_PLACEHOLDER</span></tt> can be replaced by
+<a title="gromacs.qsub.generate_submit_array" class="reference internal" href="#gromacs.qsub.generate_submit_array"><tt class="xref docutils literal"><span class="pre">generate_submit_array()</span></tt></a> to produce a &#8220;job array&#8221;
+(also known as a &#8220;task array&#8221;) script that runs a large number of
+related simulations under the control of a single queuing system
+job. The individual array tasks are run from different sub
+directories. Only queuing system scripts that are using the
+<strong>bash</strong> shell are supported for job arrays at the moment.</p>
+<p>A queuing system script <em>must</em> have the appropriate suffix to be properly
+recognized, as shown in the table below.</p>
+<table border="1" class="docutils">
+<caption>Suffices for queuing system templates. Pure shell-scripts are only used to run locally.</caption>
+<colgroup>
+<col width="44%" />
+<col width="16%" />
+<col width="40%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Queuing system</th>
+<th class="head">suffix</th>
+<th class="head">notes</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>Sun Gridengine</td>
+<td>.sge</td>
+<td>Sun&#8217;s <a class="reference external" href="http://gridengine.sunsource.net/">Sun Gridengine</a></td>
+</tr>
+<tr><td>Portable Batch queuing system</td>
+<td>.pbs</td>
+<td><a class="reference external" href="http://www.mcs.anl.gov/research/projects/openpbs/">OpenPBS</a> and <a class="reference external" href="http://www.pbsworks.com/Product.aspx?id=1">PBS Pro</a></td>
+</tr>
+<tr><td>LoadLeveler</td>
+<td>.ll</td>
+<td>IBM&#8217;s <a class="reference external" href="http://www-03.ibm.com/systems/software/loadleveler/index.html">LoadLeveler</a></td>
+</tr>
+<tr><td>bash script</td>
+<td>.bash, .sh</td>
+<td><a class="reference external" href="http://tldp.org/LDP/abs/html/">Advanced bash scripting</a></td>
+</tr>
+<tr><td>csh script</td>
+<td>.csh</td>
+<td><a class="reference external" href="http://www.grymoire.com/Unix/CshTop10.txt">avoid</a> <a class="reference external" href="http://www.faqs.org/faqs/unix-faq/shell/csh-whynot/">csh</a></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="example-queuing-system-script-template-for-pbs">
+<h3>Example queuing system script template for PBS<a class="headerlink" href="#example-queuing-system-script-template-for-pbs" title="Permalink to this headline">¶</a></h3>
+<p>The following script is a usable <a class="reference external" href="http://www.mcs.anl.gov/research/projects/openpbs/">PBS</a> script for a super computer. It
+contains almost all of the replacement tokens listed in the table
+(indicated by ++++++; these values should be kept in the template as
+they are or they will not be subject to replacement).</p>
+<div class="highlight-python"><pre>#!/bin/bash
+# File name: ~/.gromacswrapper/qscripts/supercomputer.somewhere.fr_64core.pbs
+#PBS -N GMX_MD
+#       ++++++
+#PBS -j oe
+#PBS -l select=8:ncpus=8:mpiprocs=8
+#PBS -l walltime=00:20:00
+#                ++++++++
+
+# host: supercomputer.somewhere.fr
+# queuing system: PBS
+
+# set this to the same value as walltime; mdrun will stop cleanly
+# at 0.99 * WALL_HOURS 
+WALL_HOURS=0.33
+#          ++++
+
+# deffnm line is possibly modified by gromacs.setup
+# (leave it as it is in the template)
+DEFFNM=md
+#      ++
+
+TPR=${DEFFNM}.tpr
+OUTPUT=${DEFFNM}.out
+PDB=${DEFFNM}.pdb
+
+MDRUN_OPTS=""
+#          ++
+
+# If you always want to add additional MDRUN options in this script then
+# you can either do this directly in the mdrun commandline below or by
+# constructs such as the following:
+## MDRUN_OPTS="-npme 24 $MDRUN_OPTS"
+
+# JOB_ARRAY_PLACEHOLDER
+#++++++++++++++++++++++   leave the full commented line intact!
+
+# avoids some failures
+export MPI_GROUP_MAX=1024
+# use hard coded path for time being
+GMXBIN="/opt/software/SGI/gromacs/4.0.3/bin"
+MPIRUN=/usr/pbs/bin/mpiexec
+APPLICATION=$GMXBIN/mdrun_mpi
+
+$MPIRUN $APPLICATION -stepout 1000 -deffnm ${DEFFNM} -s ${TPR} -c ${PDB} -cpi                         $MDRUN_OPTS                         -maxh ${WALL_HOURS} &gt; $OUTPUT
+rc=$?
+
+# dependent jobs will only start if rc == 0
+exit $rc</pre>
+</div>
+<p>Save the above script in <tt class="docutils literal"><span class="pre">~/.gromacswrapper/qscripts</span></tt> under the name
+<tt class="docutils literal"><span class="pre">supercomputer.somewhere.fr_64core.pbs</span></tt>. This will make the script
+immediately usable. For example, in order to set up a production MD run with
+<a title="gromacs.setup.MD" class="reference external" href="setup.html#gromacs.setup.MD"><tt class="xref docutils literal"><span class="pre">gromacs.setup.MD()</span></tt></a> for this super computer one would use</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">gromacs</span><span class="o">.</span><span class="n">setup</span><span class="o">.</span><span class="n">MD</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">qscripts</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;supercomputer.somewhere.fr_64core.pbs&#39;</span><span class="p">,</span> <span class="s">&#39;local.sh&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>This will generate submission scripts based on
+<tt class="docutils literal"><span class="pre">supercomputer.somewhere.fr_64core.pbs</span></tt> and also the default <tt class="docutils literal"><span class="pre">local.sh</span></tt>
+that is provided with <em>GromacsWrapper</em>.</p>
+<p>In order to modify <tt class="docutils literal"><span class="pre">MDRUN_OPTS</span></tt> one would use the additonal <em>mdrun_opts</em>
+argument, for instance:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">gromacs</span><span class="o">.</span><span class="n">setup</span><span class="o">.</span><span class="n">MD</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">qscripts</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;supercomputer.somewhere.fr_64core.pbs&#39;</span><span class="p">,</span> <span class="s">&#39;local.sh&#39;</span><span class="p">],</span>
+                 <span class="n">mdrun_opts</span><span class="o">=</span><span class="s">&quot;-v -npme 20 -dlb yes -nosum&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Currently there is no good way to specify the number of processors when
+creating run scripts. You will need to provided scripts with different numbers
+of cores hard coded or set them when submitting the scripts with command line
+options to <strong>qsub</strong>.</p>
+</div>
+</div>
 <div class="section" id="classes-and-functions">
 <h2>Classes and functions<a class="headerlink" href="#classes-and-functions" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -179,7 +375,7 @@ the same as the template. [None]</p>
 </dd>
 <dt><em>jobarray_string</em></dt>
 <dd><p class="first last">Multi-line string that is spliced in for job array functionality
-(see <tt class="xref docutils literal"><span class="pre">gromacs.setup.generate_submit_array()</span></tt>; do not use manually)</p>
+(see <a title="gromacs.qsub.generate_submit_array" class="reference internal" href="#gromacs.qsub.generate_submit_array"><tt class="xref docutils literal"><span class="pre">gromacs.qsub.generate_submit_array()</span></tt></a>; do not use manually)</p>
 </dd>
 <dt><em>kwargs</em></dt>
 <dd><p class="first last">all other kwargs are ignored</p>
@@ -253,172 +449,6 @@ directory.</p>
 <dd>Pre-defined queuing systems (SGE, PBS). Add your own here.</dd></dl>
 
 </div>
-<div class="section" id="queuing-system-templates">
-<h2>Queuing system templates<a class="headerlink" href="#queuing-system-templates" title="Permalink to this headline">¶</a></h2>
-<p>The queing system scripts are highly specific and you will need to add
-your own.  Templates should be sh-scripts and can contain the
-following patterns; these are either shell variable assignments or
-batch submission system commands. The table shows SGE commands but PBS
-and LoadLeveller have similar constructs; e.g. PBS commands start with
-<tt class="docutils literal"><span class="pre">#PBS</span></tt> and LoadLeveller uses <tt class="docutils literal"><span class="pre">#&#64;</span></tt> with its own comman keywords):</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="16%" />
-<col width="11%" />
-<col width="17%" />
-<col width="18%" />
-<col width="39%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">command</th>
-<th class="head">default</th>
-<th class="head">replacement</th>
-<th class="head">description</th>
-<th class="head">regex</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>#$ -N</td>
-<td>GMX_MD</td>
-<td><em>sgename</em></td>
-<td>job name</td>
-<td>/^#.*(-N|job_name)/</td>
-</tr>
-<tr><td>#$ -l walltime=</td>
-<td>00:20:00</td>
-<td><em>walltime</em></td>
-<td>max run time</td>
-<td>/^#.*(-l walltime|wall_clock_limit)/</td>
-</tr>
-<tr><td>#$ -A</td>
-<td>BUDGET</td>
-<td><em>budget</em></td>
-<td>account</td>
-<td>/^#.*(-A|account_no)/</td>
-</tr>
-<tr><td>DEFFNM=</td>
-<td>md</td>
-<td><em>deffnm</em></td>
-<td>default gmx name</td>
-<td>/^DEFFNM=/</td>
-</tr>
-<tr><td>WALL_HOURS=</td>
-<td>0.33</td>
-<td><em>walltime</em> h</td>
-<td>mdrun&#8217;s -maxh</td>
-<td>/^WALL_HOURS=/</td>
-</tr>
-<tr><td>MDRUN_OPTS=</td>
-<td>&#8220;&#8221;</td>
-<td><em>mdrun_opts</em></td>
-<td>more options</td>
-<td>/^MDRUN_OPTS=/</td>
-</tr>
-</tbody>
-</table>
-<p>These lines should not have any white space at the beginning. The regular
-expression pattern is used to find the lines for the replacement and the
-default values are replaced.</p>
-<p>The line <tt class="docutils literal"><span class="pre">#</span> <span class="pre">JOB_ARRAY_PLACEHOLDER</span></tt> can be replaced by code to run multiple
-jobs (a job array) from different sub directories. Only queuing system scripts
-that are using the <strong>bash</strong> shell are supported for job arrays at the
-moment.</p>
-<p>A queuing system script <em>must</em> have the appropriate suffix to be properly
-recognized.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="44%" />
-<col width="16%" />
-<col width="40%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">Queuing system</th>
-<th class="head">suffix</th>
-<th class="head">notes</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>Sun Gridengine</td>
-<td>.sge</td>
-<td>Sun&#8217;s <a class="reference external" href="http://gridengine.sunsource.net/">Sun Gridengine</a></td>
-</tr>
-<tr><td>Portable Batch queuing system</td>
-<td>.pbs</td>
-<td><a class="reference external" href="http://www.mcs.anl.gov/research/projects/openpbs/">OpenPBS</a> and <a class="reference external" href="http://www.pbsworks.com/Product.aspx?id=1">PBS Pro</a></td>
-</tr>
-<tr><td>LoadLeveler</td>
-<td>.ll</td>
-<td>IBM&#8217;s <a class="reference external" href="http://www-03.ibm.com/systems/software/loadleveler/index.html">LoadLeveler</a></td>
-</tr>
-<tr><td>bash script</td>
-<td>.bash, .sh</td>
-<td><a href="#id1"><span class="problematic" id="id2">`Advanced bash scripting`_</span></a></td>
-</tr>
-<tr><td>csh script</td>
-<td>.csh</td>
-<td><a class="reference external" href="http://www.grymoire.com/Unix/CshTop10.txt">avoid</a> <a class="reference external" href="http://www.faqs.org/faqs/unix-faq/shell/csh-whynot/">csh</a></td>
-</tr>
-</tbody>
-</table>
-<div class="section" id="example-queuing-system-script-template-for-pbs">
-<h3>Example queuing system script template for PBS<a class="headerlink" href="#example-queuing-system-script-template-for-pbs" title="Permalink to this headline">¶</a></h3>
-<p>The following script is a usable <a href="#id3"><span class="problematic" id="id4">PBS_</span></a> script. It contains almost all of the
-replacement tokens listed in the table (indicated by ++++++; these values
-should be kept in the template as they are).</p>
-<div class="highlight-python"><pre>#!/bin/bash
-#PBS -N GMX_MD
-#       ++++++
-#PBS -j oe
-#PBS -l select=8:ncpus=8:mpiprocs=8
-#PBS -l walltime=00:20:00
-#                ++++++++
-
-# host: cluster.somewhere.fr
-# queuing system: PBS
-
-# set this to the same value as walltime; mdrun will stop cleanly
-# at 0.99 * WALL_HOURS 
-WALL_HOURS=0.33
-#          ++++
-
-# deffnm line is possibly modified by gromacs.setup
-# (leave it as it is in the template)
-DEFFNM=md
-#      ++
-
-TPR=${DEFFNM}.tpr
-OUTPUT=${DEFFNM}.out
-PDB=${DEFFNM}.pdb
-
-MDRUN_OPTS=""
-#          ++
-
-# If you always want to add additional MDRUN options in this script the
-# you can either do this directly in the mdrun commandline below or by
-# constructs such as the following:
-## MDRUN_OPTIONS="-npme 24 $MDRUN_OPTIONS"
-
-# JOB_ARRAY_PLACEHOLDER
-#++++++++++++++++++++++   leave the full commented line intact!
-
-# avoids some failures
-export MPI_GROUP_MAX=1024
-# use hard coded path for time being
-GMXBIN="/opt/software/SGI/gromacs/4.0.3/bin"
-MPIRUN=/usr/pbs/bin/mpiexec
-APPLICATION=$GMXBIN/mdrun_mpi
-
-$MPIRUN $APPLICATION -step 1000 -deffnm ${DEFFNM} -s ${TPR} -c ${PDB} -cpi                         $MDRUN_OPTS                         -maxh ${WALL_HOURS} &gt; $OUTPUT
-rc=$?
-
-# dependent jobs will only start if rc == 0
-exit $rc</pre>
-</div>
-<p>Currently there is no good way to specify the number of preocessors when
-creating run scripts. You will need to provided scripts with different numbers
-of cores hard coded or set them when submitting the scripts.</p>
-</div>
-</div>
 <div class="section" id="queuing-system-manager">
 <h2>Queuing system Manager<a class="headerlink" href="#queuing-system-manager" title="Permalink to this headline">¶</a></h2>
 <p>The <a title="gromacs.qsub.Manager" class="reference internal" href="#gromacs.qsub.Manager"><tt class="xref docutils literal"><span class="pre">Manager</span></tt></a> class must be customized for each system such as
@@ -429,33 +459,30 @@ jobs remotely (using ssh).</p>
 <em class="property">class </em><tt class="descclassname">gromacs.qsub.</tt><tt class="descname">Manager</tt><big>(</big><em>dirname='.'</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.qsub.Manager" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class to launch simulations remotely on computers with queuing systems.</p>
 <p>Basically, ssh into machine and run job.</p>
-<dl class="docutils">
-<dt>Derive a class from <a title="gromacs.qsub.Manager" class="reference internal" href="#gromacs.qsub.Manager"><tt class="xref docutils literal"><span class="pre">Manager</span></tt></a> and override the attributes</dt>
-<dd><ul class="first last simple">
-<li><tt class="xref docutils literal"><span class="pre">Manager._hostname</span></tt></li>
-<li><tt class="xref docutils literal"><span class="pre">Manager._scratchdir</span></tt></li>
-<li><tt class="xref docutils literal"><span class="pre">Manager._qscript</span></tt></li>
+<p>Derive a class from <a title="gromacs.qsub.Manager" class="reference internal" href="#gromacs.qsub.Manager"><tt class="xref docutils literal"><span class="pre">Manager</span></tt></a> and override the attributes</p>
+<blockquote>
+<ul class="simple">
+<li><tt class="xref docutils literal"><span class="pre">Manager._hostname</span></tt> (hostname of the machine)</li>
+<li><tt class="xref docutils literal"><span class="pre">Manager._scratchdir</span></tt> (all files and directories will be created under 
+this scratch directory; it must be a path on the remote host)</li>
+<li><tt class="xref docutils literal"><span class="pre">Manager._qscript</span></tt> (the default queuing system script template)</li>
 <li><tt class="xref docutils literal"><span class="pre">Manager._walltime</span></tt> (if there is a limit to the run time
-of a job)</li>
+of a job; in hours)</li>
 </ul>
-</dd>
-</dl>
+</blockquote>
 <p>and implement a specialized <a title="gromacs.qsub.Manager.qsub" class="reference internal" href="#gromacs.qsub.Manager.qsub"><tt class="xref docutils literal"><span class="pre">Manager.qsub()</span></tt></a> method if needed.</p>
-<p>Set up the manager.</p>
-<p>ssh must be set up (via ~/.ssh/config) to allow access via a
+<p><a class="reference external" href="http://www.openssh.com/">ssh</a> must be set up (via <a class="reference external" href="http://linux.die.net/man/5/ssh_config">~/.ssh/config</a>) to allow access via a
 commandline such as</p>
 <div class="highlight-python"><pre>ssh &lt;hostname&gt; &lt;command&gt; ...</pre>
 </div>
 <p>Typically you want something such as</p>
-<blockquote>
-<dl class="docutils">
-<dt>host &lt;hostname&gt;</dt>
-<dd>hostname &lt;hostname&gt;.fqdn.org
-user     &lt;remote_user&gt;</dd>
-</dl>
-</blockquote>
-<p>in ~/.ssh/config and also set up public-key authentication in
+<div class="highlight-python"><pre>host &lt;hostname&gt;
+     hostname &lt;hostname&gt;.fqdn.org
+     user     &lt;remote_user&gt;</pre>
+</div>
+<p>in <tt class="docutils literal"><span class="pre">~/.ssh/config</span></tt> and also set up public-key authentication in
 order to avoid typing your password all the time.</p>
+<p>Set up the manager.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -511,20 +538,15 @@ be different for different jobs)  [basename(CWD)]</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-<ul class="simple">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
 <li><em>dirname</em>: dir to download</li>
 <li><em>checkfile</em>: raise OSError/ENOENT if <em>targetdir/dirname/checkfile</em> was not found</li>
 <li><em>targetdir</em>: put <em>dirname</em> into this directory</li>
 </ul>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">return code from scp</td>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">return code from scp</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -562,6 +584,11 @@ available (which is saved in <tt class="xref docutils literal"><span class="pre"
 <p class="first admonition-title">Note</p>
 <p class="last">Also returns <tt class="xref docutils literal"><span class="pre">False</span></tt> if the connection failed.</p>
 </div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This is an important but somewhat  <strong>fragile</strong> method. It
+needs to be improved to be more robust.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -590,6 +617,11 @@ available (which is saved in <tt class="xref docutils literal"><span class="pre"
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Also returns <tt class="xref docutils literal"><span class="pre">False</span></tt> if the connection failed.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This is an important but somewhat  <strong>fragile</strong> method. It
+needs to be improved to be more robust.</p>
 </div>
 </dd></dl>
 
@@ -650,16 +682,34 @@ n = ceil(runtime/(performance*0.99*walltime)</blockquote>
 <dl class="method">
 <dt id="gromacs.qsub.Manager.put">
 <tt class="descname">put</tt><big>(</big><em>dirname</em><big>)</big><a class="headerlink" href="#gromacs.qsub.Manager.put" title="Permalink to this definition">¶</a></dt>
-<dd>scp dirname to host
-:Arguments: dirname to be transferred
-:Returns: return code from scp</dd></dl>
+<dd><p>scp dirname to host.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body">dirname to be transferred</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">return code from scp</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="gromacs.qsub.Manager.putfile">
 <tt class="descname">putfile</tt><big>(</big><em>filename</em>, <em>dirname</em><big>)</big><a class="headerlink" href="#gromacs.qsub.Manager.putfile" title="Permalink to this definition">¶</a></dt>
-<dd>scp <em>filename</em> to host in <em>dirname</em>
-:Arguments: filename and dirname to be transferred to
-:Returns: return code from scp</dd></dl>
+<dd><p>scp <em>filename</em> to host in <em>dirname</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body">filename and dirname to be transferred to</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">return code from scp</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="gromacs.qsub.Manager.qstat">
@@ -688,16 +738,22 @@ available (which is saved in <tt class="xref docutils literal"><span class="pre"
 <p class="first admonition-title">Note</p>
 <p class="last">Also returns <tt class="xref docutils literal"><span class="pre">False</span></tt> if the connection failed.</p>
 </div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This is an important but somewhat  <strong>fragile</strong> method. It
+needs to be improved to be more robust.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="gromacs.qsub.Manager.qsub">
 <tt class="descname">qsub</tt><big>(</big><em>dirname</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.qsub.Manager.qsub" title="Permalink to this definition">¶</a></dt>
 <dd><p>Submit remotely on host.</p>
-<p>This is the most simple case: it just runs the command</p>
-<blockquote>
-cd &lt;remotedir&gt;
-qsub &lt;qscript&gt;</blockquote>
+<dl class="docutils">
+<dt>This is simplest implementation: it just runs the commands::</dt>
+<dd>cd &lt;remotedir&gt;
+qsub &lt;qscript&gt;</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -734,7 +790,7 @@ run but that is just a guess);</li>
 <dt id="gromacs.qsub.Manager.setup_posres">
 <tt class="descname">setup_posres</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.qsub.Manager.setup_posres" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up position restraints run and transfer to host.</p>
-<p>kwargs are passed to <a title="gromacs.setup.MD_restrained" class="reference external" href="setup.html#gromacs.setup.MD_restrained"><tt class="xref docutils literal"><span class="pre">gromacs.setup.MD_restrained()</span></tt></a></p>
+<p><em>kwargs</em> are passed to <a title="gromacs.setup.MD_restrained" class="reference external" href="setup.html#gromacs.setup.MD_restrained"><tt class="xref docutils literal"><span class="pre">gromacs.setup.MD_restrained()</span></tt></a></p>
 </dd></dl>
 
 <dl class="method">
@@ -774,11 +830,11 @@ run but that is just a guess);</li>
             <h3><a href="../../index.html">Table Of Contents</a></h3>
             <ul>
 <li><a class="reference external" href="#"><tt class="docutils literal"><span class="pre">gromacs.qsub</span></tt> &#8211; utilities for batch submission systems</a><ul>
-<li><a class="reference external" href="#classes-and-functions">Classes and functions</a></li>
 <li><a class="reference external" href="#queuing-system-templates">Queuing system templates</a><ul>
 <li><a class="reference external" href="#example-queuing-system-script-template-for-pbs">Example queuing system script template for PBS</a></li>
 </ul>
 </li>
+<li><a class="reference external" href="#classes-and-functions">Classes and functions</a></li>
 <li><a class="reference external" href="#queuing-system-manager">Queuing system Manager</a></li>
 </ul>
 </li>
@@ -789,7 +845,7 @@ run but that is just a guess);</li>
                                   title="previous chapter"><tt class="docutils literal docutils literal"><span class="pre">gromacs.setup</span></tt> &#8211; Setting up a Gromacs MD run</a></p>
             <h4>Next topic</h4>
             <p class="topless"><a href="simulation.html"
-                                  title="next chapter">&lt;no title&gt;</a></p>
+                                  title="next chapter"><tt class="docutils literal docutils literal"><span class="pre">gromacs.run</span></tt> &#8211; Running simulations</a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
               <li><a href="../../_sources/gromacs/blocks/qsub.txt"
@@ -822,12 +878,12 @@ run but that is just a guess);</li>
           <a href="../../modindex.html" title="Global Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="simulation.html" title="<no title>"
+          <a href="simulation.html" title="gromacs.run – Running simulations"
              >next</a> |</li>
         <li class="right" >
           <a href="setup.html" title="gromacs.setup – Setting up a Gromacs MD run"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.1.8 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" >Gromacs building blocks</a> &raquo;</li> 
       </ul>

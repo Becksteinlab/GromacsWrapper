@@ -42,12 +42,12 @@ copyright = u'2009-2010, Oliver Beckstein'
 # other places throughout the built documents.
 #
 # Dynamically calculate the version based on mdpow.VERSION.
-version = __import__('gromacs').get_version()
+packageversion = __import__('gromacs').get_version()
 
 # The short X.Y version.
-version = '.'.join(version.split('.')[:2])
+version = '.'.join(packageversion.split('.')[:2])
 # The full version, including alpha/beta/rc tags.
-release = version
+release = packageversion
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:

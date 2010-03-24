@@ -1,1 +1,1 @@
-.. automodule:: gromacs.simulation
+.. automodule:: gromacs.run

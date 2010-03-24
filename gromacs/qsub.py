@@ -26,79 +26,84 @@ At the moment, some of the functions in :mod:`gromacs.setup` use this module
 but it is fairly independent and could conceivably be used for a wider range of
 projects.
 
-Classes and functions
----------------------
-
-.. autoclass:: QueuingSystem
-   :members:
-.. autofunction:: generate_submit_scripts
-.. autofunction:: generate_submit_array
-.. autofunction:: detect_queuing_system
-
-.. autodata:: queuing_systems
-
 
 Queuing system templates
 ------------------------
 
-The queing system scripts are highly specific and you will need to add
-your own.  Templates should be sh-scripts and can contain the
-following patterns; these are either shell variable assignments or
-batch submission system commands. The table shows SGE commands but PBS
-and LoadLeveller have similar constructs; e.g. PBS commands start with
-``#PBS`` and LoadLeveller uses ``#@`` with its own comman keywords):
+The queuing system scripts are highly specific and you will need to add
+your own.  Templates should be shell scripts. Some parts of the
+templates are modified by the
+:func:`~gromacs.qsub.generate_submit_scripts` function. The "place
+holders" that can be replaced are shown in the table below. Typically,
+the place holders are either shell variable assignments or batch
+submission system commands. The table shows SGE_ commands but PBS_ and
+LoadLeveler_ have similar constructs; e.g. PBS commands start with
+``#PBS`` and LoadLeveller uses ``#@`` with its own command keywords).
 
 .. Table:: Substitutions in queuing system templates.
-===============  ===========  ================ ================= =====================================
-command          default      replacement      description       regex
-===============  ===========  ================ ================= =====================================
-#$ -N            GMX_MD       *sgename*        job name          /^#.*(-N|job_name)/
-#$ -l walltime=  00:20:00     *walltime*       max run time      /^#.*(-l walltime|wall_clock_limit)/
-#$ -A            BUDGET       *budget*         account           /^#.*(-A|account_no)/
-DEFFNM=          md           *deffnm*         default gmx name  /^DEFFNM=/
-WALL_HOURS=      0.33         *walltime* h     mdrun's -maxh     /^WALL_HOURS=/
-MDRUN_OPTS=      ""           *mdrun_opts*     more options      /^MDRUN_OPTS=/
-===============  ===========  ================ ================= =====================================
 
-These lines should not have any white space at the beginning. The regular
-expression pattern is used to find the lines for the replacement and the
-default values are replaced.
+   ===============  ===========  ================ ================= =====================================
+   place holder     default      replacement      description       regex
+   ===============  ===========  ================ ================= =====================================
+   #$ -N            GMX_MD       *sgename*        job name          /^#.*(-N|job_name)/
+   #$ -l walltime=  00:20:00     *walltime*       max run time      /^#.*(-l walltime|wall_clock_limit)/
+   #$ -A            BUDGET       *budget*         account           /^#.*(-A|account_no)/
+   DEFFNM=          md           *deffnm*         default gmx name  /^DEFFNM=/
+   WALL_HOURS=      0.33         *walltime* h     mdrun's -maxh     /^WALL_HOURS=/
+   MDRUN_OPTS=      ""           *mdrun_opts*     more options      /^MDRUN_OPTS=/
+   ===============  ===========  ================ ================= =====================================
 
-The line ``# JOB_ARRAY_PLACEHOLDER`` can be replaced by code to run multiple
-jobs (a job array) from different sub directories. Only queuing system scripts
-that are using the :program:`bash` shell are supported for job arrays at the
-moment.
+Lines with place holders should not have any white space at the beginning. The
+regular expression pattern ("regex") is used to find the lines for the
+replacement and the literal default values ("default") are replaced. Not all
+place holders have to occur in a template; for instance, if a queue has no run
+time limitation then one would probably not include *walltime* and *WALL_HOUR*
+place holders.
+
+The line ``# JOB_ARRAY_PLACEHOLDER`` can be replaced by
+:func:`~gromacs.qsub.generate_submit_array` to produce a "job array"
+(also known as a "task array") script that runs a large number of
+related simulations under the control of a single queuing system
+job. The individual array tasks are run from different sub
+directories. Only queuing system scripts that are using the
+:program:`bash` shell are supported for job arrays at the moment.
 
 A queuing system script *must* have the appropriate suffix to be properly
-recognized.
+recognized, as shown in the table below.
 
-.. Table:: Suffices for queuing system templates. Shell-scripts are only used to run locally.
-==============================  ===========  ===========================
-Queuing system                  suffix       notes
-==============================  ===========  ===========================
-Sun Gridengine                  .sge         Sun's `Sun Gridengine`_
-Portable Batch queuing system   .pbs         OpenPBS_ and `PBS Pro`_
-LoadLeveler                     .ll          IBM's `LoadLeveler`_
-bash script                     .bash, .sh   `Advanced bash scripting`_
-csh script                      .csh         avoid_ csh_
-==============================  ===========  ===========================
+.. Table:: Suffices for queuing system templates. Pure shell-scripts are only used to run locally.
+
+   ==============================  ===========  ===========================
+   Queuing system                  suffix       notes
+   ==============================  ===========  ===========================
+   Sun Gridengine                  .sge         Sun's `Sun Gridengine`_
+   Portable Batch queuing system   .pbs         OpenPBS_ and `PBS Pro`_
+   LoadLeveler                     .ll          IBM's `LoadLeveler`_
+   bash script                     .bash, .sh   `Advanced bash scripting`_
+   csh script                      .csh         avoid_ csh_
+   ==============================  ===========  ===========================
 
 .. _OpenPBS: http://www.mcs.anl.gov/research/projects/openpbs/
+.. _PBS: OpenPBS_
 .. _PBS Pro: http://www.pbsworks.com/Product.aspx?id=1
 .. _Sun Gridengine: http://gridengine.sunsource.net/
+.. _SGE: Sun Gridengine_
 .. _LoadLeveler: http://www-03.ibm.com/systems/software/loadleveler/index.html
-.. _ABS: http://tldp.org/LDP/abs/html/
+.. _Advanced bash scripting: http://tldp.org/LDP/abs/html/
 .. _avoid: http://www.grymoire.com/Unix/CshTop10.txt
 .. _csh: http://www.faqs.org/faqs/unix-faq/shell/csh-whynot/
+
 
 Example queuing system script template for PBS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following script is a usable PBS_ script. It contains almost all of the
-replacement tokens listed in the table (indicated by ++++++; these values
-should be kept in the template as they are). ::
+The following script is a usable PBS_ script for a super computer. It
+contains almost all of the replacement tokens listed in the table
+(indicated by ++++++; these values should be kept in the template as
+they are or they will not be subject to replacement). ::
 
    #!/bin/bash
+   # File name: ~/.gromacswrapper/qscripts/supercomputer.somewhere.fr_64core.pbs
    #PBS -N GMX_MD
    #       ++++++
    #PBS -j oe
@@ -106,7 +111,7 @@ should be kept in the template as they are). ::
    #PBS -l walltime=00:20:00
    #                ++++++++
 
-   # host: cluster.somewhere.fr
+   # host: supercomputer.somewhere.fr
    # queuing system: PBS
 
    # set this to the same value as walltime; mdrun will stop cleanly
@@ -126,10 +131,10 @@ should be kept in the template as they are). ::
    MDRUN_OPTS=""
    #          ++
 
-   # If you always want to add additional MDRUN options in this script the
+   # If you always want to add additional MDRUN options in this script then
    # you can either do this directly in the mdrun commandline below or by
    # constructs such as the following:
-   ## MDRUN_OPTIONS="-npme 24 $MDRUN_OPTIONS"
+   ## MDRUN_OPTS="-npme 24 $MDRUN_OPTS"
 
    # JOB_ARRAY_PLACEHOLDER
    #++++++++++++++++++++++   leave the full commented line intact!
@@ -141,7 +146,7 @@ should be kept in the template as they are). ::
    MPIRUN=/usr/pbs/bin/mpiexec
    APPLICATION=$GMXBIN/mdrun_mpi
    
-   $MPIRUN $APPLICATION -step 1000 -deffnm ${DEFFNM} -s ${TPR} -c ${PDB} -cpi \
+   $MPIRUN $APPLICATION -stepout 1000 -deffnm ${DEFFNM} -s ${TPR} -c ${PDB} -cpi \
                         $MDRUN_OPTS \
                         -maxh ${WALL_HOURS} > $OUTPUT
    rc=$?
@@ -149,9 +154,42 @@ should be kept in the template as they are). ::
    # dependent jobs will only start if rc == 0
    exit $rc
 
-Currently there is no good way to specify the number of preocessors when
+Save the above script in ``~/.gromacswrapper/qscripts`` under the name
+``supercomputer.somewhere.fr_64core.pbs``. This will make the script
+immediately usable. For example, in order to set up a production MD run with
+:func:`gromacs.setup.MD` for this super computer one would use ::
+
+   gromacs.setup.MD(..., qscripts=['supercomputer.somewhere.fr_64core.pbs', 'local.sh'])
+
+This will generate submission scripts based on
+``supercomputer.somewhere.fr_64core.pbs`` and also the default ``local.sh``
+that is provided with *GromacsWrapper*.
+
+In order to modify ``MDRUN_OPTS`` one would use the additonal *mdrun_opts*
+argument, for instance::
+
+   gromacs.setup.MD(..., qscripts=['supercomputer.somewhere.fr_64core.pbs', 'local.sh'],
+                    mdrun_opts="-v -npme 20 -dlb yes -nosum")
+
+
+Currently there is no good way to specify the number of processors when
 creating run scripts. You will need to provided scripts with different numbers
-of cores hard coded or set them when submitting the scripts.
+of cores hard coded or set them when submitting the scripts with command line
+options to :program:`qsub`.
+
+
+
+Classes and functions
+---------------------
+
+.. autoclass:: QueuingSystem
+   :members:
+.. autofunction:: generate_submit_scripts
+.. autofunction:: generate_submit_array
+.. autofunction:: detect_queuing_system
+
+.. autodata:: queuing_systems
+
 
 
 Queuing system Manager
@@ -217,12 +255,14 @@ class QueuingSystem(object):
              suffix of input files, e.g. 'sge'
           *qsub_prefix*
              prefix string that starts a qsub flag in a script, e.g. '#$'
+
         :Keywords:
           *array_variable*
              environment variable exported for array jobs, e.g.
              'SGE_TASK_ID'
           *array_option*
              qsub option format string to launch an array (e.g. '-t %d-%d')
+
         """
         self.name = name
         self.suffix = suffix
@@ -328,7 +368,7 @@ def generate_submit_scripts(templates, prefix=None, deffnm='md', jobname='MD', b
           Maximum runtime of the job in hours. [1]
       *jobarray_string*
           Multi-line string that is spliced in for job array functionality
-          (see :func:`gromacs.setup.generate_submit_array`; do not use manually)
+          (see :func:`gromacs.qsub.generate_submit_array`; do not use manually)
       *kwargs*
           all other kwargs are ignored
 
@@ -424,12 +464,33 @@ class Manager(object):
     Basically, ssh into machine and run job.
 
     Derive a class from :class:`Manager` and override the attributes
-     - :attr:`Manager._hostname`
-     - :attr:`Manager._scratchdir`
-     - :attr:`Manager._qscript`
+
+     - :attr:`Manager._hostname` (hostname of the machine)
+     - :attr:`Manager._scratchdir` (all files and directories will be created under 
+       this scratch directory; it must be a path on the remote host)
+     - :attr:`Manager._qscript` (the default queuing system script template)
      - :attr:`Manager._walltime` (if there is a limit to the run time
-       of a job)
+       of a job; in hours)
+
     and implement a specialized :meth:`Manager.qsub` method if needed.
+
+    ssh_ must be set up (via `~/.ssh/config`_) to allow access via a
+    commandline such as ::
+
+        ssh <hostname> <command> ...
+
+    Typically you want something such as ::
+
+       host <hostname>
+            hostname <hostname>.fqdn.org
+            user     <remote_user>
+
+    in ``~/.ssh/config`` and also set up public-key authentication in
+    order to avoid typing your password all the time.
+
+    .. _ssh: http://www.openssh.com/
+    .. _~/.ssh/config: http://linux.die.net/man/5/ssh_config
+
     """
 
     # override
@@ -458,20 +519,6 @@ class Manager(object):
 
     def __init__(self, dirname=os.path.curdir, **kwargs):
         """Set up the manager.
-
-        ssh must be set up (via ~/.ssh/config) to allow access via a
-        commandline such as ::
-
-            ssh <hostname> <command> ...
-
-        Typically you want something such as
-
-           host <hostname>
-                hostname <hostname>.fqdn.org
-                user     <remote_user>
-
-        in ~/.ssh/config and also set up public-key authentication in
-        order to avoid typing your password all the time.
 
         :Arguments:
           *statedir*
@@ -523,7 +570,8 @@ class Manager(object):
         return os.path.join(self.uri,*args)
 
     def put(self, dirname):
-        """scp dirname to host
+        """scp dirname to host.
+
         :Arguments: dirname to be transferred
         :Returns: return code from scp
         """
@@ -531,7 +579,8 @@ class Manager(object):
 	return call(["scp", "-r", dirname, self.uri])
 
     def putfile(self, filename, dirname):
-        """scp *filename* to host in *dirname*
+        """scp *filename* to host in *dirname*.
+
         :Arguments: filename and dirname to be transferred to
         :Returns: return code from scp
         """
@@ -543,9 +592,10 @@ class Manager(object):
         """``scp -r`` *dirname* from host into *targetdir*
 
         :Arguments:
-        - *dirname*: dir to download
-        - *checkfile*: raise OSError/ENOENT if *targetdir/dirname/checkfile* was not found
-        - *targetdir*: put *dirname* into this directory
+           - *dirname*: dir to download
+           - *checkfile*: raise OSError/ENOENT if *targetdir/dirname/checkfile* was not found
+           - *targetdir*: put *dirname* into this directory
+
         :Returns: return code from scp
         """
         self.logger.info("Copying %r from %r" % (dirname, self.uri))
@@ -613,8 +663,7 @@ class Manager(object):
     def qsub(self, dirname, **kwargs):
         """Submit remotely on host.
 
-        This is the most simple case: it just runs the command
-
+        This is simplest implementation: it just runs the commands::
            cd <remotedir>
            qsub <qscript>
         """
@@ -644,7 +693,7 @@ class Manager(object):
 
         .. Note:: Also returns ``False`` if the connection failed.
 
-        .. Warning:; This is an important but **fragile** method. It
+        .. Warning:: This is an important but somewhat  **fragile** method. It
                      needs to be improved to be more robust.
         """
 
@@ -773,7 +822,7 @@ class Manager(object):
     def setup_posres(self, **kwargs):
         """Set up position restraints run and transfer to host.
 
-        kwargs are passed to :func:`gromacs.setup.MD_restrained`
+        *kwargs* are passed to :func:`gromacs.setup.MD_restrained`
         
         """
         

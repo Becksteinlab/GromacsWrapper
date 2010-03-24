@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.cbook – Gromacs Cook Book &mdash; GromacsWrapper v0.1 documentation</title>
+    <title>gromacs.cbook – Gromacs Cook Book &mdash; GromacsWrapper v0.1.8 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.1',
+        VERSION:     '0.1.8',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.1 documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper v0.1.8 documentation" href="../../index.html" />
     <link rel="up" title="Gromacs building blocks" href="../building_blocks.html" />
     <link rel="next" title="gromacs.setup – Setting up a Gromacs MD run" href="setup.html" />
     <link rel="prev" title="Gromacs building blocks" href="../building_blocks.html" /> 
@@ -40,7 +40,7 @@
         <li class="right" >
           <a href="../building_blocks.html" title="Gromacs building blocks"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.1.8 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" accesskey="U">Gromacs building blocks</a> &raquo;</li> 
       </ul>
@@ -62,7 +62,7 @@ how to do simple things.</p>
 <div class="section" id="miscellaneous-canned-gromacs-commands">
 <h2>Miscellaneous canned Gromacs commands<a class="headerlink" href="#miscellaneous-canned-gromacs-commands" title="Permalink to this headline">¶</a></h2>
 <p>Simple commands with new default options so that they solve a specific
-problem (see also <a href="#id3"><span class="problematic" id="id4">`Manipulating trajectories`_</span></a>):</p>
+problem (see also <a class="reference internal" href="#manipulating-trajectories-and-structures">Manipulating trajectories and structures</a>):</p>
 <dl class="function">
 <dt id="gromacs.cbook.rmsd_backbone">
 <tt class="descclassname">gromacs.cbook.</tt><tt class="descname">rmsd_backbone</tt><big>(</big><span class="optional">[</span><em>s=&quot;md.tpr&quot;</em>, <em>f=&quot;md.xtc&quot;</em><span class="optional">[</span>, <em>...</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#gromacs.cbook.rmsd_backbone" title="Permalink to this definition">¶</a></dt>
@@ -567,16 +567,14 @@ grompping a tpr file. The <tt class="docutils literal"><span class="pre">grompp_
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<ul class="last simple">
+<p>Some things to keep in mind:</p>
+<ul class="simple">
 <li>The stdout output of grompp is not shown. This can make debugging
 pretty hard.  Try running the normal <tt class="xref docutils literal"><span class="pre">gromacs.grompp()</span></tt> command and
 analyze the output if the debugging messages are not sufficient.</li>
 <li>Check that <tt class="docutils literal"><span class="pre">qtot</span></tt> is correct; because the function is based on pattern 
 matching of the output it can break when the output format changes.</li>
 </ul>
-</div>
 </dd></dl>
 
 <dl class="function">
@@ -651,7 +649,7 @@ files available.</p>
 <tr class="field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first docutils">
 <dt><em>processed</em></dt>
 <dd><p class="first last">name of the new topology file; if not set then it is named like
-<em>topol</em> but with &#8216;<a href="#id5"><span class="problematic" id="id6">pp_</span></a>&#8216; prepended</p>
+<em>topol</em> but with <tt class="docutils literal"><span class="pre">pp_</span></tt> prepended</p>
 </dd>
 <dt><em>includes</em></dt>
 <dd><p class="first last">path or list of paths of directories in which itp files are
@@ -784,9 +782,9 @@ happens.</p>
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>The <em>kwargs</em> dict is <strong>modified in place</strong>.</p>
-<p class="last">This function is a bit of a hack. It might be removed
-once all setup functions become methods in a nice class.</p>
+<p class="last">The <em>kwargs</em> dict is <strong>modified in place</strong>. This
+function is a bit of a hack. It might be removed once
+all setup functions become methods in a nice class.</p>
 </div>
 </dd></dl>
 
@@ -804,16 +802,14 @@ once all setup functions become methods in a nice class.</p>
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<ul class="last simple">
+<p>Some things to keep in mind:</p>
+<ul class="simple">
 <li>The stdout output of grompp is not shown. This can make debugging
 pretty hard.  Try running the normal <tt class="xref docutils literal"><span class="pre">gromacs.grompp()</span></tt> command and
 analyze the output if the debugging messages are not sufficient.</li>
 <li>Check that <tt class="docutils literal"><span class="pre">qtot</span></tt> is correct; because the function is based on pattern 
 matching of the output it can break when the output format changes.</li>
 </ul>
-</div>
 </dd></dl>
 
 </div>
@@ -1280,7 +1276,7 @@ empty string or similar.</li>
         <li class="right" >
           <a href="../building_blocks.html" title="Gromacs building blocks"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.1.8 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" >Gromacs building blocks</a> &raquo;</li> 
       </ul>
