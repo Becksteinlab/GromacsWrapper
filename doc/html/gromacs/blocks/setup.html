@@ -70,16 +70,16 @@ the boring parts of the process.</p>
 sequence of functions that depend on the previous step(s):</p>
 <blockquote>
 <dl class="docutils">
-<dt><a title="gromacs.setup.topology" class="reference internal" href="#gromacs.setup.topology"><tt class="xref docutils literal"><span class="pre">topology()</span></tt></a></dt>
+<dt><a title="gromacs.setup.topology" class="reference" href="#gromacs.setup.topology"><tt class="xref docutils literal"><span class="pre">topology()</span></tt></a></dt>
 <dd>generate initial topology file (limited functionality, might require
 manual setup)</dd>
-<dt><a title="gromacs.setup.solvate" class="reference internal" href="#gromacs.setup.solvate"><tt class="xref docutils literal"><span class="pre">solvate()</span></tt></a></dt>
+<dt><a title="gromacs.setup.solvate" class="reference" href="#gromacs.setup.solvate"><tt class="xref docutils literal"><span class="pre">solvate()</span></tt></a></dt>
 <dd>solvate globular protein and add ions to neutralize</dd>
-<dt><a title="gromacs.setup.energy_minimize" class="reference internal" href="#gromacs.setup.energy_minimize"><tt class="xref docutils literal"><span class="pre">energy_minimize()</span></tt></a></dt>
+<dt><a title="gromacs.setup.energy_minimize" class="reference" href="#gromacs.setup.energy_minimize"><tt class="xref docutils literal"><span class="pre">energy_minimize()</span></tt></a></dt>
 <dd>set up energy minimization and run it (using <tt class="docutils literal"><span class="pre">mdrun_d</span></tt>)</dd>
-<dt><a title="gromacs.setup.MD_restrained" class="reference internal" href="#gromacs.setup.MD_restrained"><tt class="xref docutils literal"><span class="pre">MD_restrained()</span></tt></a></dt>
+<dt><a title="gromacs.setup.MD_restrained" class="reference" href="#gromacs.setup.MD_restrained"><tt class="xref docutils literal"><span class="pre">MD_restrained()</span></tt></a></dt>
 <dd>set up restrained MD</dd>
-<dt><a title="gromacs.setup.MD" class="reference internal" href="#gromacs.setup.MD"><tt class="xref docutils literal"><span class="pre">MD()</span></tt></a></dt>
+<dt><a title="gromacs.setup.MD" class="reference" href="#gromacs.setup.MD"><tt class="xref docutils literal"><span class="pre">MD()</span></tt></a></dt>
 <dd>set up equilibrium MD</dd>
 </dl>
 </blockquote>
@@ -88,7 +88,7 @@ argument, but it should be safe and convenient to use the defaults). Other
 arguments assume the default locations so typically not much should have to be
 set manually.</p>
 <p>One can supply non-standard itp files in the topology directory. In
-some cases one does not use the <a title="gromacs.setup.topology" class="reference internal" href="#gromacs.setup.topology"><tt class="xref docutils literal"><span class="pre">topology()</span></tt></a> function at all but
+some cases one does not use the <a title="gromacs.setup.topology" class="reference" href="#gromacs.setup.topology"><tt class="xref docutils literal"><span class="pre">topology()</span></tt></a> function at all but
 sets up the topology manually. In this case it is safest to call the
 topology directory <tt class="docutils literal"><span class="pre">top</span></tt> and make sure that it contains all relevant
 top, itp, and pdb files.</p>
@@ -196,7 +196,7 @@ Set this to <tt class="xref docutils literal"><span class="pre">None</span></tt>
 file (gro or pdb).</p>
 </dd>
 <dt><em>boxtype</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first last">Any of the box types supported by <a title="gromacs.tools.Genbox" class="reference external" href="../tools.html#gromacs.tools.Genbox"><tt class="xref docutils literal"><span class="pre">Genbox</span></tt></a>.
+<dd><p class="first last">Any of the box types supported by <a title="gromacs.tools.Genbox" class="reference" href="../tools.html#gromacs.tools.Genbox"><tt class="xref docutils literal"><span class="pre">Genbox</span></tt></a>.
 If set to <tt class="xref docutils literal"><span class="pre">None</span></tt> it will also ignore <em>distance</em> and use the box
 inside the <em>struct</em> file.</p>
 </dd>
@@ -221,7 +221,7 @@ lipids. Default is <tt class="xref docutils literal"><span class="pre">False</sp
 <dd><p class="first last">The name of the custom index file that is produced here.</p>
 </dd>
 <dt><em>mainselection</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first last">A string that is fed to <a title="gromacs.tools.Make_ndx" class="reference external" href="../tools.html#gromacs.tools.Make_ndx"><tt class="xref docutils literal"><span class="pre">Make_ndx</span></tt></a> and
+<dd><p class="first last">A string that is fed to <a title="gromacs.tools.Make_ndx" class="reference" href="../tools.html#gromacs.tools.Make_ndx"><tt class="xref docutils literal"><span class="pre">Make_ndx</span></tt></a> and
 which should select the solute.</p>
 </dd>
 <dt><em>dirname</em> <span class="classifier-delimiter">:</span> <span class="classifier">directory name</span></dt>
@@ -241,7 +241,7 @@ which should select the solute.</p>
 
 <dl class="function">
 <dt id="gromacs.setup.energy_minimize">
-<tt class="descclassname">gromacs.setup.</tt><tt class="descname">energy_minimize</tt><big>(</big><em>dirname='em'</em>, <em>mdp='/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/em.mdp'</em>, <em>struct='solvate/ionized.gro'</em>, <em>top='top/system.top'</em>, <em>output='em.pdb'</em>, <em>deffnm='em'</em>, <em>mdrunner=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.setup.energy_minimize" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.setup.</tt><tt class="descname">energy_minimize</tt><big>(</big><em>dirname='em'</em>, <em>mdp='/sansom/gfio/oliver/Library/python/GromacsWrapper/gromacs/templates/em.mdp'</em>, <em>struct='solvate/ionized.gro'</em>, <em>top='top/system.top'</em>, <em>output='em.pdb'</em>, <em>deffnm='em'</em>, <em>mdrunner=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.setup.energy_minimize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Energy minimize the system.</p>
 <p>This sets up the system (creates run input files) and also runs
 <tt class="docutils literal"><span class="pre">mdrun_d</span></tt>. Thus it can take a while.</p>
@@ -274,7 +274,7 @@ which should select the solute.</p>
 <dd><p class="first last">additional directories to search for itp files</p>
 </dd>
 <dt><em>mdrunner</em></dt>
-<dd><p class="first last"><a title="gromacs.run.MDrunner" class="reference external" href="simulation.html#gromacs.run.MDrunner"><tt class="xref docutils literal"><span class="pre">gromacs.run.MDrunner</span></tt></a> class; by defauly we
+<dd><p class="first last"><a title="gromacs.run.MDrunner" class="reference" href="simulation.html#gromacs.run.MDrunner"><tt class="xref docutils literal"><span class="pre">gromacs.run.MDrunner</span></tt></a> class; by defauly we
 just try <tt class="xref docutils literal"><span class="pre">gromacs.mdrun_d()</span></tt> and <tt class="xref docutils literal"><span class="pre">gromacs.mdrun()</span></tt> but a
 MDrunner class gives the user the ability to run mpi jobs
 etc. [None]</p>
@@ -346,8 +346,8 @@ index file.)</p>
 </dd>
 <dt><em>qscript</em></dt>
 <dd><p class="first last">script to submit to the queuing system; by default
-uses the template <a title="gromacs.config.qscript_template" class="reference external" href="../core.html#gromacs.config.qscript_template"><tt class="xref docutils literal"><span class="pre">gromacs.config.qscript_template</span></tt></a>, which can 
-be manually set to another template from <a title="gromacs.config.templates" class="reference external" href="../core.html#gromacs.config.templates"><tt class="xref docutils literal"><span class="pre">gromacs.config.templates</span></tt></a>; 
+uses the template <a title="gromacs.config.qscript_template" class="reference" href="../core.html#gromacs.config.qscript_template"><tt class="xref docutils literal"><span class="pre">gromacs.config.qscript_template</span></tt></a>, which can 
+be manually set to another template from <a title="gromacs.config.templates" class="reference" href="../core.html#gromacs.config.templates"><tt class="xref docutils literal"><span class="pre">gromacs.config.templates</span></tt></a>; 
 can also be a list of template names.</p>
 </dd>
 <dt><em>qname</em></dt>
@@ -374,7 +374,7 @@ and top file. For instance one could have</p>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a dict that can be fed into <a title="gromacs.setup.MD" class="reference internal" href="#gromacs.setup.MD"><tt class="xref docutils literal"><span class="pre">gromacs.setup.MD()</span></tt></a>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a dict that can be fed into <a title="gromacs.setup.MD" class="reference" href="#gromacs.setup.MD"><tt class="xref docutils literal"><span class="pre">gromacs.setup.MD()</span></tt></a>
 (but check, just in case, especially if you want to
 change the <tt class="docutils literal"><span class="pre">define</span></tt> parameter in the mdp file)</p>
 </td>
@@ -395,7 +395,7 @@ variables if you require more output.</p>
 <dd><p>Set up equilibrium MD.</p>
 <p>Additional itp files should be in the same directory as the top file.</p>
 <p>Many of the keyword arguments below already have sensible
-values. Note that setting <a href="#id1"><span class="problematic" id="id2">*</span></a>mainselection*=``None`` will disable
+values. Note that setting <a href="#id1" name="id2"><span class="problematic" id="id2">*</span></a>mainselection*=``None`` will disable
 many of the automated choices and is often recommended when using
 your own mdp file.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -440,8 +440,8 @@ index file.)</p>
 </dd>
 <dt><em>qscript</em></dt>
 <dd><p class="first last">script to submit to the queuing system; by default
-uses the template <a title="gromacs.config.qscript_template" class="reference external" href="../core.html#gromacs.config.qscript_template"><tt class="xref docutils literal"><span class="pre">gromacs.config.qscript_template</span></tt></a>, which can 
-be manually set to another template from <a title="gromacs.config.templates" class="reference external" href="../core.html#gromacs.config.templates"><tt class="xref docutils literal"><span class="pre">gromacs.config.templates</span></tt></a>; 
+uses the template <a title="gromacs.config.qscript_template" class="reference" href="../core.html#gromacs.config.qscript_template"><tt class="xref docutils literal"><span class="pre">gromacs.config.qscript_template</span></tt></a>, which can 
+be manually set to another template from <a title="gromacs.config.templates" class="reference" href="../core.html#gromacs.config.templates"><tt class="xref docutils literal"><span class="pre">gromacs.config.templates</span></tt></a>; 
 can also be a list of template names.</p>
 </dd>
 <dt><em>qname</em></dt>
@@ -459,7 +459,7 @@ file, eg <tt class="docutils literal"><span class="pre">nstxtcout=250,</span> <s
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a dict that can be fed into <a title="gromacs.setup.MD" class="reference internal" href="#gromacs.setup.MD"><tt class="xref docutils literal"><span class="pre">gromacs.setup.MD()</span></tt></a>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a dict that can be fed into <a title="gromacs.setup.MD" class="reference" href="#gromacs.setup.MD"><tt class="xref docutils literal"><span class="pre">gromacs.setup.MD()</span></tt></a>
 (but check, just in case, especially if you want to
 change the <tt class="docutils literal"><span class="pre">define</span></tt> parameter in the mdp file)</p>
 </td>
@@ -486,7 +486,7 @@ can keep scripts more general.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><em>groups</em> is a list of dictionaries that describe the index groups. See
-<a title="gromacs.cbook.parse_ndxlist" class="reference external" href="cbook.html#gromacs.cbook.parse_ndxlist"><tt class="xref docutils literal"><span class="pre">gromacs.cbook.parse_ndxlist()</span></tt></a> for details.</p>
+<a title="gromacs.cbook.parse_ndxlist" class="reference" href="cbook.html#gromacs.cbook.parse_ndxlist"><tt class="xref docutils literal"><span class="pre">gromacs.cbook.parse_ndxlist()</span></tt></a> for details.</p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
@@ -516,7 +516,7 @@ added later as could be other symbolic groups such as __membrane__.</p>
 
 <dl class="function">
 <dt id="gromacs.setup._setup_MD">
-<tt class="descclassname">gromacs.setup.</tt><tt class="descname">_setup_MD</tt><big>(</big><em>dirname</em>, <em>deffnm='md'</em>, <em>mdp='/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/md_OPLSAA.mdp'</em>, <em>struct=None</em>, <em>top='top/system.top'</em>, <em>ndx=None</em>, <em>mainselection='&quot;Protein&quot;'</em>, <em>qscript='/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/local.sh'</em>, <em>qname=None</em>, <em>mdrun_opts=''</em>, <em>budget=None</em>, <em>walltime=0.33333333333333331</em>, <em>dt=0.002</em>, <em>runtime=1000.0</em>, <em>**mdp_kwargs</em><big>)</big><a class="headerlink" href="#gromacs.setup._setup_MD" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.setup.</tt><tt class="descname">_setup_MD</tt><big>(</big><em>dirname</em>, <em>deffnm='md'</em>, <em>mdp='/sansom/gfio/oliver/Library/python/GromacsWrapper/gromacs/templates/md_OPLSAA.mdp'</em>, <em>struct=None</em>, <em>top='top/system.top'</em>, <em>ndx=None</em>, <em>mainselection='&quot;Protein&quot;'</em>, <em>qscript='/sansom/gfio/oliver/Library/python/GromacsWrapper/gromacs/templates/local.sh'</em>, <em>qname=None</em>, <em>mdrun_opts=''</em>, <em>budget=None</em>, <em>walltime=0.33333333333333331</em>, <em>dt=0.002</em>, <em>runtime=1000.0</em>, <em>**mdp_kwargs</em><big>)</big><a class="headerlink" href="#gromacs.setup._setup_MD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generic function to set up a <tt class="docutils literal"><span class="pre">mdrun</span></tt> MD simulation.</p>
 <p>See the user functions for usage.</p>
 </dd></dl>
@@ -532,10 +532,10 @@ added later as could be other symbolic groups such as __membrane__.</p>
         <div class="sphinxsidebarwrapper">
             <h3><a href="../../index.html">Table Of Contents</a></h3>
             <ul>
-<li><a class="reference external" href="#"><tt class="docutils literal"><span class="pre">gromacs.setup</span></tt> &#8211; Setting up a Gromacs MD run</a><ul>
-<li><a class="reference external" href="#user-functions">User functions</a></li>
-<li><a class="reference external" href="#example">Example</a></li>
-<li><a class="reference external" href="#functions">Functions</a></li>
+<li><a class="reference" href="#"><tt class="docutils literal"><span class="pre">gromacs.setup</span></tt> &#8211; Setting up a Gromacs MD run</a><ul>
+<li><a class="reference" href="#user-functions">User functions</a></li>
+<li><a class="reference" href="#example">Example</a></li>
+<li><a class="reference" href="#functions">Functions</a></li>
 </ul>
 </li>
 </ul>

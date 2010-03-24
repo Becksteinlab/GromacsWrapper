@@ -152,7 +152,7 @@ gromacs.utilities.asiterable function gromacs/core.html
 gromacs.formats.XVG.read method gromacs/core.html
 gromacs.cbook.Transformer.center_fit method gromacs/blocks/cbook.html
 gromacs.utilities.anyopen function gromacs/core.html
-gromacs.tools.G_tcaf class gromacs/tools.html
+gromacs.tools.G_covar class gromacs/tools.html
 gromacs.qsub.Manager.remoteuri method gromacs/blocks/qsub.html
 gromacs.analysis.core.Plugin.worker attribute analysis/core.html
 gromacs.analysis.plugins.RMSD.worker_class attribute analysis/plugins.html
@@ -297,7 +297,7 @@ gromacs.analysis.plugins.RMSD.RMSD class analysis/plugins.html
 gromacs.tools.G_hbond class gromacs/tools.html
 gromacs.analysis.plugins.MinDistances class analysis/plugins.html
 gromacs.tools.Genbox class gromacs/tools.html
-gromacs.tools.G_covar class gromacs/tools.html
+gromacs.tools.G_tcaf class gromacs/tools.html
 gromacs.tools.G_rama class gromacs/tools.html
 gromacs.formats.XVG.array attribute gromacs/core.html
 gromacs.cbook.Transformer.fit method gromacs/blocks/cbook.html

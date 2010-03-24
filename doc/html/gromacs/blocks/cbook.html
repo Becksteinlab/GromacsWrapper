@@ -62,7 +62,7 @@ how to do simple things.</p>
 <div class="section" id="miscellaneous-canned-gromacs-commands">
 <h2>Miscellaneous canned Gromacs commands<a class="headerlink" href="#miscellaneous-canned-gromacs-commands" title="Permalink to this headline">¶</a></h2>
 <p>Simple commands with new default options so that they solve a specific
-problem (see also <a class="reference internal" href="#manipulating-trajectories-and-structures">Manipulating trajectories and structures</a>):</p>
+problem (see also <a class="reference" href="#manipulating-trajectories-and-structures">Manipulating trajectories and structures</a>):</p>
 <dl class="function">
 <dt id="gromacs.cbook.rmsd_backbone">
 <tt class="descclassname">gromacs.cbook.</tt><tt class="descname">rmsd_backbone</tt><big>(</big><span class="optional">[</span><em>s=&quot;md.tpr&quot;</em>, <em>f=&quot;md.xtc&quot;</em><span class="optional">[</span>, <em>...</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#gromacs.cbook.rmsd_backbone" title="Permalink to this definition">¶</a></dt>
@@ -138,7 +138,7 @@ for the fitting stage (pass 2) and <em>input1</em> for the centering (pass 1).</
 (good for membrane simulations); default is <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
 </dd>
 <dt><em>kwargs</em></dt>
-<dd><p class="first last">All other arguments are passed to <a title="gromacs.tools.Trjconv" class="reference external" href="../tools.html#gromacs.tools.Trjconv"><tt class="xref docutils literal"><span class="pre">Trjconv</span></tt></a>.</p>
+<dd><p class="first last">All other arguments are passed to <a title="gromacs.tools.Trjconv" class="reference" href="../tools.html#gromacs.tools.Trjconv"><tt class="xref docutils literal"><span class="pre">Trjconv</span></tt></a>.</p>
 </dd>
 </dl>
 </td>
@@ -156,7 +156,7 @@ where columns of solvent appear cut out from the box&#8212;it probably means
 that after rotation the information for the periodic boundaries is not
 correct any more.</p>
 <p>Most kwargs are passed to both invocations of
-<a title="gromacs.tools.Trjconv" class="reference external" href="../tools.html#gromacs.tools.Trjconv"><tt class="xref docutils literal"><span class="pre">gromacs.tools.Trjconv</span></tt></a> so it does not really make sense to use eg
+<a title="gromacs.tools.Trjconv" class="reference" href="../tools.html#gromacs.tools.Trjconv"><tt class="xref docutils literal"><span class="pre">gromacs.tools.Trjconv</span></tt></a> so it does not really make sense to use eg
 <em>skip</em>; in this case do things manually.</p>
 <p>By default the <em>input</em> to the fit command is (&#8216;backbone&#8217;,
 &#8216;protein&#8217;,&#8217;system&#8217;); the compact command always uses the second and third
@@ -172,7 +172,7 @@ the output file also a trr suffix.</p>
 <p class="last">For big trajectories it can <strong>take a very long time</strong>
 and consume a <strong>large amount of temporary diskspace</strong>.</p>
 </div>
-<p>We follow the <a class="reference external" href="http://oldwiki.gromacs.org/index.php/Manual:g_spatial_4.0.3">g_spatial documentation</a> in preparing the trajectories:</p>
+<p>We follow the <a class="reference" href="http://oldwiki.gromacs.org/index.php/Manual:g_spatial_4.0.3">g_spatial documentation</a> in preparing the trajectories:</p>
 <div class="highlight-python"><pre>trjconv -s a.tpr -f a.xtc -o b.xtc -center tric -ur compact -pbc none
 trjconv -s a.tpr -f b.xtc -o c.xtc -fit rot+trans</pre>
 </div>
@@ -217,7 +217,7 @@ generated files so far but <em>check carefully</em>!</p>
 <dt><em>prefix</em></dt>
 <dd><p class="first last">deffnm of the trajectories [md]</p>
 </dd>
-<dt><a href="#id1"><span class="problematic" id="id2">*</span></a>resolve_multi&#8221;</dt>
+<dt><a href="#id1" name="id2"><span class="problematic" id="id2">*</span></a>resolve_multi&#8221;</dt>
 <dd><p class="first">how to deal with multiple &#8220;final&#8221; gro or pdb files: normally there should
 only be one but in case of restarting from the checkpoint of a finished
 simulation one can end up with multiple identical ones.</p>
@@ -334,8 +334,8 @@ cannot be changed are <em>sep</em> and the output file name <em>o</em>.</p>
 <dd><p>Class to handle transformations of trajectories.</p>
 <ol class="arabic simple">
 <li>Center, compact, and fit to reference structure in tpr
-(optionally, only center in the xy plane): <a title="gromacs.cbook.Transformer.center_fit" class="reference internal" href="#gromacs.cbook.Transformer.center_fit"><tt class="xref docutils literal"><span class="pre">center_fit()</span></tt></a></li>
-<li>Write compact xtc and tpr with water removed: <a title="gromacs.cbook.Transformer.strip_water" class="reference internal" href="#gromacs.cbook.Transformer.strip_water"><tt class="xref docutils literal"><span class="pre">strip_water()</span></tt></a></li>
+(optionally, only center in the xy plane): <a title="gromacs.cbook.Transformer.center_fit" class="reference" href="#gromacs.cbook.Transformer.center_fit"><tt class="xref docutils literal"><span class="pre">center_fit()</span></tt></a></li>
+<li>Write compact xtc and tpr with water removed: <a title="gromacs.cbook.Transformer.strip_water" class="reference" href="#gromacs.cbook.Transformer.strip_water"><tt class="xref docutils literal"><span class="pre">strip_water()</span></tt></a></li>
 </ol>
 <p>Set up Transformer with structure and trajectory.</p>
 <p>Supply <em>n</em> = tpr, <em>f</em> = xtc (and <em>n</em> = ndx) relative to dirname.</p>
@@ -347,7 +347,7 @@ cannot be changed are <em>sep</em> and the output file name <em>o</em>.</p>
 <dt><em>s</em> </dt>
 <dd><p class="first last">tpr file (or similar); note that this should not contain
 position restraints if it is to be used with a reduced
-system (see <a title="gromacs.cbook.Transformer.strip_water" class="reference internal" href="#gromacs.cbook.Transformer.strip_water"><tt class="xref docutils literal"><span class="pre">strip_water()</span></tt></a>)</p>
+system (see <a title="gromacs.cbook.Transformer.strip_water" class="reference" href="#gromacs.cbook.Transformer.strip_water"><tt class="xref docutils literal"><span class="pre">strip_water()</span></tt></a>)</p>
 </dd>
 <dt><em>f</em></dt>
 <dd><p class="first last">trajectory (xtc, trr, ...)</p>
@@ -421,7 +421,7 @@ the new files</p>
 <dt id="gromacs.cbook.Transformer.fit">
 <tt class="descname">fit</tt><big>(</big><em>xy=False</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.cbook.Transformer.fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write xtc that is fitted to the tpr reference structure.</p>
-<p>See <a title="gromacs.cbook.trj_xyfitted" class="reference internal" href="#gromacs.cbook.trj_xyfitted"><tt class="xref docutils literal"><span class="pre">gromacs.cbook.trj_xyfitted()</span></tt></a> for details and
+<p>See <a title="gromacs.cbook.trj_xyfitted" class="reference" href="#gromacs.cbook.trj_xyfitted"><tt class="xref docutils literal"><span class="pre">gromacs.cbook.trj_xyfitted()</span></tt></a> for details and
 description of <em>kwargs</em>. The most important ones are listed
 here but in most cases the defaults should work.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -455,7 +455,7 @@ If e.g. <em>dt</em> = 100  is one of the <em>kwargs</em> then the default name i
 <tt class="xref docutils literal"><span class="pre">None</span></tt>: skip existing and log a warning [default]</p>
 </dd>
 <dt><em>kwargs</em></dt>
-<dd><p class="first last">kwargs are passed to <a title="gromacs.cbook.trj_xyfitted" class="reference internal" href="#gromacs.cbook.trj_xyfitted"><tt class="xref docutils literal"><span class="pre">trj_xyfitted()</span></tt></a></p>
+<dd><p class="first last">kwargs are passed to <a title="gromacs.cbook.trj_xyfitted" class="reference" href="#gromacs.cbook.trj_xyfitted"><tt class="xref docutils literal"><span class="pre">trj_xyfitted()</span></tt></a></p>
 </dd>
 </dl>
 </td>
@@ -512,7 +512,7 @@ from the system.</p>
 </ul>
 </dd>
 <dt><em>kwargs</em> </dt>
-<dd><p class="first last">are passed on to <a title="gromacs.cbook.trj_compact" class="reference internal" href="#gromacs.cbook.trj_compact"><tt class="xref docutils literal"><span class="pre">gromacs.cbook.trj_compact()</span></tt></a> (unless the
+<dd><p class="first last">are passed on to <a title="gromacs.cbook.trj_compact" class="reference" href="#gromacs.cbook.trj_compact"><tt class="xref docutils literal"><span class="pre">gromacs.cbook.trj_compact()</span></tt></a> (unless the
 values have to be set to certain values such as s, f, n, o
 keywords). The <em>input</em> keyword is always mangled: Only the first
 entry (the group to centre the trajectory on) is kept, and as a
@@ -747,7 +747,7 @@ mdp parameter)</li>
 </ol>
 <p>By default, the directories <tt class="docutils literal"><span class="pre">.</span></tt> and <tt class="docutils literal"><span class="pre">..</span></tt> are also added to the
 <em>include</em> string for the mdp; when fed into
-<a title="gromacs.cbook.edit_mdp" class="reference internal" href="#gromacs.cbook.edit_mdp"><tt class="xref docutils literal"><span class="pre">gromacs.cbook.edit_mdp()</span></tt></a> it will result in a line such as</p>
+<a title="gromacs.cbook.edit_mdp" class="reference" href="#gromacs.cbook.edit_mdp"><tt class="xref docutils literal"><span class="pre">gromacs.cbook.edit_mdp()</span></tt></a> it will result in a line such as</p>
 <div class="highlight-python"><pre>include = -I. -I.. -I../topology_dir ....</pre>
 </div>
 <p>Note that the user can always override the behaviour by setting
@@ -817,11 +817,11 @@ matching of the output it can break when the output format changes.</li>
 <h2>Working with index files<a class="headerlink" href="#working-with-index-files" title="Permalink to this headline">¶</a></h2>
 <p>Manipulation of index files (<tt class="docutils literal"><span class="pre">ndx</span></tt>) can be cumbersome because the
 <tt class="docutils literal"><span class="pre">make_ndx</span></tt> program is not very sophisticated (yet) compared to
-full-fledged atom selection expression as available in <a class="reference external" href="http://www.charmm.org/html/documentation/c35b1/select.html">Charmm</a>, <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/current/ug/node87.html">VMD</a>, or
-<a class="reference external" href="http://mdanalysis.googlecode.com">MDAnalysis</a>. Some tools help in building and interpreting index files.</p>
+full-fledged atom selection expression as available in <a class="reference" href="http://www.charmm.org/html/documentation/c35b1/select.html">Charmm</a>, <a class="reference" href="http://www.ks.uiuc.edu/Research/vmd/current/ug/node87.html">VMD</a>, or
+<a class="reference" href="http://mdanalysis.googlecode.com">MDAnalysis</a>. Some tools help in building and interpreting index files.</p>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last">The <a title="gromacs.formats.NDX" class="reference external" href="../core.html#gromacs.formats.NDX"><tt class="xref docutils literal"><span class="pre">gromacs.formats.NDX</span></tt></a> class can solve a number
+<p class="last">The <a title="gromacs.formats.NDX" class="reference" href="../core.html#gromacs.formats.NDX"><tt class="xref docutils literal"><span class="pre">gromacs.formats.NDX</span></tt></a> class can solve a number
 of index problems in a cleaner way than the classes and
 functions here.</p>
 </div>
@@ -833,7 +833,7 @@ functions here.</p>
 MDAnalysis but a very quick hack.</p>
 <p><strong>Example</strong></p>
 <blockquote>
-<p>How to use the <a title="gromacs.cbook.IndexBuilder" class="reference internal" href="#gromacs.cbook.IndexBuilder"><tt class="xref docutils literal"><span class="pre">IndexBuilder</span></tt></a>:</p>
+<p>How to use the <a title="gromacs.cbook.IndexBuilder" class="reference" href="#gromacs.cbook.IndexBuilder"><tt class="xref docutils literal"><span class="pre">IndexBuilder</span></tt></a>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">G</span> <span class="o">=</span> <span class="n">gromacs</span><span class="o">.</span><span class="n">cbook</span><span class="o">.</span><span class="n">IndexBuilder</span><span class="p">(</span><span class="s">&#39;md_posres.pdb&#39;</span><span class="p">,</span> 
               <span class="p">[</span><span class="s">&#39;S312:OG&#39;</span><span class="p">,</span><span class="s">&#39;T313:OG1&#39;</span><span class="p">,</span><span class="s">&#39;A38:O&#39;</span><span class="p">,</span><span class="s">&#39;A309:O&#39;</span><span class="p">,</span><span class="s">&#39;@a62549 &amp; r NA&#39;</span><span class="p">],</span> 
               <span class="n">offset</span><span class="o">=-</span><span class="mi">9</span><span class="p">,</span> <span class="n">out_ndx</span><span class="o">=</span><span class="s">&#39;selection.ndx&#39;</span><span class="p">)</span>
@@ -847,9 +847,9 @@ resids by subtracting 9 from the canonical resid.</p>
 <p>The combined selection is <tt class="docutils literal"><span class="pre">OR</span></tt> ed by default and written to
 <em>selection.ndx</em>. One can also add all the groups in the initial <em>ndx</em>
 file (or the <strong>make_ndx</strong> default groups) to the output (see the
-<em>defaultgroups</em> keyword for <a title="gromacs.cbook.IndexBuilder.combine" class="reference internal" href="#gromacs.cbook.IndexBuilder.combine"><tt class="xref docutils literal"><span class="pre">IndexBuilder.combine()</span></tt></a>).</p>
+<em>defaultgroups</em> keyword for <a title="gromacs.cbook.IndexBuilder.combine" class="reference" href="#gromacs.cbook.IndexBuilder.combine"><tt class="xref docutils literal"><span class="pre">IndexBuilder.combine()</span></tt></a>).</p>
 <p>Generating an index file always requires calling
-<a title="gromacs.cbook.IndexBuilder.combine" class="reference internal" href="#gromacs.cbook.IndexBuilder.combine"><tt class="xref docutils literal"><span class="pre">combine()</span></tt></a> even if there is only a single group.</p>
+<a title="gromacs.cbook.IndexBuilder.combine" class="reference" href="#gromacs.cbook.IndexBuilder.combine"><tt class="xref docutils literal"><span class="pre">combine()</span></tt></a> even if there is only a single group.</p>
 <p>Deleting the class removes all temporary files associated with it (see
 <tt class="xref docutils literal"><span class="pre">IndexBuilder.indexfiles</span></tt>).</p>
 </blockquote>
@@ -858,7 +858,7 @@ file (or the <strong>make_ndx</strong> default groups) to the output (see the
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Raises:</th><td class="field-body"><p class="first">If an empty group is detected (which does not always work) then a
-<a title="gromacs.BadParameterWarning" class="reference external" href="../init.html#gromacs.BadParameterWarning"><tt class="xref docutils literal"><span class="pre">gromacs.BadParameterWarning</span></tt></a> is issued.</p>
+<a title="gromacs.BadParameterWarning" class="reference" href="../init.html#gromacs.BadParameterWarning"><tt class="xref docutils literal"><span class="pre">gromacs.BadParameterWarning</span></tt></a> is issued.</p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Bugs:</th><td class="field-body"><p class="first">If <tt class="docutils literal"><span class="pre">make_ndx</span></tt> crashes with an unexpected error then this is fairly hard to
@@ -876,12 +876,12 @@ could be.</p>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last">In some cases it might be more straightforward to use
-<a title="gromacs.formats.NDX" class="reference external" href="../core.html#gromacs.formats.NDX"><tt class="xref docutils literal"><span class="pre">gromacs.formats.NDX</span></tt></a>.</p>
+<a title="gromacs.formats.NDX" class="reference" href="../core.html#gromacs.formats.NDX"><tt class="xref docutils literal"><span class="pre">gromacs.formats.NDX</span></tt></a>.</p>
 </div>
 <p>Build a index group from the selection arguments.</p>
 <p>If selections and a structure file are supplied then the individual
 selections are constructed with separate calls to
-<tt class="xref docutils literal"><span class="pre">gromacs.make_ndx()</span></tt>. Use <a title="gromacs.cbook.IndexBuilder.combine" class="reference internal" href="#gromacs.cbook.IndexBuilder.combine"><tt class="xref docutils literal"><span class="pre">IndexBuilder.combine()</span></tt></a> to combine
+<tt class="xref docutils literal"><span class="pre">gromacs.make_ndx()</span></tt>. Use <a title="gromacs.cbook.IndexBuilder.combine" class="reference" href="#gromacs.cbook.IndexBuilder.combine"><tt class="xref docutils literal"><span class="pre">IndexBuilder.combine()</span></tt></a> to combine
 them into a joint selection.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -981,7 +981,7 @@ actual group name and the name of the file; useful when all names are autogenera
 <em>not</em> guaranteed to be the same as the selections on input because
 <tt class="docutils literal"><span class="pre">make_ndx</span></tt> sorts them ascending. Thus you should be careful when
 using these index files for calculations of angles and dihedrals.
-Use <a title="gromacs.formats.NDX" class="reference external" href="../core.html#gromacs.formats.NDX"><tt class="xref docutils literal"><span class="pre">gromacs.formats.NDX</span></tt></a> in these cases.</p>
+Use <a title="gromacs.formats.NDX" class="reference" href="../core.html#gromacs.formats.NDX"><tt class="xref docutils literal"><span class="pre">gromacs.formats.NDX</span></tt></a> in these cases.</p>
 </div>
 </dd></dl>
 
@@ -1039,17 +1039,17 @@ rc,output,junk = cbook.make_ndx_captured(...)</blockquote>
 <tbody valign="top">
 <tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
 <li><em>ndx</em>  is a Gromacs index file.</li>
-<li>kwargs are passed to <a title="gromacs.cbook.make_ndx_captured" class="reference internal" href="#gromacs.cbook.make_ndx_captured"><tt class="xref docutils literal"><span class="pre">make_ndx_captured()</span></tt></a>.</li>
+<li>kwargs are passed to <a title="gromacs.cbook.make_ndx_captured" class="reference" href="#gromacs.cbook.make_ndx_captured"><tt class="xref docutils literal"><span class="pre">make_ndx_captured()</span></tt></a>.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of groups as supplied by <a title="gromacs.cbook.parse_ndxlist" class="reference internal" href="#gromacs.cbook.parse_ndxlist"><tt class="xref docutils literal"><span class="pre">parse_ndxlist()</span></tt></a></p>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of groups as supplied by <a title="gromacs.cbook.parse_ndxlist" class="reference" href="#gromacs.cbook.parse_ndxlist"><tt class="xref docutils literal"><span class="pre">parse_ndxlist()</span></tt></a></p>
 </td>
 </tr>
 </tbody>
 </table>
 <p>Alternatively, load the index file with
-<a title="gromacs.formats.NDX" class="reference external" href="../core.html#gromacs.formats.NDX"><tt class="xref docutils literal"><span class="pre">gromacs.formats.NDX</span></tt></a> for full control.</p>
+<a title="gromacs.formats.NDX" class="reference" href="../core.html#gromacs.formats.NDX"><tt class="xref docutils literal"><span class="pre">gromacs.formats.NDX</span></tt></a> for full control.</p>
 </dd></dl>
 
 <dl class="function">
@@ -1058,12 +1058,12 @@ rc,output,junk = cbook.make_ndx_captured(...)</blockquote>
 <dd><p>make_ndx that captures all output</p>
 <p>Standard <tt class="xref docutils literal"><span class="pre">make_ndx()</span></tt> command with the input and
 output pre-set in such a way that it can be conveniently used for
-<a title="gromacs.cbook.parse_ndxlist" class="reference internal" href="#gromacs.cbook.parse_ndxlist"><tt class="xref docutils literal"><span class="pre">parse_ndxlist()</span></tt></a>.</p>
+<a title="gromacs.cbook.parse_ndxlist" class="reference" href="#gromacs.cbook.parse_ndxlist"><tt class="xref docutils literal"><span class="pre">parse_ndxlist()</span></tt></a>.</p>
 <dl class="docutils">
 <dt>Example::</dt>
 <dd>ndx_groups = parse_ndxlist(make_ndx_captured(n=ndx)[0])</dd>
 </dl>
-<p>Note that the convenient <a title="gromacs.cbook.get_ndx_groups" class="reference internal" href="#gromacs.cbook.get_ndx_groups"><tt class="xref docutils literal"><span class="pre">get_ndx_groups()</span></tt></a> function does exactly
+<p>Note that the convenient <a title="gromacs.cbook.get_ndx_groups" class="reference" href="#gromacs.cbook.get_ndx_groups"><tt class="xref docutils literal"><span class="pre">get_ndx_groups()</span></tt></a> function does exactly
 that and can probably used in most cases.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1189,7 +1189,7 @@ expression strings, the last is the substitution value. It mimics
 <strong id="grammar-token-search_RE">search_RE           </strong> ::=  regular expression that is searched in the line
 <strong id="grammar-token-replacement">replacement         </strong> ::=  replacement string for search_RE
 </pre>
-<p>Running <a title="gromacs.cbook.edit_txt" class="reference internal" href="#gromacs.cbook.edit_txt"><tt class="xref docutils literal"><span class="pre">edit_txt()</span></tt></a> does pretty much what a simple</p>
+<p>Running <a title="gromacs.cbook.edit_txt" class="reference" href="#gromacs.cbook.edit_txt"><tt class="xref docutils literal"><span class="pre">edit_txt()</span></tt></a> does pretty much what a simple</p>
 <div class="highlight-python"><pre>sed /line_match_RE/s/search_RE/replacement/</pre>
 </div>
 <p>with repeated substitution commands does.</p>
@@ -1222,13 +1222,13 @@ empty string or similar.</li>
         <div class="sphinxsidebarwrapper">
             <h3><a href="../../index.html">Table Of Contents</a></h3>
             <ul>
-<li><a class="reference external" href="#"><tt class="docutils literal"><span class="pre">gromacs.cbook</span></tt> &#8211; Gromacs Cook Book</a><ul>
-<li><a class="reference external" href="#miscellaneous-canned-gromacs-commands">Miscellaneous canned Gromacs commands</a></li>
-<li><a class="reference external" href="#manipulating-trajectories-and-structures">Manipulating trajectories and structures</a></li>
-<li><a class="reference external" href="#processing-output">Processing output</a></li>
-<li><a class="reference external" href="#working-with-topologies-and-mdp-files">Working with topologies and mdp files</a></li>
-<li><a class="reference external" href="#working-with-index-files">Working with index files</a></li>
-<li><a class="reference external" href="#file-editing-functions">File editing functions</a></li>
+<li><a class="reference" href="#"><tt class="docutils literal"><span class="pre">gromacs.cbook</span></tt> &#8211; Gromacs Cook Book</a><ul>
+<li><a class="reference" href="#miscellaneous-canned-gromacs-commands">Miscellaneous canned Gromacs commands</a></li>
+<li><a class="reference" href="#manipulating-trajectories-and-structures">Manipulating trajectories and structures</a></li>
+<li><a class="reference" href="#processing-output">Processing output</a></li>
+<li><a class="reference" href="#working-with-topologies-and-mdp-files">Working with topologies and mdp files</a></li>
+<li><a class="reference" href="#working-with-index-files">Working with index files</a></li>
+<li><a class="reference" href="#file-editing-functions">File editing functions</a></li>
 </ul>
 </li>
 </ul>
