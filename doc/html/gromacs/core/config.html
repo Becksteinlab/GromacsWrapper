@@ -1,0 +1,349 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>gromacs.config – Configuration for GromacsWrapper &mdash; GromacsWrapper v0.1.8 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1.8',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="GromacsWrapper v0.1.8 documentation" href="../../index.html" />
+    <link rel="up" title="Gromacs core modules" href="../core.html" />
+    <link rel="next" title="gromacs.formats – Accessing various files" href="formats.html" />
+    <link rel="prev" title="gromacs.core – Core functionality" href="core.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="formats.html" title="gromacs.formats – Accessing various files"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="core.html" title="gromacs.core – Core functionality"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">GromacsWrapper v0.1.8 documentation</a> &raquo;</li>
+          <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
+          <li><a href="../core.html" accesskey="U">Gromacs core modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="gromacs-config-configuration-for-gromacswrapper">
+<span id="module-gromacs.config"></span><h1><tt class="xref docutils literal"><span class="pre">gromacs.config</span></tt> &#8211; Configuration for GromacsWrapper<a class="headerlink" href="#gromacs-config-configuration-for-gromacswrapper" title="Permalink to this headline">¶</a></h1>
+<p>The config module provides configurable options for the whole package;
+eventually it might grow into a sophisticated configuration system such as
+matplotlib&#8217;s rc system but right now it mostly serves to define which gromacs
+tools and other scripts are offered in the package and where template files are
+located. If the user wants to change anything they will still have to do it
+here in source until a better mechanism with rc files has been implemented.</p>
+<p>User-supplied templates are stored under
+<a title="gromacs.config.configdir" class="reference internal" href="#gromacs.config.configdir"><tt class="xref docutils literal"><span class="pre">gromacs.config.configdir</span></tt></a>. Eventually this will also contain the
+configuration options currently hard-coded in <tt class="xref docutils literal"><span class="pre">gromacs.config</span></tt>.</p>
+<dl class="data">
+<dt id="gromacs.config.configdir">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">configdir</tt><a class="headerlink" href="#gromacs.config.configdir" title="Permalink to this definition">¶</a></dt>
+<dd>Directory to store user templates and rc files.</dd></dl>
+
+<dl class="data">
+<dt id="gromacs.config.path">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">path</tt><a class="headerlink" href="#gromacs.config.path" title="Permalink to this definition">¶</a></dt>
+<dd>Search path for queuing scripts and templates. The internal package-supplied
+templates are always searcheded last via <a title="gromacs.config.get_templates" class="reference internal" href="#gromacs.config.get_templates"><tt class="xref docutils literal"><span class="pre">gromacs.config.get_templates()</span></tt></a>.
+Modify <a title="gromacs.config.path" class="reference internal" href="#gromacs.config.path"><tt class="xref docutils literal"><span class="pre">gromacs.config.path</span></tt></a> directly in order to customize the template
+and qscript searching.
+(Note that it is not a good idea to have templates and qscripts with the
+same name as they are both searched on the same path.)</dd></dl>
+
+<div class="section" id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Permalink to this headline">¶</a></h2>
+<p>Gromacs commands log their invocation to a log file; typically at
+loglevel <em>INFO</em> (see the python <a class="reference external" href="http://docs.python.org/library/logging.html">logging module</a> for details).</p>
+<dl class="data">
+<dt id="gromacs.config.logfilename">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">logfilename</tt><a class="headerlink" href="#gromacs.config.logfilename" title="Permalink to this definition">¶</a></dt>
+<dd>File name for the log file; all gromacs command and many utility functions (e.g. in
+<a title="" class="reference external" href="../blocks/cbook.html#module-gromacs.cbook"><tt class="xref docutils literal"><span class="pre">gromacs.cbook</span></tt></a> and <a title="" class="reference external" href="../blocks/setup.html#module-gromacs.setup"><tt class="xref docutils literal"><span class="pre">gromacs.setup</span></tt></a>) append messages there. Warnings and
+errors are also recorded here. The default is <em>gromacs.log</em>.</dd></dl>
+
+<dl class="data">
+<dt id="gromacs.config.loglevel_console">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">loglevel_console</tt><a class="headerlink" href="#gromacs.config.loglevel_console" title="Permalink to this definition">¶</a></dt>
+<dd>The default loglevel that is still printed to the console.</dd></dl>
+
+<dl class="data">
+<dt id="gromacs.config.loglevel_file">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">loglevel_file</tt><a class="headerlink" href="#gromacs.config.loglevel_file" title="Permalink to this definition">¶</a></dt>
+<dd>The default loglevel that is still written to the <a title="gromacs.config.logfilename" class="reference internal" href="#gromacs.config.logfilename"><tt class="xref docutils literal"><span class="pre">logfilename</span></tt></a>.</dd></dl>
+
+</div>
+<div class="section" id="gromacs-tools-and-scripts">
+<h2>Gromacs tools and scripts<a class="headerlink" href="#gromacs-tools-and-scripts" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">load_*</span></tt> variables are lists that contain instructions to other
+parts of the code which packages and scripts should be wrapped.</p>
+<dl class="data">
+<dt id="gromacs.config.load_tools">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">load_tools</tt><a class="headerlink" href="#gromacs.config.load_tools" title="Permalink to this definition">¶</a></dt>
+<dd>Python list of all tool file names. Automatically filled from <a title="gromacs.config.gmx_tools" class="reference internal" href="#gromacs.config.gmx_tools"><tt class="xref docutils literal"><span class="pre">gmx_tools</span></tt></a>
+and <a title="gromacs.config.gmx_extra_tools" class="reference internal" href="#gromacs.config.gmx_extra_tools"><tt class="xref docutils literal"><span class="pre">gmx_extra_tools</span></tt></a>, depending on the values in
+<a title="gromacs.config.gmx_tool_groups" class="reference internal" href="#gromacs.config.gmx_tool_groups"><tt class="xref docutils literal"><span class="pre">gmx_tool_groups</span></tt></a>.</dd></dl>
+
+<dl class="data">
+<dt id="gromacs.config.load_scripts">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">load_scripts</tt><a class="headerlink" href="#gromacs.config.load_scripts" title="Permalink to this definition">¶</a></dt>
+<dd><p>3rd party analysis scripts and tools; this is a list of triplets of</p>
+<blockquote>
+(<em>script name/path</em>, <em>command name</em>, <em>doc string</em>)</blockquote>
+<p>(See the source code for examples.)</p>
+</dd></dl>
+
+<p><a title="gromacs.config.load_tools" class="reference internal" href="#gromacs.config.load_tools"><tt class="xref docutils literal"><span class="pre">load_tools</span></tt></a> is populated by listing <tt class="docutils literal"><span class="pre">gmx_*</span></tt> tool group variables in
+<a title="gromacs.config.gmx_tool_groups" class="reference internal" href="#gromacs.config.gmx_tool_groups"><tt class="xref docutils literal"><span class="pre">gmx_tool_groups</span></tt></a>.</p>
+<dl class="data">
+<dt id="gromacs.config.gmx_tool_groups">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">gmx_tool_groups</tt><a class="headerlink" href="#gromacs.config.gmx_tool_groups" title="Permalink to this definition">¶</a></dt>
+<dd>List of the variables in gromacs.tools that should be loaded. Possible values:
+<em>gmx_tools</em>, <em>gmx_extra_tools</em>. Right now these are variable names in
+<tt class="xref docutils literal"><span class="pre">gromacs.config</span></tt>, referencing <a title="gromacs.config.gmx_tools" class="reference internal" href="#gromacs.config.gmx_tools"><tt class="xref docutils literal"><span class="pre">gromacs.config.gmx_tools</span></tt></a> and
+<a title="gromacs.config.gmx_extra_tools" class="reference internal" href="#gromacs.config.gmx_extra_tools"><tt class="xref docutils literal"><span class="pre">gromacs.config.gmx_extra_tools</span></tt></a>.</dd></dl>
+
+<p>The tool groups variables are strings that contain white-space separated file
+names of Gromacs tools. These lists determine which tools are made available as
+classes in <a title="" class="reference external" href="../tools.html#module-gromacs.tools"><tt class="xref docutils literal"><span class="pre">gromacs.tools</span></tt></a>.</p>
+<dl class="data">
+<dt id="gromacs.config.gmx_tools">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">gmx_tools</tt><a class="headerlink" href="#gromacs.config.gmx_tools" title="Permalink to this definition">¶</a></dt>
+<dd><p>Contains the file names of all Gromacs tools for which classes are generated.
+Editing this list has only an effect when the package is reloaded.  If you want
+additional tools then add the, to the source (<tt class="docutils literal"><span class="pre">config.py</span></tt>) or derive new
+classes manually from <a title="gromacs.core.GromacsCommand" class="reference external" href="core.html#gromacs.core.GromacsCommand"><tt class="xref docutils literal"><span class="pre">gromacs.core.GromacsCommand</span></tt></a>.  (Eventually, this
+functionality will be in a per-user configurable file.)  The current list was
+generated from Gromacs 4.0.99 (git).
+Removed (because of various issues)</p>
+<blockquote>
+<ul class="simple">
+<li>g_kinetics</li>
+</ul>
+</blockquote>
+</dd></dl>
+
+<dl class="data">
+<dt id="gromacs.config.gmx_extra_tools">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">gmx_extra_tools</tt><a class="headerlink" href="#gromacs.config.gmx_extra_tools" title="Permalink to this definition">¶</a></dt>
+<dd>Additional gromacs tools (add <em>gmx_extra_tools</em> to
+<a title="gromacs.config.gmx_tool_groups" class="reference internal" href="#gromacs.config.gmx_tool_groups"><tt class="xref docutils literal"><span class="pre">gromacs.config.gmx_tool_groups</span></tt></a> to enable them, provided the binaries
+have been provided on the <span class="target" id="index-2"></span><strong class="xref">PATH</strong>).</dd></dl>
+
+</div>
+<div class="section" id="location-of-template-files">
+<h2>Location of template files<a class="headerlink" href="#location-of-template-files" title="Permalink to this headline">¶</a></h2>
+<p><em>Template variables</em> list files in the package that can be used as
+templates such as run input files. Because the package can be a zipped
+egg we actually have to unwrap these files at this stage but this is
+completely transparent to the user.</p>
+<dl class="data">
+<dt id="gromacs.config.qscriptdir">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">qscriptdir</tt><a class="headerlink" href="#gromacs.config.qscriptdir" title="Permalink to this definition">¶</a></dt>
+<dd>Directory to store user supplied queuing system scripts.</dd></dl>
+
+<dl class="data">
+<dt id="gromacs.config.templatesdir">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">templatesdir</tt><a class="headerlink" href="#gromacs.config.templatesdir" title="Permalink to this definition">¶</a></dt>
+<dd>Directory to store user supplied template files such as mdp files.</dd></dl>
+
+<dl class="data">
+<dt id="gromacs.config.templates">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">templates</tt><a class="headerlink" href="#gromacs.config.templates" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>GromacsWrapper</em> comes with a number of templates for run input files
+and queuing system scripts. They are provided as a convenience and
+examples but <strong>WITHOUT ANY GUARANTEE FOR CORRECTNESS OR SUITABILITY FOR
+ANY PURPOSE</strong>.</p>
+<p>All template filenames are stored in
+<a title="gromacs.config.templates" class="reference internal" href="#gromacs.config.templates"><tt class="xref docutils literal"><span class="pre">gromacs.config.templates</span></tt></a>. Templates have to be extracted from
+the GromacsWrapper python egg file because they are used by external
+code: find the actual file locations from this variable.</p>
+<p><strong>Gromacs mdp templates</strong></p>
+<blockquote>
+<p>These are supplied as examples and there is <strong>NO GUARANTEE THAT THEY
+PRODUCE SENSIBLE OUTPUT</strong> &#8212; check for yourself!  Note that only
+existing parameter names can be modified with
+<a title="gromacs.cbook.edit_mdp" class="reference external" href="../blocks/cbook.html#gromacs.cbook.edit_mdp"><tt class="xref docutils literal"><span class="pre">gromacs.cbook.edit_mdp()</span></tt></a> at the moment; if in doubt add the
+parameter with its gromacs default value (or empty values) and
+modify later with <a title="gromacs.cbook.edit_mdp" class="reference external" href="../blocks/cbook.html#gromacs.cbook.edit_mdp"><tt class="xref docutils literal"><span class="pre">edit_mdp()</span></tt></a>.</p>
+<p>The safest bet is to use one of the <tt class="docutils literal"><span class="pre">mdout.mdp</span></tt> files produced by
+<tt class="xref docutils literal"><span class="pre">gromacs.grompp()</span></tt> as a template as this mdp contains all
+parameters that are legal in the current version of Gromacs.</p>
+</blockquote>
+<p><strong>Queuing system templates</strong></p>
+<blockquote>
+The queing system scripts are highly specific and you will need to add your
+own into <a title="gromacs.config.qscriptdir" class="reference internal" href="#gromacs.config.qscriptdir"><tt class="xref docutils literal"><span class="pre">gromacs.config.qscriptdir</span></tt></a>.
+See <a title="" class="reference external" href="../blocks/qsub.html#module-gromacs.qsub"><tt class="xref docutils literal"><span class="pre">gromacs.qsub</span></tt></a> for the format and how these files are processed.</blockquote>
+</dd></dl>
+
+<dl class="data">
+<dt id="gromacs.config.qscript_template">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">qscript_template</tt><a class="headerlink" href="#gromacs.config.qscript_template" title="Permalink to this definition">¶</a></dt>
+<dd>The default template for SGE/PBS run scripts.</dd></dl>
+
+</div>
+<div class="section" id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<p>The following functions can be used to access configuration data. Note that
+files are searched first with their full filename, then in all directories
+listed in <a title="gromacs.config.path" class="reference internal" href="#gromacs.config.path"><tt class="xref docutils literal"><span class="pre">gromacs.config.path</span></tt></a>, and finally within the package itself.</p>
+<dl class="function">
+<dt id="gromacs.config.get_template">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">get_template</tt><big>(</big><em>t</em><big>)</big><a class="headerlink" href="#gromacs.config.get_template" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find template file <em>t</em> and return its real path.</p>
+<p><em>t</em> can be a single string or a list of strings. A string
+should be one of</p>
+<ol class="arabic simple">
+<li>a relative or absolute path,</li>
+<li>a file in one of the directories listed in <a title="gromacs.config.path" class="reference internal" href="#gromacs.config.path"><tt class="xref docutils literal"><span class="pre">gromacs.config.path</span></tt></a>,</li>
+<li>a filename in the package template directory (defined in the template dictionary
+<a title="gromacs.config.templates" class="reference internal" href="#gromacs.config.templates"><tt class="xref docutils literal"><span class="pre">gromacs.config.templates</span></tt></a>) or</li>
+<li>a key into <a title="gromacs.config.templates" class="reference internal" href="#gromacs.config.templates"><tt class="xref docutils literal"><span class="pre">templates</span></tt></a>.</li>
+</ol>
+<p>The first match (in this order) is returned. If the argument is a
+single string then a single string is returned, otherwise a list
+of strings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><em>t</em> : template file or key (string or list of strings)</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">os.path.realpath(<em>t</em>) (or a list thereof)</td>
+</tr>
+<tr class="field"><th class="field-name">Raises:</th><td class="field-body"><a title="(in Python v2.6)" class="reference external" href="http://docs.python.org/library/exceptions.html#exceptions.ValueError"><tt class="xref docutils literal"><span class="pre">ValueError</span></tt></a> if no file can be located.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="gromacs.config.get_templates">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">get_templates</tt><big>(</big><em>t</em><big>)</big><a class="headerlink" href="#gromacs.config.get_templates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find template file(s) <em>t</em> and return their real paths.</p>
+<p><em>t</em> can be a single string or a list of strings. A string should
+be one of</p>
+<ol class="arabic simple">
+<li>a relative or absolute path,</li>
+<li>a file in one of the directories listed in <a title="gromacs.config.path" class="reference internal" href="#gromacs.config.path"><tt class="xref docutils literal"><span class="pre">gromacs.config.path</span></tt></a>,</li>
+<li>a filename in the package template directory (defined in the template dictionary
+<a title="gromacs.config.templates" class="reference internal" href="#gromacs.config.templates"><tt class="xref docutils literal"><span class="pre">gromacs.config.templates</span></tt></a>) or</li>
+<li>a key into <a title="gromacs.config.templates" class="reference internal" href="#gromacs.config.templates"><tt class="xref docutils literal"><span class="pre">templates</span></tt></a>.</li>
+</ol>
+<p>The first match (in this order) is returned for each input argument.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><em>t</em> : template file or key (string or list of strings)</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">list of os.path.realpath(<em>t</em>)</td>
+</tr>
+<tr class="field"><th class="field-name">Raises:</th><td class="field-body"><a title="(in Python v2.6)" class="reference external" href="http://docs.python.org/library/exceptions.html#exceptions.ValueError"><tt class="xref docutils literal"><span class="pre">ValueError</span></tt></a> if no file can be located.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="../../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#"><tt class="docutils literal"><span class="pre">gromacs.config</span></tt> &#8211; Configuration for GromacsWrapper</a><ul>
+<li><a class="reference external" href="#logging">Logging</a></li>
+<li><a class="reference external" href="#gromacs-tools-and-scripts">Gromacs tools and scripts</a></li>
+<li><a class="reference external" href="#location-of-template-files">Location of template files</a></li>
+<li><a class="reference external" href="#functions">Functions</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="core.html"
+                                  title="previous chapter"><tt class="docutils literal docutils literal"><span class="pre">gromacs.core</span></tt> &#8211; Core functionality</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="formats.html"
+                                  title="next chapter"><tt class="docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../../_sources/gromacs/core/config.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="formats.html" title="gromacs.formats – Accessing various files"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="core.html" title="gromacs.core – Core functionality"
+             >previous</a> |</li>
+        <li><a href="../../index.html">GromacsWrapper v0.1.8 documentation</a> &raquo;</li>
+          <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
+          <li><a href="../core.html" >Gromacs core modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009-2010, Oliver Beckstein.
+      Last updated on Mar 25, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

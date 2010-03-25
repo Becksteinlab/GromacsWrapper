@@ -58,10 +58,10 @@ queuing systems. The known ones are listed stored as
 <a title="gromacs.qsub.QueuingSystem" class="reference internal" href="#gromacs.qsub.QueuingSystem"><tt class="xref docutils literal"><span class="pre">QueuingSystem</span></tt></a> instances in
 <a title="gromacs.qsub.queuing_systems" class="reference internal" href="#gromacs.qsub.queuing_systems"><tt class="xref docutils literal"><span class="pre">queuing_systems</span></tt></a>; append new ones to this list.</p>
 <p>The working paradigm is that template scripts are provided (see
-<a title="gromacs.config.templates" class="reference external" href="../core.html#gromacs.config.templates"><tt class="xref docutils literal"><span class="pre">gromacs.config.templates</span></tt></a>) and only a few place holders are substituted
+<a title="gromacs.config.templates" class="reference external" href="../core/config.html#gromacs.config.templates"><tt class="xref docutils literal"><span class="pre">gromacs.config.templates</span></tt></a>) and only a few place holders are substituted
 (using <a title="gromacs.cbook.edit_txt" class="reference external" href="cbook.html#gromacs.cbook.edit_txt"><tt class="xref docutils literal"><span class="pre">gromacs.cbook.edit_txt()</span></tt></a>).</p>
 <p><em>User-supplied template scripts</em> can be stored in
-<a title="gromacs.config.qscriptdir" class="reference external" href="../core.html#gromacs.config.qscriptdir"><tt class="xref docutils literal"><span class="pre">gromacs.config.qscriptdir</span></tt></a> (by default <tt class="docutils literal"><span class="pre">~/.gromacswrapper/qscripts</span></tt>)
+<a title="gromacs.config.qscriptdir" class="reference external" href="../core/config.html#gromacs.config.qscriptdir"><tt class="xref docutils literal"><span class="pre">gromacs.config.qscriptdir</span></tt></a> (by default <tt class="docutils literal"><span class="pre">~/.gromacswrapper/qscripts</span></tt>)
 and they will be picked up before the package-supplied ones.</p>
 <p>The <a title="gromacs.qsub.Manager" class="reference internal" href="#gromacs.qsub.Manager"><tt class="xref docutils literal"><span class="pre">Manager</span></tt></a> handles setup and control of jobs
 in a queuing system on a remote system via <strong>ssh</strong>.</p>
@@ -139,7 +139,7 @@ submission system commands. The table shows <a class="reference external" href="
 regular expression pattern (&#8220;regex&#8221;) is used to find the lines for the
 replacement and the literal default values (&#8220;default&#8221;) are replaced. Not all
 place holders have to occur in a template; for instance, if a queue has no run
-time limitation then one would probably not include <em>walltime</em> and <em>WALL_HOUR</em>
+time limitation then one would probably not include <em>walltime</em> and <em>WALL_HOURS</em>
 place holders.</p>
 <p>The line <tt class="docutils literal"><span class="pre">#</span> <span class="pre">JOB_ARRAY_PLACEHOLDER</span></tt> can be replaced by
 <a title="gromacs.qsub.generate_submit_array" class="reference internal" href="#gromacs.qsub.generate_submit_array"><tt class="xref docutils literal"><span class="pre">generate_submit_array()</span></tt></a> to produce a &#8220;job array&#8221;
@@ -349,7 +349,7 @@ are made executable.</p>
 <dt><em>templates</em></dt>
 <dd><p class="first last">Template file or list of template files. The &#8220;files&#8221; can also be names
 or symbolic names for templates in the templates directory. See
-<a title="" class="reference external" href="../core.html#module-gromacs.config"><tt class="xref docutils literal"><span class="pre">gromacs.config</span></tt></a> for details and rules for writing templates.</p>
+<a title="" class="reference external" href="../core/config.html#module-gromacs.config"><tt class="xref docutils literal"><span class="pre">gromacs.config</span></tt></a> for details and rules for writing templates.</p>
 </dd>
 <dt><em>prefix</em></dt>
 <dd><p class="first last">Prefix for the final run script filename; by default the filename will be
@@ -453,7 +453,7 @@ directory.</p>
 <h2>Queuing system Manager<a class="headerlink" href="#queuing-system-manager" title="Permalink to this headline">¶</a></h2>
 <p>The <a title="gromacs.qsub.Manager" class="reference internal" href="#gromacs.qsub.Manager"><tt class="xref docutils literal"><span class="pre">Manager</span></tt></a> class must be customized for each system such as
 a cluster or a super computer. It then allows submission and control of
-jobs remotely (using ssh).</p>
+jobs remotely (using <a class="reference external" href="http://www.openssh.com/">ssh</a>).</p>
 <dl class="class">
 <dt id="gromacs.qsub.Manager">
 <em class="property">class </em><tt class="descclassname">gromacs.qsub.</tt><tt class="descname">Manager</tt><big>(</big><em>dirname='.'</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.qsub.Manager" title="Permalink to this definition">¶</a></dt>
@@ -462,11 +462,11 @@ jobs remotely (using ssh).</p>
 <p>Derive a class from <a title="gromacs.qsub.Manager" class="reference internal" href="#gromacs.qsub.Manager"><tt class="xref docutils literal"><span class="pre">Manager</span></tt></a> and override the attributes</p>
 <blockquote>
 <ul class="simple">
-<li><tt class="xref docutils literal"><span class="pre">Manager._hostname</span></tt> (hostname of the machine)</li>
-<li><tt class="xref docutils literal"><span class="pre">Manager._scratchdir</span></tt> (all files and directories will be created under 
+<li><a title="gromacs.qsub.Manager._hostname" class="reference internal" href="#gromacs.qsub.Manager._hostname"><tt class="xref docutils literal"><span class="pre">Manager._hostname</span></tt></a> (hostname of the machine)</li>
+<li><a title="gromacs.qsub.Manager._scratchdir" class="reference internal" href="#gromacs.qsub.Manager._scratchdir"><tt class="xref docutils literal"><span class="pre">Manager._scratchdir</span></tt></a> (all files and directories will be created under 
 this scratch directory; it must be a path on the remote host)</li>
-<li><tt class="xref docutils literal"><span class="pre">Manager._qscript</span></tt> (the default queuing system script template)</li>
-<li><tt class="xref docutils literal"><span class="pre">Manager._walltime</span></tt> (if there is a limit to the run time
+<li><a title="gromacs.qsub.Manager._qscript" class="reference internal" href="#gromacs.qsub.Manager._qscript"><tt class="xref docutils literal"><span class="pre">Manager._qscript</span></tt></a> (the default queuing system script template)</li>
+<li><a title="gromacs.qsub.Manager._walltime" class="reference internal" href="#gromacs.qsub.Manager._walltime"><tt class="xref docutils literal"><span class="pre">Manager._walltime</span></tt></a> (if there is a limit to the run time
 of a job; in hours)</li>
 </ul>
 </blockquote>
@@ -500,14 +500,40 @@ be different for different jobs)  [basename(CWD)]</p>
 </tr>
 </tbody>
 </table>
+<dl class="attribute">
+<dt id="gromacs.qsub.Manager._hostname">
+<tt class="descname">_hostname</tt><a class="headerlink" href="#gromacs.qsub.Manager._hostname" title="Permalink to this definition">¶</a></dt>
+<dd>hostname of the super computer (<strong>required</strong>)</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.qsub.Manager._scratchdir">
+<tt class="descname">_scratchdir</tt><a class="headerlink" href="#gromacs.qsub.Manager._scratchdir" title="Permalink to this definition">¶</a></dt>
+<dd>scratch dir on hostname (<strong>required</strong>)</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.qsub.Manager._qscript">
+<tt class="descname">_qscript</tt><a class="headerlink" href="#gromacs.qsub.Manager._qscript" title="Permalink to this definition">¶</a></dt>
+<dd>name of the template submission script appropriate for the
+queuing system on <a title="gromacs.qsub.Manager._hostname" class="reference internal" href="#gromacs.qsub.Manager._hostname"><tt class="xref docutils literal"><span class="pre">Manager._hostname</span></tt></a>; can be a path to a
+local file or a key for <a title="gromacs.config.templates" class="reference external" href="../core/config.html#gromacs.config.templates"><tt class="xref docutils literal"><span class="pre">gromacs.config.templates</span></tt></a> (<strong>required</strong>)</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.qsub.Manager._walltime">
+<tt class="descname">_walltime</tt><a class="headerlink" href="#gromacs.qsub.Manager._walltime" title="Permalink to this definition">¶</a></dt>
+<dd>maximum run time of script in hours; the queuing system script
+attr:<cite>Manager._qscript</cite> is supposed to stop <strong>mdrun</strong>
+after 99% of this time via the <tt class="docutils literal"><span class="pre">-maxh</span></tt> option. A value of
+<tt class="xref docutils literal"><span class="pre">None</span></tt> or <tt class="docutils literal"><span class="pre">inf</span></tt> indicates to limit.</dd></dl>
+
 <dl class="method">
 <dt id="gromacs.qsub.Manager.cat">
 <tt class="descname">cat</tt><big>(</big><em>dirname</em>, <em>prefix='md'</em>, <em>cleanup=True</em><big>)</big><a class="headerlink" href="#gromacs.qsub.Manager.cat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Concatenate parts of a run in <em>dirname</em>.</p>
-<p>Always uses <tt class="xref docutils literal"><span class="pre">gromacs.cbook.cat(resolve_multi='guess')()</span></tt>.</p>
+<p>Always uses <a title="gromacs.cbook.cat" class="reference external" href="cbook.html#gromacs.cbook.cat"><tt class="xref docutils literal"><span class="pre">gromacs.cbook.cat()</span></tt></a> with <em>resolve_multi</em> = &#8216;guess&#8217;.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The default is to immediately delete the original files.</p>
+<p class="last">The default is to immediately delete the original files
+(<em>cleanup</em> = <tt class="xref docutils literal"><span class="pre">True</span></tt>).</p>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -521,7 +547,7 @@ be different for different jobs)  [basename(CWD)]</p>
 <dd><p class="first last">prefix (deffnm) of the files [md]</p>
 </dd>
 <dt><em>cleanup</em> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
-<dd><p class="first last">if <tt class="xref docutils literal"><span class="pre">True</span></tt>, remove all used files [True]</p>
+<dd><p class="first last">if <tt class="xref docutils literal"><span class="pre">True</span></tt>, remove all used files [<tt class="xref docutils literal"><span class="pre">True</span></tt>]</p>
 </dd>
 </dl>
 </td>
@@ -890,7 +916,7 @@ run but that is just a guess);</li>
     </div>
     <div class="footer">
       &copy; Copyright 2009-2010, Oliver Beckstein.
-      Last updated on Mar 24, 2010.
+      Last updated on Mar 25, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
     </div>
   </body>

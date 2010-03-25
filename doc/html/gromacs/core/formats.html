@@ -1,0 +1,431 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>gromacs.formats – Accessing various files &mdash; GromacsWrapper v0.1.8 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1.8',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="GromacsWrapper v0.1.8 documentation" href="../../index.html" />
+    <link rel="up" title="Gromacs core modules" href="../core.html" />
+    <link rel="next" title="gromacs.utilities – Helper functions and classes" href="utilities.html" />
+    <link rel="prev" title="gromacs.config – Configuration for GromacsWrapper" href="config.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="utilities.html" title="gromacs.utilities – Helper functions and classes"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="config.html" title="gromacs.config – Configuration for GromacsWrapper"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">GromacsWrapper v0.1.8 documentation</a> &raquo;</li>
+          <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
+          <li><a href="../core.html" accesskey="U">Gromacs core modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="gromacs-formats-accessing-various-files">
+<span id="module-gromacs.formats"></span><h1><tt class="xref docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files<a class="headerlink" href="#gromacs-formats-accessing-various-files" title="Permalink to this headline">¶</a></h1>
+<p>This module contains classes that represent data files on
+disk. Typically one creates an instance and</p>
+<ul class="simple">
+<li>reads from a file using a <tt class="xref docutils literal"><span class="pre">read()</span></tt> method, or</li>
+<li>populates the instance (in the simplest case with a <a title="(in Python v2.6)" class="reference external" href="http://docs.python.org/library/stdtypes.html#set"><tt class="xref docutils literal"><span class="pre">set()</span></tt></a>
+method) and the uses the <tt class="xref docutils literal"><span class="pre">write()</span></tt> method to write the data to
+disk in the appropriate format.</li>
+</ul>
+<p>For function data there typically also exists a <tt class="xref docutils literal"><span class="pre">plot()</span></tt> method
+which produces a graph (using matplotlib).</p>
+<p>The module defines some classes that are used in other modules; they
+do <em>not</em> make use of <a title="" class="reference external" href="../tools.html#module-gromacs.tools"><tt class="xref docutils literal"><span class="pre">gromacs.tools</span></tt></a> or <a title="" class="reference external" href="../blocks/cbook.html#module-gromacs.cbook"><tt class="xref docutils literal"><span class="pre">gromacs.cbook</span></tt></a> and
+can be safely imported at any time.</p>
+<div class="section" id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gromacs.formats.XVG">
+<em class="property">class </em><tt class="descclassname">gromacs.formats.</tt><tt class="descname">XVG</tt><big>(</big><em>filename=None</em><big>)</big><a class="headerlink" href="#gromacs.formats.XVG" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that represents the numerical data in a grace xvg file.</p>
+<p>All data must be numerical. <tt class="xref docutils literal"><span class="pre">NAN</span></tt> and <tt class="xref docutils literal"><span class="pre">INF</span></tt> values are
+supported via python&#8217;s <a title="(in Python v2.6)" class="reference external" href="http://docs.python.org/library/functions.html#float"><tt class="xref docutils literal"><span class="pre">float()</span></tt></a> builtin function.</p>
+<p>The <a title="gromacs.formats.XVG.array" class="reference internal" href="#gromacs.formats.XVG.array"><tt class="xref docutils literal"><span class="pre">array</span></tt></a> attribute can be used to access the the
+array once it has been read and parsed. The <a title="gromacs.formats.XVG.ma" class="reference internal" href="#gromacs.formats.XVG.ma"><tt class="xref docutils literal"><span class="pre">ma</span></tt></a>
+attribute is a numpy masked array (good for plotting).</p>
+<p>Conceptually, the file on disk and the XVG instance are considered the same
+data. This means that whenever the filename for I/O (<a title="gromacs.formats.XVG.read" class="reference internal" href="#gromacs.formats.XVG.read"><tt class="xref docutils literal"><span class="pre">XVG.read()</span></tt></a> and
+<a title="gromacs.formats.XVG.write" class="reference internal" href="#gromacs.formats.XVG.write"><tt class="xref docutils literal"><span class="pre">XVG.write()</span></tt></a>) is changed then the filename associated with the
+instance is also changed to reflect the association between file and
+instance.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ul class="last simple">
+<li>Only simple XY or NXY files are currently supported, not
+Grace files that contain multiple data sets separated by &#8216;&amp;&#8217;.</li>
+<li>Any kind of formatting (xmgrace commands) are discarded.</li>
+</ul>
+</div>
+<p>Initialize the class from a xvg file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><em>filename</em> is the xvg file; it can only be of type XY or
+NXY. If it is supplied then it is read and parsed when
+<a title="gromacs.formats.XVG.array" class="reference internal" href="#gromacs.formats.XVG.array"><tt class="xref docutils literal"><span class="pre">XVG.array</span></tt></a> is accessed.</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="gromacs.formats.XVG.array">
+<tt class="descname">array</tt><a class="headerlink" href="#gromacs.formats.XVG.array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represent xvg data as a (cached) numpy array.</p>
+<p>The array is returned with column-first indexing, i.e. for a data file with
+columns X Y1 Y2 Y3 ... the array a will be a[0] = X, a[1] = Y1, ... .</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.formats.XVG.errorbar">
+<tt class="descname">errorbar</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.formats.XVG.errorbar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quick hack: errorbar plot.</p>
+<p>Set columns to select [x, y, dy].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.formats.XVG.ma">
+<tt class="descname">ma</tt><a class="headerlink" href="#gromacs.formats.XVG.ma" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represent data as a masked array.</p>
+<p>The array is returned with column-first indexing, i.e. for a data file with
+columns X Y1 Y2 Y3 ... the array a will be a[0] = X, a[1] = Y1, ... .</p>
+<p>inf and nan are filtered via <tt class="xref docutils literal"><span class="pre">numpy.isfinite()</span></tt>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.formats.XVG.max">
+<tt class="descname">max</tt><a class="headerlink" href="#gromacs.formats.XVG.max" title="Permalink to this definition">¶</a></dt>
+<dd>Maximum of the data columns.</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.formats.XVG.mean">
+<tt class="descname">mean</tt><a class="headerlink" href="#gromacs.formats.XVG.mean" title="Permalink to this definition">¶</a></dt>
+<dd>Mean value of all data columns.</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.formats.XVG.min">
+<tt class="descname">min</tt><a class="headerlink" href="#gromacs.formats.XVG.min" title="Permalink to this definition">¶</a></dt>
+<dd>Minimum of the data columns.</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.formats.XVG.parse">
+<tt class="descname">parse</tt><big>(</big><big>)</big><a class="headerlink" href="#gromacs.formats.XVG.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read and cache the file as a numpy array.</p>
+<p>The array is returned with column-first indexing, i.e. for a data file with
+columns X Y1 Y2 Y3 ... the array a will be a[0] = X, a[1] = Y1, ... .</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.formats.XVG.plot">
+<tt class="descname">plot</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.formats.XVG.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot xvg file data.</p>
+<p>The first column of the data is always taken as the abscissa
+X. Additional columns are plotted as ordinates Y1, Y2, ...</p>
+<p>In the special case that there is only a single column then this column
+is plotted against the index, i.e. (N, Y).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>columns</em> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">Select the columns of the data to be plotted; the list
+is used as a numpy.array extended slice. The default is
+to use all columns. Columns are selected <em>after</em> a transform.</p>
+</dd>
+<dt><em>transform</em> <span class="classifier-delimiter">:</span> <span class="classifier">function</span></dt>
+<dd><p class="first last">function <tt class="docutils literal"><span class="pre">transform(array)</span> <span class="pre">-&gt;</span> <span class="pre">array</span></tt> which transforms
+the original array; must return a 2D numpy array of
+shape [X, Y1, Y2, ...] where X, Y1, ... are column
+vectors.  By default the transformation is the
+identity [<tt class="docutils literal"><span class="pre">lambda</span> <span class="pre">x:</span> <span class="pre">x</span></tt>].</p>
+</dd>
+<dt><em>maxpoints</em> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">limit the total number of data points; matplotlib has issues processing
+png files with &gt;100,000 points and pdfs take forever to display. Set to
+<tt class="xref docutils literal"><span class="pre">None</span></tt> if really all data should be displayed. At the moment we simply
+subsample the data at regular intervals. [10000]</p>
+</dd>
+<dt><em>kwargs</em></dt>
+<dd><p class="first last">All other keyword arguments are passed on to <tt class="xref docutils literal"><span class="pre">pylab.plot()</span></tt>.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.formats.XVG.read">
+<tt class="descname">read</tt><big>(</big><em>filename=None</em><big>)</big><a class="headerlink" href="#gromacs.formats.XVG.read" title="Permalink to this definition">¶</a></dt>
+<dd>Read and parse xvg file <em>filename</em>.</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.formats.XVG.set">
+<tt class="descname">set</tt><big>(</big><em>a</em><big>)</big><a class="headerlink" href="#gromacs.formats.XVG.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the <em>array</em> data from <em>a</em> (i.e. completely replace).</p>
+<p>No sanity checks at the moment...</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.formats.XVG.std">
+<tt class="descname">std</tt><a class="headerlink" href="#gromacs.formats.XVG.std" title="Permalink to this definition">¶</a></dt>
+<dd>Standard deviation from the mean of all data columns.</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.formats.XVG.write">
+<tt class="descname">write</tt><big>(</big><em>filename=None</em><big>)</big><a class="headerlink" href="#gromacs.formats.XVG.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write array to xvg file <em>filename</em> in NXY format.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Only plain files working at the moment, not compressed.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gromacs.formats.NDX">
+<em class="property">class </em><tt class="descclassname">gromacs.formats.</tt><tt class="descname">NDX</tt><big>(</big><em>filename=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.formats.NDX" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gromacs index file.</p>
+<p>Represented as a ordered dict where the keys are index group names and
+values are numpy arrays of atom numbers.</p>
+<p>Use the <a title="gromacs.formats.NDX.read" class="reference internal" href="#gromacs.formats.NDX.read"><tt class="xref docutils literal"><span class="pre">NDX.read()</span></tt></a> and <a title="gromacs.formats.NDX.write" class="reference internal" href="#gromacs.formats.NDX.write"><tt class="xref docutils literal"><span class="pre">NDX.write()</span></tt></a> methods for
+I/O. Access groups by name via the <a title="gromacs.formats.NDX.get" class="reference internal" href="#gromacs.formats.NDX.get"><tt class="xref docutils literal"><span class="pre">NDX.get()</span></tt></a> and
+<a title="gromacs.formats.NDX.set" class="reference internal" href="#gromacs.formats.NDX.set"><tt class="xref docutils literal"><span class="pre">NDX.set()</span></tt></a> methods.</p>
+<p>Alternatively, simply treat the <a title="gromacs.formats.NDX" class="reference internal" href="#gromacs.formats.NDX"><tt class="xref docutils literal"><span class="pre">NDX</span></tt></a> instance as a
+dictionary. Setting a key automatically transforms the new value
+into a integer 1D numpy array (<em>not</em> a set, as would be the
+<strong>make_ndx</strong> behaviour).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The index entries themselves are ordered and can contain 
+duplicates so that output from NDX can be easily used for 
+<strong>g_dih</strong> and friends. If you need set-like behaviour
+you will have do use <a title="gromacs.formats.uniqueNDX" class="reference internal" href="#gromacs.formats.uniqueNDX"><tt class="xref docutils literal"><span class="pre">gromacs.formats.uniqueNDX</span></tt></a> or
+<a title="gromacs.cbook.IndexBuilder" class="reference external" href="../blocks/cbook.html#gromacs.cbook.IndexBuilder"><tt class="xref docutils literal"><span class="pre">gromacs.cbook.IndexBuilder</span></tt></a> (which uses
+<strong>make_ndx</strong> throughout).</p>
+</div>
+<p><strong>Example</strong></p>
+<blockquote>
+<p>Read index file, make new group and write to disk:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">ndx</span> <span class="o">=</span> <span class="n">NDX</span><span class="p">()</span>
+<span class="n">ndx</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;system.ndx&#39;</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">ndx</span><span class="p">[</span><span class="s">&#39;Protein&#39;</span><span class="p">]</span>       
+<span class="n">ndx</span><span class="p">[</span><span class="s">&#39;my_group&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>   <span class="c"># add new group</span>
+<span class="n">ndx</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;new.ndx&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Or quicker (replacing the input file <tt class="docutils literal"><span class="pre">system.ndx</span></tt>):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">ndx</span> <span class="o">=</span> <span class="n">NDX</span><span class="p">(</span><span class="s">&#39;system&#39;</span><span class="p">)</span>          <span class="c"># suffix .ndx is automatically added</span>
+<span class="n">ndx</span><span class="p">[</span><span class="s">&#39;chi1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+<span class="n">ndx</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+</pre></div>
+</div>
+</blockquote>
+<dl class="attribute">
+<dt id="gromacs.formats.NDX.format">
+<tt class="descname">format</tt><a class="headerlink" href="#gromacs.formats.NDX.format" title="Permalink to this definition">¶</a></dt>
+<dd>standard ndx file format: &#8216;%6d&#8217;</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.formats.NDX.get">
+<tt class="descname">get</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#gromacs.formats.NDX.get" title="Permalink to this definition">¶</a></dt>
+<dd>Return index array for index group <em>name</em>.</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.formats.NDX.groups">
+<tt class="descname">groups</tt><a class="headerlink" href="#gromacs.formats.NDX.groups" title="Permalink to this definition">¶</a></dt>
+<dd>Return a list of all groups.</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.formats.NDX.ncol">
+<tt class="descname">ncol</tt><a class="headerlink" href="#gromacs.formats.NDX.ncol" title="Permalink to this definition">¶</a></dt>
+<dd>standard ndx file format: 15 columns</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.formats.NDX.ndxlist">
+<tt class="descname">ndxlist</tt><a class="headerlink" href="#gromacs.formats.NDX.ndxlist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of groups in the same format as  <a title="gromacs.cbook.get_ndx_groups" class="reference external" href="../blocks/cbook.html#gromacs.cbook.get_ndx_groups"><tt class="xref docutils literal"><span class="pre">gromacs.cbook.get_ndx_groups()</span></tt></a>.</p>
+<dl class="docutils">
+<dt>Format:</dt>
+<dd>[ {&#8216;name&#8217;: group_name, &#8216;natoms&#8217;: number_atoms, &#8216;nr&#8217;:  # group_number}, ....]</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.formats.NDX.read">
+<tt class="descname">read</tt><big>(</big><em>filename=None</em><big>)</big><a class="headerlink" href="#gromacs.formats.NDX.read" title="Permalink to this definition">¶</a></dt>
+<dd>Read and parse index file <em>filename</em>.</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.formats.NDX.set">
+<tt class="descname">set</tt><big>(</big><em>name</em>, <em>value</em><big>)</big><a class="headerlink" href="#gromacs.formats.NDX.set" title="Permalink to this definition">¶</a></dt>
+<dd>Set or add group <em>name</em> as a 1D numpy array.</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.formats.NDX.size">
+<tt class="descname">size</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#gromacs.formats.NDX.size" title="Permalink to this definition">¶</a></dt>
+<dd>Return number of entries for group <em>name</em>.</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.formats.NDX.sizes">
+<tt class="descname">sizes</tt><a class="headerlink" href="#gromacs.formats.NDX.sizes" title="Permalink to this definition">¶</a></dt>
+<dd>Return a dict with group names and number of entries,</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.formats.NDX.write">
+<tt class="descname">write</tt><big>(</big><em>filename=None</em>, <em>ncol=15</em>, <em>format='%6d'</em><big>)</big><a class="headerlink" href="#gromacs.formats.NDX.write" title="Permalink to this definition">¶</a></dt>
+<dd>Write index file to <em>filename</em> (or overwrite the file that the index was read from)</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gromacs.formats.uniqueNDX">
+<em class="property">class </em><tt class="descclassname">gromacs.formats.</tt><tt class="descname">uniqueNDX</tt><big>(</big><em>filename=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.formats.uniqueNDX" title="Permalink to this definition">¶</a></dt>
+<dd><p>Index that behaves like make_ndx, i.e. entries behaves as sets,
+not lists.</p>
+<p>The index lists behave like sets:
+- adding sets with &#8216;+&#8217; is equivalent to a logical OR: x + y == &#8220;x | y&#8221;
+- subtraction &#8216;-&#8216; is AND: x - y == &#8220;x &amp; y&#8221;
+- see <tt class="xref docutils literal"><span class="pre">join()</span></tt> for ORing multiple groups (x+y+z+...)</p>
+<dl class="docutils">
+<dt><strong>Example</strong> ::</dt>
+<dd>I = uniqueNDX(&#8216;system.ndx&#8217;)
+I[&#8216;SOLVENT&#8217;] = I[&#8216;SOL&#8217;] + I[&#8216;NA+&#8217;] + I[&#8216;CL-&#8216;]</dd>
+</dl>
+<dl class="method">
+<dt id="gromacs.formats.uniqueNDX.join">
+<tt class="descname">join</tt><big>(</big><em>*groupnames</em><big>)</big><a class="headerlink" href="#gromacs.formats.uniqueNDX.join" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an index group that contains atoms from all  <em>groupnames</em>.</p>
+<p>The method will silently ignore any groups that are not in the
+index.</p>
+<p><strong>Example</strong></p>
+<p>Always make a solvent group from water and ions, even if not
+all ions are present in all simulations:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">I</span><span class="p">[</span><span class="s">&#39;SOLVENT&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">I</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s">&#39;SOL&#39;</span><span class="p">,</span> <span class="s">&#39;NA+&#39;</span><span class="p">,</span> <span class="s">&#39;K+&#39;</span><span class="p">,</span> <span class="s">&#39;CL-&#39;</span><span class="p">)</span>        
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gromacs.formats.GRO">
+<em class="property">class </em><tt class="descclassname">gromacs.formats.</tt><tt class="descname">GRO</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.formats.GRO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that represents a GROMOS (gro) structure file.</p>
+<p>File format:</p>
+<p>(Not implemented yet)</p>
+<dl class="method">
+<dt id="gromacs.formats.GRO.read">
+<tt class="descname">read</tt><big>(</big><em>filename=None</em><big>)</big><a class="headerlink" href="#gromacs.formats.GRO.read" title="Permalink to this definition">¶</a></dt>
+<dd>Read and parse index file <em>filename</em>.</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="../../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#"><tt class="docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a><ul>
+<li><a class="reference external" href="#classes">Classes</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="config.html"
+                                  title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">gromacs.config</span></tt> &#8211; Configuration for GromacsWrapper</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="utilities.html"
+                                  title="next chapter"><tt class="docutils literal"><span class="pre">gromacs.utilities</span></tt> &#8211; Helper functions and classes</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../../_sources/gromacs/core/formats.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="utilities.html" title="gromacs.utilities – Helper functions and classes"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="config.html" title="gromacs.config – Configuration for GromacsWrapper"
+             >previous</a> |</li>
+        <li><a href="../../index.html">GromacsWrapper v0.1.8 documentation</a> &raquo;</li>
+          <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
+          <li><a href="../core.html" >Gromacs core modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009-2010, Oliver Beckstein.
+      Last updated on Mar 25, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>
