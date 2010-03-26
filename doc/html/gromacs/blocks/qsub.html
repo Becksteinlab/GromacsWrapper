@@ -58,10 +58,10 @@ queuing systems. The known ones are listed stored as
 <a title="gromacs.qsub.QueuingSystem" class="reference" href="#gromacs.qsub.QueuingSystem"><tt class="xref docutils literal"><span class="pre">QueuingSystem</span></tt></a> instances in
 <a title="gromacs.qsub.queuing_systems" class="reference" href="#gromacs.qsub.queuing_systems"><tt class="xref docutils literal"><span class="pre">queuing_systems</span></tt></a>; append new ones to this list.</p>
 <p>The working paradigm is that template scripts are provided (see
-<a title="gromacs.config.templates" class="reference" href="../core.html#gromacs.config.templates"><tt class="xref docutils literal"><span class="pre">gromacs.config.templates</span></tt></a>) and only a few place holders are substituted
+<a title="gromacs.config.templates" class="reference" href="../core/config.html#gromacs.config.templates"><tt class="xref docutils literal"><span class="pre">gromacs.config.templates</span></tt></a>) and only a few place holders are substituted
 (using <a title="gromacs.cbook.edit_txt" class="reference" href="cbook.html#gromacs.cbook.edit_txt"><tt class="xref docutils literal"><span class="pre">gromacs.cbook.edit_txt()</span></tt></a>).</p>
 <p><em>User-supplied template scripts</em> can be stored in
-<a title="gromacs.config.qscriptdir" class="reference" href="../core.html#gromacs.config.qscriptdir"><tt class="xref docutils literal"><span class="pre">gromacs.config.qscriptdir</span></tt></a> (by default <tt class="docutils literal"><span class="pre">~/.gromacswrapper/qscripts</span></tt>)
+<a title="gromacs.config.qscriptdir" class="reference" href="../core/config.html#gromacs.config.qscriptdir"><tt class="xref docutils literal"><span class="pre">gromacs.config.qscriptdir</span></tt></a> (by default <tt class="docutils literal"><span class="pre">~/.gromacswrapper/qscripts</span></tt>)
 and they will be picked up before the package-supplied ones.</p>
 <p>The <a title="gromacs.qsub.Manager" class="reference" href="#gromacs.qsub.Manager"><tt class="xref docutils literal"><span class="pre">Manager</span></tt></a> handles setup and control of jobs
 in a queuing system on a remote system via <strong>ssh</strong>.</p>
@@ -349,7 +349,7 @@ are made executable.</p>
 <dt><em>templates</em></dt>
 <dd><p class="first last">Template file or list of template files. The &#8220;files&#8221; can also be names
 or symbolic names for templates in the templates directory. See
-<a title="" class="reference" href="../core.html#module-gromacs.config"><tt class="xref docutils literal"><span class="pre">gromacs.config</span></tt></a> for details and rules for writing templates.</p>
+<a title="" class="reference" href="../core/config.html#module-gromacs.config"><tt class="xref docutils literal"><span class="pre">gromacs.config</span></tt></a> for details and rules for writing templates.</p>
 </dd>
 <dt><em>prefix</em></dt>
 <dd><p class="first last">Prefix for the final run script filename; by default the filename will be
@@ -516,7 +516,7 @@ be different for different jobs)  [basename(CWD)]</p>
 <dd>name of the template submission script appropriate for the
 queuing system on <a title="gromacs.qsub.Manager._hostname" class="reference" href="#gromacs.qsub.Manager._hostname"><tt class="xref docutils literal"><span class="pre">Manager._hostname</span></tt></a>; can be a path to a
 local file or a template stored in
-<a title="gromacs.config.qscriptdir" class="reference" href="../core.html#gromacs.config.qscriptdir"><tt class="xref docutils literal"><span class="pre">gromacs.config.qscriptdir</span></tt></a> or a key for <a title="gromacs.config.templates" class="reference" href="../core.html#gromacs.config.templates"><tt class="xref docutils literal"><span class="pre">gromacs.config.templates</span></tt></a> (<strong>required</strong>)</dd></dl>
+<a title="gromacs.config.qscriptdir" class="reference" href="../core/config.html#gromacs.config.qscriptdir"><tt class="xref docutils literal"><span class="pre">gromacs.config.qscriptdir</span></tt></a> or a key for <a title="gromacs.config.templates" class="reference" href="../core/config.html#gromacs.config.templates"><tt class="xref docutils literal"><span class="pre">gromacs.config.templates</span></tt></a> (<strong>required</strong>)</dd></dl>
 
 <dl class="attribute">
 <dt id="gromacs.qsub.Manager._walltime">
@@ -861,7 +861,7 @@ run but that is just a guess);</li>
     </div>
     <div class="footer">
       &copy; Copyright 2009-2010, Oliver Beckstein.
-      Last updated on Mar 24, 2010.
+      Last updated on Mar 26, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
     </div>
   </body>

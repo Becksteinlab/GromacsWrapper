@@ -22,7 +22,7 @@
     <link rel="top" title="GromacsWrapper v0.1.8 documentation" href="../index.html" />
     <link rel="up" title="Gromacs core modules" href="core.html" />
     <link rel="next" title="Gromacs building blocks" href="building_blocks.html" />
-    <link rel="prev" title="Gromacs core modules" href="core.html" /> 
+    <link rel="prev" title="gromacs.tools – Gromacs commands classes" href="core/tools.html" /> 
   </head>
   <body>
     <div class="related">
@@ -38,7 +38,7 @@
           <a href="building_blocks.html" title="Gromacs building blocks"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="core.html" title="Gromacs core modules"
+          <a href="core/tools.html" title="gromacs.tools – Gromacs commands classes"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">GromacsWrapper v0.1.8 documentation</a> &raquo;</li>
           <li><a href="../gromacs.html" >Gromacs package</a> &raquo;</li>
@@ -60,11 +60,11 @@ available when this documentation was built. They are part of the
 <h2><tt class="xref docutils literal"><span class="pre">gromacs.tools</span></tt> &#8211; Gromacs commands classes<a class="headerlink" href="#gromacs-tools-gromacs-commands-classes" title="Permalink to this headline">¶</a></h2>
 <p>A Gromacs command class can be thought of as a factory function that
 produces an instance of a gromacs command
-(<a title="gromacs.core.GromacsCommand" class="reference" href="core.html#gromacs.core.GromacsCommand"><tt class="xref docutils literal"><span class="pre">gromacs.core.GromacsCommand</span></tt></a>) with initial default values.</p>
+(<a title="gromacs.core.GromacsCommand" class="reference" href="core/core.html#gromacs.core.GromacsCommand"><tt class="xref docutils literal"><span class="pre">gromacs.core.GromacsCommand</span></tt></a>) with initial default values.</p>
 <p>By convention, a class has the capitalized name of the corresponding Gromacs
 tool; dots are replaced by underscores to make it a valid python identifier.</p>
 <p>The list of Gromacs tools to be loaded is configured in
-<a title="gromacs.config.gmx_tool_groups" class="reference" href="core.html#gromacs.config.gmx_tool_groups"><tt class="xref docutils literal"><span class="pre">gromacs.config.gmx_tool_groups</span></tt></a>.</p>
+<a title="gromacs.config.gmx_tool_groups" class="reference" href="core/config.html#gromacs.config.gmx_tool_groups"><tt class="xref docutils literal"><span class="pre">gromacs.config.gmx_tool_groups</span></tt></a>.</p>
 <p>It is also possible to extend the basic commands and patch in additional
 functionality. For example, the <a title="gromacs.tools.GromacsCommandMultiIndex" class="reference" href="#gromacs.tools.GromacsCommandMultiIndex"><tt class="xref docutils literal"><span class="pre">GromacsCommandMultiIndex</span></tt></a> class makes a
 command accept multiple index files and concatenates them on the fly; the
@@ -76,10 +76,10 @@ all tools.</p>
 <dd><p>Initialize instance.</p>
 <ol class="arabic simple">
 <li>Sets up the combined index file.</li>
-<li>Inititialize <a title="gromacs.core.GromacsCommand" class="reference" href="core.html#gromacs.core.GromacsCommand"><tt class="xref docutils literal"><span class="pre">GromacsCommand</span></tt></a> with the 
+<li>Inititialize <a title="gromacs.core.GromacsCommand" class="reference" href="core/core.html#gromacs.core.GromacsCommand"><tt class="xref docutils literal"><span class="pre">GromacsCommand</span></tt></a> with the 
 new index file.</li>
 </ol>
-<p>See the documentation for <a title="gromacs.core.GromacsCommand" class="reference" href="core.html#gromacs.core.GromacsCommand"><tt class="xref docutils literal"><span class="pre">gromacs.core.GromacsCommand</span></tt></a> for details.</p>
+<p>See the documentation for <a title="gromacs.core.GromacsCommand" class="reference" href="core/core.html#gromacs.core.GromacsCommand"><tt class="xref docutils literal"><span class="pre">gromacs.core.GromacsCommand</span></tt></a> for details.</p>
 <dl class="method">
 <dt id="gromacs.tools.GromacsCommandMultiIndex.run">
 <tt class="descname">run</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.tools.GromacsCommandMultiIndex.run" title="Permalink to this definition">¶</a></dt>
@@ -430,10 +430,10 @@ can be one of the following:</p>
 <p>Initialize instance.</p>
 <ol class="arabic simple">
 <li>Sets up the combined index file.</li>
-<li>Inititialize <a title="gromacs.core.GromacsCommand" class="reference" href="core.html#gromacs.core.GromacsCommand"><tt class="xref docutils literal"><span class="pre">GromacsCommand</span></tt></a> with the 
+<li>Inititialize <a title="gromacs.core.GromacsCommand" class="reference" href="core/core.html#gromacs.core.GromacsCommand"><tt class="xref docutils literal"><span class="pre">GromacsCommand</span></tt></a> with the 
 new index file.</li>
 </ol>
-<p>See the documentation for <a title="gromacs.core.GromacsCommand" class="reference" href="core.html#gromacs.core.GromacsCommand"><tt class="xref docutils literal"><span class="pre">gromacs.core.GromacsCommand</span></tt></a> for details.</p>
+<p>See the documentation for <a title="gromacs.core.GromacsCommand" class="reference" href="core/core.html#gromacs.core.GromacsCommand"><tt class="xref docutils literal"><span class="pre">gromacs.core.GromacsCommand</span></tt></a> for details.</p>
 </dd></dl>
 
 <dl class="class">
@@ -766,10 +766,10 @@ can be one of the following:</p>
 <p>Initialize instance.</p>
 <ol class="arabic simple">
 <li>Sets up the combined index file.</li>
-<li>Inititialize <a title="gromacs.core.GromacsCommand" class="reference" href="core.html#gromacs.core.GromacsCommand"><tt class="xref docutils literal"><span class="pre">GromacsCommand</span></tt></a> with the 
+<li>Inititialize <a title="gromacs.core.GromacsCommand" class="reference" href="core/core.html#gromacs.core.GromacsCommand"><tt class="xref docutils literal"><span class="pre">GromacsCommand</span></tt></a> with the 
 new index file.</li>
 </ol>
-<p>See the documentation for <a title="gromacs.core.GromacsCommand" class="reference" href="core.html#gromacs.core.GromacsCommand"><tt class="xref docutils literal"><span class="pre">gromacs.core.GromacsCommand</span></tt></a> for details.</p>
+<p>See the documentation for <a title="gromacs.core.GromacsCommand" class="reference" href="core/core.html#gromacs.core.GromacsCommand"><tt class="xref docutils literal"><span class="pre">gromacs.core.GromacsCommand</span></tt></a> for details.</p>
 </dd></dl>
 
 <dl class="class">
@@ -7483,8 +7483,8 @@ can be one of the following:</p>
 </ul>
 
             <h4>Previous topic</h4>
-            <p class="topless"><a href="core.html"
-                                  title="previous chapter">Gromacs core modules</a></p>
+            <p class="topless"><a href="core/tools.html"
+                                  title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">gromacs.tools</span></tt> &#8211; Gromacs commands classes</a></p>
             <h4>Next topic</h4>
             <p class="topless"><a href="building_blocks.html"
                                   title="next chapter">Gromacs building blocks</a></p>
@@ -7523,7 +7523,7 @@ can be one of the following:</p>
           <a href="building_blocks.html" title="Gromacs building blocks"
              >next</a> |</li>
         <li class="right" >
-          <a href="core.html" title="Gromacs core modules"
+          <a href="core/tools.html" title="gromacs.tools – Gromacs commands classes"
              >previous</a> |</li>
         <li><a href="../index.html">GromacsWrapper v0.1.8 documentation</a> &raquo;</li>
           <li><a href="../gromacs.html" >Gromacs package</a> &raquo;</li>
@@ -7532,7 +7532,7 @@ can be one of the following:</p>
     </div>
     <div class="footer">
       &copy; Copyright 2009-2010, Oliver Beckstein.
-      Last updated on Mar 24, 2010.
+      Last updated on Mar 26, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
     </div>
   </body>

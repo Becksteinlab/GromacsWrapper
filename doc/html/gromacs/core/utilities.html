@@ -1,0 +1,371 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>gromacs.utilities – Helper functions and classes &mdash; GromacsWrapper v0.1.8 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1.8',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="GromacsWrapper v0.1.8 documentation" href="../../index.html" />
+    <link rel="up" title="Gromacs core modules" href="../core.html" />
+    <link rel="next" title="gromacs.tools – Gromacs commands classes" href="tools.html" />
+    <link rel="prev" title="gromacs.formats – Accessing various files" href="formats.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="tools.html" title="gromacs.tools – Gromacs commands classes"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="formats.html" title="gromacs.formats – Accessing various files"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">GromacsWrapper v0.1.8 documentation</a> &raquo;</li>
+          <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
+          <li><a href="../core.html" accesskey="U">Gromacs core modules</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="gromacs-utilities-helper-functions-and-classes">
+<span id="module-gromacs.utilities"></span><h1><tt class="xref docutils literal"><span class="pre">gromacs.utilities</span></tt> &#8211; Helper functions and classes<a class="headerlink" href="#gromacs-utilities-helper-functions-and-classes" title="Permalink to this headline">¶</a></h1>
+<p>The module defines some convenience functions and classes that are
+used in other modules; they do <em>not</em> make use of <a title="" class="reference" href="../tools.html#module-gromacs.tools"><tt class="xref docutils literal"><span class="pre">gromacs.tools</span></tt></a>
+or <a title="" class="reference" href="../blocks/cbook.html#module-gromacs.cbook"><tt class="xref docutils literal"><span class="pre">gromacs.cbook</span></tt></a> and can be safely imported at any time.</p>
+<div class="section" id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<p><a title="gromacs.utilities.FileUtils" class="reference" href="#gromacs.utilities.FileUtils"><tt class="xref docutils literal"><span class="pre">FileUtils</span></tt></a> provides functions related to filename handling. It
+can be used as a base or mixin class. The <a title="gromacs.analysis.Simulation" class="reference" href="../../analysis/core.html#gromacs.analysis.Simulation"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.Simulation</span></tt></a>
+class is derived from it.</p>
+<dl class="class">
+<dt id="gromacs.utilities.FileUtils">
+<em class="property">class </em><tt class="descclassname">gromacs.utilities.</tt><tt class="descname">FileUtils</tt><a class="headerlink" href="#gromacs.utilities.FileUtils" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mixin class to provide additional file-related capabilities.</p>
+<dl class="method">
+<dt id="gromacs.utilities.FileUtils.check_file_exists">
+<tt class="descname">check_file_exists</tt><big>(</big><em>filename</em>, <em>resolve='exception'</em>, <em>force=None</em><big>)</big><a class="headerlink" href="#gromacs.utilities.FileUtils.check_file_exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>If a file exists then continue with the action specified in <tt class="docutils literal"><span class="pre">resolve</span></tt>.</p>
+<p><tt class="docutils literal"><span class="pre">resolve</span></tt> must be one of</p>
+<dl class="docutils">
+<dt>&#8220;ignore&#8221;</dt>
+<dd>always return <tt class="xref docutils literal"><span class="pre">False</span></tt></dd>
+<dt>&#8220;indicate&#8221;</dt>
+<dd>return <tt class="xref docutils literal"><span class="pre">True</span></tt> if it exists</dd>
+<dt>&#8220;warn&#8221;</dt>
+<dd>indicate and issue a <a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.UserWarning"><tt class="xref docutils literal"><span class="pre">UserWarning</span></tt></a></dd>
+<dt>&#8220;exception&#8221;</dt>
+<dd>raise <a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.IOError"><tt class="xref docutils literal"><span class="pre">IOError</span></tt></a> if it exists</dd>
+</dl>
+<p>Alternatively, set <em>force</em> for the following behaviour (which
+ignores <em>resolve</em>):</p>
+<dl class="docutils">
+<dt><tt class="xref docutils literal"><span class="pre">True</span></tt></dt>
+<dd>same as <em>resolve</em> = &#8220;ignore&#8221; (will allow overwriting of files)</dd>
+<dt><tt class="xref docutils literal"><span class="pre">False</span></tt></dt>
+<dd>same as <em>resolve</em> = &#8220;exception&#8221; (will prevent overwriting of files)</dd>
+<dt><tt class="xref docutils literal"><span class="pre">None</span></tt></dt>
+<dd>ignored, do whatever <em>resolve</em> says</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.utilities.FileUtils.default_extension">
+<tt class="descname">default_extension</tt><a class="headerlink" href="#gromacs.utilities.FileUtils.default_extension" title="Permalink to this definition">¶</a></dt>
+<dd>Default extension for files read/written by this class.</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.utilities.FileUtils.filename">
+<tt class="descname">filename</tt><big>(</big><em>filename=None</em>, <em>ext=None</em>, <em>set_default=False</em>, <em>use_my_ext=False</em><big>)</big><a class="headerlink" href="#gromacs.utilities.FileUtils.filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Supply a file name for the class object.</p>
+<p>Typical uses:</p>
+<div class="highlight-python"><pre>fn = filename()             ---&gt; &lt;default_filename&gt;
+fn = filename('name.ext')   ---&gt; 'name'
+fn = filename(ext='pickle') ---&gt; &lt;default_filename&gt;'.pickle'
+fn = filename('name.inp','pdf') --&gt; 'name.pdf'
+fn = filename('foo.pdf',ext='png',use_my_ext=True) --&gt; 'foo.pdf'</pre>
+</div>
+<p>The returned filename is stripped of the extension
+(<tt class="docutils literal"><span class="pre">use_my_ext=False</span></tt>) and if provided, another extension is
+appended. Chooses a default if no filename is given.</p>
+<p>Raises a <tt class="docutils literal"><span class="pre">ValueError</span></tt> exception if no default file name is known.</p>
+<p>If <tt class="docutils literal"><span class="pre">set_default=True</span></tt> then the default filename is also set.</p>
+<p><tt class="docutils literal"><span class="pre">use_my_ext=True</span></tt> lets the suffix of a provided filename take
+priority over a default <tt class="docutils literal"><span class="pre">ext</span></tt> tension.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.utilities.FileUtils.infix_filename">
+<tt class="descname">infix_filename</tt><big>(</big><em>name</em>, <em>default</em>, <em>infix</em>, <em>ext=None</em><big>)</big><a class="headerlink" href="#gromacs.utilities.FileUtils.infix_filename" title="Permalink to this definition">¶</a></dt>
+<dd>Unless <em>name</em> is provided, insert <em>infix</em> before the extension <em>ext</em> of <em>default</em>.</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gromacs.utilities.AttributeDict">
+<em class="property">class </em><tt class="descclassname">gromacs.utilities.</tt><tt class="descname">AttributeDict</tt><a class="headerlink" href="#gromacs.utilities.AttributeDict" title="Permalink to this definition">¶</a></dt>
+<dd>A dictionary with pythonic access to keys as attributes &#8212; useful for interactive work.</dd></dl>
+
+<dl class="class">
+<dt id="gromacs.utilities.Timedelta">
+<em class="property">class </em><tt class="descclassname">gromacs.utilities.</tt><tt class="descname">Timedelta</tt><a class="headerlink" href="#gromacs.utilities.Timedelta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extension of <a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/datetime.html#datetime.timedelta"><tt class="xref docutils literal"><span class="pre">datetime.timedelta</span></tt></a>.</p>
+<p>Provides attributes ddays, dhours, dminutes, dseconds to measure
+the delta in normal time units.</p>
+<p>ashours gives the total time in fractional hours.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<p>Some additional convenience functions that deal with files and
+directories:</p>
+<dl class="function">
+<dt id="gromacs.utilities.openany">
+<tt class="descclassname">gromacs.utilities.</tt><tt class="descname">openany</tt><big>(</big><em>directory</em><span class="optional">[</span>, <em>mode='r'</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#gromacs.utilities.openany" title="Permalink to this definition">¶</a></dt>
+<dd>Context manager to open a compressed (bzip2, gzip) or plain file
+(uses <a title="gromacs.utilities.anyopen" class="reference" href="#gromacs.utilities.anyopen"><tt class="xref docutils literal"><span class="pre">anyopen()</span></tt></a>).</dd></dl>
+
+<dl class="function">
+<dt id="gromacs.utilities.anyopen">
+<tt class="descclassname">gromacs.utilities.</tt><tt class="descname">anyopen</tt><big>(</big><em>datasource</em>, <em>mode='r'</em><big>)</big><a class="headerlink" href="#gromacs.utilities.anyopen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open datasource (gzipped, bzipped, uncompressed) and return a stream.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><em>datasource</em>: a file or a stream</li>
+<li><em>mode</em>: &#8216;r&#8217; or &#8216;w&#8217;</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="gromacs.utilities.realpath">
+<tt class="descclassname">gromacs.utilities.</tt><tt class="descname">realpath</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#gromacs.utilities.realpath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Join all args and return the real path, rooted at /.</p>
+<p>Returns <tt class="xref docutils literal"><span class="pre">None</span></tt> if any of the args is none.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gromacs.utilities.in_dir">
+<tt class="descclassname">gromacs.utilities.</tt><tt class="descname">in_dir</tt><big>(</big><em>directory</em><span class="optional">[</span>, <em>create=True</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#gromacs.utilities.in_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Context manager to execute a code block in a directory.</p>
+<ul class="simple">
+<li>The <em>directory</em> is created if it does not exist (unless
+<em>create</em> = <tt class="xref docutils literal"><span class="pre">False</span></tt> is set)</li>
+<li>At the end or after an exception code always returns to
+the directory that was the current directory before entering
+the block.</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="gromacs.utilities.find_first">
+<tt class="descclassname">gromacs.utilities.</tt><tt class="descname">find_first</tt><big>(</big><em>filename</em>, <em>suffices=None</em><big>)</big><a class="headerlink" href="#gromacs.utilities.find_first" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find first <em>filename</em> with a suffix from <em>suffices</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<dt><em>filename</em></dt>
+<dd><p class="first last">base filename; this file name is checked first</p>
+</dd>
+<dt><em>suffices</em></dt>
+<dd><p class="first last">list of suffices that are tried in turn on the root of <em>filename</em>; can contain the 
+ext separator (<tt class="xref docutils literal"><span class="pre">os.path.extsep</span></tt>) or not</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The first match or <tt class="xref docutils literal"><span class="pre">None</span></tt>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="gromacs.utilities.withextsep">
+<tt class="descclassname">gromacs.utilities.</tt><tt class="descname">withextsep</tt><big>(</big><em>extensions</em><big>)</big><a class="headerlink" href="#gromacs.utilities.withextsep" title="Permalink to this definition">¶</a></dt>
+<dd>Return list in which each element is guaranteed to start with <tt class="xref docutils literal"><span class="pre">os.path.extsep</span></tt>.</dd></dl>
+
+<p>Functions that improve list processing and which do <em>not</em> treat
+strings as lists:</p>
+<dl class="function">
+<dt id="gromacs.utilities.iterable">
+<tt class="descclassname">gromacs.utilities.</tt><tt class="descname">iterable</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#gromacs.utilities.iterable" title="Permalink to this definition">¶</a></dt>
+<dd>Returns <tt class="xref docutils literal"><span class="pre">True</span></tt> if <em>obj</em> can be iterated over and is <em>not</em> a  string.</dd></dl>
+
+<dl class="function">
+<dt id="gromacs.utilities.asiterable">
+<tt class="descclassname">gromacs.utilities.</tt><tt class="descname">asiterable</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#gromacs.utilities.asiterable" title="Permalink to this definition">¶</a></dt>
+<dd>Returns obj so that it can be iterated over; a string is <em>not</em> treated as iterable</dd></dl>
+
+<p>Functions that help handling Gromacs files:</p>
+<dl class="function">
+<dt id="gromacs.utilities.unlink_f">
+<tt class="descclassname">gromacs.utilities.</tt><tt class="descname">unlink_f</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#gromacs.utilities.unlink_f" title="Permalink to this definition">¶</a></dt>
+<dd>Unlink path but do not complain if file does not exist.</dd></dl>
+
+<dl class="function">
+<dt id="gromacs.utilities.unlink_gmx">
+<tt class="descclassname">gromacs.utilities.</tt><tt class="descname">unlink_gmx</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#gromacs.utilities.unlink_gmx" title="Permalink to this definition">¶</a></dt>
+<dd>Unlink (remove) Gromacs file(s) and all corresponding backups.</dd></dl>
+
+<dl class="function">
+<dt id="gromacs.utilities.unlink_gmx_backups">
+<tt class="descclassname">gromacs.utilities.</tt><tt class="descname">unlink_gmx_backups</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#gromacs.utilities.unlink_gmx_backups" title="Permalink to this definition">¶</a></dt>
+<dd>Unlink (rm) all backup files corresponding to the listed files.</dd></dl>
+
+<dl class="function">
+<dt id="gromacs.utilities.number_pdbs">
+<tt class="descclassname">gromacs.utilities.</tt><tt class="descname">number_pdbs</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.utilities.number_pdbs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rename pdbs x1.pdb ... x345.pdb &#8211;&gt; x0001.pdb ... x0345.pdb</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><em>args</em>: filenames or glob patterns (such as &#8220;pdb/md*.pdb&#8221;)</li>
+<li><em>format</em>: format string including keyword <em>num</em> [&#8220;%(num)04d&#8221;]</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>Functions that make working with <a class="reference" href="http://matplotlib.sourceforge.net/">matplotlib</a> easier:</p>
+<dl class="function">
+<dt id="gromacs.utilities.activate_subplot">
+<tt class="descclassname">gromacs.utilities.</tt><tt class="descname">activate_subplot</tt><big>(</big><em>numPlot</em><big>)</big><a class="headerlink" href="#gromacs.utilities.activate_subplot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make subplot <em>numPlot</em> active on the canvas.</p>
+<p>Use this if a simple <tt class="docutils literal"><span class="pre">subplot(numRows,</span> <span class="pre">numCols,</span> <span class="pre">numPlot)</span></tt>
+overwrites the subplot instead of activating it.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gromacs.utilities.remove_legend">
+<tt class="descclassname">gromacs.utilities.</tt><tt class="descname">remove_legend</tt><big>(</big><em>ax=None</em><big>)</big><a class="headerlink" href="#gromacs.utilities.remove_legend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove legend for axes or gca.</p>
+<p>See <a class="reference" href="http://osdir.com/ml/python.matplotlib.general/2005-07/msg00285.html">http://osdir.com/ml/python.matplotlib.general/2005-07/msg00285.html</a></p>
+</dd></dl>
+
+<p>Miscellaneous functions:</p>
+<dl class="function">
+<dt id="gromacs.utilities.convert_aa_code">
+<tt class="descclassname">gromacs.utilities.</tt><tt class="descname">convert_aa_code</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#gromacs.utilities.convert_aa_code" title="Permalink to this definition">¶</a></dt>
+<dd>Converts between 3-letter and 1-letter amino acid codes.</dd></dl>
+
+</div>
+<div class="section" id="data">
+<h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
+<dl class="data">
+<dt id="gromacs.utilities.amino_acid_codes">
+<tt class="descclassname">gromacs.utilities.</tt><tt class="descname">amino_acid_codes</tt><a class="headerlink" href="#gromacs.utilities.amino_acid_codes" title="Permalink to this definition">¶</a></dt>
+<dd>translation table for 1-letter codes &#8211;&gt; 3-letter codes
+.. Note: This does not work for HISB and non-default charge state aa!</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="../../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference" href="#"><tt class="docutils literal"><span class="pre">gromacs.utilities</span></tt> &#8211; Helper functions and classes</a><ul>
+<li><a class="reference" href="#classes">Classes</a></li>
+<li><a class="reference" href="#functions">Functions</a></li>
+<li><a class="reference" href="#data">Data</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="formats.html"
+                                  title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="tools.html"
+                                  title="next chapter"><tt class="docutils literal docutils literal"><span class="pre">gromacs.tools</span></tt> &#8211; Gromacs commands classes</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../../_sources/gromacs/core/utilities.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="tools.html" title="gromacs.tools – Gromacs commands classes"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="formats.html" title="gromacs.formats – Accessing various files"
+             >previous</a> |</li>
+        <li><a href="../../index.html">GromacsWrapper v0.1.8 documentation</a> &raquo;</li>
+          <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
+          <li><a href="../core.html" >Gromacs core modules</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009-2010, Oliver Beckstein.
+      Last updated on Mar 26, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

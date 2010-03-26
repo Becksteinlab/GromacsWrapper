@@ -1,0 +1,7 @@
+.. automodule:: gromacs.tools
+   :members: Mdrun, GridMAT_MD
+   
+   The documentation of all wrapped gromacs tools is auto-generated
+   and can be found in :doc:`Wrapped Gromacs Tools <../tools>`. Here only
+   two examples (:class:`~gromacs.tools.Mdrun` and
+   :class:`~gromacs.tools.GridMAT_MD`) are shown.
