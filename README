@@ -1,6 +1,5 @@
-.. $Id$
 .. -*- mode: rst -*-
-.. The whole GromacsWrapper package is Copyright (c) 2009 Oliver Beckstein,
+.. The whole GromacsWrapper package is Copyright (c) 2009-2010 Oliver Beckstein,
 .. except where noted otherwise.
 
 
@@ -14,7 +13,8 @@ Availability`_ for download instructions if the instructions in
 :doc:`INSTALL` are not sufficient.
 
 There is also auto-generated `online source code documentation`_
-available.
+available. The source code is also available at
+http://github.com/orbeckst/GromacsWrapper .
 
 Please be aware that this is **alpha** software that most definitely
 contains bugs. It is *your* responsibility to ensure that you are
