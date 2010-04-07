@@ -21,6 +21,13 @@ configuration options currently hard-coded in :mod:`gromacs.config`.
 .. autodata:: configdir
 .. autodata:: path
 
+The user should execute :func:`gromacs.config.setup` at least once to
+prepare the user configurable area in their home directory::
+
+  import gromacs
+  gromacs.config.setup()
+
+
 Logging
 -------
 
@@ -68,10 +75,10 @@ completely transparent to the user.
 .. autodata:: templatesdir
 .. autodata:: templates
 .. autodata:: qscript_template
+.. autofunction:: setup
 
-
-Functions
----------
+Accessing configuration data
+----------------------------
 
 The following functions can be used to access configuration data. Note that
 files are searched first with their full filename, then in all directories
@@ -109,17 +116,39 @@ loglevel_file = logging.DEBUG
 #: Directory to store user templates and rc files.
 #: The default value is ``~/.gromacswrapper``.
 configdir = os.path.expanduser(os.path.join("~",".gromacswrapper"))
-utilities.mkdir_p(configdir)
 
 #: Directory to store user supplied queuing system scripts.
 #: The default value is ``~/.gromacswrapper/qscripts``.
 qscriptdir = os.path.join(configdir, 'qscripts')
-utilities.mkdir_p(qscriptdir)
 
 #: Directory to store user supplied template files such as mdp files.
 #: The default value is ``~/.gromacswrapper/templates``.
 templatesdir = os.path.join(configdir, 'templates')
-utilities.mkdir_p(templatesdir)
+
+def setup():
+     """Create the directories in which the user can store template and config files.
+
+     This function can be run repeatedly without harm.
+     """
+     # setup() must be separate and NOT run automatically when config
+     # is loaded so that easy_install installations work
+     # (otherwise we get a sandbox violation)
+     utilities.mkdir_p(configdir)
+     utilities.mkdir_p(qscriptdir)
+     utilities.mkdir_p(templatesdir)
+
+def check_setup():
+     """Check if templates directories are setup and issue a warning and help."""
+     missing = [d for d in (configdir, qscriptdir, templatesdir)
+                if not os.path.exists(d)]
+     if len(missing) > 0:
+          print "NOTE: Some configuration directories are not set up yet"
+          print "      %r" % missing
+          print "      You can create them with the command"
+          print "      >>> gromacs.config.setup()"
+     return len(missing) == 0
+check_setup()
+               
 
 #: Search path for user queuing scripts and templates. The internal package-supplied
 #: templates are always searched last via :func:`gromacs.config.get_templates`. 
@@ -129,7 +158,6 @@ utilities.mkdir_p(templatesdir)
 #: (Note that it is not a good idea to have template files and qscripts with the
 #: same name as they are both searched on the same path.)
 path = [os.path.curdir, qscriptdir, templatesdir]
-
 
 # Gromacs tools
 # -------------
