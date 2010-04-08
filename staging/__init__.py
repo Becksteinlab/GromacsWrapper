@@ -1,19 +1,27 @@
 # $Id: __init__.py 2677 2008-12-22 20:58:45Z oliver $
 
-"""The 'staging' module provides a framework to run python scripts
-easily through a queuing system that requires copying of files to the
-scratch directory on compute nodes.
+"""
+:mod:`staging` --- Staging of input/output files on a queuing system
+====================================================================
 
-Load the appropiate submodule at the of the script. Currently
+The 'staging' module provides a framework to run python scripts easily
+through a queuing system that requires copying of files to the scratch
+directory on compute nodes.
+
+Load the appropriate submodule at the of the script. Currently
 available submodules are:
 
-   SunGridEngine       Sun Gridengine (SGE)
-                       activates if JOB_ID is found in environment
-                       (otherwise behaves similarly to Local)
-   Local               Runs the job without any staging.
+:mod:`staging.SunGridEngine`
+       Sun Gridengine (SGE) activates if JOB_ID is found in
+       environment (otherwise behaves similarly to Local) 
+
+:mod:`staging.Local`
+       Runs the job without any staging.
 
 
-Example:
+Example
+-------
+::
 
   from staging.SunGridEngine import Job
 
@@ -30,4 +38,4 @@ Example:
   job.cleanup()   # removes stage dir, careful!
 """
 
-__all__ = [ 'SunGridEngine', 'Local' ]
+__all__ = ['SunGridEngine', 'Local']

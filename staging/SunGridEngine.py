@@ -1,37 +1,35 @@
 # $Id: SunGridEngine.py 2765 2009-01-20 13:02:14Z oliver $
 """Primitive framework for staging jobs in Sun Grid Engine
 
-Write the SGE script like this:
+Write the SGE script like this::
+   #!/usr/bin/env python
+   #$ -N bulk
+   #$ -S /usr/bin/python
+   #$ -v PYTHONPATH=/home/oliver/Library/python-lib
+   #$ -v LD_LIBRARY_PATH=/opt/intel/cmkl/8.0/lib/32:/opt/intel/itc60/slib:/opt/intel/ipp41/ia32_itanium/sharedlib:/opt/intel/ipp41/ia32_itanium/sharedlib/linux32:/opt/intel/fc/9.0/lib:/opt/intel/cc/9.0/lib
+   #$ -r n
+   #$ -j y
+   # The next line is IMPORTANT when you are using the default for Job(startdir=None)
+   #$ -cwd
 
-#!/usr/bin/env python
-#$ -N bulk
-#$ -S /usr/bin/python
-#$ -v PYTHONPATH=/home/oliver/Library/python-lib
-#$ -v LD_LIBRARY_PATH=/opt/intel/cmkl/8.0/lib/32:/opt/intel/itc60/slib:/opt/intel/ipp41/ia32_itanium/sharedlib:/opt/intel/ipp41/ia32_itanium/sharedlib/linux32:/opt/intel/fc/9.0/lib:/opt/intel/cc/9.0/lib
-#$ -r n
-#$ -j y
-# The next line is IMPORTANT when you are using the default for Job(startdir=None)
-#$ -cwd
+   from staging.SunGridEngine import Job
 
-from staging.SunGridEngine import Job
+   job = Job(inputfiles=dict(psf = 'inp/crbp_apo.psf',
+                             dcd = 'trj/rmsfit_1opa_salt_ewald_shake_10ang_prod.dcd'),
+             outputfiles=dict(dx = '*.dx', pickle = '*.pickle'),
+             variables=dict(normalize = True, ...))
 
-job = Job(inputfiles=dict(psf = 'inp/crbp_apo.psf',
-                          dcd = 'trj/rmsfit_1opa_salt_ewald_shake_10ang_prod.dcd'),
-          outputfiles=dict(dx = '*.dx', pickle = '*.pickle'),
-          variables=dict(normalize = True, ...))
+   job.stage()
+   F = job.filenames  # use F[key] to reference filenames from inputfiles or outputfiles
+   V = job.variables  # and V[key] for the variables
 
-job.stage()
-F = job.filenames  # use F[key] to reference filenames from inputfiles or outputfiles
-V = job.variables  # and V[key] for the variables
-
-# your python script here...
-print "psf: %(psf)s  dcd: %(dcd)" % F
-print "normalize = %(normalize)s" % V
+   # your python script here...
+   print "psf: %(psf)s  dcd: %(dcd)" % F
+   print "normalize = %(normalize)s" % V
 
 
-job.unstage()
-job.cleanup()   # removes stage dir, careful!
-
+   job.unstage()
+   job.cleanup()   # removes stage dir, careful!
 """
 
 import os
@@ -139,13 +137,13 @@ class Job(SGE_job):
         These have the proper paths of the local (staged) files for
         the script to operate on.
 
-        With
+        With ::
 
           job.stage()
         
         inputfiles are copied to the stagedir on the node's scratch
         dir and sub directories are created as necessary; directories
-        mentioned as part of the outputfiles are created, too.
+        mentioned as part of the outputfiles are created, too. ::
 
           job.unstage()
 
