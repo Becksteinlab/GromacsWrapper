@@ -163,16 +163,21 @@ Version
 The package version can be queried with the :func:`gromacs.get_version` function.
 
 .. autofunction:: get_version
+.. autofunction:: get_version_tuple
 
 """
 __docformat__ = "restructuredtext en"
 
 #: Package version; this is the only place where it is set.
-VERSION = "0.1.9"
+VERSION = 0,1,10
 
 def get_version():
     """Return current package version as a string."""
-    return VERSION
+    return ".".join(map(str,VERSION))
+
+def get_version_tuple():
+    """Return current package version as a tuple (*MAJOR*, *MINOR*, *PATCHLEVEL*)."""
+    return tuple(VERSION)
 
 # __all__ is extended with all gromacs command instances later
 __all__ = ['config', 'tools', 'cbook']

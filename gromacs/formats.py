@@ -56,7 +56,6 @@ import utilities
 from gromacs import ParseError, AutoCorrectionWarning
 
 import logging
-logger = logging.getLogger('gromacs.formats')
 
 class XVG(utilities.FileUtils):
     """Class that represents the numerical data in a grace xvg file.
@@ -69,19 +68,23 @@ class XVG(utilities.FileUtils):
     attribute is a numpy masked array (good for plotting).
 
     Conceptually, the file on disk and the XVG instance are considered the same
-    data. This means that whenever the filename for I/O (:meth:`XVG.read` and
-    :meth:`XVG.write`) is changed then the filename associated with the
-    instance is also changed to reflect the association between file and
-    instance.
+    data. Whenever the filename for I/O (:meth:`XVG.read` and :meth:`XVG.write`) is
+    changed then the filename associated with the instance is also changed to reflect
+    the association between file and instance.
+
+    With the *permissive* = ``True`` flag one can instruct the file reader to skip
+    unparseable lines. In this case the line numbers of the skipped lines are stored
+    in :attr:`XVG.corrupted_lineno`.
 
     .. Note:: - Only simple XY or NXY files are currently supported, not
                 Grace files that contain multiple data sets separated by '&'.
               - Any kind of formatting (xmgrace commands) are discarded.
     """
 
-    default_extension = "xvg"
-    
-    def __init__(self, filename=None, names=None):
+    default_extension = "xvg"    
+    logger = logging.getLogger('gromacs.formats.XVG')  # for pickling: must be class-level
+
+    def __init__(self, filename=None, names=None, permissive=False):
         """Initialize the class from a xvg file.
 
         :Arguments: 
@@ -93,6 +96,12 @@ class XVG(utilities.FileUtils):
                     optional labels for the columns (currently only
                     written as comments to file); string with columns
                     separated by commas or a list of strings
+              *permissive*
+                    ``False`` raises a :exc:`ValueError` and logs and errior 
+                    when encountering data lines that it cannot parse.
+                    ``True`` ignores those lines and logs a warning---this is
+                    a risk because it might read a corrupted input file [``False``]
+                    
         """
         self.__array = None          # cache for array property
         if not filename is None:
@@ -104,6 +113,8 @@ class XVG(utilities.FileUtils):
                 self.names = names.split(',')
             except AttributeError:
                 self.names = names
+        self.permissive = permissive
+        self.corrupted_lineno = None      # must parse() first before this makes sense
 
     def read(self, filename=None):
         """Read and parse xvg file *filename*."""
@@ -173,26 +184,48 @@ class XVG(utilities.FileUtils):
         The array is returned with column-first indexing, i.e. for a data file with
         columns X Y1 Y2 Y3 ... the array a will be a[0] = X, a[1] = Y1, ... .
         """
+        self.corrupted_lineno = []
         # cannot use numpy.loadtxt() because xvg can have two types of 'comment' lines
         with utilities.openany(self.real_filename) as xvg:
             rows = []
-            for line in xvg:
+            ncol = None
+            for lineno,line in enumerate(xvg):
                 line = line.strip()
                 if line.startswith(('#', '@')) or len(line) == 0:
                     continue
                 if line.startswith('&'):
                     raise NotImplementedError('%s: Multi-data not supported, only simple NXY format.' 
                                               % self.real_filename)
+                # parse line as floats
                 try:
-                    rows.append(map(float, line.split()))
+                    row = map(float, line.split())
                 except:
-                    logger.error("%s: Cannot parse line %r", self.real_filename, line)
+                    if self.permissive:
+                        self.logger.warn("%s: SKIPPING unparsable line %d: %r",
+                                         self.real_filename, lineno+1, line)
+                        self.corrupted_lineno.append(lineno+1)
+                        continue
+                    self.logger.error("%s: Cannot parse line %d: %r", 
+                                      self.real_filename, lineno+1, line)
                     raise
+                # check for same number of columns as in previous step
+                if not ncol is None and len(row) != ncol:
+                    if self.permissive:
+                        self.logger.warn("%s: SKIPPING line %d with wrong number of columns: %r",
+                                         self.real_filename, lineno+1, line)
+                        self.corrupted_lineno.append(lineno+1)
+                        continue
+                    errmsg = "%s: Wrong number of columns in line %d: %r" % (self.real_filename, lineno+1, line)
+                    self.logger.error(errmsg)
+                    raise IOError(errno.ENODATA, errmsg, self.real_filename)
+                # finally: a good line
+                ncol = len(row)
+                rows.append(row)
         try:
             self.__array = numpy.array(rows).transpose()    # cache result
         except:
-            logger.error("%s: Failed reading XVG file, possibly data corrupted. "
-                         "Check the last line of the file...", self.real_filename)
+            self.logger.error("%s: Failed reading XVG file, possibly data corrupted. "
+                              "Check the last line of the file...", self.real_filename)
             raise
 
     def set(self, a):
@@ -517,6 +550,7 @@ class GRO(utilities.FileUtils):
     File format:
     """
     default_extension = "gro"
+    logger = logging.getLogger('gromacs.formats.GRO')
 
     def __init__(self, **kwargs):
 
@@ -559,7 +593,7 @@ class MDP(odict, utilities.FileUtils):
                 poor replacement for sed).
     """
     default_extension = "mdp"
-
+    logger = logging.getLogger('gromacs.formats.MDP')
 
     COMMENT = re.compile("""\s*;\s*(?P<value>.*)""")   # eat initial ws
     # see regex in cbook.edit_mdp()
@@ -629,7 +663,7 @@ class MDP(odict, utilities.FileUtils):
                     data[parameter] = value
                 else:
                     errmsg = '%(filename)r: unknown line in mdp file, %(line)r' % vars()
-                    logger.error(errmsg)
+                    self.logger.error(errmsg)
                     raise ParseError(errmsg)
 
         super(MDP,self).update(data)
