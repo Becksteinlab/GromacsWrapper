@@ -1,5 +1,3 @@
-.. $Id$
-
 ==============================
 Alternatives to GromacsWrapper
 ==============================
@@ -8,7 +6,7 @@ Alternatives to GromacsWrapper
 link to the Gromacs libraries but relies on python wrappers to call
 gromacs tools. Some people find this very crude (the author
 included). Other people have given more thought to the problem and you
-are eoncouraged to see if their efforts speed up your work more than
+are encouraged to see if their efforts speed up your work more than
 does *GromacsWrapper*.
 
 pymacs_ (Daniel Seeliger)
@@ -29,11 +27,16 @@ pymacs_ (Daniel Seeliger)
    - Structure building from sequence
    - Handling gromacs index files
 
+Gromacs `XTC Library`_
+   Version 1.1 of the separate xtc/trr library contains example code
+   to access a Gromacs trajectory from python. It appears to be based
+   on grompy_ (also see below).
+
 various implementations of python wrappers
    See the discussion on the gmx-developers mailinglist: check the
    thread  `[gmx-developers] Python interface for Gromacs`_  
 
-grompy_ (Martin Höfling, Roland Schulz)
+grompy_ (Martin Hoefling, Roland Schulz)
    uses ctypes_ to wrap **libgmx**:
 
       "Here's a bunch of code I wrote to wrap libgmx with ctypes and make use  
@@ -58,8 +61,20 @@ grompy_ (Martin Höfling, Roland Schulz)
    A working `grompy tar ball`_ (with Roland's enhancements) is cached
    at gmane.org.
 
+LOOS_ (`Grossfield lab`_ at the University of Rochester)
+  The idea behind *LOOS* (*Lightweight Object-Oriented Structure*
+  library) is to provide a lightweight C++ library for analysis of
+  molecular dynamics simulations. This includes parsing a number of
+  PDB variants, as well as the native system description and
+  trajectory formats for CHARMM, NAMD, and Amber. *LOOS* is not intended
+  to be an all-encompassing library and it is primarily geared towards
+  reading data in and processing rather than manipulating the files
+  and structures and writing them out.
 
-VMD_ (Schulten lab at UIUC)
+  The `LOOS documentation`_ is well written and comprehensive and the
+  code is published under the GPL_.
+
+VMD_ (`Schulten lab`_ at UIUC)
   VMD is a great analysis tool; the only downside is that (at the
   moment) trajectories have to fit into memory. In some cases this can
   be circumvented by reading a trajectory frame by frame using the
@@ -72,13 +87,19 @@ MDAnalysis_ (N. Michaud-Agrawal and O. Beckstein)
 
 Please let `me`_ know of other efforts so that I can add them here. Thanks.
 
+.. _XTC Library: http://www.gromacs.org/Developer_Zone/Programming_Guide/XTC_Library
 .. _pymacs: http://www.mpibpc.mpg.de/groups/de_groot/dseelig/pymacs.html
 .. _[gmx-developers] Python interface for Gromacs:
     http://lists.gromacs.org/pipermail/gmx-developers/2009-March/003179.html
 .. _ctypes: http://docs.python.org/library/ctypes.html
 .. _grompy: http://lists.gromacs.org/pipermail/gmx-developers/2009-March/003183.html
 .. _grompy tar ball: http://article.gmane.org/gmane.science.biology.gromacs.devel/1185
+.. _LOOS: http://loos.sourceforge.net
+.. _LOOS documentation: http://loos.sourceforge.net/Docs/
+.. _Grossfield lab: http://membrane.urmc.rochester.edu/Grossfield_Lab/Welcome.html
 .. _VMD: http://www.ks.uiuc.edu/Research/vmd/
+.. _Schulten lab: http://www.ks.uiuc.edu/
 .. _bigdcd: http://www.ks.uiuc.edu/Research/vmd/script_library/scripts/bigdcd/
 .. _MDAnalysis: http://mdanalysis.googlecode.com
 .. _me: http://sbcb.bioch.ox.ac.uk/oliver/
+.. _GPL: http://www.gnu.org/licenses/ 
