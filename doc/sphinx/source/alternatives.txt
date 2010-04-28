@@ -80,10 +80,10 @@ VMD_ (`Schulten lab`_ at UIUC)
   be circumvented by reading a trajectory frame by frame using the
   `bigdcd`_ script (which might also work for Gromacs xtcs).
 
-MDAnalysis_ (N. Michaud-Agrawal and O. Beckstein)
-  Will `soon
-  <http://code.google.com/p/mdanalysis/issues/detail?id=1>`_ also read
-  Gromacs xtcs but does not use the gromacs tools themselves.
+MDAnalysis_ (N. Michaud-Agrawal, E. J. Dennning, and O. Beckstein)
+  Reads various trajectories (dcd, xtc, trr) and makes coordinates
+  available as numpy_ arrays. It also has a fairly sophisticated
+  selection language, similar to Charmm_ or VMD_.
 
 Please let `me`_ know of other efforts so that I can add them here. Thanks.
 
@@ -103,3 +103,5 @@ Please let `me`_ know of other efforts so that I can add them here. Thanks.
 .. _MDAnalysis: http://mdanalysis.googlecode.com
 .. _me: http://sbcb.bioch.ox.ac.uk/oliver/
 .. _GPL: http://www.gnu.org/licenses/ 
+.. _numpy: http://numpy.scipy.org
+.. _Charmm: http://www.charmm.org
