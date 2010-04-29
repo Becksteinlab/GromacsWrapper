@@ -95,7 +95,6 @@ import errno
 import subprocess
 from contextlib import contextmanager
 import bz2, gzip
-import numpy
 import datetime
 
 import logging
