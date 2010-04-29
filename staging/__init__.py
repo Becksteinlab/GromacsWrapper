@@ -1,9 +1,9 @@
 # $Id: __init__.py 2677 2008-12-22 20:58:45Z oliver $
 
 """
-====================================================================
-:mod:`staging` --- Staging of input/output files on a queuing system
-====================================================================
+==========================================
+:mod:`staging` --- Staging module overview
+==========================================
 
 The 'staging' module provides a framework to run python scripts easily
 through a queuing system that requires copying of files to the scratch
