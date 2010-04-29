@@ -1,0 +1,12 @@
+.. -*- mode: rst -*-
+
+.. automodule:: staging
+
+Modules
+=======
+
+.. toctree::
+   :maxdepth: 1
+
+   staging/SunGridEngine
+   staging/Local

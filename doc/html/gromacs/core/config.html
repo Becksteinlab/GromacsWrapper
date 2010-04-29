@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.config – Configuration for GromacsWrapper &mdash; GromacsWrapper v0.1.8 documentation</title>
+    <title>gromacs.config – Configuration for GromacsWrapper &mdash; GromacsWrapper v0.1.9 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.1.8',
+        VERSION:     '0.1.9',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.1.8 documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper v0.1.9 documentation" href="../../index.html" />
     <link rel="up" title="Gromacs core modules" href="../core.html" />
     <link rel="next" title="gromacs.formats – Accessing various files" href="formats.html" />
     <link rel="prev" title="gromacs.core – Core functionality" href="core.html" /> 
@@ -40,7 +40,7 @@
         <li class="right" >
           <a href="core.html" title="gromacs.core – Core functionality"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.1.8 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.1.9 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" accesskey="U">Gromacs core modules</a> &raquo;</li> 
       </ul>
@@ -79,6 +79,12 @@ and qscript searching. By default it has the value <tt class="docutils literal">
 (Note that it is not a good idea to have template files and qscripts with the
 same name as they are both searched on the same path.)</dd></dl>
 
+<p>The user should execute <a title="gromacs.config.setup" class="reference" href="#gromacs.config.setup"><tt class="xref docutils literal"><span class="pre">gromacs.config.setup()</span></tt></a> at least once to
+prepare the user configurable area in their home directory:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">gromacs</span>
+<span class="n">gromacs</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+</pre></div>
+</div>
 <div class="section" id="logging">
 <h2>Logging<a class="headerlink" href="#logging" title="Permalink to this headline">¶</a></h2>
 <p>Gromacs commands log their invocation to a log file; typically at
@@ -212,9 +218,16 @@ See <a title="" class="reference" href="../blocks/qsub.html#module-gromacs.qsub"
 <tt class="descclassname">gromacs.config.</tt><tt class="descname">qscript_template</tt><a class="headerlink" href="#gromacs.config.qscript_template" title="Permalink to this definition">¶</a></dt>
 <dd>The default template for SGE/PBS run scripts.</dd></dl>
 
+<dl class="function">
+<dt id="gromacs.config.setup">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">setup</tt><big>(</big><big>)</big><a class="headerlink" href="#gromacs.config.setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the directories in which the user can store template and config files.</p>
+<p>This function can be run repeatedly without harm.</p>
+</dd></dl>
+
 </div>
-<div class="section" id="functions">
-<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="accessing-configuration-data">
+<h2>Accessing configuration data<a class="headerlink" href="#accessing-configuration-data" title="Permalink to this headline">¶</a></h2>
 <p>The following functions can be used to access configuration data. Note that
 files are searched first with their full filename, then in all directories
 listed in <a title="gromacs.config.path" class="reference" href="#gromacs.config.path"><tt class="xref docutils literal"><span class="pre">gromacs.config.path</span></tt></a>, and finally within the package itself.</p>
@@ -291,7 +304,7 @@ be one of</p>
 <li><a class="reference" href="#logging">Logging</a></li>
 <li><a class="reference" href="#gromacs-tools-and-scripts">Gromacs tools and scripts</a></li>
 <li><a class="reference" href="#location-of-template-files">Location of template files</a></li>
-<li><a class="reference" href="#functions">Functions</a></li>
+<li><a class="reference" href="#accessing-configuration-data">Accessing configuration data</a></li>
 </ul>
 </li>
 </ul>
@@ -339,14 +352,14 @@ be one of</p>
         <li class="right" >
           <a href="core.html" title="gromacs.core – Core functionality"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.1.8 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.1.9 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" >Gromacs core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
       &copy; Copyright 2009-2010, Oliver Beckstein.
-      Last updated on Apr 06, 2010.
+      Last updated on Apr 29, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
     </div>
   </body>

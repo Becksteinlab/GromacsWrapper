@@ -3,6 +3,7 @@
 # Version: 0.1
 vmd mod vmd.html
 gromacs.run mod gromacs/blocks/simulation.html
+staging.Local mod staging/Local.html
 edPDB.log mod edpdb/helpers.html
 edPDB.selections mod edpdb/selections.html
 gromacs.analysis.plugins.dist mod analysis/plugins.html
@@ -20,7 +21,9 @@ gromacs.analysis.collections mod analysis/support.html
 gromacs.config mod gromacs/core/config.html
 gromacs.setup mod gromacs/blocks/setup.html
 edPDB mod edpdb/init.html
+staging.SunGridEngine mod staging/SunGridEngine.html
 edPDB.xpdb mod edpdb/xpdb.html
+staging mod staging.html
 vmd.control mod vmd.html
 gromacs mod gromacs/init.html
 gromacs.analysis.core mod analysis/core.html
@@ -35,6 +38,7 @@ gromacs.config.load_tools data gromacs/core/config.html
 gromacs.analysis.core.Simulation.analyze method analysis/core.html
 gromacs.tools.G_clustsize class gromacs/tools.html
 gromacs.core.Command.command_name attribute gromacs/core/core.html
+staging.SunGridEngine.Job.cleanup method staging/SunGridEngine.html
 edPDB.xpdb.write_pdb function edpdb/xpdb.html
 edPDB.selections.residues_by_resname function edpdb/selections.html
 gromacs.tools.Genrestr class gromacs/tools.html
@@ -80,6 +84,7 @@ gromacs.analysis.core.Worker.savefig method analysis/core.html
 gromacs.core.Command.transform_args method gromacs/core/core.html
 gromacs.run.MDrunner.mpiexec attribute gromacs/blocks/simulation.html
 gromacs.formats.uniqueNDX.join method gromacs/core/formats.html
+staging.Local.Job.save method staging/Local.html
 gromacs.qsub.Manager.local_get method gromacs/blocks/qsub.html
 gromacs.tools.G_sgangle class gromacs/tools.html
 gromacs.analysis.Simulation.analyze method analysis/core.html
@@ -126,6 +131,7 @@ gromacs.analysis.core.Worker.topdir method analysis/core.html
 gromacs.qsub.Manager.qstat method gromacs/blocks/qsub.html
 gromacs.cbook.trj_compact function gromacs/blocks/cbook.html
 edPDB.selections.find_water function edpdb/selections.html
+staging.SunGridEngine.get_value_from_arraylist function staging/SunGridEngine.html
 gromacs.tools.G_bond class gromacs/tools.html
 gromacs.tools.GridMAT_MD.GridMAT_MD class gromacs/tools.html
 gromacs.qsub.Manager._qscript attribute gromacs/blocks/qsub.html
@@ -149,10 +155,12 @@ gromacs.formats.NDX.get method gromacs/core/formats.html
 gromacs.analysis.plugins.gridmatmd.GridMatMD.run_frame method analysis/plugins.html
 gromacs.cbook.parse_ndxlist function gromacs/blocks/cbook.html
 gromacs.run.MDrunner.mpicommand method gromacs/blocks/simulation.html
+staging.SunGridEngine.getline_from_arraylist function staging/SunGridEngine.html
 gromacs.utilities.asiterable function gromacs/core/utilities.html
 gromacs.formats.XVG.read method gromacs/core/formats.html
 gromacs.cbook.Transformer.center_fit method gromacs/blocks/cbook.html
 gromacs.utilities.anyopen function gromacs/core/utilities.html
+staging.Local.Job class staging/Local.html
 gromacs.tools.G_covar class gromacs/tools.html
 gromacs.qsub.Manager.remoteuri method gromacs/blocks/qsub.html
 gromacs.analysis.core.Plugin.worker attribute analysis/core.html
@@ -250,6 +258,7 @@ edPDB.cbook.PDB class edpdb/cbook.html
 gromacs.analysis.plugins.gridmatmd.GridMatData.imshow method analysis/plugins.html
 gromacs.utilities.activate_subplot function gromacs/core/utilities.html
 gromacs.cbook.Frames.cleanup method gromacs/blocks/cbook.html
+staging.SunGridEngine.Job.save method staging/SunGridEngine.html
 gromacs.tools.G_nmens class gromacs/tools.html
 gromacs.formats.NDX class gromacs/core/formats.html
 gromacs.core.Command class gromacs/core/core.html
@@ -314,12 +323,14 @@ gromacs.config.configdir data gromacs/core/config.html
 gromacs.cbook.get_volume function gromacs/blocks/cbook.html
 gromacs.tools.G_mindist class gromacs/tools.html
 gromacs.cbook.cat function gromacs/blocks/cbook.html
+staging.SunGridEngine.get_fields_from_arraylist function staging/SunGridEngine.html
 gromacs.GromacsError exception gromacs/init.html
 edPDB.utilities.iterable function edpdb/helpers.html
 gromacs.formats.NDX.groups attribute gromacs/core/formats.html
 gromacs.formats.NDX.read method gromacs/core/formats.html
 gromacs.tools.G_dist class gromacs/tools.html
 gromacs.cbook.edit_mdp function gromacs/blocks/cbook.html
+staging.SunGridEngine.Job.unstage method staging/SunGridEngine.html
 gromacs.run.MDrunner.posthook method gromacs/blocks/simulation.html
 gromacs.tools.G_traj class gromacs/tools.html
 gromacs.analysis.plugins.Energy.worker_class attribute analysis/plugins.html
@@ -350,6 +361,7 @@ gromacs.analysis.core.Simulation.plugindir method analysis/core.html
 gromacs.tools.Mk_angndx class gromacs/tools.html
 gromacs.qsub.Manager.cat method gromacs/blocks/qsub.html
 gromacs.analysis.plugins.gridmatmd.Grid2D.__div__ method analysis/plugins.html
+staging.SunGridEngine.Job.stage method staging/SunGridEngine.html
 gromacs.qsub.Manager.put method gromacs/blocks/qsub.html
 gromacs.tools.Grompp class gromacs/tools.html
 gromacs.qsub.Manager.ndependent method gromacs/blocks/qsub.html
@@ -382,6 +394,7 @@ gromacs.analysis.core.Plugin.plugin_name attribute analysis/core.html
 gromacs.core.GromacsCommand.run method gromacs/core/core.html
 gromacs.tools.GromacsCommandMultiIndex.__del__ method gromacs/tools.html
 gromacs.tools.Do_dssp class gromacs/tools.html
+gromacs.config.setup function gromacs/core/config.html
 gromacs.config.path data gromacs/core/config.html
 gromacs.cbook.Frames.extract method gromacs/blocks/cbook.html
 gromacs.qsub.QueuingSystem class gromacs/blocks/qsub.html
@@ -401,6 +414,7 @@ gromacs.analysis.plugins.CysAccessibility.CysAccessibility class analysis/plugin
 gromacs.config.qscript_template data gromacs/core/config.html
 gromacs.analysis.core.Simulation.get_plugin method analysis/core.html
 gromacs.qsub.queuing_systems data gromacs/blocks/qsub.html
+staging.SunGridEngine.Job class staging/SunGridEngine.html
 gromacs.qsub.Manager.setup_MD method gromacs/blocks/qsub.html
 gromacs.qsub.Manager class gromacs/blocks/qsub.html
 gromacs.tools.Luck class gromacs/tools.html

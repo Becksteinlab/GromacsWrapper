@@ -1,4 +1,3 @@
-.. $Id$
 .. GromacsWrapper documentation master file, created by sphinx-quickstart on Tue Jun 23 19:38:56 2009.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
@@ -21,7 +20,8 @@ is primarily provided through the python doc strings (from which most of the
 online documentation is generated).
 
 There is also auto-generated `online source code documentation`_
-available.
+available and the source code itself is available in the
+`GromacsWrapper git repository`_.
 
 .. warning:: Please be aware that this is **alpha** software that most
   definitely contains bugs. The API is not stable and can change
@@ -30,8 +30,8 @@ available.
   It is *your* responsibility to ensure that you are running
   simulations with sensible parameters.
 
-The package and the documentation are still in flux and any feedback,
-bug reports, suggestions and contributions are very welcome. See the
+The package and the documentation are still in flux and any 
+`feedback, bug reports, suggestions`_ and contributions are very welcome. See the
 package :doc:`README` for contact details.
 
 For other approaches to interfacing python_ and Gromacs_ see
@@ -44,6 +44,10 @@ For other approaches to interfacing python_ and Gromacs_ see
    http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/html/index.html
 .. _online source code documentation:
    http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/epydoc/index.html
+.. _GromacsWrapper git repository:
+   http://github.com/orbeckst/GromacsWrapper
+.. _feedback, bug reports, suggestions:
+   http://github.com/orbeckst/GromacsWrapper/issues
 
 
 Contents
@@ -59,6 +63,7 @@ Contents
    alternatives
    vmd
    edpdb
+   staging
 
 
 

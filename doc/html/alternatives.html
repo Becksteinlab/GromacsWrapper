@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Alternatives to GromacsWrapper &mdash; GromacsWrapper v0.1.8 documentation</title>
+    <title>Alternatives to GromacsWrapper &mdash; GromacsWrapper v0.1.9 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '#',
-        VERSION:     '0.1.8',
+        VERSION:     '0.1.9',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.1.8 documentation" href="index.html" />
+    <link rel="top" title="GromacsWrapper v0.1.9 documentation" href="index.html" />
     <link rel="next" title="vmd — Remote Tcl commands in VMD" href="vmd.html" />
     <link rel="prev" title="Analysis plugins" href="analysis/plugins.html" /> 
   </head>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="analysis/plugins.html" title="Analysis plugins"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">GromacsWrapper v0.1.8 documentation</a> &raquo;</li> 
+        <li><a href="index.html">GromacsWrapper v0.1.9 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -54,7 +54,7 @@
 link to the Gromacs libraries but relies on python wrappers to call
 gromacs tools. Some people find this very crude (the author
 included). Other people have given more thought to the problem and you
-are eoncouraged to see if their efforts speed up your work more than
+are encouraged to see if their efforts speed up your work more than
 does <em>GromacsWrapper</em>.</p>
 <dl class="docutils">
 <dt><a class="reference" href="http://www.mpibpc.mpg.de/groups/de_groot/dseelig/pymacs.html">pymacs</a> (Daniel Seeliger)</dt>
@@ -76,10 +76,14 @@ an intuitive data structure (Model &#8211;&gt; Chain &#8211;&gt; Molecule
 <li>Handling gromacs index files</li>
 </ul>
 </dd>
+<dt>Gromacs <a class="reference" href="http://www.gromacs.org/Developer_Zone/Programming_Guide/XTC_Library">XTC Library</a></dt>
+<dd>Version 1.1 of the separate xtc/trr library contains example code
+to access a Gromacs trajectory from python. It appears to be based
+on <a class="reference" href="http://lists.gromacs.org/pipermail/gmx-developers/2009-March/003183.html">grompy</a> (also see below).</dd>
 <dt>various implementations of python wrappers</dt>
 <dd>See the discussion on the gmx-developers mailinglist: check the
 thread  <a class="reference" href="http://lists.gromacs.org/pipermail/gmx-developers/2009-March/003179.html">[gmx-developers] Python interface for Gromacs</a></dd>
-<dt><a class="reference" href="http://lists.gromacs.org/pipermail/gmx-developers/2009-March/003183.html">grompy</a> (Martin H?ng, Roland Schulz)</dt>
+<dt><a class="reference" href="http://lists.gromacs.org/pipermail/gmx-developers/2009-March/003183.html">grompy</a> (Martin Hoefling, Roland Schulz)</dt>
 <dd><p class="first">uses <a class="reference" href="http://docs.python.org/library/ctypes.html">ctypes</a> to wrap <strong>libgmx</strong>:</p>
 <blockquote>
 <p>&#8220;Here&#8217;s a bunch of code I wrote to wrap libgmx with ctypes and make use
@@ -101,14 +105,27 @@ compatible ...&#8221;</blockquote>
 <p class="last">A working <a class="reference" href="http://article.gmane.org/gmane.science.biology.gromacs.devel/1185">grompy tar ball</a> (with Roland&#8217;s enhancements) is cached
 at gmane.org.</p>
 </dd>
-<dt><a class="reference" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a> (Schulten lab at UIUC)</dt>
+<dt><a class="reference" href="http://loos.sourceforge.net">LOOS</a> (<a class="reference" href="http://membrane.urmc.rochester.edu/Grossfield_Lab/Welcome.html">Grossfield lab</a> at the University of Rochester)</dt>
+<dd><p class="first">The idea behind <em>LOOS</em> (<em>Lightweight Object-Oriented Structure</em>
+library) is to provide a lightweight C++ library for analysis of
+molecular dynamics simulations. This includes parsing a number of
+PDB variants, as well as the native system description and
+trajectory formats for CHARMM, NAMD, and Amber. <em>LOOS</em> is not intended
+to be an all-encompassing library and it is primarily geared towards
+reading data in and processing rather than manipulating the files
+and structures and writing them out.</p>
+<p class="last">The <a class="reference" href="http://loos.sourceforge.net/Docs/">LOOS documentation</a> is well written and comprehensive and the
+code is published under the <a class="reference" href="http://www.gnu.org/licenses/">GPL</a>.</p>
+</dd>
+<dt><a class="reference" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a> (<a class="reference" href="http://www.ks.uiuc.edu/">Schulten lab</a> at UIUC)</dt>
 <dd>VMD is a great analysis tool; the only downside is that (at the
 moment) trajectories have to fit into memory. In some cases this can
 be circumvented by reading a trajectory frame by frame using the
 <a class="reference" href="http://www.ks.uiuc.edu/Research/vmd/script_library/scripts/bigdcd/">bigdcd</a> script (which might also work for Gromacs xtcs).</dd>
-<dt><a class="reference" href="http://mdanalysis.googlecode.com">MDAnalysis</a> (N. Michaud-Agrawal and O. Beckstein)</dt>
-<dd>Will <a class="reference" href="http://code.google.com/p/mdanalysis/issues/detail?id=1">soon</a> also read
-Gromacs xtcs but does not use the gromacs tools themselves.</dd>
+<dt><a class="reference" href="http://mdanalysis.googlecode.com">MDAnalysis</a> (N. Michaud-Agrawal, E. J. Dennning, and O. Beckstein)</dt>
+<dd>Reads various trajectories (dcd, xtc, trr) and makes coordinates
+available as <a class="reference" href="http://numpy.scipy.org">numpy</a> arrays. It also has a fairly sophisticated
+selection language, similar to <a class="reference" href="http://www.charmm.org">Charmm</a> or <a class="reference" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>.</dd>
 </dl>
 <p>Please let <a class="reference" href="http://sbcb.bioch.ox.ac.uk/oliver/">me</a> know of other efforts so that I can add them here. Thanks.</p>
 </div>
@@ -162,12 +179,12 @@ Gromacs xtcs but does not use the gromacs tools themselves.</dd>
         <li class="right" >
           <a href="analysis/plugins.html" title="Analysis plugins"
              >previous</a> |</li>
-        <li><a href="index.html">GromacsWrapper v0.1.8 documentation</a> &raquo;</li> 
+        <li><a href="index.html">GromacsWrapper v0.1.9 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
       &copy; Copyright 2009-2010, Oliver Beckstein.
-      Last updated on Apr 06, 2010.
+      Last updated on Apr 29, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
     </div>
   </body>
