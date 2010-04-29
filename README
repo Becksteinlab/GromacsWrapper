@@ -13,8 +13,8 @@ Availability`_ for download instructions if the instructions in
 :doc:`INSTALL` are not sufficient.
 
 There is also auto-generated `online source code documentation`_
-available. The source code is also available at
-http://github.com/orbeckst/GromacsWrapper .
+available. The source code is also available in the `GromacsWrapper
+git repository`_.
 
 Please be aware that this is **alpha** software that most definitely
 contains bugs. It is *your* responsibility to ensure that you are
@@ -25,6 +25,8 @@ running simulations with sensible parameters.
    http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/html/index.html
 .. _online source code documentation:
    http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/epydoc/index.html
+.. _GromacsWrapper git repository:
+   http://github.com/orbeckst/GromacsWrapper
 
 
 
@@ -108,22 +110,29 @@ Thank you.
 Download and Availability
 =========================
 
-The latest version of the package is being made available via the
-internet-thingy at the direct download URI 
+The GromacsWrapper home page is
+http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/ .  The
+latest version of the package is being made available via the
+internet-thingy at the direct download URI
 
   http://sbcb.bioch.ox.ac.uk/oliver/download/Python/ 
 
 You can use this URI if you want to install from the network using
 ``easy_install`` as described in :doc:`INSTALL`.
 
+You can also clone the `GromacsWrapper git repository`_ or fork for
+your own development::
 
-Its home page is http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/
+  git clone git://github.com/orbeckst/GromacsWrapper.git
 
 
 
 Contact
 =======
 
-Please send feedback to `Oliver Beckstein`_.
+Please use the `Issue Tracker`_ to report bugs and feature requests;
+general feedback and inquiries can be sent to `Oliver Beckstein`_ by
+e-mail.
 
+.. _Issue Tracker: http://github.com/orbeckst/GromacsWrapper/issues
 .. _Oliver Beckstein: oliver.beckstein@bioch.ox.ac.uk

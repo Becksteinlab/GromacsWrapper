@@ -1,7 +1,16 @@
 # $Id: SunGridEngine.py 2765 2009-01-20 13:02:14Z oliver $
-"""Primitive framework for staging jobs in Sun Grid Engine
+"""
+:mod:`staging.SunGridEngine` --- staging class for SunGridEngine
+================================================================
+
+Primitive framework for staging jobs in `Sun Grid Engine`_ via a
+customized :class:`Job` class.
+
+Example python submission script
+--------------------------------
 
 Write the SGE script like this::
+
    #!/usr/bin/env python
    #$ -N bulk
    #$ -S /usr/bin/python
@@ -30,6 +39,21 @@ Write the SGE script like this::
 
    job.unstage()
    job.cleanup()   # removes stage dir, careful!
+
+.. _`Sun Grid Engine`: http://gridengine.sunsource.net/
+
+Description of the :class:`Job` class
+-------------------------------------
+
+.. autoclass:: Job
+   :members:
+
+Helper functions for building job arrays
+----------------------------------------
+
+.. autofunction:: getline_from_arraylist
+.. autofunction:: get_fields_from_arraylist
+.. autofunction:: get_value_from_arraylist
 """
 
 import os
@@ -120,79 +144,98 @@ class SGE_job(object):
 
 
 class Job(SGE_job):
-    """The Job class encapsulates the SGE job and allows for clean staging and unstaging."""
+    """The Job class encapsulates the SGE job and allows for clean staging and unstaging.
+
+    Set up the Job::
+
+      job = Job(inputfiles=dict(...),outputfiles=dict(...),variables=dict(...),**kwargs)
+
+    *inputfiles* and *outputfiles* are dictionaries with arbitrary
+    keys; each item is a path to a file relative to the startdir
+    (which by default is the directory from which the SGE job starts
+    --- use the ``#$ -cwd`` flag!). If the files are not relative to the
+    start dir then new directories are constructed under the stage
+    dir; in this instance it uis important that the user script *only*
+    uses the filenames in :attr:`Job.filenames`: These have the proper paths
+    of the local (staged) files for the script to operate on.
+
+    With ::
+
+      job.stage()
+
+    inputfiles are copied to the stagedir on the node's scratch
+    dir and sub directories are created as necessary; directories
+    mentioned as part of the outputfiles are created, too. ::
+
+      job.unstage()
+
+    copies back all files mentioned in output files (again, use
+    directories as part of the path as necessary) and create the
+    directories in the startdir if needed. For the outputfiles one
+    can also use shell-style glob patterns, e.g. ``outfiles =
+    {'all_dcd': '*.dcd', 'last_data':'*[5-9].dat'}``
+
+    Sensible defaults are automatically selected for startdir
+    (cwd) and stagedir (/scratch/USER/JOB_NAME.JOB_ID).
+
+    If the script is not run through SGE (i.e. the environment
+    variable :envvar:`JOB_NAME` is not set) then the script is run without
+    staging; this is pretty much equivalent to using ::
+
+      from staging.Local import Job
+
+    (i.e. using the :class:`staging.Local.Job` class).
+
+    :Attributes:
+
+       :attr:`input`
+                        inputfiles dict  (relative to startdir or absolute)
+       :attr:`output`
+                        outputfiles dict (relative to startdir or absolute, can contain globs)
+       :attr:`filenames`
+                        merged dict of input and output, pointing to *staged* files
+       :attr:`variables`
+                        variables dict
+
+    :Methods:
+
+       :meth:`stage`
+                        setup job on the nodes in stagedir
+       :meth:`unstage`
+                        retrieve results to startdir
+       :meth:`cleanup`
+                        remove all files on the node (rm -rf stagedir)
+    """
 
     def __init__(self,*args,**kwargs):
-        """Set up the Job:
+        """Set up SGE job.
 
-        job = Job(inputfiles=dict(...),outputfiles=dict(...),variables=dict(...),**kwargs)
+        :Arguments:
 
-        inputfiles and outputfiles are dictionaries with arbitrary
-        keys; each item is a path to a file relative to the startdir
-        (which by default is the directory from which the SGE job
-        starts --- use the #$ -cwd flag!). If the files are not
-        relative to the start dir then new directories are constructed
-        under the stage dir; in this instance it uis important that
-        the user script ONLY uses the filenames in self.filenames:
-        These have the proper paths of the local (staged) files for
-        the script to operate on.
+           inputfiles
+                            dict of input files (with relative path to startdir);
+                            globs are not supported.
+           outputfiles
+                            dict of result files or glob patterns (relative to
+                            stagedir == relative to startdir)
+           variables
+                            key/value pairs that can be used in the script as 
+                            Job.variables[key]
+           startdir
+                            path to the directory where the input can be found
+                            (must be nfs-mounted on node)
+           stagedir
+                            local scratch directory on node; all input files are copied
+                            there. The default should be ok.
 
-        With ::
+           JOB_NAME
+                            unique identifier (only set this if this NOT submitted through
+                            the Gridengine queuing system AND if the files should be copied
+                            to a scratch disk (i.e. staging proceeds as it would for a
+                            SGE-submitted job).)
+           SGE_TASK_ID
+                           fake a task id (use with JOB_NAME)
 
-          job.stage()
-        
-        inputfiles are copied to the stagedir on the node's scratch
-        dir and sub directories are created as necessary; directories
-        mentioned as part of the outputfiles are created, too. ::
-
-          job.unstage()
-
-        copies back all files mentioned in output files (again, use
-        directories as part of the path as necessary) and create the
-        directories in the startdir if needed. For the outputfiles one
-        can also use shell-style glob patterns, e.g. outfiles =
-        {'all_dcd': '*.dcd', 'last_data':'*[5-9].dat'}
-
-        Sensible defaults are automatically selected for startdir
-        (cwd) and stagedir (/scratch/USER/JOB_NAME.JOB_ID).
-        
-        If the script is not run through SGE (i.e. the environment
-        variable JOB_NAME is not set) then the script is run without
-        staging; this is pretty much equivalent to using
-
-          from staging.Local import Job
-
-        :Input:
-
-        inputfiles       dict of input files (with relative path to startdir);
-                         globs are not supported.
-        outputfiles      dict of result files or glob patterns (relative to
-                         stagedir == relative to startdir)
-        variables        key/value pairs that can be used in the script as 
-                         Job.variables[key]
-        startdir         path to the directory where the input can be found
-                         (must be nfs-mounted on node)
-        stagedir         local scratch directory on node; all input files are copied
-                         there. The default should be ok.
-                         
-        JOB_NAME         unique identifier (only set this if this NOT submitted through
-                         the Gridengine queuing system AND if the files should be copied
-                         to a scratch disk (i.e. staging proceeds as it would for a
-                         SGE-submitted job).)
-        SGE_TASK_ID      fake a task id (use with JOB_NAME)
-
-        :Attributes:
-      
-        input            inputfiles dict  (relative to startdir or absolute)
-        output           outputfiles dict (relative to startdir or absolute, can contain globs)
-        filenames        merged dict of input and output, pointing to *staged* files
-        variables        variables dict
-
-        :Methods:
-        
-        stage()          setup job on the nodes in stagedir
-        unstage()        retrieve results to startdir
-        cleanup()        remove all files on the node (rm -rf stagedir)
         """
         self.__MODE__ = "init"   # current state, for self.msg
         super(Job,self).__init__(*args,**kwargs)
@@ -308,12 +351,11 @@ class Job(SGE_job):
     def save(self,filename):
         """Save the Job() as a pickled file.
 
-        Restore with
+        Restore with ::
 
            import staging.SunGridengine
            import cPickle
            job = cPickle.load(open(<filename>,'r'))
-           
         """
         import cPickle
         cPickle.dump(self,open(filename,'wb'),cPickle.HIGHEST_PROTOCOL)
@@ -322,17 +364,20 @@ class Job(SGE_job):
 def getline_from_arraylist(filename=None,ENVNAME='ARRAYLIST',default="arraylist.txt"):
     """Read a list of values from filename and return the line that corresponds to the current SGE_TASK_ID.
 
-    line = get_line_from_arraylist(filename=None,ENVNAME='ARRAYLIST',default="arraylist.txt")
+      line = get_line_from_arraylist(filename=None,ENVNAME='ARRAYLIST',default="arraylist.txt")
 
-    fields will be different depending on the value of SGE_TASK_ID (set by SunGridengine).
-    The lines are simply numbered consecutively.
+    fields will be different depending on the value of :envvar:`SGE_TASK_ID`
+    (set by SunGridengine).  The lines are simply numbered consecutively.
 
-    Arguments:
-    filename         name of the arraylist file
-    ENVNAME          try to get filename from environment variable if filename is not set
-    default          if all fails, try this as a default filename
+    :Arguments:
+       *filename*
+                     name of the arraylist file
+       *ENVNAME*
+                     try to get filename from environment variable if filename is not set
+       *default*
+                     if all fails, try this as a default filename
 
-    File format:
+    File format::
 
       # comment lines are ignored as are whitespace lines
       # only the first column is read; the internal numbering starts at 1
@@ -342,7 +387,7 @@ def getline_from_arraylist(filename=None,ENVNAME='ARRAYLIST',default="arraylist.
       line3 ...   <---- task id 3      
       ...
       
-    Ignores white space lines and lines starting with #. Lines are
+    Ignores white space lines and lines starting with ``#``. Lines are
     stripped of left and right white space.
     """
     if filename is None:
@@ -367,19 +412,19 @@ def getline_from_arraylist(filename=None,ENVNAME='ARRAYLIST',default="arraylist.
 def get_fields_from_arraylist(**kwargs):
     """Read a list of values from filename and return the line that corresponds to the current SGE_TASK_ID.
 
-    fields = get_line_from_arraylist(filename=None,ENVNAME='ARRAYLIST',default="arraylist.txt")
+      get_line_from_arraylist(filename=None,ENVNAME='ARRAYLIST',default="arraylist.txt") -> fields
 
     fields will be different depending on the value of SGE_TASK_ID (set by SunGridengine).
     The lines are simply numbered consecutively.
 
-    See getline_from_aaraylist() for more details.
+    See :func:`getline_from_arraylist` for more details.
     """
     return getline_from_arraylist(**kwargs).split()
     
 def get_value_from_arraylist(index=0,**kwargs):
     """Get field[index] of the entry in the array list corresponding to SGE_TASK_ID.
 
-    See get_fields_from_arraylist() for details.
+    See :func:`get_fields_from_arraylist` for details.
     """
     return get_fields_from_arraylist(**kwargs)[index]
     

@@ -1,10 +1,27 @@
 # $Id: Local.py 2050 2008-07-23 17:37:12Z oliver $
-"""Ersatz framework for running a staged script without actually doing any staging.
+"""
+:mod:`staging.Local` --- staging class for running local jobs
+=============================================================
 
-Simply replace
+Ersatz framework for running a staged script without actually doing any staging.
+
+Simply replace ::
+
    from staging.SunGridEngine import Job
-with
+
+with ::
+
    from staging.Local import Job
+
+in the python run script (see :mod:`staging.SunGridEngine` for an
+example script).
+
+Description of the :class:`Job` class
+-------------------------------------
+
+.. autoclass:: Job
+   :members:
+
 """
 from staging.common import joindicts
 
