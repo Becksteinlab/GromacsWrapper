@@ -154,9 +154,8 @@ class GromacsCommandMultiIndex(GromacsCommand):
             """Clean up temporary multi-index files if they were used."""
             # XXX: does not seem to work when closing the interpreter?!
             try:
-                from utilities import unlink_gmx
                 # self.multi_ndx <-- _fake_multi_index()
-                unlink_gmx(self.multi_ndx)
+                utilities.unlink_gmx(self.multi_ndx)
             except (AttributeError, OSError):
                 pass
             # XXX: type error --- can't use super in __del__?
