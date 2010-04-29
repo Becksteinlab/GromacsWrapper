@@ -1,12 +1,20 @@
 .. -*- mode: rst -*-
 
-.. automodule:: staging
+====================================================================
+:mod:`staging` --- Staging of input/output files on a queuing system
+====================================================================
 
-Modules
-=======
+The :mod:`staging` module provides a framework to run python scripts
+easily through a queuing system that requires copying of files to the
+scratch directory on compute nodes ("staging"). Instead of submitting
+a shell script to the queuing system, one uses a python script that
+imports the module and instantiates a
+:class:`~staging.SunGridEngine.Job` class that contains methods to
+manage staging.
 
 .. toctree::
    :maxdepth: 1
 
+   staging/init.txt
    staging/SunGridEngine
    staging/Local

@@ -23,7 +23,7 @@ gromacs.setup mod gromacs/blocks/setup.html
 edPDB mod edpdb/init.html
 staging.SunGridEngine mod staging/SunGridEngine.html
 edPDB.xpdb mod edpdb/xpdb.html
-staging mod staging.html
+staging mod staging/init.html
 vmd.control mod vmd.html
 gromacs mod gromacs/init.html
 gromacs.analysis.core mod analysis/core.html

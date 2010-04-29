@@ -20,7 +20,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="GromacsWrapper v0.1.9 documentation" href="index.html" />
-    <link rel="next" title="staging.SunGridEngine — staging class for SunGridEngine" href="staging/SunGridEngine.html" />
+    <link rel="next" title="staging — Staging of input/output files on a queuing system" href="staging/init.html" />
     <link rel="prev" title="Helper modules" href="edpdb/helpers.html" /> 
   </head>
   <body>
@@ -34,7 +34,7 @@
           <a href="modindex.html" title="Global Module Index"
              accesskey="M">modules</a> |</li>
         <li class="right" >
-          <a href="staging/SunGridEngine.html" title="staging.SunGridEngine — staging class for SunGridEngine"
+          <a href="staging/init.html" title="staging — Staging of input/output files on a queuing system"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="edpdb/helpers.html" title="Helper modules"
@@ -49,41 +49,16 @@
           <div class="body">
             
   <div class="section" id="staging-staging-of-input-output-files-on-a-queuing-system">
-<span id="module-staging"></span><h1><tt class="xref docutils literal"><span class="pre">staging</span></tt> &#8212; Staging of input/output files on a queuing system<a class="headerlink" href="#staging-staging-of-input-output-files-on-a-queuing-system" title="Permalink to this headline">¶</a></h1>
-<p>The &#8216;staging&#8217; module provides a framework to run python scripts easily
-through a queuing system that requires copying of files to the scratch
-directory on compute nodes.</p>
-<p>Load the appropriate submodule at the of the script. Currently
-available submodules are:</p>
-<dl class="docutils">
-<dt><a title="" class="reference" href="staging/SunGridEngine.html#module-staging.SunGridEngine"><tt class="xref docutils literal"><span class="pre">staging.SunGridEngine</span></tt></a></dt>
-<dd>Use the <a title="staging.SunGridEngine.Job" class="reference" href="staging/SunGridEngine.html#staging.SunGridEngine.Job"><tt class="xref docutils literal"><span class="pre">staging.SunGridEngine.Job</span></tt></a> class when running
-under Sun Grid Engine.</dd>
-<dt><a title="" class="reference" href="staging/Local.html#module-staging.Local"><tt class="xref docutils literal"><span class="pre">staging.Local</span></tt></a></dt>
-<dd>Runs the job without any staging.</dd>
-</dl>
-<div class="section" id="example">
-<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">staging.SunGridEngine</span> <span class="kn">import</span> <span class="n">Job</span>
-
-<span class="n">job</span> <span class="o">=</span> <span class="n">Job</span><span class="p">(</span><span class="n">inputfiles</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">psf</span> <span class="o">=</span> <span class="s">&#39;inp/apo.psf&#39;</span><span class="p">,</span>
-                        <span class="n">dcd</span> <span class="o">=</span> <span class="s">&#39;trj/prod.dcd&#39;</span><span class="p">),</span>
-          <span class="n">outputfiles</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">dx</span> <span class="o">=</span> <span class="s">&#39;*.dx&#39;</span><span class="p">,</span> <span class="n">pickle</span> <span class="o">=</span> <span class="s">&#39;*.pickle&#39;</span><span class="p">))</span>
-
-<span class="n">job</span><span class="o">.</span><span class="n">stage</span><span class="p">()</span>     <span class="c"># copy files to staging directory, creating dirs</span>
-
-<span class="c"># your python script here...</span>
-<span class="c"># access all filenames as job.filenames[&lt;KEY&gt;]</span>
-
-<span class="n">job</span><span class="o">.</span><span class="n">unstage</span><span class="p">()</span>   <span class="c"># copies files backs and creates dirs as needed</span>
-<span class="n">job</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>   <span class="c"># removes stage dir, careful!</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="section" id="modules">
-<h1>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h1>
+<h1><a title="" class="reference" href="staging/init.html#module-staging"><tt class="xref docutils literal"><span class="pre">staging</span></tt></a> &#8212; Staging of input/output files on a queuing system<a class="headerlink" href="#staging-staging-of-input-output-files-on-a-queuing-system" title="Permalink to this headline">¶</a></h1>
+<p>The <a title="" class="reference" href="staging/init.html#module-staging"><tt class="xref docutils literal"><span class="pre">staging</span></tt></a> module provides a framework to run python scripts
+easily through a queuing system that requires copying of files to the
+scratch directory on compute nodes (&#8220;staging&#8221;). Instead of submitting
+a shell script to the queuing system, one uses a python script that
+imports the module and instantiates a
+<a title="staging.SunGridEngine.Job" class="reference" href="staging/SunGridEngine.html#staging.SunGridEngine.Job"><tt class="xref docutils literal"><span class="pre">Job</span></tt></a> class that contains methods to
+manage staging.</p>
 <ul>
+<li class="toctree-l1"><a class="reference" href="staging/init.html"><tt class="docutils literal"><span class="pre">staging</span></tt> &#8212; Staging of input/output files on a queuing system</a></li>
 <li class="toctree-l1"><a class="reference" href="staging/SunGridEngine.html"><tt class="docutils literal"><span class="pre">staging.SunGridEngine</span></tt> &#8212; staging class for SunGridEngine</a></li>
 <li class="toctree-l1"><a class="reference" href="staging/Local.html"><tt class="docutils literal"><span class="pre">staging.Local</span></tt> &#8212; staging class for running local jobs</a></li>
 </ul>
@@ -95,23 +70,12 @@ under Sun Grid Engine.</dd>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h3><a href="index.html">Table Of Contents</a></h3>
-            <ul>
-<li><a class="reference" href="#"><tt class="docutils literal"><span class="pre">staging</span></tt> &#8212; Staging of input/output files on a queuing system</a><ul>
-<li><a class="reference" href="#example">Example</a></li>
-</ul>
-</li>
-<li><a class="reference" href="#modules">Modules</a><ul>
-</ul>
-</li>
-</ul>
-
             <h4>Previous topic</h4>
             <p class="topless"><a href="edpdb/helpers.html"
                                   title="previous chapter">Helper modules</a></p>
             <h4>Next topic</h4>
-            <p class="topless"><a href="staging/SunGridEngine.html"
-                                  title="next chapter"><tt class="docutils literal"><span class="pre">staging.SunGridEngine</span></tt> &#8212; staging class for SunGridEngine</a></p>
+            <p class="topless"><a href="staging/init.html"
+                                  title="next chapter"><tt class="docutils literal"><span class="pre">staging</span></tt> &#8212; Staging of input/output files on a queuing system</a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
               <li><a href="_sources/staging.txt"
@@ -144,7 +108,7 @@ under Sun Grid Engine.</dd>
           <a href="modindex.html" title="Global Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="staging/SunGridEngine.html" title="staging.SunGridEngine — staging class for SunGridEngine"
+          <a href="staging/init.html" title="staging — Staging of input/output files on a queuing system"
              >next</a> |</li>
         <li class="right" >
           <a href="edpdb/helpers.html" title="Helper modules"
