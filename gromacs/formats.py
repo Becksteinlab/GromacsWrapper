@@ -55,6 +55,9 @@ from odict import odict
 import utilities
 from gromacs import ParseError, AutoCorrectionWarning
 
+import logging
+logger = logging.getLogger('gromacs.formats')
+
 class XVG(utilities.FileUtils):
     """Class that represents the numerical data in a grace xvg file.
 
@@ -178,9 +181,19 @@ class XVG(utilities.FileUtils):
                 if line.startswith(('#', '@')) or len(line) == 0:
                     continue
                 if line.startswith('&'):
-                    raise NotImplementedError('Sorry only simple NXY format is supported.')
-                rows.append(map(float, line.split()))
-        self.__array = numpy.array(rows).transpose()    # cache result
+                    raise NotImplementedError('%s: Multi-data not supported, only simple NXY format.' 
+                                              % self.real_filename)
+                try:
+                    rows.append(map(float, line.split()))
+                except:
+                    logger.error("%s: Cannot parse line %r", self.real_filename, line)
+                    raise
+        try:
+            self.__array = numpy.array(rows).transpose()    # cache result
+        except:
+            logger.error("%s: Failed reading XVG file, possibly data corrupted. "
+                         "Check the last line of the file...", self.real_filename)
+            raise
 
     def set(self, a):
         """Set the *array* data from *a* (i.e. completely replace).
@@ -615,7 +628,9 @@ class MDP(odict, utilities.FileUtils):
                     value =  self._transform(m.group('value'))
                     data[parameter] = value
                 else:
-                    raise ParseError('unknown line in mdp file %(filename)r: %(line)r' % vars())
+                    errmsg = '%(filename)r: unknown line in mdp file, %(line)r' % vars()
+                    logger.error(errmsg)
+                    raise ParseError(errmsg)
 
         super(MDP,self).update(data)
 
