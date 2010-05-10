@@ -1152,9 +1152,7 @@ class IndexBuilder(object):
                      Use :class:`gromacs.formats.NDX` in these cases.
         """
         if name_all is None:
-            name_all = self.name_all
-        if name_all is None:
-            name_all = operation.join(self.indexfiles)
+            name_all = self.name_all or operation.join(self.indexfiles)
         if not operation in ('|', '&'):
             raise ValueError("Illegal operation %r, only '|' (OR) and '&' (AND) allowed." % 
                              operation)
@@ -1175,45 +1173,33 @@ class IndexBuilder(object):
 
         ndxfiles.extend(self.indexfiles.values())
 
-        if len(self.selections) == 1:
-            # no need to combine selections
-            try:
-                cmd = ['', 'q']
-                rc,out,err = self.make_ndx(n=ndxfiles, o=out_ndx, input=cmd)
-                if self._is_empty_group(out):
-                    warnings.warn("No atoms found for %(cmd)r" % vars(), 
-                                  category=BadParameterWarning)
-            finally:
-                if defaultgroups:
-                    utilities.unlink_gmx(default_ndx)
-        else:
-            # multiple selections: combine them and name them
-            try:
-                fd, tmp_ndx = tempfile.mkstemp(suffix='.ndx', prefix='combined__')
-                # combine all selections by loading ALL temporary index files
-                operation = ' '+operation.strip()+' '
-                cmd = [operation.join(['"%s"' % gname for gname in self.indexfiles]),
-                       '', 'q']
-                rc,out,err = self.make_ndx(n=ndxfiles, o=tmp_ndx, input=cmd)
-                if self._is_empty_group(out):
-                    warnings.warn("No atoms found for %(cmd)r" % vars(), 
-                                  category=BadParameterWarning)
+        # combine multiple selections and name them
+        try:
+            fd, tmp_ndx = tempfile.mkstemp(suffix='.ndx', prefix='combined__')
+            # combine all selections by loading ALL temporary index files
+            operation = ' '+operation.strip()+' '
+            cmd = [operation.join(['"%s"' % gname for gname in self.indexfiles]),
+                   '', 'q']
+            rc,out,err = self.make_ndx(n=ndxfiles, o=tmp_ndx, input=cmd)
+            if self._is_empty_group(out):
+                warnings.warn("No atoms found for %(cmd)r" % vars(), 
+                              category=BadParameterWarning)
 
-                # second pass for naming, sigh (or: use NDX ?)
-                groups = parse_ndxlist(out)
-                last = groups[-1]
-                # name this group
-                name_cmd = ["name %d %s" % (last['nr'], name_all), 
-                            'q']
-                rc,out,err = self.make_ndx(n=tmp_ndx, o=out_ndx, input=name_cmd)
-                # For debugging, look at out and err or set stdout=True, stderr=True
-                # TODO: check out if at least 1 atom selected
-                ##print "DEBUG: combine()"
-                ##print out
-            finally:
-                utilities.unlink_gmx(tmp_ndx)
-                if defaultgroups:
-                    utilities.unlink_gmx(default_ndx)
+            # second pass for naming, sigh (or: use NDX ?)
+            groups = parse_ndxlist(out)
+            last = groups[-1]
+            # name this group
+            name_cmd = ["name %d %s" % (last['nr'], name_all), 
+                        'q']
+            rc,out,err = self.make_ndx(n=tmp_ndx, o=out_ndx, input=name_cmd)
+            # For debugging, look at out and err or set stdout=True, stderr=True
+            # TODO: check out if at least 1 atom selected
+            ##print "DEBUG: combine()"
+            ##print out
+        finally:
+            utilities.unlink_gmx(tmp_ndx)
+            if defaultgroups:
+                utilities.unlink_gmx(default_ndx)
         
         return name_all, out_ndx
 
@@ -1446,6 +1432,7 @@ class Transformer(utilities.FileUtils):
     1. Center, compact, and fit to reference structure in tpr
        (optionally, only center in the xy plane): :meth:`~Transformer.center_fit`
     2. Write compact xtc and tpr with water removed: :meth:`~Transformer.strip_water`
+    3. Write compact xtc and tpr only with protein: :meth:`~Transformer.keep_protein_only`
 
     """
 
@@ -1469,7 +1456,7 @@ class Transformer(utilities.FileUtils):
               Set the default behaviour for handling existing files:
                 - ``True``: overwrite existing trajectories
                 - ``False``: throw a IOError exception
-                - ``None``: skip existing and log a warning [default]           
+                - ``None``: skip existing and log a warning [default]
         """
 
         self.tpr = self.filename(s, ext="tpr", use_my_ext=True)
@@ -1478,6 +1465,7 @@ class Transformer(utilities.FileUtils):
         self.dirname = dirname
         self.force = force
         self.nowater = {}     # data for trajectory stripped from water
+        self.proteinonly = {} # data for a protein-only trajectory
 
         with utilities.in_dir(self.dirname, create=False):
             for f in (self.tpr, self.xtc, self.ndx):
@@ -1489,7 +1477,16 @@ class Transformer(utilities.FileUtils):
                     logger.warn(msg)
 
     def rp(self, *args):
-        """Return canonical path to file under *dirname* with components *args*"""
+        """Return canonical path to file under *dirname* with components *args*
+
+         If *args* form an absolute path then just return it as the absolute path.
+         """
+        try:
+            p = os.path.join(*args)
+            if os.path.isabs(p):
+                return p
+        except TypeError:
+            pass
         return utilities.realpath(self.dirname, *args)
 
     def center_fit(self, **kwargs):
@@ -1686,6 +1683,109 @@ class Transformer(utilities.FileUtils):
 
         self.nowater[newxtc] = Transformer(dirname=self.dirname, s=newtpr, 
                                            f=newxtc, n=newndx)
+        return {'tpr':self.rp(newtpr), 'xtc':self.rp(newxtc), 'ndx':self.rp(newndx)}
+
+
+    # TODO: could probably unify strip_water() and keep_protein_only()
+    # (given that the latter was produced by copy&paste+search&replace...)
+
+    def keep_protein_only(self, os=None, o=None, on=None, compact=False, 
+                          groupname="proteinonly", **kwargs):
+        """Write xtc and tpr only containing the protein.
+
+        :Keywords:
+           *os*
+              Name of the output tpr file; by default use the original but
+              insert "proteinonly" before suffix.
+           *o*
+              Name of the output trajectory; by default use the original name but
+              insert "proteinonly" before suffix.
+           *on*
+              Name of a new index file.
+           *compact*
+              ``True``: write a compact and centered trajectory
+              ``False``: use trajectory as it is [``False``]
+           *groupname*
+              Name of the protein-only group.
+           *keepalso*
+              List of literal make_ndx selections of additional groups that should 
+              be kept, e.g. ['resname DRUG', 'atom 6789'].
+           *force* : Boolean
+             - ``True``: overwrite existing trajectories
+             - ``False``: throw a IOError exception
+             - ``None``: skip existing and log a warning [default]           
+           *kwargs* 
+              are passed on to :func:`gromacs.cbook.trj_compact` (unless the
+              values have to be set to certain values such as s, f, n, o
+              keywords). The *input* keyword is always mangled: Only the first
+              entry (the group to centre the trajectory on) is kept, and as a
+              second group (the output group) *groupname* is used.
+
+        :Returns: 
+              dictionary with keys *tpr*, *xtc*, *ndx* which are the names of the
+              the new files
+              
+        .. warning:: The input tpr file should *not* have *any position restraints*;
+                     otherwise Gromacs will throw a hissy-fit and say 
+
+                     *Software inconsistency error: Position restraint coordinates are
+                     missing*
+
+                     (This appears to be a bug in Gromacs 4.x.)
+        """
+        force = kwargs.pop('force', self.force)
+        suffix = 'proteinonly'
+        newtpr = self.infix_filename(os, self.tpr, '_'+suffix)
+        newxtc = self.infix_filename(o, self.xtc, '_'+suffix)
+        newndx = self.infix_filename(on, self.tpr, '_'+suffix, 'ndx')
+
+        selection_ndx = suffix+".ndx"    # refers to original tpr
+
+        if compact:
+            TRJCONV = trj_compact
+            _input = kwargs.get('input', ['Protein'])
+            kwargs['input'] = [_input[0], groupname]  # [center group, write-out selection]
+            del _input
+        else:
+            TRJCONV = gromacs.trjconv
+            kwargs['input'] = [groupname]
+
+        selections = ['@'+sel for sel in ['"Protein"'] + kwargs.pop('keepalso',[])]
+        with utilities.in_dir(self.dirname):
+            # ugly because I cannot break from the block
+            if not self.check_file_exists(newxtc, resolve="indicate", force=force):
+                # make index (overkill for 'Protein' but maybe we want to enhance
+                # it in the future, e.g. with keeping ions/ligands as well?
+                B = IndexBuilder(struct=self.tpr, selections=selections,
+                                 ndx=self.ndx, out_ndx=selection_ndx)
+                B.combine(name_all=groupname, operation="|", defaultgroups=True)
+
+                logger.info("TPR file containg the protein %(newtpr)r" % vars())
+                gromacs.tpbconv(s=self.tpr, o=newtpr, n=selection_ndx, input=[groupname])
+
+                logger.info("NDX of the new system %(newndx)r" % vars())
+                gromacs.make_ndx(f=newtpr, o=newndx, input=['q'], stderr=False, stdout=False)
+
+                logger.info("Trajectory with only the protein %(newxtc)r" % vars())
+                kwargs['s'] = self.tpr
+                kwargs['f'] = self.xtc
+                kwargs['n'] = selection_ndx
+                kwargs['o'] = newxtc
+                TRJCONV(**kwargs)
+
+                logger.info("pdb and gro for visualization")            
+                for ext in 'pdb', 'gro':
+                    try:
+                        # see warning in doc ... so we don't use the new xtc but the old one
+                        kwargs['o'] = self.filename(newtpr, ext=ext)
+                        TRJCONV(dump=0, stdout=False, stderr=False, **kwargs)  # silent
+                    except:
+                        logger.exception("Failed building the protein-only %(ext)s. "
+                                         "Position restraints in tpr file (see docs)?" % vars())
+            logger.info("keep_protein_only() complete")
+
+        self.proteinonly[newxtc] = Transformer(dirname=self.dirname, s=newtpr, 
+                                               f=newxtc, n=newndx)
         return {'tpr':self.rp(newtpr), 'xtc':self.rp(newxtc), 'ndx':self.rp(newndx)}
 
 
