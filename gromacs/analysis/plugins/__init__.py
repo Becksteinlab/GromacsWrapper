@@ -57,6 +57,9 @@ sending it to the `package author`_. You will be acknowledged in the list below.
    :class:`StripWater`            [#OB]_  remove solvent (and optionally fit to 
                                           reference)
 
+   :class:`ProteinOnly            [#OB]_  remove all atoms except the Protein
+                                          (and optionally fit to reference)
+
    :class:`Ls`                    [#OB]_  simple :program:`ls` (for testing)
    ==========================  =========  ========================================
 
@@ -90,6 +93,8 @@ Plugin classes
    :members:
 .. autoclass:: StripWater
    :members:
+.. autoclass:: ProteinOnly
+   :members:
 .. autoclass:: Ls
    :members:
 
@@ -114,7 +119,7 @@ __docformat__ = "restructuredtext en"
 #: file ``plugins/distances.py``).
 __plugins__ = ['CysAccessibility', 'Distances', 'MinDistances', 'Dihedrals',
                'COM', 'RMSF', 'RMSD', 'Energy', 'HelixBundle',
-               'Trajectories', 'StripWater', 'Ls',
+               'Trajectories', 'StripWater', 'ProteinOnly', 'Ls',
                ]
 __all__ = []
 __all__.extend(__plugins__)
