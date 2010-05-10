@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.formats – Accessing various files &mdash; GromacsWrapper v0.1.9 documentation</title>
+    <title>gromacs.formats – Accessing various files &mdash; GromacsWrapper v0.1.10 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.1.9',
+        VERSION:     '0.1.10',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.1.9 documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper v0.1.10 documentation" href="../../index.html" />
     <link rel="up" title="Gromacs core modules" href="../core.html" />
     <link rel="next" title="gromacs.utilities – Helper functions and classes" href="utilities.html" />
     <link rel="prev" title="gromacs.config – Configuration for GromacsWrapper" href="config.html" /> 
@@ -40,7 +40,7 @@
         <li class="right" >
           <a href="config.html" title="gromacs.config – Configuration for GromacsWrapper"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.1.9 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.1.10 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" accesskey="U">Gromacs core modules</a> &raquo;</li> 
       </ul>
@@ -70,7 +70,7 @@ can be safely imported at any time.</p>
 <h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="gromacs.formats.XVG">
-<em class="property">class </em><tt class="descclassname">gromacs.formats.</tt><tt class="descname">XVG</tt><big>(</big><em>filename=None</em>, <em>names=None</em><big>)</big><a class="headerlink" href="#gromacs.formats.XVG" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">gromacs.formats.</tt><tt class="descname">XVG</tt><big>(</big><em>filename=None</em>, <em>names=None</em>, <em>permissive=False</em><big>)</big><a class="headerlink" href="#gromacs.formats.XVG" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class that represents the numerical data in a grace xvg file.</p>
 <p>All data must be numerical. <tt class="xref docutils literal"><span class="pre">NAN</span></tt> and <tt class="xref docutils literal"><span class="pre">INF</span></tt> values are
 supported via python&#8217;s <a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/functions.html#float"><tt class="xref docutils literal"><span class="pre">float()</span></tt></a> builtin function.</p>
@@ -78,10 +78,12 @@ supported via python&#8217;s <a title="(in Python v2.6)" class="reference" href=
 array once it has been read and parsed. The <a title="gromacs.formats.XVG.ma" class="reference" href="#gromacs.formats.XVG.ma"><tt class="xref docutils literal"><span class="pre">ma</span></tt></a>
 attribute is a numpy masked array (good for plotting).</p>
 <p>Conceptually, the file on disk and the XVG instance are considered the same
-data. This means that whenever the filename for I/O (<a title="gromacs.formats.XVG.read" class="reference" href="#gromacs.formats.XVG.read"><tt class="xref docutils literal"><span class="pre">XVG.read()</span></tt></a> and
-<a title="gromacs.formats.XVG.write" class="reference" href="#gromacs.formats.XVG.write"><tt class="xref docutils literal"><span class="pre">XVG.write()</span></tt></a>) is changed then the filename associated with the
-instance is also changed to reflect the association between file and
-instance.</p>
+data. Whenever the filename for I/O (<a title="gromacs.formats.XVG.read" class="reference" href="#gromacs.formats.XVG.read"><tt class="xref docutils literal"><span class="pre">XVG.read()</span></tt></a> and <a title="gromacs.formats.XVG.write" class="reference" href="#gromacs.formats.XVG.write"><tt class="xref docutils literal"><span class="pre">XVG.write()</span></tt></a>) is
+changed then the filename associated with the instance is also changed to reflect
+the association between file and instance.</p>
+<p>With the <em>permissive</em> = <tt class="xref docutils literal"><span class="pre">True</span></tt> flag one can instruct the file reader to skip
+unparseable lines. In this case the line numbers of the skipped lines are stored
+in <tt class="xref docutils literal"><span class="pre">XVG.corrupted_lineno</span></tt>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <ul class="last simple">
@@ -105,6 +107,12 @@ when <a title="gromacs.formats.XVG.array" class="reference" href="#gromacs.forma
 <dd><p class="first last">optional labels for the columns (currently only
 written as comments to file); string with columns
 separated by commas or a list of strings</p>
+</dd>
+<dt><em>permissive</em></dt>
+<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">False</span></tt> raises a <a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.ValueError"><tt class="xref docutils literal"><span class="pre">ValueError</span></tt></a> and logs and errior 
+when encountering data lines that it cannot parse.
+<tt class="xref docutils literal"><span class="pre">True</span></tt> ignores those lines and logs a warning&#8212;this is
+a risk because it might read a corrupted input file [<tt class="xref docutils literal"><span class="pre">False</span></tt>]</p>
 </dd>
 </dl>
 </td>
@@ -427,14 +435,14 @@ all ions are present in all simulations:</p>
         <li class="right" >
           <a href="config.html" title="gromacs.config – Configuration for GromacsWrapper"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.1.9 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.1.10 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" >Gromacs core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
       &copy; Copyright 2009-2010, Oliver Beckstein.
-      Last updated on Apr 29, 2010.
+      Last updated on May 07, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
     </div>
   </body>

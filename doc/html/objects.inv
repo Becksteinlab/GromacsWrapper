@@ -107,6 +107,7 @@ gromacs.formats.XVG.max attribute gromacs/core/formats.html
 gromacs.tools.G_vanhove class gromacs/tools.html
 gromacs.formats.XVG.ma attribute gromacs/core/formats.html
 gromacs.analysis.Simulation.plot method analysis/core.html
+gromacs.get_version_tuple function gromacs/init.html
 edPDB.xpdb.SloppyPDBIO class edpdb/xpdb.html
 gromacs.analysis.plugins.HelixBundle.HelixBundle class analysis/plugins.html
 gromacs.analysis.plugins.gridmatmd.GridMatData class analysis/plugins.html
