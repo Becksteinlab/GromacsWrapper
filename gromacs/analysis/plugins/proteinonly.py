@@ -1,14 +1,14 @@
 # plugin for GromacsWrapper: stripwater.py
-# Copyright (c) 2009 Oliver Beckstein <orbeckst@gmail.com>
+# Copyright (c) 2010 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
 
 """
-StripWater
-==========
+ProteinOnly
+===========
 
-Write a trajectory with all water removed. This uses
-:meth:`gromacs.cbook.Transformer.strip_water`.
+Write a trajectory with only the protein retained, using
+:meth:`gromacs.cbook.Transformer.keep_protein_only`.
 
 Plugin class
 ------------
@@ -22,7 +22,7 @@ Worker class
 
 The worker class performs the analysis.
 
-.. autoclass:: _StripWater
+.. autoclass:: _ProteinOnly
    :members:
 
 
@@ -44,11 +44,11 @@ from gromacs.analysis.core import Worker, Plugin
 # ----------------------------------------------------------
 # These must be defined before the plugins.
 
-class _StripWater(Worker):
-    """StripWater worker class."""
+class _ProteinOnly(Worker):
+    """ProteinOnly worker class."""
 
     def __init__(self,**kwargs):
-        """Set up  StripWater
+        """Set up  ProteinOnly
 
         :Arguments:
           *force*
@@ -70,10 +70,7 @@ class _StripWater(Worker):
                - "all": rot+trans
                - ``None``: no fitting
              If *fit* is not supplied then the constructore-default is used
-             (:attr:`_StripWater.parameters.fit`).
-          *resn*
-             name of the residues that are stripped (typically it is
-             safe to leave this at the default 'SOL')
+             (:attr:`_ProteinOnly.parameters.fit`).
         """
         # specific arguments: take them before calling the super class that
         # does not know what to do with them
@@ -81,15 +78,14 @@ class _StripWater(Worker):
         parameters = {}
         parameters['fit'] = kwargs.pop('fit',None)            # fitting algorithm
         if not parameters['fit'] in _fitvalues:
-            raise ValueError("StripWater: *fit* must be one of %(_fitvalues)r, not %(fit)r." % vars())
+            raise ValueError("ProteinOnly: *fit* must be one of %(_fitvalues)r, not %(fit)r." % vars())
         parameters['compact'] = kwargs.pop('compact', False)  # compact+centered ?
-        parameters['resn'] = kwargs.pop('resn', 'SOL')        # residue name to be stripped
         parameters['dt'] = kwargs.pop('dt', None)
         parameters['force'] = kwargs.pop('force', None)
 
         # super class init: do this before doing anything else
         # (also sets up self.parameters and self.results)
-        super(_StripWater, self).__init__(**kwargs)
+        super(_ProteinOnly, self).__init__(**kwargs)
 
         # self.parameters is set up by the base Worker class...
         self.parameters.filenames = AttributeDict()
@@ -105,7 +101,7 @@ class _StripWater(Worker):
     def _register_hook(self, **kwargs):
         """Run when registering; requires simulation."""
 
-        super(_StripWater, self)._register_hook(**kwargs)
+        super(_ProteinOnly, self)._register_hook(**kwargs)
         assert not self.simulation is None
 
         trjdir = os.path.dirname(self.simulation.tpr)
@@ -141,10 +137,7 @@ class _StripWater(Worker):
                - "all": rot+trans
                - ``None``: no fitting
              If *fit* is not supplied then the constructore-default is used
-             (:attr:`_StripWater.parameters.fit`).
-          *resn*
-             name of the residues that are stripped (typically it is
-             safe to leave this at the default 'SOL')
+             (:attr:`_ProteinOnly.parameters.fit`).
 
         .. Note:: If set, *dt* is only applied to a fit step; the
                   no-water trajectory is always generated for all time
@@ -154,25 +147,23 @@ class _StripWater(Worker):
         fit = kwargs.pop('fit', self.parameters.fit)
                 
         kwargs.setdefault('compact', self.parameters.compact)
-        kwargs.setdefault('resn', self.parameters.resn)
         kwargs.setdefault('force', self.parameters.force)
 
-        newfiles = self.transformer.strip_water(**kwargs)
+        newfiles = self.transformer.keep_protein_only(**kwargs)
         self.parameters.filenames.update(newfiles)
 
         if fit != None:
             if self.parameters.fit == "xy":
                 xy = True
             else:
-                xy = False        
-            transformer_nowater = self.transformer.nowater.values()[0]
+                xy = False
+            transformer_proteinonly = self.transformer.proteinonly.values()[0]
             for delta_t in asiterable(dt):
-                transformer_nowater.fit(xy=xy, dt=delta_t, force=kwargs['force'])
+                transformer_proteinonly.fit(xy=xy, dt=delta_t, force=kwargs['force'])
 
     def analyze(self,**kwargs):
         """No postprocessing."""        
         pass
-
 
     def plot(self, **kwargs):
         """No plotting."""
@@ -182,12 +173,12 @@ class _StripWater(Worker):
 # Public classes that register the worker classes
 #------------------------------------------------
 
-class StripWater(Plugin):
-    """*StripWater* plugin.
+class ProteinOnly(Plugin):
+    """*ProteinOnly* plugin.
 
     Write a new trajectory which has the water index group removed. 
 
-    .. class:: StripWater([selection[, name[, simulation]]])
+    .. class:: ProteinOnly([selection[, name[, simulation]]])
     
     :Arguments:
         *selection*
@@ -198,6 +189,6 @@ class StripWater(Plugin):
             The :class:`gromacs.analysis.Simulation` instance that owns the plugin.
 
     """
-    worker_class = _StripWater
+    worker_class = _ProteinOnly
 
 
