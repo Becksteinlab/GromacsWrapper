@@ -857,6 +857,10 @@ def edit_txt(filename, substitutions, newname=None):
 
 # Working with index files and index groups
 # -----------------------------------------
+#
+# TODO: move this mess into a separate module (for 0.2);
+#       Once Gromacs 4.1 comes around it will be outdated/useless
+#       anyway.
 
 #: compiled regular expression to match a list of index groups
 #: in the output of ``make_ndx``s <Enter> (empty) command.
@@ -1081,8 +1085,9 @@ class IndexBuilder(object):
         self.ndx = ndx
         self.output = out_ndx
         self.name_all = name_all
-        #: This number is added to the resids in the first selection scheme; this
-        #: allows names to be the same as in a crystal structure. If offset is a 
+        #: *offset* as a number is added to the resids in the first selection 
+        #: scheme; this
+        #: allows names to be the same as in a crystal structure. If *offset* is a 
         #: dict then it is used to directly look up the resids. Use :meth:`gmx_resid`
         #: to transform a crystal resid to a gromacs resid.
         #:
@@ -1090,7 +1095,7 @@ class IndexBuilder(object):
         self.offset = offset
 
         #: Auto-labelled groups use this counter.
-        self.command_counter = 0
+        self._command_counter = 0
 
         if selections is None:
             selections = []
@@ -1110,7 +1115,11 @@ class IndexBuilder(object):
         #: as I can clear groups easily.)
         self.indexfiles = dict([self.parse_selection(selection, name) 
                                 for selection, name in zip(selections, names)])
-        self.names = self.indexfiles.keys()
+        
+    @property
+    def names(self):
+        """Names of all generated index groups."""
+        return self.indexfiles.keys()
 
     def gmx_resid(self, resid):
         """Returns resid in the Gromacs index by transforming with offset."""
@@ -1237,9 +1246,9 @@ class IndexBuilder(object):
     def _process_command(self, command, name=None):
         """Process ``make_ndx`` command and  return name and temp index file."""
     
-        self.command_counter += 1    
+        self._command_counter += 1    
         if name is None:
-            name = "CMD%03d" % self.command_counter
+            name = "CMD%03d" % self._command_counter
     
         # Need to build it with two make_ndx calls because I cannot reliably
         # name the new group without knowing its number.
@@ -1653,9 +1662,9 @@ class Transformer(utilities.FileUtils):
             # ugly because I cannot break from the block
             if not self.check_file_exists(newxtc, resolve="indicate", force=force):
                 # make no-water index
-                B = IndexBuilder(struct=self.tpr, selections=['@'+NOTwater], names=[groupname],
+                B = IndexBuilder(struct=self.tpr, selections=['@'+NOTwater],
                                  ndx=self.ndx, out_ndx=nowater_ndx)
-                B.combine(defaultgroups=True)
+                B.combine(name_all=groupname, operation="|", defaultgroups=True)
 
                 logger.info("TPR file without water %(newtpr)r" % vars())
                 gromacs.tpbconv(s=self.tpr, o=newtpr, n=nowater_ndx, input=[groupname])
