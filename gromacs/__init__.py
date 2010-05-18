@@ -169,7 +169,7 @@ The package version can be queried with the :func:`gromacs.get_version` function
 __docformat__ = "restructuredtext en"
 
 #: Package version; this is the only place where it is set.
-VERSION = 0,1,10
+VERSION = 0,1,11
 
 def get_version():
     """Return current package version as a string."""
