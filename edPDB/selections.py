@@ -19,6 +19,7 @@ it with :func:`residues_by_selection` to obtain a list of residues.
 .. autoclass:: ResidueSelect
 .. autoclass:: NotResidueSelect
 .. autoclass:: ProteinSelect
+.. autoclass:: NotProteinSelect
 
 Selection functions
 -------------------
@@ -60,6 +61,10 @@ def canonical(resname):
     space stripped and  upper case
     """
     return resname.strip().upper()
+
+# TODO: Why do I use these clunk complement selectors??
+#       It would be cleaner to simply set up two classes;
+#       maybe have NotX inherit from X but override everything.
 
 class ResnameSelect(Select):
     """Select all atoms that match *resnames*."""
@@ -113,6 +118,11 @@ class ProteinSelect(Select):
     def _accept_not_residue(self,residue):
         return not canonical(residue.resname) in PROTEIN_RESNAMES
 
+class NotProteinSelect(ProteinSelect):
+    """Select all non-aminoacid residues."""
+    def __init__(self, complement=False):
+        """Supply a list of Bio.PDB residues for the search."""        
+        ProteinSelect.__init__(self, complement=(not complement))
 
 
 def residues_by_resname(structure, resnames):

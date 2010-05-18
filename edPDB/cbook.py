@@ -211,6 +211,12 @@ class PDB(object):
         kwargs['selection'] = selections.ProteinSelect()
         self.write(filename, **kwargs)
 
+    def extract_notprotein(self, filename, **kwargs):
+        """Write a pdb file without any amino acids extracted."""
+        self.logger.info("extract_notprotein(%(filename)r)" % vars())
+        kwargs['selection'] = selections.NotProteinSelect()
+        self.write(filename, **kwargs)
+
     def extract_lipids(self, filename, lipid_resnames='POPC|POPG|POPE|DMPC|DPPE|DOPE', **kwargs):
         """Write a pdb file with the lipids extracted.
 
