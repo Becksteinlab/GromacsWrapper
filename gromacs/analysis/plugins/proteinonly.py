@@ -71,6 +71,10 @@ class _ProteinOnly(Worker):
                - ``None``: no fitting
              If *fit* is not supplied then the constructore-default is used
              (:attr:`_ProteinOnly.parameters.fit`).
+          *keepalso*
+             List of literal ``make_ndx`` selections that select additional
+             groups of atoms that should also be kept in addition to the
+             protein. For example *keepalso*=['"POPC"', 'resname DRUG'].
         """
         # specific arguments: take them before calling the super class that
         # does not know what to do with them
@@ -82,6 +86,7 @@ class _ProteinOnly(Worker):
         parameters['compact'] = kwargs.pop('compact', False)  # compact+centered ?
         parameters['dt'] = kwargs.pop('dt', None)
         parameters['force'] = kwargs.pop('force', None)
+        parameters['keepalso'] = kwargs.pop('keepalso', None)
 
         # super class init: do this before doing anything else
         # (also sets up self.parameters and self.results)
@@ -138,6 +143,8 @@ class _ProteinOnly(Worker):
                - ``None``: no fitting
              If *fit* is not supplied then the constructore-default is used
              (:attr:`_ProteinOnly.parameters.fit`).
+          *keepalso*
+              List of ``make_ndx`` selections that should also be kept.
 
         .. Note:: If set, *dt* is only applied to a fit step; the
                   no-water trajectory is always generated for all time
@@ -148,6 +155,7 @@ class _ProteinOnly(Worker):
                 
         kwargs.setdefault('compact', self.parameters.compact)
         kwargs.setdefault('force', self.parameters.force)
+        kwargs.setdefault('keepalso', self.parameters.keepalso)
 
         newfiles = self.transformer.keep_protein_only(**kwargs)
         self.parameters.filenames.update(newfiles)
@@ -178,7 +186,7 @@ class ProteinOnly(Plugin):
 
     Write a new trajectory which has the water index group removed. 
 
-    .. class:: ProteinOnly([selection[, name[, simulation]]])
+    .. class:: ProteinOnly([selection[, name[, simulation[, ...]]]])
     
     :Arguments:
         *selection*
@@ -187,6 +195,30 @@ class ProteinOnly(Plugin):
             plugin name (used to access it)
         *simulation* : instance
             The :class:`gromacs.analysis.Simulation` instance that owns the plugin.
+        *force*
+           ``True`` will always regenerate trajectories even if they 
+           already exist, ``False`` raises an exception, ``None``
+           does the sensible thing in most cases (i.e. notify and
+           then move on).
+        *dt* : float or list of floats
+           only write every dt timestep (in ps); if a list of floats is 
+           supplied, write multiple trajectories, one for each dt.             
+        *compact* : bool
+           write a compact representation
+        *fit*          
+           Create an additional trajectory from the stripped one in which
+           the Protein group is rms-fitted to the initial structure. See
+           :meth:`gromacs.cbook.Transformer.fit` for details. Useful 
+           values:
+             - "xy" : perform a rot+trans fit in the x-y plane
+             - "all": rot+trans
+             - ``None``: no fitting
+           If *fit* is not supplied then the constructore-default is used
+           (:attr:`_ProteinOnly.parameters.fit`).
+        *keepalso*
+           List of literal ``make_ndx`` selections that select additional
+           groups of atoms that should also be kept in addition to the
+           protein. For example *keepalso*=['"POPC"', 'resname DRUG'].
 
     """
     worker_class = _ProteinOnly
