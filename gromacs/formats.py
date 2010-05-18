@@ -130,7 +130,7 @@ class XVG(utilities.FileUtils):
         with utilities.openany(self.real_filename, 'w') as xvg:
             xvg.write("# xmgrace compatible NXY data file\n"
                       "# Written by gromacs.formats.XVG()\n")
-            xvg.write("# :columns: %r" % self.names)
+            xvg.write("# :columns: %r\n" % self.names)
             for xyy in self.array.T:
                 xyy.tofile(xvg, sep=" ", format="%-8s")  # quick and dirty ascii output...--no compression!
                 xvg.write('\n')
