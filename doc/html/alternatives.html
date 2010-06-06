@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Alternatives to GromacsWrapper &mdash; GromacsWrapper v0.1.10 documentation</title>
+    <title>Alternatives to GromacsWrapper &mdash; GromacsWrapper v0.1.11 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '#',
-        VERSION:     '0.1.10',
+        VERSION:     '0.1.11',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,9 +19,8 @@
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.1.10 documentation" href="index.html" />
-    <link rel="next" title="vmd — Remote Tcl commands in VMD" href="vmd.html" />
-    <link rel="prev" title="Analysis plugins" href="analysis/plugins.html" /> 
+    <link rel="top" title="GromacsWrapper v0.1.11 documentation" href="index.html" />
+    <link rel="prev" title="staging.Local — staging class for running local jobs" href="staging/Local.html" /> 
   </head>
   <body>
     <div class="related">
@@ -34,12 +33,9 @@
           <a href="modindex.html" title="Global Module Index"
              accesskey="M">modules</a> |</li>
         <li class="right" >
-          <a href="vmd.html" title="vmd — Remote Tcl commands in VMD"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="analysis/plugins.html" title="Analysis plugins"
+          <a href="staging/Local.html" title="staging.Local — staging class for running local jobs"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">GromacsWrapper v0.1.10 documentation</a> &raquo;</li> 
+        <li><a href="index.html">GromacsWrapper v0.1.11 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -57,7 +53,7 @@ included). Other people have given more thought to the problem and you
 are encouraged to see if their efforts speed up your work more than
 does <em>GromacsWrapper</em>.</p>
 <dl class="docutils">
-<dt><a class="reference" href="http://www.mpibpc.mpg.de/groups/de_groot/dseelig/pymacs.html">pymacs</a> (Daniel Seeliger)</dt>
+<dt><a class="reference external" href="http://www.mpibpc.mpg.de/groups/de_groot/dseelig/pymacs.html">pymacs</a> (Daniel Seeliger)</dt>
 <dd><p class="first">pymacs is a python module for dealing with structure files and
 trajectory data from the GROMACS molecular dynamics package. It has
 interfaces to some gromacs functions and uses gromacs routines for
@@ -76,15 +72,15 @@ an intuitive data structure (Model &#8211;&gt; Chain &#8211;&gt; Molecule
 <li>Handling gromacs index files</li>
 </ul>
 </dd>
-<dt>Gromacs <a class="reference" href="http://www.gromacs.org/Developer_Zone/Programming_Guide/XTC_Library">XTC Library</a></dt>
+<dt>Gromacs <a class="reference external" href="http://www.gromacs.org/Developer_Zone/Programming_Guide/XTC_Library">XTC Library</a></dt>
 <dd>Version 1.1 of the separate xtc/trr library contains example code
 to access a Gromacs trajectory from python. It appears to be based
-on <a class="reference" href="http://lists.gromacs.org/pipermail/gmx-developers/2009-March/003183.html">grompy</a> (also see below).</dd>
+on <a class="reference external" href="http://lists.gromacs.org/pipermail/gmx-developers/2009-March/003183.html">grompy</a> (also see below).</dd>
 <dt>various implementations of python wrappers</dt>
 <dd>See the discussion on the gmx-developers mailinglist: check the
-thread  <a class="reference" href="http://lists.gromacs.org/pipermail/gmx-developers/2009-March/003179.html">[gmx-developers] Python interface for Gromacs</a></dd>
-<dt><a class="reference" href="http://lists.gromacs.org/pipermail/gmx-developers/2009-March/003183.html">grompy</a> (Martin Hoefling, Roland Schulz)</dt>
-<dd><p class="first">uses <a class="reference" href="http://docs.python.org/library/ctypes.html">ctypes</a> to wrap <strong>libgmx</strong>:</p>
+thread  <a class="reference external" href="http://lists.gromacs.org/pipermail/gmx-developers/2009-March/003179.html">[gmx-developers] Python interface for Gromacs</a></dd>
+<dt><a class="reference external" href="http://lists.gromacs.org/pipermail/gmx-developers/2009-March/003183.html">grompy</a> (Martin Hoefling, Roland Schulz)</dt>
+<dd><p class="first">uses <a class="reference external" href="http://docs.python.org/library/ctypes.html">ctypes</a> to wrap <strong>libgmx</strong>:</p>
 <blockquote>
 <p>&#8220;Here&#8217;s a bunch of code I wrote to wrap libgmx with ctypes and make use
 of parts of gromacs functionality. My application for this was the
@@ -102,10 +98,10 @@ test.py as an example using it.&#8221;</p>
 &#8220;I added a little bit wrapper code to easily access the atom
 information in tpx. I attached the version. It is backward
 compatible ...&#8221;</blockquote>
-<p class="last">A working <a class="reference" href="http://article.gmane.org/gmane.science.biology.gromacs.devel/1185">grompy tar ball</a> (with Roland&#8217;s enhancements) is cached
+<p class="last">A working <a class="reference external" href="http://article.gmane.org/gmane.science.biology.gromacs.devel/1185">grompy tar ball</a> (with Roland&#8217;s enhancements) is cached
 at gmane.org.</p>
 </dd>
-<dt><a class="reference" href="http://loos.sourceforge.net">LOOS</a> (<a class="reference" href="http://membrane.urmc.rochester.edu/Grossfield_Lab/Welcome.html">Grossfield lab</a> at the University of Rochester)</dt>
+<dt><a class="reference external" href="http://loos.sourceforge.net">LOOS</a> (<a class="reference external" href="http://membrane.urmc.rochester.edu/Grossfield_Lab/Welcome.html">Grossfield lab</a> at the University of Rochester)</dt>
 <dd><p class="first">The idea behind <em>LOOS</em> (<em>Lightweight Object-Oriented Structure</em>
 library) is to provide a lightweight C++ library for analysis of
 molecular dynamics simulations. This includes parsing a number of
@@ -114,20 +110,20 @@ trajectory formats for CHARMM, NAMD, and Amber. <em>LOOS</em> is not intended
 to be an all-encompassing library and it is primarily geared towards
 reading data in and processing rather than manipulating the files
 and structures and writing them out.</p>
-<p class="last">The <a class="reference" href="http://loos.sourceforge.net/Docs/">LOOS documentation</a> is well written and comprehensive and the
-code is published under the <a class="reference" href="http://www.gnu.org/licenses/">GPL</a>.</p>
+<p class="last">The <a class="reference external" href="http://loos.sourceforge.net/Docs/">LOOS documentation</a> is well written and comprehensive and the
+code is published under the <a class="reference external" href="http://www.gnu.org/licenses/">GPL</a>.</p>
 </dd>
-<dt><a class="reference" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a> (<a class="reference" href="http://www.ks.uiuc.edu/">Schulten lab</a> at UIUC)</dt>
+<dt><a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a> (<a class="reference external" href="http://www.ks.uiuc.edu/">Schulten lab</a> at UIUC)</dt>
 <dd>VMD is a great analysis tool; the only downside is that (at the
 moment) trajectories have to fit into memory. In some cases this can
 be circumvented by reading a trajectory frame by frame using the
-<a class="reference" href="http://www.ks.uiuc.edu/Research/vmd/script_library/scripts/bigdcd/">bigdcd</a> script (which might also work for Gromacs xtcs).</dd>
-<dt><a class="reference" href="http://mdanalysis.googlecode.com">MDAnalysis</a> (N. Michaud-Agrawal, E. J. Dennning, and O. Beckstein)</dt>
+<a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/script_library/scripts/bigdcd/">bigdcd</a> script (which might also work for Gromacs xtcs).</dd>
+<dt><a class="reference external" href="http://mdanalysis.googlecode.com">MDAnalysis</a> (N. Michaud-Agrawal, E. J. Dennning, and O. Beckstein)</dt>
 <dd>Reads various trajectories (dcd, xtc, trr) and makes coordinates
-available as <a class="reference" href="http://numpy.scipy.org">numpy</a> arrays. It also has a fairly sophisticated
-selection language, similar to <a class="reference" href="http://www.charmm.org">Charmm</a> or <a class="reference" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>.</dd>
+available as <a class="reference external" href="http://numpy.scipy.org">numpy</a> arrays. It also has a fairly sophisticated
+selection language, similar to <a class="reference external" href="http://www.charmm.org">Charmm</a> or <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>.</dd>
 </dl>
-<p>Please let <a class="reference" href="http://sbcb.bioch.ox.ac.uk/oliver/">me</a> know of other efforts so that I can add them here. Thanks.</p>
+<p>Please let <a class="reference external" href="http://sbcb.bioch.ox.ac.uk/oliver/">me</a> know of other efforts so that I can add them here. Thanks.</p>
 </div>
 
 
@@ -137,11 +133,8 @@ selection language, similar to <a class="reference" href="http://www.charmm.org"
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <h4>Previous topic</h4>
-            <p class="topless"><a href="analysis/plugins.html"
-                                  title="previous chapter">Analysis plugins</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="vmd.html"
-                                  title="next chapter"><tt class="docutils literal"><span class="pre">vmd</span></tt> &#8212; Remote Tcl commands in VMD</a></p>
+            <p class="topless"><a href="staging/Local.html"
+                                  title="previous chapter"><tt class="docutils literal"><span class="pre">staging.Local</span></tt> &#8212; staging class for running local jobs</a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
               <li><a href="_sources/alternatives.txt"
@@ -174,17 +167,14 @@ selection language, similar to <a class="reference" href="http://www.charmm.org"
           <a href="modindex.html" title="Global Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="vmd.html" title="vmd — Remote Tcl commands in VMD"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="analysis/plugins.html" title="Analysis plugins"
+          <a href="staging/Local.html" title="staging.Local — staging class for running local jobs"
              >previous</a> |</li>
-        <li><a href="index.html">GromacsWrapper v0.1.10 documentation</a> &raquo;</li> 
+        <li><a href="index.html">GromacsWrapper v0.1.11 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
       &copy; Copyright 2009-2010, Oliver Beckstein.
-      Last updated on May 07, 2010.
+      Last updated on Jun 07, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
     </div>
   </body>

@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.run – Running simulations &mdash; GromacsWrapper v0.1.10 documentation</title>
+    <title>gromacs.run – Running simulations &mdash; GromacsWrapper v0.1.11 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.1.10',
+        VERSION:     '0.1.11',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.1.10 documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper v0.1.11 documentation" href="../../index.html" />
     <link rel="up" title="Gromacs building blocks" href="../building_blocks.html" />
     <link rel="next" title="Analysis" href="../../analysis.html" />
     <link rel="prev" title="gromacs.qsub – utilities for batch submission systems" href="qsub.html" /> 
@@ -40,7 +40,7 @@
         <li class="right" >
           <a href="qsub.html" title="gromacs.qsub – utilities for batch submission systems"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.1.10 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.1.11 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" accesskey="U">Gromacs building blocks</a> &raquo;</li> 
       </ul>
@@ -53,7 +53,7 @@
             
   <div class="section" id="gromacs-run-running-simulations">
 <span id="module-gromacs.run"></span><h1><tt class="xref docutils literal"><span class="pre">gromacs.run</span></tt> &#8211; Running simulations<a class="headerlink" href="#gromacs-run-running-simulations" title="Permalink to this headline">¶</a></h1>
-<p>Helper functions and classes around <a title="gromacs.tools.Mdrun" class="reference" href="../tools.html#gromacs.tools.Mdrun"><tt class="xref docutils literal"><span class="pre">gromacs.tools.Mdrun</span></tt></a>.</p>
+<p>Helper functions and classes around <a title="gromacs.tools.Mdrun" class="reference external" href="../tools.html#gromacs.tools.Mdrun"><tt class="xref docutils literal"><span class="pre">gromacs.tools.Mdrun</span></tt></a>.</p>
 <dl class="class">
 <dt id="gromacs.run.MDrunner">
 <em class="property">class </em><tt class="descclassname">gromacs.run.</tt><tt class="descname">MDrunner</tt><big>(</big><em>dirname='.'</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.run.MDrunner" title="Permalink to this definition">¶</a></dt>
@@ -61,12 +61,12 @@
 <p>In order to do complicated multiprocessor runs with mpiexec or
 similar you need to derive from this class and override</p>
 <ul class="simple">
-<li><a title="gromacs.run.MDrunner.mdrun" class="reference" href="#gromacs.run.MDrunner.mdrun"><tt class="xref docutils literal"><span class="pre">MDrunner.mdrun</span></tt></a> with the path to the <tt class="docutils literal"><span class="pre">mdrun</span></tt> executable</li>
-<li><a title="gromacs.run.MDrunner.mpiexec" class="reference" href="#gromacs.run.MDrunner.mpiexec"><tt class="xref docutils literal"><span class="pre">MDrunner.mpiexec</span></tt></a> with the path to the MPI launcher</li>
-<li><a title="gromacs.run.MDrunner.mpicommand" class="reference" href="#gromacs.run.MDrunner.mpicommand"><tt class="xref docutils literal"><span class="pre">MDrunner.mpicommand()</span></tt></a> with a function that returns the mpi command as a list</li>
+<li><a title="gromacs.run.MDrunner.mdrun" class="reference internal" href="#gromacs.run.MDrunner.mdrun"><tt class="xref docutils literal"><span class="pre">MDrunner.mdrun</span></tt></a> with the path to the <tt class="docutils literal"><span class="pre">mdrun</span></tt> executable</li>
+<li><a title="gromacs.run.MDrunner.mpiexec" class="reference internal" href="#gromacs.run.MDrunner.mpiexec"><tt class="xref docutils literal"><span class="pre">MDrunner.mpiexec</span></tt></a> with the path to the MPI launcher</li>
+<li><a title="gromacs.run.MDrunner.mpicommand" class="reference internal" href="#gromacs.run.MDrunner.mpicommand"><tt class="xref docutils literal"><span class="pre">MDrunner.mpicommand()</span></tt></a> with a function that returns the mpi command as a list</li>
 </ul>
-<p>In addition there are two methods named <a title="gromacs.run.MDrunner.prehook" class="reference" href="#gromacs.run.MDrunner.prehook"><tt class="xref docutils literal"><span class="pre">prehook()</span></tt></a> and
-<a title="gromacs.run.MDrunner.posthook" class="reference" href="#gromacs.run.MDrunner.posthook"><tt class="xref docutils literal"><span class="pre">posthook()</span></tt></a> that are called right before and after the
+<p>In addition there are two methods named <a title="gromacs.run.MDrunner.prehook" class="reference internal" href="#gromacs.run.MDrunner.prehook"><tt class="xref docutils literal"><span class="pre">prehook()</span></tt></a> and
+<a title="gromacs.run.MDrunner.posthook" class="reference internal" href="#gromacs.run.MDrunner.posthook"><tt class="xref docutils literal"><span class="pre">posthook()</span></tt></a> that are called right before and after the
 process is started. If they are overriden appropriately then they
 can be used to set up a mpi environment.</p>
 <p>Set up a simple run with <tt class="docutils literal"><span class="pre">mdrun</span></tt>.</p>
@@ -93,26 +93,26 @@ keyword arguments are allowed.</p>
 <dt id="gromacs.run.MDrunner.check_success">
 <tt class="descname">check_success</tt><big>(</big><big>)</big><a class="headerlink" href="#gromacs.run.MDrunner.check_success" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if <strong>mdrun</strong> finished successfully.</p>
-<p>(See <a title="gromacs.run.check_mdrun_success" class="reference" href="#gromacs.run.check_mdrun_success"><tt class="xref docutils literal"><span class="pre">check_mdrun_success()</span></tt></a> for details)</p>
+<p>(See <a title="gromacs.run.check_mdrun_success" class="reference internal" href="#gromacs.run.check_mdrun_success"><tt class="xref docutils literal"><span class="pre">check_mdrun_success()</span></tt></a> for details)</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gromacs.run.MDrunner.commandline">
 <tt class="descname">commandline</tt><big>(</big><em>**mpiargs</em><big>)</big><a class="headerlink" href="#gromacs.run.MDrunner.commandline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns simple command line to invoke mdrun.</p>
-<p>If <a title="gromacs.run.MDrunner.mpiexec" class="reference" href="#gromacs.run.MDrunner.mpiexec"><tt class="xref docutils literal"><span class="pre">mpiexec</span></tt></a> is set then <a title="gromacs.run.MDrunner.mpicommand" class="reference" href="#gromacs.run.MDrunner.mpicommand"><tt class="xref docutils literal"><span class="pre">mpicommand()</span></tt></a> provides the mpi
+<p>If <a title="gromacs.run.MDrunner.mpiexec" class="reference internal" href="#gromacs.run.MDrunner.mpiexec"><tt class="xref docutils literal"><span class="pre">mpiexec</span></tt></a> is set then <a title="gromacs.run.MDrunner.mpicommand" class="reference internal" href="#gromacs.run.MDrunner.mpicommand"><tt class="xref docutils literal"><span class="pre">mpicommand()</span></tt></a> provides the mpi
 launcher command that prefixes the actual <tt class="docutils literal"><span class="pre">mdrun</span></tt> invocation:</p>
 <blockquote>
-<a title="gromacs.run.MDrunner.mpiexec" class="reference" href="#gromacs.run.MDrunner.mpiexec"><tt class="xref docutils literal"><span class="pre">mpiexec</span></tt></a> [<em>mpiargs</em>]  <a title="gromacs.run.MDrunner.mdrun" class="reference" href="#gromacs.run.MDrunner.mdrun"><tt class="xref docutils literal"><span class="pre">mdrun</span></tt></a> [<em>mdrun-args</em>]</blockquote>
+<a title="gromacs.run.MDrunner.mpiexec" class="reference internal" href="#gromacs.run.MDrunner.mpiexec"><tt class="xref docutils literal"><span class="pre">mpiexec</span></tt></a> [<em>mpiargs</em>]  <a title="gromacs.run.MDrunner.mdrun" class="reference internal" href="#gromacs.run.MDrunner.mdrun"><tt class="xref docutils literal"><span class="pre">mdrun</span></tt></a> [<em>mdrun-args</em>]</blockquote>
 <p>The <em>mdrun-args</em> are set on initializing the class. Override
-<a title="gromacs.run.MDrunner.mpicommand" class="reference" href="#gromacs.run.MDrunner.mpicommand"><tt class="xref docutils literal"><span class="pre">mpicommand()</span></tt></a> to fit your system if the simple default
+<a title="gromacs.run.MDrunner.mpicommand" class="reference internal" href="#gromacs.run.MDrunner.mpicommand"><tt class="xref docutils literal"><span class="pre">mpicommand()</span></tt></a> to fit your system if the simple default
 OpenMP launcher is not appropriate.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="gromacs.run.MDrunner.mdrun">
 <tt class="descname">mdrun</tt><a class="headerlink" href="#gromacs.run.MDrunner.mdrun" title="Permalink to this definition">¶</a></dt>
-<dd>path to the <strong>mdrun</strong> executable (or the name if it can be found on <span class="target" id="index-1"></span><strong>PATH</strong>)</dd></dl>
+<dd>path to the <strong>mdrun</strong> executable (or the name if it can be found on <span class="target" id="index-1"></span><strong class="xref">PATH</strong>)</dd></dl>
 
 <dl class="method">
 <dt id="gromacs.run.MDrunner.mpicommand">
@@ -151,13 +151,13 @@ complicated cases.)</p>
 <tbody valign="top">
 <tr class="field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>pre</em></dt>
-<dd><p class="first last">a dictionary containing keyword arguments for the <a title="gromacs.run.MDrunner.prehook" class="reference" href="#gromacs.run.MDrunner.prehook"><tt class="xref docutils literal"><span class="pre">prehook()</span></tt></a></p>
+<dd><p class="first last">a dictionary containing keyword arguments for the <a title="gromacs.run.MDrunner.prehook" class="reference internal" href="#gromacs.run.MDrunner.prehook"><tt class="xref docutils literal"><span class="pre">prehook()</span></tt></a></p>
 </dd>
 <dt><em>post</em></dt>
-<dd><p class="first last">a dictionary containing keyword arguments for the <a title="gromacs.run.MDrunner.posthook" class="reference" href="#gromacs.run.MDrunner.posthook"><tt class="xref docutils literal"><span class="pre">posthook()</span></tt></a></p>
+<dd><p class="first last">a dictionary containing keyword arguments for the <a title="gromacs.run.MDrunner.posthook" class="reference internal" href="#gromacs.run.MDrunner.posthook"><tt class="xref docutils literal"><span class="pre">posthook()</span></tt></a></p>
 </dd>
 <dt><em>mpiargs</em></dt>
-<dd><p class="first last">keyword arguments that are processed by <a title="gromacs.run.MDrunner.mpicommand" class="reference" href="#gromacs.run.MDrunner.mpicommand"><tt class="xref docutils literal"><span class="pre">mpicommand()</span></tt></a></p>
+<dd><p class="first last">keyword arguments that are processed by <a title="gromacs.run.MDrunner.mpicommand" class="reference internal" href="#gromacs.run.MDrunner.mpicommand"><tt class="xref docutils literal"><span class="pre">mpicommand()</span></tt></a></p>
 </dd>
 </dl>
 </td>
@@ -178,7 +178,7 @@ techniques.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><p class="first"><em>kwargs</em> are keyword arguments that are passed on to
-<a title="gromacs.run.MDrunner.run" class="reference" href="#gromacs.run.MDrunner.run"><tt class="xref docutils literal"><span class="pre">run()</span></tt></a> (typically used for mpi things)</p>
+<a title="gromacs.run.MDrunner.run" class="reference internal" href="#gromacs.run.MDrunner.run"><tt class="xref docutils literal"><span class="pre">run()</span></tt></a> (typically used for mpi things)</p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Returns:</th><td class="field-body"><ul class="first last simple">
@@ -196,7 +196,7 @@ techniques.</p>
 <dl class="class">
 <dt id="gromacs.run.MDrunnerOpenMP">
 <em class="property">class </em><tt class="descclassname">gromacs.run.</tt><tt class="descname">MDrunnerOpenMP</tt><big>(</big><em>dirname='.'</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.run.MDrunnerOpenMP" title="Permalink to this definition">¶</a></dt>
-<dd><p>Manage running <strong>mdrun</strong> as an <a class="reference" href="http://openmp.org/wp/">OpenMP</a> multiprocessor job.</p>
+<dd><p>Manage running <strong>mdrun</strong> as an <a class="reference external" href="http://openmp.org/wp/">OpenMP</a> multiprocessor job.</p>
 <p>Set up a simple run with <tt class="docutils literal"><span class="pre">mdrun</span></tt>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -222,7 +222,7 @@ keyword arguments are allowed.</p>
 <dl class="class">
 <dt id="gromacs.run.MDrunnerOpenMP64">
 <em class="property">class </em><tt class="descclassname">gromacs.run.</tt><tt class="descname">MDrunnerOpenMP64</tt><big>(</big><em>dirname='.'</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.run.MDrunnerOpenMP64" title="Permalink to this definition">¶</a></dt>
-<dd><p>Manage running <strong>mdrun</strong> as an <a class="reference" href="http://openmp.org/wp/">OpenMP</a> multiprocessor job (64-bit executable).</p>
+<dd><p>Manage running <strong>mdrun</strong> as an <a class="reference external" href="http://openmp.org/wp/">OpenMP</a> multiprocessor job (64-bit executable).</p>
 <p>Set up a simple run with <tt class="docutils literal"><span class="pre">mdrun</span></tt>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -248,7 +248,7 @@ keyword arguments are allowed.</p>
 <dl class="class">
 <dt id="gromacs.run.MDrunnerMpich2Smpd">
 <em class="property">class </em><tt class="descclassname">gromacs.run.</tt><tt class="descname">MDrunnerMpich2Smpd</tt><big>(</big><em>dirname='.'</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.run.MDrunnerMpich2Smpd" title="Permalink to this definition">¶</a></dt>
-<dd><p>Manage running <strong>mdrun</strong> as <a class="reference" href="http://www.mcs.anl.gov/research/projects/mpich2/">mpich2</a> multiprocessor job with the SMPD mechanism.</p>
+<dd><p>Manage running <strong>mdrun</strong> as <a class="reference external" href="http://www.mcs.anl.gov/research/projects/mpich2/">mpich2</a> multiprocessor job with the SMPD mechanism.</p>
 <p>Set up a simple run with <tt class="docutils literal"><span class="pre">mdrun</span></tt>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -347,14 +347,14 @@ the file. (The file must be seeakable.)</p>
         <li class="right" >
           <a href="qsub.html" title="gromacs.qsub – utilities for batch submission systems"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.1.10 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.1.11 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" >Gromacs building blocks</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
       &copy; Copyright 2009-2010, Oliver Beckstein.
-      Last updated on May 07, 2010.
+      Last updated on Jun 07, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
     </div>
   </body>

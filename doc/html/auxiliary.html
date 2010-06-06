@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Analysis &mdash; GromacsWrapper v0.1.11 documentation</title>
+    <title>Auxiliary modules &mdash; GromacsWrapper v0.1.11 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -20,8 +20,8 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="GromacsWrapper v0.1.11 documentation" href="index.html" />
-    <link rel="next" title="Analysis core modules" href="analysis/core.html" />
-    <link rel="prev" title="gromacs.run – Running simulations" href="gromacs/blocks/simulation.html" /> 
+    <link rel="next" title="vmd — Remote Tcl commands in VMD" href="vmd.html" />
+    <link rel="prev" title="Analysis plugins" href="analysis/plugins.html" /> 
   </head>
   <body>
     <div class="related">
@@ -34,10 +34,10 @@
           <a href="modindex.html" title="Global Module Index"
              accesskey="M">modules</a> |</li>
         <li class="right" >
-          <a href="analysis/core.html" title="Analysis core modules"
+          <a href="vmd.html" title="vmd — Remote Tcl commands in VMD"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="gromacs/blocks/simulation.html" title="gromacs.run – Running simulations"
+          <a href="analysis/plugins.html" title="Analysis plugins"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">GromacsWrapper v0.1.11 documentation</a> &raquo;</li> 
       </ul>
@@ -48,24 +48,27 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="analysis">
-<h1>Analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h1>
-<p>The analysis package uses the <a title="" class="reference external" href="gromacs/init.html#module-gromacs"><tt class="xref docutils literal"><span class="pre">gromacs</span></tt></a> package and various other 3rd
-party ones such as <a class="reference external" href="http://numpy.scipy.org">numpy</a> and <a class="reference external" href="http://pylab.scipy.org">pylab</a>. It provides a frame work to
-analyze <a class="reference external" href="http://www.gromacs.org">Gromacs</a> MD simulations.</p>
+  <div class="section" id="auxiliary-modules">
+<h1>Auxiliary modules<a class="headerlink" href="#auxiliary-modules" title="Permalink to this headline">¶</a></h1>
+<p>A number of small python modules are currently bundled with
+<em>GromacsWrapper</em> as they have proven useful in the context of which
+the main package is being used. However, <em>GromacsWrapper</em> does not
+depend on them and they could be safely ignored (and might be removed
+if we ever get to a 1.0 release...).</p>
 <ul>
-<li class="toctree-l1"><a class="reference external" href="analysis/core.html">Analysis core modules</a><ul>
-<li class="toctree-l2"><a class="reference external" href="analysis/core.html#analysis-analysis-package-overview"><tt class="docutils literal"><span class="pre">analysis</span></tt> &#8211; Analysis Package Overview</a></li>
-<li class="toctree-l2"><a class="reference external" href="analysis/core.html#analysis-core-core-classes-for-analysis-of-gromacs-trajectories"><tt class="docutils literal"><span class="pre">analysis.core</span></tt> &#8211; Core classes for analysis of Gromacs trajectories</a></li>
+<li class="toctree-l1"><a class="reference external" href="vmd.html"><tt class="docutils literal"><span class="pre">vmd</span></tt> &#8212; Remote Tcl commands in VMD</a></li>
+<li class="toctree-l1"><a class="reference external" href="edpdb.html"><tt class="docutils literal"><span class="pre">edPDB</span></tt> &#8212; Simple processing of PDB files</a><ul>
+<li class="toctree-l2"><a class="reference external" href="edpdb/init.html"><tt class="docutils literal"><span class="pre">edPDB</span></tt> &#8211; editing PDB files</a></li>
+<li class="toctree-l2"><a class="reference external" href="edpdb/cbook.html"><tt class="docutils literal"><span class="pre">edPDB.cbook</span></tt> &#8211; Recipes for editing PDB files</a></li>
+<li class="toctree-l2"><a class="reference external" href="edpdb/xpdb.html"><tt class="docutils literal"><span class="pre">edPDB.xpdb</span></tt> &#8211; Extensions to <tt class="docutils literal"><span class="pre">Bio.PDB</span></tt></a></li>
+<li class="toctree-l2"><a class="reference external" href="edpdb/selections.html"><tt class="docutils literal"><span class="pre">edPDB.selections</span></tt> &#8212; Selections</a></li>
+<li class="toctree-l2"><a class="reference external" href="edpdb/helpers.html">Helper modules</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference external" href="analysis/support.html">Support modules</a><ul>
-<li class="toctree-l2"><a class="reference external" href="analysis/support.html#analysis-collections-handling-of-groups-of-simulation-instances"><tt class="docutils literal"><span class="pre">analysis.collections</span></tt> &#8211; Handling of groups of simulation instances</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference external" href="analysis/plugins.html">Analysis plugins</a><ul>
-<li class="toctree-l2"><a class="reference external" href="analysis/plugins.html#module-gromacs.analysis.plugins">Plugins</a></li>
-<li class="toctree-l2"><a class="reference external" href="analysis/plugins.html#module-gromacs.analysis.plugins.gridmatmd">Helper modules</a></li>
+<li class="toctree-l1"><a class="reference external" href="staging.html"><tt class="docutils literal"><span class="pre">staging</span></tt> &#8212; Staging of input/output files on a queuing system</a><ul>
+<li class="toctree-l2"><a class="reference external" href="staging/init.html"><tt class="docutils literal"><span class="pre">staging</span></tt> &#8212; Staging module overview</a></li>
+<li class="toctree-l2"><a class="reference external" href="staging/SunGridEngine.html"><tt class="docutils literal"><span class="pre">staging.SunGridEngine</span></tt> &#8212; staging class for SunGridEngine</a></li>
+<li class="toctree-l2"><a class="reference external" href="staging/Local.html"><tt class="docutils literal"><span class="pre">staging.Local</span></tt> &#8212; staging class for running local jobs</a></li>
 </ul>
 </li>
 </ul>
@@ -78,14 +81,14 @@ analyze <a class="reference external" href="http://www.gromacs.org">Gromacs</a> 
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <h4>Previous topic</h4>
-            <p class="topless"><a href="gromacs/blocks/simulation.html"
-                                  title="previous chapter"><tt class="docutils literal"><span class="pre">gromacs.run</span></tt> &#8211; Running simulations</a></p>
+            <p class="topless"><a href="analysis/plugins.html"
+                                  title="previous chapter">Analysis plugins</a></p>
             <h4>Next topic</h4>
-            <p class="topless"><a href="analysis/core.html"
-                                  title="next chapter">Analysis core modules</a></p>
+            <p class="topless"><a href="vmd.html"
+                                  title="next chapter"><tt class="docutils literal"><span class="pre">vmd</span></tt> &#8212; Remote Tcl commands in VMD</a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
-              <li><a href="_sources/analysis.txt"
+              <li><a href="_sources/auxiliary.txt"
                      rel="nofollow">Show Source</a></li>
             </ul>
           <div id="searchbox" style="display: none">
@@ -115,10 +118,10 @@ analyze <a class="reference external" href="http://www.gromacs.org">Gromacs</a> 
           <a href="modindex.html" title="Global Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="analysis/core.html" title="Analysis core modules"
+          <a href="vmd.html" title="vmd — Remote Tcl commands in VMD"
              >next</a> |</li>
         <li class="right" >
-          <a href="gromacs/blocks/simulation.html" title="gromacs.run – Running simulations"
+          <a href="analysis/plugins.html" title="Analysis plugins"
              >previous</a> |</li>
         <li><a href="index.html">GromacsWrapper v0.1.11 documentation</a> &raquo;</li> 
       </ul>
