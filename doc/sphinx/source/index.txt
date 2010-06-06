@@ -60,10 +60,8 @@ Contents
    INSTALL
    gromacs
    analysis
+   auxiliary
    alternatives
-   vmd
-   edpdb
-   staging
 
 
 
