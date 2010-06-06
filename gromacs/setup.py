@@ -29,6 +29,10 @@ sequence of functions that depend on the previous step(s):
         solvate globular protein and add ions to neutralize
   :func:`energy_minimize`
         set up energy minimization and run it (using ``mdrun_d``)
+  :func:`em_schedule`
+        set up and run multiple energy minimizations one after another (as an
+        alternative to the simple single energy minimization provided by
+        :func:`energy_minimize`)
   :func:`MD_restrained`
         set up restrained MD
   :func:`MD`
@@ -80,21 +84,34 @@ the equilibrium MD::
 Run the resulting tpr file on a cluster.
 
 
-Functions
----------
+User functions
+--------------
 
 The following functions are provided for the user:
 
 .. autofunction:: topology
 .. autofunction:: solvate
 .. autofunction:: energy_minimize
+.. autofunction:: em_schedule
 .. autofunction:: MD_restrained
 .. autofunction:: MD
 
-Helper functions (mainly of use to developers):
+Helper functions
+----------------
+
+The following functions are used under the hood and are mainly useful when
+writing extensions to the module.
 
 .. autofunction:: make_main_index
+.. autofunction:: check_mdpargs
+.. autofunction:: get_lipid_vdwradii
 .. autofunction:: _setup_MD
+
+Defined constants:
+
+.. autodata:: CONC_WATER
+.. autodata:: vdw_lipid_resnames
+.. autodata:: vdw_lipid_atom_radii
 
 """
 
@@ -124,9 +141,9 @@ from gromacs.utilities import in_dir, realpath, Timedelta, asiterable
 
 
 #: Concentration of water at standard conditions in mol/L.
-#: density at 25 degrees C and 1 atmosphere pressure: rho = 997.0480 g/L.
-#: molecular weight: M = 18.015 g/mol
-#: c = n/V = m/(V*M) = rho/M  = 55.345 mol/L
+#: Density at 25 degrees C and 1 atmosphere pressure: rho = 997.0480 g/L.
+#: Molecular weight: M = 18.015 g/mol.
+#: c = n/V = m/(V*M) = rho/M  = 55.345 mol/L.
 CONC_WATER = 55.345
 
 # XXX: This is not used anywhere at the moment:
@@ -251,11 +268,11 @@ def make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None):
 
 
 #: Hard-coded lipid residue names for a ``vdwradii.dat`` file. Use together with
-#: :data:`~gromacs.setup.vdw_lipid_atoms` in :func:`~gromacs.setup.get_lipid_vdwradii`.
+#: :data:`~gromacs.setup.vdw_lipid_atom_radii` in :func:`~gromacs.setup.get_lipid_vdwradii`.
 vdw_lipid_resnames = ["POPC", "POPE", "POPG", "DOPC", "DPPC", "DLPC", "DMPC", "DPPG"]
 #: Increased atom radii for lipid atoms; these are simply the standard values from
-#: ``GMXLIB/vdwradii.dat`` increased by 0.1 nm (C) or 0.05 (N, O, H).
-vdw_lipid_atoms = {'C': 0.25, 'N': 0.16, 'O': 0.155, 'H': 0.09}
+#: ``GMXLIB/vdwradii.dat`` increased by 0.1 nm (C) or 0.05 nm (N, O, H).
+vdw_lipid_atom_radii = {'C': 0.25, 'N': 0.16, 'O': 0.155, 'H': 0.09}
 
 def get_lipid_vdwradii(outdir=os.path.curdir, libdir=None):
     """Find vdwradii.dat and add special entries for lipids.
@@ -293,7 +310,7 @@ def get_lipid_vdwradii(outdir=os.path.curdir, libdir=None):
         # write lipid stuff before general 
         outfile.write('; Special larger vdw radii for solvating lipid membranes\n')
         for resname in patterns:
-            for atom,radius in vdw_lipid_atoms.items():
+            for atom,radius in vdw_lipid_atom_radii.items():
                 outfile.write('%(resname)4s %(atom)-5s %(radius)5.3f\n' % vars())
         with open(filename, 'r') as infile:
             for line in infile:
@@ -612,7 +629,7 @@ def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
             }
 
 def em_schedule(**kwargs):
-    """Run multiple ebergy minimizations one after each other.
+    """Run multiple energy minimizations one after each other.
 
     :Keywords:
       *integrators*
@@ -629,13 +646,13 @@ def em_schedule(**kwargs):
 
     :Example:
        Conduct three minimizations:
-         1. low memory Broyden-Goldfar-Fletcher-Shannon for 30 steps
+         1. low memory Broyden-Goldfarb-Fletcher-Shannon (BFGS) for 30 steps
          2. steepest descent for 200 steps
          3. finish with BFGS for another 30 steps
-       We also do a multi-processor minimization when possible (i.e. for steep (and conjugate
-       gradient) by using a :class:`gromacs.run.MDrunner` class for a
-       :program:`mdrun` executable compiled for OpenMP in 64 bit (see
-       :mod:`gromacs.run` for details).
+       We also do a multi-processor minimization when possible (i.e. for steep
+       (and conjugate gradient) by using a :class:`gromacs.run.MDrunner` class
+       for a :program:`mdrun` executable compiled for OpenMP in 64 bit (see
+       :mod:`gromacs.run` for details)::
 
           import gromacs.run
           gromacs.setup.em_schedule(struct='solvate/ionized.gro',
@@ -650,7 +667,7 @@ def em_schedule(**kwargs):
 
     mdrunner = kwargs.pop('mdrunner', None)
     integrators = kwargs.pop('integrators', ['l-bfgs', 'steep'])
-    kwargs.pop('integrator', None)
+    kwargs.pop('integrator', None)  # clean input; we set intgerator from integrators
     nsteps = kwargs.pop('nsteps', [100, 1000])
 
     outputs = ['em%03d_%s.pdb' % (i,integrator) for i,integrator in enumerate(integrators)]
@@ -789,10 +806,9 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
 
     Additional itp files should be in the same directory as the top file.
 
-    Many of the keyword arguments below already have sensible
-    values. Note that setting *mainselection* = ``None`` will disable
-    many of the automated choices and is often recommended when using
-    your own mdp file.
+    Many of the keyword arguments below already have sensible values. Note that
+    setting *mainselection* = ``None`` will disable many of the automated
+    choices and is often recommended when using your own mdp file.
 
     :Keywords:
        *dirname*
@@ -808,7 +824,7 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
        *includes*
           additional directories to search for itp files          
        *mainselection*
-          `` make_ndx`` selection to select main group ["Protein"]
+          :program:`make_ndx` selection to select main group ["Protein"]
           (If ``None`` then no canonical index file is generated and
           it is the user's responsibility to set *tc_grps*,
           *tau_t*, and *ref_t* as keyword arguments, or provide the mdp template
@@ -850,8 +866,8 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
               (but check, just in case, especially if you want to
               change the ``define`` parameter in the mdp file)
 
-    .. Note:: The output frequency is drastically reduce for position
-              restraints runs by default. Set the corresponding ``nst*``
+    .. Note:: The output frequency is drastically reduced for position
+              restraint runs by default. Set the corresponding ``nst*``
               variables if you require more output.
     """
 
@@ -873,10 +889,9 @@ def MD(dirname='MD', **kwargs):
 
     Additional itp files should be in the same directory as the top file.
 
-    Many of the keyword arguments below already have sensible
-    values. Note that setting *mainselection*=``None`` will disable
-    many of the automated choices and is often recommended when using
-    your own mdp file.
+    Many of the keyword arguments below already have sensible values. Note that
+    setting *mainselection* = ``None`` will disable many of the automated
+    choices and is often recommended when using your own mdp file.
 
     :Keywords:
        *dirname*
@@ -916,12 +931,12 @@ def MD(dirname='MD', **kwargs):
           scripts such as "-stepout 100 -dgdl". [""]
        *kwargs*
           remaining key/value pairs that should be changed in the template mdp
-          file, eg ``nstxtcout=250, nstfout=250`` or command line options for
-          ``grompp` such as ``maxwarn=1``.
+          file, e.g. ``nstxtcout=250, nstfout=250`` or command line options for
+          :program`grompp` such as ``maxwarn=1``.
 
     :Returns: a dict that can be fed into :func:`gromacs.setup.MD`
               (but check, just in case, especially if you want to
-              change the ``define`` parameter in the mdp file)
+              change the *define* parameter in the mdp file)
     """
 
     logger.info("[%(dirname)s] Setting up MD..." % vars())
