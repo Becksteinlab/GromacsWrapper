@@ -4,8 +4,9 @@
 # Released under the GNU Lesser Public License, version 3 or later.
 # See COPYING and COPYING.LESSER.
 """
-VMD control
-===========
+=============
+ VMD control
+=============
 
 Simple client to transmit Tcl commands to a server running in `VMD`_.
 
@@ -33,12 +34,6 @@ See `VMD Tcl Text Commands`_ for all available commands.
 .. _VMD: http://www.ks.uiuc.edu/Research/vmd/
 .. _Tcl: http://www.tcl.tk/man/
 .. _VMD Tcl Text Commands: http://www.ks.uiuc.edu/Research/vmd/current/ug/node107.html
-
-Module content
---------------
-
-.. automodule:: vmd.control
-   :members:
 
 """
 __docformat__ = "restructuredtext en"

@@ -29,31 +29,27 @@ class server:
                  server_tcl=REMOTE_TCL,
                  force=False,maxdelay=10,dispdev='text'):
         
-        """Start VMD in text mode and launch the remote server::
-
-           server(**kwargs)
+        """Start VMD in text mode and launch the remote server.
 
         :Arguments:
            vmdbinary
                  ``vmd`` (either in PATH or absolute path)
            server_tcl
-                  path to the tcl script that starts the listening server in VMD
-                  (the default is correct in 99.9% of cases)
+                 path to the tcl script that starts the listening server in VMD
+                 (the default is correct in 99.9% of cases)
            force
-                  ``False``
+                 ``False``
                        don't launch new server if one is already active
-                  ``True``
+                 ``True``
                        always start new vmd process
            maxdelay         
-                  maximum time to wait for the server to come up in seconds
+                 maximum time to wait for the server to come up in seconds
            dispdev
-                  VMD display device; default is 'text' which runs VMD without
-                  graphics. 'win' is the graphical window device
+                 VMD display device; default is 'text' which runs VMD without
+                 graphics. 'win' is the graphical window device
 
-        Bugs
-        ----
-
-        * starting multiple VMD processes does not work as we always use the same port
+        :Bugs: Starting multiple VMD processes does not work as we always
+               use the same port
 
         """
         devices = {'graphics':'win','win':'win', 'text':'text','batch':'text'}
@@ -71,9 +67,7 @@ class server:
         self.start(force=force)
 
     def start(self,force=False,maxdelay=10):
-        """Start VMD and launch the remote server::
-
-          server.start(**kwargs)
+        """Start VMD and launch the remote server.
 
         :Arguments:
            force
@@ -105,7 +99,7 @@ class server:
     def ping(self,pid=os.getpid()):
         """Check if a vmd server can be used.
 
-        Returns True or False.
+        :Returns: ``True`` for a live VMD server, or ``False``.
 
         Ignore the message 'error: uncaptured python exception' if the server is down.
         """
@@ -121,7 +115,7 @@ class server:
            c.results()
 
         This is only a thin convenience wrapper for
-        ``vmd.control.command()`` and not strongly tied to the server (as
+        :meth:`vmd.control.command` and not strongly tied to the server (as
         anyone can connect).
         """
         return command(*args)
@@ -136,7 +130,7 @@ class client(asynchat.async_chat):
     Starting VMD as ``vmd -e remote_ctl.tcl`` opens port 5555 for connection.
     The client only becomes active in the ``asyncore.loop()`` and exits after
     sending the commands and receiving the response. The response is available
-    as ``c.response()``
+    as :meth:`client.response`
 
     :Parameters:
        host
@@ -144,17 +138,13 @@ class client(asynchat.async_chat):
        port
            port to connect to (typically 5555)
 
-    Methods
-    -------
-
-    c.cmd(tcl, tcl, ...)
+    :Methods:
+      :meth:`client.cmd`
         commands (with embedded newlines!) scheduled for sending and execution in VMD
-    c.response()              
+      :meth:`client.response`
         response from VMD
 
-    Bugs
-    ----
-    Somehow it doesnt like many commands...
+    :Bugs: Somehow it doesnt like many commands...
     """
     def __init__(self, host,port=services['vmd']):
         asynchat.async_chat.__init__(self)
@@ -206,12 +196,10 @@ class command(client):
 
     Technically, this is unelegant cr^&...
 
-    Methods
-    -------
-
-    c.results()
+    :Methods:
+      :meth:`client.results`
          response from VMD
-    c.commands()
+      :meth:`clinet.commands`
          corresponding commands
     """
 
