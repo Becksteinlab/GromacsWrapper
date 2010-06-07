@@ -53,12 +53,35 @@
   <div class="section" id="module-vmd.control">
 <h1><tt class="xref docutils literal"><span class="pre">vmd</span></tt> &#8212; Remote Tcl commands in VMD<a class="headerlink" href="#module-vmd.control" title="Permalink to this headline">¶</a></h1>
 <p>The <tt class="xref docutils literal"><span class="pre">vmd</span></tt> module contains a very simple client that can connect to a
-locally running server process in <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>. This allows running VMD
-<a class="reference external" href="http://www.tcl.tk/man/">Tcl</a> commands remotely. See <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/current/ug/node107.html">VMD Tcl Text Commands</a> for all
+locally running server process in <a class="reference" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>. This allows running VMD
+<a class="reference" href="http://www.tcl.tk/man/">Tcl</a> commands remotely. See <a class="reference" href="http://www.ks.uiuc.edu/Research/vmd/current/ug/node107.html">VMD Tcl Text Commands</a> for all
 available commands.</p>
-<p>The <tt class="xref docutils literal"><span class="pre">vmd</span></tt> module is independent from <a title="" class="reference external" href="gromacs/init.html#module-gromacs"><tt class="xref docutils literal"><span class="pre">gromacs</span></tt></a> and
+<p>The <tt class="xref docutils literal"><span class="pre">vmd</span></tt> module is independent from <a title="" class="reference" href="gromacs/init.html#module-gromacs"><tt class="xref docutils literal"><span class="pre">gromacs</span></tt></a> and
 distribute for convenience. It can be used to implement additional
 visualization and analysis tasks.</p>
+<div class="section" id="vmd-control">
+<h2>VMD control<a class="headerlink" href="#vmd-control" title="Permalink to this headline">¶</a></h2>
+<p>Simple client to transmit Tcl commands to a server running in <a class="reference" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>.</p>
+<p>VMD and the server run locally and can be started from the module. Once the
+server is running, one can use <tt class="xref docutils literal"><span class="pre">vmd.client</span></tt> to communicate with the server
+process via a local socket.</p>
+<div class="section" id="example">
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<p>Start a VMD server and connect:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">vmd.control</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">VMD</span> <span class="o">=</span> <span class="n">server</span><span class="p">()</span>
+<span class="n">VMD</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s">&#39;molecule new load 1AKE&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>or start an interactive <a class="reference" href="http://www.tcl.tk/man/">Tcl</a> session connected to a running VMD 
+server process:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">interactive</span><span class="p">(</span><span class="n">host</span><span class="p">)</span>
+<span class="n">asyncore</span><span class="o">.</span><span class="n">loop</span><span class="p">()</span>      <span class="c"># necessary</span>
+</pre></div>
+</div>
+<p>See <a class="reference" href="http://www.ks.uiuc.edu/Research/vmd/current/ug/node107.html">VMD Tcl Text Commands</a> for all available commands.</p>
+</div>
+</div>
 </div>
 
 
@@ -67,6 +90,17 @@ visualization and analysis tasks.</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference" href="#"><tt class="docutils literal"><span class="pre">vmd</span></tt> &#8212; Remote Tcl commands in VMD</a><ul>
+<li><a class="reference" href="#vmd-control">VMD control</a><ul>
+<li><a class="reference" href="#example">Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
             <h4>Previous topic</h4>
             <p class="topless"><a href="auxiliary.html"
                                   title="previous chapter">Auxiliary modules</a></p>

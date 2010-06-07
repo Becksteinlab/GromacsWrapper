@@ -54,12 +54,12 @@
   <div class="section" id="gromacs-utilities-helper-functions-and-classes">
 <span id="module-gromacs.utilities"></span><h1><tt class="xref docutils literal"><span class="pre">gromacs.utilities</span></tt> &#8211; Helper functions and classes<a class="headerlink" href="#gromacs-utilities-helper-functions-and-classes" title="Permalink to this headline">¶</a></h1>
 <p>The module defines some convenience functions and classes that are
-used in other modules; they do <em>not</em> make use of <a title="" class="reference external" href="../tools.html#module-gromacs.tools"><tt class="xref docutils literal"><span class="pre">gromacs.tools</span></tt></a>
-or <a title="" class="reference external" href="../blocks/cbook.html#module-gromacs.cbook"><tt class="xref docutils literal"><span class="pre">gromacs.cbook</span></tt></a> and can be safely imported at any time.</p>
+used in other modules; they do <em>not</em> make use of <a title="" class="reference" href="../tools.html#module-gromacs.tools"><tt class="xref docutils literal"><span class="pre">gromacs.tools</span></tt></a>
+or <a title="" class="reference" href="../blocks/cbook.html#module-gromacs.cbook"><tt class="xref docutils literal"><span class="pre">gromacs.cbook</span></tt></a> and can be safely imported at any time.</p>
 <div class="section" id="classes">
 <h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
-<p><a title="gromacs.utilities.FileUtils" class="reference internal" href="#gromacs.utilities.FileUtils"><tt class="xref docutils literal"><span class="pre">FileUtils</span></tt></a> provides functions related to filename handling. It
-can be used as a base or mixin class. The <a title="gromacs.analysis.Simulation" class="reference external" href="../../analysis/core.html#gromacs.analysis.Simulation"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.Simulation</span></tt></a>
+<p><a title="gromacs.utilities.FileUtils" class="reference" href="#gromacs.utilities.FileUtils"><tt class="xref docutils literal"><span class="pre">FileUtils</span></tt></a> provides functions related to filename handling. It
+can be used as a base or mixin class. The <a title="gromacs.analysis.Simulation" class="reference" href="../../analysis/core.html#gromacs.analysis.Simulation"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.Simulation</span></tt></a>
 class is derived from it.</p>
 <dl class="class">
 <dt id="gromacs.utilities.FileUtils">
@@ -76,9 +76,9 @@ class is derived from it.</p>
 <dt>&#8220;indicate&#8221;</dt>
 <dd>return <tt class="xref docutils literal"><span class="pre">True</span></tt> if it exists</dd>
 <dt>&#8220;warn&#8221;</dt>
-<dd>indicate and issue a <a title="(in Python v2.6)" class="reference external" href="http://docs.python.org/library/exceptions.html#exceptions.UserWarning"><tt class="xref docutils literal"><span class="pre">UserWarning</span></tt></a></dd>
+<dd>indicate and issue a <a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.UserWarning"><tt class="xref docutils literal"><span class="pre">UserWarning</span></tt></a></dd>
 <dt>&#8220;exception&#8221;</dt>
-<dd>raise <a title="(in Python v2.6)" class="reference external" href="http://docs.python.org/library/exceptions.html#exceptions.IOError"><tt class="xref docutils literal"><span class="pre">IOError</span></tt></a> if it exists</dd>
+<dd>raise <a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.IOError"><tt class="xref docutils literal"><span class="pre">IOError</span></tt></a> if it exists</dd>
 </dl>
 <p>Alternatively, set <em>force</em> for the following behaviour (which
 ignores <em>resolve</em>):</p>
@@ -132,7 +132,7 @@ priority over a default <tt class="docutils literal"><span class="pre">ext</span
 <dl class="class">
 <dt id="gromacs.utilities.Timedelta">
 <em class="property">class </em><tt class="descclassname">gromacs.utilities.</tt><tt class="descname">Timedelta</tt><a class="headerlink" href="#gromacs.utilities.Timedelta" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extension of <a title="(in Python v2.6)" class="reference external" href="http://docs.python.org/library/datetime.html#datetime.timedelta"><tt class="xref docutils literal"><span class="pre">datetime.timedelta</span></tt></a>.</p>
+<dd><p>Extension of <a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/datetime.html#datetime.timedelta"><tt class="xref docutils literal"><span class="pre">datetime.timedelta</span></tt></a>.</p>
 <p>Provides attributes ddays, dhours, dminutes, dseconds to measure
 the delta in normal time units.</p>
 <p>ashours gives the total time in fractional hours.</p>
@@ -147,7 +147,7 @@ directories:</p>
 <dt id="gromacs.utilities.openany">
 <tt class="descclassname">gromacs.utilities.</tt><tt class="descname">openany</tt><big>(</big><em>directory</em><span class="optional">[</span>, <em>mode='r'</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#gromacs.utilities.openany" title="Permalink to this definition">¶</a></dt>
 <dd>Context manager to open a compressed (bzip2, gzip) or plain file
-(uses <a title="gromacs.utilities.anyopen" class="reference internal" href="#gromacs.utilities.anyopen"><tt class="xref docutils literal"><span class="pre">anyopen()</span></tt></a>).</dd></dl>
+(uses <a title="gromacs.utilities.anyopen" class="reference" href="#gromacs.utilities.anyopen"><tt class="xref docutils literal"><span class="pre">anyopen()</span></tt></a>).</dd></dl>
 
 <dl class="function">
 <dt id="gromacs.utilities.anyopen">
@@ -264,7 +264,7 @@ strings as lists:</p>
 </table>
 </dd></dl>
 
-<p>Functions that make working with <a class="reference external" href="http://matplotlib.sourceforge.net/">matplotlib</a> easier:</p>
+<p>Functions that make working with <a class="reference" href="http://matplotlib.sourceforge.net/">matplotlib</a> easier:</p>
 <dl class="function">
 <dt id="gromacs.utilities.activate_subplot">
 <tt class="descclassname">gromacs.utilities.</tt><tt class="descname">activate_subplot</tt><big>(</big><em>numPlot</em><big>)</big><a class="headerlink" href="#gromacs.utilities.activate_subplot" title="Permalink to this definition">¶</a></dt>
@@ -277,7 +277,7 @@ overwrites the subplot instead of activating it.</p>
 <dt id="gromacs.utilities.remove_legend">
 <tt class="descclassname">gromacs.utilities.</tt><tt class="descname">remove_legend</tt><big>(</big><em>ax=None</em><big>)</big><a class="headerlink" href="#gromacs.utilities.remove_legend" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove legend for axes or gca.</p>
-<p>See <a class="reference external" href="http://osdir.com/ml/python.matplotlib.general/2005-07/msg00285.html">http://osdir.com/ml/python.matplotlib.general/2005-07/msg00285.html</a></p>
+<p>See <a class="reference" href="http://osdir.com/ml/python.matplotlib.general/2005-07/msg00285.html">http://osdir.com/ml/python.matplotlib.general/2005-07/msg00285.html</a></p>
 </dd></dl>
 
 <p>Miscellaneous functions:</p>
@@ -306,10 +306,10 @@ overwrites the subplot instead of activating it.</p>
         <div class="sphinxsidebarwrapper">
             <h3><a href="../../index.html">Table Of Contents</a></h3>
             <ul>
-<li><a class="reference external" href="#"><tt class="docutils literal"><span class="pre">gromacs.utilities</span></tt> &#8211; Helper functions and classes</a><ul>
-<li><a class="reference external" href="#classes">Classes</a></li>
-<li><a class="reference external" href="#functions">Functions</a></li>
-<li><a class="reference external" href="#data">Data</a></li>
+<li><a class="reference" href="#"><tt class="docutils literal"><span class="pre">gromacs.utilities</span></tt> &#8211; Helper functions and classes</a><ul>
+<li><a class="reference" href="#classes">Classes</a></li>
+<li><a class="reference" href="#functions">Functions</a></li>
+<li><a class="reference" href="#data">Data</a></li>
 </ul>
 </li>
 </ul>
