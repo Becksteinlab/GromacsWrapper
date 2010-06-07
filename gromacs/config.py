@@ -166,7 +166,7 @@ path = [os.path.curdir, qscriptdir, templatesdir]
 #: *gmx_tools*, *gmx_extra_tools*. Right now these are variable names in
 #: :mod:`gromacs.config`, referencing :data:`gromacs.config.gmx_tools` and
 #: :data:`gromacs.config.gmx_extra_tools`.
-gmx_tool_groups = ['gmx_tools', ]
+gmx_tool_groups = ['gmx_tools', 'gmx_extra_tools' ]
 
 #: Contains the file names of all Gromacs tools for which classes are generated.
 #: Editing this list has only an effect when the package is reloaded.  If you want
