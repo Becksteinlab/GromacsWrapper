@@ -1,7 +1,10 @@
-# $Id$
+# GromacsWrappe analysis module
+# Copyright (c) 2009-2010 Oliver Beckstein <orbeckst@gmail.com>
+# Released under the GNU Public License version 3 (or higher)
+
 """
-``analysis`` -- Analysis Package Overview
-=========================================
+:mod:`gromacs.analysis` -- Analysis Package Overview
+====================================================
 
 The :mod:`gromacs.analysis` package is a framework for analyzing Gromacs MD
 trajectories. The basic object is the :class:`Simulation` class. For a

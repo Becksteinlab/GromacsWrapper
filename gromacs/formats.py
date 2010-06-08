@@ -76,15 +76,29 @@ class XVG(utilities.FileUtils):
     unparseable lines. In this case the line numbers of the skipped lines are stored
     in :attr:`XVG.corrupted_lineno`.
 
-    .. Note:: - Only simple XY or NXY files are currently supported, not
+    A number of attributes are defined to give quick access to simple statistics such as 
+
+     - :attr:`~XVG.mean`: mean of all data columns
+     - :attr:`~XVG.std`: standard deviation
+     - :attr:`~XVG.min`: minimum of data 
+     - :attr:`~XVG.max`: maximum of data 
+     - :attr:`~XVG.error`: error on the mean, taking correlation times into
+       account (see also :meth:`XVG.set_correlparameters`)
+     - :attr:`~XVG.tc`: correlation time of the data (assuming a simple
+       exponential decay of the fluctuations around the mean)
+
+    These attributes are numpy arrays that correspond to the data columns,
+    i.e. :attr:`XVG.array`[1:].
+
+    .. Note:: - Only simple XY or NXY files are currently supported, *not*
                 Grace files that contain multiple data sets separated by '&'.
-              - Any kind of formatting (xmgrace commands) are discarded.
+              - Any kind of formatting (i.e. :program:`xmgrace` commands) is discarded.
     """
 
     default_extension = "xvg"    
     logger = logging.getLogger('gromacs.formats.XVG')  # for pickling: must be class-level
 
-    def __init__(self, filename=None, names=None, permissive=False):
+    def __init__(self, filename=None, names=None, permissive=False, **kwargs):
         """Initialize the class from a xvg file.
 
         :Arguments: 
@@ -104,6 +118,7 @@ class XVG(utilities.FileUtils):
                     
         """
         self.__array = None          # cache for array property
+        self.__cache = {}            # cache for computed results
         if not filename is None:
             self._init_filename(filename)  # reading from file is delayed until required
         if names is None:
@@ -115,6 +130,9 @@ class XVG(utilities.FileUtils):
                 self.names = names
         self.permissive = permissive
         self.corrupted_lineno = None      # must parse() first before this makes sense
+        # default number of data points for calculating correlation times via FFT
+        self.ncorrel = kwargs.pop('ncorrel', 25000)
+        self.set_correlparameters()  # (unfortunately destroys the lazy loading: needs the array)
 
     def read(self, filename=None):
         """Read and parse xvg file *filename*."""
@@ -176,8 +194,70 @@ class XVG(utilities.FileUtils):
     @property
     def max(self):
         """Maximum of the data columns."""
-        return self.array[1:].max(axis=1)        
-        
+        return self.array[1:].max(axis=1)
+
+    def _tcorrel(self, nstep=100, **kwargs):
+        """Correlation "time" of data.
+
+        The 0-th column of the data is interpreted as a time and the
+        decay of the data is computed from the autocorrelation
+        function (using FFT).
+        """
+        import gromacs.analysis.numkit as nk
+        from gromacs.analysis.collections import Collection
+        t = self.array[0,::nstep]
+        r = Collection([nk.tcorrel(t, Y, nstep=1, **kwargs) for Y in self.array[1:,::nstep]])
+        return r
+
+    def set_correlparameters(self, **kwargs):
+        """Set and change the parameters for calculations involving correlation functions.
+
+        :Keywords:
+           *nstep*
+               only process every *nstep* data point to speed up the FFT; if
+               left empty a default is chosen that produces roughly 25,000 data
+               points (or whatever is set in :attr:`XVG.ncorrel`).
+           *force*            
+               force recalculating correlation data even if cached values are
+               available
+           *kwargs*
+               see :func:`gromacs.analysis.numkit.tcorrel` for other options
+
+        .. SeeAlso: :attr:`XVG.error` for details and references.
+        """
+        # good step size leads to ~25,000 data points
+        nstep = len(self.array[0])/self.ncorrel
+        kwargs.setdefault('nstep', nstep)
+        self.__correlkwargs = kwargs
+
+    def _correlprop(self, key, **kwargs):
+        kwargs.update(self.__correlkwargs)
+        if not self.__cache.get('tcorrel',None) or kwargs.get('force', False):
+            self.__cache['tcorrel'] = self._tcorrel(**kwargs)
+        return numpy.array(self.__cache['tcorrel'].get(key).tolist())
+
+    @property
+    def error(self):
+        """Error on the mean of the data, taking the correlation time into account.
+
+        See Frenkel and Smit, Academic Press, San Diego 2002, p526:
+
+           error = sqrt(2*tc*acf[0]/T)
+
+        where acf() is the autocorrelation function of the fluctuations around
+        the mean y-<y>, tc is the correlation time, and T the total length of
+        the simulation.
+        """
+        return self._correlprop('sigma')
+
+    @property
+    def tc(self):
+        """Correlation time of the data.
+
+        See :meth:`XVG.error` for details.
+        """
+        return self._correlprop('tc')
+
     def parse(self):
         """Read and cache the file as a numpy array.
 

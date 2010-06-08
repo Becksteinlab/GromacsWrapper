@@ -142,6 +142,7 @@ The following *warnings* are defined:
 .. autoexception:: BadParameterWarning
 .. autoexception:: MissingDataWarning
 .. autoexception:: UsageWarning
+.. autoexception:: LowAccuracyWarning
 
 
 Logging
@@ -169,7 +170,7 @@ The package version can be queried with the :func:`gromacs.get_version` function
 __docformat__ = "restructuredtext en"
 
 #: Package version; this is the only place where it is set.
-VERSION = 0,1,11
+VERSION = 0,1,12
 
 def get_version():
     """Return current package version as a string."""
@@ -222,6 +223,9 @@ class MissingDataWarning(Warning):
 
 class UsageWarning(Warning):
     """Warns if usage is unexpected/documentation ambiguous."""
+
+class LowAccuracyWarning(Warning):
+    """Warns that results may possibly have low accuracy."""
 
 import warnings
 # These warnings should always be displayed because other parameters

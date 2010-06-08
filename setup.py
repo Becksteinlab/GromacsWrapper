@@ -38,7 +38,8 @@ more complicated analysis tasks.
                           ],              # basic package (w/o analysis)
       extras_require = {
                 'analysis': ['matplotlib>=0.91.3', 
-                             'RecSQL>=0.7',            
+                             'scipy',
+                             'RecSQL>=0.7',
                              ],
                 'edPDB': ['Bio'],
                 },
