@@ -1,6 +1,9 @@
-# GromacsWrapper -- numerical helper functions for analysis
+# GromacsWrapper numkit -- numerical helper functions for analysis
 # Copyright (c) 2010 Oliver Beckstein <orbeckst@gmail.com>
-# Released under the GNU Public License version 3 (or higher)
+# numkit is released under the "Modified BSD Licence"
+#
+# numkit contains modified code from scipy
+
 """
 :mod:`gromacs.analysis.numkit` --- Mathematical analysis helper functions
 =========================================================================
