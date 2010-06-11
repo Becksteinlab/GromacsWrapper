@@ -157,7 +157,7 @@ class QuantityWithError(object):
         """
         if isinstance(other, QuantityWithError):
             return other
-        return QuantityWithError(*QuantityWithError._value_error(other))
+        return QuantityWithError(*QuantityWithError._astuple(other))
 
     @staticmethod
     def _astuple(other):
@@ -171,8 +171,12 @@ class QuantityWithError(object):
             qid = QID()  # empty for quantities without error
         return val, err, qid 
 
+    def astuple(self):
+        """Return tuple (value,error)."""
+        return self.value, self.error
+
     def __repr__(self):
-        return "%g (%g)" % (self.value, self.error)
+        return "%g (%g)" % self.astuple()
 
     # NOTE: all the special casing should really be done with the covariance
     # formulae. Also, check that a+a+a etc produces sensible output...
