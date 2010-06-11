@@ -231,7 +231,7 @@ import warnings
 # These warnings should always be displayed because other parameters
 # can have changed, eg during interactive use.
 for w in (AutoCorrectionWarning, BadParameterWarning, UsageWarning,  
-          GromacsFailureWarning, GromacsValueWarning):
+          GromacsFailureWarning, GromacsValueWarning, LowAccuracyWarning):
     warnings.simplefilter('always', category=w)
 del w
 
