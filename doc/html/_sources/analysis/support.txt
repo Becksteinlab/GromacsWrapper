@@ -1,10 +1,9 @@
-.. $Id$
-
 ========================
   Support modules
 ========================
 
 Support modules contain code that simplifies working with
-:class:`~gromacs.analysis.core.Simulation` instances.
+:class:`~gromacs.analysis.core.Simulation` instances. It also uses
+routines from :mod:`numkit`.
 
 .. automodule:: gromacs.analysis.collections

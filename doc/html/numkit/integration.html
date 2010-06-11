@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>numkit.integration — Numerical integration of data &mdash; GromacsWrapper v0.1.12 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1.12',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="GromacsWrapper v0.1.12 documentation" href="../index.html" />
+    <link rel="up" title="numkit — Numerical analysis toolkit" href="../numkit.html" />
+    <link rel="next" title="numkit.observables — Observables as quantities with errors" href="observables.html" />
+    <link rel="prev" title="numkit.timeseries — Time series manipulation and analysis" href="timeseries.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="observables.html" title="numkit.observables — Observables as quantities with errors"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="timeseries.html" title="numkit.timeseries — Time series manipulation and analysis"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">GromacsWrapper v0.1.12 documentation</a> &raquo;</li>
+          <li><a href="../auxiliary.html" >Auxiliary modules</a> &raquo;</li>
+          <li><a href="../numkit.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="numkit-integration-numerical-integration-of-data">
+<span id="module-numkit.integration"></span><h1><tt class="xref docutils literal"><span class="pre">numkit.integration</span></tt> &#8212; Numerical integration of data<a class="headerlink" href="#numkit-integration-numerical-integration-of-data" title="Permalink to this headline">¶</a></h1>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref docutils literal"><span class="pre">scipy.integrate</span></tt></p>
+</div>
+<dl class="function">
+<dt id="numkit.integration.simps_error">
+<tt class="descclassname">numkit.integration.</tt><tt class="descname">simps_error</tt><big>(</big><em>y</em>, <em>x=None</em>, <em>dx=1</em>, <em>axis=-1</em>, <em>even='avg'</em><big>)</big><a class="headerlink" href="#numkit.integration.simps_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Error on integral evaluated with <a class="reference external" href="http://mathworld.wolfram.com/SimpsonsRule.html">Simpson&#8217;s rule</a> from errors of points, y.</p>
+<p>Evaluate the integral with <tt class="xref docutils literal"><span class="pre">scipy.integrate.simps()</span></tt>. For a
+given vector <em>y</em> of errors on the function values, the error on
+the integral is calculated via propagation of errors.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>y</em></dt>
+<dd><p class="first last">errors for the tabulated values of the integrand f</p>
+</dd>
+<dt><em>x</em></dt>
+<dd><p class="first last">values of abscissa at which f was tabulated (can be <tt class="xref docutils literal"><span class="pre">None</span></tt>
+and then <em>dx</em> should be provided)</p>
+</dd>
+<dt><em>dx</em></dt>
+<dd><p class="first last">constant spacing of the abscissa</p>
+</dd>
+<dt><em>axis</em></dt>
+<dd><p class="first last">axis in <em>y</em> along which the data lies</p>
+</dd>
+<dt><em>even</em></dt>
+<dd><p class="first last">see <tt class="xref docutils literal"><span class="pre">scipy.integrate.simps()</span></tt> (&#8216;avg&#8217;, &#8216;first&#8217;, &#8216;last&#8217;)</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="exception">
+<dt id="numkit.integration.LowAccuracyWarning">
+<em class="property">exception </em><tt class="descclassname">numkit.integration.</tt><tt class="descname">LowAccuracyWarning</tt><a class="headerlink" href="#numkit.integration.LowAccuracyWarning" title="Permalink to this definition">¶</a></dt>
+<dd>Warns that results may possibly have low accuracy.</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="timeseries.html"
+                                  title="previous chapter"><tt class="docutils literal docutils literal"><span class="pre">numkit.timeseries</span></tt> &#8212; Time series manipulation and analysis</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="observables.html"
+                                  title="next chapter"><tt class="docutils literal"><span class="pre">numkit.observables</span></tt> &#8212; Observables as quantities with errors</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/numkit/integration.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="observables.html" title="numkit.observables — Observables as quantities with errors"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="timeseries.html" title="numkit.timeseries — Time series manipulation and analysis"
+             >previous</a> |</li>
+        <li><a href="../index.html">GromacsWrapper v0.1.12 documentation</a> &raquo;</li>
+          <li><a href="../auxiliary.html" >Auxiliary modules</a> &raquo;</li>
+          <li><a href="../numkit.html" ><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009-2010, Oliver Beckstein.
+      Last updated on Jun 11, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

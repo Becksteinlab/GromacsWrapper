@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>numkit.observables — Observables as quantities with errors &mdash; GromacsWrapper v0.1.12 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1.12',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="GromacsWrapper v0.1.12 documentation" href="../index.html" />
+    <link rel="up" title="numkit — Numerical analysis toolkit" href="../numkit.html" />
+    <link rel="next" title="vmd — Remote Tcl commands in VMD" href="../vmd.html" />
+    <link rel="prev" title="numkit.integration — Numerical integration of data" href="integration.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="../vmd.html" title="vmd — Remote Tcl commands in VMD"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="integration.html" title="numkit.integration — Numerical integration of data"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">GromacsWrapper v0.1.12 documentation</a> &raquo;</li>
+          <li><a href="../auxiliary.html" >Auxiliary modules</a> &raquo;</li>
+          <li><a href="../numkit.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="numkit-observables-observables-as-quantities-with-errors">
+<span id="module-numkit.observables"></span><h1><tt class="xref docutils literal"><span class="pre">numkit.observables</span></tt> &#8212; Observables as quantities with errors<a class="headerlink" href="#numkit-observables-observables-as-quantities-with-errors" title="Permalink to this headline">¶</a></h1>
+<dl class="docutils">
+<dt>Example showing how to use <a title="numkit.observables.QuantityWithError" class="reference internal" href="#numkit.observables.QuantityWithError"><tt class="xref docutils literal"><span class="pre">QuantityWithError</span></tt></a>:</dt>
+<dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">numkit.observables</span> <span class="kn">import</span> <span class="n">QuantityWithError</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">QuantityWithError</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a2</span> <span class="o">=</span> <span class="n">QuantityWithError</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>  <span class="c"># 2nd independent measurement of a</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a3</span> <span class="o">=</span> <span class="n">QuantityWithError</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>  <span class="c"># 3rd independent measurement of a</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">QuantityWithError</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">+</span><span class="n">a</span>
+<span class="go">4 (2)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">+</span><span class="n">a2</span>
+<span class="go">4 (1.41421)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">a</span><span class="o">+</span><span class="n">a</span><span class="o">+</span><span class="n">a</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span>
+<span class="go">2 (1)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">a</span><span class="o">+</span><span class="n">a2</span><span class="o">+</span><span class="n">a3</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span>
+<span class="go">2 (0.57735)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">/</span><span class="n">b</span>
+<span class="go">-2 (1.41421)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<p>Note that each quantity has an identity: it makes a difference to the
+error of a combined quantity such as a+a if the inputs are independent
+measurements of the same.</p>
+<dl class="class">
+<dt id="numkit.observables.QuantityWithError">
+<em class="property">class </em><tt class="descclassname">numkit.observables.</tt><tt class="descname">QuantityWithError</tt><big>(</big><em>value</em>, <em>error=None</em>, <em>qid=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#numkit.observables.QuantityWithError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number with error and basic error propagation arithmetic.</p>
+<p>The quantity is assumed to be a mean of an observable
+(<tt class="xref docutils literal"><span class="pre">value</span></tt>) with an associated (Gaussian) error
+<tt class="xref docutils literal"><span class="pre">error</span></tt> (which is the sqrt of the variance
+<tt class="xref docutils literal"><span class="pre">variance</span></tt> of the data).</p>
+<p>The covariance is not taken into account in the <a class="reference external" href="http://mathworld.wolfram.com/ErrorPropagation.html">error
+propagation</a> (i.e. all quantities are assumed to be uncorrelated)
+with the exception of the case of binary relations of the quantity
+with itself. For instance, a*a is correctly interpreted as
+a**2). However, this behaviour is not guaranteed to work for any
+complicated expression.</p>
+<p>When combining with pure numbers you have to wrap these numbers if
+they are to the left of a <a title="numkit.observables.QuantityWithError" class="reference internal" href="#numkit.observables.QuantityWithError"><tt class="xref docutils literal"><span class="pre">QuantityWithError</span></tt></a>, e.g.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">QuantityWithError</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mi">1</span><span class="o">/</span><span class="n">a</span>
+<span class="go">TypeError</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">QuantityWithError</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span><span class="o">/</span><span class="n">a</span>
+<span class="go">0.5 (0.25)</span>
+</pre></div>
+</div>
+<dl class="staticmethod">
+<dt id="numkit.observables.QuantityWithError.asQuantityWithError">
+<em class="property">static </em><tt class="descname">asQuantityWithError</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#numkit.observables.QuantityWithError.asQuantityWithError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a <a title="numkit.observables.QuantityWithError" class="reference internal" href="#numkit.observables.QuantityWithError"><tt class="xref docutils literal"><span class="pre">QuantityWithError</span></tt></a>.</p>
+<p>If the input is already a <a title="numkit.observables.QuantityWithError" class="reference internal" href="#numkit.observables.QuantityWithError"><tt class="xref docutils literal"><span class="pre">QuantityWithError</span></tt></a> then it is
+returned itself. This is important because a new quantity x&#8217; would be
+considered independent from the original one x and thus lead to
+different error estimates for quantities such as x*x versus x*x&#8217;.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="numkit.observables.QuantityWithError.copy">
+<tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#numkit.observables.QuantityWithError.copy" title="Permalink to this definition">¶</a></dt>
+<dd>Create a new quantity with the same value and error.</dd></dl>
+
+<dl class="method">
+<dt id="numkit.observables.QuantityWithError.deepcopy">
+<tt class="descname">deepcopy</tt><big>(</big><big>)</big><a class="headerlink" href="#numkit.observables.QuantityWithError.deepcopy" title="Permalink to this definition">¶</a></dt>
+<dd>Create an exact copy with the same identity.</dd></dl>
+
+<dl class="method">
+<dt id="numkit.observables.QuantityWithError.isSame">
+<tt class="descname">isSame</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#numkit.observables.QuantityWithError.isSame" title="Permalink to this definition">¶</a></dt>
+<dd><p>True if <em>other</em> is the same observable.</p>
+<p>Also True if <em>other</em> was derived from <em>self</em> without using any
+other independent quantities with errors.</p>
+</dd></dl>
+
+</dd></dl>
+
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">Various packages that describe quantities with units. </p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="integration.html"
+                                  title="previous chapter"><tt class="docutils literal docutils literal"><span class="pre">numkit.integration</span></tt> &#8212; Numerical integration of data</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="../vmd.html"
+                                  title="next chapter"><tt class="docutils literal docutils literal"><span class="pre">vmd</span></tt> &#8212; Remote Tcl commands in VMD</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/numkit/observables.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../vmd.html" title="vmd — Remote Tcl commands in VMD"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="integration.html" title="numkit.integration — Numerical integration of data"
+             >previous</a> |</li>
+        <li><a href="../index.html">GromacsWrapper v0.1.12 documentation</a> &raquo;</li>
+          <li><a href="../auxiliary.html" >Auxiliary modules</a> &raquo;</li>
+          <li><a href="../numkit.html" ><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009-2010, Oliver Beckstein.
+      Last updated on Jun 11, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

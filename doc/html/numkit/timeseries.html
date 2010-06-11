@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>numkit.timeseries — Time series manipulation and analysis &mdash; GromacsWrapper v0.1.12 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1.12',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="GromacsWrapper v0.1.12 documentation" href="../index.html" />
+    <link rel="up" title="numkit — Numerical analysis toolkit" href="../numkit.html" />
+    <link rel="next" title="numkit.integration — Numerical integration of data" href="integration.html" />
+    <link rel="prev" title="numkit.fitting — Fitting data" href="fitting.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="integration.html" title="numkit.integration — Numerical integration of data"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="fitting.html" title="numkit.fitting — Fitting data"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">GromacsWrapper v0.1.12 documentation</a> &raquo;</li>
+          <li><a href="../auxiliary.html" >Auxiliary modules</a> &raquo;</li>
+          <li><a href="../numkit.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="numkit-timeseries-time-series-manipulation-and-analysis">
+<span id="module-numkit.timeseries"></span><h1><tt class="xref docutils literal"><span class="pre">numkit.timeseries</span></tt> &#8212; Time series manipulation and analysis<a class="headerlink" href="#numkit-timeseries-time-series-manipulation-and-analysis" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="numkit.timeseries.autocorrelation_fft">
+<tt class="descclassname">numkit.timeseries.</tt><tt class="descname">autocorrelation_fft</tt><big>(</big><em>series</em>, <em>remove_mean=True</em>, <em>paddingcorrection=True</em>, <em>normalize=False</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#numkit.timeseries.autocorrelation_fft" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the auto correlation function.</p>
+<blockquote>
+autocorrelation_fft(series,remove_mean=False,**kwargs) &#8211;&gt; acf</blockquote>
+<p>The time series is correlated with itself across its whole length. Only the
+[0,len(series)[ interval is returned.</p>
+<p>By default, the mean of the series is subtracted and the correlation of the
+fluctuations around the mean are investigated.</p>
+<p>For the default setting remove_mean=True, acf[0] equals the variance of
+the series, acf[0] = Var(series) = &lt;(series - &lt;series&gt;)**2&gt;.</p>
+<p>Optional:</p>
+<ul class="simple">
+<li>The series can be normalized to its 0-th element so that acf[0] == 1.</li>
+<li>For calculating the acf, 0-padding is used. The ACF should be corrected
+for the 0-padding (the values for larger lags are increased) unless
+mode=&#8217;valid&#8217; is set (see below).</li>
+</ul>
+<p>Note that the series for mode=&#8217;same&#8217;|&#8217;full&#8217; is inaccurate for long times
+and should probably be truncated at 1/2*len(series)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>series</em></dt>
+<dd><p class="first last">(time) series, a 1D numpy array of length N</p>
+</dd>
+<dt><em>remove_mean</em></dt>
+<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">False</span></tt>: use series as is;
+<tt class="xref docutils literal"><span class="pre">True</span></tt>: subtract mean(series) from series [<tt class="xref docutils literal"><span class="pre">True</span></tt>]</p>
+</dd>
+<dt><em>paddingcorrection</em></dt>
+<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">False</span></tt>: corrected for 0-padding; <tt class="xref docutils literal"><span class="pre">True</span></tt>: return as is it is.
+(the latter is appropriate for periodic signals).
+The correction for element 0=&lt;i&lt;N amounts to a factor N/(N-i). Only 
+applied for modes != &#8220;valid&#8221;       [<tt class="xref docutils literal"><span class="pre">True</span></tt>]</p>
+</dd>
+<dt><em>normalize</em></dt>
+<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt> divides by acf[0] so that the first element is 1;
+<tt class="xref docutils literal"><span class="pre">False</span></tt> leaves un-normalized [<tt class="xref docutils literal"><span class="pre">False</span></tt>]</p>
+</dd>
+<dt><em>mode</em></dt>
+<dd><p class="first last">&#8220;full&#8221; | &#8220;same&#8221; | &#8220;valid&#8221;: see <tt class="xref docutils literal"><span class="pre">scipy.signal.fftconvolve()</span></tt>
+[&#8220;full&#8221;]</p>
+</dd>
+<dt><em>kwargs</em></dt>
+<dd><p class="first last">other keyword arguments for <tt class="xref docutils literal"><span class="pre">scipy.signal.fftconvolve()</span></tt></p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="numkit.timeseries.tcorrel">
+<tt class="descclassname">numkit.timeseries.</tt><tt class="descname">tcorrel</tt><big>(</big><em>x</em>, <em>y</em>, <em>nstep=100</em>, <em>debug=False</em><big>)</big><a class="headerlink" href="#numkit.timeseries.tcorrel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the correlation time and an estimate of the error of &lt;y&gt;.</p>
+<p>The autocorrelation function f(t) is calculated via FFT on every <em>nstep</em> of
+the <strong>fluctuations</strong> of the data around the mean (y-&lt;y&gt;). The normalized
+ACF f(t)/f(0) is assumed to decay exponentially, f(t)/f(0) = exp(-t/tc) and
+the decay constant tc is estimated as the integral of the ACF from the
+start up to its first root.</p>
+<p>See Frenkel and Smit, Academic Press, San Diego 2002, p526.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><em>nstep</em> should be set sufficiently large so that there are less
+than ~50,000 entries in the input.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<dt><em>x</em></dt>
+<dd><p class="first last">1D array of abscissa values (typically time)</p>
+</dd>
+<dt><em>y</em></dt>
+<dd><p class="first last">1D array of the ibservable y(x)</p>
+</dd>
+<dt><em>nstep</em></dt>
+<dd><p class="first last">only analyze every <em>nstep</em> datapoint to speed up calculation
+[100]</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">dictionary with entries <em>tc</em> (decay constant in units of <em>x</em>),
+<em>t0</em> (value of the first root along x (y(t0) = 0)), <em>sigma</em> (error estimate
+for the mean of y, &lt;y&gt;, corrected for correlations in the data).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="fitting.html"
+                                  title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">numkit.fitting</span></tt> &#8212; Fitting data</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="integration.html"
+                                  title="next chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">numkit.integration</span></tt> &#8212; Numerical integration of data</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="../_sources/numkit/timeseries.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="../search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="integration.html" title="numkit.integration — Numerical integration of data"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="fitting.html" title="numkit.fitting — Fitting data"
+             >previous</a> |</li>
+        <li><a href="../index.html">GromacsWrapper v0.1.12 documentation</a> &raquo;</li>
+          <li><a href="../auxiliary.html" >Auxiliary modules</a> &raquo;</li>
+          <li><a href="../numkit.html" ><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009-2010, Oliver Beckstein.
+      Last updated on Jun 11, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>

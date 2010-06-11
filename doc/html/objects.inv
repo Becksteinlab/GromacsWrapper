@@ -1,7 +1,7 @@
 # Sphinx inventory version 1
 # Project: GromacsWrapper
 # Version: 0.1
-vmd mod vmd.html
+numkit.integration mod numkit/integration.html
 gromacs.run mod gromacs/blocks/simulation.html
 staging.Local mod staging/Local.html
 edPDB.log mod edpdb/helpers.html
@@ -10,14 +10,18 @@ gromacs.analysis.plugins.dist mod analysis/plugins.html
 gromacs.tools mod gromacs/tools.html
 gromacs.utilities mod gromacs/core/utilities.html
 gromacs.core mod gromacs/core/core.html
+numkit.fitting mod numkit/fitting.html
+numkit.observables mod numkit/observables.html
 gromacs.cbook mod gromacs/blocks/cbook.html
 edPDB.cbook mod edpdb/cbook.html
 gromacs.analysis.plugins mod analysis/plugins.html
 gromacs.analysis.plugins.gridmatmd mod analysis/plugins.html
 gromacs.formats mod gromacs/core/formats.html
 gromacs.qsub mod gromacs/blocks/qsub.html
+numkit.timeseries mod numkit/timeseries.html
 edPDB.utilities mod edpdb/helpers.html
 gromacs.analysis.collections mod analysis/support.html
+vmd mod vmd.html
 gromacs.config mod gromacs/core/config.html
 gromacs.setup mod gromacs/blocks/setup.html
 edPDB mod edpdb/init.html
@@ -64,8 +68,10 @@ gromacs.qsub.generate_submit_scripts function gromacs/blocks/qsub.html
 gromacs.analysis.plugins.StripWater.worker_class attribute analysis/plugins.html
 gromacs.tools.G_sas class gromacs/tools.html
 edPDB.selections.ProteinSelect class edpdb/selections.html
+numkit.timeseries.autocorrelation_fft function numkit/timeseries.html
 gromacs.analysis.plugins.Ls.worker_class attribute analysis/plugins.html
 gromacs.config.get_template function gromacs/core/config.html
+numkit.observables.QuantityWithError.copy method numkit/observables.html
 gromacs.run.check_mdrun_success function gromacs/blocks/simulation.html
 edPDB.cbook.PDB.extract_resnames method edpdb/cbook.html
 gromacs.cbook.make_ndx_captured function gromacs/blocks/cbook.html
@@ -82,8 +88,10 @@ gromacs.qsub.QueuingSystem.flag method gromacs/blocks/qsub.html
 edPDB.cbook.PDB.residues_by_resname method edpdb/cbook.html
 gromacs.tools.G_confrms class gromacs/tools.html
 edPDB.xpdb.AtomGroup class edpdb/xpdb.html
+numkit.integration.simps_error function numkit/integration.html
 gromacs.analysis.core.Worker.savefig method analysis/core.html
 gromacs.core.Command.transform_args method gromacs/core/core.html
+numkit.fitting.FitExp class numkit/fitting.html
 gromacs.run.MDrunner.mpiexec attribute gromacs/blocks/simulation.html
 gromacs.formats.uniqueNDX.join method gromacs/core/formats.html
 staging.Local.Job.save method staging/Local.html
@@ -104,6 +112,7 @@ gromacs.ParseError exception gromacs/init.html
 gromacs.tools.G_velacc class gromacs/tools.html
 gromacs.setup.em_schedule function gromacs/blocks/setup.html
 gromacs.cbook.add_mdp_includes function gromacs/blocks/cbook.html
+numkit.fitting.Pearson_r function numkit/fitting.html
 gromacs.tools.Tpbconv class gromacs/tools.html
 gromacs.utilities.withextsep function gromacs/core/utilities.html
 gromacs.utilities.unlink_f function gromacs/core/utilities.html
@@ -119,6 +128,7 @@ gromacs.config.gmx_tools data gromacs/core/config.html
 edPDB.selections.ResidueSelect class edpdb/selections.html
 gromacs.analysis.plugins.Energy.Energy class analysis/plugins.html
 gromacs.tools.G_dipoles class gromacs/tools.html
+gromacs.core.PopenWithInput class gromacs/core/core.html
 gromacs.run.MDrunner.run method gromacs/blocks/simulation.html
 gromacs.tools.G_gyrate class gromacs/tools.html
 gromacs.tools.G_potential class gromacs/tools.html
@@ -130,6 +140,7 @@ gromacs.analysis.core.Simulation.run method analysis/core.html
 gromacs.qsub.QueuingSystem.has_arrays method gromacs/blocks/qsub.html
 gromacs.run.MDrunner.mdrun attribute gromacs/blocks/simulation.html
 gromacs.analysis.plugins.dist.Mindist.plot method analysis/plugins.html
+gromacs.formats.XVG.tc attribute gromacs/core/formats.html
 edPDB.cbook.PDB.extract_lipids method edpdb/cbook.html
 gromacs.analysis.plugins.StripWater.StripWater class analysis/plugins.html
 gromacs.analysis.core.Worker.topdir method analysis/core.html
@@ -145,6 +156,7 @@ gromacs.qsub.Manager._qscript attribute gromacs/blocks/qsub.html
 gromacs.cbook.IndexBuilder class gromacs/blocks/cbook.html
 gromacs.core.GromacsCommand.failuremodes attribute gromacs/core/core.html
 gromacs.run.MDrunner.prehook method gromacs/blocks/simulation.html
+numkit.fitting.FitExp2 class numkit/fitting.html
 gromacs.analysis.core.Simulation.plot method analysis/core.html
 gromacs.setup.solvate function gromacs/blocks/setup.html
 gromacs.analysis.core.Simulation.has_plugin method analysis/core.html
@@ -156,7 +168,7 @@ gromacs.tools.Pdb2gmx class gromacs/tools.html
 gromacs.config.gmx_extra_tools data gromacs/core/config.html
 gromacs.analysis.plugins.__plugins__ data analysis/plugins.html
 gromacs.setup.energy_minimize function gromacs/blocks/setup.html
-gromacs.core.PopenWithInput class gromacs/core/core.html
+gromacs.formats.XVG.set_correlparameters method gromacs/core/formats.html
 gromacs.tools.G_enemat class gromacs/tools.html
 gromacs.tools.G_flux class gromacs/tools.html
 gromacs.formats.NDX.get method gromacs/core/formats.html
@@ -186,6 +198,7 @@ gromacs.tools.G_spol class gromacs/tools.html
 gromacs.formats.NDX.format attribute gromacs/core/formats.html
 gromacs.tools.Eneconv class gromacs/tools.html
 gromacs.tools.GromacsCommandMultiIndex.run method gromacs/tools.html
+numkit.integration.LowAccuracyWarning exception numkit/integration.html
 gromacs.analysis.Simulation.set_plugin method analysis/core.html
 gromacs.formats.XVG.plot method gromacs/core/formats.html
 gromacs.analysis.plugins.dist.Mindist.hist attribute analysis/plugins.html
@@ -193,6 +206,7 @@ gromacs.utilities.Timedelta class gromacs/core/utilities.html
 gromacs.analysis.plugins.Distances.Distances class analysis/plugins.html
 gromacs.GromacsImportWarning exception gromacs/init.html
 gromacs.tools.X2top class gromacs/tools.html
+gromacs.LowAccuracyWarning exception gromacs/init.html
 edPDB.selections.residues_by_selection function edpdb/selections.html
 gromacs.cbook.Transformer.strip_water method gromacs/blocks/cbook.html
 gromacs.utilities.FileUtils class gromacs/core/utilities.html
@@ -200,6 +214,8 @@ gromacs.config.loglevel_console data gromacs/core/config.html
 edPDB.cbook.PDB.write method edpdb/cbook.html
 gromacs.cbook.trj_fitandcenter function gromacs/blocks/cbook.html
 edPDB.cbook.PDB.extract_protein method edpdb/cbook.html
+numkit.fitting.FitLin class numkit/fitting.html
+numkit.fitting.FitFunc.fit method numkit/fitting.html
 gromacs.qsub.Manager.get method gromacs/blocks/qsub.html
 gromacs.GromacsFailureWarning exception gromacs/init.html
 gromacs.qsub.Manager.get_dir method gromacs/blocks/qsub.html
@@ -210,10 +226,13 @@ gromacs.core.GromacsCommand.help method gromacs/core/core.html
 gromacs.utilities.FileUtils.filename method gromacs/core/utilities.html
 gromacs.utilities.openany function gromacs/core/utilities.html
 gromacs.qsub.Manager.setup_posres method gromacs/blocks/qsub.html
+numkit.fitting.FitFunc.initial_values method numkit/fitting.html
+numkit.observables.QuantityWithError class numkit/observables.html
 gromacs.analysis.Simulation.add_plugin method analysis/core.html
 gromacs.cbook.IndexBuilder.gmx_resid method gromacs/blocks/cbook.html
 gromacs.MissingDataWarning exception gromacs/init.html
 gromacs.cbook.Frames.delete_frames method gromacs/blocks/cbook.html
+numkit.timeseries.tcorrel function numkit/timeseries.html
 gromacs.tools.G_sham class gromacs/tools.html
 gromacs.qsub.Manager.job_done method gromacs/blocks/qsub.html
 edPDB.selections.ResnameSelect class edpdb/selections.html
@@ -258,6 +277,7 @@ gromacs.analysis.plugins.Trajectories class analysis/plugins.html
 gromacs.config.loglevel_file data gromacs/core/config.html
 gromacs.tools.G_msd class gromacs/tools.html
 gromacs.qsub.Manager._scratchdir attribute gromacs/blocks/qsub.html
+numkit.fitting.FitFunc class numkit/fitting.html
 gromacs.cbook.Frames class gromacs/blocks/cbook.html
 edPDB.selections.canonical function edpdb/selections.html
 gromacs.formats.NDX.set method gromacs/core/formats.html
@@ -291,6 +311,7 @@ gromacs.run.MDrunner.check_success method gromacs/blocks/simulation.html
 gromacs.analysis.plugins.ProteinOnly.worker_class attribute analysis/plugins.html
 gromacs.analysis.core.Worker.plugindir method analysis/core.html
 gromacs.analysis.core.Simulation.set_plugin method analysis/core.html
+numkit.observables.QuantityWithError.deepcopy method numkit/observables.html
 gromacs.tools.Genconf class gromacs/tools.html
 gromacs.qsub.QueuingSystem.array method gromacs/blocks/qsub.html
 gromacs.tools.G_saltbr class gromacs/tools.html
@@ -300,6 +321,7 @@ gromacs.analysis.plugins.CysAccessibility class analysis/plugins.html
 gromacs.setup.CONC_WATER data gromacs/blocks/setup.html
 gromacs.AutoCorrectionWarning exception gromacs/init.html
 gromacs.setup.vdw_lipid_resnames data gromacs/blocks/setup.html
+gromacs.formats.XVG.error attribute gromacs/core/formats.html
 gromacs.tools.G_rotacf class gromacs/tools.html
 gromacs.config.setup function gromacs/core/config.html
 gromacs.analysis.plugins.RMSD class analysis/plugins.html
@@ -333,6 +355,7 @@ gromacs.tools.G_rama class gromacs/tools.html
 gromacs.formats.XVG.array attribute gromacs/core/formats.html
 gromacs.cbook.Transformer.fit method gromacs/blocks/cbook.html
 gromacs.core.GromacsCommand.Popen method gromacs/core/core.html
+numkit.fitting.FitFunc.f_factory method numkit/fitting.html
 gromacs.tools.Trjconv class gromacs/tools.html
 gromacs.tools.Gmxdump class gromacs/tools.html
 gromacs.tools.G_current class gromacs/tools.html
@@ -340,6 +363,7 @@ gromacs.analysis.plugins.RMSF.RMSF class analysis/plugins.html
 gromacs.config.configdir data gromacs/core/config.html
 gromacs.cbook.get_volume function gromacs/blocks/cbook.html
 gromacs.tools.G_mindist class gromacs/tools.html
+numkit.fitting.linfit function numkit/fitting.html
 gromacs.cbook.cat function gromacs/blocks/cbook.html
 staging.SunGridEngine.get_fields_from_arraylist function staging/SunGridEngine.html
 gromacs.GromacsError exception gromacs/init.html
@@ -383,12 +407,14 @@ staging.SunGridEngine.Job.stage method staging/SunGridEngine.html
 gromacs.qsub.Manager.put method gromacs/blocks/qsub.html
 gromacs.tools.Grompp class gromacs/tools.html
 gromacs.qsub.Manager.ndependent method gromacs/blocks/qsub.html
+numkit.observables.QuantityWithError.asQuantityWithError staticmethod numkit/observables.html
 gromacs.analysis.plugins.COM.COM class analysis/plugins.html
 gromacs.cbook.create_portable_topology function gromacs/blocks/cbook.html
 gromacs.setup.topology function gromacs/blocks/setup.html
 gromacs.analysis.plugins.dist.GdistData class analysis/plugins.html
 gromacs.tools.Wheel class gromacs/tools.html
 gromacs.analysis.plugins.gridmatmd.Grid2D.imshow method analysis/plugins.html
+numkit.observables.QuantityWithError.isSame method numkit/observables.html
 gromacs.cbook.get_ndx_groups function gromacs/blocks/cbook.html
 gromacs.config.load_scripts data gromacs/core/config.html
 gromacs.config.get_templates function gromacs/core/config.html

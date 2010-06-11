@@ -1,0 +1,28 @@
+.. Copyright (c) 2010 Oliver Beckstein <orbeckst@gmail.com>
+.. Licence: Modified BSD
+
+:Author:  Oliver Beckstein <orbeckst@gmail.com>
+:Year:    2010
+:Licence: Modified BSD
+
+==============================================
+ :mod:`numkit` --- Numerical analysis toolkit
+==============================================
+
+A collection of functions and classes built on top of NumPy and SciPy
+to aid the numerical analysis of data. It is geared towards the use of
+data coming from molecular simulations, namely time series. It is used
+in :mod:`gromacs.analysis`.
+
+.. SeeAlso:: Core functionality is based on :mod:`scipy`.
+
+Contents:
+
+.. toctree::
+   :maxdepth: 2
+
+   numkit/fitting
+   numkit/timeseries
+   numkit/integration
+   numkit/observables
+
