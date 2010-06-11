@@ -14,7 +14,9 @@ to aid the numerical analysis of data. It is geared towards the use of
 data coming from molecular simulations, namely time series. It is used
 in :mod:`gromacs.analysis`.
 
-.. SeeAlso:: Core functionality is based on :mod:`scipy`.
+.. SeeAlso:: Core functionality is based on SciPy_ (:mod:`scipy` module).
+
+.. _SciPy: http://www.scipy.org/
 
 Contents:
 

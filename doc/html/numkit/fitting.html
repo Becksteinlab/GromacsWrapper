@@ -123,7 +123,7 @@ should occur by chance.)</p>
 <em class="property">class </em><tt class="descclassname">numkit.fitting.</tt><tt class="descname">FitFunc</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="headerlink" href="#numkit.fitting.FitFunc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit a function f to data (x,y) using the method of least squares.</p>
 <p>The function is fitted when the object is created, using
-<tt class="xref docutils literal"><span class="pre">scipy.optimize.leastsq()</span></tt>. One must derive from the base class
+<a title="(in SciPy v0.8.dev)" class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.leastsq.html#scipy.optimize.leastsq"><tt class="xref docutils literal"><span class="pre">scipy.optimize.leastsq()</span></tt></a>. One must derive from the base class
 <a title="numkit.fitting.FitFunc" class="reference internal" href="#numkit.fitting.FitFunc"><tt class="xref docutils literal"><span class="pre">FitFunc</span></tt></a> and override the <a title="numkit.fitting.FitFunc.f_factory" class="reference internal" href="#numkit.fitting.FitFunc.f_factory"><tt class="xref docutils literal"><span class="pre">FitFunc.f_factory()</span></tt></a> (including
 the definition of an appropriate local <tt class="xref docutils literal"><span class="pre">fitfunc()</span></tt> function) and
 <a title="numkit.fitting.FitFunc.initial_values" class="reference internal" href="#numkit.fitting.FitFunc.initial_values"><tt class="xref docutils literal"><span class="pre">FitFunc.initial_values()</span></tt></a> appropriately. See the examples for a
@@ -135,7 +135,7 @@ or a 3-parameter double exponential fit <a title="numkit.fitting.FitExp2" class=
 <dt><tt class="xref docutils literal"><span class="pre">FitFunc.parameters</span></tt></dt>
 <dd>list of parameters of the fit</dd>
 <dt><tt class="xref docutils literal"><span class="pre">FitFunc.message</span></tt></dt>
-<dd>message from <tt class="xref docutils literal"><span class="pre">scipy.optimize.leastsq()</span></tt></dd>
+<dd>message from <a title="(in SciPy v0.8.dev)" class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.leastsq.html#scipy.optimize.leastsq"><tt class="xref docutils literal"><span class="pre">scipy.optimize.leastsq()</span></tt></a></dd>
 </dl>
 </dd>
 </dl>
