@@ -53,43 +53,43 @@
   <div class="section" id="module-gromacs.analysis.core">
 <h1>Analysis core modules<a class="headerlink" href="#module-gromacs.analysis.core" title="Permalink to this headline">¶</a></h1>
 <p>The core modules contain the important classes
-<a title="gromacs.analysis.core.Simulation" class="reference internal" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> and
-<a title="gromacs.analysis.core.Plugin" class="reference internal" href="#gromacs.analysis.core.Plugin"><tt class="xref docutils literal"><span class="pre">Plugin</span></tt></a>. An analysis class is derived from
-<a title="gromacs.analysis.Simulation" class="reference internal" href="#gromacs.analysis.Simulation"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.Simulation</span></tt></a> and additional plugins from
-<a title="" class="reference external" href="plugins.html#module-gromacs.analysis.plugins"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.plugins</span></tt></a> are added to the instance; these plugin classes
-must be derived from <a title="gromacs.analysis.core.Plugin" class="reference internal" href="#gromacs.analysis.core.Plugin"><tt class="xref docutils literal"><span class="pre">Plugin</span></tt></a>.</p>
+<a title="gromacs.analysis.core.Simulation" class="reference" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> and
+<a title="gromacs.analysis.core.Plugin" class="reference" href="#gromacs.analysis.core.Plugin"><tt class="xref docutils literal"><span class="pre">Plugin</span></tt></a>. An analysis class is derived from
+<a title="gromacs.analysis.Simulation" class="reference" href="#gromacs.analysis.Simulation"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.Simulation</span></tt></a> and additional plugins from
+<a title="" class="reference" href="plugins.html#module-gromacs.analysis.plugins"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.plugins</span></tt></a> are added to the instance; these plugin classes
+must be derived from <a title="gromacs.analysis.core.Plugin" class="reference" href="#gromacs.analysis.core.Plugin"><tt class="xref docutils literal"><span class="pre">Plugin</span></tt></a>.</p>
 <div class="section" id="gromacs-analysis-analysis-package-overview">
 <h2><tt class="xref docutils literal"><span class="pre">gromacs.analysis</span></tt> &#8211; Analysis Package Overview<a class="headerlink" href="#gromacs-analysis-analysis-package-overview" title="Permalink to this headline">¶</a></h2>
 <p>The <tt class="xref docutils literal"><span class="pre">gromacs.analysis</span></tt> package is a framework for analyzing Gromacs MD
-trajectories. The basic object is the <a title="gromacs.analysis.Simulation" class="reference internal" href="#gromacs.analysis.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> class. For a
-particular project one has to derive a class from <a title="gromacs.analysis.Simulation" class="reference internal" href="#gromacs.analysis.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> and add
-analysis plugin classes (from <a title="" class="reference external" href="plugins.html#module-gromacs.analysis.plugins"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.plugins</span></tt></a>) for specific
+trajectories. The basic object is the <a title="gromacs.analysis.Simulation" class="reference" href="#gromacs.analysis.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> class. For a
+particular project one has to derive a class from <a title="gromacs.analysis.Simulation" class="reference" href="#gromacs.analysis.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> and add
+analysis plugin classes (from <a title="" class="reference" href="plugins.html#module-gromacs.analysis.plugins"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.plugins</span></tt></a>) for specific
 analysis tasks. This is slightly cumbersome but flexible.</p>
 <p>New analysis plugins should follow the API sketched out in
 <tt class="xref docutils literal"><span class="pre">gromacs.analysis.core</span></tt>; see an example for use there.</p>
 <p>Right now the number of plugins is limited and simply demonstrates how to use
 the framework in principle. If you would like to contribute your own plugins
-feel free to send then to the <a class="reference external" href="mailto:oliver&#46;beckstein&#37;&#52;&#48;bioch&#46;ox&#46;ac&#46;uk">package author</a>. If they have been written
+feel free to send then to the <a class="reference" href="mailto:oliver&#46;beckstein&#37;&#52;&#48;bioch&#46;ox&#46;ac&#46;uk">package author</a>. If they have been written
 according to the API they will be added to the distribution and of course you
 will be acknowledged in the list of plugin authors in
-<a title="" class="reference external" href="plugins.html#module-gromacs.analysis.plugins"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.plugins</span></tt></a>.</p>
+<a title="" class="reference" href="plugins.html#module-gromacs.analysis.plugins"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.plugins</span></tt></a>.</p>
 <div class="section" id="simulation-class">
 <h3>Simulation class<a class="headerlink" href="#simulation-class" title="Permalink to this headline">¶</a></h3>
-<p>The <a title="gromacs.analysis.Simulation" class="reference internal" href="#gromacs.analysis.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> class is central for doing analysis. The user can
+<p>The <a title="gromacs.analysis.Simulation" class="reference" href="#gromacs.analysis.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> class is central for doing analysis. The user can
 derive a custom analysis class that pre-defines values for plugins as seen in
-the <a class="reference internal" href="#example">Example</a>.</p>
+the <a class="reference" href="#example">Example</a>.</p>
 <dl class="class">
 <dt id="gromacs.analysis.Simulation">
 <em class="property">class </em><tt class="descclassname">gromacs.analysis.</tt><tt class="descname">Simulation</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.analysis.Simulation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class that represents one simulation.</p>
 <p>Analysis capabilities are added via plugins.</p>
 <ol class="arabic simple">
-<li>Set the <em>active plugin</em> with the <a title="gromacs.analysis.Simulation.set_plugin" class="reference internal" href="#gromacs.analysis.Simulation.set_plugin"><tt class="xref docutils literal"><span class="pre">Simulation.set_plugin()</span></tt></a> method.</li>
+<li>Set the <em>active plugin</em> with the <a title="gromacs.analysis.Simulation.set_plugin" class="reference" href="#gromacs.analysis.Simulation.set_plugin"><tt class="xref docutils literal"><span class="pre">Simulation.set_plugin()</span></tt></a> method.</li>
 <li>Analyze the trajectory with the active plugin by calling the 
-<a title="gromacs.analysis.Simulation.run" class="reference internal" href="#gromacs.analysis.Simulation.run"><tt class="xref docutils literal"><span class="pre">Simulation.run()</span></tt></a> method.</li>
-<li>Analyze the output from <a title="gromacs.analysis.Simulation.run" class="reference internal" href="#gromacs.analysis.Simulation.run"><tt class="xref docutils literal"><span class="pre">run()</span></tt></a> with <a title="gromacs.analysis.Simulation.analyze" class="reference internal" href="#gromacs.analysis.Simulation.analyze"><tt class="xref docutils literal"><span class="pre">Simulation.analyze()</span></tt></a>; results are stored 
+<a title="gromacs.analysis.Simulation.run" class="reference" href="#gromacs.analysis.Simulation.run"><tt class="xref docutils literal"><span class="pre">Simulation.run()</span></tt></a> method.</li>
+<li>Analyze the output from <a title="gromacs.analysis.Simulation.run" class="reference" href="#gromacs.analysis.Simulation.run"><tt class="xref docutils literal"><span class="pre">run()</span></tt></a> with <a title="gromacs.analysis.Simulation.analyze" class="reference" href="#gromacs.analysis.Simulation.analyze"><tt class="xref docutils literal"><span class="pre">Simulation.analyze()</span></tt></a>; results are stored 
 in the plugin&#8217;s <tt class="xref docutils literal"><span class="pre">results</span></tt> dictionary.</li>
-<li>Plot results with <a title="gromacs.analysis.Simulation.plot" class="reference internal" href="#gromacs.analysis.Simulation.plot"><tt class="xref docutils literal"><span class="pre">Simulation.plot()</span></tt></a>.</li>
+<li>Plot results with <a title="gromacs.analysis.Simulation.plot" class="reference" href="#gromacs.analysis.Simulation.plot"><tt class="xref docutils literal"><span class="pre">Simulation.plot()</span></tt></a>.</li>
 </ol>
 <p>Set up a Simulation object.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -100,7 +100,7 @@ in the plugin&#8217;s <tt class="xref docutils literal"><span class="pre">result
 <dt><em>sim</em></dt>
 <dd><p class="first last">Any object that contains the attributes <em>tpr</em>, <em>xtc</em>,
 and optionally <em>ndx</em>
-(e.g. <a title="gromacs.cbook.Transformer" class="reference external" href="../gromacs/blocks/cbook.html#gromacs.cbook.Transformer"><tt class="xref docutils literal"><span class="pre">gromacs.cbook.Transformer</span></tt></a>). The individual keywrods such
+(e.g. <a title="gromacs.cbook.Transformer" class="reference" href="../gromacs/blocks/cbook.html#gromacs.cbook.Transformer"><tt class="xref docutils literal"><span class="pre">gromacs.cbook.Transformer</span></tt></a>). The individual keywrods such
 as <em>xtc</em> override the values in <em>sim</em>.</p>
 </dd>
 <dt><em>tpr</em></dt>
@@ -122,7 +122,7 @@ defaults to the directory containing the tpr [None]</p>
 <dt><em>plugins</em> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
 <dd><p class="first last">plugin instances or tuples (<em>plugin class</em>, <em>kwarg dict</em>) or tuples
 (<em>plugin_class_name</em>, <em>kwarg dict</em>) to be used; more can be
-added later with <a title="gromacs.analysis.Simulation.add_plugin" class="reference internal" href="#gromacs.analysis.Simulation.add_plugin"><tt class="xref docutils literal"><span class="pre">Simulation.add_plugin()</span></tt></a>.</p>
+added later with <a title="gromacs.analysis.Simulation.add_plugin" class="reference" href="#gromacs.analysis.Simulation.add_plugin"><tt class="xref docutils literal"><span class="pre">Simulation.add_plugin()</span></tt></a>.</p>
 </dd>
 </dl>
 </td>
@@ -138,7 +138,7 @@ added later with <a title="gromacs.analysis.Simulation.add_plugin" class="refere
 instance is directly registered and any keyword arguments
 are ignored.</li>
 <li>If <em>plugin</em> is a <tt class="xref docutils literal"><span class="pre">Plugin</span></tt> class object or a
-string that can be found in <a title="" class="reference external" href="plugins.html#module-gromacs.analysis.plugins"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.plugins</span></tt></a>
+string that can be found in <a title="" class="reference" href="plugins.html#module-gromacs.analysis.plugins"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.plugins</span></tt></a>
 then first an instance is created with the given keyword
 arguments and then registered.</li>
 </ul>
@@ -150,7 +150,7 @@ arguments and then registered.</li>
 <dt><em>plugin</em> <span class="classifier-delimiter">:</span> <span class="classifier">class or string, or instance</span></dt>
 <dd><p class="first">If the parameter is a class then it should have been derived
 from <tt class="xref docutils literal"><span class="pre">Plugin</span></tt>. If it is a string then it is taken as a
-plugin name in <a title="" class="reference external" href="plugins.html#module-gromacs.analysis.plugins"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.plugins</span></tt></a> and the
+plugin name in <a title="" class="reference" href="plugins.html#module-gromacs.analysis.plugins"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.plugins</span></tt></a> and the
 corresponding class is added. In both cases any parameters for
 initizlization should be provided.</p>
 <p class="last">If <em>plugin</em> is already a <tt class="xref docutils literal"><span class="pre">Plugin</span></tt> instance then the kwargs 
@@ -171,7 +171,7 @@ described in its documentation.</p>
 <dt id="gromacs.analysis.Simulation.set_plugin">
 <tt class="descname">set_plugin</tt><big>(</big><em>plugin_name</em><big>)</big><a class="headerlink" href="#gromacs.analysis.Simulation.set_plugin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the plugin that should be used by default.</p>
-<p>If no <em>plugin_name</em> is supplied to <a title="gromacs.analysis.Simulation.run" class="reference internal" href="#gromacs.analysis.Simulation.run"><tt class="xref docutils literal"><span class="pre">run()</span></tt></a>, <a title="gromacs.analysis.Simulation.analyze" class="reference internal" href="#gromacs.analysis.Simulation.analyze"><tt class="xref docutils literal"><span class="pre">analyze()</span></tt></a> etc. then
+<p>If no <em>plugin_name</em> is supplied to <a title="gromacs.analysis.Simulation.run" class="reference" href="#gromacs.analysis.Simulation.run"><tt class="xref docutils literal"><span class="pre">run()</span></tt></a>, <a title="gromacs.analysis.Simulation.analyze" class="reference" href="#gromacs.analysis.Simulation.analyze"><tt class="xref docutils literal"><span class="pre">analyze()</span></tt></a> etc. then
 this will be used.</p>
 </dd></dl>
 
@@ -209,7 +209,7 @@ this will be used.</p>
 </dd>
 <dt><em>kwargs</em></dt>
 <dd><p class="first last">arguments for plugin plot function (in many cases
-provided by <a title="gromacs.formats.XVG.plot" class="reference external" href="../gromacs/core/formats.html#gromacs.formats.XVG.plot"><tt class="xref docutils literal"><span class="pre">gromacs.formats.XVG.plot()</span></tt></a> and
+provided by <a title="gromacs.formats.XVG.plot" class="reference" href="../gromacs/core/formats.html#gromacs.formats.XVG.plot"><tt class="xref docutils literal"><span class="pre">gromacs.formats.XVG.plot()</span></tt></a> and
 ultimately by <tt class="xref docutils literal"><span class="pre">pylab.plot()</span></tt>)</p>
 </dd>
 </dl>
@@ -225,8 +225,8 @@ ultimately by <tt class="xref docutils literal"><span class="pre">pylab.plot()</
 <div class="section" id="example">
 <h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
 <p>Here we analyze a protein, which has three Cysteines (C96, C243, C372). We
-will use the <a title="gromacs.analysis.plugins.CysAccessibility" class="reference external" href="plugins.html#gromacs.analysis.plugins.CysAccessibility"><tt class="xref docutils literal"><span class="pre">plugins.CysAccessibility</span></tt></a> and the
-<a title="gromacs.analysis.plugins.Distances" class="reference external" href="plugins.html#gromacs.analysis.plugins.Distances"><tt class="xref docutils literal"><span class="pre">plugins.Distances</span></tt></a> plugin (arguments for <tt class="docutils literal"><span class="pre">Distances</span></tt> omitted):</p>
+will use the <a title="gromacs.analysis.plugins.CysAccessibility" class="reference" href="plugins.html#gromacs.analysis.plugins.CysAccessibility"><tt class="xref docutils literal"><span class="pre">plugins.CysAccessibility</span></tt></a> and the
+<a title="gromacs.analysis.plugins.Distances" class="reference" href="plugins.html#gromacs.analysis.plugins.Distances"><tt class="xref docutils literal"><span class="pre">plugins.Distances</span></tt></a> plugin (arguments for <tt class="docutils literal"><span class="pre">Distances</span></tt> omitted):</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">gromacs.analysis</span> <span class="kn">import</span> <span class="n">Simulation</span>
 <span class="kn">from</span> <span class="nn">gromacs.analysis.plugins</span> <span class="kn">import</span> <span class="n">CysAccessibility</span><span class="p">,</span> <span class="n">Distances</span>
 
@@ -260,26 +260,26 @@ analysis plugins.</p>
 <div class="section" id="programming-api-for-plugins">
 <h3>Programming API for plugins<a class="headerlink" href="#programming-api-for-plugins" title="Permalink to this headline">¶</a></h3>
 <p>Additional analysis capabilities are added to a
-<a title="gromacs.analysis.Simulation" class="reference internal" href="#gromacs.analysis.Simulation"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.Simulation</span></tt></a> class with <em>plugin</em> classes. For
-an example see <a title="" class="reference external" href="plugins.html#module-gromacs.analysis.plugins"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.plugins</span></tt></a>.</p>
+<a title="gromacs.analysis.Simulation" class="reference" href="#gromacs.analysis.Simulation"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.Simulation</span></tt></a> class with <em>plugin</em> classes. For
+an example see <a title="" class="reference" href="plugins.html#module-gromacs.analysis.plugins"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.plugins</span></tt></a>.</p>
 <div class="section" id="api-description">
 <h4>API description<a class="headerlink" href="#api-description" title="Permalink to this headline">¶</a></h4>
 <p>Analysis capabilities can be added with plugins to the simulation class. Each
 plugin is registered with the simulation class and provides at a minimum
 <tt class="xref docutils literal"><span class="pre">run()</span></tt>, <tt class="xref docutils literal"><span class="pre">analyze()</span></tt>, and <tt class="xref docutils literal"><span class="pre">plot()</span></tt> methods.</p>
-<p>A plugin consists of a subclass of <a title="gromacs.analysis.core.Plugin" class="reference internal" href="#gromacs.analysis.core.Plugin"><tt class="xref docutils literal"><span class="pre">Plugin</span></tt></a>  and an associated <a title="gromacs.analysis.core.Worker" class="reference internal" href="#gromacs.analysis.core.Worker"><tt class="xref docutils literal"><span class="pre">Worker</span></tt></a>
+<p>A plugin consists of a subclass of <a title="gromacs.analysis.core.Plugin" class="reference" href="#gromacs.analysis.core.Plugin"><tt class="xref docutils literal"><span class="pre">Plugin</span></tt></a>  and an associated <a title="gromacs.analysis.core.Worker" class="reference" href="#gromacs.analysis.core.Worker"><tt class="xref docutils literal"><span class="pre">Worker</span></tt></a>
 instance. The former is responsible for administrative tasks and documentation,
 the latter implements the analysis code.</p>
-<p>A plugin class must be derived from <a title="gromacs.analysis.core.Plugin" class="reference internal" href="#gromacs.analysis.core.Plugin"><tt class="xref docutils literal"><span class="pre">Plugin</span></tt></a> and typically bears the
+<p>A plugin class must be derived from <a title="gromacs.analysis.core.Plugin" class="reference" href="#gromacs.analysis.core.Plugin"><tt class="xref docutils literal"><span class="pre">Plugin</span></tt></a> and typically bears the
 name that is used to access it. A plugin instance must be <em>registered</em> with a
-<a title="gromacs.analysis.core.Simulation" class="reference internal" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> object. This can be done implicitly by passing the
-<a title="gromacs.analysis.core.Simulation" class="reference internal" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> instance in the <tt class="docutils literal"><span class="pre">simulation</span></tt> keyword argument to the
-constructor or by explicitly calling the <a title="gromacs.analysis.core.Plugin.register" class="reference internal" href="#gromacs.analysis.core.Plugin.register"><tt class="xref docutils literal"><span class="pre">Plugin.register()</span></tt></a> method with
+<a title="gromacs.analysis.core.Simulation" class="reference" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> object. This can be done implicitly by passing the
+<a title="gromacs.analysis.core.Simulation" class="reference" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> instance in the <tt class="docutils literal"><span class="pre">simulation</span></tt> keyword argument to the
+constructor or by explicitly calling the <a title="gromacs.analysis.core.Plugin.register" class="reference" href="#gromacs.analysis.core.Plugin.register"><tt class="xref docutils literal"><span class="pre">Plugin.register()</span></tt></a> method with
 the simulation instance. Alternatively, one can also register a plugin via the
-<a title="gromacs.analysis.core.Simulation.add_plugin" class="reference internal" href="#gromacs.analysis.core.Simulation.add_plugin"><tt class="xref docutils literal"><span class="pre">Simulation.add_plugin()</span></tt></a> method.</p>
+<a title="gromacs.analysis.core.Simulation.add_plugin" class="reference" href="#gromacs.analysis.core.Simulation.add_plugin"><tt class="xref docutils literal"><span class="pre">Simulation.add_plugin()</span></tt></a> method.</p>
 <p>Registering the plugin means that the actual worker class is added to the
 <tt class="xref docutils literal"><span class="pre">Simulation.plugins</span></tt> dictionary.</p>
-<p>A plugin must eventually obtain a pointer to the <a title="gromacs.analysis.core.Simulation" class="reference internal" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> class in
+<p>A plugin must eventually obtain a pointer to the <a title="gromacs.analysis.core.Simulation" class="reference" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> class in
 order to be able to access simulation-global parameters such as top directories
 or input files.</p>
 <p>See <tt class="xref docutils literal"><span class="pre">analysis.plugins.CysAccessibility</span></tt> and
@@ -290,18 +290,18 @@ or input files.</p>
 <h4>API requirements<a class="headerlink" href="#api-requirements" title="Permalink to this headline">¶</a></h4>
 <ul>
 <li><p class="first">Each plugin is contained in a separate module in the
-<a title="" class="reference external" href="plugins.html#module-gromacs.analysis.plugins"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.plugins</span></tt></a> package. The name of the module <em>must</em> be the
+<a title="" class="reference" href="plugins.html#module-gromacs.analysis.plugins"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.plugins</span></tt></a> package. The name of the module <em>must</em> be the
 name of the plugin class in all lower case.</p>
 </li>
 <li><p class="first">The plugin name is registered in
-<a title="gromacs.analysis.plugins.__plugins__" class="reference external" href="plugins.html#gromacs.analysis.plugins.__plugins__"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.plugins.__plugins__</span></tt></a>. (Together with the file naming
+<a title="gromacs.analysis.plugins.__plugins__" class="reference" href="plugins.html#gromacs.analysis.plugins.__plugins__"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.plugins.__plugins__</span></tt></a>. (Together with the file naming
 convention this allows for automatic and consistent loading.)</p>
 </li>
-<li><p class="first">The plugin itself is derived from <a title="gromacs.analysis.core.Plugin" class="reference internal" href="#gromacs.analysis.core.Plugin"><tt class="xref docutils literal"><span class="pre">Plugin</span></tt></a>; the only changes are the
-doc strings and setting the <a title="gromacs.analysis.core.Plugin.worker_class" class="reference internal" href="#gromacs.analysis.core.Plugin.worker_class"><tt class="xref docutils literal"><span class="pre">Plugin.worker_class</span></tt></a> class attribute to a
-<a title="gromacs.analysis.core.Worker" class="reference internal" href="#gromacs.analysis.core.Worker"><tt class="xref docutils literal"><span class="pre">Worker</span></tt></a> class.</p>
+<li><p class="first">The plugin itself is derived from <a title="gromacs.analysis.core.Plugin" class="reference" href="#gromacs.analysis.core.Plugin"><tt class="xref docutils literal"><span class="pre">Plugin</span></tt></a>; the only changes are the
+doc strings and setting the <a title="gromacs.analysis.core.Plugin.worker_class" class="reference" href="#gromacs.analysis.core.Plugin.worker_class"><tt class="xref docutils literal"><span class="pre">Plugin.worker_class</span></tt></a> class attribute to a
+<a title="gromacs.analysis.core.Worker" class="reference" href="#gromacs.analysis.core.Worker"><tt class="xref docutils literal"><span class="pre">Worker</span></tt></a> class.</p>
 </li>
-<li><p class="first">The corresponding worker class is derived from <a title="gromacs.analysis.core.Worker" class="reference internal" href="#gromacs.analysis.core.Worker"><tt class="xref docutils literal"><span class="pre">Worker</span></tt></a> and must implement</p>
+<li><p class="first">The corresponding worker class is derived from <a title="gromacs.analysis.core.Worker" class="reference" href="#gromacs.analysis.core.Worker"><tt class="xref docutils literal"><span class="pre">Worker</span></tt></a> and must implement</p>
 <ul class="simple">
 <li><tt class="xref docutils literal"><span class="pre">Worker.__init__()</span></tt> which can only use keyword arguments to initialize
 the plugin. It must ensure that init methods of super classes are also
@@ -310,7 +310,7 @@ called. See the existing plugins for details.</li>
 trajectory, possibly multiple times. It should store results in files.</li>
 <li><tt class="xref docutils literal"><span class="pre">Worker.analyze()</span></tt> analyzes the data generated by <tt class="xref docutils literal"><span class="pre">Worker.run()</span></tt>.</li>
 <li><tt class="xref docutils literal"><span class="pre">Worker.plot()</span></tt> plots the analyzed data.</li>
-<li><a title="gromacs.analysis.core.Worker._register_hook" class="reference internal" href="#gromacs.analysis.core.Worker._register_hook"><tt class="xref docutils literal"><span class="pre">Worker._register_hook()</span></tt></a> (see below)</li>
+<li><a title="gromacs.analysis.core.Worker._register_hook" class="reference" href="#gromacs.analysis.core.Worker._register_hook"><tt class="xref docutils literal"><span class="pre">Worker._register_hook()</span></tt></a> (see below)</li>
 </ul>
 </li>
 <li><p class="first">The worker class can access parameters of the simulation via the
@@ -319,19 +319,19 @@ registers itself with <tt class="xref docutils literal"><span class="pre">Simula
 rely on <tt class="xref docutils literal"><span class="pre">simulation</span></tt> being present during initialization
 (__init__) because registration of the plugin might occur <em>after</em> init.</p>
 <p>This also means that one cannot use the directory methods such as
-<a title="gromacs.analysis.core.Worker.plugindir" class="reference internal" href="#gromacs.analysis.core.Worker.plugindir"><tt class="xref docutils literal"><span class="pre">Worker.plugindir()</span></tt></a> because they depend on <a title="gromacs.analysis.core.Simulation.topdir" class="reference internal" href="#gromacs.analysis.core.Simulation.topdir"><tt class="xref docutils literal"><span class="pre">Simulation.topdir()</span></tt></a> and
-<a title="gromacs.analysis.core.Simulation.plugindir" class="reference internal" href="#gromacs.analysis.core.Simulation.plugindir"><tt class="xref docutils literal"><span class="pre">Simulation.plugindir()</span></tt></a>.</p>
-<p>Any initialization that requires access to the <a title="gromacs.analysis.core.Simulation" class="reference internal" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> instance
-should be moved into the <a title="gromacs.analysis.core.Worker._register_hook" class="reference internal" href="#gromacs.analysis.core.Worker._register_hook"><tt class="xref docutils literal"><span class="pre">Worker._register_hook()</span></tt></a> method. It is called
+<a title="gromacs.analysis.core.Worker.plugindir" class="reference" href="#gromacs.analysis.core.Worker.plugindir"><tt class="xref docutils literal"><span class="pre">Worker.plugindir()</span></tt></a> because they depend on <a title="gromacs.analysis.core.Simulation.topdir" class="reference" href="#gromacs.analysis.core.Simulation.topdir"><tt class="xref docutils literal"><span class="pre">Simulation.topdir()</span></tt></a> and
+<a title="gromacs.analysis.core.Simulation.plugindir" class="reference" href="#gromacs.analysis.core.Simulation.plugindir"><tt class="xref docutils literal"><span class="pre">Simulation.plugindir()</span></tt></a>.</p>
+<p>Any initialization that requires access to the <a title="gromacs.analysis.core.Simulation" class="reference" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> instance
+should be moved into the <a title="gromacs.analysis.core.Worker._register_hook" class="reference" href="#gromacs.analysis.core.Worker._register_hook"><tt class="xref docutils literal"><span class="pre">Worker._register_hook()</span></tt></a> method. It is called
 when the plugin is actually being registered. Note that the hook <em>must</em> also
 call the hook of the super class before setting any values. The hook should
 pop any arguments that it requires and ignore everything else.</p>
 </li>
 <li><p class="first">Parameters of the plugin are stored in <tt class="xref docutils literal"><span class="pre">Worker.parameters</span></tt> (either as
 attributes or as key/value pairs, see the container class
-<a title="gromacs.utilities.AttributeDict" class="reference external" href="../gromacs/core/utilities.html#gromacs.utilities.AttributeDict"><tt class="xref docutils literal"><span class="pre">gromacs.utilities.AttributeDict</span></tt></a>).</p>
+<a title="gromacs.utilities.AttributeDict" class="reference" href="../gromacs/core/utilities.html#gromacs.utilities.AttributeDict"><tt class="xref docutils literal"><span class="pre">gromacs.utilities.AttributeDict</span></tt></a>).</p>
 </li>
-<li><p class="first">Results are stored in <tt class="xref docutils literal"><span class="pre">Worker.results</span></tt> (also a <a title="gromacs.utilities.AttributeDict" class="reference external" href="../gromacs/core/utilities.html#gromacs.utilities.AttributeDict"><tt class="xref docutils literal"><span class="pre">gromacs.utilities.AttributeDict</span></tt></a>).</p>
+<li><p class="first">Results are stored in <tt class="xref docutils literal"><span class="pre">Worker.results</span></tt> (also a <a title="gromacs.utilities.AttributeDict" class="reference" href="../gromacs/core/utilities.html#gromacs.utilities.AttributeDict"><tt class="xref docutils literal"><span class="pre">gromacs.utilities.AttributeDict</span></tt></a>).</p>
 </li>
 </ul>
 </div>
@@ -341,16 +341,16 @@ attributes or as key/value pairs, see the container class
 <dl class="class">
 <dt id="gromacs.analysis.core.Simulation">
 <em class="property">class </em><tt class="descclassname">gromacs.analysis.core.</tt><tt class="descname">Simulation</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.analysis.core.Simulation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a title="(in Python v2.6)" class="reference external" href="http://docs.python.org/library/functions.html#object"><tt class="xref docutils literal"><span class="pre">object</span></tt></a></p>
+<dd><p>Bases: <a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/functions.html#object"><tt class="xref docutils literal"><span class="pre">object</span></tt></a></p>
 <p>Class that represents one simulation.</p>
 <p>Analysis capabilities are added via plugins.</p>
 <ol class="arabic simple">
-<li>Set the <em>active plugin</em> with the <a title="gromacs.analysis.core.Simulation.set_plugin" class="reference internal" href="#gromacs.analysis.core.Simulation.set_plugin"><tt class="xref docutils literal"><span class="pre">Simulation.set_plugin()</span></tt></a> method.</li>
+<li>Set the <em>active plugin</em> with the <a title="gromacs.analysis.core.Simulation.set_plugin" class="reference" href="#gromacs.analysis.core.Simulation.set_plugin"><tt class="xref docutils literal"><span class="pre">Simulation.set_plugin()</span></tt></a> method.</li>
 <li>Analyze the trajectory with the active plugin by calling the 
-<a title="gromacs.analysis.core.Simulation.run" class="reference internal" href="#gromacs.analysis.core.Simulation.run"><tt class="xref docutils literal"><span class="pre">Simulation.run()</span></tt></a> method.</li>
-<li>Analyze the output from <a title="gromacs.analysis.core.Simulation.run" class="reference internal" href="#gromacs.analysis.core.Simulation.run"><tt class="xref docutils literal"><span class="pre">run()</span></tt></a> with <a title="gromacs.analysis.core.Simulation.analyze" class="reference internal" href="#gromacs.analysis.core.Simulation.analyze"><tt class="xref docutils literal"><span class="pre">Simulation.analyze()</span></tt></a>; results are stored 
+<a title="gromacs.analysis.core.Simulation.run" class="reference" href="#gromacs.analysis.core.Simulation.run"><tt class="xref docutils literal"><span class="pre">Simulation.run()</span></tt></a> method.</li>
+<li>Analyze the output from <a title="gromacs.analysis.core.Simulation.run" class="reference" href="#gromacs.analysis.core.Simulation.run"><tt class="xref docutils literal"><span class="pre">run()</span></tt></a> with <a title="gromacs.analysis.core.Simulation.analyze" class="reference" href="#gromacs.analysis.core.Simulation.analyze"><tt class="xref docutils literal"><span class="pre">Simulation.analyze()</span></tt></a>; results are stored 
 in the plugin&#8217;s <tt class="xref docutils literal"><span class="pre">results</span></tt> dictionary.</li>
-<li>Plot results with <a title="gromacs.analysis.core.Simulation.plot" class="reference internal" href="#gromacs.analysis.core.Simulation.plot"><tt class="xref docutils literal"><span class="pre">Simulation.plot()</span></tt></a>.</li>
+<li>Plot results with <a title="gromacs.analysis.core.Simulation.plot" class="reference" href="#gromacs.analysis.core.Simulation.plot"><tt class="xref docutils literal"><span class="pre">Simulation.plot()</span></tt></a>.</li>
 </ol>
 <p>Set up a Simulation object.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -361,7 +361,7 @@ in the plugin&#8217;s <tt class="xref docutils literal"><span class="pre">result
 <dt><em>sim</em></dt>
 <dd><p class="first last">Any object that contains the attributes <em>tpr</em>, <em>xtc</em>,
 and optionally <em>ndx</em>
-(e.g. <a title="gromacs.cbook.Transformer" class="reference external" href="../gromacs/blocks/cbook.html#gromacs.cbook.Transformer"><tt class="xref docutils literal"><span class="pre">gromacs.cbook.Transformer</span></tt></a>). The individual keywrods such
+(e.g. <a title="gromacs.cbook.Transformer" class="reference" href="../gromacs/blocks/cbook.html#gromacs.cbook.Transformer"><tt class="xref docutils literal"><span class="pre">gromacs.cbook.Transformer</span></tt></a>). The individual keywrods such
 as <em>xtc</em> override the values in <em>sim</em>.</p>
 </dd>
 <dt><em>tpr</em></dt>
@@ -383,7 +383,7 @@ defaults to the directory containing the tpr [None]</p>
 <dt><em>plugins</em> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
 <dd><p class="first last">plugin instances or tuples (<em>plugin class</em>, <em>kwarg dict</em>) or tuples
 (<em>plugin_class_name</em>, <em>kwarg dict</em>) to be used; more can be
-added later with <a title="gromacs.analysis.core.Simulation.add_plugin" class="reference internal" href="#gromacs.analysis.core.Simulation.add_plugin"><tt class="xref docutils literal"><span class="pre">Simulation.add_plugin()</span></tt></a>.</p>
+added later with <a title="gromacs.analysis.core.Simulation.add_plugin" class="reference" href="#gromacs.analysis.core.Simulation.add_plugin"><tt class="xref docutils literal"><span class="pre">Simulation.add_plugin()</span></tt></a>.</p>
 </dd>
 </dl>
 </td>
@@ -395,11 +395,11 @@ added later with <a title="gromacs.analysis.core.Simulation.add_plugin" class="r
 <tt class="descname">add_plugin</tt><big>(</big><em>plugin</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.analysis.core.Simulation.add_plugin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a plugin to the registry.</p>
 <ul class="simple">
-<li>If <em>plugin</em> is a <a title="gromacs.analysis.core.Plugin" class="reference internal" href="#gromacs.analysis.core.Plugin"><tt class="xref docutils literal"><span class="pre">Plugin</span></tt></a> instance then the
+<li>If <em>plugin</em> is a <a title="gromacs.analysis.core.Plugin" class="reference" href="#gromacs.analysis.core.Plugin"><tt class="xref docutils literal"><span class="pre">Plugin</span></tt></a> instance then the
 instance is directly registered and any keyword arguments
 are ignored.</li>
-<li>If <em>plugin</em> is a <a title="gromacs.analysis.core.Plugin" class="reference internal" href="#gromacs.analysis.core.Plugin"><tt class="xref docutils literal"><span class="pre">Plugin</span></tt></a> class object or a
-string that can be found in <a title="" class="reference external" href="plugins.html#module-gromacs.analysis.plugins"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.plugins</span></tt></a>
+<li>If <em>plugin</em> is a <a title="gromacs.analysis.core.Plugin" class="reference" href="#gromacs.analysis.core.Plugin"><tt class="xref docutils literal"><span class="pre">Plugin</span></tt></a> class object or a
+string that can be found in <a title="" class="reference" href="plugins.html#module-gromacs.analysis.plugins"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.plugins</span></tt></a>
 then first an instance is created with the given keyword
 arguments and then registered.</li>
 </ul>
@@ -410,11 +410,11 @@ arguments and then registered.</li>
 <tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>plugin</em> <span class="classifier-delimiter">:</span> <span class="classifier">class or string, or instance</span></dt>
 <dd><p class="first">If the parameter is a class then it should have been derived
-from <a title="gromacs.analysis.core.Plugin" class="reference internal" href="#gromacs.analysis.core.Plugin"><tt class="xref docutils literal"><span class="pre">Plugin</span></tt></a>. If it is a string then it is taken as a
-plugin name in <a title="" class="reference external" href="plugins.html#module-gromacs.analysis.plugins"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.plugins</span></tt></a> and the
+from <a title="gromacs.analysis.core.Plugin" class="reference" href="#gromacs.analysis.core.Plugin"><tt class="xref docutils literal"><span class="pre">Plugin</span></tt></a>. If it is a string then it is taken as a
+plugin name in <a title="" class="reference" href="plugins.html#module-gromacs.analysis.plugins"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.plugins</span></tt></a> and the
 corresponding class is added. In both cases any parameters for
 initizlization should be provided.</p>
-<p class="last">If <em>plugin</em> is already a <a title="gromacs.analysis.core.Plugin" class="reference internal" href="#gromacs.analysis.core.Plugin"><tt class="xref docutils literal"><span class="pre">Plugin</span></tt></a> instance then the kwargs 
+<p class="last">If <em>plugin</em> is already a <a title="gromacs.analysis.core.Plugin" class="reference" href="#gromacs.analysis.core.Plugin"><tt class="xref docutils literal"><span class="pre">Plugin</span></tt></a> instance then the kwargs 
 will be ignored.</p>
 </dd>
 <dt><em>kwargs</em></dt>
@@ -432,14 +432,14 @@ described in its documentation.</p>
 <dt id="gromacs.analysis.core.Simulation.set_plugin">
 <tt class="descname">set_plugin</tt><big>(</big><em>plugin_name</em><big>)</big><a class="headerlink" href="#gromacs.analysis.core.Simulation.set_plugin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the plugin that should be used by default.</p>
-<p>If no <em>plugin_name</em> is supplied to <a title="gromacs.analysis.core.Simulation.run" class="reference internal" href="#gromacs.analysis.core.Simulation.run"><tt class="xref docutils literal"><span class="pre">run()</span></tt></a>, <a title="gromacs.analysis.core.Simulation.analyze" class="reference internal" href="#gromacs.analysis.core.Simulation.analyze"><tt class="xref docutils literal"><span class="pre">analyze()</span></tt></a> etc. then
+<p>If no <em>plugin_name</em> is supplied to <a title="gromacs.analysis.core.Simulation.run" class="reference" href="#gromacs.analysis.core.Simulation.run"><tt class="xref docutils literal"><span class="pre">run()</span></tt></a>, <a title="gromacs.analysis.core.Simulation.analyze" class="reference" href="#gromacs.analysis.core.Simulation.analyze"><tt class="xref docutils literal"><span class="pre">analyze()</span></tt></a> etc. then
 this will be used.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gromacs.analysis.core.Simulation.get_plugin">
 <tt class="descname">get_plugin</tt><big>(</big><em>plugin_name=None</em><big>)</big><a class="headerlink" href="#gromacs.analysis.core.Simulation.get_plugin" title="Permalink to this definition">¶</a></dt>
-<dd>Return valid plugin or the default for <a href="#id1"><span class="problematic" id="id2">*</span></a>plugin_name*=``None``.</dd></dl>
+<dd>Return valid plugin or the default for <a href="#id1" name="id2"><span class="problematic" id="id2">*</span></a>plugin_name*=``None``.</dd></dl>
 
 <dl class="method">
 <dt id="gromacs.analysis.core.Simulation.run">
@@ -475,7 +475,7 @@ this will be used.</p>
 </dd>
 <dt><em>kwargs</em></dt>
 <dd><p class="first last">arguments for plugin plot function (in many cases
-provided by <a title="gromacs.formats.XVG.plot" class="reference external" href="../gromacs/core/formats.html#gromacs.formats.XVG.plot"><tt class="xref docutils literal"><span class="pre">gromacs.formats.XVG.plot()</span></tt></a> and
+provided by <a title="gromacs.formats.XVG.plot" class="reference" href="../gromacs/core/formats.html#gromacs.formats.XVG.plot"><tt class="xref docutils literal"><span class="pre">gromacs.formats.XVG.plot()</span></tt></a> and
 ultimately by <tt class="xref docutils literal"><span class="pre">pylab.plot()</span></tt>)</p>
 </dd>
 </dl>
@@ -518,7 +518,7 @@ ultimately by <tt class="xref docutils literal"><span class="pre">pylab.plot()</
 <dl class="method">
 <dt id="gromacs.analysis.core.Simulation.check_file">
 <tt class="descname">check_file</tt><big>(</big><em>filetype</em>, <em>path</em><big>)</big><a class="headerlink" href="#gromacs.analysis.core.Simulation.check_file" title="Permalink to this definition">¶</a></dt>
-<dd>Raise <a title="(in Python v2.6)" class="reference external" href="http://docs.python.org/library/exceptions.html#exceptions.ValueError"><tt class="xref docutils literal"><span class="pre">ValueError</span></tt></a> if path does not exist. Uses <em>filetype</em> in message.</dd></dl>
+<dd>Raise <a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.ValueError"><tt class="xref docutils literal"><span class="pre">ValueError</span></tt></a> if path does not exist. Uses <em>filetype</em> in message.</dd></dl>
 
 <dl class="method">
 <dt id="gromacs.analysis.core.Simulation.has_plugin">
@@ -533,23 +533,23 @@ ultimately by <tt class="xref docutils literal"><span class="pre">pylab.plot()</
 <dl class="attribute">
 <dt id="gromacs.analysis.core.Simulation.current_plugin">
 <tt class="descname">current_plugin</tt><a class="headerlink" href="#gromacs.analysis.core.Simulation.current_plugin" title="Permalink to this definition">¶</a></dt>
-<dd>The currently active plugin (set with <a title="gromacs.analysis.core.Simulation.set_plugin" class="reference internal" href="#gromacs.analysis.core.Simulation.set_plugin"><tt class="xref docutils literal"><span class="pre">Simulation.set_plugin()</span></tt></a>).</dd></dl>
+<dd>The currently active plugin (set with <a title="gromacs.analysis.core.Simulation.set_plugin" class="reference" href="#gromacs.analysis.core.Simulation.set_plugin"><tt class="xref docutils literal"><span class="pre">Simulation.set_plugin()</span></tt></a>).</dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="gromacs.analysis.core.Plugin">
 <em class="property">class </em><tt class="descclassname">gromacs.analysis.core.</tt><tt class="descname">Plugin</tt><big>(</big><em>name=None</em>, <em>simulation=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.analysis.core.Plugin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plugin class that can be added to a <a title="gromacs.analysis.core.Simulation" class="reference internal" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> instance.</p>
+<dd><p>Plugin class that can be added to a <a title="gromacs.analysis.core.Simulation" class="reference" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> instance.</p>
 <p>All analysis plugins must be derived from this base class.</p>
-<p>If a <a title="gromacs.analysis.core.Simulation" class="reference internal" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> instance is provided to the constructore in the
+<p>If a <a title="gromacs.analysis.core.Simulation" class="reference" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> instance is provided to the constructore in the
 <em>simulation</em> keyword argument then the plugin instantiates and registers a
-worker class in <tt class="xref docutils literal"><span class="pre">Simulation.plugins</span></tt> and adds the <a title="gromacs.analysis.core.Simulation" class="reference internal" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a>
+worker class in <tt class="xref docutils literal"><span class="pre">Simulation.plugins</span></tt> and adds the <a title="gromacs.analysis.core.Simulation" class="reference" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a>
 instance to the worker.</p>
-<p>Otherwise the <a title="gromacs.analysis.core.Plugin.register" class="reference internal" href="#gromacs.analysis.core.Plugin.register"><tt class="xref docutils literal"><span class="pre">Plugin.register()</span></tt></a> method must be called explicitly with
-a <a title="gromacs.analysis.core.Simulation" class="reference internal" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> instance.</p>
+<p>Otherwise the <a title="gromacs.analysis.core.Plugin.register" class="reference" href="#gromacs.analysis.core.Plugin.register"><tt class="xref docutils literal"><span class="pre">Plugin.register()</span></tt></a> method must be called explicitly with
+a <a title="gromacs.analysis.core.Simulation" class="reference" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> instance.</p>
 <p>The plugin class handles the administrative tasks of interfacing with the
-<a title="gromacs.analysis.core.Simulation" class="reference internal" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> class. The worker runs the analysis.</p>
+<a title="gromacs.analysis.core.Simulation" class="reference" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> class. The worker runs the analysis.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">If multiple Plugin instances are added to a Simulation one <em>must</em>
@@ -572,8 +572,8 @@ are passed through.</p>
 instances. Defaults to the class name.</p>
 </dd>
 <dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">Simulation instance</span></dt>
-<dd><p class="first last">The <a title="gromacs.analysis.core.Simulation" class="reference internal" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> instance that owns this plugin instance. Can be
-<tt class="xref docutils literal"><span class="pre">None</span></tt> but then the <a title="gromacs.analysis.core.Plugin.register" class="reference internal" href="#gromacs.analysis.core.Plugin.register"><tt class="xref docutils literal"><span class="pre">register()</span></tt></a> method has to be called manually
+<dd><p class="first last">The <a title="gromacs.analysis.core.Simulation" class="reference" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> instance that owns this plugin instance. Can be
+<tt class="xref docutils literal"><span class="pre">None</span></tt> but then the <a title="gromacs.analysis.core.Plugin.register" class="reference" href="#gromacs.analysis.core.Plugin.register"><tt class="xref docutils literal"><span class="pre">register()</span></tt></a> method has to be called manually
 with a simulation instance later.</p>
 </dd>
 <dt><em>kwargs</em></dt>
@@ -588,30 +588,30 @@ with a simulation instance later.</p>
 <dt id="gromacs.analysis.core.Plugin.plugin_name">
 <tt class="descname">plugin_name</tt><a class="headerlink" href="#gromacs.analysis.core.Plugin.plugin_name" title="Permalink to this definition">¶</a></dt>
 <dd>Name of the plugin; this must be a <em>unique</em> identifier across
-all plugins of a <a title="gromacs.analysis.core.Simulation" class="reference internal" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> object. It should also be
+all plugins of a <a title="gromacs.analysis.core.Simulation" class="reference" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> object. It should also be
 human understandable and must be a valid python identifier as it
 is used as a dict key.</dd></dl>
 
 <dl class="attribute">
 <dt id="gromacs.analysis.core.Plugin.simulation">
 <tt class="descname">simulation</tt><a class="headerlink" href="#gromacs.analysis.core.Plugin.simulation" title="Permalink to this definition">¶</a></dt>
-<dd>The <a title="gromacs.analysis.core.Simulation" class="reference internal" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> instance who owns the plugin. Can be
-<tt class="xref docutils literal"><span class="pre">None</span></tt> until a successful call to <a title="gromacs.analysis.core.Plugin.register" class="reference internal" href="#gromacs.analysis.core.Plugin.register"><tt class="xref docutils literal"><span class="pre">register()</span></tt></a>.</dd></dl>
+<dd>The <a title="gromacs.analysis.core.Simulation" class="reference" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> instance who owns the plugin. Can be
+<tt class="xref docutils literal"><span class="pre">None</span></tt> until a successful call to <a title="gromacs.analysis.core.Plugin.register" class="reference" href="#gromacs.analysis.core.Plugin.register"><tt class="xref docutils literal"><span class="pre">register()</span></tt></a>.</dd></dl>
 
 <dl class="attribute">
 <dt id="gromacs.analysis.core.Plugin.worker">
 <tt class="descname">worker</tt><a class="headerlink" href="#gromacs.analysis.core.Plugin.worker" title="Permalink to this definition">¶</a></dt>
-<dd>The <a title="gromacs.analysis.core.Worker" class="reference internal" href="#gromacs.analysis.core.Worker"><tt class="xref docutils literal"><span class="pre">Worker</span></tt></a> instance of the plugin.</dd></dl>
+<dd>The <a title="gromacs.analysis.core.Worker" class="reference" href="#gromacs.analysis.core.Worker"><tt class="xref docutils literal"><span class="pre">Worker</span></tt></a> instance of the plugin.</dd></dl>
 
 <dl class="attribute">
 <dt id="gromacs.analysis.core.Plugin.worker_class">
 <tt class="descname">worker_class</tt><a class="headerlink" href="#gromacs.analysis.core.Plugin.worker_class" title="Permalink to this definition">¶</a></dt>
-<dd>actual plugin <a title="gromacs.analysis.core.Worker" class="reference internal" href="#gromacs.analysis.core.Worker"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.core.Worker</span></tt></a> class (name with leading underscore)</dd></dl>
+<dd>actual plugin <a title="gromacs.analysis.core.Worker" class="reference" href="#gromacs.analysis.core.Worker"><tt class="xref docutils literal"><span class="pre">gromacs.analysis.core.Worker</span></tt></a> class (name with leading underscore)</dd></dl>
 
 <dl class="method">
 <dt id="gromacs.analysis.core.Plugin.register">
 <tt class="descname">register</tt><big>(</big><em>simulation</em><big>)</big><a class="headerlink" href="#gromacs.analysis.core.Plugin.register" title="Permalink to this definition">¶</a></dt>
-<dd><p>Register the plugin with the <a title="gromacs.analysis.core.Simulation" class="reference internal" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> instance.</p>
+<dd><p>Register the plugin with the <a title="gromacs.analysis.core.Simulation" class="reference" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> instance.</p>
 <p>This method also ensures that the worker class knows the simulation
 instance. This is typically required for its <tt class="xref docutils literal"><span class="pre">run()</span></tt>,
 <tt class="xref docutils literal"><span class="pre">analyze()</span></tt>, and <tt class="xref docutils literal"><span class="pre">plot()</span></tt> methods.</p>
@@ -622,7 +622,7 @@ instance. This is typically required for its <tt class="xref docutils literal"><
 <dl class="class">
 <dt id="gromacs.analysis.core.Worker">
 <em class="property">class </em><tt class="descclassname">gromacs.analysis.core.</tt><tt class="descname">Worker</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.analysis.core.Worker" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a title="gromacs.utilities.FileUtils" class="reference external" href="../gromacs/core/utilities.html#gromacs.utilities.FileUtils"><tt class="xref docutils literal"><span class="pre">gromacs.utilities.FileUtils</span></tt></a></p>
+<dd><p>Bases: <a title="gromacs.utilities.FileUtils" class="reference" href="../gromacs/core/utilities.html#gromacs.utilities.FileUtils"><tt class="xref docutils literal"><span class="pre">gromacs.utilities.FileUtils</span></tt></a></p>
 <p>Base class for a plugin worker.</p>
 <p>Set up Worker class.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -631,7 +631,7 @@ instance. This is typically required for its <tt class="xref docutils literal"><
 <tbody valign="top">
 <tr class="field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>plugin</em> <span class="classifier-delimiter">:</span> <span class="classifier">instance</span></dt>
-<dd><p class="first last">The <a title="gromacs.analysis.core.Plugin" class="reference internal" href="#gromacs.analysis.core.Plugin"><tt class="xref docutils literal"><span class="pre">Plugin</span></tt></a> instance that owns this worker. <strong>Must be supplied.</strong></p>
+<dd><p class="first last">The <a title="gromacs.analysis.core.Plugin" class="reference" href="#gromacs.analysis.core.Plugin"><tt class="xref docutils literal"><span class="pre">Plugin</span></tt></a> instance that owns this worker. <strong>Must be supplied.</strong></p>
 </dd>
 <dt><em>simulation</em></dt>
 <dd><p class="first last">A :class:Simulation` object, required for registration,
@@ -665,13 +665,13 @@ but can be supplied later.</p>
 <dl class="method">
 <dt id="gromacs.analysis.core.Worker._register_hook">
 <tt class="descname">_register_hook</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.analysis.core.Worker._register_hook" title="Permalink to this definition">¶</a></dt>
-<dd><p>Things to initialize once the <a title="gromacs.analysis.core.Simulation" class="reference internal" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> instance is known.</p>
-<p>The hook is called from <a title="gromacs.analysis.core.Plugin.register" class="reference internal" href="#gromacs.analysis.core.Plugin.register"><tt class="xref docutils literal"><span class="pre">Plugin.register()</span></tt></a>.</p>
+<dd><p>Things to initialize once the <a title="gromacs.analysis.core.Simulation" class="reference" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> instance is known.</p>
+<p>The hook is called from <a title="gromacs.analysis.core.Plugin.register" class="reference" href="#gromacs.analysis.core.Plugin.register"><tt class="xref docutils literal"><span class="pre">Plugin.register()</span></tt></a>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Subclasses should do all their <a title="gromacs.analysis.core.Simulation" class="reference internal" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> -
-dependent initialization in their own <a title="gromacs.analysis.core.Worker._register_hook" class="reference internal" href="#gromacs.analysis.core.Worker._register_hook"><tt class="xref docutils literal"><span class="pre">_register_hook()</span></tt></a> which
-<strong>must</strong> call the super class hook via the <a title="(in Python v2.6)" class="reference external" href="http://docs.python.org/library/functions.html#super"><tt class="xref docutils literal"><span class="pre">super</span></tt></a>
+<p class="last">Subclasses should do all their <a title="gromacs.analysis.core.Simulation" class="reference" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> -
+dependent initialization in their own <a title="gromacs.analysis.core.Worker._register_hook" class="reference" href="#gromacs.analysis.core.Worker._register_hook"><tt class="xref docutils literal"><span class="pre">_register_hook()</span></tt></a> which
+<strong>must</strong> call the super class hook via the <a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/functions.html#super"><tt class="xref docutils literal"><span class="pre">super</span></tt></a>
 mechanism.</p>
 </div>
 </dd></dl>
@@ -690,19 +690,19 @@ mechanism.</p>
         <div class="sphinxsidebarwrapper">
             <h3><a href="../index.html">Table Of Contents</a></h3>
             <ul>
-<li><a class="reference external" href="#">Analysis core modules</a><ul>
-<li><a class="reference external" href="#gromacs-analysis-analysis-package-overview"><tt class="docutils literal"><span class="pre">gromacs.analysis</span></tt> &#8211; Analysis Package Overview</a><ul>
-<li><a class="reference external" href="#simulation-class">Simulation class</a></li>
-<li><a class="reference external" href="#example">Example</a></li>
+<li><a class="reference" href="#">Analysis core modules</a><ul>
+<li><a class="reference" href="#gromacs-analysis-analysis-package-overview"><tt class="docutils literal"><span class="pre">gromacs.analysis</span></tt> &#8211; Analysis Package Overview</a><ul>
+<li><a class="reference" href="#simulation-class">Simulation class</a></li>
+<li><a class="reference" href="#example">Example</a></li>
 </ul>
 </li>
-<li><a class="reference external" href="#analysis-core-core-classes-for-analysis-of-gromacs-trajectories"><tt class="docutils literal"><span class="pre">analysis.core</span></tt> &#8211; Core classes for analysis of Gromacs trajectories</a><ul>
-<li><a class="reference external" href="#programming-api-for-plugins">Programming API for plugins</a><ul>
-<li><a class="reference external" href="#api-description">API description</a></li>
-<li><a class="reference external" href="#api-requirements">API requirements</a></li>
+<li><a class="reference" href="#analysis-core-core-classes-for-analysis-of-gromacs-trajectories"><tt class="docutils literal"><span class="pre">analysis.core</span></tt> &#8211; Core classes for analysis of Gromacs trajectories</a><ul>
+<li><a class="reference" href="#programming-api-for-plugins">Programming API for plugins</a><ul>
+<li><a class="reference" href="#api-description">API description</a></li>
+<li><a class="reference" href="#api-requirements">API requirements</a></li>
 </ul>
 </li>
-<li><a class="reference external" href="#classes">Classes</a></li>
+<li><a class="reference" href="#classes">Classes</a></li>
 </ul>
 </li>
 </ul>

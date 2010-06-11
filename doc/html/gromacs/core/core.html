@@ -53,8 +53,8 @@
             
   <div class="section" id="gromacs-core-core-functionality">
 <span id="module-gromacs.core"></span><h1><tt class="xref docutils literal"><span class="pre">gromacs.core</span></tt> &#8211; Core functionality<a class="headerlink" href="#gromacs-core-core-functionality" title="Permalink to this headline">¶</a></h1>
-<p>Here the basic command class <a title="gromacs.core.GromacsCommand" class="reference internal" href="#gromacs.core.GromacsCommand"><tt class="xref docutils literal"><span class="pre">GromacsCommand</span></tt></a> is defined. All
-Gromacs command classes in <a title="" class="reference external" href="../tools.html#module-gromacs.tools"><tt class="xref docutils literal"><span class="pre">gromacs.tools</span></tt></a> are automatically
+<p>Here the basic command class <a title="gromacs.core.GromacsCommand" class="reference" href="#gromacs.core.GromacsCommand"><tt class="xref docutils literal"><span class="pre">GromacsCommand</span></tt></a> is defined. All
+Gromacs command classes in <a title="" class="reference" href="../tools.html#module-gromacs.tools"><tt class="xref docutils literal"><span class="pre">gromacs.tools</span></tt></a> are automatically
 generated from it.</p>
 <dl class="class">
 <dt id="gromacs.core.Command">
@@ -149,10 +149,10 @@ command.</p>
 </tr>
 <tr class="field"><th class="field-name">Notes:</th><td class="field-body"><p class="first">By default, the process stdout and stderr are merged.</p>
 <p>In order to chain different commands via pipes one must use the special
-<a title="gromacs.core.PopenWithInput" class="reference internal" href="#gromacs.core.PopenWithInput"><tt class="xref docutils literal"><span class="pre">PopenWithInput</span></tt></a> object (see <a title="gromacs.core.GromacsCommand.Popen" class="reference internal" href="#gromacs.core.GromacsCommand.Popen"><tt class="xref docutils literal"><span class="pre">GromacsCommand.Popen()</span></tt></a> method) instead of the simple
+<a title="gromacs.core.PopenWithInput" class="reference" href="#gromacs.core.PopenWithInput"><tt class="xref docutils literal"><span class="pre">PopenWithInput</span></tt></a> object (see <a title="gromacs.core.GromacsCommand.Popen" class="reference" href="#gromacs.core.GromacsCommand.Popen"><tt class="xref docutils literal"><span class="pre">GromacsCommand.Popen()</span></tt></a> method) instead of the simple
 call described here and first construct the pipeline explicitly and then
-call the <a title="gromacs.core.PopenWithInput.communicate" class="reference internal" href="#gromacs.core.PopenWithInput.communicate"><tt class="xref docutils literal"><span class="pre">PopenWithInput.communicate()</span></tt></a> method.</p>
-<p><tt class="docutils literal"><span class="pre">STDOUT</span></tt> and <tt class="docutils literal"><span class="pre">PIPE</span></tt> are objects provided by the <a title="(in Python v2.6)" class="reference external" href="http://docs.python.org/library/subprocess.html#module-subprocess"><tt class="xref docutils literal"><span class="pre">subprocess</span></tt></a> module. Any
+call the <a title="gromacs.core.PopenWithInput.communicate" class="reference" href="#gromacs.core.PopenWithInput.communicate"><tt class="xref docutils literal"><span class="pre">PopenWithInput.communicate()</span></tt></a> method.</p>
+<p><tt class="docutils literal"><span class="pre">STDOUT</span></tt> and <tt class="docutils literal"><span class="pre">PIPE</span></tt> are objects provided by the <a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/subprocess.html#module-subprocess"><tt class="xref docutils literal"><span class="pre">subprocess</span></tt></a> module. Any
 python stream can be provided and manipulated. This allows for chaining
 of commands. Use</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">PIPE</span><span class="p">,</span> <span class="n">STDOUT</span>
@@ -180,9 +180,9 @@ switches <tt class="xref docutils literal"><span class="pre">True</span></tt>/<t
 <dl class="method">
 <dt id="gromacs.core.Command.Popen">
 <tt class="descname">Popen</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.core.Command.Popen" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a special Popen instance (<a title="gromacs.core.PopenWithInput" class="reference internal" href="#gromacs.core.PopenWithInput"><tt class="xref docutils literal"><span class="pre">PopenWithInput</span></tt></a>).</p>
+<dd><p>Returns a special Popen instance (<a title="gromacs.core.PopenWithInput" class="reference" href="#gromacs.core.PopenWithInput"><tt class="xref docutils literal"><span class="pre">PopenWithInput</span></tt></a>).</p>
 <p>The instance has its input pre-set so that calls to
-<a title="gromacs.core.PopenWithInput.communicate" class="reference internal" href="#gromacs.core.PopenWithInput.communicate"><tt class="xref docutils literal"><span class="pre">communicate()</span></tt></a> will not need to supply
+<a title="gromacs.core.PopenWithInput.communicate" class="reference" href="#gromacs.core.PopenWithInput.communicate"><tt class="xref docutils literal"><span class="pre">communicate()</span></tt></a> will not need to supply
 input. This is necessary if one wants to chain the output from
 one command to an input from another.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -205,7 +205,7 @@ one command to an input from another.</p>
 <tt class="descname">command_name</tt><a class="headerlink" href="#gromacs.core.Command.command_name" title="Permalink to this definition">¶</a></dt>
 <dd>Derive a class from command; typically one only has to set <em>command_name</em>
 to the name of the script or executable. The full path is required if it
-cannot be found by searching <span class="target" id="index-3"></span><strong class="xref">PATH</strong>.</dd></dl>
+cannot be found by searching <span class="target" id="index-3"></span><strong>PATH</strong>.</dd></dl>
 
 </dd></dl>
 
@@ -245,7 +245,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference external" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -255,7 +255,7 @@ stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span
 </blockquote>
 <p><strong>Command execution</strong></p>
 <blockquote>
-<p>The command is executed with the <a title="gromacs.core.GromacsCommand.run" class="reference internal" href="#gromacs.core.GromacsCommand.run"><tt class="xref docutils literal"><span class="pre">run()</span></tt></a> method or by
+<p>The command is executed with the <a title="gromacs.core.GromacsCommand.run" class="reference" href="#gromacs.core.GromacsCommand.run"><tt class="xref docutils literal"><span class="pre">run()</span></tt></a> method or by
 calling it as a function. The two next lines are equivalent:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">cmd</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 <span class="n">cmd</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
@@ -302,9 +302,9 @@ can be one of the following:</p>
 <dl class="method">
 <dt id="gromacs.core.GromacsCommand.Popen">
 <tt class="descname">Popen</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.core.GromacsCommand.Popen" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a special Popen instance (<a title="gromacs.core.PopenWithInput" class="reference internal" href="#gromacs.core.PopenWithInput"><tt class="xref docutils literal"><span class="pre">PopenWithInput</span></tt></a>).</p>
+<dd><p>Returns a special Popen instance (<a title="gromacs.core.PopenWithInput" class="reference" href="#gromacs.core.PopenWithInput"><tt class="xref docutils literal"><span class="pre">PopenWithInput</span></tt></a>).</p>
 <p>The instance has its input pre-set so that calls to
-<a title="gromacs.core.PopenWithInput.communicate" class="reference internal" href="#gromacs.core.PopenWithInput.communicate"><tt class="xref docutils literal"><span class="pre">communicate()</span></tt></a> will not need to supply
+<a title="gromacs.core.PopenWithInput.communicate" class="reference" href="#gromacs.core.PopenWithInput.communicate"><tt class="xref docutils literal"><span class="pre">communicate()</span></tt></a> will not need to supply
 input. This is necessary if one wants to chain the output from
 one command to an input from another.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -355,12 +355,12 @@ one command to an input from another.</p>
 <dd><p>Popen class that knows its input.</p>
 <ol class="arabic simple">
 <li>Set up the instance, including all the input it shoould receive.</li>
-<li>Call <a title="gromacs.core.PopenWithInput.communicate" class="reference internal" href="#gromacs.core.PopenWithInput.communicate"><tt class="xref docutils literal"><span class="pre">PopenWithInput.communicate()</span></tt></a> later.</li>
+<li>Call <a title="gromacs.core.PopenWithInput.communicate" class="reference" href="#gromacs.core.PopenWithInput.communicate"><tt class="xref docutils literal"><span class="pre">PopenWithInput.communicate()</span></tt></a> later.</li>
 </ol>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>Some versions of python have a bug in the subprocess module
-( <a class="reference external" href="http://bugs.python.org/issue5179">issue 5179</a> ) which does not clean up open file
+( <a class="reference" href="http://bugs.python.org/issue5179">issue 5179</a> ) which does not clean up open file
 descriptors. Eventually code (such as this one) fails with the
 error:</p>
 <blockquote>
@@ -369,7 +369,7 @@ error:</p>
 file descriptors with <tt class="docutils literal"><span class="pre">ulimit</span> <span class="pre">-n</span> <span class="pre">2048</span></tt> and run analysis in
 different scripts.</p>
 </div>
-<p>Initialize with the standard <a title="(in Python v2.6)" class="reference external" href="http://docs.python.org/library/subprocess.html#subprocess.Popen"><tt class="xref docutils literal"><span class="pre">subprocess.Popen</span></tt></a> arguments.</p>
+<p>Initialize with the standard <a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/subprocess.html#subprocess.Popen"><tt class="xref docutils literal"><span class="pre">subprocess.Popen</span></tt></a> arguments.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

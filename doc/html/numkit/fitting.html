@@ -123,24 +123,24 @@ should occur by chance.)</p>
 <em class="property">class </em><tt class="descclassname">numkit.fitting.</tt><tt class="descname">FitFunc</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="headerlink" href="#numkit.fitting.FitFunc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit a function f to data (x,y) using the method of least squares.</p>
 <p>The function is fitted when the object is created, using
-<a title="(in SciPy v0.8.dev)" class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.leastsq.html#scipy.optimize.leastsq"><tt class="xref docutils literal"><span class="pre">scipy.optimize.leastsq()</span></tt></a>. One must derive from the base class
-<a title="numkit.fitting.FitFunc" class="reference internal" href="#numkit.fitting.FitFunc"><tt class="xref docutils literal"><span class="pre">FitFunc</span></tt></a> and override the <a title="numkit.fitting.FitFunc.f_factory" class="reference internal" href="#numkit.fitting.FitFunc.f_factory"><tt class="xref docutils literal"><span class="pre">FitFunc.f_factory()</span></tt></a> (including
+<a title="(in SciPy v0.8.dev)" class="reference" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.leastsq.html#scipy.optimize.leastsq"><tt class="xref docutils literal"><span class="pre">scipy.optimize.leastsq()</span></tt></a>. One must derive from the base class
+<a title="numkit.fitting.FitFunc" class="reference" href="#numkit.fitting.FitFunc"><tt class="xref docutils literal"><span class="pre">FitFunc</span></tt></a> and override the <a title="numkit.fitting.FitFunc.f_factory" class="reference" href="#numkit.fitting.FitFunc.f_factory"><tt class="xref docutils literal"><span class="pre">FitFunc.f_factory()</span></tt></a> (including
 the definition of an appropriate local <tt class="xref docutils literal"><span class="pre">fitfunc()</span></tt> function) and
-<a title="numkit.fitting.FitFunc.initial_values" class="reference internal" href="#numkit.fitting.FitFunc.initial_values"><tt class="xref docutils literal"><span class="pre">FitFunc.initial_values()</span></tt></a> appropriately. See the examples for a
-linear fit <a title="numkit.fitting.FitLin" class="reference internal" href="#numkit.fitting.FitLin"><tt class="xref docutils literal"><span class="pre">FitLin</span></tt></a>, a 1-parameter exponential fit <a title="numkit.fitting.FitExp" class="reference internal" href="#numkit.fitting.FitExp"><tt class="xref docutils literal"><span class="pre">FitExp</span></tt></a>,
-or a 3-parameter double exponential fit <a title="numkit.fitting.FitExp2" class="reference internal" href="#numkit.fitting.FitExp2"><tt class="xref docutils literal"><span class="pre">FitExp2</span></tt></a>.</p>
+<a title="numkit.fitting.FitFunc.initial_values" class="reference" href="#numkit.fitting.FitFunc.initial_values"><tt class="xref docutils literal"><span class="pre">FitFunc.initial_values()</span></tt></a> appropriately. See the examples for a
+linear fit <a title="numkit.fitting.FitLin" class="reference" href="#numkit.fitting.FitLin"><tt class="xref docutils literal"><span class="pre">FitLin</span></tt></a>, a 1-parameter exponential fit <a title="numkit.fitting.FitExp" class="reference" href="#numkit.fitting.FitExp"><tt class="xref docutils literal"><span class="pre">FitExp</span></tt></a>,
+or a 3-parameter double exponential fit <a title="numkit.fitting.FitExp2" class="reference" href="#numkit.fitting.FitExp2"><tt class="xref docutils literal"><span class="pre">FitExp2</span></tt></a>.</p>
 <dl class="docutils">
 <dt>The object provides two attributes</dt>
 <dd><dl class="first last docutils">
 <dt><tt class="xref docutils literal"><span class="pre">FitFunc.parameters</span></tt></dt>
 <dd>list of parameters of the fit</dd>
 <dt><tt class="xref docutils literal"><span class="pre">FitFunc.message</span></tt></dt>
-<dd>message from <a title="(in SciPy v0.8.dev)" class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.leastsq.html#scipy.optimize.leastsq"><tt class="xref docutils literal"><span class="pre">scipy.optimize.leastsq()</span></tt></a></dd>
+<dd>message from <a title="(in SciPy v0.8.dev)" class="reference" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.leastsq.html#scipy.optimize.leastsq"><tt class="xref docutils literal"><span class="pre">scipy.optimize.leastsq()</span></tt></a></dd>
 </dl>
 </dd>
 </dl>
 <p>After a successful fit, the fitted function can be applied to any data (a
-1D-numpy array) with <a title="numkit.fitting.FitFunc.fit" class="reference internal" href="#numkit.fitting.FitFunc.fit"><tt class="xref docutils literal"><span class="pre">FitFunc.fit()</span></tt></a>.</p>
+1D-numpy array) with <a title="numkit.fitting.FitFunc.fit" class="reference" href="#numkit.fitting.FitFunc.fit"><tt class="xref docutils literal"><span class="pre">FitFunc.fit()</span></tt></a>.</p>
 <dl class="method">
 <dt id="numkit.fitting.FitFunc.f_factory">
 <tt class="descname">f_factory</tt><big>(</big><big>)</big><a class="headerlink" href="#numkit.fitting.FitFunc.f_factory" title="Permalink to this definition">¶</a></dt>
