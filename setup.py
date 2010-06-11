@@ -41,6 +41,7 @@ more complicated analysis tasks.
                              'scipy',
                              'RecSQL>=0.7',
                              ],
+                'numkit': ['scipy'],
                 'edPDB': ['Bio'],
                 },
       dependency_links = ["http://sbcb.bioch.ox.ac.uk/oliver/download/Python/"],

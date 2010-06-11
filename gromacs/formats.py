@@ -203,10 +203,10 @@ class XVG(utilities.FileUtils):
         decay of the data is computed from the autocorrelation
         function (using FFT).
         """
-        import gromacs.analysis.numkit as nk
+        from numkit.timeseries import tcorrel
         from gromacs.analysis.collections import Collection
         t = self.array[0,::nstep]
-        r = Collection([nk.tcorrel(t, Y, nstep=1, **kwargs) for Y in self.array[1:,::nstep]])
+        r = Collection([tcorrel(t, Y, nstep=1, **kwargs) for Y in self.array[1:,::nstep]])
         return r
 
     def set_correlparameters(self, **kwargs):
@@ -221,7 +221,7 @@ class XVG(utilities.FileUtils):
                force recalculating correlation data even if cached values are
                available
            *kwargs*
-               see :func:`gromacs.analysis.numkit.tcorrel` for other options
+               see :func:`numkit.timeseries.tcorrel` for other options
 
         .. SeeAlso: :attr:`XVG.error` for details and references.
         """
