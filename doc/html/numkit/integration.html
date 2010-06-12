@@ -63,7 +63,14 @@
 <dd><p>Error on integral evaluated with <a class="reference" href="http://mathworld.wolfram.com/SimpsonsRule.html">Simpson&#8217;s rule</a> from errors of points, y.</p>
 <p>Evaluate the integral with <a title="(in SciPy v0.8.dev)" class="reference" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.simps.html#scipy.integrate.simps"><tt class="xref docutils literal"><span class="pre">scipy.integrate.simps()</span></tt></a>. For a
 given vector <em>y</em> of errors on the function values, the error on
-the integral is calculated via propagation of errors.</p>
+the integral is calculated via <a class="reference" href="http://mathworld.wolfram.com/ErrorPropagation.html">propagation of errors</a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If the spacing is not equal then the error propagation
+is made with the <em>approximation</em> of a constant spacing equal to
+the average <em>x</em> spacing. This will be fixed in a future
+release.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -91,11 +98,6 @@ and then <em>dx</em> should be provided)</p>
 </tbody>
 </table>
 </dd></dl>
-
-<dl class="exception">
-<dt id="numkit.integration.LowAccuracyWarning">
-<em class="property">exception </em><tt class="descclassname">numkit.integration.</tt><tt class="descname">LowAccuracyWarning</tt><a class="headerlink" href="#numkit.integration.LowAccuracyWarning" title="Permalink to this definition">¶</a></dt>
-<dd>Warns that results may possibly have low accuracy.</dd></dl>
 
 </div>
 

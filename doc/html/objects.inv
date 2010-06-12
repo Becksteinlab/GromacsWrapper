@@ -202,7 +202,6 @@ gromacs.tools.G_spol class gromacs/tools.html
 gromacs.formats.NDX.format attribute gromacs/core/formats.html
 gromacs.tools.Eneconv class gromacs/tools.html
 gromacs.tools.GromacsCommandMultiIndex.run method gromacs/tools.html
-numkit.integration.LowAccuracyWarning exception numkit/integration.html
 gromacs.analysis.Simulation.set_plugin method analysis/core.html
 gromacs.formats.XVG.plot method gromacs/core/formats.html
 gromacs.analysis.plugins.dist.Mindist.hist attribute analysis/plugins.html
@@ -378,6 +377,7 @@ gromacs.formats.NDX.read method gromacs/core/formats.html
 gromacs.tools.G_dist class gromacs/tools.html
 gromacs.cbook.edit_mdp function gromacs/blocks/cbook.html
 staging.SunGridEngine.Job.unstage method staging/SunGridEngine.html
+numkit.timeseries.LowAccuracyWarning exception numkit/timeseries.html
 gromacs.run.MDrunner.posthook method gromacs/blocks/simulation.html
 gromacs.tools.G_traj class gromacs/tools.html
 gromacs.analysis.plugins.Energy.worker_class attribute analysis/plugins.html
