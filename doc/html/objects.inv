@@ -40,6 +40,7 @@ gromacs.tools.G_densmap class gromacs/tools.html
 gromacs.tools.G_lie class gromacs/tools.html
 gromacs.config.load_tools data gromacs/core/config.html
 gromacs.analysis.core.Simulation.analyze method analysis/core.html
+gromacs.formats.XVG.default_extension attribute gromacs/core/formats.html
 gromacs.tools.G_clustsize class gromacs/tools.html
 gromacs.core.Command.command_name attribute gromacs/core/core.html
 staging.SunGridEngine.Job.cleanup method staging/SunGridEngine.html
@@ -87,6 +88,7 @@ gromacs.config.gmx_tool_groups data gromacs/core/config.html
 gromacs.qsub.QueuingSystem.flag method gromacs/blocks/qsub.html
 edPDB.cbook.PDB.residues_by_resname method edpdb/cbook.html
 gromacs.tools.G_confrms class gromacs/tools.html
+numkit.observables.QuantityWithError.error attribute numkit/observables.html
 edPDB.xpdb.AtomGroup class edpdb/xpdb.html
 numkit.integration.simps_error function numkit/integration.html
 gromacs.analysis.core.Worker.savefig method analysis/core.html
@@ -125,6 +127,7 @@ edPDB.xpdb.SloppyPDBIO class edpdb/xpdb.html
 gromacs.analysis.plugins.HelixBundle.HelixBundle class analysis/plugins.html
 gromacs.analysis.plugins.gridmatmd.GridMatData class analysis/plugins.html
 gromacs.config.gmx_tools data gromacs/core/config.html
+staging.SunGridEngine.Job.stage method staging/SunGridEngine.html
 edPDB.selections.ResidueSelect class edpdb/selections.html
 gromacs.analysis.plugins.Energy.Energy class analysis/plugins.html
 gromacs.tools.G_dipoles class gromacs/tools.html
@@ -188,6 +191,7 @@ gromacs.analysis.core.Plugin.worker attribute analysis/core.html
 gromacs.tools.A_gridcalc class gromacs/tools.html
 gromacs.analysis.plugins.RMSD.worker_class attribute analysis/plugins.html
 gromacs.qsub.Manager._hostname attribute gromacs/blocks/qsub.html
+numkit.observables.QuantityWithError.astuple method numkit/observables.html
 gromacs.tools.G_filter class gromacs/tools.html
 gromacs.formats.XVG.errorbar method gromacs/core/formats.html
 gromacs.core.PopenWithInput.communicate method gromacs/core/core.html
@@ -367,6 +371,7 @@ numkit.fitting.linfit function numkit/fitting.html
 gromacs.cbook.cat function gromacs/blocks/cbook.html
 staging.SunGridEngine.get_fields_from_arraylist function staging/SunGridEngine.html
 gromacs.GromacsError exception gromacs/init.html
+numkit.observables.QuantityWithError.variance attribute numkit/observables.html
 edPDB.utilities.iterable function edpdb/helpers.html
 gromacs.formats.NDX.groups attribute gromacs/core/formats.html
 gromacs.formats.NDX.read method gromacs/core/formats.html
@@ -403,7 +408,7 @@ gromacs.analysis.core.Simulation.plugindir method analysis/core.html
 gromacs.tools.Mk_angndx class gromacs/tools.html
 gromacs.qsub.Manager.cat method gromacs/blocks/qsub.html
 gromacs.analysis.plugins.gridmatmd.Grid2D.__div__ method analysis/plugins.html
-staging.SunGridEngine.Job.stage method staging/SunGridEngine.html
+numkit.observables.QID class numkit/observables.html
 gromacs.qsub.Manager.put method gromacs/blocks/qsub.html
 gromacs.tools.Grompp class gromacs/tools.html
 gromacs.qsub.Manager.ndependent method gromacs/blocks/qsub.html
@@ -435,6 +440,7 @@ gromacs.tools.Mdrun_d class gromacs/tools.html
 gromacs.cbook.IndexBuilder.combine method gromacs/blocks/cbook.html
 gromacs.analysis.core.Plugin.worker_class attribute analysis/core.html
 gromacs.tools.G_density class gromacs/tools.html
+numkit.observables.QuantityWithError.value attribute numkit/observables.html
 gromacs.analysis.core.Plugin.plugin_name attribute analysis/core.html
 gromacs.core.GromacsCommand.run method gromacs/core/core.html
 gromacs.tools.GromacsCommandMultiIndex.__del__ method gromacs/tools.html

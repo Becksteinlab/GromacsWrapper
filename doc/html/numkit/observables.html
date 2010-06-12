@@ -77,14 +77,18 @@
 <p>Note that each quantity has an identity: it makes a difference to the
 error of a combined quantity such as a+a if the inputs are independent
 measurements of the same.</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">Various packages that describe quantities with units. </p>
+</div>
 <dl class="class">
 <dt id="numkit.observables.QuantityWithError">
 <em class="property">class </em><tt class="descclassname">numkit.observables.</tt><tt class="descname">QuantityWithError</tt><big>(</big><em>value</em>, <em>error=None</em>, <em>qid=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#numkit.observables.QuantityWithError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number with error and basic error propagation arithmetic.</p>
 <p>The quantity is assumed to be a mean of an observable
-(<tt class="xref docutils literal"><span class="pre">value</span></tt>) with an associated (Gaussian) error
-<tt class="xref docutils literal"><span class="pre">error</span></tt> (which is the sqrt of the variance
-<tt class="xref docutils literal"><span class="pre">variance</span></tt> of the data).</p>
+(<a title="numkit.observables.QuantityWithError.value" class="reference" href="#numkit.observables.QuantityWithError.value"><tt class="xref docutils literal"><span class="pre">value</span></tt></a>) with an associated (Gaussian) error
+<a title="numkit.observables.QuantityWithError.error" class="reference" href="#numkit.observables.QuantityWithError.error"><tt class="xref docutils literal"><span class="pre">error</span></tt></a> (which is the sqrt of the variance
+<a title="numkit.observables.QuantityWithError.variance" class="reference" href="#numkit.observables.QuantityWithError.variance"><tt class="xref docutils literal"><span class="pre">variance</span></tt></a> of the data).</p>
 <p>The covariance is not taken into account in the <a class="reference" href="http://mathworld.wolfram.com/ErrorPropagation.html">error
 propagation</a> (i.e. all quantities are assumed to be uncorrelated)
 with the exception of the case of binary relations of the quantity
@@ -111,6 +115,11 @@ different error estimates for quantities such as x*x versus x*x&#8217;.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="numkit.observables.QuantityWithError.astuple">
+<tt class="descname">astuple</tt><big>(</big><big>)</big><a class="headerlink" href="#numkit.observables.QuantityWithError.astuple" title="Permalink to this definition">¶</a></dt>
+<dd>Return tuple (value,error).</dd></dl>
+
+<dl class="method">
 <dt id="numkit.observables.QuantityWithError.copy">
 <tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#numkit.observables.QuantityWithError.copy" title="Permalink to this definition">¶</a></dt>
 <dd>Create a new quantity with the same value and error.</dd></dl>
@@ -123,17 +132,93 @@ different error estimates for quantities such as x*x versus x*x&#8217;.</p>
 <dl class="method">
 <dt id="numkit.observables.QuantityWithError.isSame">
 <tt class="descname">isSame</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#numkit.observables.QuantityWithError.isSame" title="Permalink to this definition">¶</a></dt>
-<dd><p>True if <em>other</em> is the same observable.</p>
-<p>Also True if <em>other</em> was derived from <em>self</em> without using any
-other independent quantities with errors.</p>
-</dd></dl>
-
-</dd></dl>
-
-<div class="admonition-see-also admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last">Various packages that describe quantities with units. </p>
+<dd><p>Check if <em>other</em> is 100% correlated with <em>self</em>.</p>
+<dl class="docutils">
+<dt><tt class="xref docutils literal"><span class="pre">True</span></tt> if </dt>
+<dd><dl class="first last docutils">
+<dt><a href="#id1" name="id2"><span class="problematic" id="id2">`</span></a>- <em>other</em> is the same observable (instance)</dt>
+<dd><ul class="first last">
+<li><p class="first"><em>other</em> was derived from <em>self</em> without using any
+other independent quantities with errors, e.g.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">QuantityWithError</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">a</span><span class="o">*</span><span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">isSame</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
 </div>
+</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt><tt class="xref docutils literal"><span class="pre">False</span></tt> if </dt>
+<dd><ul class="first last simple">
+<li><em>other</em> is a scalar (without an error), or</li>
+<li><em>other</em> was computed from <em>self</em> without involvement of
+any other observables.</li>
+</ul>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Todo:</th><td class="field-body"><p class="first">How should one treat the case when a quantity is used
+again in an operation, e.g.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">c</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> 
+<span class="n">d</span> <span class="o">=</span> <span class="n">c</span><span class="o">/</span><span class="n">a</span> 
+</pre></div>
+</div>
+<p class="last">How to compute the error on d? What should the result
+for <tt class="docutils literal"><span class="pre">c.isSame(a)</span></tt> be?</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="attribute">
+<dt id="numkit.observables.QuantityWithError.value">
+<tt class="descclassname">QuantityWithError.</tt><tt class="descname">value</tt><a class="headerlink" href="#numkit.observables.QuantityWithError.value" title="Permalink to this definition">¶</a></dt>
+<dd>Value of the observable A, typically the mean of a number of
+observations, &lt;A&gt;.</dd></dl>
+
+<dl class="attribute">
+<dt id="numkit.observables.QuantityWithError.error">
+<tt class="descclassname">QuantityWithError.</tt><tt class="descname">error</tt><a class="headerlink" href="#numkit.observables.QuantityWithError.error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Error of the observable, typically the square root of the
+<a title="numkit.observables.QuantityWithError.variance" class="reference" href="#numkit.observables.QuantityWithError.variance"><tt class="xref docutils literal"><span class="pre">QuantityWithError.variance</span></tt></a> of the observations,
+sqrt(&lt;(A-&lt;A&gt;)**2&gt;).</p>
+<p>Changing the error automatically changes the
+<a title="numkit.observables.QuantityWithError.variance" class="reference" href="#numkit.observables.QuantityWithError.variance"><tt class="xref docutils literal"><span class="pre">QuantityWithError.variance</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="numkit.observables.QuantityWithError.variance">
+<tt class="descclassname">QuantityWithError.</tt><tt class="descname">variance</tt><a class="headerlink" href="#numkit.observables.QuantityWithError.variance" title="Permalink to this definition">¶</a></dt>
+<dd>Variance &lt;(A-&lt;A&gt;)**2&gt; of the observable. Changing the variance
+automatically changes the <a title="numkit.observables.QuantityWithError.error" class="reference" href="#numkit.observables.QuantityWithError.error"><tt class="xref docutils literal"><span class="pre">QuantityWithError.error</span></tt></a>.</dd></dl>
+
+<dl class="class">
+<dt id="numkit.observables.QID">
+<em class="property">class </em><tt class="descclassname">numkit.observables.</tt><tt class="descname">QID</tt><a class="headerlink" href="#numkit.observables.QID" title="Permalink to this definition">¶</a></dt>
+<dd><p>Identity of a <a title="numkit.observables.QuantityWithError" class="reference" href="#numkit.observables.QuantityWithError"><tt class="xref docutils literal"><span class="pre">QuantityWithError</span></tt></a>.</p>
+<blockquote>
+QID(iterable) &#8211;&gt; identity
+QID() &#8211;&gt; <tt class="xref docutils literal"><span class="pre">None</span></tt></blockquote>
+<p>The anonymous identity is <tt class="xref docutils literal"><span class="pre">None</span></tt>, anything else is a
+<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/stdtypes.html#frozenset"><tt class="xref docutils literal"><span class="pre">frozenset()</span></tt></a>.</p>
+<p>The QID can contain arbitray (but unique) identifiers in the
+<em>iterable</em>; however, strings are treated as individual objects and
+<em>not</em> as iterables.</p>
+<p>The error arithmetic encapsulated by the operator-overloading of
+<a title="numkit.observables.QuantityWithError" class="reference" href="#numkit.observables.QuantityWithError"><tt class="xref docutils literal"><span class="pre">QuantityWithError</span></tt></a> builds new QIDs by accumulating QIDs of
+the terms of the expression. In a certain sense, the &#8220;history&#8221; of
+a quantity becomes its &#8220;identity&#8221;.</p>
+</dd></dl>
+
 </div>
 
 
@@ -192,7 +277,7 @@ other independent quantities with errors.</p>
     </div>
     <div class="footer">
       &copy; Copyright 2009-2010, Oliver Beckstein.
-      Last updated on Jun 11, 2010.
+      Last updated on Jun 12, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
     </div>
   </body>

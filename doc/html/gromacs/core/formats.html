@@ -129,6 +129,14 @@ when encountering data lines that it cannot parse.
 <tt class="xref docutils literal"><span class="pre">True</span></tt> ignores those lines and logs a warning&#8212;this is
 a risk because it might read a corrupted input file [<tt class="xref docutils literal"><span class="pre">False</span></tt>]</p>
 </dd>
+<dt><em>savedata</em></dt>
+<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt> includes the data (<tt class="xref docutils literal"><span class="pre">XVG.array`</span></tt> and
+associated caches) when the instance is pickled (see
+<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/pickle.html#module-pickle"><tt class="xref docutils literal"><span class="pre">pickle</span></tt></a>); this is oftens not desirable because the
+data are already on disk (the xvg file <em>filename</em>) and the
+resulting pickle file can become very big. <tt class="xref docutils literal"><span class="pre">False</span></tt> omits
+those data from a pickle. [<tt class="xref docutils literal"><span class="pre">False</span></tt>]</p>
+</dd>
 </dl>
 </td>
 </tr>
@@ -143,6 +151,11 @@ columns X Y1 Y2 Y3 ... the array a will be a[0] = X, a[1] = Y1, ... .</p>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="gromacs.formats.XVG.default_extension">
+<tt class="descname">default_extension</tt><a class="headerlink" href="#gromacs.formats.XVG.default_extension" title="Permalink to this definition">¶</a></dt>
+<dd>Default extension of XVG files.</dd></dl>
+
+<dl class="attribute">
 <dt id="gromacs.formats.XVG.error">
 <tt class="descname">error</tt><a class="headerlink" href="#gromacs.formats.XVG.error" title="Permalink to this definition">¶</a></dt>
 <dd><p>Error on the mean of the data, taking the correlation time into account.</p>
@@ -150,7 +163,7 @@ columns X Y1 Y2 Y3 ... the array a will be a[0] = X, a[1] = Y1, ... .</p>
 <blockquote>
 error = sqrt(2*tc*acf[0]/T)</blockquote>
 <p>where acf() is the autocorrelation function of the fluctuations around
-the mean y-&lt;y&gt;, tc is the correlation time, and T the total length of
+the mean, y-&lt;y&gt;, tc is the correlation time, and T the total length of
 the simulation.</p>
 </dd></dl>
 
@@ -258,7 +271,11 @@ subsample the data at regular intervals. [10000]</p>
 <dt><em>nstep</em></dt>
 <dd><p class="first last">only process every <em>nstep</em> data point to speed up the FFT; if
 left empty a default is chosen that produces roughly 25,000 data
-points (or whatever is set in <tt class="xref docutils literal"><span class="pre">XVG.ncorrel</span></tt>).</p>
+points (or whatever is set in <em>ncorrel</em>)</p>
+</dd>
+<dt><em>ncorrel</em></dt>
+<dd><p class="first last">If no <em>nstep</em> is supplied, aim at using <em>ncorrel</em> data points for
+the FFT; sets <tt class="xref docutils literal"><span class="pre">XVG.ncorrel</span></tt>.</p>
 </dd>
 <dt><em>force</em>            </dt>
 <dd><p class="first last">force recalculating correlation data even if cached values are
@@ -504,7 +521,7 @@ all ions are present in all simulations:</p>
     </div>
     <div class="footer">
       &copy; Copyright 2009-2010, Oliver Beckstein.
-      Last updated on Jun 11, 2010.
+      Last updated on Jun 12, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
     </div>
   </body>
