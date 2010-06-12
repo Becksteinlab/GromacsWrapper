@@ -8,7 +8,6 @@
 .. SeeAlso:: :mod:`scipy.integrate`
 
 .. autofunction:: simps_error
-.. autoexception:: LowAccuracyWarning
 
 """
 
@@ -19,20 +18,17 @@ from scipy.integrate.quadrature import tupleset
 import logging
 logger = logging.getLogger("numkit.integration")
 
-class LowAccuracyWarning(Warning):
-    """Warns that results may possibly have low accuracy."""
-
 def simps_error(y, x=None, dx=1, axis=-1, even='avg'):
     """Error on integral evaluated with `Simpson's rule`_ from errors of points, y.
 
     Evaluate the integral with :func:`scipy.integrate.simps`. For a
     given vector *y* of errors on the function values, the error on
-    the integral is calculated via propagation of errors.
+    the integral is calculated via `propagation of errors`_.
 
-    .. Note: If the spacing is not equal then the error propagation is
-             made with the *approximation* of a constant spacing equal
-             to the average *x* spacing. This should be fixed in a future
-             release.
+    .. Note:: If the spacing is not equal then the error propagation
+       is made with the *approximation* of a constant spacing equal to
+       the average *x* spacing. This will be fixed in a future
+       release.
 
     :Arguments:
       *y*
@@ -48,6 +44,7 @@ def simps_error(y, x=None, dx=1, axis=-1, even='avg'):
          see :func:`scipy.integrate.simps` ('avg', 'first', 'last')
 
     .. _Simpson's rule: http://mathworld.wolfram.com/SimpsonsRule.html
+    .. _propagation of errors: http://mathworld.wolfram.com/ErrorPropagation.html
     """
     # copied basic structure from scipy.integrate.quadrature.simps
     y = numpy.asarray(y)
@@ -105,9 +102,9 @@ def simps_error(y, x=None, dx=1, axis=-1, even='avg'):
 def _simps_error(y,start,stop,x,dx,axis):
     """Squared error on Simpson's rule integration.
 
-    .. Note: If the spacing is not equal then the error propagation is
-             made with the *approximation* of a constant spacing equal
-             to the average spacing.
+    .. Note:: If the spacing is not equal then the error propagation
+       is made with the *approximation* of a constant spacing equal to
+       the average spacing.
 
     :Arguments:
        *y*

@@ -7,6 +7,7 @@
 
 .. autofunction:: autocorrelation_fft
 .. autofunction:: tcorrel
+.. autoexception:: LowAccuracyWarning
 
 """
 # doc notes:
@@ -21,8 +22,11 @@ import numpy
 import scipy.signal
 import scipy.integrate
 
+import warnings
 import logging
 logger = logging.getLogger("numkit.timeseries")
+
+from numkit import LowAccuracyWarning
 
 def autocorrelation_fft(series, remove_mean=True, paddingcorrection=True,
                         normalize=False, **kwargs):
@@ -140,7 +144,6 @@ def tcorrel(x,y,nstep=100,debug=False):
     _x = x[::nstep]  # do not run acf on all data: takes too long
     _y = y[::nstep]  # and does not improve accuracy
     if len(_y) < 500:  # 500 is a bit arbitrary
-        import warnings
         wmsg = "tcorrel(): Only %d datapoints for the chosen nstep=%d; " \
             "ACF will possibly not be accurate." % (len(_y), nstep)
         warnings.warn(wmsg, category=LowAccuracyWarning)
