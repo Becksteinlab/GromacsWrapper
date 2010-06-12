@@ -95,8 +95,14 @@ class XVG(utilities.FileUtils):
               - Any kind of formatting (i.e. :program:`xmgrace` commands) is discarded.
     """
 
+    #: Default extension of XVG files.
     default_extension = "xvg"    
     logger = logging.getLogger('gromacs.formats.XVG')  # for pickling: must be class-level
+
+    #: If :attr:`XVG.savedata` is ``False`` then any attributes in
+    #: :attr:`XVG.__pickle_excluded` are *not* pickled as they are but simply
+    #: pickled with the default value.
+    __pickle_excluded = {'__array': None}   # note class name un-mangling in __getstate__()!
 
     def __init__(self, filename=None, names=None, permissive=False, **kwargs):
         """Initialize the class from a xvg file.
@@ -115,12 +121,20 @@ class XVG(utilities.FileUtils):
                     when encountering data lines that it cannot parse.
                     ``True`` ignores those lines and logs a warning---this is
                     a risk because it might read a corrupted input file [``False``]
+              *savedata*
+                    ``True`` includes the data (:attr:`XVG.array`` and
+                    associated caches) when the instance is pickled (see
+                    :mod:`pickle`); this is oftens not desirable because the
+                    data are already on disk (the xvg file *filename*) and the
+                    resulting pickle file can become very big. ``False`` omits
+                    those data from a pickle. [``False``]
                     
         """
-        self.__array = None          # cache for array property
+        self.__array = None          # cache for array (BIG) (used by XVG.array)
         self.__cache = {}            # cache for computed results
+        self.savedata = kwargs.pop('savedata', False)
         if not filename is None:
-            self._init_filename(filename)  # reading from file is delayed until required
+            self._init_filename(filename)  # note: reading data from file is delayed until required
         if names is None:
             self.names = []
         else:
@@ -132,7 +146,7 @@ class XVG(utilities.FileUtils):
         self.corrupted_lineno = None      # must parse() first before this makes sense
         # default number of data points for calculating correlation times via FFT
         self.ncorrel = kwargs.pop('ncorrel', 25000)
-        self.set_correlparameters()  # (unfortunately destroys the lazy loading: needs the array)
+        self.__correlkwargs = {}          # see set_correlparameters()
 
     def read(self, filename=None):
         """Read and parse xvg file *filename*."""
@@ -216,7 +230,10 @@ class XVG(utilities.FileUtils):
            *nstep*
                only process every *nstep* data point to speed up the FFT; if
                left empty a default is chosen that produces roughly 25,000 data
-               points (or whatever is set in :attr:`XVG.ncorrel`).
+               points (or whatever is set in *ncorrel*)
+           *ncorrel*
+               If no *nstep* is supplied, aim at using *ncorrel* data points for
+               the FFT; sets :attr:`XVG.ncorrel`.
            *force*            
                force recalculating correlation data even if cached values are
                available
@@ -225,14 +242,18 @@ class XVG(utilities.FileUtils):
 
         .. SeeAlso: :attr:`XVG.error` for details and references.
         """
-        # good step size leads to ~25,000 data points
-        nstep = len(self.array[0])/self.ncorrel
-        kwargs.setdefault('nstep', nstep)
-        self.__correlkwargs = kwargs
+        self.ncorrel = kwargs.pop('ncorrel', self.ncorrel) or 25000
+        nstep = kwargs.pop('nstep', None)
+        if nstep is None:
+            # good step size leads to ~25,000 data points
+            nstep = len(self.array[0])/self.ncorrel   # needs the array so can take a while when loading
+        kwargs['nstep'] = nstep
+        self.__correlkwargs.update(kwargs)  # only contains legal kw for numkit.timeseries.tcorrel or force
+        return self.__correlkwargs
 
     def _correlprop(self, key, **kwargs):
-        kwargs.update(self.__correlkwargs)
-        if not self.__cache.get('tcorrel',None) or kwargs.get('force', False):
+        kwargs = self.set_correlparameters(**kwargs)
+        if not self.__cache.get('tcorrel',None) or kwargs.pop('force', False):
             self.__cache['tcorrel'] = self._tcorrel(**kwargs)
         return numpy.array(self.__cache['tcorrel'].get(key).tolist())
 
@@ -245,7 +266,7 @@ class XVG(utilities.FileUtils):
            error = sqrt(2*tc*acf[0]/T)
 
         where acf() is the autocorrelation function of the fluctuations around
-        the mean y-<y>, tc is the correlation time, and T the total length of
+        the mean, y-<y>, tc is the correlation time, and T the total length of
         the simulation.
         """
         return self._correlprop('sigma')
@@ -421,6 +442,29 @@ class XVG(utilities.FileUtils):
             kwargs['yerr'] = ma[2]
 
         pylab.errorbar(X, Y, **kwargs)
+
+    def __getstate__(self):
+        """custom pickling protocol: http://docs.python.org/library/pickle.html
+
+        If :attr:`XVG.savedata` is ``False`` then any attributes in
+        :attr:`XVG.__pickle_excluded` are *not* pickled as they are but simply
+        pickled with the default value.
+        """
+        
+        if self.savedata:
+            d = self.__dict__
+        else:
+            # do not pickle the big array cache
+            mangleprefix = '_'+self.__class__.__name__
+            def demangle(k):
+                """_XVG__array --> __array"""
+                if k.startswith(mangleprefix):
+                    k = k.replace(mangleprefix,'')
+                return k
+            d = {}
+            for k in self.__dict__:
+                d[k] = self.__pickle_excluded.get(demangle(k), self.__dict__[k])
+        return d
         
 
 class NDX(odict, utilities.FileUtils):
