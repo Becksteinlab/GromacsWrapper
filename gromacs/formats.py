@@ -224,7 +224,9 @@ class XVG(utilities.FileUtils):
         return r
 
     def set_correlparameters(self, **kwargs):
-        """Set and change the parameters for calculations involving correlation functions.
+        """Set and change the parameters for calculations with  correlation functions.
+
+        The parameters persist until explicitly changed.
 
         :Keywords:
            *nstep*
@@ -233,7 +235,7 @@ class XVG(utilities.FileUtils):
                points (or whatever is set in *ncorrel*)
            *ncorrel*
                If no *nstep* is supplied, aim at using *ncorrel* data points for
-               the FFT; sets :attr:`XVG.ncorrel`.
+               the FFT; sets :attr:`XVG.ncorrel` [25000]
            *force*            
                force recalculating correlation data even if cached values are
                available
@@ -246,7 +248,8 @@ class XVG(utilities.FileUtils):
         nstep = kwargs.pop('nstep', None)
         if nstep is None:
             # good step size leads to ~25,000 data points
-            nstep = len(self.array[0])/self.ncorrel   # needs the array so can take a while when loading
+            nstep = len(self.array[0])/float(self.ncorrel)
+            nstep = int(numpy.ceil(nstep))  # catch small data sets
         kwargs['nstep'] = nstep
         self.__correlkwargs.update(kwargs)  # only contains legal kw for numkit.timeseries.tcorrel or force
         return self.__correlkwargs
@@ -261,13 +264,19 @@ class XVG(utilities.FileUtils):
     def error(self):
         """Error on the mean of the data, taking the correlation time into account.
 
-        See Frenkel and Smit, Academic Press, San Diego 2002, p526:
+        See [FrenkelSmit2002]_ `p526`_:
 
            error = sqrt(2*tc*acf[0]/T)
 
         where acf() is the autocorrelation function of the fluctuations around
         the mean, y-<y>, tc is the correlation time, and T the total length of
         the simulation.
+
+        .. [FrenkelSmit2002] D. Frenkel and B. Smit, Understanding
+                             Molecular Simulation. Academic Press, San
+                             Diego 2002
+
+        .. _p526: http://books.google.co.uk/books?id=XmyO2oRUg0cC&lpg=PP1&ots=Zw5FY2j2DS&dq=Frenkel%20and%20Smit%2C&pg=PA526
         """
         return self._correlprop('sigma')
 
