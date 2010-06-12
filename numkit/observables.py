@@ -26,10 +26,32 @@ Note that each quantity has an identity: it makes a difference to the
 error of a combined quantity such as a+a if the inputs are independent
 measurements of the same.
 
+.. SeeAlso:: Various packages that describe quantities with units. 
+
 .. autoclass:: QuantityWithError
    :members:
+.. attribute:: QuantityWithError.value
 
-.. SeeAlso:: Various packages that describe quantities with units. 
+   Value of the observable A, typically the mean of a number of
+   observations, <A>.
+
+.. attribute:: QuantityWithError.error
+
+   Error of the observable, typically the square root of the
+   :attr:`QuantityWithError.variance` of the observations,
+   sqrt(<(A-<A>)**2>).
+
+   Changing the error automatically changes the
+   :attr:`QuantityWithError.variance`.
+
+.. attribute:: QuantityWithError.variance
+
+   Variance <(A-<A>)**2> of the observable. Changing the variance
+   automatically changes the :attr:`QuantityWithError.error`.
+
+.. autoclass:: QID
+   :members: union
+
 """
 
 import numpy
@@ -37,8 +59,20 @@ import numpy
 class QID(frozenset):
     """Identity of a :class:`QuantityWithError`.
 
+      QID(iterable) --> identity
+      QID() --> ``None``
+
     The anonymous identity is ``None``, anything else is a
     :func:`frozenset`.
+
+    The QID can contain arbitray (but unique) identifiers in the
+    *iterable*; however, strings are treated as individual objects and
+    *not* as iterables. 
+
+    The error arithmetic encapsulated by the operator-overloading of
+    :class:`QuantityWithError` builds new QIDs by accumulating QIDs of
+    the terms of the expression. In a certain sense, the "history" of
+    a quantity becomes its "identity".
     """
     def __new__(cls, iterable=None):
         if iterable is None:
@@ -89,7 +123,7 @@ class QuantityWithError(object):
     #       special casing of 'if other is self'.
     # TODO: Use variances throughout instead of errors.
     # TODO: special case operations with scalars: conserve the qid during those
-    #       operations.
+    #       operations (Is actually working with the current scheme.)
     # TODO: Add qid-conservation to special case "self"-operations.
     def __init__(self, value, error=None, qid=None, **kwargs):
         # value can be another QuantityWithError instance
@@ -132,10 +166,28 @@ class QuantityWithError(object):
     error = property(**error())
 
     def isSame(self, other):
-        """True if *other* is the same observable.
+        """Check if *other* is 100% correlated with *self*.
 
-        Also True if *other* was derived from *self* without using any
-        other independent quantities with errors.
+        ``True`` if 
+          `- *other* is the same observable (instance)
+           - *other* was derived from *self* without using any
+             other independent quantities with errors, e.g. ::
+                >>> a = QuantityWithError(1.0, 0.5)
+                >>> b = a**2 - a*2
+                >>> a.isSame(b)
+                True
+
+        ``False`` if 
+            - *other* is a scalar (without an error), or 
+            - *other* was computed from *self* without involvement of
+              any other observables.
+
+        :TODO: How should one treat the case when a quantity is used
+               again in an operation, e.g.  ::
+                 c = a + b 
+                 d = c/a 
+               How to compute the error on d? What should the result
+               for ``c.isSame(a)`` be?
         """
         try:
             return self.qid == other.qid
