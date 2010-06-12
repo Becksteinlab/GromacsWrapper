@@ -450,7 +450,6 @@ class XVG(utilities.FileUtils):
         :attr:`XVG.__pickle_excluded` are *not* pickled as they are but simply
         pickled with the default value.
         """
-        
         if self.savedata:
             d = self.__dict__
         else:
@@ -465,7 +464,16 @@ class XVG(utilities.FileUtils):
             for k in self.__dict__:
                 d[k] = self.__pickle_excluded.get(demangle(k), self.__dict__[k])
         return d
-        
+
+    def __setstate__(self, d):
+        # compatibility with older (pre 0.1.13) pickled instances
+        if not 'savedata' in d:
+            wmsg = "Reading pre 0.1.13 pickle file: setting savedata=False"
+            warnings.warn(wmsg, category=DeprecationWarning)
+            self.logger.warn(wmsg)
+            d['savedata'] = False  # new default
+        self.__dict__.update(d)
+
 
 class NDX(odict, utilities.FileUtils):
     """Gromacs index file.
