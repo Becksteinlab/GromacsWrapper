@@ -20,6 +20,7 @@ default commands: 'distribution docs'
 cmd           description
 -----         -----------------
 distribution  make sdist and egg, copy to $PACKAGES
+dist
 docs          'make_epydoc make_sphinx'
 make_epydoc   source code docs, copy to $DOCS/epydoc
 make_sphinx   documentation, copy to $DOCS/html
@@ -116,7 +117,7 @@ case "$PYVERSION" in
 esac
 
 commands="$@"
-[ -n "$commands" ] || commands="docs distribution"
+[ -n "$commands" ] || commands="make_sphinx distribution"
 
 for cmd in $commands; do
     eval "$cmd"

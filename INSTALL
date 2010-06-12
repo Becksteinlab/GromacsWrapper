@@ -113,6 +113,7 @@ For the :mod:`gromacs.analysis` library additional packages are required:
   package        version     source
   =============  ==========  ==================================================
   matplotlib     >=0.91.3    http://matplotlib.sourceforge.net/
+  scipy                      http://www.scipy.org/
   RecSQL         >=0.3       http://sbcb.bioch.ox.ac.uk/oliver/software/RecSQL/
   =============  ==========  ==================================================
 
