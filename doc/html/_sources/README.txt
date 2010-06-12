@@ -12,9 +12,8 @@ mostly provided through the python doc strings. See `Download and
 Availability`_ for download instructions if the instructions in
 :doc:`INSTALL` are not sufficient.
 
-There is also auto-generated `online source code documentation`_
-available. The source code is also available in the `GromacsWrapper
-git repository`_.
+The source code is also available in the `GromacsWrapper git
+repository`_.
 
 Please be aware that this is **alpha** software that most definitely
 contains bugs. It is *your* responsibility to ensure that you are
@@ -23,6 +22,7 @@ running simulations with sensible parameters.
 
 .. _Documentation: 
    http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/html/index.html
+.. Online source code is not necessarily uptodate; check the git repository
 .. _online source code documentation:
    http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/epydoc/index.html
 .. _GromacsWrapper git repository:
@@ -30,20 +30,24 @@ running simulations with sensible parameters.
 
 
 
-License
+Licence
 =======
 
-The **GromacsWrapper** package is made available under the terms of the
-`GNU Public License v3`_ (or any higher version at your choice). 
+The **GromacsWrapper** package is made available under the terms of
+the `GNU Public License v3`_ (or any higher version at your choice)
+except as noted below. See the file COPYING for the licensing terms
+for all modules.
 
-See the file COPYING for the licensing terms for all modules except
-the **vmd** module, which is made available under the `LGPL v3`_ (see
-COPYING and COPYING.LESSER).
-
+The **vmd** module is made available under the `LGPL v3`_ (see COPYING
+and COPYING.LESSER). **numkit** is provided under the "`Modified BSD
+Licence`_" (as it contains some code from scipy_). **edPDB** is
+published under the `Biopython Licence`_.
 
 .. _GNU Public License v3: http://www.gnu.org/licenses/gpl.html
 .. _LGPL v3: http://www.gnu.org/licenses/lgpl.html
-
+.. _Modified BSD Licence: http://www.opensource.org/licenses/bsd-license.php
+.. _Biopython Licence: http://www.biopython.org/DIST/LICENSE
+.. _scipy: http://www.scipy.org
 
 
 Included Software
