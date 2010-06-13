@@ -276,7 +276,7 @@ class XVG(utilities.FileUtils):
                              Molecular Simulation. Academic Press, San
                              Diego 2002
 
-        .. _p526: http://books.google.co.uk/books?id=XmyO2oRUg0cC&lpg=PP1&ots=Zw5FY2j2DS&dq=Frenkel%20and%20Smit%2C&pg=PA526
+        .. _p526: http://books.google.co.uk/books?id=XmyO2oRUg0cC&pg=PA526
         """
         return self._correlprop('sigma')
 
