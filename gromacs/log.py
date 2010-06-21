@@ -61,7 +61,7 @@ def create(logger_name, logfile='edPDB.log'):
     # set a format which is simpler for console use
     formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
     console.setFormatter(formatter)
-    # configure for Mhp1 only
+
     logger.addHandler(console)
 
     return logger
