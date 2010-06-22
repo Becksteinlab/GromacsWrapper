@@ -507,6 +507,9 @@ class Worker(FileUtils):
         self.parameters.filenames[name] = filename        
         return filename
             
+    def __repr__(self):
+        """Represent the worker with the plugin name."""
+        return "<%s (name %s) Worker>" % (self.plugin.__class__.__name__, self.plugin_name)
 
 # plugins:
 # registers a worker class in Simulation.plugins and adds a pointer to Simulation to worker
