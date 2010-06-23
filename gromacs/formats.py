@@ -419,7 +419,8 @@ class XVG(utilities.FileUtils):
     def errorbar(self, **kwargs):
         """Quick hack: errorbar plot.
         
-        Set columns to select [x, y, dy].
+        Set *columns* keyword to select [x, y, dy] or [x, y, dx, dy],
+        e.g. ``columns=[0,1,2]``. See :meth:`XVG.plot` for details.
         """
         import pylab
 
@@ -460,7 +461,10 @@ class XVG(utilities.FileUtils):
             kwargs['yerr'] = ma[3]
             kwargs['xerr'] = ma[2]
         except IndexError:
-            kwargs['yerr'] = ma[2]
+            try:
+                kwargs['yerr'] = ma[2]
+            except IndexError:
+                raise TypeError("Either too few columns selected or data does not have a error column")
 
         pylab.errorbar(X, Y, **kwargs)
 
