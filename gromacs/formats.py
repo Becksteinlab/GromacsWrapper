@@ -121,6 +121,8 @@ class XVG(utilities.FileUtils):
                     when encountering data lines that it cannot parse.
                     ``True`` ignores those lines and logs a warning---this is
                     a risk because it might read a corrupted input file [``False``]
+              *stride*
+                    Only read every *stride* line of data [1].
               *savedata*
                     ``True`` includes the data (:attr:`XVG.array`` and
                     associated caches) when the instance is pickled (see
@@ -143,6 +145,7 @@ class XVG(utilities.FileUtils):
             except AttributeError:
                 self.names = names
         self.permissive = permissive
+        self.stride = kwargs.pop('stride', 1)
         self.corrupted_lineno = None      # must parse() first before this makes sense
         # default number of data points for calculating correlation times via FFT
         self.ncorrel = kwargs.pop('ncorrel', 25000)
@@ -288,13 +291,18 @@ class XVG(utilities.FileUtils):
         """
         return self._correlprop('tc')
 
-    def parse(self):
+    def parse(self, stride=None):
         """Read and cache the file as a numpy array.
+
+        Store every *stride* line of data; if ``None`` then the class default is used.
 
         The array is returned with column-first indexing, i.e. for a data file with
         columns X Y1 Y2 Y3 ... the array a will be a[0] = X, a[1] = Y1, ... .
         """
+        if stride is None:
+            stride = self.stride
         self.corrupted_lineno = []
+        irow  = 0  # count rows of data
         # cannot use numpy.loadtxt() because xvg can have two types of 'comment' lines
         with utilities.openany(self.real_filename) as xvg:
             rows = []
@@ -329,14 +337,18 @@ class XVG(utilities.FileUtils):
                     self.logger.error(errmsg)
                     raise IOError(errno.ENODATA, errmsg, self.real_filename)
                 # finally: a good line
-                ncol = len(row)
-                rows.append(row)
+                if irow % stride == 0:
+                    ncol = len(row)
+                    rows.append(row)
+                irow += 1
         try:
             self.__array = numpy.array(rows).transpose()    # cache result
         except:
             self.logger.error("%s: Failed reading XVG file, possibly data corrupted. "
                               "Check the last line of the file...", self.real_filename)
             raise
+        finally:
+            del rows     # try to clean up as well as possible as it can be massively big
 
     def set(self, a):
         """Set the *array* data from *a* (i.e. completely replace).
@@ -407,7 +419,8 @@ class XVG(utilities.FileUtils):
     def errorbar(self, **kwargs):
         """Quick hack: errorbar plot.
         
-        Set columns to select [x, y, dy].
+        Set *columns* keyword to select [x, y, dy] or [x, y, dx, dy],
+        e.g. ``columns=[0,1,2]``. See :meth:`XVG.plot` for details.
         """
         import pylab
 
@@ -448,7 +461,10 @@ class XVG(utilities.FileUtils):
             kwargs['yerr'] = ma[3]
             kwargs['xerr'] = ma[2]
         except IndexError:
-            kwargs['yerr'] = ma[2]
+            try:
+                kwargs['yerr'] = ma[2]
+            except IndexError:
+                raise TypeError("Either too few columns selected or data does not have a error column")
 
         pylab.errorbar(X, Y, **kwargs)
 
