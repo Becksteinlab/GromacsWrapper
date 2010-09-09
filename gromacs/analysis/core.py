@@ -170,7 +170,7 @@ class Simulation(object):
            *sim*
              Any object that contains the attributes *tpr*, *xtc*,
              and optionally *ndx*
-             (e.g. :class:`gromacs.cbook.Transformer`). The individual keywrods such
+             (e.g. :class:`gromacs.cbook.Transformer`). The individual keywords such
              as *xtc* override the values in *sim*.
            *tpr*
              Gromacs tpr file (**required**)
