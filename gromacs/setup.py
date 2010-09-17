@@ -321,7 +321,7 @@ def get_lipid_vdwradii(outdir=os.path.curdir, libdir=None):
 def solvate(struct='top/protein.pdb', top='top/system.top',
             distance=0.9, boxtype='dodecahedron',
             concentration=0, cation='NA+', anion='CL-',
-            water='spc', with_membrane=False,
+            water='spc', solvent_name='SOL', with_membrane=False,
             ndx = 'main.ndx', mainselection = '"Protein"',
             dirname='solvate',
             **kwargs):
@@ -336,6 +336,9 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
     ``None`` and also enable *with_membrane* = ``True`` (using extra
     big vdw radii for typical lipids).
 
+    .. Note:: The defaults are suitable for solvating a globular
+       protein in a fairly tight (increase *distance*!) dodecahedral
+       box.
 
     :Arguments:
       *struct* : filename
@@ -346,12 +349,21 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
           When solvating with water, make the box big enough so that
           at least *distance* nm water are between the solute *struct*
           and the box boundary.
-          Set this to ``None`` in order to use a box size in the input
+          Set *boxtype*  to ``None`` in order to use a box size in the input
           file (gro or pdb).
       *boxtype* : string
-          Any of the box types supported by :class:`~gromacs.tools.Genbox`.
-          If set to ``None`` it will also ignore *distance* and use the box
-          inside the *struct* file.
+          Any of the box types supported by :class:`~gromacs.tools.Editconf` 
+          (triclinic, cubic, dodecahedron, octahedron). Set the box dimensions 
+          either with *distance* or the *box* and *angle* keywords. 
+
+          If set to ``None`` it will ignore *distance* and use the box
+          inside the *struct* file. 
+      *box*
+          List of three box lengths [A,B,C] that are used by :class:`~gromacs.tools.Editconf`
+          in combination with *boxtype* (``bt`` in :program:`editconf`) and *angles*.
+          Setting *box* overrides *distance*.
+      *angles*
+          List of three angles (only necessary for triclinic boxes).
       *concentration* : float
           Concentration of the free ions in mol/l. Note that counter
           ions are added in excess of this concentration.
@@ -360,43 +372,74 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
       *water* : string
           Name of the water model; one of "spc", "spce", "tip3p",
           "tip4p". This should be appropriate for the chosen force
-          field. If no water is requird, simply supply the path to a box with solvent
-          molecules (used by :func:`gromacs.genbox`'s  *cs* argument).
+          field. If an alternative solvent is required, simply supply the path to a box 
+          with solvent molecules (used by :func:`~gromacs.genbox`'s  *cs* argument)
+          and also supply the molecule name via *solvent_name*.
+      *solvent_name*
+          Name of the molecules that make up the solvent (as set in the itp/top).
+          Typically needs to be changed when using non-standard/non-water solvents.
+          ["SOL"]
       *with_membrane* : bool
            ``True``: use special ``vdwradii.dat`` with 0.1 nm-increased radii on 
            lipids. Default is ``False``.
       *ndx* : filename
-          The name of the custom index file that is produced here.
+          How to name the index file that is produced by this function.
       *mainselection* : string
           A string that is fed to :class:`~gromacs.tools.Make_ndx` and
           which should select the solute.
       *dirname* : directory name
           Name of the directory in which all files for the solvation stage are stored.
-      *includes* : list of additional directories to add to the mdp include path
+      *includes*
+          List of additional directories to add to the mdp include path
+      *kwargs*
+          Additional arguments are passed on to
+          :class:`~gromacs.tools.Editconf` or are interpreted as parameters to be 
+          changed in the mdp file.
 
-    .. Note:: non-water solvents only work if the molecules are named SOL.
     """
-
     structure = realpath(struct)
     topology = realpath(top)
+
+    # arguments for editconf that we honour
+    editconf_keywords = ["box","angles","c","center","aligncenter","align","translate",
+                         "rotate","princ"]
+    editconf_kwargs = dict((k,kwargs.pop(k,None)) for k in editconf_keywords) 
+
+    # needed for topology scrubbing
+    scrubber_kwargs = {'marker': kwargs.pop('marker',None)}
+
+    # sanity checks and argument dependencies
+    editconf_boxtypes = "triclinic,cubic,dodecahedron,octahedron".split(',') + [None]
+    if not boxtype in editconf_boxtypes:
+        msg = "Unsupported boxtype %(boxtype)r: Only %(boxtypes)r are possible." % vars()
+        logger.error(msg)
+        raise ValueError(msg)
+    if editconf_kwargs['box']:
+        distance = None    # if box is set then user knows what she is doing...
 
     # handle additional include directories (kwargs are also modified!)
     mdp_kwargs = add_mdp_includes(topology, kwargs)
 
     if water.lower() in ('spc', 'spce'):
         water = 'spc216'
+    elif water.lower() == 'tip3p':
+        water = 'spc216'
+        logger.warning("TIP3P water model selected: using SPC equilibrated box "
+                       "for initial solvation because it is a reasonable strting point "
+                       "for any 3-point model. EQUILIBRATE THOROUGHLY!")
 
     # By default, grompp should not choke on a few warnings because at
     # this stage the user cannot do much about it (can be set to any
-    # value but keep undocumented...)
+    # value but is kept undocumented...)
     grompp_maxwarn = kwargs.pop('maxwarn',10)
-
-    # should scrub topology but hard to know what to scrub; for
-    # instance, some ions or waters could be part of the crystal structure
     
+    # clean topology (if user added the marker; the default marker is
+    # ; Gromacs auto-generated entries follow:
+    n_removed = gromacs.cbook.remove_molecules_from_topology(topology, **scrubber_kwargs)
+
     with in_dir(dirname):
         logger.info("[%(dirname)s] Solvating with water %(water)r..." % vars())
-        if distance is None or boxtype is None:
+        if boxtype is None:
             hasBox = False
             ext = os.path.splitext(structure)[1]
             if ext == '.gro':
@@ -408,11 +451,13 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
                             hasBox = True
                             break
             if not hasBox:
-                msg = "No box data in the input structure %(structure)r and distance or boxtype is set to None" % vars()
+                msg = "No box data in the input structure %(structure)r and boxtype is set to None" % vars()
                 logger.exception(msg)
                 raise MissingDataError(msg)
             distance = boxtype = None   # ensures that editconf just converts
-        gromacs.editconf(f=structure, o='boxed.gro', bt=boxtype, d=distance)
+        editconf_kwargs.update({'f': structure, 'o': 'boxed.gro',
+                                'bt': boxtype, 'd': distance})
+        gromacs.editconf(**editconf_kwargs)
 
         if with_membrane:
             vdwradii_dat = get_lipid_vdwradii()  # need to clean up afterwards
@@ -467,7 +512,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
             logger.info("[%(dirname)s] Adding n_cation = %(n_cation)d and n_anion = %(n_anion)d ions..." % vars())
             gromacs.genion(s='topol.tpr', o='ionized.gro', p=topology,
                            pname=cation, nname=anion, np=n_cation, nn=n_anion,
-                           input='SOL')
+                           input=solvent_name)
         else:
             # fake ionized file ... makes it easier to continue without too much fuzz
             try:

@@ -201,7 +201,7 @@ class Command(object):
 
            rc,stdout,stderr = command(*args, input=None, **kwargs)
            
-        All positional parameters \*args and all gromacs \*\*kwargs are passed on
+        All positional parameters *args* and all gromacs *kwargs* are passed on
         to the Gromacs command. input and output keywords allow communication
         with the process via the python subprocess module.
         
