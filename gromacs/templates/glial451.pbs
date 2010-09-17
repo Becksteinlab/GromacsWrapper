@@ -1,0 +1,48 @@
+#!/bin/bash
+#PBS -N GMX_MD
+#PBS -l nodes=1:ppn=8
+#PBS -r y
+
+# host: glial
+# queuing system: PBS
+# Gromacs version: 4.5.1
+
+#---------------------
+# !!! Set STARTDIR !!!
+#---------------------
+#
+#   sed -i "/^STARTDIR=/s|\.|$PWD|" glial.pbs
+#
+STARTDIR=.
+
+
+# deffnm line is possibly modified by gromacs.setup
+# (leave it as it is in the template)
+DEFFNM=md
+
+TPR=${DEFFNM}.tpr
+OUTPUT=${DEFFNM}.out
+PDB=${DEFFNM}.pdb
+
+MDRUN_OPTS=""
+
+# JOB_ARRAY_PLACEHOLDER
+
+
+#MDRUN=$HOME/Library/Gromacs/version/4.0.2/x86_64-unknown-linux-gnu/bin/mdrun_lammpi706
+MDRUN=$HOME/Library/Gromacs/version/4.5.1/x86_64-unknown-linux-gnu/bin/mdrun_lammpi706
+MPIRUN=/packages/lam-7.0.6/bin/mpirun
+
+
+echo hostname
+date
+cd $STARTDIR || { echo "Failed to 'cd $STARTDIR'. Exit."; exit 1; }
+echo
+
+lamboot -v $PBS_NODEFILE
+$MPIRUN -np 8 $MDRUN -step 1000 -deffnm ${DEFFNM} -s ${TPR} -c ${PDB} -cpi ${MDRUN_OPTS} > $OUTPUT
+rc=$?
+lamhalt -v $PBS_NODEFILE
+
+# dependent jobs will only start if rc == 0
+exit $rc
