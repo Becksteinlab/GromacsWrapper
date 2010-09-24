@@ -4,7 +4,7 @@ PACKAGE=GromacsWrapper
 EPYDOC_DIRS="gromacs gromacs/analysis/plugins/ vmd/ edPDB/"
 PDF=GromacsWrapper.pdf
 
-SERVERDIR=/sansom/public_html/sbcb/oliver
+SERVERDIR=/sansom/public_html/html/sbcb/oliver
 PACKAGES=$SERVERDIR/download/Python
 DOCS=$SERVERDIR/software/$PACKAGE
 
