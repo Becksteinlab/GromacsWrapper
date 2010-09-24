@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.setup – Setting up a Gromacs MD run &mdash; GromacsWrapper v0.1.13 documentation</title>
+    <title>gromacs.setup – Setting up a Gromacs MD run &mdash; GromacsWrapper v0.1.14 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.1.13',
+        VERSION:     '0.1.14',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.1.13 documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper v0.1.14 documentation" href="../../index.html" />
     <link rel="up" title="Gromacs building blocks" href="../building_blocks.html" />
     <link rel="next" title="gromacs.qsub – utilities for batch submission systems" href="qsub.html" />
     <link rel="prev" title="gromacs.cbook – Gromacs Cook Book" href="cbook.html" /> 
@@ -40,7 +40,7 @@
         <li class="right" >
           <a href="cbook.html" title="gromacs.cbook – Gromacs Cook Book"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.1.13 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.1.14 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" accesskey="U">Gromacs building blocks</a> &raquo;</li> 
       </ul>
@@ -172,7 +172,7 @@ manually.</p>
 
 <dl class="function">
 <dt id="gromacs.setup.solvate">
-<tt class="descclassname">gromacs.setup.</tt><tt class="descname">solvate</tt><big>(</big><em>struct='top/protein.pdb'</em>, <em>top='top/system.top'</em>, <em>distance=0.90000000000000002</em>, <em>boxtype='dodecahedron'</em>, <em>concentration=0</em>, <em>cation='NA+'</em>, <em>anion='CL-'</em>, <em>water='spc'</em>, <em>with_membrane=False</em>, <em>ndx='main.ndx'</em>, <em>mainselection='&quot;Protein&quot;'</em>, <em>dirname='solvate'</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.setup.solvate" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.setup.</tt><tt class="descname">solvate</tt><big>(</big><em>struct='top/protein.pdb'</em>, <em>top='top/system.top'</em>, <em>distance=0.90000000000000002</em>, <em>boxtype='dodecahedron'</em>, <em>concentration=0</em>, <em>cation='NA+'</em>, <em>anion='CL-'</em>, <em>water='spc'</em>, <em>solvent_name='SOL'</em>, <em>with_membrane=False</em>, <em>ndx='main.ndx'</em>, <em>mainselection='&quot;Protein&quot;'</em>, <em>dirname='solvate'</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.setup.solvate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Put protein into box, add water, add counter-ions.</p>
 <p>Currently this really only supports solutes in water. If you need
 to embedd a protein in a membrane then you will require more
@@ -181,11 +181,17 @@ sophisticated approaches.</p>
 bilayer. In this case you will probably want to set <em>distance</em> =
 <tt class="xref docutils literal"><span class="pre">None</span></tt> and also enable <em>with_membrane</em> = <tt class="xref docutils literal"><span class="pre">True</span></tt> (using extra
 big vdw radii for typical lipids).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The defaults are suitable for solvating a globular
+protein in a fairly tight (increase <em>distance</em>!) dodecahedral
+box.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>struct</em> <span class="classifier-delimiter">:</span> <span class="classifier">filename</span></dt>
 <dd><p class="first last">pdb or gro input structure</p>
 </dd>
@@ -196,13 +202,23 @@ big vdw radii for typical lipids).</p>
 <dd><p class="first last">When solvating with water, make the box big enough so that
 at least <em>distance</em> nm water are between the solute <em>struct</em>
 and the box boundary.
-Set this to <tt class="xref docutils literal"><span class="pre">None</span></tt> in order to use a box size in the input
+Set <em>boxtype</em>  to <tt class="xref docutils literal"><span class="pre">None</span></tt> in order to use a box size in the input
 file (gro or pdb).</p>
 </dd>
 <dt><em>boxtype</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first last">Any of the box types supported by <a title="gromacs.tools.Genbox" class="reference" href="../tools.html#gromacs.tools.Genbox"><tt class="xref docutils literal"><span class="pre">Genbox</span></tt></a>.
-If set to <tt class="xref docutils literal"><span class="pre">None</span></tt> it will also ignore <em>distance</em> and use the box
+<dd><p class="first">Any of the box types supported by <a title="gromacs.tools.Editconf" class="reference" href="../tools.html#gromacs.tools.Editconf"><tt class="xref docutils literal"><span class="pre">Editconf</span></tt></a> 
+(triclinic, cubic, dodecahedron, octahedron). Set the box dimensions 
+either with <em>distance</em> or the <em>box</em> and <em>angle</em> keywords.</p>
+<p class="last">If set to <tt class="xref docutils literal"><span class="pre">None</span></tt> it will ignore <em>distance</em> and use the box
 inside the <em>struct</em> file.</p>
+</dd>
+<dt><em>box</em></dt>
+<dd><p class="first last">List of three box lengths [A,B,C] that are used by <a title="gromacs.tools.Editconf" class="reference" href="../tools.html#gromacs.tools.Editconf"><tt class="xref docutils literal"><span class="pre">Editconf</span></tt></a>
+in combination with <em>boxtype</em> (<tt class="docutils literal"><span class="pre">bt</span></tt> in <strong>editconf</strong>) and <em>angles</em>.
+Setting <em>box</em> overrides <em>distance</em>.</p>
+</dd>
+<dt><em>angles</em></dt>
+<dd><p class="first last">List of three angles (only necessary for triclinic boxes).</p>
 </dd>
 <dt><em>concentration</em> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
 <dd><p class="first last">Concentration of the free ions in mol/l. Note that counter
@@ -214,15 +230,21 @@ ions are added in excess of this concentration.</p>
 <dt><em>water</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">Name of the water model; one of &#8220;spc&#8221;, &#8220;spce&#8221;, &#8220;tip3p&#8221;,
 &#8220;tip4p&#8221;. This should be appropriate for the chosen force
-field. If no water is requird, simply supply the path to a box with solvent
-molecules (used by <tt class="xref docutils literal"><span class="pre">gromacs.genbox()</span></tt>&#8216;s  <em>cs</em> argument).</p>
+field. If an alternative solvent is required, simply supply the path to a box 
+with solvent molecules (used by <tt class="xref docutils literal"><span class="pre">genbox()</span></tt>&#8216;s  <em>cs</em> argument)
+and also supply the molecule name via <em>solvent_name</em>.</p>
+</dd>
+<dt><em>solvent_name</em></dt>
+<dd><p class="first last">Name of the molecules that make up the solvent (as set in the itp/top).
+Typically needs to be changed when using non-standard/non-water solvents.
+[&#8220;SOL&#8221;]</p>
 </dd>
 <dt><em>with_membrane</em> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt>: use special <tt class="docutils literal"><span class="pre">vdwradii.dat</span></tt> with 0.1 nm-increased radii on 
 lipids. Default is <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
 </dd>
 <dt><em>ndx</em> <span class="classifier-delimiter">:</span> <span class="classifier">filename</span></dt>
-<dd><p class="first last">The name of the custom index file that is produced here.</p>
+<dd><p class="first last">How to name the index file that is produced by this function.</p>
 </dd>
 <dt><em>mainselection</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">A string that is fed to <a title="gromacs.tools.Make_ndx" class="reference" href="../tools.html#gromacs.tools.Make_ndx"><tt class="xref docutils literal"><span class="pre">Make_ndx</span></tt></a> and
@@ -231,16 +253,19 @@ which should select the solute.</p>
 <dt><em>dirname</em> <span class="classifier-delimiter">:</span> <span class="classifier">directory name</span></dt>
 <dd><p class="first last">Name of the directory in which all files for the solvation stage are stored.</p>
 </dd>
+<dt><em>includes</em></dt>
+<dd><p class="first last">List of additional directories to add to the mdp include path</p>
+</dd>
+<dt><em>kwargs</em></dt>
+<dd><p class="first last">Additional arguments are passed on to
+<a title="gromacs.tools.Editconf" class="reference" href="../tools.html#gromacs.tools.Editconf"><tt class="xref docutils literal"><span class="pre">Editconf</span></tt></a> or are interpreted as parameters to be 
+changed in the mdp file.</p>
+</dd>
 </dl>
-<p class="last"><em>includes</em> : list of additional directories to add to the mdp include path</p>
 </td>
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">non-water solvents only work if the molecules are named SOL.</p>
-</div>
 </dd></dl>
 
 <dl class="function">
@@ -683,14 +708,14 @@ c = n/V = m/(V*M) = rho/M  = 55.345 mol/L.</dd></dl>
         <li class="right" >
           <a href="cbook.html" title="gromacs.cbook – Gromacs Cook Book"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.1.13 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.1.14 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" >Gromacs building blocks</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
       &copy; Copyright 2009-2010, Oliver Beckstein.
-      Last updated on Jun 14, 2010.
+      Last updated on Sep 24, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
     </div>
   </body>

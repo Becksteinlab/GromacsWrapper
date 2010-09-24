@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>numkit.observables — Observables as quantities with errors &mdash; GromacsWrapper v0.1.13 documentation</title>
+    <title>numkit.observables — Observables as quantities with errors &mdash; GromacsWrapper v0.1.14 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1.13',
+        VERSION:     '0.1.14',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.1.13 documentation" href="../index.html" />
+    <link rel="top" title="GromacsWrapper v0.1.14 documentation" href="../index.html" />
     <link rel="up" title="numkit — Numerical analysis toolkit" href="../numkit.html" />
     <link rel="next" title="vmd — Remote Tcl commands in VMD" href="../vmd.html" />
     <link rel="prev" title="numkit.integration — Numerical integration of data" href="integration.html" /> 
@@ -40,7 +40,7 @@
         <li class="right" >
           <a href="integration.html" title="numkit.integration — Numerical integration of data"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper v0.1.13 documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper v0.1.14 documentation</a> &raquo;</li>
           <li><a href="../auxiliary.html" >Auxiliary modules</a> &raquo;</li>
           <li><a href="../numkit.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a> &raquo;</li> 
       </ul>
@@ -95,15 +95,6 @@ with the exception of the case of binary relations of the quantity
 with itself. For instance, a*a is correctly interpreted as
 a**2). However, this behaviour is not guaranteed to work for any
 complicated expression.</p>
-<p>When combining with pure numbers you have to wrap these numbers if
-they are to the left of a <a title="numkit.observables.QuantityWithError" class="reference" href="#numkit.observables.QuantityWithError"><tt class="xref docutils literal"><span class="pre">QuantityWithError</span></tt></a>, e.g.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">QuantityWithError</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="mi">1</span><span class="o">/</span><span class="n">a</span>
-<span class="go">TypeError</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">QuantityWithError</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span><span class="o">/</span><span class="n">a</span>
-<span class="go">0.5 (0.25)</span>
-</pre></div>
-</div>
 <dl class="staticmethod">
 <dt id="numkit.observables.QuantityWithError.asQuantityWithError">
 <em class="property">static </em><tt class="descname">asQuantityWithError</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#numkit.observables.QuantityWithError.asQuantityWithError" title="Permalink to this definition">¶</a></dt>
@@ -209,7 +200,7 @@ automatically changes the <a title="numkit.observables.QuantityWithError.error" 
 QID(iterable) &#8211;&gt; identity
 QID() &#8211;&gt; <tt class="xref docutils literal"><span class="pre">None</span></tt></blockquote>
 <p>The anonymous identity is <tt class="xref docutils literal"><span class="pre">None</span></tt>, anything else is a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/stdtypes.html#frozenset"><tt class="xref docutils literal"><span class="pre">frozenset()</span></tt></a>.</p>
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/stdtypes.html#frozenset"><tt class="xref docutils literal"><span class="pre">frozenset()</span></tt></a>.</p>
 <p>The QID can contain arbitray (but unique) identifiers in the
 <em>iterable</em>; however, strings are treated as individual objects and
 <em>not</em> as iterables.</p>
@@ -270,14 +261,14 @@ a quantity becomes its &#8220;identity&#8221;.</p>
         <li class="right" >
           <a href="integration.html" title="numkit.integration — Numerical integration of data"
              >previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper v0.1.13 documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper v0.1.14 documentation</a> &raquo;</li>
           <li><a href="../auxiliary.html" >Auxiliary modules</a> &raquo;</li>
           <li><a href="../numkit.html" ><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
       &copy; Copyright 2009-2010, Oliver Beckstein.
-      Last updated on Jun 14, 2010.
+      Last updated on Sep 24, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
     </div>
   </body>

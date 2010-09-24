@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.core – Core functionality &mdash; GromacsWrapper v0.1.13 documentation</title>
+    <title>gromacs.core – Core functionality &mdash; GromacsWrapper v0.1.14 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.1.13',
+        VERSION:     '0.1.14',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.1.13 documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper v0.1.14 documentation" href="../../index.html" />
     <link rel="up" title="Gromacs core modules" href="../core.html" />
     <link rel="next" title="gromacs.config – Configuration for GromacsWrapper" href="config.html" />
     <link rel="prev" title="Gromacs core modules" href="../core.html" /> 
@@ -40,7 +40,7 @@
         <li class="right" >
           <a href="../core.html" title="Gromacs core modules"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.1.13 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.1.14 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" accesskey="U">Gromacs core modules</a> &raquo;</li> 
       </ul>
@@ -88,7 +88,7 @@ sequence of positional arguments.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">rc</span><span class="p">,</span><span class="n">stdout</span><span class="p">,</span><span class="n">stderr</span> <span class="o">=</span> <span class="n">command</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="nb">input</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>All positional parameters *args and all gromacs **kwargs are passed on
+<p>All positional parameters <em>args</em> and all gromacs <em>kwargs</em> are passed on
 to the Gromacs command. input and output keywords allow communication
 with the process via the python subprocess module.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -152,7 +152,7 @@ command.</p>
 <a title="gromacs.core.PopenWithInput" class="reference" href="#gromacs.core.PopenWithInput"><tt class="xref docutils literal"><span class="pre">PopenWithInput</span></tt></a> object (see <a title="gromacs.core.GromacsCommand.Popen" class="reference" href="#gromacs.core.GromacsCommand.Popen"><tt class="xref docutils literal"><span class="pre">GromacsCommand.Popen()</span></tt></a> method) instead of the simple
 call described here and first construct the pipeline explicitly and then
 call the <a title="gromacs.core.PopenWithInput.communicate" class="reference" href="#gromacs.core.PopenWithInput.communicate"><tt class="xref docutils literal"><span class="pre">PopenWithInput.communicate()</span></tt></a> method.</p>
-<p><tt class="docutils literal"><span class="pre">STDOUT</span></tt> and <tt class="docutils literal"><span class="pre">PIPE</span></tt> are objects provided by the <a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/subprocess.html#module-subprocess"><tt class="xref docutils literal"><span class="pre">subprocess</span></tt></a> module. Any
+<p><tt class="docutils literal"><span class="pre">STDOUT</span></tt> and <tt class="docutils literal"><span class="pre">PIPE</span></tt> are objects provided by the <a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/subprocess.html#module-subprocess"><tt class="xref docutils literal"><span class="pre">subprocess</span></tt></a> module. Any
 python stream can be provided and manipulated. This allows for chaining
 of commands. Use</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">PIPE</span><span class="p">,</span> <span class="n">STDOUT</span>
@@ -245,7 +245,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -369,7 +369,7 @@ error:</p>
 file descriptors with <tt class="docutils literal"><span class="pre">ulimit</span> <span class="pre">-n</span> <span class="pre">2048</span></tt> and run analysis in
 different scripts.</p>
 </div>
-<p>Initialize with the standard <a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/subprocess.html#subprocess.Popen"><tt class="xref docutils literal"><span class="pre">subprocess.Popen</span></tt></a> arguments.</p>
+<p>Initialize with the standard <a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/subprocess.html#subprocess.Popen"><tt class="xref docutils literal"><span class="pre">subprocess.Popen</span></tt></a> arguments.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -441,14 +441,14 @@ different scripts.</p>
         <li class="right" >
           <a href="../core.html" title="Gromacs core modules"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.1.13 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.1.14 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" >Gromacs core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
       &copy; Copyright 2009-2010, Oliver Beckstein.
-      Last updated on Jun 14, 2010.
+      Last updated on Sep 24, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
     </div>
   </body>

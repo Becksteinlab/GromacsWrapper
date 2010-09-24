@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Analysis core modules &mdash; GromacsWrapper v0.1.13 documentation</title>
+    <title>Analysis core modules &mdash; GromacsWrapper v0.1.14 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1.13',
+        VERSION:     '0.1.14',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.1.13 documentation" href="../index.html" />
+    <link rel="top" title="GromacsWrapper v0.1.14 documentation" href="../index.html" />
     <link rel="up" title="Analysis" href="../analysis.html" />
     <link rel="next" title="Support modules" href="support.html" />
     <link rel="prev" title="Analysis" href="../analysis.html" /> 
@@ -40,7 +40,7 @@
         <li class="right" >
           <a href="../analysis.html" title="Analysis"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper v0.1.13 documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper v0.1.14 documentation</a> &raquo;</li>
           <li><a href="../analysis.html" accesskey="U">Analysis</a> &raquo;</li> 
       </ul>
     </div>  
@@ -100,7 +100,7 @@ in the plugin&#8217;s <tt class="xref docutils literal"><span class="pre">result
 <dt><em>sim</em></dt>
 <dd><p class="first last">Any object that contains the attributes <em>tpr</em>, <em>xtc</em>,
 and optionally <em>ndx</em>
-(e.g. <a title="gromacs.cbook.Transformer" class="reference" href="../gromacs/blocks/cbook.html#gromacs.cbook.Transformer"><tt class="xref docutils literal"><span class="pre">gromacs.cbook.Transformer</span></tt></a>). The individual keywrods such
+(e.g. <a title="gromacs.cbook.Transformer" class="reference" href="../gromacs/blocks/cbook.html#gromacs.cbook.Transformer"><tt class="xref docutils literal"><span class="pre">gromacs.cbook.Transformer</span></tt></a>). The individual keywords such
 as <em>xtc</em> override the values in <em>sim</em>.</p>
 </dd>
 <dt><em>tpr</em></dt>
@@ -341,7 +341,7 @@ attributes or as key/value pairs, see the container class
 <dl class="class">
 <dt id="gromacs.analysis.core.Simulation">
 <em class="property">class </em><tt class="descclassname">gromacs.analysis.core.</tt><tt class="descname">Simulation</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.analysis.core.Simulation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/functions.html#object"><tt class="xref docutils literal"><span class="pre">object</span></tt></a></p>
+<dd><p>Bases: <a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/functions.html#object"><tt class="xref docutils literal"><span class="pre">object</span></tt></a></p>
 <p>Class that represents one simulation.</p>
 <p>Analysis capabilities are added via plugins.</p>
 <ol class="arabic simple">
@@ -361,7 +361,7 @@ in the plugin&#8217;s <tt class="xref docutils literal"><span class="pre">result
 <dt><em>sim</em></dt>
 <dd><p class="first last">Any object that contains the attributes <em>tpr</em>, <em>xtc</em>,
 and optionally <em>ndx</em>
-(e.g. <a title="gromacs.cbook.Transformer" class="reference" href="../gromacs/blocks/cbook.html#gromacs.cbook.Transformer"><tt class="xref docutils literal"><span class="pre">gromacs.cbook.Transformer</span></tt></a>). The individual keywrods such
+(e.g. <a title="gromacs.cbook.Transformer" class="reference" href="../gromacs/blocks/cbook.html#gromacs.cbook.Transformer"><tt class="xref docutils literal"><span class="pre">gromacs.cbook.Transformer</span></tt></a>). The individual keywords such
 as <em>xtc</em> override the values in <em>sim</em>.</p>
 </dd>
 <dt><em>tpr</em></dt>
@@ -518,7 +518,7 @@ ultimately by <tt class="xref docutils literal"><span class="pre">pylab.plot()</
 <dl class="method">
 <dt id="gromacs.analysis.core.Simulation.check_file">
 <tt class="descname">check_file</tt><big>(</big><em>filetype</em>, <em>path</em><big>)</big><a class="headerlink" href="#gromacs.analysis.core.Simulation.check_file" title="Permalink to this definition">¶</a></dt>
-<dd>Raise <a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.ValueError"><tt class="xref docutils literal"><span class="pre">ValueError</span></tt></a> if path does not exist. Uses <em>filetype</em> in message.</dd></dl>
+<dd>Raise <a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.ValueError"><tt class="xref docutils literal"><span class="pre">ValueError</span></tt></a> if path does not exist. Uses <em>filetype</em> in message.</dd></dl>
 
 <dl class="method">
 <dt id="gromacs.analysis.core.Simulation.has_plugin">
@@ -671,7 +671,7 @@ but can be supplied later.</p>
 <p class="first admonition-title">Note</p>
 <p class="last">Subclasses should do all their <a title="gromacs.analysis.core.Simulation" class="reference" href="#gromacs.analysis.core.Simulation"><tt class="xref docutils literal"><span class="pre">Simulation</span></tt></a> -
 dependent initialization in their own <a title="gromacs.analysis.core.Worker._register_hook" class="reference" href="#gromacs.analysis.core.Worker._register_hook"><tt class="xref docutils literal"><span class="pre">_register_hook()</span></tt></a> which
-<strong>must</strong> call the super class hook via the <a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/functions.html#super"><tt class="xref docutils literal"><span class="pre">super</span></tt></a>
+<strong>must</strong> call the super class hook via the <a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/functions.html#super"><tt class="xref docutils literal"><span class="pre">super</span></tt></a>
 mechanism.</p>
 </div>
 </dd></dl>
@@ -752,13 +752,13 @@ mechanism.</p>
         <li class="right" >
           <a href="../analysis.html" title="Analysis"
              >previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper v0.1.13 documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper v0.1.14 documentation</a> &raquo;</li>
           <li><a href="../analysis.html" >Analysis</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
       &copy; Copyright 2009-2010, Oliver Beckstein.
-      Last updated on Jun 14, 2010.
+      Last updated on Sep 24, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
     </div>
   </body>

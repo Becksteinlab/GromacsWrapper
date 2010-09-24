@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Wrapped Gromacs tools &mdash; GromacsWrapper v0.1.13 documentation</title>
+    <title>Wrapped Gromacs tools &mdash; GromacsWrapper v0.1.14 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1.13',
+        VERSION:     '0.1.14',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.1.13 documentation" href="../index.html" />
+    <link rel="top" title="GromacsWrapper v0.1.14 documentation" href="../index.html" />
     <link rel="up" title="Gromacs core modules" href="core.html" />
     <link rel="next" title="Gromacs building blocks" href="building_blocks.html" />
     <link rel="prev" title="gromacs.tools – Gromacs commands classes" href="core/tools.html" /> 
@@ -40,7 +40,7 @@
         <li class="right" >
           <a href="core/tools.html" title="gromacs.tools – Gromacs commands classes"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper v0.1.13 documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper v0.1.14 documentation</a> &raquo;</li>
           <li><a href="../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="core.html" accesskey="U">Gromacs core modules</a> &raquo;</li> 
       </ul>
@@ -117,7 +117,7 @@ to the temporary indexs file.</p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Example:</th><td class="field-body"><p class="first">Used in derived classes that replace the standard
-<a title="gromacs.tools.GromacsCommandMultiIndex.run" class="reference" href="#gromacs.tools.GromacsCommandMultiIndex.run"><tt class="xref docutils literal"><span class="pre">run()</span></tt></a> (or <a title="(in Python v2.6)" class="reference" href="http://docs.python.org/reference/datamodel.html#object.__init__"><tt class="xref docutils literal"><span class="pre">__init__()</span></tt></a>) methods with something like:</p>
+<a title="gromacs.tools.GromacsCommandMultiIndex.run" class="reference" href="#gromacs.tools.GromacsCommandMultiIndex.run"><tt class="xref docutils literal"><span class="pre">run()</span></tt></a> (or <a title="(in Python v2.7)" class="reference" href="http://docs.python.org/reference/datamodel.html#object.__init__"><tt class="xref docutils literal"><span class="pre">__init__()</span></tt></a>) methods with something like:</p>
 <div class="last highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fake_multi_ndx</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>            
     <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">G_mindist</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -191,7 +191,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -279,7 +279,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -367,7 +367,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -455,7 +455,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -543,7 +543,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -631,7 +631,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -719,7 +719,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -807,7 +807,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -895,7 +895,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -983,7 +983,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -1071,7 +1071,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -1159,7 +1159,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -1247,7 +1247,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -1335,7 +1335,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -1423,7 +1423,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -1511,7 +1511,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -1599,7 +1599,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -1687,7 +1687,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -1775,7 +1775,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -1863,7 +1863,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -1951,7 +1951,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -2039,7 +2039,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -2127,7 +2127,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -2215,7 +2215,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -2303,7 +2303,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -2391,7 +2391,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -2479,7 +2479,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -2567,7 +2567,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -2655,7 +2655,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -2743,7 +2743,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -2831,7 +2831,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -2919,7 +2919,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -3007,7 +3007,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -3095,7 +3095,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -3183,7 +3183,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -3271,7 +3271,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -3359,7 +3359,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -3447,7 +3447,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -3535,7 +3535,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -3623,7 +3623,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -3711,7 +3711,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -3799,7 +3799,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -3887,7 +3887,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -3975,7 +3975,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -4063,7 +4063,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -4151,7 +4151,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -4239,7 +4239,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -4340,7 +4340,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -4428,7 +4428,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -4516,7 +4516,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -4604,7 +4604,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -4692,7 +4692,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -4780,7 +4780,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -4868,7 +4868,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -4956,7 +4956,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -5044,7 +5044,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -5132,7 +5132,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -5220,7 +5220,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -5308,7 +5308,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -5396,7 +5396,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -5484,7 +5484,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -5631,7 +5631,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -5719,7 +5719,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -5807,7 +5807,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -5895,7 +5895,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -5983,7 +5983,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -6071,7 +6071,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -6159,7 +6159,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -6247,7 +6247,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -6335,7 +6335,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -6436,7 +6436,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -6524,7 +6524,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -6612,7 +6612,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -6700,7 +6700,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -6788,7 +6788,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -6876,7 +6876,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -6964,7 +6964,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -7052,7 +7052,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -7140,7 +7140,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -7228,7 +7228,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -7316,7 +7316,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -7404,7 +7404,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -7492,7 +7492,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -7580,7 +7580,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -7668,7 +7668,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -7756,7 +7756,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -7844,7 +7844,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -7932,7 +7932,7 @@ scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
 is used.</p>
 <p>Keywords must be legal python keywords or the interpreter raises a
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
+<a title="(in Python v2.7)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.SyntaxError"><tt class="xref docutils literal"><span class="pre">SyntaxError</span></tt></a> but of course Gromacs commandline arguments are
 not required to be legal python. In this case &#8220;quote&#8221; the option
 with an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) and the underscore will be silently
 stripped. For instance, <tt class="docutils literal"><span class="pre">-or</span></tt> translates to the illegal keyword
@@ -8053,14 +8053,14 @@ can be one of the following:</p>
         <li class="right" >
           <a href="core/tools.html" title="gromacs.tools – Gromacs commands classes"
              >previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper v0.1.13 documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper v0.1.14 documentation</a> &raquo;</li>
           <li><a href="../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="core.html" >Gromacs core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
       &copy; Copyright 2009-2010, Oliver Beckstein.
-      Last updated on Jun 14, 2010.
+      Last updated on Sep 24, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
     </div>
   </body>
