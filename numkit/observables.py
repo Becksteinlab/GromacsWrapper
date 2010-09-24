@@ -236,7 +236,7 @@ class QuantityWithError(object):
         """x.__radd__(y)  <-->  y + x"""
         val,err,qid = self._astuple(other)
         if self.isSame(other):
-            return QuantityWithError(val, numpy.abs(self.error+err) + self.value, qid=self.qid)
+            return QuantityWithError(self.value + val, numpy.abs(self.error+err), qid=self.qid)
         return QuantityWithError(val + self.value, self._dist(self.error, err), qid=self.qid.union(qid))
 
     def __sub__(self, other):
@@ -269,7 +269,7 @@ class QuantityWithError(object):
         val,err,qid = self._astuple(other)
         if self.isSame(other):
             # TODO: error not correct in the general case (?)
-            return QuantityWithError(self.value * val, numpy.abs(self.error*err), qid=self.qid)
+            return QuantityWithError(val * self.value, numpy.abs(self.error*err), qid=self.qid)
         error = self._dist(val*self.error, err*self.value)
         return QuantityWithError(val * self.value, error=error, qid=self.qid.union(qid))
 
@@ -282,7 +282,7 @@ class QuantityWithError(object):
         error = self._dist(self.error/val, err*self.value/val**2)
         return QuantityWithError(self.value/val, error=error, qid=self.qid.union(qid))
 
-    def __div__(self, other):
+    def __rdiv__(self, other):
         """x.__rdiv__(y)  <-->  y / x"""
         val,err,qid = self._astuple(other)
         if self.isSame(other):
