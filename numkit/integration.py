@@ -19,12 +19,12 @@ import logging
 logger = logging.getLogger("numkit.integration")
 
 def simps_error(dy, x=None, dx=1, axis=-1, even='avg'):
-    """Error on integral evaluated with `Simpson's rule`_ from errors of points, dy.
+    """Error on integral evaluated with `Simpson's rule`_ from errors of points, *dy*.
 
     Evaluate the integral with :func:`scipy.integrate.simps`. For a
     given vector *dy* of errors on the function values, the error on
     the integral is calculated via `propagation of errors`_ from the
-    `Newton-Cotes`_ formula for the 3rd `Lagrange interpolating
+    `Newton-Cotes formula`_ for the 3rd `Lagrange interpolating
     polynomial`_. The results are exact for the cases of even spacing
     *dx*; for uneven spacing we currently average all spacings (exact
     solution is in the works...)
@@ -44,7 +44,7 @@ def simps_error(dy, x=None, dx=1, axis=-1, even='avg'):
 
     .. _Simpson's rule: http://mathworld.wolfram.com/SimpsonsRule.html
     .. _propagation of errors: http://mathworld.wolfram.com/ErrorPropagation.html
-    .. _Newton-Cotes formula: http://mathworld.wolfram.com/Newton-CotesFormulas.html
+    .. _`Newton-Cotes formula`: http://mathworld.wolfram.com/Newton-CotesFormulas.html
     .. _Lagrange interpolating polynomial: http://mathworld.wolfram.com/LagrangeInterpolatingPolynomial.html
     """
     # copied basic structure from scipy.integrate.quadrature.simps

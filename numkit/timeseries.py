@@ -113,7 +113,7 @@ def autocorrelation_fft(series, remove_mean=True, paddingcorrection=True,
     return ac/norm
 
 def tcorrel(x,y,nstep=100,debug=False):
-    """Calculate the correlation time and an estimate of the error of <y>.
+    """Calculate the correlation time and an estimate of the error of the mean <y>.
 
     The autocorrelation function f(t) is calculated via FFT on every *nstep* of
     the **fluctuations** of the data around the mean (y-<y>). The normalized
@@ -121,10 +121,17 @@ def tcorrel(x,y,nstep=100,debug=False):
     the decay constant tc is estimated as the integral of the ACF from the
     start up to its first root.
 
-    See Frenkel and Smit, Academic Press, San Diego 2002, p526.
+    See [FrenkelSmit2002]_ `p526`_ for details.
 
     .. Note:: *nstep* should be set sufficiently large so that there are less
               than ~50,000 entries in the input.
+
+    .. [FrenkelSmit2002] D. Frenkel and B. Smit, Understanding
+                         Molecular Simulation. Academic Press, San
+                         Diego 2002
+
+    .. _p526: http://books.google.co.uk/books?id=XmyO2oRUg0cC&pg=PA526
+
 
     :Arguments:
        *x*
