@@ -15,6 +15,5 @@ mostly relevant to anyone who wants to extend the package.
    core/formats
    core/utilities   
    core/tools
-   tools
 
 

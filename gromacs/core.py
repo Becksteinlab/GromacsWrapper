@@ -9,17 +9,19 @@
 
 Here the basic command class :class:`GromacsCommand` is defined. All
 Gromacs command classes in :mod:`gromacs.tools` are automatically
-generated from it.
+generated from it. The documentation of :class:`GromacsCommand`
+applies to all wrapped Gromacs commands should be read by anyone using
+this package.
 
-.. autoclass:: Command
-   :members:  __call__, run, transform_args, Popen, help,
-             command_name
-   
 .. autoclass:: GromacsCommand
    :members: __call__, run, transform_args, Popen, help,
              check_failure, gmxdoc
    :inherited-members:
 
+.. autoclass:: Command
+   :members:  __call__, run, transform_args, Popen, help,
+             command_name
+   
 .. autoclass:: PopenWithInput
    :members:
 """

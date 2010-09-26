@@ -1,4 +1,3 @@
-# $Id$
 # Copyright (c) 2009 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
@@ -7,9 +6,9 @@
 :mod:`gromacs.tools` -- Gromacs commands classes
 ================================================
 
-A Gromacs command class can be thought of as a factory function that
-produces an instance of a gromacs command
-(:class:`gromacs.core.GromacsCommand`) with initial default values.
+A Gromacs command class acts as a factory function that produces an
+instance of a gromacs command (:class:`gromacs.core.GromacsCommand`)
+with initial default values.
 
 By convention, a class has the capitalized name of the corresponding Gromacs
 tool; dots are replaced by underscores to make it a valid python identifier.
@@ -51,6 +50,11 @@ interactive work.
 Gromacs tools
 -------------
 .. The docs for the tool classes are auto generated.
+
+.. autoclass:: Mdrun
+   :members:
+.. autoclass:: GridMAT_MD
+   :members:
 """
 
 __docformat__ = "restructuredtext en"
@@ -62,6 +66,8 @@ import config
 from core import GromacsCommand, Command
 import utilities
 
+def _generate_sphinx_class_string(clsname):
+    return ".. class:: %(clsname)s\n    :noindex:\n" % vars()
 
 #: This dict holds all generated classes.
 registry = {}
@@ -70,13 +76,14 @@ registry = {}
 # class g_dist(GromacsCommand):
 #     command_name = 'g_dist'
 
-for name in config.load_tools:
+for name in sorted(config.load_tools):
     # make names valid python identifiers and use convention that class names are capitalized
     clsname = name.replace('.','_').replace('-','_').capitalize()  
     cls = type(clsname, (GromacsCommand,), {'command_name':name,
                                             '__doc__': "Gromacs tool %(name)r." % vars()})
     registry[clsname] = cls      # registry keeps track of all classes
-
+    # dynamically build the module doc string
+    __doc__ += _generate_sphinx_class_string(clsname)
 
 # modify/fix classes as necessary
 # Note: 
