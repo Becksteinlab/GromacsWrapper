@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -12,12 +14,13 @@
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
         VERSION:     '0.1.14',
-        COLLAPSE_MODINDEX: false,
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="GromacsWrapper v0.1.14 documentation" href="#" />
     <link rel="next" title="README" href="README.html" /> 
@@ -30,8 +33,8 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="README.html" title="README"
              accesskey="N">next</a> |</li>
@@ -54,7 +57,7 @@ handling and superior data structures. It also allows for
 modularization and code re-use. In addition, commands, warnings and
 errors are logged to a file so that there exists a complete history of
 what has been done.</p>
-<p>See <a class="reference external" href="INSTALL.html"><em>INSTALL</em></a> for download and installation instructions. <a class="reference external" href="http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/html/index.html">Documentation</a>
+<p>See <a class="reference internal" href="INSTALL.html"><em>INSTALL</em></a> for download and installation instructions. <a class="reference external" href="http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/html/index.html">Documentation</a>
 is primarily provided through the python doc strings (from which most of the
 online documentation is generated).</p>
 <p>The source code itself is available in the <a class="reference external" href="http://github.com/orbeckst/GromacsWrapper">GromacsWrapper git
@@ -69,60 +72,62 @@ simulations with sensible parameters.</p>
 </div>
 <p>The package and the documentation are still in flux and any
 <a class="reference external" href="http://github.com/orbeckst/GromacsWrapper/issues">feedback, bug reports, suggestions</a> and contributions are very welcome. See the
-package <a class="reference external" href="README.html"><em>README</em></a> for contact details.</p>
+package <a class="reference internal" href="README.html"><em>README</em></a> for contact details.</p>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last">Other approaches to interfacing <a class="reference external" href="http://www.python.org">python</a> and <a class="reference external" href="http://www.gromacs.org">Gromacs</a>
-are listed under <a class="reference external" href="alternatives.html"><em>Alternatives to GromacsWrapper</em></a>.</p>
+are listed under <a class="reference internal" href="alternatives.html"><em>Alternatives to GromacsWrapper</em></a>.</p>
 </div>
 <div class="section" id="contents">
 <h2>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference external" href="README.html">README</a><ul>
-<li class="toctree-l2"><a class="reference external" href="README.html#licence">Licence</a></li>
-<li class="toctree-l2"><a class="reference external" href="README.html#included-software">Included Software</a></li>
-<li class="toctree-l2"><a class="reference external" href="README.html#citing">Citing</a></li>
-<li class="toctree-l2"><a class="reference external" href="README.html#download-and-availability">Download and Availability</a></li>
-<li class="toctree-l2"><a class="reference external" href="README.html#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html">README</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="README.html#licence">Licence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#included-software">Included Software</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#citing">Citing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#download-and-availability">Download and Availability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#contact">Contact</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference external" href="INSTALL.html">INSTALL</a><ul>
-<li class="toctree-l2"><a class="reference external" href="INSTALL.html#quick-installation-instructions">Quick installation instructions</a></li>
-<li class="toctree-l2"><a class="reference external" href="INSTALL.html#manual-download">Manual Download</a></li>
-<li class="toctree-l2"><a class="reference external" href="INSTALL.html#source-code-access">Source code access</a></li>
-<li class="toctree-l2"><a class="reference external" href="INSTALL.html#requirements">Requirements</a></li>
-<li class="toctree-l2"><a class="reference external" href="INSTALL.html#additional-instructions">Additional instructions</a></li>
-<li class="toctree-l2"><a class="reference external" href="INSTALL.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="INSTALL.html">INSTALL</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="INSTALL.html#quick-installation-instructions">Quick installation instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="INSTALL.html#manual-download">Manual Download</a></li>
+<li class="toctree-l2"><a class="reference internal" href="INSTALL.html#source-code-access">Source code access</a></li>
+<li class="toctree-l2"><a class="reference internal" href="INSTALL.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="INSTALL.html#additional-instructions">Additional instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="INSTALL.html#troubleshooting">Troubleshooting</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference external" href="gromacs.html">Gromacs package</a><ul>
-<li class="toctree-l2"><a class="reference external" href="gromacs/init.html"><tt class="docutils literal"><span class="pre">gromacs</span></tt> &#8211; GromacsWrapper Package Overview</a></li>
-<li class="toctree-l2"><a class="reference external" href="gromacs/core.html">Gromacs core modules</a></li>
-<li class="toctree-l2"><a class="reference external" href="gromacs/building_blocks.html">Gromacs building blocks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gromacs.html">Gromacs package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gromacs/init.html"><tt class="docutils literal"><span class="pre">gromacs</span></tt> &#8211; GromacsWrapper Package Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gromacs/core.html">Gromacs core modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gromacs/building_blocks.html">Gromacs building blocks</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference external" href="analysis.html">Analysis</a><ul>
-<li class="toctree-l2"><a class="reference external" href="analysis/core.html">Analysis core modules</a></li>
-<li class="toctree-l2"><a class="reference external" href="analysis/support.html">Support modules</a></li>
-<li class="toctree-l2"><a class="reference external" href="analysis/plugins.html">Analysis plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis.html">Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="analysis/core.html">Analysis core modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis/support.html">Support modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analysis/plugins.html">Analysis plugins</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference external" href="auxiliary.html">Auxiliary modules</a><ul>
-<li class="toctree-l2"><a class="reference external" href="numkit.html"><tt class="docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a></li>
-<li class="toctree-l2"><a class="reference external" href="vmd.html"><tt class="docutils literal"><span class="pre">vmd</span></tt> &#8212; Remote Tcl commands in VMD</a></li>
-<li class="toctree-l2"><a class="reference external" href="edpdb.html"><tt class="docutils literal"><span class="pre">edPDB</span></tt> &#8212; Simple processing of PDB files</a></li>
-<li class="toctree-l2"><a class="reference external" href="staging.html"><tt class="docutils literal"><span class="pre">staging</span></tt> &#8212; Staging of input/output files on a queuing system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auxiliary.html">Auxiliary modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numkit.html"><tt class="docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vmd.html"><tt class="docutils literal"><span class="pre">vmd</span></tt> &#8212; Remote Tcl commands in VMD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="edpdb.html"><tt class="docutils literal"><span class="pre">edPDB</span></tt> &#8212; Simple processing of PDB files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="staging.html"><tt class="docutils literal"><span class="pre">staging</span></tt> &#8212; Staging of input/output files on a queuing system</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference external" href="alternatives.html">Alternatives to GromacsWrapper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="alternatives.html">Alternatives to GromacsWrapper</a></li>
 </ul>
+</div>
 </div>
 <div class="section" id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><a class="reference external" href="genindex.html"><em>Index</em></a></li>
-<li><a class="reference external" href="modindex.html"><em>Module Index</em></a></li>
-<li><a class="reference external" href="search.html"><em>Search Page</em></a></li>
+<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
+<li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
+<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
 </ul>
 </div>
 </div>
@@ -133,38 +138,38 @@ are listed under <a class="reference external" href="alternatives.html"><em>Alte
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h3><a href="#">Table Of Contents</a></h3>
-            <ul>
-<li><a class="reference external" href="#">GromacsWrapper &#8212; a python framework for Gromacs</a><ul>
-<li><a class="reference external" href="#contents">Contents</a><ul>
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">GromacsWrapper &#8212; a python framework for Gromacs</a><ul>
+<li><a class="reference internal" href="#contents">Contents</a><ul>
 </ul>
 </li>
-<li><a class="reference external" href="#indices-and-tables">Indices and tables</a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 </li>
 </ul>
 
-            <h4>Next topic</h4>
-            <p class="topless"><a href="README.html"
-                                  title="next chapter">README</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="_sources/index.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="README.html"
+                        title="next chapter">README</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -176,7 +181,7 @@ are listed under <a class="reference external" href="alternatives.html"><em>Alte
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="modindex.html" title="Global Module Index"
+          <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="README.html" title="README"
@@ -185,9 +190,9 @@ are listed under <a class="reference external" href="alternatives.html"><em>Alte
       </ul>
     </div>
     <div class="footer">
-      &copy; Copyright 2009-2010, Oliver Beckstein.
+        &copy; Copyright 2009-2010, Oliver Beckstein.
       Last updated on Sep 26, 2010.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.2.
     </div>
   </body>
 </html>

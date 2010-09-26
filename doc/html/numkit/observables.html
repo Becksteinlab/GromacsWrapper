@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -12,12 +14,13 @@
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
         VERSION:     '0.1.14',
-        COLLAPSE_MODINDEX: false,
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="GromacsWrapper v0.1.14 documentation" href="../index.html" />
     <link rel="up" title="numkit — Numerical analysis toolkit" href="../numkit.html" />
@@ -32,8 +35,8 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="../vmd.html" title="vmd — Remote Tcl commands in VMD"
              accesskey="N">next</a> |</li>
@@ -51,10 +54,10 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="numkit-observables-observables-as-quantities-with-errors">
-<span id="module-numkit.observables"></span><h1><tt class="xref docutils literal"><span class="pre">numkit.observables</span></tt> &#8212; Observables as quantities with errors<a class="headerlink" href="#numkit-observables-observables-as-quantities-with-errors" title="Permalink to this headline">¶</a></h1>
+  <span class="target" id="module-numkit.observables"></span><div class="section" id="numkit-observables-observables-as-quantities-with-errors">
+<h1><a class="reference internal" href="#module-numkit.observables" title="numkit.observables"><tt class="xref py py-mod docutils literal"><span class="pre">numkit.observables</span></tt></a> &#8212; Observables as quantities with errors<a class="headerlink" href="#numkit-observables-observables-as-quantities-with-errors" title="Permalink to this headline">¶</a></h1>
 <dl class="docutils">
-<dt>Example showing how to use <a title="numkit.observables.QuantityWithError" class="reference internal" href="#numkit.observables.QuantityWithError"><tt class="xref docutils literal"><span class="pre">QuantityWithError</span></tt></a>:</dt>
+<dt>Example showing how to use <a class="reference internal" href="#numkit.observables.QuantityWithError" title="numkit.observables.QuantityWithError"><tt class="xref py py-class docutils literal"><span class="pre">QuantityWithError</span></tt></a>:</dt>
 <dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">numkit.observables</span> <span class="kn">import</span> <span class="n">QuantityWithError</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">QuantityWithError</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a2</span> <span class="o">=</span> <span class="n">QuantityWithError</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>  <span class="c"># 2nd independent measurement of a</span>
@@ -86,9 +89,9 @@ measurements of the same.</p>
 <em class="property">class </em><tt class="descclassname">numkit.observables.</tt><tt class="descname">QuantityWithError</tt><big>(</big><em>value</em>, <em>error=None</em>, <em>qid=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#numkit.observables.QuantityWithError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number with error and basic error propagation arithmetic.</p>
 <p>The quantity is assumed to be a mean of an observable
-(<a title="numkit.observables.QuantityWithError.value" class="reference internal" href="#numkit.observables.QuantityWithError.value"><tt class="xref docutils literal"><span class="pre">value</span></tt></a>) with an associated (Gaussian) error
-<a title="numkit.observables.QuantityWithError.error" class="reference internal" href="#numkit.observables.QuantityWithError.error"><tt class="xref docutils literal"><span class="pre">error</span></tt></a> (which is the sqrt of the variance
-<a title="numkit.observables.QuantityWithError.variance" class="reference internal" href="#numkit.observables.QuantityWithError.variance"><tt class="xref docutils literal"><span class="pre">variance</span></tt></a> of the data).</p>
+(<a class="reference internal" href="#numkit.observables.QuantityWithError.value" title="numkit.observables.QuantityWithError.value"><tt class="xref py py-attr docutils literal"><span class="pre">value</span></tt></a>) with an associated (Gaussian) error
+<a class="reference internal" href="#numkit.observables.QuantityWithError.error" title="numkit.observables.QuantityWithError.error"><tt class="xref py py-attr docutils literal"><span class="pre">error</span></tt></a> (which is the sqrt of the variance
+<a class="reference internal" href="#numkit.observables.QuantityWithError.variance" title="numkit.observables.QuantityWithError.variance"><tt class="xref py py-attr docutils literal"><span class="pre">variance</span></tt></a> of the data).</p>
 <p>The covariance is not taken into account in the <a class="reference external" href="http://mathworld.wolfram.com/ErrorPropagation.html">error
 propagation</a> (i.e. all quantities are assumed to be uncorrelated)
 with the exception of the case of binary relations of the quantity
@@ -98,8 +101,8 @@ complicated expression.</p>
 <dl class="staticmethod">
 <dt id="numkit.observables.QuantityWithError.asQuantityWithError">
 <em class="property">static </em><tt class="descname">asQuantityWithError</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#numkit.observables.QuantityWithError.asQuantityWithError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a <a title="numkit.observables.QuantityWithError" class="reference internal" href="#numkit.observables.QuantityWithError"><tt class="xref docutils literal"><span class="pre">QuantityWithError</span></tt></a>.</p>
-<p>If the input is already a <a title="numkit.observables.QuantityWithError" class="reference internal" href="#numkit.observables.QuantityWithError"><tt class="xref docutils literal"><span class="pre">QuantityWithError</span></tt></a> then it is
+<dd><p>Return a <a class="reference internal" href="#numkit.observables.QuantityWithError" title="numkit.observables.QuantityWithError"><tt class="xref py py-class docutils literal"><span class="pre">QuantityWithError</span></tt></a>.</p>
+<p>If the input is already a <a class="reference internal" href="#numkit.observables.QuantityWithError" title="numkit.observables.QuantityWithError"><tt class="xref py py-class docutils literal"><span class="pre">QuantityWithError</span></tt></a> then it is
 returned itself. This is important because a new quantity x&#8217; would be
 considered independent from the original one x and thus lead to
 different error estimates for quantities such as x*x versus x*x&#8217;.</p>
@@ -108,17 +111,20 @@ different error estimates for quantities such as x*x versus x*x&#8217;.</p>
 <dl class="method">
 <dt id="numkit.observables.QuantityWithError.astuple">
 <tt class="descname">astuple</tt><big>(</big><big>)</big><a class="headerlink" href="#numkit.observables.QuantityWithError.astuple" title="Permalink to this definition">¶</a></dt>
-<dd>Return tuple (value,error).</dd></dl>
+<dd><p>Return tuple (value,error).</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="numkit.observables.QuantityWithError.copy">
 <tt class="descname">copy</tt><big>(</big><big>)</big><a class="headerlink" href="#numkit.observables.QuantityWithError.copy" title="Permalink to this definition">¶</a></dt>
-<dd>Create a new quantity with the same value and error.</dd></dl>
+<dd><p>Create a new quantity with the same value and error.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="numkit.observables.QuantityWithError.deepcopy">
 <tt class="descname">deepcopy</tt><big>(</big><big>)</big><a class="headerlink" href="#numkit.observables.QuantityWithError.deepcopy" title="Permalink to this definition">¶</a></dt>
-<dd>Create an exact copy with the same identity.</dd></dl>
+<dd><p>Create an exact copy with the same identity.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="numkit.observables.QuantityWithError.isSame">
@@ -154,7 +160,7 @@ any other observables.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Todo:</th><td class="field-body"><p class="first">How should one treat the case when a quantity is used
+<tr class="field"><th class="field-name">Todo :</th><td class="field-body"><p class="first">How should one treat the case when a quantity is used
 again in an operation, e.g.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">c</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> 
 <span class="n">d</span> <span class="o">=</span> <span class="n">c</span><span class="o">/</span><span class="n">a</span> 
@@ -173,39 +179,41 @@ for <tt class="docutils literal"><span class="pre">c.isSame(a)</span></tt> be?</
 <dl class="attribute">
 <dt id="numkit.observables.QuantityWithError.value">
 <tt class="descclassname">QuantityWithError.</tt><tt class="descname">value</tt><a class="headerlink" href="#numkit.observables.QuantityWithError.value" title="Permalink to this definition">¶</a></dt>
-<dd>Value of the observable A, typically the mean of a number of
-observations, &lt;A&gt;.</dd></dl>
+<dd><p>Value of the observable A, typically the mean of a number of
+observations, &lt;A&gt;.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="numkit.observables.QuantityWithError.error">
 <tt class="descclassname">QuantityWithError.</tt><tt class="descname">error</tt><a class="headerlink" href="#numkit.observables.QuantityWithError.error" title="Permalink to this definition">¶</a></dt>
 <dd><p>Error of the observable, typically the square root of the
-<a title="numkit.observables.QuantityWithError.variance" class="reference internal" href="#numkit.observables.QuantityWithError.variance"><tt class="xref docutils literal"><span class="pre">QuantityWithError.variance</span></tt></a> of the observations,
+<a class="reference internal" href="#numkit.observables.QuantityWithError.variance" title="numkit.observables.QuantityWithError.variance"><tt class="xref py py-attr docutils literal"><span class="pre">QuantityWithError.variance</span></tt></a> of the observations,
 sqrt(&lt;(A-&lt;A&gt;)**2&gt;).</p>
 <p>Changing the error automatically changes the
-<a title="numkit.observables.QuantityWithError.variance" class="reference internal" href="#numkit.observables.QuantityWithError.variance"><tt class="xref docutils literal"><span class="pre">QuantityWithError.variance</span></tt></a>.</p>
+<a class="reference internal" href="#numkit.observables.QuantityWithError.variance" title="numkit.observables.QuantityWithError.variance"><tt class="xref py py-attr docutils literal"><span class="pre">QuantityWithError.variance</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="numkit.observables.QuantityWithError.variance">
 <tt class="descclassname">QuantityWithError.</tt><tt class="descname">variance</tt><a class="headerlink" href="#numkit.observables.QuantityWithError.variance" title="Permalink to this definition">¶</a></dt>
-<dd>Variance &lt;(A-&lt;A&gt;)**2&gt; of the observable. Changing the variance
-automatically changes the <a title="numkit.observables.QuantityWithError.error" class="reference internal" href="#numkit.observables.QuantityWithError.error"><tt class="xref docutils literal"><span class="pre">QuantityWithError.error</span></tt></a>.</dd></dl>
+<dd><p>Variance &lt;(A-&lt;A&gt;)**2&gt; of the observable. Changing the variance
+automatically changes the <a class="reference internal" href="#numkit.observables.QuantityWithError.error" title="numkit.observables.QuantityWithError.error"><tt class="xref py py-attr docutils literal"><span class="pre">QuantityWithError.error</span></tt></a>.</p>
+</dd></dl>
 
 <dl class="class">
 <dt id="numkit.observables.QID">
 <em class="property">class </em><tt class="descclassname">numkit.observables.</tt><tt class="descname">QID</tt><a class="headerlink" href="#numkit.observables.QID" title="Permalink to this definition">¶</a></dt>
-<dd><p>Identity of a <a title="numkit.observables.QuantityWithError" class="reference internal" href="#numkit.observables.QuantityWithError"><tt class="xref docutils literal"><span class="pre">QuantityWithError</span></tt></a>.</p>
+<dd><p>Identity of a <a class="reference internal" href="#numkit.observables.QuantityWithError" title="numkit.observables.QuantityWithError"><tt class="xref py py-class docutils literal"><span class="pre">QuantityWithError</span></tt></a>.</p>
 <blockquote>
 QID(iterable) &#8211;&gt; identity
 QID() &#8211;&gt; <tt class="xref docutils literal"><span class="pre">None</span></tt></blockquote>
 <p>The anonymous identity is <tt class="xref docutils literal"><span class="pre">None</span></tt>, anything else is a
-<a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/library/stdtypes.html#frozenset"><tt class="xref docutils literal"><span class="pre">frozenset()</span></tt></a>.</p>
+<tt class="xref py py-func docutils literal"><span class="pre">frozenset()</span></tt>.</p>
 <p>The QID can contain arbitray (but unique) identifiers in the
 <em>iterable</em>; however, strings are treated as individual objects and
 <em>not</em> as iterables.</p>
 <p>The error arithmetic encapsulated by the operator-overloading of
-<a title="numkit.observables.QuantityWithError" class="reference internal" href="#numkit.observables.QuantityWithError"><tt class="xref docutils literal"><span class="pre">QuantityWithError</span></tt></a> builds new QIDs by accumulating QIDs of
+<a class="reference internal" href="#numkit.observables.QuantityWithError" title="numkit.observables.QuantityWithError"><tt class="xref py py-class docutils literal"><span class="pre">QuantityWithError</span></tt></a> builds new QIDs by accumulating QIDs of
 the terms of the expression. In a certain sense, the &#8220;history&#8221; of
 a quantity becomes its &#8220;identity&#8221;.</p>
 </dd></dl>
@@ -218,30 +226,30 @@ a quantity becomes its &#8220;identity&#8221;.</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="integration.html"
-                                  title="previous chapter"><tt class="docutils literal docutils literal"><span class="pre">numkit.integration</span></tt> &#8212; Numerical integration of data</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="../vmd.html"
-                                  title="next chapter"><tt class="docutils literal docutils literal"><span class="pre">vmd</span></tt> &#8212; Remote Tcl commands in VMD</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="../_sources/numkit/observables.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="../search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="integration.html"
+                        title="previous chapter"><tt class="docutils literal docutils literal"><span class="pre">numkit.integration</span></tt> &#8212; Numerical integration of data</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../vmd.html"
+                        title="next chapter"><tt class="docutils literal docutils literal"><span class="pre">vmd</span></tt> &#8212; Remote Tcl commands in VMD</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/numkit/observables.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -253,7 +261,7 @@ a quantity becomes its &#8220;identity&#8221;.</p>
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
+          <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="../vmd.html" title="vmd — Remote Tcl commands in VMD"
@@ -267,9 +275,9 @@ a quantity becomes its &#8220;identity&#8221;.</p>
       </ul>
     </div>
     <div class="footer">
-      &copy; Copyright 2009-2010, Oliver Beckstein.
+        &copy; Copyright 2009-2010, Oliver Beckstein.
       Last updated on Sep 26, 2010.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.2.
     </div>
   </body>
 </html>

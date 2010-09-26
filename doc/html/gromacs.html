@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -12,12 +14,13 @@
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
         VERSION:     '0.1.14',
-        COLLAPSE_MODINDEX: false,
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="GromacsWrapper v0.1.14 documentation" href="index.html" />
     <link rel="next" title="gromacs – GromacsWrapper Package Overview" href="gromacs/init.html" />
@@ -31,8 +34,8 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="gromacs/init.html" title="gromacs – GromacsWrapper Package Overview"
              accesskey="N">next</a> |</li>
@@ -50,33 +53,35 @@
             
   <div class="section" id="gromacs-package">
 <h1>Gromacs package<a class="headerlink" href="#gromacs-package" title="Permalink to this headline">¶</a></h1>
-<p>The <a title="" class="reference external" href="gromacs/init.html#module-gromacs"><tt class="xref docutils literal"><span class="pre">gromacs</span></tt></a> package makes <a class="reference external" href="http://www.gromacs.org">Gromacs</a> tools available via
+<p>The <a class="reference internal" href="gromacs/init.html#module-gromacs" title="gromacs"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs</span></tt></a> package makes <a class="reference external" href="http://www.gromacs.org">Gromacs</a> tools available via
 thin python wrappers. In addition, it provides little building blocks
 to solve commonly encountered tasks.</p>
 <p>Contents:</p>
+<div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference external" href="gromacs/init.html"><tt class="docutils literal"><span class="pre">gromacs</span></tt> &#8211; GromacsWrapper Package Overview</a><ul>
-<li class="toctree-l2"><a class="reference external" href="gromacs/init.html#modules">Modules</a></li>
-<li class="toctree-l2"><a class="reference external" href="gromacs/init.html#examples">Examples</a></li>
-<li class="toctree-l2"><a class="reference external" href="gromacs/init.html#warnings-and-exceptions">Warnings and Exceptions</a></li>
-<li class="toctree-l2"><a class="reference external" href="gromacs/init.html#logging">Logging</a></li>
-<li class="toctree-l2"><a class="reference external" href="gromacs/init.html#version">Version</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gromacs/init.html"><tt class="docutils literal"><span class="pre">gromacs</span></tt> &#8211; GromacsWrapper Package Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gromacs/init.html#modules">Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gromacs/init.html#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gromacs/init.html#warnings-and-exceptions">Warnings and Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gromacs/init.html#logging">Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gromacs/init.html#version">Version</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference external" href="gromacs/core.html">Gromacs core modules</a><ul>
-<li class="toctree-l2"><a class="reference external" href="gromacs/core/core.html"><tt class="docutils literal"><span class="pre">gromacs.core</span></tt> &#8211; Core functionality</a></li>
-<li class="toctree-l2"><a class="reference external" href="gromacs/core/config.html"><tt class="docutils literal"><span class="pre">gromacs.config</span></tt> &#8211; Configuration for GromacsWrapper</a></li>
-<li class="toctree-l2"><a class="reference external" href="gromacs/core/formats.html"><tt class="docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a></li>
-<li class="toctree-l2"><a class="reference external" href="gromacs/core/utilities.html"><tt class="docutils literal"><span class="pre">gromacs.utilities</span></tt> &#8211; Helper functions and classes</a></li>
-<li class="toctree-l2"><a class="reference external" href="gromacs/core/tools.html"><tt class="docutils literal"><span class="pre">gromacs.tools</span></tt> &#8211; Gromacs commands classes</a></li>
-<li class="toctree-l2"><a class="reference external" href="gromacs/tools.html">Wrapped Gromacs tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gromacs/core.html">Gromacs core modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gromacs/core/core.html"><tt class="docutils literal"><span class="pre">gromacs.core</span></tt> &#8211; Core functionality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gromacs/core/config.html"><tt class="docutils literal"><span class="pre">gromacs.config</span></tt> &#8211; Configuration for GromacsWrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gromacs/core/formats.html"><tt class="docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gromacs/core/utilities.html"><tt class="docutils literal"><span class="pre">gromacs.utilities</span></tt> &#8211; Helper functions and classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gromacs/core/tools.html"><tt class="docutils literal"><span class="pre">gromacs.tools</span></tt> &#8211; Gromacs commands classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gromacs/tools.html">Wrapped Gromacs tools</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference external" href="gromacs/building_blocks.html">Gromacs building blocks</a><ul>
-<li class="toctree-l2"><a class="reference external" href="gromacs/blocks/simulation.html"><tt class="docutils literal"><span class="pre">gromacs.run</span></tt> &#8211; Running simulations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gromacs/building_blocks.html">Gromacs building blocks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gromacs/blocks/simulation.html"><tt class="docutils literal"><span class="pre">gromacs.run</span></tt> &#8211; Running simulations</a></li>
 </ul>
 </li>
 </ul>
+</div>
 </div>
 
 
@@ -85,30 +90,30 @@ to solve commonly encountered tasks.</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="INSTALL.html"
-                                  title="previous chapter">INSTALL</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="gromacs/init.html"
-                                  title="next chapter"><tt class="docutils literal"><span class="pre">gromacs</span></tt> &#8211; GromacsWrapper Package Overview</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="_sources/gromacs.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="INSTALL.html"
+                        title="previous chapter">INSTALL</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="gromacs/init.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">gromacs</span></tt> &#8211; GromacsWrapper Package Overview</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/gromacs.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -120,7 +125,7 @@ to solve commonly encountered tasks.</p>
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="modindex.html" title="Global Module Index"
+          <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="gromacs/init.html" title="gromacs – GromacsWrapper Package Overview"
@@ -132,9 +137,9 @@ to solve commonly encountered tasks.</p>
       </ul>
     </div>
     <div class="footer">
-      &copy; Copyright 2009-2010, Oliver Beckstein.
+        &copy; Copyright 2009-2010, Oliver Beckstein.
       Last updated on Sep 26, 2010.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.2.
     </div>
   </body>
 </html>

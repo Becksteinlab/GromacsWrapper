@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -12,12 +14,13 @@
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
         VERSION:     '0.1.14',
-        COLLAPSE_MODINDEX: false,
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="GromacsWrapper v0.1.14 documentation" href="../index.html" />
     <link rel="up" title="edPDB — Simple processing of PDB files" href="../edpdb.html" />
@@ -32,8 +35,8 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="cbook.html" title="edPDB.cbook – Recipes for editing PDB files"
              accesskey="N">next</a> |</li>
@@ -51,26 +54,26 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="edpdb-editing-pdb-files">
-<span id="module-edPDB"></span><h1><tt class="xref docutils literal"><span class="pre">edPDB</span></tt> &#8211; editing PDB files<a class="headerlink" href="#edpdb-editing-pdb-files" title="Permalink to this headline">¶</a></h1>
+  <span class="target" id="module-edPDB"></span><div class="section" id="edpdb-editing-pdb-files">
+<h1><a class="reference internal" href="#module-edPDB" title="edPDB"><tt class="xref py py-mod docutils literal"><span class="pre">edPDB</span></tt></a> &#8211; editing PDB files<a class="headerlink" href="#edpdb-editing-pdb-files" title="Permalink to this headline">¶</a></h1>
 <p>A collection of python snippets to quickly edit pdb files. This is
 typically used for setting up system for MD simulations.</p>
-<p>Typically, one instantiates a <a title="edPDB.cbook.PDB" class="reference external" href="cbook.html#edPDB.cbook.PDB"><tt class="xref docutils literal"><span class="pre">edPDB.cbook.PDB</span></tt></a> object (which
-can also be accessed as <tt class="xref docutils literal"><span class="pre">edPDB.PDB</span></tt>) and uses the methods
+<p>Typically, one instantiates a <a class="reference internal" href="cbook.html#edPDB.cbook.PDB" title="edPDB.cbook.PDB"><tt class="xref py py-class docutils literal"><span class="pre">edPDB.cbook.PDB</span></tt></a> object (which
+can also be accessed as <tt class="xref py py-class docutils literal"><span class="pre">edPDB.PDB</span></tt>) and uses the methods
 defined on it to write new pdb files.</p>
-<p>The cook book <a title="" class="reference external" href="cbook.html#module-edPDB.cbook"><tt class="xref docutils literal"><span class="pre">edPDB.cbook</span></tt></a> contains some more specialized
-functions that are not integrated into <a title="edPDB.cbook.PDB" class="reference external" href="cbook.html#edPDB.cbook.PDB"><tt class="xref docutils literal"><span class="pre">PDB</span></tt></a> yet;
+<p>The cook book <a class="reference internal" href="cbook.html#module-edPDB.cbook" title="edPDB.cbook"><tt class="xref py py-mod docutils literal"><span class="pre">edPDB.cbook</span></tt></a> contains some more specialized
+functions that are not integrated into <a class="reference internal" href="cbook.html#edPDB.cbook.PDB" title="edPDB.cbook.PDB"><tt class="xref py py-class docutils literal"><span class="pre">PDB</span></tt></a> yet;
 study the source and use them as examples.</p>
-<p>Built on top of <tt class="xref docutils literal"><span class="pre">Bio.PDB</span></tt> from <a class="reference external" href="http://biopython.org">Biopython</a>.</p>
+<p>Built on top of <tt class="xref py py-mod docutils literal"><span class="pre">Bio.PDB</span></tt> from <a class="reference external" href="http://biopython.org">Biopython</a>.</p>
 <div class="section" id="modules">
 <h2>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h2>
 <dl class="docutils">
-<dt><a title="" class="reference external" href="cbook.html#module-edPDB.cbook"><tt class="xref docutils literal"><span class="pre">edPDB.cbook</span></tt></a></dt>
+<dt><a class="reference internal" href="cbook.html#module-edPDB.cbook" title="edPDB.cbook"><tt class="xref py py-mod docutils literal"><span class="pre">edPDB.cbook</span></tt></a></dt>
 <dd>Cook-book with short functions that show how to implement basic
 functionality.</dd>
-<dt><a title="" class="reference external" href="xpdb.html#module-edPDB.xpdb"><tt class="xref docutils literal"><span class="pre">edPDB.xpdb</span></tt></a></dt>
+<dt><a class="reference internal" href="xpdb.html#module-edPDB.xpdb" title="edPDB.xpdb"><tt class="xref py py-mod docutils literal"><span class="pre">edPDB.xpdb</span></tt></a></dt>
 <dd>Extensions to the Bio.PDB class.</dd>
-<dt><a title="" class="reference external" href="selections.html#module-edPDB.selections"><tt class="xref docutils literal"><span class="pre">edPDB.selections</span></tt></a></dt>
+<dt><a class="reference internal" href="selections.html#module-edPDB.selections" title="edPDB.selections"><tt class="xref py py-mod docutils literal"><span class="pre">edPDB.selections</span></tt></a></dt>
 <dd>Selections that can be used to extract parts of a pdb.</dd>
 </dl>
 </div>
@@ -87,39 +90,39 @@ functionality.</dd>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h3><a href="../index.html">Table Of Contents</a></h3>
-            <ul>
-<li><a class="reference external" href="#"><tt class="docutils literal"><span class="pre">edPDB</span></tt> &#8211; editing PDB files</a><ul>
-<li><a class="reference external" href="#modules">Modules</a></li>
-<li><a class="reference external" href="#future-plans">Future plans</a></li>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">edPDB</span></tt> &#8211; editing PDB files</a><ul>
+<li><a class="reference internal" href="#modules">Modules</a></li>
+<li><a class="reference internal" href="#future-plans">Future plans</a></li>
 </ul>
 </li>
 </ul>
 
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="../edpdb.html"
-                                  title="previous chapter"><tt class="docutils literal docutils literal docutils literal docutils literal"><span class="pre">edPDB</span></tt> &#8212; Simple processing of PDB files</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="cbook.html"
-                                  title="next chapter"><tt class="docutils literal docutils literal"><span class="pre">edPDB.cbook</span></tt> &#8211; Recipes for editing PDB files</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="../_sources/edpdb/init.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="../search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../edpdb.html"
+                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal docutils literal"><span class="pre">edPDB</span></tt> &#8212; Simple processing of PDB files</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="cbook.html"
+                        title="next chapter"><tt class="docutils literal docutils literal"><span class="pre">edPDB.cbook</span></tt> &#8211; Recipes for editing PDB files</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/edpdb/init.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -131,7 +134,7 @@ functionality.</dd>
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
+          <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="cbook.html" title="edPDB.cbook – Recipes for editing PDB files"
@@ -145,9 +148,9 @@ functionality.</dd>
       </ul>
     </div>
     <div class="footer">
-      &copy; Copyright 2009-2010, Oliver Beckstein.
+        &copy; Copyright 2009-2010, Oliver Beckstein.
       Last updated on Sep 26, 2010.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.2.
     </div>
   </body>
 </html>

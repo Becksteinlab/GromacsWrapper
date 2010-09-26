@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -12,12 +14,13 @@
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
         VERSION:     '0.1.14',
-        COLLAPSE_MODINDEX: false,
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="GromacsWrapper v0.1.14 documentation" href="index.html" />
     <link rel="up" title="Auxiliary modules" href="auxiliary.html" />
@@ -32,8 +35,8 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="staging/init.html" title="staging — Staging module overview"
              accesskey="N">next</a> |</li>
@@ -51,19 +54,21 @@
           <div class="body">
             
   <div class="section" id="staging-staging-of-input-output-files-on-a-queuing-system">
-<h1><a title="" class="reference external" href="staging/init.html#module-staging"><tt class="xref docutils literal"><span class="pre">staging</span></tt></a> &#8212; Staging of input/output files on a queuing system<a class="headerlink" href="#staging-staging-of-input-output-files-on-a-queuing-system" title="Permalink to this headline">¶</a></h1>
-<p>The <a title="" class="reference external" href="staging/init.html#module-staging"><tt class="xref docutils literal"><span class="pre">staging</span></tt></a> module provides a framework to run python scripts
+<h1><a class="reference internal" href="staging/init.html#module-staging" title="staging"><tt class="xref py py-mod docutils literal"><span class="pre">staging</span></tt></a> &#8212; Staging of input/output files on a queuing system<a class="headerlink" href="#staging-staging-of-input-output-files-on-a-queuing-system" title="Permalink to this headline">¶</a></h1>
+<p>The <a class="reference internal" href="staging/init.html#module-staging" title="staging"><tt class="xref py py-mod docutils literal"><span class="pre">staging</span></tt></a> module provides a framework to run python scripts
 easily through a queuing system that requires copying of files to the
 scratch directory on compute nodes (&#8220;staging&#8221;). Instead of submitting
 a shell script to the queuing system, one uses a python script that
 imports the module and instantiates a
-<a title="staging.SunGridEngine.Job" class="reference external" href="staging/SunGridEngine.html#staging.SunGridEngine.Job"><tt class="xref docutils literal"><span class="pre">Job</span></tt></a> class that contains methods to
+<a class="reference internal" href="staging/SunGridEngine.html#staging.SunGridEngine.Job" title="staging.SunGridEngine.Job"><tt class="xref py py-class docutils literal"><span class="pre">Job</span></tt></a> class that contains methods to
 manage staging.</p>
+<div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference external" href="staging/init.html"><tt class="docutils literal"><span class="pre">staging</span></tt> &#8212; Staging module overview</a></li>
-<li class="toctree-l1"><a class="reference external" href="staging/SunGridEngine.html"><tt class="docutils literal"><span class="pre">staging.SunGridEngine</span></tt> &#8212; staging class for SunGridEngine</a></li>
-<li class="toctree-l1"><a class="reference external" href="staging/Local.html"><tt class="docutils literal"><span class="pre">staging.Local</span></tt> &#8212; staging class for running local jobs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="staging/init.html"><tt class="docutils literal"><span class="pre">staging</span></tt> &#8212; Staging module overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="staging/SunGridEngine.html"><tt class="docutils literal"><span class="pre">staging.SunGridEngine</span></tt> &#8212; staging class for SunGridEngine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="staging/Local.html"><tt class="docutils literal"><span class="pre">staging.Local</span></tt> &#8212; staging class for running local jobs</a></li>
 </ul>
+</div>
 </div>
 
 
@@ -72,30 +77,30 @@ manage staging.</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="edpdb/helpers.html"
-                                  title="previous chapter">Helper modules</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="staging/init.html"
-                                  title="next chapter"><tt class="docutils literal"><span class="pre">staging</span></tt> &#8212; Staging module overview</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="_sources/staging.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="edpdb/helpers.html"
+                        title="previous chapter">Helper modules</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="staging/init.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">staging</span></tt> &#8212; Staging module overview</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/staging.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -107,7 +112,7 @@ manage staging.</p>
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="modindex.html" title="Global Module Index"
+          <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="staging/init.html" title="staging — Staging module overview"
@@ -120,9 +125,9 @@ manage staging.</p>
       </ul>
     </div>
     <div class="footer">
-      &copy; Copyright 2009-2010, Oliver Beckstein.
+        &copy; Copyright 2009-2010, Oliver Beckstein.
       Last updated on Sep 26, 2010.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.2.
     </div>
   </body>
 </html>

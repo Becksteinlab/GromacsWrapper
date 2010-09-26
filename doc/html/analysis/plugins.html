@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -12,12 +14,13 @@
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
         VERSION:     '0.1.14',
-        COLLAPSE_MODINDEX: false,
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="GromacsWrapper v0.1.14 documentation" href="../index.html" />
     <link rel="up" title="Analysis" href="../analysis.html" />
@@ -32,8 +35,8 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="../auxiliary.html" title="Auxiliary modules"
              accesskey="N">next</a> |</li>
@@ -53,14 +56,14 @@
   <div class="section" id="analysis-plugins">
 <h1>Analysis plugins<a class="headerlink" href="#analysis-plugins" title="Permalink to this headline">¶</a></h1>
 <p>Analysis plugins consist of a book-keeping class derived from
-<tt class="xref docutils literal"><span class="pre">gromacs.analysis.core.Plugin</span></tt> and a &#8220;worker&#8221; class (a child of
-<tt class="xref docutils literal"><span class="pre">gromacs.analysis.core.Worker</span></tt>), which contains the actual
+<tt class="xref py py-class docutils literal"><span class="pre">gromacs.analysis.core.Plugin</span></tt> and a &#8220;worker&#8221; class (a child of
+<tt class="xref py py-class docutils literal"><span class="pre">gromacs.analysis.core.Worker</span></tt>), which contains the actual
 analysis code.</p>
 <div class="section" id="plugins">
 <h2>Plugins<a class="headerlink" href="#plugins" title="Permalink to this headline">¶</a></h2>
 <p>Plugin modules are named like the plugin class but the filename is all
 lower case. All plugin classes are available in the
-<tt class="xref docutils literal"><span class="pre">gromacs.analysis.plugins</span></tt> name space.</p>
+<tt class="xref py py-mod docutils literal"><span class="pre">gromacs.analysis.plugins</span></tt> name space.</p>
 </div>
 <div class="section" id="helper-modules">
 <h2>Helper modules<a class="headerlink" href="#helper-modules" title="Permalink to this headline">¶</a></h2>
@@ -76,39 +79,39 @@ into separate modules for code reuse.</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h3><a href="../index.html">Table Of Contents</a></h3>
-            <ul>
-<li><a class="reference external" href="#">Analysis plugins</a><ul>
-<li><a class="reference external" href="#plugins">Plugins</a></li>
-<li><a class="reference external" href="#helper-modules">Helper modules</a></li>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Analysis plugins</a><ul>
+<li><a class="reference internal" href="#plugins">Plugins</a></li>
+<li><a class="reference internal" href="#helper-modules">Helper modules</a></li>
 </ul>
 </li>
 </ul>
 
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="support.html"
-                                  title="previous chapter">Support modules</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="../auxiliary.html"
-                                  title="next chapter">Auxiliary modules</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="../_sources/analysis/plugins.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="../search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="support.html"
+                        title="previous chapter">Support modules</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../auxiliary.html"
+                        title="next chapter">Auxiliary modules</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/analysis/plugins.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -120,7 +123,7 @@ into separate modules for code reuse.</p>
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
+          <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="../auxiliary.html" title="Auxiliary modules"
@@ -133,9 +136,9 @@ into separate modules for code reuse.</p>
       </ul>
     </div>
     <div class="footer">
-      &copy; Copyright 2009-2010, Oliver Beckstein.
+        &copy; Copyright 2009-2010, Oliver Beckstein.
       Last updated on Sep 26, 2010.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.2.
     </div>
   </body>
 </html>

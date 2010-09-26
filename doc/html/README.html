@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -12,12 +14,13 @@
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
         VERSION:     '0.1.14',
-        COLLAPSE_MODINDEX: false,
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="GromacsWrapper v0.1.14 documentation" href="index.html" />
     <link rel="next" title="INSTALL" href="INSTALL.html" />
@@ -31,8 +34,8 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="INSTALL.html" title="INSTALL"
              accesskey="N">next</a> |</li>
@@ -50,10 +53,10 @@
             
   <div class="section" id="readme">
 <h1>README<a class="headerlink" href="#readme" title="Permalink to this headline">¶</a></h1>
-<p>See <a class="reference external" href="INSTALL.html"><em>INSTALL</em></a> for installation instructions. <a class="reference external" href="http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/html/index.html">Documentation</a> is
-mostly provided through the python doc strings. See <a class="reference internal" href="#download-and-availability">Download and
+<p>See <a class="reference internal" href="INSTALL.html"><em>INSTALL</em></a> for installation instructions. <a class="reference external" href="http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/html/index.html">Documentation</a> is
+mostly provided through the python doc strings. See <a class="reference external" href="#download-and-availability">Download and
 Availability</a> for download instructions if the instructions in
-<a class="reference external" href="INSTALL.html"><em>INSTALL</em></a> are not sufficient.</p>
+<a class="reference internal" href="INSTALL.html"><em>INSTALL</em></a> are not sufficient.</p>
 <p>The source code is also available in the <a class="reference external" href="http://github.com/orbeckst/GromacsWrapper">GromacsWrapper git
 repository</a>.</p>
 <p>Please be aware that this is <strong>alpha</strong> software that most definitely
@@ -95,7 +98,7 @@ Dynamics.&#8221; J. Comput. Chem. 30 (12): 1952-1958.</li>
 </dd>
 <dt><tt class="docutils literal"><span class="pre">odict.py</span></tt></dt>
 <dd><ul class="first last simple">
-<li>a simple implementation of an ordered dictionary as proposed in <span class="target" id="index-0"></span><a class="reference external" href="http://www.python.org/dev/peps/pep-0372"><strong>PEP 0372</strong></a></li>
+<li>a simple implementation of an ordered dictionary as proposed in <span class="target" id="index-0"></span><a class="pep reference external" href="http://www.python.org/dev/peps/pep-0372"><strong>PEP 0372</strong></a></li>
 <li>copyright: (c) 2008 by Armin Ronacher and PEP 273 authors.</li>
 <li>license: modified BSD license (<a class="reference external" href="http://www.fsf.org/licensing/licenses/index_html">compatible with GPL</a>)</li>
 <li><a class="reference external" href="http://dev.pocoo.org/hg/sandbox/raw-file/tip/odict.py">http://dev.pocoo.org/hg/sandbox/raw-file/tip/odict.py</a></li>
@@ -108,7 +111,7 @@ Dynamics.&#8221; J. Comput. Chem. 30 (12): 1952-1958.</li>
 <p>If you find this package useful and use it in published work I&#8217;d be
 grateful if it was acknowledged in text as</p>
 <blockquote>
-&#8220;... used GromacsWrapper (Oliver Beckstein,
+&#8221;... used GromacsWrapper (Oliver Beckstein,
 <a class="reference external" href="http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/">http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/</a>)&#8221;</blockquote>
 <p>or in the Acknowledgements section.</p>
 <p>If you use the <tt class="docutils literal"><span class="pre">gridmatmd</span></tt> plugin also cite <a class="reference internal" href="#allen2009">[Allen2009]</a>.</p>
@@ -133,7 +136,7 @@ internet-thingy at the direct download URI</p>
 <blockquote>
 <a class="reference external" href="http://sbcb.bioch.ox.ac.uk/oliver/download/Python/">http://sbcb.bioch.ox.ac.uk/oliver/download/Python/</a></blockquote>
 <p>You can use this URI if you want to install from the network using
-<tt class="docutils literal"><span class="pre">easy_install</span></tt> as described in <a class="reference external" href="INSTALL.html"><em>INSTALL</em></a>.</p>
+<tt class="docutils literal"><span class="pre">easy_install</span></tt> as described in <a class="reference internal" href="INSTALL.html"><em>INSTALL</em></a>.</p>
 <p>You can also clone the <a class="reference external" href="http://github.com/orbeckst/GromacsWrapper">GromacsWrapper git repository</a> or fork for
 your own development:</p>
 <div class="highlight-python"><pre>git clone git://github.com/orbeckst/GromacsWrapper.git</pre>
@@ -153,42 +156,42 @@ e-mail.</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h3><a href="index.html">Table Of Contents</a></h3>
-            <ul>
-<li><a class="reference external" href="#">README</a><ul>
-<li><a class="reference external" href="#licence">Licence</a></li>
-<li><a class="reference external" href="#included-software">Included Software</a></li>
-<li><a class="reference external" href="#citing">Citing</a></li>
-<li><a class="reference external" href="#download-and-availability">Download and Availability</a></li>
-<li><a class="reference external" href="#contact">Contact</a></li>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">README</a><ul>
+<li><a class="reference internal" href="#licence">Licence</a></li>
+<li><a class="reference internal" href="#included-software">Included Software</a></li>
+<li><a class="reference internal" href="#citing">Citing</a></li>
+<li><a class="reference internal" href="#download-and-availability">Download and Availability</a></li>
+<li><a class="reference internal" href="#contact">Contact</a></li>
 </ul>
 </li>
 </ul>
 
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="index.html"
-                                  title="previous chapter">GromacsWrapper &#8212; a python framework for Gromacs</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="INSTALL.html"
-                                  title="next chapter">INSTALL</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="_sources/README.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">GromacsWrapper &#8212; a python framework for Gromacs</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="INSTALL.html"
+                        title="next chapter">INSTALL</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/README.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -200,7 +203,7 @@ e-mail.</p>
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="modindex.html" title="Global Module Index"
+          <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="INSTALL.html" title="INSTALL"
@@ -212,9 +215,9 @@ e-mail.</p>
       </ul>
     </div>
     <div class="footer">
-      &copy; Copyright 2009-2010, Oliver Beckstein.
+        &copy; Copyright 2009-2010, Oliver Beckstein.
       Last updated on Sep 26, 2010.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.2.
     </div>
   </body>
 </html>

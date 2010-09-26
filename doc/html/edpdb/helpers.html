@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -12,12 +14,13 @@
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
         VERSION:     '0.1.14',
-        COLLAPSE_MODINDEX: false,
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="GromacsWrapper v0.1.14 documentation" href="../index.html" />
     <link rel="up" title="edPDB — Simple processing of PDB files" href="../edpdb.html" />
@@ -32,8 +35,8 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="../staging.html" title="staging — Staging of input/output files on a queuing system"
              accesskey="N">next</a> |</li>
@@ -51,10 +54,10 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="module-edPDB.log">
-<h1>Helper modules<a class="headerlink" href="#module-edPDB.log" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-edPDB.utilities">
+<span id="helper-modules"></span><h1>Helper modules<a class="headerlink" href="#module-edPDB.utilities" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="edpdb-utilities-helper-functions-and-classes">
-<h2><tt class="xref docutils literal"><span class="pre">edPDB.utilities</span></tt> &#8211; Helper functions and classes<a class="headerlink" href="#edpdb-utilities-helper-functions-and-classes" title="Permalink to this headline">¶</a></h2>
+<h2><a class="reference internal" href="#module-edPDB.utilities" title="edPDB.utilities"><tt class="xref py py-mod docutils literal"><span class="pre">edPDB.utilities</span></tt></a> &#8211; Helper functions and classes<a class="headerlink" href="#edpdb-utilities-helper-functions-and-classes" title="Permalink to this headline">¶</a></h2>
 <p>The module defines some convenience functions and classes that are
 used in other modules</p>
 <div class="section" id="functions">
@@ -64,16 +67,18 @@ strings as lists:</p>
 <dl class="function">
 <dt id="edPDB.utilities.iterable">
 <tt class="descclassname">edPDB.utilities.</tt><tt class="descname">iterable</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#edPDB.utilities.iterable" title="Permalink to this definition">¶</a></dt>
-<dd>Returns <tt class="xref docutils literal"><span class="pre">True</span></tt> if <em>obj</em> can be iterated over and is <em>not</em> a  string.</dd></dl>
+<dd><p>Returns <tt class="xref docutils literal"><span class="pre">True</span></tt> if <em>obj</em> can be iterated over and is <em>not</em> a  string.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="edPDB.utilities.asiterable">
 <tt class="descclassname">edPDB.utilities.</tt><tt class="descname">asiterable</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#edPDB.utilities.asiterable" title="Permalink to this definition">¶</a></dt>
-<dd>Returns obj so that it can be iterated over; a string is <em>not</em> treated as iterable</dd></dl>
+<dd><p>Returns obj so that it can be iterated over; a string is <em>not</em> treated as iterable</p>
+</dd></dl>
 
 </div>
 </div>
-<p>Configure logging for edPDB analysis.</p>
+<span class="target" id="module-edPDB.log"></span><p>Configure logging for edPDB analysis.</p>
 <p>Import this module if logging is desired in application code.</p>
 </div>
 
@@ -83,41 +88,41 @@ strings as lists:</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h3><a href="../index.html">Table Of Contents</a></h3>
-            <ul>
-<li><a class="reference external" href="#">Helper modules</a><ul>
-<li><a class="reference external" href="#edpdb-utilities-helper-functions-and-classes"><tt class="docutils literal"><span class="pre">edPDB.utilities</span></tt> &#8211; Helper functions and classes</a><ul>
-<li><a class="reference external" href="#functions">Functions</a></li>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Helper modules</a><ul>
+<li><a class="reference internal" href="#edpdb-utilities-helper-functions-and-classes"><tt class="docutils literal"><span class="pre">edPDB.utilities</span></tt> &#8211; Helper functions and classes</a><ul>
+<li><a class="reference internal" href="#functions">Functions</a></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="selections.html"
-                                  title="previous chapter"><tt class="docutils literal"><span class="pre">edPDB.selections</span></tt> &#8212; Selections</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="../staging.html"
-                                  title="next chapter"><tt class="docutils literal"><span class="pre">staging</span></tt> &#8212; Staging of input/output files on a queuing system</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="../_sources/edpdb/helpers.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="../search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="selections.html"
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">edPDB.selections</span></tt> &#8212; Selections</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../staging.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">staging</span></tt> &#8212; Staging of input/output files on a queuing system</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/edpdb/helpers.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -129,7 +134,7 @@ strings as lists:</p>
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
+          <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="../staging.html" title="staging — Staging of input/output files on a queuing system"
@@ -143,9 +148,9 @@ strings as lists:</p>
       </ul>
     </div>
     <div class="footer">
-      &copy; Copyright 2009-2010, Oliver Beckstein.
+        &copy; Copyright 2009-2010, Oliver Beckstein.
       Last updated on Sep 26, 2010.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.2.
     </div>
   </body>
 </html>

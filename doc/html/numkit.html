@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -12,12 +14,13 @@
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
         VERSION:     '0.1.14',
-        COLLAPSE_MODINDEX: false,
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="GromacsWrapper v0.1.14 documentation" href="index.html" />
     <link rel="up" title="Auxiliary modules" href="auxiliary.html" />
@@ -32,8 +35,8 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="numkit/fitting.html" title="numkit.fitting — Fitting data"
              accesskey="N">next</a> |</li>
@@ -51,22 +54,24 @@
           <div class="body">
             
   <div class="section" id="numkit-numerical-analysis-toolkit">
-<h1><tt class="xref docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit<a class="headerlink" href="#numkit-numerical-analysis-toolkit" title="Permalink to this headline">¶</a></h1>
+<h1><tt class="xref py py-mod docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit<a class="headerlink" href="#numkit-numerical-analysis-toolkit" title="Permalink to this headline">¶</a></h1>
 <p>A collection of functions and classes built on top of NumPy and SciPy
 to aid the numerical analysis of data. It is geared towards the use of
 data coming from molecular simulations, namely time series. It is used
-in <tt class="xref docutils literal"><span class="pre">gromacs.analysis</span></tt>.</p>
+in <tt class="xref py py-mod docutils literal"><span class="pre">gromacs.analysis</span></tt>.</p>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last">Core functionality is based on <a class="reference external" href="http://www.scipy.org/">SciPy</a> (<tt class="xref docutils literal"><span class="pre">scipy</span></tt> module).</p>
+<p class="last">Core functionality is based on <a class="reference external" href="http://www.scipy.org/">SciPy</a> (<tt class="xref py py-mod docutils literal"><span class="pre">scipy</span></tt> module).</p>
 </div>
 <p>Contents:</p>
+<div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference external" href="numkit/fitting.html"><tt class="docutils literal"><span class="pre">numkit.fitting</span></tt> &#8212; Fitting data</a></li>
-<li class="toctree-l1"><a class="reference external" href="numkit/timeseries.html"><tt class="docutils literal"><span class="pre">numkit.timeseries</span></tt> &#8212; Time series manipulation and analysis</a></li>
-<li class="toctree-l1"><a class="reference external" href="numkit/integration.html"><tt class="docutils literal"><span class="pre">numkit.integration</span></tt> &#8212; Numerical integration of data</a></li>
-<li class="toctree-l1"><a class="reference external" href="numkit/observables.html"><tt class="docutils literal"><span class="pre">numkit.observables</span></tt> &#8212; Observables as quantities with errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numkit/fitting.html"><tt class="docutils literal"><span class="pre">numkit.fitting</span></tt> &#8212; Fitting data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numkit/timeseries.html"><tt class="docutils literal"><span class="pre">numkit.timeseries</span></tt> &#8212; Time series manipulation and analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numkit/integration.html"><tt class="docutils literal"><span class="pre">numkit.integration</span></tt> &#8212; Numerical integration of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numkit/observables.html"><tt class="docutils literal"><span class="pre">numkit.observables</span></tt> &#8212; Observables as quantities with errors</a></li>
 </ul>
+</div>
 </div>
 
 
@@ -75,30 +80,30 @@ in <tt class="xref docutils literal"><span class="pre">gromacs.analysis</span></
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="auxiliary.html"
-                                  title="previous chapter">Auxiliary modules</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="numkit/fitting.html"
-                                  title="next chapter"><tt class="docutils literal"><span class="pre">numkit.fitting</span></tt> &#8212; Fitting data</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="_sources/numkit.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="auxiliary.html"
+                        title="previous chapter">Auxiliary modules</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="numkit/fitting.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">numkit.fitting</span></tt> &#8212; Fitting data</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/numkit.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -110,7 +115,7 @@ in <tt class="xref docutils literal"><span class="pre">gromacs.analysis</span></
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="modindex.html" title="Global Module Index"
+          <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="numkit/fitting.html" title="numkit.fitting — Fitting data"
@@ -123,9 +128,9 @@ in <tt class="xref docutils literal"><span class="pre">gromacs.analysis</span></
       </ul>
     </div>
     <div class="footer">
-      &copy; Copyright 2009-2010, Oliver Beckstein.
+        &copy; Copyright 2009-2010, Oliver Beckstein.
       Last updated on Sep 26, 2010.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.2.
     </div>
   </body>
 </html>

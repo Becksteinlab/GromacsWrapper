@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -12,12 +14,13 @@
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
         VERSION:     '0.1.14',
-        COLLAPSE_MODINDEX: false,
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="GromacsWrapper v0.1.14 documentation" href="index.html" />
     <link rel="up" title="Auxiliary modules" href="auxiliary.html" />
@@ -32,8 +35,8 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="edpdb.html" title="edPDB — Simple processing of PDB files"
              accesskey="N">next</a> |</li>
@@ -50,20 +53,20 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="module-vmd.control">
-<h1><tt class="xref docutils literal"><span class="pre">vmd</span></tt> &#8212; Remote Tcl commands in VMD<a class="headerlink" href="#module-vmd.control" title="Permalink to this headline">¶</a></h1>
-<p>The <tt class="xref docutils literal"><span class="pre">vmd</span></tt> module contains a very simple client that can connect to a
+  <div class="section" id="vmd-remote-tcl-commands-in-vmd">
+<h1><a class="reference internal" href="#module-vmd" title="vmd"><tt class="xref py py-mod docutils literal"><span class="pre">vmd</span></tt></a> &#8212; Remote Tcl commands in VMD<a class="headerlink" href="#vmd-remote-tcl-commands-in-vmd" title="Permalink to this headline">¶</a></h1>
+<p>The <a class="reference internal" href="#module-vmd" title="vmd"><tt class="xref py py-mod docutils literal"><span class="pre">vmd</span></tt></a> module contains a very simple client that can connect to a
 locally running server process in <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>. This allows running VMD
 <a class="reference external" href="http://www.tcl.tk/man/">Tcl</a> commands remotely. See <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/current/ug/node107.html">VMD Tcl Text Commands</a> for all
 available commands.</p>
-<p>The <tt class="xref docutils literal"><span class="pre">vmd</span></tt> module is independent from <a title="" class="reference external" href="gromacs/init.html#module-gromacs"><tt class="xref docutils literal"><span class="pre">gromacs</span></tt></a> and
+<p>The <a class="reference internal" href="#module-vmd" title="vmd"><tt class="xref py py-mod docutils literal"><span class="pre">vmd</span></tt></a> module is independent from <a class="reference internal" href="gromacs/init.html#module-gromacs" title="gromacs"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs</span></tt></a> and
 distribute for convenience. It can be used to implement additional
 visualization and analysis tasks.</p>
-<div class="section" id="vmd-control">
+<span class="target" id="module-vmd"></span><div class="section" id="vmd-control">
 <h2>VMD control<a class="headerlink" href="#vmd-control" title="Permalink to this headline">¶</a></h2>
 <p>Simple client to transmit Tcl commands to a server running in <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>.</p>
 <p>VMD and the server run locally and can be started from the module. Once the
-server is running, one can use <tt class="xref docutils literal"><span class="pre">vmd.client</span></tt> to communicate with the server
+server is running, one can use <tt class="xref py py-class docutils literal"><span class="pre">vmd.client</span></tt> to communicate with the server
 process via a local socket.</p>
 <div class="section" id="example">
 <h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
@@ -82,7 +85,7 @@ server process:</p>
 <p>See <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/current/ug/node107.html">VMD Tcl Text Commands</a> for all available commands.</p>
 </div>
 </div>
-</div>
+<span class="target" id="module-vmd.control"></span></div>
 
 
           </div>
@@ -90,41 +93,41 @@ server process:</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h3><a href="index.html">Table Of Contents</a></h3>
-            <ul>
-<li><a class="reference external" href="#"><tt class="docutils literal"><span class="pre">vmd</span></tt> &#8212; Remote Tcl commands in VMD</a><ul>
-<li><a class="reference external" href="#vmd-control">VMD control</a><ul>
-<li><a class="reference external" href="#example">Example</a></li>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">vmd</span></tt> &#8212; Remote Tcl commands in VMD</a><ul>
+<li><a class="reference internal" href="#vmd-control">VMD control</a><ul>
+<li><a class="reference internal" href="#example">Example</a></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="numkit/observables.html"
-                                  title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">numkit.observables</span></tt> &#8212; Observables as quantities with errors</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="edpdb.html"
-                                  title="next chapter"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">edPDB</span></tt> &#8212; Simple processing of PDB files</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="_sources/vmd.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="numkit/observables.html"
+                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">numkit.observables</span></tt> &#8212; Observables as quantities with errors</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="edpdb.html"
+                        title="next chapter"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">edPDB</span></tt> &#8212; Simple processing of PDB files</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/vmd.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -136,7 +139,7 @@ server process:</p>
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="modindex.html" title="Global Module Index"
+          <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="edpdb.html" title="edPDB — Simple processing of PDB files"
@@ -149,9 +152,9 @@ server process:</p>
       </ul>
     </div>
     <div class="footer">
-      &copy; Copyright 2009-2010, Oliver Beckstein.
+        &copy; Copyright 2009-2010, Oliver Beckstein.
       Last updated on Sep 26, 2010.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.2.
     </div>
   </body>
 </html>

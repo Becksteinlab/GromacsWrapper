@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -12,12 +14,13 @@
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
         VERSION:     '0.1.14',
-        COLLAPSE_MODINDEX: false,
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="GromacsWrapper v0.1.14 documentation" href="index.html" />
     <link rel="next" title="Gromacs package" href="gromacs.html" />
@@ -31,8 +34,8 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="gromacs.html" title="Gromacs package"
              accesskey="N">next</a> |</li>
@@ -54,7 +57,7 @@
 package. The installation uses <a class="reference external" href="http://peak.telecommunity.com/DevCenter/setuptools">setuptools</a> (also known as
 <tt class="docutils literal"><span class="pre">easy_install</span></tt> or &#8220;egg install&#8221;); if this is not available on your
 system you can either let the installer download it automatically from
-the internet (so just go to <a class="reference internal" href="#quick-installation-instructions">Quick installation instructions</a>) or
+the internet (so just go to <a class="reference external" href="#quick-installation-instructions">Quick installation instructions</a>) or
 install it using your package manager, eg:</p>
 <div class="highlight-python"><pre>aptitude install python-setuptools</pre>
 </div>
@@ -122,7 +125,7 @@ versions will likely fail.</p>
 <p>The basic package makes use of <a class="reference external" href="http://numpy.scipy.org">numpy</a> and can use <a class="reference external" href="http://matplotlib.sourceforge.net/">matplotlib</a> (in the
 form of the <tt class="docutils literal"><span class="pre">pylab</span></tt> package). Only <a class="reference external" href="http://numpy.scipy.org">numpy</a> is immediately required (and
 automatically installed with <tt class="docutils literal"><span class="pre">easy_install</span></tt>).</p>
-<p>For the <tt class="xref docutils literal"><span class="pre">gromacs.analysis</span></tt> library additional packages are required:</p>
+<p>For the <tt class="xref py py-mod docutils literal"><span class="pre">gromacs.analysis</span></tt> library additional packages are required:</p>
 <blockquote>
 <table border="1" class="docutils">
 <colgroup>
@@ -152,7 +155,7 @@ automatically installed with <tt class="docutils literal"><span class="pre">easy
 </tbody>
 </table>
 </blockquote>
-<p>See <a class="reference internal" href="#installing-all-packages-and-requirements">Installing all packages and requirements</a> for hints on how to
+<p>See <a class="reference external" href="#installing-all-packages-and-requirements">Installing all packages and requirements</a> for hints on how to
 install these package.</p>
 </div>
 </div>
@@ -175,7 +178,7 @@ easy_install . GromacsWrapper[analysis]</pre>
 </div>
 <p>In each case this will try to download additional packages for the
 extra <em>analysis</em> module.</p>
-<p>A common problem appears to be the error <a class="reference internal" href="#could-not-find-matplotlib">Could not find matplotlib</a>
+<p>A common problem appears to be the error <a class="reference external" href="#could-not-find-matplotlib">Could not find matplotlib</a>
 as discussed below.</p>
 </div>
 </div>
@@ -249,55 +252,55 @@ installed matplotlib.</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h3><a href="index.html">Table Of Contents</a></h3>
-            <ul>
-<li><a class="reference external" href="#">INSTALL</a><ul>
-<li><a class="reference external" href="#quick-installation-instructions">Quick installation instructions</a></li>
-<li><a class="reference external" href="#manual-download">Manual Download</a></li>
-<li><a class="reference external" href="#source-code-access">Source code access</a></li>
-<li><a class="reference external" href="#requirements">Requirements</a><ul>
-<li><a class="reference external" href="#system-requirements">System requirements</a></li>
-<li><a class="reference external" href="#required-python-modules">Required python modules</a></li>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">INSTALL</a><ul>
+<li><a class="reference internal" href="#quick-installation-instructions">Quick installation instructions</a></li>
+<li><a class="reference internal" href="#manual-download">Manual Download</a></li>
+<li><a class="reference internal" href="#source-code-access">Source code access</a></li>
+<li><a class="reference internal" href="#requirements">Requirements</a><ul>
+<li><a class="reference internal" href="#system-requirements">System requirements</a></li>
+<li><a class="reference internal" href="#required-python-modules">Required python modules</a></li>
 </ul>
 </li>
-<li><a class="reference external" href="#additional-instructions">Additional instructions</a><ul>
-<li><a class="reference external" href="#installing-all-packages-and-requirements">Installing <em>all</em> packages and requirements</a></li>
+<li><a class="reference internal" href="#additional-instructions">Additional instructions</a><ul>
+<li><a class="reference internal" href="#installing-all-packages-and-requirements">Installing <em>all</em> packages and requirements</a></li>
 </ul>
 </li>
-<li><a class="reference external" href="#troubleshooting">Troubleshooting</a><ul>
-<li><a class="reference external" href="#installing-in-non-standard-locations">Installing in non-standard locations</a></li>
-<li><a class="reference external" href="#easy-install-import-error">easy_install import error</a></li>
-<li><a class="reference external" href="#could-not-find-matplotlib">Could not find matplotlib</a></li>
+<li><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
+<li><a class="reference internal" href="#installing-in-non-standard-locations">Installing in non-standard locations</a></li>
+<li><a class="reference internal" href="#easy-install-import-error">easy_install import error</a></li>
+<li><a class="reference internal" href="#could-not-find-matplotlib">Could not find matplotlib</a></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="README.html"
-                                  title="previous chapter">README</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="gromacs.html"
-                                  title="next chapter">Gromacs package</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="_sources/INSTALL.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="README.html"
+                        title="previous chapter">README</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="gromacs.html"
+                        title="next chapter">Gromacs package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/INSTALL.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -309,7 +312,7 @@ installed matplotlib.</p>
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="modindex.html" title="Global Module Index"
+          <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="gromacs.html" title="Gromacs package"
@@ -321,9 +324,9 @@ installed matplotlib.</p>
       </ul>
     </div>
     <div class="footer">
-      &copy; Copyright 2009-2010, Oliver Beckstein.
+        &copy; Copyright 2009-2010, Oliver Beckstein.
       Last updated on Sep 26, 2010.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.2.
     </div>
   </body>
 </html>

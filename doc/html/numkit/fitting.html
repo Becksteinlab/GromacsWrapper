@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -12,12 +14,13 @@
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
         VERSION:     '0.1.14',
-        COLLAPSE_MODINDEX: false,
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="GromacsWrapper v0.1.14 documentation" href="../index.html" />
     <link rel="up" title="numkit — Numerical analysis toolkit" href="../numkit.html" />
@@ -32,8 +35,8 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="timeseries.html" title="numkit.timeseries — Time series manipulation and analysis"
              accesskey="N">next</a> |</li>
@@ -51,8 +54,8 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="numkit-fitting-fitting-data">
-<span id="module-numkit.fitting"></span><h1><tt class="xref docutils literal"><span class="pre">numkit.fitting</span></tt> &#8212; Fitting data<a class="headerlink" href="#numkit-fitting-fitting-data" title="Permalink to this headline">¶</a></h1>
+  <span class="target" id="module-numkit.fitting"></span><div class="section" id="numkit-fitting-fitting-data">
+<h1><a class="reference internal" href="#module-numkit.fitting" title="numkit.fitting"><tt class="xref py py-mod docutils literal"><span class="pre">numkit.fitting</span></tt></a> &#8212; Fitting data<a class="headerlink" href="#numkit-fitting-fitting-data" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="numkit.fitting.Pearson_r">
 <tt class="descclassname">numkit.fitting.</tt><tt class="descname">Pearson_r</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="headerlink" href="#numkit.fitting.Pearson_r" title="Permalink to this definition">¶</a></dt>
@@ -93,7 +96,7 @@ should occur by chance.)</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">result_dict with components</p>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">result_dict with components</p>
 <dl class="last docutils">
 <dt>intercept, sigma_intercept    </dt>
 <dd><p class="first last">a +/- sigma_a</p>
@@ -123,56 +126,62 @@ should occur by chance.)</p>
 <em class="property">class </em><tt class="descclassname">numkit.fitting.</tt><tt class="descname">FitFunc</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="headerlink" href="#numkit.fitting.FitFunc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit a function f to data (x,y) using the method of least squares.</p>
 <p>The function is fitted when the object is created, using
-<tt class="xref docutils literal"><span class="pre">scipy.optimize.leastsq()</span></tt>. One must derive from the base class
-<a title="numkit.fitting.FitFunc" class="reference internal" href="#numkit.fitting.FitFunc"><tt class="xref docutils literal"><span class="pre">FitFunc</span></tt></a> and override the <a title="numkit.fitting.FitFunc.f_factory" class="reference internal" href="#numkit.fitting.FitFunc.f_factory"><tt class="xref docutils literal"><span class="pre">FitFunc.f_factory()</span></tt></a> (including
-the definition of an appropriate local <tt class="xref docutils literal"><span class="pre">fitfunc()</span></tt> function) and
-<a title="numkit.fitting.FitFunc.initial_values" class="reference internal" href="#numkit.fitting.FitFunc.initial_values"><tt class="xref docutils literal"><span class="pre">FitFunc.initial_values()</span></tt></a> appropriately. See the examples for a
-linear fit <a title="numkit.fitting.FitLin" class="reference internal" href="#numkit.fitting.FitLin"><tt class="xref docutils literal"><span class="pre">FitLin</span></tt></a>, a 1-parameter exponential fit <a title="numkit.fitting.FitExp" class="reference internal" href="#numkit.fitting.FitExp"><tt class="xref docutils literal"><span class="pre">FitExp</span></tt></a>,
-or a 3-parameter double exponential fit <a title="numkit.fitting.FitExp2" class="reference internal" href="#numkit.fitting.FitExp2"><tt class="xref docutils literal"><span class="pre">FitExp2</span></tt></a>.</p>
+<a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.leastsq.html#scipy.optimize.leastsq" title="(in SciPy v0.9.dev6665)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.optimize.leastsq()</span></tt></a>. One must derive from the base class
+<a class="reference internal" href="#numkit.fitting.FitFunc" title="numkit.fitting.FitFunc"><tt class="xref py py-class docutils literal"><span class="pre">FitFunc</span></tt></a> and override the <a class="reference internal" href="#numkit.fitting.FitFunc.f_factory" title="numkit.fitting.FitFunc.f_factory"><tt class="xref py py-meth docutils literal"><span class="pre">FitFunc.f_factory()</span></tt></a> (including
+the definition of an appropriate local <tt class="xref py py-func docutils literal"><span class="pre">fitfunc()</span></tt> function) and
+<a class="reference internal" href="#numkit.fitting.FitFunc.initial_values" title="numkit.fitting.FitFunc.initial_values"><tt class="xref py py-meth docutils literal"><span class="pre">FitFunc.initial_values()</span></tt></a> appropriately. See the examples for a
+linear fit <a class="reference internal" href="#numkit.fitting.FitLin" title="numkit.fitting.FitLin"><tt class="xref py py-class docutils literal"><span class="pre">FitLin</span></tt></a>, a 1-parameter exponential fit <a class="reference internal" href="#numkit.fitting.FitExp" title="numkit.fitting.FitExp"><tt class="xref py py-class docutils literal"><span class="pre">FitExp</span></tt></a>,
+or a 3-parameter double exponential fit <a class="reference internal" href="#numkit.fitting.FitExp2" title="numkit.fitting.FitExp2"><tt class="xref py py-class docutils literal"><span class="pre">FitExp2</span></tt></a>.</p>
 <dl class="docutils">
 <dt>The object provides two attributes</dt>
 <dd><dl class="first last docutils">
-<dt><tt class="xref docutils literal"><span class="pre">FitFunc.parameters</span></tt></dt>
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">FitFunc.parameters</span></tt></dt>
 <dd>list of parameters of the fit</dd>
-<dt><tt class="xref docutils literal"><span class="pre">FitFunc.message</span></tt></dt>
-<dd>message from <tt class="xref docutils literal"><span class="pre">scipy.optimize.leastsq()</span></tt></dd>
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">FitFunc.message</span></tt></dt>
+<dd>message from <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.leastsq.html#scipy.optimize.leastsq" title="(in SciPy v0.9.dev6665)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.optimize.leastsq()</span></tt></a></dd>
 </dl>
 </dd>
 </dl>
 <p>After a successful fit, the fitted function can be applied to any data (a
-1D-numpy array) with <a title="numkit.fitting.FitFunc.fit" class="reference internal" href="#numkit.fitting.FitFunc.fit"><tt class="xref docutils literal"><span class="pre">FitFunc.fit()</span></tt></a>.</p>
+1D-numpy array) with <a class="reference internal" href="#numkit.fitting.FitFunc.fit" title="numkit.fitting.FitFunc.fit"><tt class="xref py py-meth docutils literal"><span class="pre">FitFunc.fit()</span></tt></a>.</p>
 <dl class="method">
 <dt id="numkit.fitting.FitFunc.f_factory">
 <tt class="descname">f_factory</tt><big>(</big><big>)</big><a class="headerlink" href="#numkit.fitting.FitFunc.f_factory" title="Permalink to this definition">¶</a></dt>
-<dd>Stub for fit function factory, which returns the fit function.
-Override for derived classes.</dd></dl>
+<dd><p>Stub for fit function factory, which returns the fit function.
+Override for derived classes.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="numkit.fitting.FitFunc.fit">
 <tt class="descname">fit</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#numkit.fitting.FitFunc.fit" title="Permalink to this definition">¶</a></dt>
-<dd>Applies the fit to all <em>x</em> values</dd></dl>
+<dd><p>Applies the fit to all <em>x</em> values</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="numkit.fitting.FitFunc.initial_values">
 <tt class="descname">initial_values</tt><big>(</big><big>)</big><a class="headerlink" href="#numkit.fitting.FitFunc.initial_values" title="Permalink to this definition">¶</a></dt>
-<dd>List of initital guesses for all parameters p[]</dd></dl>
+<dd><p>List of initital guesses for all parameters p[]</p>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="numkit.fitting.FitLin">
 <em class="property">class </em><tt class="descclassname">numkit.fitting.</tt><tt class="descname">FitLin</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="headerlink" href="#numkit.fitting.FitLin" title="Permalink to this definition">¶</a></dt>
-<dd>y = f(x) = p[0]*x + p[1]</dd></dl>
+<dd><p>y = f(x) = p[0]*x + p[1]</p>
+</dd></dl>
 
 <dl class="class">
 <dt id="numkit.fitting.FitExp">
 <em class="property">class </em><tt class="descclassname">numkit.fitting.</tt><tt class="descname">FitExp</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="headerlink" href="#numkit.fitting.FitExp" title="Permalink to this definition">¶</a></dt>
-<dd>y = f(x) = exp(-p[0]*x)</dd></dl>
+<dd><p>y = f(x) = exp(-p[0]*x)</p>
+</dd></dl>
 
 <dl class="class">
 <dt id="numkit.fitting.FitExp2">
 <em class="property">class </em><tt class="descclassname">numkit.fitting.</tt><tt class="descname">FitExp2</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="headerlink" href="#numkit.fitting.FitExp2" title="Permalink to this definition">¶</a></dt>
-<dd>y = f(x) = p[0]*exp(-p[1]*x) + (1-p[0])*exp(-p[2]*x)</dd></dl>
+<dd><p>y = f(x) = p[0]*exp(-p[1]*x) + (1-p[0])*exp(-p[2]*x)</p>
+</dd></dl>
 
 </div>
 
@@ -182,30 +191,30 @@ Override for derived classes.</dd></dl>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="../numkit.html"
-                                  title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="timeseries.html"
-                                  title="next chapter"><tt class="docutils literal"><span class="pre">numkit.timeseries</span></tt> &#8212; Time series manipulation and analysis</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="../_sources/numkit/fitting.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="../search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../numkit.html"
+                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="timeseries.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">numkit.timeseries</span></tt> &#8212; Time series manipulation and analysis</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/numkit/fitting.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -217,7 +226,7 @@ Override for derived classes.</dd></dl>
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
+          <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="timeseries.html" title="numkit.timeseries — Time series manipulation and analysis"
@@ -231,9 +240,9 @@ Override for derived classes.</dd></dl>
       </ul>
     </div>
     <div class="footer">
-      &copy; Copyright 2009-2010, Oliver Beckstein.
+        &copy; Copyright 2009-2010, Oliver Beckstein.
       Last updated on Sep 26, 2010.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.2.
     </div>
   </body>
 </html>

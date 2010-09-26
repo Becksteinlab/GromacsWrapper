@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -12,12 +14,13 @@
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
         VERSION:     '0.1.14',
-        COLLAPSE_MODINDEX: false,
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="GromacsWrapper v0.1.14 documentation" href="../index.html" />
     <link rel="up" title="numkit — Numerical analysis toolkit" href="../numkit.html" />
@@ -32,8 +35,8 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="integration.html" title="numkit.integration — Numerical integration of data"
              accesskey="N">next</a> |</li>
@@ -51,8 +54,8 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="numkit-timeseries-time-series-manipulation-and-analysis">
-<span id="module-numkit.timeseries"></span><h1><tt class="xref docutils literal"><span class="pre">numkit.timeseries</span></tt> &#8212; Time series manipulation and analysis<a class="headerlink" href="#numkit-timeseries-time-series-manipulation-and-analysis" title="Permalink to this headline">¶</a></h1>
+  <span class="target" id="module-numkit.timeseries"></span><div class="section" id="numkit-timeseries-time-series-manipulation-and-analysis">
+<h1><a class="reference internal" href="#module-numkit.timeseries" title="numkit.timeseries"><tt class="xref py py-mod docutils literal"><span class="pre">numkit.timeseries</span></tt></a> &#8212; Time series manipulation and analysis<a class="headerlink" href="#numkit-timeseries-time-series-manipulation-and-analysis" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="numkit.timeseries.autocorrelation_fft">
 <tt class="descclassname">numkit.timeseries.</tt><tt class="descname">autocorrelation_fft</tt><big>(</big><em>series</em>, <em>remove_mean=True</em>, <em>paddingcorrection=True</em>, <em>normalize=False</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#numkit.timeseries.autocorrelation_fft" title="Permalink to this definition">¶</a></dt>
@@ -78,7 +81,7 @@ and should probably be truncated at 1/2*len(series)</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>series</em></dt>
 <dd><p class="first last">(time) series, a 1D numpy array of length N</p>
 </dd>
@@ -97,11 +100,11 @@ applied for modes != &#8220;valid&#8221;       [<tt class="xref docutils literal
 <tt class="xref docutils literal"><span class="pre">False</span></tt> leaves un-normalized [<tt class="xref docutils literal"><span class="pre">False</span></tt>]</p>
 </dd>
 <dt><em>mode</em></dt>
-<dd><p class="first last">&#8220;full&#8221; | &#8220;same&#8221; | &#8220;valid&#8221;: see <tt class="xref docutils literal"><span class="pre">scipy.signal.fftconvolve()</span></tt>
+<dd><p class="first last">&#8220;full&#8221; | &#8220;same&#8221; | &#8220;valid&#8221;: see <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.fftconvolve.html#scipy.signal.fftconvolve" title="(in SciPy v0.9.dev6665)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.signal.fftconvolve()</span></tt></a>
 [&#8220;full&#8221;]</p>
 </dd>
 <dt><em>kwargs</em></dt>
-<dd><p class="first last">other keyword arguments for <tt class="xref docutils literal"><span class="pre">scipy.signal.fftconvolve()</span></tt></p>
+<dd><p class="first last">other keyword arguments for <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.fftconvolve.html#scipy.signal.fftconvolve" title="(in SciPy v0.9.dev6665)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.signal.fftconvolve()</span></tt></a></p>
 </dd>
 </dl>
 </td>
@@ -129,7 +132,7 @@ than ~50,000 entries in the input.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>x</em></dt>
 <dd><p class="first last">1D array of abscissa values (typically time)</p>
 </dd>
@@ -143,7 +146,7 @@ than ~50,000 entries in the input.</p>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">dictionary with entries <em>tc</em> (decay constant in units of <em>x</em>),
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">dictionary with entries <em>tc</em> (decay constant in units of <em>x</em>),
 <em>t0</em> (value of the first root along x (y(t0) = 0)), <em>sigma</em> (error estimate
 for the mean of y, &lt;y&gt;, corrected for correlations in the data).</p>
 </td>
@@ -155,7 +158,8 @@ for the mean of y, &lt;y&gt;, corrected for correlations in the data).</p>
 <dl class="exception">
 <dt id="numkit.timeseries.LowAccuracyWarning">
 <em class="property">exception </em><tt class="descclassname">numkit.timeseries.</tt><tt class="descname">LowAccuracyWarning</tt><a class="headerlink" href="#numkit.timeseries.LowAccuracyWarning" title="Permalink to this definition">¶</a></dt>
-<dd>Warns that results may possibly have low accuracy.</dd></dl>
+<dd><p>Warns that results may possibly have low accuracy.</p>
+</dd></dl>
 
 </div>
 
@@ -165,30 +169,30 @@ for the mean of y, &lt;y&gt;, corrected for correlations in the data).</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="fitting.html"
-                                  title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">numkit.fitting</span></tt> &#8212; Fitting data</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="integration.html"
-                                  title="next chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">numkit.integration</span></tt> &#8212; Numerical integration of data</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="../_sources/numkit/timeseries.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="../search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="fitting.html"
+                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">numkit.fitting</span></tt> &#8212; Fitting data</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="integration.html"
+                        title="next chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">numkit.integration</span></tt> &#8212; Numerical integration of data</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/numkit/timeseries.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -200,7 +204,7 @@ for the mean of y, &lt;y&gt;, corrected for correlations in the data).</p>
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="../modindex.html" title="Global Module Index"
+          <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="integration.html" title="numkit.integration — Numerical integration of data"
@@ -214,9 +218,9 @@ for the mean of y, &lt;y&gt;, corrected for correlations in the data).</p>
       </ul>
     </div>
     <div class="footer">
-      &copy; Copyright 2009-2010, Oliver Beckstein.
+        &copy; Copyright 2009-2010, Oliver Beckstein.
       Last updated on Sep 26, 2010.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.2.
     </div>
   </body>
 </html>
