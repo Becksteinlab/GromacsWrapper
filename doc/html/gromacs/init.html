@@ -67,7 +67,7 @@ run directly or queried for its documentation. It also defines
 the root logger class (name <em>gromacs</em> by default).</dd>
 <dt><a class="reference internal" href="core/config.html#module-gromacs.config" title="gromacs.config"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.config</span></tt></a></dt>
 <dd>Configuration options. Not really used much at the moment.</dd>
-<dt><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.cbook</span></tt></dt>
+<dt><a class="reference internal" href="blocks/cbook.html#module-gromacs.cbook" title="gromacs.cbook"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.cbook</span></tt></a></dt>
 <dd>The Gromacs cook book contains typical applications of the tools. In many
 cases this not more than just an often-used combination of parameters for
 a tool.</dd>
@@ -81,16 +81,16 @@ graphs, also plotting of the data.</dd>
 <dt><a class="reference internal" href="core/utilities.html#module-gromacs.utilities" title="gromacs.utilities"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.utilities</span></tt></a></dt>
 <dd>Convenience functions and mixin-classes that are used as helpers
 in other modules.</dd>
-<dt><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.setup</span></tt></dt>
+<dt><a class="reference internal" href="blocks/setup.html#module-gromacs.setup" title="gromacs.setup"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.setup</span></tt></a></dt>
 <dd>Functions to set up a MD simulation, containing tasks such as solvation
 and adding ions, energy minimizqtion, MD with position-restraints, and
 equilibrium MD.</dd>
-<dt><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.qsub</span></tt></dt>
+<dt><a class="reference internal" href="blocks/qsub.html#module-gromacs.qsub" title="gromacs.qsub"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.qsub</span></tt></a></dt>
 <dd>Functions to handle batch submission queuing systems.</dd>
 <dt><a class="reference internal" href="blocks/simulation.html#module-gromacs.run" title="gromacs.run"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.run</span></tt></a></dt>
 <dd>Classes to run <strong class="program">mdrun</strong> in various way, including on
 multiprocessor systems.</dd>
-<dt><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.analysis</span></tt></dt>
+<dt><a class="reference internal" href="../analysis/core.html#module-gromacs.analysis" title="gromacs.analysis"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.analysis</span></tt></a></dt>
 <dd>A package that collects whole analysis tasks. It uses the gromacs but is
 otherwise only loosely coupled with the rest. At the moment it only
 contains the infrastructure and an example application. See the package
@@ -133,7 +133,7 @@ package. See the individual modules for more examples.</p>
           <span class="k">break</span>
 </pre></div>
 </div>
-<p>(See <tt class="xref py py-func docutils literal"><span class="pre">gromacs.cbook.grompp_qtot()</span></tt> for a more robust implementation of this
+<p>(See <a class="reference internal" href="blocks/cbook.html#gromacs.cbook.grompp_qtot" title="gromacs.cbook.grompp_qtot"><tt class="xref py py-func docutils literal"><span class="pre">gromacs.cbook.grompp_qtot()</span></tt></a> for a more robust implementation of this
 application.)</p>
 </div>
 </div>
@@ -167,8 +167,8 @@ to always report, eg:</p>
 <dt id="gromacs.MissingDataError">
 <em class="property">exception </em><tt class="descclassname">gromacs.</tt><tt class="descname">MissingDataError</tt><a class="headerlink" href="#gromacs.MissingDataError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Error raised when prerequisite data are not available.</p>
-<p>For analysis with <tt class="xref py py-class docutils literal"><span class="pre">gromacs.analysis.core.Simulation</span></tt> this typically
-means that the <tt class="xref py py-meth docutils literal"><span class="pre">analyze()</span></tt> method has
+<p>For analysis with <a class="reference internal" href="../analysis/core.html#gromacs.analysis.core.Simulation" title="gromacs.analysis.core.Simulation"><tt class="xref py py-class docutils literal"><span class="pre">gromacs.analysis.core.Simulation</span></tt></a> this typically
+means that the <a class="reference internal" href="../analysis/core.html#gromacs.analysis.core.Simulation.analyze" title="gromacs.analysis.core.Simulation.analyze"><tt class="xref py py-meth docutils literal"><span class="pre">analyze()</span></tt></a> method has
 to be run first.</p>
 </dd></dl>
 

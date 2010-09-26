@@ -98,7 +98,7 @@ loglevel <em>INFO</em> (see the python <a class="reference external" href="http:
 <dt id="gromacs.config.logfilename">
 <tt class="descclassname">gromacs.config.</tt><tt class="descname">logfilename</tt><a class="headerlink" href="#gromacs.config.logfilename" title="Permalink to this definition">¶</a></dt>
 <dd><p>File name for the log file; all gromacs command and many utility functions (e.g. in
-<tt class="xref py py-mod docutils literal"><span class="pre">gromacs.cbook</span></tt> and <tt class="xref py py-mod docutils literal"><span class="pre">gromacs.setup</span></tt>) append messages there. Warnings and
+<a class="reference internal" href="../blocks/cbook.html#module-gromacs.cbook" title="gromacs.cbook"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.cbook</span></tt></a> and <a class="reference internal" href="../blocks/setup.html#module-gromacs.setup" title="gromacs.setup"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.setup</span></tt></a>) append messages there. Warnings and
 errors are also recorded here. The default is <em>gromacs.log</em>.</p>
 </dd></dl>
 
@@ -212,9 +212,9 @@ code: find the actual file locations from this variable.</p>
 <p>These are supplied as examples and there is <strong>NO GUARANTEE THAT THEY
 PRODUCE SENSIBLE OUTPUT</strong> &#8212; check for yourself!  Note that only
 existing parameter names can be modified with
-<tt class="xref py py-func docutils literal"><span class="pre">gromacs.cbook.edit_mdp()</span></tt> at the moment; if in doubt add the
+<a class="reference internal" href="../blocks/cbook.html#gromacs.cbook.edit_mdp" title="gromacs.cbook.edit_mdp"><tt class="xref py py-func docutils literal"><span class="pre">gromacs.cbook.edit_mdp()</span></tt></a> at the moment; if in doubt add the
 parameter with its gromacs default value (or empty values) and
-modify later with <tt class="xref py py-func docutils literal"><span class="pre">edit_mdp()</span></tt>.</p>
+modify later with <a class="reference internal" href="../blocks/cbook.html#gromacs.cbook.edit_mdp" title="gromacs.cbook.edit_mdp"><tt class="xref py py-func docutils literal"><span class="pre">edit_mdp()</span></tt></a>.</p>
 <p>The safest bet is to use one of the <tt class="docutils literal"><span class="pre">mdout.mdp</span></tt> files produced by
 <tt class="xref py py-func docutils literal"><span class="pre">gromacs.grompp()</span></tt> as a template as this mdp contains all
 parameters that are legal in the current version of Gromacs.</p>
@@ -223,7 +223,7 @@ parameters that are legal in the current version of Gromacs.</p>
 <blockquote>
 The queing system scripts are highly specific and you will need to add your
 own into <a class="reference internal" href="#gromacs.config.qscriptdir" title="gromacs.config.qscriptdir"><tt class="xref py py-data docutils literal"><span class="pre">gromacs.config.qscriptdir</span></tt></a>.
-See <tt class="xref py py-mod docutils literal"><span class="pre">gromacs.qsub</span></tt> for the format and how these files are processed.</blockquote>
+See <a class="reference internal" href="../blocks/qsub.html#module-gromacs.qsub" title="gromacs.qsub"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.qsub</span></tt></a> for the format and how these files are processed.</blockquote>
 </dd></dl>
 
 <dl class="data">
