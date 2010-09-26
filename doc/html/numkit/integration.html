@@ -63,11 +63,11 @@
 <dl class="function">
 <dt id="numkit.integration.simps_error">
 <tt class="descclassname">numkit.integration.</tt><tt class="descname">simps_error</tt><big>(</big><em>dy</em>, <em>x=None</em>, <em>dx=1</em>, <em>axis=-1</em>, <em>even='avg'</em><big>)</big><a class="headerlink" href="#numkit.integration.simps_error" title="Permalink to this definition">¶</a></dt>
-<dd><p>Error on integral evaluated with <a class="reference external" href="http://mathworld.wolfram.com/SimpsonsRule.html">Simpson&#8217;s rule</a> from errors of points, dy.</p>
+<dd><p>Error on integral evaluated with <a class="reference external" href="http://mathworld.wolfram.com/SimpsonsRule.html">Simpson&#8217;s rule</a> from errors of points, <em>dy</em>.</p>
 <p>Evaluate the integral with <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.simps.html#scipy.integrate.simps" title="(in SciPy v0.9.dev6665)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.integrate.simps()</span></tt></a>. For a
 given vector <em>dy</em> of errors on the function values, the error on
 the integral is calculated via <a class="reference external" href="http://mathworld.wolfram.com/ErrorPropagation.html">propagation of errors</a> from the
-<a href="#id1"><span class="problematic" id="id2">`Newton-Cotes`_</span></a> formula for the 3rd <a class="reference external" href="http://mathworld.wolfram.com/LagrangeInterpolatingPolynomial.html">Lagrange interpolating
+<a class="reference external" href="http://mathworld.wolfram.com/Newton-CotesFormulas.html">Newton-Cotes formula</a> for the 3rd <a class="reference external" href="http://mathworld.wolfram.com/LagrangeInterpolatingPolynomial.html">Lagrange interpolating
 polynomial</a>. The results are exact for the cases of even spacing
 <em>dx</em>; for uneven spacing we currently average all spacings (exact
 solution is in the works...)</p>

@@ -116,18 +116,26 @@ applied for modes != &#8220;valid&#8221;       [<tt class="xref docutils literal
 <dl class="function">
 <dt id="numkit.timeseries.tcorrel">
 <tt class="descclassname">numkit.timeseries.</tt><tt class="descname">tcorrel</tt><big>(</big><em>x</em>, <em>y</em>, <em>nstep=100</em>, <em>debug=False</em><big>)</big><a class="headerlink" href="#numkit.timeseries.tcorrel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the correlation time and an estimate of the error of &lt;y&gt;.</p>
+<dd><p>Calculate the correlation time and an estimate of the error of the mean &lt;y&gt;.</p>
 <p>The autocorrelation function f(t) is calculated via FFT on every <em>nstep</em> of
 the <strong>fluctuations</strong> of the data around the mean (y-&lt;y&gt;). The normalized
 ACF f(t)/f(0) is assumed to decay exponentially, f(t)/f(0) = exp(-t/tc) and
 the decay constant tc is estimated as the integral of the ACF from the
 start up to its first root.</p>
-<p>See Frenkel and Smit, Academic Press, San Diego 2002, p526.</p>
+<p>See <a class="reference internal" href="#frenkelsmit2002">[FrenkelSmit2002]</a> <a class="reference external" href="http://books.google.co.uk/books?id=XmyO2oRUg0cC&amp;pg=PA526">p526</a> for details.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last"><em>nstep</em> should be set sufficiently large so that there are less
 than ~50,000 entries in the input.</p>
 </div>
+<table class="docutils citation" frame="void" id="frenkelsmit2002" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[FrenkelSmit2002]</a></td><td>D. Frenkel and B. Smit, Understanding
+Molecular Simulation. Academic Press, San
+Diego 2002</td></tr>
+</tbody>
+</table>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
