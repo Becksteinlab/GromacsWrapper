@@ -8,6 +8,5 @@ available when this documentation was built. They are part of the
 
 
 .. automodule:: gromacs.tools
-   :members:
-
+..   :members:
 .. How can I make this *not* list the doc strings but just the members?   
