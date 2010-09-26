@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>numkit.fitting — Fitting data &mdash; GromacsWrapper v0.1.13 documentation</title>
+    <title>numkit.fitting — Fitting data &mdash; GromacsWrapper v0.1.14 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1.13',
+        VERSION:     '0.1.14',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.1.13 documentation" href="../index.html" />
+    <link rel="top" title="GromacsWrapper v0.1.14 documentation" href="../index.html" />
     <link rel="up" title="numkit — Numerical analysis toolkit" href="../numkit.html" />
     <link rel="next" title="numkit.timeseries — Time series manipulation and analysis" href="timeseries.html" />
     <link rel="prev" title="numkit — Numerical analysis toolkit" href="../numkit.html" /> 
@@ -40,7 +40,7 @@
         <li class="right" >
           <a href="../numkit.html" title="numkit — Numerical analysis toolkit"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper v0.1.13 documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper v0.1.14 documentation</a> &raquo;</li>
           <li><a href="../auxiliary.html" >Auxiliary modules</a> &raquo;</li>
           <li><a href="../numkit.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a> &raquo;</li> 
       </ul>
@@ -123,24 +123,24 @@ should occur by chance.)</p>
 <em class="property">class </em><tt class="descclassname">numkit.fitting.</tt><tt class="descname">FitFunc</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="headerlink" href="#numkit.fitting.FitFunc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit a function f to data (x,y) using the method of least squares.</p>
 <p>The function is fitted when the object is created, using
-<a title="(in SciPy v0.8.dev)" class="reference" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.leastsq.html#scipy.optimize.leastsq"><tt class="xref docutils literal"><span class="pre">scipy.optimize.leastsq()</span></tt></a>. One must derive from the base class
-<a title="numkit.fitting.FitFunc" class="reference" href="#numkit.fitting.FitFunc"><tt class="xref docutils literal"><span class="pre">FitFunc</span></tt></a> and override the <a title="numkit.fitting.FitFunc.f_factory" class="reference" href="#numkit.fitting.FitFunc.f_factory"><tt class="xref docutils literal"><span class="pre">FitFunc.f_factory()</span></tt></a> (including
+<tt class="xref docutils literal"><span class="pre">scipy.optimize.leastsq()</span></tt>. One must derive from the base class
+<a title="numkit.fitting.FitFunc" class="reference internal" href="#numkit.fitting.FitFunc"><tt class="xref docutils literal"><span class="pre">FitFunc</span></tt></a> and override the <a title="numkit.fitting.FitFunc.f_factory" class="reference internal" href="#numkit.fitting.FitFunc.f_factory"><tt class="xref docutils literal"><span class="pre">FitFunc.f_factory()</span></tt></a> (including
 the definition of an appropriate local <tt class="xref docutils literal"><span class="pre">fitfunc()</span></tt> function) and
-<a title="numkit.fitting.FitFunc.initial_values" class="reference" href="#numkit.fitting.FitFunc.initial_values"><tt class="xref docutils literal"><span class="pre">FitFunc.initial_values()</span></tt></a> appropriately. See the examples for a
-linear fit <a title="numkit.fitting.FitLin" class="reference" href="#numkit.fitting.FitLin"><tt class="xref docutils literal"><span class="pre">FitLin</span></tt></a>, a 1-parameter exponential fit <a title="numkit.fitting.FitExp" class="reference" href="#numkit.fitting.FitExp"><tt class="xref docutils literal"><span class="pre">FitExp</span></tt></a>,
-or a 3-parameter double exponential fit <a title="numkit.fitting.FitExp2" class="reference" href="#numkit.fitting.FitExp2"><tt class="xref docutils literal"><span class="pre">FitExp2</span></tt></a>.</p>
+<a title="numkit.fitting.FitFunc.initial_values" class="reference internal" href="#numkit.fitting.FitFunc.initial_values"><tt class="xref docutils literal"><span class="pre">FitFunc.initial_values()</span></tt></a> appropriately. See the examples for a
+linear fit <a title="numkit.fitting.FitLin" class="reference internal" href="#numkit.fitting.FitLin"><tt class="xref docutils literal"><span class="pre">FitLin</span></tt></a>, a 1-parameter exponential fit <a title="numkit.fitting.FitExp" class="reference internal" href="#numkit.fitting.FitExp"><tt class="xref docutils literal"><span class="pre">FitExp</span></tt></a>,
+or a 3-parameter double exponential fit <a title="numkit.fitting.FitExp2" class="reference internal" href="#numkit.fitting.FitExp2"><tt class="xref docutils literal"><span class="pre">FitExp2</span></tt></a>.</p>
 <dl class="docutils">
 <dt>The object provides two attributes</dt>
 <dd><dl class="first last docutils">
 <dt><tt class="xref docutils literal"><span class="pre">FitFunc.parameters</span></tt></dt>
 <dd>list of parameters of the fit</dd>
 <dt><tt class="xref docutils literal"><span class="pre">FitFunc.message</span></tt></dt>
-<dd>message from <a title="(in SciPy v0.8.dev)" class="reference" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.leastsq.html#scipy.optimize.leastsq"><tt class="xref docutils literal"><span class="pre">scipy.optimize.leastsq()</span></tt></a></dd>
+<dd>message from <tt class="xref docutils literal"><span class="pre">scipy.optimize.leastsq()</span></tt></dd>
 </dl>
 </dd>
 </dl>
 <p>After a successful fit, the fitted function can be applied to any data (a
-1D-numpy array) with <a title="numkit.fitting.FitFunc.fit" class="reference" href="#numkit.fitting.FitFunc.fit"><tt class="xref docutils literal"><span class="pre">FitFunc.fit()</span></tt></a>.</p>
+1D-numpy array) with <a title="numkit.fitting.FitFunc.fit" class="reference internal" href="#numkit.fitting.FitFunc.fit"><tt class="xref docutils literal"><span class="pre">FitFunc.fit()</span></tt></a>.</p>
 <dl class="method">
 <dt id="numkit.fitting.FitFunc.f_factory">
 <tt class="descname">f_factory</tt><big>(</big><big>)</big><a class="headerlink" href="#numkit.fitting.FitFunc.f_factory" title="Permalink to this definition">¶</a></dt>
@@ -225,15 +225,15 @@ Override for derived classes.</dd></dl>
         <li class="right" >
           <a href="../numkit.html" title="numkit — Numerical analysis toolkit"
              >previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper v0.1.13 documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper v0.1.14 documentation</a> &raquo;</li>
           <li><a href="../auxiliary.html" >Auxiliary modules</a> &raquo;</li>
           <li><a href="../numkit.html" ><tt class="docutils literal docutils literal docutils literal docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
       &copy; Copyright 2009-2010, Oliver Beckstein.
-      Last updated on Jun 14, 2010.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+      Last updated on Sep 26, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.7.
     </div>
   </body>
 </html>

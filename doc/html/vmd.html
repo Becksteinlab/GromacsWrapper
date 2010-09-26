@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>vmd — Remote Tcl commands in VMD &mdash; GromacsWrapper v0.1.13 documentation</title>
+    <title>vmd — Remote Tcl commands in VMD &mdash; GromacsWrapper v0.1.14 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '#',
-        VERSION:     '0.1.13',
+        URL_ROOT:    '',
+        VERSION:     '0.1.14',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.1.13 documentation" href="index.html" />
+    <link rel="top" title="GromacsWrapper v0.1.14 documentation" href="index.html" />
     <link rel="up" title="Auxiliary modules" href="auxiliary.html" />
     <link rel="next" title="edPDB — Simple processing of PDB files" href="edpdb.html" />
     <link rel="prev" title="numkit.observables — Observables as quantities with errors" href="numkit/observables.html" /> 
@@ -40,7 +40,7 @@
         <li class="right" >
           <a href="numkit/observables.html" title="numkit.observables — Observables as quantities with errors"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">GromacsWrapper v0.1.13 documentation</a> &raquo;</li>
+        <li><a href="index.html">GromacsWrapper v0.1.14 documentation</a> &raquo;</li>
           <li><a href="auxiliary.html" accesskey="U">Auxiliary modules</a> &raquo;</li> 
       </ul>
     </div>  
@@ -53,15 +53,15 @@
   <div class="section" id="module-vmd.control">
 <h1><tt class="xref docutils literal"><span class="pre">vmd</span></tt> &#8212; Remote Tcl commands in VMD<a class="headerlink" href="#module-vmd.control" title="Permalink to this headline">¶</a></h1>
 <p>The <tt class="xref docutils literal"><span class="pre">vmd</span></tt> module contains a very simple client that can connect to a
-locally running server process in <a class="reference" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>. This allows running VMD
-<a class="reference" href="http://www.tcl.tk/man/">Tcl</a> commands remotely. See <a class="reference" href="http://www.ks.uiuc.edu/Research/vmd/current/ug/node107.html">VMD Tcl Text Commands</a> for all
+locally running server process in <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>. This allows running VMD
+<a class="reference external" href="http://www.tcl.tk/man/">Tcl</a> commands remotely. See <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/current/ug/node107.html">VMD Tcl Text Commands</a> for all
 available commands.</p>
-<p>The <tt class="xref docutils literal"><span class="pre">vmd</span></tt> module is independent from <a title="" class="reference" href="gromacs/init.html#module-gromacs"><tt class="xref docutils literal"><span class="pre">gromacs</span></tt></a> and
+<p>The <tt class="xref docutils literal"><span class="pre">vmd</span></tt> module is independent from <a title="" class="reference external" href="gromacs/init.html#module-gromacs"><tt class="xref docutils literal"><span class="pre">gromacs</span></tt></a> and
 distribute for convenience. It can be used to implement additional
 visualization and analysis tasks.</p>
 <div class="section" id="vmd-control">
 <h2>VMD control<a class="headerlink" href="#vmd-control" title="Permalink to this headline">¶</a></h2>
-<p>Simple client to transmit Tcl commands to a server running in <a class="reference" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>.</p>
+<p>Simple client to transmit Tcl commands to a server running in <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>.</p>
 <p>VMD and the server run locally and can be started from the module. Once the
 server is running, one can use <tt class="xref docutils literal"><span class="pre">vmd.client</span></tt> to communicate with the server
 process via a local socket.</p>
@@ -73,13 +73,13 @@ process via a local socket.</p>
 <span class="n">VMD</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s">&#39;molecule new load 1AKE&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>or start an interactive <a class="reference" href="http://www.tcl.tk/man/">Tcl</a> session connected to a running VMD 
+<p>or start an interactive <a class="reference external" href="http://www.tcl.tk/man/">Tcl</a> session connected to a running VMD 
 server process:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">interactive</span><span class="p">(</span><span class="n">host</span><span class="p">)</span>
 <span class="n">asyncore</span><span class="o">.</span><span class="n">loop</span><span class="p">()</span>      <span class="c"># necessary</span>
 </pre></div>
 </div>
-<p>See <a class="reference" href="http://www.ks.uiuc.edu/Research/vmd/current/ug/node107.html">VMD Tcl Text Commands</a> for all available commands.</p>
+<p>See <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/current/ug/node107.html">VMD Tcl Text Commands</a> for all available commands.</p>
 </div>
 </div>
 </div>
@@ -92,9 +92,9 @@ server process:</p>
         <div class="sphinxsidebarwrapper">
             <h3><a href="index.html">Table Of Contents</a></h3>
             <ul>
-<li><a class="reference" href="#"><tt class="docutils literal"><span class="pre">vmd</span></tt> &#8212; Remote Tcl commands in VMD</a><ul>
-<li><a class="reference" href="#vmd-control">VMD control</a><ul>
-<li><a class="reference" href="#example">Example</a></li>
+<li><a class="reference external" href="#"><tt class="docutils literal"><span class="pre">vmd</span></tt> &#8212; Remote Tcl commands in VMD</a><ul>
+<li><a class="reference external" href="#vmd-control">VMD control</a><ul>
+<li><a class="reference external" href="#example">Example</a></li>
 </ul>
 </li>
 </ul>
@@ -144,14 +144,14 @@ server process:</p>
         <li class="right" >
           <a href="numkit/observables.html" title="numkit.observables — Observables as quantities with errors"
              >previous</a> |</li>
-        <li><a href="index.html">GromacsWrapper v0.1.13 documentation</a> &raquo;</li>
+        <li><a href="index.html">GromacsWrapper v0.1.14 documentation</a> &raquo;</li>
           <li><a href="auxiliary.html" >Auxiliary modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
       &copy; Copyright 2009-2010, Oliver Beckstein.
-      Last updated on Jun 14, 2010.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+      Last updated on Sep 26, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.7.
     </div>
   </body>
 </html>

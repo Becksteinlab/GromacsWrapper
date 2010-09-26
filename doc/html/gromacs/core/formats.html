@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.formats – Accessing various files &mdash; GromacsWrapper v0.1.13 documentation</title>
+    <title>gromacs.formats – Accessing various files &mdash; GromacsWrapper v0.1.14 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.1.13',
+        VERSION:     '0.1.14',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.1.13 documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper v0.1.14 documentation" href="../../index.html" />
     <link rel="up" title="Gromacs core modules" href="../core.html" />
     <link rel="next" title="gromacs.utilities – Helper functions and classes" href="utilities.html" />
     <link rel="prev" title="gromacs.config – Configuration for GromacsWrapper" href="config.html" /> 
@@ -40,7 +40,7 @@
         <li class="right" >
           <a href="config.html" title="gromacs.config – Configuration for GromacsWrapper"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.1.13 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.1.14 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" accesskey="U">Gromacs core modules</a> &raquo;</li> 
       </ul>
@@ -57,14 +57,14 @@
 disk. Typically one creates an instance and</p>
 <ul class="simple">
 <li>reads from a file using a <tt class="xref docutils literal"><span class="pre">read()</span></tt> method, or</li>
-<li>populates the instance (in the simplest case with a <a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/stdtypes.html#set"><tt class="xref docutils literal"><span class="pre">set()</span></tt></a>
+<li>populates the instance (in the simplest case with a <a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/library/stdtypes.html#set"><tt class="xref docutils literal"><span class="pre">set()</span></tt></a>
 method) and the uses the <tt class="xref docutils literal"><span class="pre">write()</span></tt> method to write the data to
 disk in the appropriate format.</li>
 </ul>
 <p>For function data there typically also exists a <tt class="xref docutils literal"><span class="pre">plot()</span></tt> method
 which produces a graph (using matplotlib).</p>
 <p>The module defines some classes that are used in other modules; they
-do <em>not</em> make use of <a title="" class="reference" href="../tools.html#module-gromacs.tools"><tt class="xref docutils literal"><span class="pre">gromacs.tools</span></tt></a> or <a title="" class="reference" href="../blocks/cbook.html#module-gromacs.cbook"><tt class="xref docutils literal"><span class="pre">gromacs.cbook</span></tt></a> and
+do <em>not</em> make use of <a title="" class="reference external" href="../tools.html#module-gromacs.tools"><tt class="xref docutils literal"><span class="pre">gromacs.tools</span></tt></a> or <tt class="xref docutils literal"><span class="pre">gromacs.cbook</span></tt> and
 can be safely imported at any time.</p>
 <div class="section" id="classes">
 <h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
@@ -73,12 +73,12 @@ can be safely imported at any time.</p>
 <em class="property">class </em><tt class="descclassname">gromacs.formats.</tt><tt class="descname">XVG</tt><big>(</big><em>filename=None</em>, <em>names=None</em>, <em>permissive=False</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.formats.XVG" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class that represents the numerical data in a grace xvg file.</p>
 <p>All data must be numerical. <tt class="xref docutils literal"><span class="pre">NAN</span></tt> and <tt class="xref docutils literal"><span class="pre">INF</span></tt> values are
-supported via python&#8217;s <a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/functions.html#float"><tt class="xref docutils literal"><span class="pre">float()</span></tt></a> builtin function.</p>
-<p>The <a title="gromacs.formats.XVG.array" class="reference" href="#gromacs.formats.XVG.array"><tt class="xref docutils literal"><span class="pre">array</span></tt></a> attribute can be used to access the the
-array once it has been read and parsed. The <a title="gromacs.formats.XVG.ma" class="reference" href="#gromacs.formats.XVG.ma"><tt class="xref docutils literal"><span class="pre">ma</span></tt></a>
+supported via python&#8217;s <a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/library/functions.html#float"><tt class="xref docutils literal"><span class="pre">float()</span></tt></a> builtin function.</p>
+<p>The <a title="gromacs.formats.XVG.array" class="reference internal" href="#gromacs.formats.XVG.array"><tt class="xref docutils literal"><span class="pre">array</span></tt></a> attribute can be used to access the the
+array once it has been read and parsed. The <a title="gromacs.formats.XVG.ma" class="reference internal" href="#gromacs.formats.XVG.ma"><tt class="xref docutils literal"><span class="pre">ma</span></tt></a>
 attribute is a numpy masked array (good for plotting).</p>
 <p>Conceptually, the file on disk and the XVG instance are considered the same
-data. Whenever the filename for I/O (<a title="gromacs.formats.XVG.read" class="reference" href="#gromacs.formats.XVG.read"><tt class="xref docutils literal"><span class="pre">XVG.read()</span></tt></a> and <a title="gromacs.formats.XVG.write" class="reference" href="#gromacs.formats.XVG.write"><tt class="xref docutils literal"><span class="pre">XVG.write()</span></tt></a>) is
+data. Whenever the filename for I/O (<a title="gromacs.formats.XVG.read" class="reference internal" href="#gromacs.formats.XVG.read"><tt class="xref docutils literal"><span class="pre">XVG.read()</span></tt></a> and <a title="gromacs.formats.XVG.write" class="reference internal" href="#gromacs.formats.XVG.write"><tt class="xref docutils literal"><span class="pre">XVG.write()</span></tt></a>) is
 changed then the filename associated with the instance is also changed to reflect
 the association between file and instance.</p>
 <p>With the <em>permissive</em> = <tt class="xref docutils literal"><span class="pre">True</span></tt> flag one can instruct the file reader to skip
@@ -87,18 +87,18 @@ in <tt class="xref docutils literal"><span class="pre">XVG.corrupted_lineno</spa
 <p>A number of attributes are defined to give quick access to simple statistics such as</p>
 <blockquote>
 <ul class="simple">
-<li><a title="gromacs.formats.XVG.mean" class="reference" href="#gromacs.formats.XVG.mean"><tt class="xref docutils literal"><span class="pre">mean</span></tt></a>: mean of all data columns</li>
-<li><a title="gromacs.formats.XVG.std" class="reference" href="#gromacs.formats.XVG.std"><tt class="xref docutils literal"><span class="pre">std</span></tt></a>: standard deviation</li>
-<li><a title="gromacs.formats.XVG.min" class="reference" href="#gromacs.formats.XVG.min"><tt class="xref docutils literal"><span class="pre">min</span></tt></a>: minimum of data</li>
-<li><a title="gromacs.formats.XVG.max" class="reference" href="#gromacs.formats.XVG.max"><tt class="xref docutils literal"><span class="pre">max</span></tt></a>: maximum of data</li>
-<li><a title="gromacs.formats.XVG.error" class="reference" href="#gromacs.formats.XVG.error"><tt class="xref docutils literal"><span class="pre">error</span></tt></a>: error on the mean, taking correlation times into
-account (see also <a title="gromacs.formats.XVG.set_correlparameters" class="reference" href="#gromacs.formats.XVG.set_correlparameters"><tt class="xref docutils literal"><span class="pre">XVG.set_correlparameters()</span></tt></a>)</li>
-<li><a title="gromacs.formats.XVG.tc" class="reference" href="#gromacs.formats.XVG.tc"><tt class="xref docutils literal"><span class="pre">tc</span></tt></a>: correlation time of the data (assuming a simple
+<li><a title="gromacs.formats.XVG.mean" class="reference internal" href="#gromacs.formats.XVG.mean"><tt class="xref docutils literal"><span class="pre">mean</span></tt></a>: mean of all data columns</li>
+<li><a title="gromacs.formats.XVG.std" class="reference internal" href="#gromacs.formats.XVG.std"><tt class="xref docutils literal"><span class="pre">std</span></tt></a>: standard deviation</li>
+<li><a title="gromacs.formats.XVG.min" class="reference internal" href="#gromacs.formats.XVG.min"><tt class="xref docutils literal"><span class="pre">min</span></tt></a>: minimum of data</li>
+<li><a title="gromacs.formats.XVG.max" class="reference internal" href="#gromacs.formats.XVG.max"><tt class="xref docutils literal"><span class="pre">max</span></tt></a>: maximum of data</li>
+<li><a title="gromacs.formats.XVG.error" class="reference internal" href="#gromacs.formats.XVG.error"><tt class="xref docutils literal"><span class="pre">error</span></tt></a>: error on the mean, taking correlation times into
+account (see also <a title="gromacs.formats.XVG.set_correlparameters" class="reference internal" href="#gromacs.formats.XVG.set_correlparameters"><tt class="xref docutils literal"><span class="pre">XVG.set_correlparameters()</span></tt></a>)</li>
+<li><a title="gromacs.formats.XVG.tc" class="reference internal" href="#gromacs.formats.XVG.tc"><tt class="xref docutils literal"><span class="pre">tc</span></tt></a>: correlation time of the data (assuming a simple
 exponential decay of the fluctuations around the mean)</li>
 </ul>
 </blockquote>
 <p>These attributes are numpy arrays that correspond to the data columns,
-i.e. :attr:<a href="#id1" name="id2"><span class="problematic" id="id2">`</span></a>XVG.array`[1:].</p>
+i.e. :attr:<a href="#id1"><span class="problematic" id="id2">`</span></a>XVG.array`[1:].</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <ul class="last simple">
@@ -116,7 +116,7 @@ Grace files that contain multiple data sets separated by &#8216;&amp;&#8217;.</l
 <dt><em>filename</em> </dt>
 <dd><p class="first last">is the xvg file; it can only be of type XY or
 NXY. If it is supplied then it is read and parsed
-when <a title="gromacs.formats.XVG.array" class="reference" href="#gromacs.formats.XVG.array"><tt class="xref docutils literal"><span class="pre">XVG.array</span></tt></a> is accessed.</p>
+when <a title="gromacs.formats.XVG.array" class="reference internal" href="#gromacs.formats.XVG.array"><tt class="xref docutils literal"><span class="pre">XVG.array</span></tt></a> is accessed.</p>
 </dd>
 <dt><em>names</em></dt>
 <dd><p class="first last">optional labels for the columns (currently only
@@ -124,15 +124,18 @@ written as comments to file); string with columns
 separated by commas or a list of strings</p>
 </dd>
 <dt><em>permissive</em></dt>
-<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">False</span></tt> raises a <a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/exceptions.html#exceptions.ValueError"><tt class="xref docutils literal"><span class="pre">ValueError</span></tt></a> and logs and errior 
+<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">False</span></tt> raises a <a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/library/exceptions.html#exceptions.ValueError"><tt class="xref docutils literal"><span class="pre">ValueError</span></tt></a> and logs and errior 
 when encountering data lines that it cannot parse.
 <tt class="xref docutils literal"><span class="pre">True</span></tt> ignores those lines and logs a warning&#8212;this is
 a risk because it might read a corrupted input file [<tt class="xref docutils literal"><span class="pre">False</span></tt>]</p>
 </dd>
+<dt><em>stride</em></dt>
+<dd><p class="first last">Only read every <em>stride</em> line of data [1].</p>
+</dd>
 <dt><em>savedata</em></dt>
 <dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt> includes the data (<tt class="xref docutils literal"><span class="pre">XVG.array`</span></tt> and
 associated caches) when the instance is pickled (see
-<a title="(in Python v2.6)" class="reference" href="http://docs.python.org/library/pickle.html#module-pickle"><tt class="xref docutils literal"><span class="pre">pickle</span></tt></a>); this is oftens not desirable because the
+<a title="(in Python v2.7)" class="reference external" href="http://docs.python.org/library/pickle.html#module-pickle"><tt class="xref docutils literal"><span class="pre">pickle</span></tt></a>); this is oftens not desirable because the
 data are already on disk (the xvg file <em>filename</em>) and the
 resulting pickle file can become very big. <tt class="xref docutils literal"><span class="pre">False</span></tt> omits
 those data from a pickle. [<tt class="xref docutils literal"><span class="pre">False</span></tt>]</p>
@@ -159,7 +162,7 @@ columns X Y1 Y2 Y3 ... the array a will be a[0] = X, a[1] = Y1, ... .</p>
 <dt id="gromacs.formats.XVG.error">
 <tt class="descname">error</tt><a class="headerlink" href="#gromacs.formats.XVG.error" title="Permalink to this definition">¶</a></dt>
 <dd><p>Error on the mean of the data, taking the correlation time into account.</p>
-<p>See <a class="reference" href="#frenkelsmit2002">[FrenkelSmit2002]</a> <a class="reference" href="http://books.google.co.uk/books?id=XmyO2oRUg0cC&amp;pg=PA526">p526</a>:</p>
+<p>See <a class="reference internal" href="#frenkelsmit2002">[FrenkelSmit2002]</a> <a class="reference external" href="http://books.google.co.uk/books?id=XmyO2oRUg0cC&amp;pg=PA526">p526</a>:</p>
 <blockquote>
 error = sqrt(2*tc*acf[0]/T)</blockquote>
 <p>where acf() is the autocorrelation function of the fluctuations around
@@ -168,7 +171,7 @@ the simulation.</p>
 <table class="docutils citation" frame="void" id="frenkelsmit2002" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id3" name="frenkelsmit2002">[FrenkelSmit2002]</a></td><td>D. Frenkel and B. Smit, Understanding
+<tr><td class="label"><a class="fn-backref" href="#id3">[FrenkelSmit2002]</a></td><td>D. Frenkel and B. Smit, Understanding
 Molecular Simulation. Academic Press, San
 Diego 2002</td></tr>
 </tbody>
@@ -179,7 +182,8 @@ Diego 2002</td></tr>
 <dt id="gromacs.formats.XVG.errorbar">
 <tt class="descname">errorbar</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.formats.XVG.errorbar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Quick hack: errorbar plot.</p>
-<p>Set columns to select [x, y, dy].</p>
+<p>Set <em>columns</em> keyword to select [x, y, dy] or [x, y, dx, dy],
+e.g. <tt class="docutils literal"><span class="pre">columns=[0,1,2]</span></tt>. See <a title="gromacs.formats.XVG.plot" class="reference internal" href="#gromacs.formats.XVG.plot"><tt class="xref docutils literal"><span class="pre">XVG.plot()</span></tt></a> for details.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -188,7 +192,7 @@ Diego 2002</td></tr>
 <dd><p>Represent data as a masked array.</p>
 <p>The array is returned with column-first indexing, i.e. for a data file with
 columns X Y1 Y2 Y3 ... the array a will be a[0] = X, a[1] = Y1, ... .</p>
-<p>inf and nan are filtered via <a title="(in NumPy v1.5.dev8106)" class="reference" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.isfinite.html#numpy.isfinite"><tt class="xref docutils literal"><span class="pre">numpy.isfinite()</span></tt></a>.</p>
+<p>inf and nan are filtered via <tt class="xref docutils literal"><span class="pre">numpy.isfinite()</span></tt>.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -208,8 +212,9 @@ columns X Y1 Y2 Y3 ... the array a will be a[0] = X, a[1] = Y1, ... .</p>
 
 <dl class="method">
 <dt id="gromacs.formats.XVG.parse">
-<tt class="descname">parse</tt><big>(</big><big>)</big><a class="headerlink" href="#gromacs.formats.XVG.parse" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">parse</tt><big>(</big><em>stride=None</em><big>)</big><a class="headerlink" href="#gromacs.formats.XVG.parse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read and cache the file as a numpy array.</p>
+<p>Store every <em>stride</em> line of data; if <tt class="xref docutils literal"><span class="pre">None</span></tt> then the class default is used.</p>
 <p>The array is returned with column-first indexing, i.e. for a data file with
 columns X Y1 Y2 Y3 ... the array a will be a[0] = X, a[1] = Y1, ... .</p>
 </dd></dl>
@@ -291,7 +296,7 @@ the FFT; sets <tt class="xref docutils literal"><span class="pre">XVG.ncorrel</s
 available</p>
 </dd>
 <dt><em>kwargs</em></dt>
-<dd><p class="first last">see <a title="numkit.timeseries.tcorrel" class="reference" href="../../numkit/timeseries.html#numkit.timeseries.tcorrel"><tt class="xref docutils literal"><span class="pre">numkit.timeseries.tcorrel()</span></tt></a> for other options</p>
+<dd><p class="first last">see <a title="numkit.timeseries.tcorrel" class="reference external" href="../../numkit/timeseries.html#numkit.timeseries.tcorrel"><tt class="xref docutils literal"><span class="pre">numkit.timeseries.tcorrel()</span></tt></a> for other options</p>
 </dd>
 </dl>
 </td>
@@ -309,7 +314,7 @@ available</p>
 <dt id="gromacs.formats.XVG.tc">
 <tt class="descname">tc</tt><a class="headerlink" href="#gromacs.formats.XVG.tc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Correlation time of the data.</p>
-<p>See <a title="gromacs.formats.XVG.error" class="reference" href="#gromacs.formats.XVG.error"><tt class="xref docutils literal"><span class="pre">XVG.error()</span></tt></a> for details.</p>
+<p>See <a title="gromacs.formats.XVG.error" class="reference internal" href="#gromacs.formats.XVG.error"><tt class="xref docutils literal"><span class="pre">XVG.error()</span></tt></a> for details.</p>
 </dd></dl>
 
 <dl class="method">
@@ -330,10 +335,10 @@ available</p>
 <dd><p>Gromacs index file.</p>
 <p>Represented as a ordered dict where the keys are index group names and
 values are numpy arrays of atom numbers.</p>
-<p>Use the <a title="gromacs.formats.NDX.read" class="reference" href="#gromacs.formats.NDX.read"><tt class="xref docutils literal"><span class="pre">NDX.read()</span></tt></a> and <a title="gromacs.formats.NDX.write" class="reference" href="#gromacs.formats.NDX.write"><tt class="xref docutils literal"><span class="pre">NDX.write()</span></tt></a> methods for
-I/O. Access groups by name via the <a title="gromacs.formats.NDX.get" class="reference" href="#gromacs.formats.NDX.get"><tt class="xref docutils literal"><span class="pre">NDX.get()</span></tt></a> and
-<a title="gromacs.formats.NDX.set" class="reference" href="#gromacs.formats.NDX.set"><tt class="xref docutils literal"><span class="pre">NDX.set()</span></tt></a> methods.</p>
-<p>Alternatively, simply treat the <a title="gromacs.formats.NDX" class="reference" href="#gromacs.formats.NDX"><tt class="xref docutils literal"><span class="pre">NDX</span></tt></a> instance as a
+<p>Use the <a title="gromacs.formats.NDX.read" class="reference internal" href="#gromacs.formats.NDX.read"><tt class="xref docutils literal"><span class="pre">NDX.read()</span></tt></a> and <a title="gromacs.formats.NDX.write" class="reference internal" href="#gromacs.formats.NDX.write"><tt class="xref docutils literal"><span class="pre">NDX.write()</span></tt></a> methods for
+I/O. Access groups by name via the <a title="gromacs.formats.NDX.get" class="reference internal" href="#gromacs.formats.NDX.get"><tt class="xref docutils literal"><span class="pre">NDX.get()</span></tt></a> and
+<a title="gromacs.formats.NDX.set" class="reference internal" href="#gromacs.formats.NDX.set"><tt class="xref docutils literal"><span class="pre">NDX.set()</span></tt></a> methods.</p>
+<p>Alternatively, simply treat the <a title="gromacs.formats.NDX" class="reference internal" href="#gromacs.formats.NDX"><tt class="xref docutils literal"><span class="pre">NDX</span></tt></a> instance as a
 dictionary. Setting a key automatically transforms the new value
 into a integer 1D numpy array (<em>not</em> a set, as would be the
 <strong>make_ndx</strong> behaviour).</p>
@@ -342,8 +347,8 @@ into a integer 1D numpy array (<em>not</em> a set, as would be the
 <p class="last">The index entries themselves are ordered and can contain 
 duplicates so that output from NDX can be easily used for 
 <strong>g_dih</strong> and friends. If you need set-like behaviour
-you will have do use <a title="gromacs.formats.uniqueNDX" class="reference" href="#gromacs.formats.uniqueNDX"><tt class="xref docutils literal"><span class="pre">gromacs.formats.uniqueNDX</span></tt></a> or
-<a title="gromacs.cbook.IndexBuilder" class="reference" href="../blocks/cbook.html#gromacs.cbook.IndexBuilder"><tt class="xref docutils literal"><span class="pre">gromacs.cbook.IndexBuilder</span></tt></a> (which uses
+you will have do use <a title="gromacs.formats.uniqueNDX" class="reference internal" href="#gromacs.formats.uniqueNDX"><tt class="xref docutils literal"><span class="pre">gromacs.formats.uniqueNDX</span></tt></a> or
+<tt class="xref docutils literal"><span class="pre">gromacs.cbook.IndexBuilder</span></tt> (which uses
 <strong>make_ndx</strong> throughout).</p>
 </div>
 <p><strong>Example</strong></p>
@@ -386,7 +391,7 @@ you will have do use <a title="gromacs.formats.uniqueNDX" class="reference" href
 <dl class="attribute">
 <dt id="gromacs.formats.NDX.ndxlist">
 <tt class="descname">ndxlist</tt><a class="headerlink" href="#gromacs.formats.NDX.ndxlist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a list of groups in the same format as  <a title="gromacs.cbook.get_ndx_groups" class="reference" href="../blocks/cbook.html#gromacs.cbook.get_ndx_groups"><tt class="xref docutils literal"><span class="pre">gromacs.cbook.get_ndx_groups()</span></tt></a>.</p>
+<dd><p>Return a list of groups in the same format as  <tt class="xref docutils literal"><span class="pre">gromacs.cbook.get_ndx_groups()</span></tt>.</p>
 <dl class="docutils">
 <dt>Format:</dt>
 <dd>[ {&#8216;name&#8217;: group_name, &#8216;natoms&#8217;: number_atoms, &#8216;nr&#8217;:  # group_number}, ....]</dd>
@@ -474,8 +479,8 @@ all ions are present in all simulations:</p>
         <div class="sphinxsidebarwrapper">
             <h3><a href="../../index.html">Table Of Contents</a></h3>
             <ul>
-<li><a class="reference" href="#"><tt class="docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a><ul>
-<li><a class="reference" href="#classes">Classes</a></li>
+<li><a class="reference external" href="#"><tt class="docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a><ul>
+<li><a class="reference external" href="#classes">Classes</a></li>
 </ul>
 </li>
 </ul>
@@ -523,15 +528,15 @@ all ions are present in all simulations:</p>
         <li class="right" >
           <a href="config.html" title="gromacs.config – Configuration for GromacsWrapper"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.1.13 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.1.14 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" >Gromacs core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
       &copy; Copyright 2009-2010, Oliver Beckstein.
-      Last updated on Jun 14, 2010.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+      Last updated on Sep 26, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.7.
     </div>
   </body>
 </html>
