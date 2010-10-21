@@ -158,7 +158,7 @@ Computes RMSD of backbone after fitting to the backbone.""")
 
 # Gromacs 4.x
 trj_xyfitted = tools.Trjconv(fit='rotxy+transxy',
-                            center=True, boxcenter='rect', pbc='whole',
+                            center=True, boxcenter='rect',
                             input=('backbone', 'protein','system'),
                             doc="""
 Writes a trajectory centered and fitted to the protein in the XY-plane only.
@@ -263,7 +263,8 @@ def trj_fitandcenter(xy=False, **kwargs):
 
     fd, tmptrj = tempfile.mkstemp(suffix=suffix, prefix='fitted_')
 
-    logger.info("Input trajectory:  %(intrj)r\nOutput trajectory: %(outtrj)r"% vars())
+    logger.info("Input trajectory:  %(intrj)r" % vars())
+    logger.info("Output trajectory: %(outtrj)r"% vars())
     logger.info("... writing temporary trajectory %(tmptrj)r (will be auto-cleaned)." % vars())
     sys.stdout.flush()
     try:
