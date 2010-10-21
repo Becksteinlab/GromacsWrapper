@@ -177,6 +177,19 @@ class Energy(Plugin):
     Analysis of terms in the Gromacs energy (edr) file.
 
     .. class:: Energy([name[, simulation]])
+
+     The following energy terms are extracted from the edr file: 
+
+       * 'Potential'
+       * 'Kinetic-En.'
+       * 'Total-Energy'
+       * 'Temperature'
+       * 'Pressure'
+       * 'Volume'
+       * 'Box-X', 'Box-Y', 'Box-Z'
+
+    The list of terms corresponds to input values for :func:`gromacs.g_energy`
+    and is defined in the attribute :attr:`_Energy.terms`.
     
     :Arguments:
         *name* : string

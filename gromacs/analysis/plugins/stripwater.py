@@ -187,16 +187,36 @@ class StripWater(Plugin):
 
     Write a new trajectory which has the water index group removed. 
 
-    .. class:: StripWater([selection[, name[, simulation]]])
+    .. class:: StripWater([resn[,force[,dt[,compact[,fit[,name[,simulation]]]]]]])
     
     :Arguments:
-        *selection*
-            optional selection for the water instead of "SOL"
+        *resn*
+           name of the residues that are stripped (typically it is
+           safe to leave this at the default 'SOL')
+        *force*
+           ``True`` will always regenerate trajectories even if they 
+           already exist, ``False`` raises an exception, ``None``
+           does the sensible thing in most cases (i.e. notify and
+           then move on).
+        *dt* : float or list of floats
+           only write every dt timestep (in ps); if a list of floats is 
+           supplied, write multiple trajectories, one for each dt.             
+        *compact* : bool
+           write a compact representation
+        *fit*          
+           Create an additional trajectory from the stripped one in which
+           the Protein group is rms-fitted to the initial structure. See
+           :meth:`gromacs.cbook.Transformer.fit` for details. Useful 
+           values:
+             - "xy" : perform a rot+trans fit in the x-y plane
+             - "all": rot+trans
+             - ``None``: no fitting
+           If *fit* is not supplied then the constructore-default is used
+           (:attr:`_StripWater.parameters.fit`).
         *name* : string
             plugin name (used to access it)
         *simulation* : instance
             The :class:`gromacs.analysis.Simulation` instance that owns the plugin.
-
     """
     worker_class = _StripWater
 

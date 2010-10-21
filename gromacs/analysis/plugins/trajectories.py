@@ -51,7 +51,7 @@ logger = logging.getLogger('gromacs.analysis.plugins.trajectories')
 # These must be defined before the plugins.
 
 class _Trajectories(Worker):
-    """Trajctories worker class."""
+    """Trajectories worker class."""
 
     def __init__(self,**kwargs):
         """Set up  Trajectories
@@ -155,9 +155,15 @@ class Trajectories(Plugin):
 
     Write new xy-fitted trajectories (see :func:`gromacs.cbook.trj_fitandcenter`),
 
-    .. class:: Trajectories([name[, simulation]])
+    .. class:: Trajectories([dt[,[name[, simulation]]])
+
+    The plugin has only one user-settable argument; everything is hard-coded,
+    including the output filenames: *_fitxy* is always inserted before the
+    suffix.
     
     :Arguments:
+        *dt*
+            time step in ps of the output trajectory
         *name* : string
             plugin name (used to access it)
         *simulation* : instance

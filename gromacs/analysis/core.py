@@ -148,6 +148,8 @@ import warnings
 
 from gromacs.utilities import FileUtils, AttributeDict, asiterable
 
+import logging
+logger = logging.getLogger("gromacs.analysis")
 
 class Simulation(object):
     """Class that represents one simulation.
@@ -171,7 +173,7 @@ class Simulation(object):
              Any object that contains the attributes *tpr*, *xtc*,
              and optionally *ndx*
              (e.g. :class:`gromacs.cbook.Transformer`). The individual keywords such
-             as *xtc* override the values in *sim*.
+             as *xtc* override the values in *sim*.    
            *tpr*
              Gromacs tpr file (**required**)
            *xtc*
@@ -180,6 +182,9 @@ class Simulation(object):
              Gromacs energy file (only required for some plugins)
            *ndx*
              Gromacs index file
+           *absolute*
+             ``True``: Turn file names into absolute paths (typically required
+             for most plugins); ``False`` keep a they are [``True``]
            *analysisdir*
              directory under which derived data are stored;
              defaults to the directory containing the tpr [None]
@@ -201,12 +206,21 @@ class Simulation(object):
                     raise TypeError("Required attribute %r not found in kwargs or sim" % attr)
                 return None
 
-        # required files
-        self.tpr = getpop('tpr', required=True)
-        self.xtc = getpop('xtc', required=True)
+        make_absolute = kwargs.pop('absolute', True)
+        def canonical(*args):
+            """Join *args* and get the :func:`os.path.realpath`."""
+            if None in args:
+                return None
+            if not make_absolute:
+                return os.path.join(*args)
+            return os.path.realpath(os.path.join(*args))
 
-        self.ndx = getpop('ndx')
-        self.edr = getpop('edr')
+        # required files
+        self.tpr = canonical(getpop('tpr', required=True))
+        self.xtc = canonical(getpop('xtc', required=True))
+
+        self.ndx = canonical(getpop('ndx'))
+        self.edr = canonical(getpop('edr'))
 
         # check existence of required files
         for v in ('tpr', 'xtc'):
@@ -216,7 +230,8 @@ class Simulation(object):
 
         #: Registry for plugins: This dict is central.
         self.plugins = AttributeDict()
-        #: Use this plugin if none is explicitly specified. Typically set with :meth:`~Simulation.set_plugin`.
+        #: Use this plugin if none is explicitly specified. Typically set with
+        #: :meth:`~Simulation.set_plugin`.
         self.default_plugin_name = None
 
         # XXX: Or should we simply add instances and then re-register
@@ -484,7 +499,7 @@ class Worker(FileUtils):
             filename = self.parameters.figname
         _filename = self.filename(filename, ext=ext, use_my_ext=True)
         pylab.savefig(_filename)
-        print "Saved figure as %(_filename)r." % vars()
+        logger.info("Saved figure as %(_filename)r." % vars())
 
     def store_xvg(self, name, a, **kwargs):
         """Store array *a* as :class:`~gromacs.formats.XVG` in result *name*.
@@ -560,13 +575,13 @@ class Plugin(object):
         if name is None:
             name = self.__class__.__name__
         self.plugin_name = name
-        """Name of the plugin; this must be a **unique** identifier across all
-           plugins of a :class:`Simulation` object. It should also be human
-           understandable and must be a valid python identifier as it is used
-           as a dict key."""
+        """Name of the plugin; this must be a **unique** identifier
+        across all plugins of a :class:`Simulation` object. It should
+        also be human understandable and must be a valid python
+        identifier as it is used as a dict key.
+        """
 
-
-        print "Initializing plugin %r" % self.plugin_name
+        logger.info("Initializing plugin %r" % self.plugin_name)
 
         assert issubclass(self.worker_class, Worker)   # must be a Worker
 
@@ -583,7 +598,8 @@ class Plugin(object):
 
         if not simulation is None:                     # can delay registration
             self.register(simulation)
-
+            
+        super(Plugin, self).__init__()      # maybe pointless because all kwargs go to Worker
 
     def register(self, simulation):
         """Register the plugin with the :class:`Simulation` instance.
@@ -599,10 +615,16 @@ class Plugin(object):
         self.simulation = simulation                   # update our own
         self.worker._register_hook(simulation=simulation)    # HACK!!! patch simulation into worker & do more
         simulation.plugins[self.plugin_name] = self.worker  # add the worker to simulation
-
-        # improve help by changing the worker class doc to the plugin
-        # one: the user mostly sees the worker via simulation.plugins
-        self.worker.__doc__ = self.__doc__
-
+        self._update_worker_docs()
         self.__is_registered = True
-        
+
+    def _update_worker_docs(self):
+        # improve help by  the worker class doc to the plugin
+        # one: the user mostly sees the worker via simulation.plugins
+        header = "PLUGIN DOCUMENTATION"
+        try:
+            if self.worker.__doc__.find(header) == -1:
+                self.worker.__doc__ = self.__doc__ + "\n"+header+"\n" + self.worker.__doc__
+        except AttributeError:
+            pass
+            
