@@ -472,6 +472,8 @@ def generate_submit_array(templates, directories, **kwargs):
     # must use config.get_templates() because we need to access the file for detecting
     return [write_script(template) for template in gromacs.config.get_templates(templates)]
 
+class Job(dict):
+    """Properties of a job."""
 
 class Manager(object):
     """ Base class to launch simulations remotely on computers with queuing systems.
