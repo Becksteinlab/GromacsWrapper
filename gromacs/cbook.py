@@ -174,7 +174,9 @@ def trj_fitandcenter(xy=False, **kwargs):
 
     :Keywords:
        *s*
-           input structure file (tpr file required to make molecule whole)
+           input structure file (tpr file required to make molecule whole);
+           if a list or tuple is provided then s[0] is used for pass 1 (should be a tpr)
+           and s[1] is used for the fitting step (can be a pdb of the whole system)
        *f*
            input trajectory
        *o*
@@ -252,7 +254,16 @@ def trj_fitandcenter(xy=False, **kwargs):
 
     ndx = kwargs.pop('n', None)
     ndxcompact = kwargs.pop('n1', ndx)
-    
+
+    structures = kwargs.pop('s', None)
+    if type(structures) in (tuple, list):
+        try:
+            compact_structure, fit_structure = structures
+        except:
+            raise ValueError("argument s must be a pair of tpr/pdb files or a single structure file")
+    else:
+        compact_structure = fit_structure = structures
+        
 
     inpfit = kwargs.pop('input', ('backbone', 'protein','system'))    
     try:
@@ -263,13 +274,15 @@ def trj_fitandcenter(xy=False, **kwargs):
 
     fd, tmptrj = tempfile.mkstemp(suffix=suffix, prefix='fitted_')
 
+    logger.info("Input structure for PBC:  %(compact_structure)r" % vars())
+    logger.info("Input structure for fit:  %(fit_structure)r" % vars())
     logger.info("Input trajectory:  %(intrj)r" % vars())
     logger.info("Output trajectory: %(outtrj)r"% vars())
     logger.info("... writing temporary trajectory %(tmptrj)r (will be auto-cleaned)." % vars())
     sys.stdout.flush()
     try:
-        trj_compact(f=intrj, o=tmptrj, n=ndxcompact, input=inpcompact, **kwargs)
-        trj_xyfitted(f=tmptrj, o=outtrj, n=ndx, fit=fitmode, input=inpfit, **kwargs)
+        trj_compact(s=compact_structure, f=intrj, o=tmptrj, n=ndxcompact, input=inpcompact, **kwargs)
+        trj_xyfitted(s=fit_structure, f=tmptrj, o=outtrj, n=ndx, fit=fitmode, input=inpfit, **kwargs)
     finally:
         utilities.unlink_gmx(tmptrj)
 
