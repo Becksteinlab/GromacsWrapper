@@ -156,9 +156,20 @@ rmsd_backbone = tools.G_rms(what='rmsd', fit='rot+trans',
                             doc="""
 Computes RMSD of backbone after fitting to the backbone.""")
 
+trj_fitted = tools.Trjconv(fit='rot+trans',
+                           input=('backbone', 'system'),
+                           doc="""
+Writes a trajectory fitted to the protein backbone.
+
+Note that this does *not* center; if center is required, the *input*
+selection should have the group to be centered on in second position,
+e.g. ``input = ('backbone', 'Protein', System')``.
+""")
+
+
 # Gromacs 4.x
 trj_xyfitted = tools.Trjconv(fit='rotxy+transxy',
-                            center=True, boxcenter='rect',
+                            center=True, boxcenter='rect',  # is boxcenter=rect really needed??
                             input=('backbone', 'protein','system'),
                             doc="""
 Writes a trajectory centered and fitted to the protein in the XY-plane only.
@@ -177,6 +188,9 @@ def trj_fitandcenter(xy=False, **kwargs):
            input structure file (tpr file required to make molecule whole);
            if a list or tuple is provided then s[0] is used for pass 1 (should be a tpr)
            and s[1] is used for the fitting step (can be a pdb of the whole system)
+
+           If a second structure is supplied then it is assumed that the fitted
+           trajectory should *not* be centered.
        *f*
            input trajectory
        *o*
@@ -282,7 +296,13 @@ def trj_fitandcenter(xy=False, **kwargs):
     sys.stdout.flush()
     try:
         trj_compact(s=compact_structure, f=intrj, o=tmptrj, n=ndxcompact, input=inpcompact, **kwargs)
-        trj_xyfitted(s=fit_structure, f=tmptrj, o=outtrj, n=ndx, fit=fitmode, input=inpfit, **kwargs)
+        if compact_structure == fit_structure:
+            # fit and center as ususal (including centering..)
+            trj_xyfitted(s=fit_structure, f=tmptrj, o=outtrj, n=ndx, fit=fitmode, input=inpfit, **kwargs)
+        else:
+            # make sure that we fit EXACTLY as the user wants
+            inpfit = [inpfit[0], inpfit[-1]]
+            gromacs.trjconv(s=fit_structure, f=tmptrj, o=outtrj, n=ndx, fit=fitmode, input=inpfit, **kwargs)
     finally:
         utilities.unlink_gmx(tmptrj)
 
