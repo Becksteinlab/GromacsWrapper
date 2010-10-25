@@ -272,13 +272,13 @@ def trj_fitandcenter(xy=False, **kwargs):
         _inpcompact = None
     inpcompact = kwargs.pop('input1', _inpcompact)  # ... or the user supplied ones
 
-    fd, tmptrj = tempfile.mkstemp(suffix=suffix, prefix='fitted_')
+    fd, tmptrj = tempfile.mkstemp(suffix=suffix, prefix='pbc_compact_')
 
     logger.info("Input structure for PBC:  %(compact_structure)r" % vars())
     logger.info("Input structure for fit:  %(fit_structure)r" % vars())
     logger.info("Input trajectory:  %(intrj)r" % vars())
     logger.info("Output trajectory: %(outtrj)r"% vars())
-    logger.info("... writing temporary trajectory %(tmptrj)r (will be auto-cleaned)." % vars())
+    logger.debug("Writing temporary trajectory %(tmptrj)r (will be auto-cleaned)." % vars())
     sys.stdout.flush()
     try:
         trj_compact(s=compact_structure, f=intrj, o=tmptrj, n=ndxcompact, input=inpcompact, **kwargs)
