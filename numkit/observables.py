@@ -26,7 +26,11 @@ Note that each quantity has an identity: it makes a difference to the
 error of a combined quantity such as a+a if the inputs are independent
 measurements of the same.
 
-.. SeeAlso:: Various packages that describe quantities with units. 
+.. SeeAlso:: Various packages that describe quantities with units, in
+             particular quantities_.
+
+.. _quantities: http://packages.python.org/quantities/
+
 
 .. autoclass:: QuantityWithError
    :members:
