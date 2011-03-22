@@ -247,10 +247,10 @@ def trj_fitandcenter(xy=False, **kwargs):
 
     We follow the `g_spatial documentation`_ in preparing the trajectories::
 
-       trjconv -s a.tpr -f a.xtc -o b.xtc -center tric -ur compact -pbc none
+       trjconv -s a.tpr -f a.xtc -o b.xtc -center tric -ur compact -pbc mol
        trjconv -s a.tpr -f b.xtc -o c.xtc -fit rot+trans
     
-    .. _`g_spatial documentation`: http://oldwiki.gromacs.org/index.php/Manual:g_spatial_4.0.3
+    .. _`g_spatial documentation`: http://www.gromacs.org/Documentation/Gromacs_Utilities/g_spatial
     """
     if xy:
         fitmode = 'rotxy+transxy'
@@ -295,10 +295,17 @@ def trj_fitandcenter(xy=False, **kwargs):
     logger.debug("Writing temporary trajectory %(tmptrj)r (will be auto-cleaned)." % vars())
     sys.stdout.flush()
     try:
-        trj_compact(s=compact_structure, f=intrj, o=tmptrj, n=ndxcompact, input=inpcompact, **kwargs)
+        gromacs.trjconv(s=compact_structure, f=intrj, o=tmptrj, n=ndxcompact, 
+                        ur='compact', center=True, boxcenter='tric', pbc='mol',
+                        input=inpcompact, **kwargs)
+        # explicitly set pbc="none" for the fitting stage (anything else will produce rubbish and/or
+        # complaints from Gromacs)
+        kwargs['pbc'] = "none"
         if compact_structure == fit_structure:
-            # fit and center as ususal (including centering..)
-            trj_xyfitted(s=fit_structure, f=tmptrj, o=outtrj, n=ndx, fit=fitmode, input=inpfit, **kwargs)
+            # fit as ususal, including centering 
+            # (Is center=True really necessary? -- note, if I remove center=True then 
+            # I MUST fiddle inpfit as below!!)
+            gromacs.trjconv(s=fit_structure, f=tmptrj, o=outtrj, n=ndx, fit=fitmode, center=True, input=inpfit, **kwargs)
         else:
             # make sure that we fit EXACTLY as the user wants
             inpfit = [inpfit[0], inpfit[-1]]
