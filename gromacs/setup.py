@@ -160,6 +160,9 @@ rlist        1.4 ?      1.0
 
 
     
+trj_compact_main = gromacs.tools.Trjconv(ur='compact', center=True, boxcenter='tric', pbc='mol',
+                                         input=('__main__','system'),
+                                         doc="Returns a compact representation of the system centered on the __main__ group")
 
 
 # TODO:
@@ -194,21 +197,14 @@ def topology(struct=None, protein='protein',
 
     new_struct = protein + '.pdb'
     posres = protein + '_posres.itp'
-    tmp_top = "tmp.top"
 
-    pdb2gmx_args.update({'f': structure, 'o': new_struct, 'p': tmp_top, 'i': posres})
+    pdb2gmx_args.update({'f': structure, 'o': new_struct, 'p': top, 'i': posres})
 
     with in_dir(dirname):
         logger.info("[%(dirname)s] Building topology %(top)r from struct = %(struct)r" % vars())
+        # perhaps parse output from pdb2gmx 4.5.x to get the names of the chain itp files?
         gromacs.pdb2gmx(**pdb2gmx_args)
-        # need some editing  protein_tmp --> system.top and protein.itp
-        # here... for the time being we just copy
-        shutil.copy(tmp_top, top)
     return {'top': realpath(dirname, top), 'struct': realpath(dirname, new_struct)}
-
-trj_compact_main = gromacs.tools.Trjconv(ur='compact', center=True, boxcenter='tric', pbc='mol',
-                                         input=('__main__','system'),
-                                         doc="Returns a compact representation of the system centered on the __main__ group")
 
 def make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None):
     """Make index file with the special groups.
