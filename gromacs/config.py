@@ -125,6 +125,14 @@ qscriptdir = os.path.join(configdir, 'qscripts')
 #: The default value is ``~/.gromacswrapper/templates``.
 templatesdir = os.path.join(configdir, 'templates')
 
+#: Directory to store configuration files for remote queuing systems
+#: :class:`gromacs.qsub.Manager` instances.
+#: The default value is ``~/.gromacswrapper/managers``.
+managerdir = os.path.join(configdir, 'managers')
+
+#: List of all configuration directories.
+config_directories = [configdir, qscriptdir, templatesdir, managerdir]
+
 def setup():
      """Create the directories in which the user can store template and config files.
 
@@ -133,9 +141,8 @@ def setup():
      # setup() must be separate and NOT run automatically when config
      # is loaded so that easy_install installations work
      # (otherwise we get a sandbox violation)
-     utilities.mkdir_p(configdir)
-     utilities.mkdir_p(qscriptdir)
-     utilities.mkdir_p(templatesdir)
+     for d in config_directories:
+          utilities.mkdir_p(d)
 
 def check_setup():
      """Check if templates directories are setup and issue a warning and help."""

@@ -190,34 +190,8 @@ Classes and functions
 
 .. autodata:: queuing_systems
 
+.. SeeAlso:: :mod:`gromacs.manager` for classes to manage jobs remotely.
 
-
-Queuing system Manager
-----------------------
-
-The :class:`Manager` class must be customized for each system such as
-a cluster or a super computer. It then allows submission and control of
-jobs remotely (using ssh_).
-
-.. autoclass:: Manager
-   :members:
-   :exclude-members: job_done, qstat
-
-   .. autoattribute:: _hostname
-   .. autoattribute:: _scratchdir
-   .. autoattribute:: _qscript
-   .. autoattribute:: _walltime
-   .. method:: job_done
-
-               alias for :meth:`get_status`
-
-   .. method:: qstat
-
-               alias for :meth:`get_status`
-
-
-.. _ssh: http://www.openssh.com/
-.. _~/.ssh/config: http://linux.die.net/man/5/ssh_config
 """
 
 import os, errno

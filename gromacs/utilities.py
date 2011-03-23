@@ -55,7 +55,7 @@ strings as lists:
 
 .. autofunction:: iterable
 .. autofunction:: asiterable
-
+.. autofunction:: firstof
 
 Functions that help handling Gromacs files:
 
@@ -89,6 +89,7 @@ __docformat__ = "restructuredtext en"
 
 import os
 import glob
+import fnmatch
 import re
 import warnings
 import errno
@@ -290,6 +291,19 @@ def withextsep(extensions):
         return os.path.extsep + x
     return [dottify(x) for x in asiterable(extensions)]
 
+def find_files(directory, pattern):
+    """Find files recursively under *directory*, matching *pattern* (generator).
+
+    *pattern* is a UNIX-style glob pattern as used ny :func:`fnmatch.fnmatch`.
+
+    Recipe by Bruno Oliveira from
+    http://stackoverflow.com/questions/2186525/use-a-glob-to-find-files-recursively-in-python
+    """
+    for root, dirs, files in os.walk(directory):
+        for basename in files:
+            if fnmatch.fnmatch(basename, pattern):
+                filename = os.path.join(root, basename)
+                yield filename
             
 
 class FileUtils(object):
@@ -449,6 +463,12 @@ def asiterable(obj):
         obj = [obj]
     return obj
 
+def firstof(obj):
+    """Returns the first entry of a sequence or the obj.
+
+    Treats strings as single objects.
+    """
+    return asiterable(obj)[0]
 
 # In utilities so that it can be safely used in tools, cbook, ...
 
