@@ -722,8 +722,12 @@ def edit_mdp(mdp, new_mdp=None, extend_parameters=None, **substitutions):
             makes mostly sense for a single parameter, namely 'include', which
             is set as the default. Set to ``[]`` to disable. ['include']
         *substitutions*
-            parameter=value pairs, where parameter is defined by the Gromacs mdp file; 
-            dashes in parameter names have to be replaced by underscores.
+            parameter=value pairs, where parameter is defined by the Gromacs
+            mdp file; dashes in parameter names have to be replaced by
+            underscores. If a value is a list-like object then the items are
+            written as a sequence, joined with spaces, e.g. ::
+
+               ref_t=[310,310,310] --->  ref_t = 310 310 310
 
     :Returns:    
         Dict of parameters that have *not* been substituted.
@@ -797,7 +801,9 @@ def edit_mdp(mdp, new_mdp=None, extend_parameters=None, **substitutions):
                     if p in extend_parameters:
                         # keep original value and add new stuff at end
                         new_line += str(m.group('value')) + ' '
-                    new_line += str(substitutions[p]) + comment
+                    # automatically transform lists into space-separated string values
+                    value = " ".join(map(str, asiterable(substitutions[p])))
+                    new_line += value + comment
                     params.remove(p)
                     break
             target.write(new_line+'\n')
