@@ -79,6 +79,7 @@ from gromacs import MissingDataError
 import gromacs.config
 import gromacs.utilities
 import gromacs.cbook
+import gromacs.setup
 
 import warnings
 import logging
@@ -498,8 +499,9 @@ class Manager(object):
         
         dirname = 'MD_POSRES'
         struct = self.local_get('em','em.pdb')
-        gromacs.setup.MD_restrained(dirname=dirname, struct=struct,
-                                    qscript=self.qscript, qname=self.prefix+'pr',
+        qscript = kwargs.pop('qscript', self.qscript)
+        gromacs.setup.MD_restrained(dirname=dirname, struct=struct, qscript=qscript, 
+                                    qname=self.prefix+'pr', startdir=self.remotepath(dirname),
                                     **kwargs) 
         self.put(dirname)
         self.logger.info("Run %s on %s in %s/%s" % (dirname, self.hostname, self.uri, dirname))
@@ -520,9 +522,10 @@ class Manager(object):
         jobid_s = '%(jobnumber)03d' % vars()
         dirname = 'MD_'+jobid_s
         structure = self.local_get(os.path.dirname(struct), os.path.basename(struct))
+        qscript = kwargs.pop('qscript', self.qscript)
 
-        gromacs.setup.MD(dirname=dirname, struct=structure, qscript=self.qscript, 
-                         qname=self.prefix+jobid_s,
+        gromacs.setup.MD(dirname=dirname, struct=structure, qscript=qscript, 
+                         qname=self.prefix+jobid_s, startdir=self.remotepath(dirname),
                          **kwargs) 
         self.put(dirname)
         self.logger.info("Run %s on %s in %s/%s" % (dirname, self.hostname, self.uri, dirname))

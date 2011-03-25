@@ -45,12 +45,13 @@ LoadLeveler_ have similar constructs; e.g. PBS commands start with
    ===============  ===========  ================ ================= =====================================
    place holder     default      replacement      description       regex
    ===============  ===========  ================ ================= =====================================
-   #$ -N            GMX_MD       *sgename*        job name          /^#.*(-N|job_name)/
-   #$ -l walltime=  00:20:00     *walltime*       max run time      /^#.*(-l walltime|wall_clock_limit)/
-   #$ -A            BUDGET       *budget*         account           /^#.*(-A|account_no)/
-   DEFFNM=          md           *deffnm*         default gmx name  /^DEFFNM=/
-   WALL_HOURS=      0.33         *walltime* h     mdrun's -maxh     /^WALL_HOURS=/
-   MDRUN_OPTS=      ""           *mdrun_opts*     more options      /^MDRUN_OPTS=/
+   #$ -N            GMX_MD       *sgename*        job name          `/^#.*(-N|job_name)/`
+   #$ -l walltime=  00:20:00     *walltime*       max run time      `/^#.*(-l walltime|wall_clock_limit)/`
+   #$ -A            BUDGET       *budget*         account           `/^#.*(-A|account_no)/`
+   DEFFNM=          md           *deffnm*         default gmx name  `/^ *DEFFNM=/`
+   STARTDIR=        .            *startdir*       remote jobdir     `/^ *STARTDIR=/`
+   WALL_HOURS=      0.33         *walltime* h     mdrun's -maxh     `/^ *WALL_HOURS=/`
+   MDRUN_OPTS=      ""           *mdrun_opts*     more options      `/^ *MDRUN_OPTS=/`
    ===============  ===========  ================ ================= =====================================
 
 Lines with place holders should not have any white space at the beginning. The
@@ -326,7 +327,7 @@ def detect_queuing_system(scriptfile):
     return None
 
 def generate_submit_scripts(templates, prefix=None, deffnm='md', jobname='MD', budget=None, 
-                            mdrun_opts=None, walltime=1.0, jobarray_string=None,
+                            mdrun_opts=None, walltime=1.0, jobarray_string=None, startdir=None,
                             **kwargs):
     """Write scripts for queuing systems.
 
@@ -351,6 +352,9 @@ def generate_submit_scripts(templates, prefix=None, deffnm='md', jobname='MD', b
           Name of the job in the queuing system. [MD]
       *budget*
           Which budget to book the runtime on [None]
+      *startdir*
+          Explicit path on the remote system (for run scripts that need to `cd`
+          into this directory at the beginning of execution) [None]
       *mdrun_opts*
           String of additional options for :program:`mdrun`.
       *walltime*
@@ -382,13 +386,14 @@ def generate_submit_scripts(templates, prefix=None, deffnm='md', jobname='MD', b
     def write_script(template):
         submitscript = os.path.join(dirname, prefix + os.path.basename(template))
         logger.info("Setting up queuing system script %(submitscript)r..." % vars())
-        # These substitution rules are documented for the user in gromacs.config:
+        # These substitution rules are documented for the user in the module doc string
         gromacs.cbook.edit_txt(template,
                                [('^ *DEFFNM=','md', deffnm), 
                                 ('^#.*(-N|job_name)', 'GMX_MD', jobname),
                                 ('^#.*(-A|account_no)', 'BUDGET', budget),
                                 ('^#.*(-l walltime|wall_clock_limit)', '00:20:00', walltime),
                                 ('^ *WALL_HOURS=', '0\.33', wall_hours),
+                                ('^ *STARTDIR=', '\.', startdir),
                                 ('^ *MDRUN_OPTS=', '""', mdrun_opts),
                                 ('^# JOB_ARRAY_PLACEHOLDER', '^.*$', jobarray_string), 
                                 ],
@@ -847,7 +852,7 @@ class Manager(object):
         structure = self.local_get(os.path.dirname(struct), os.path.basename(struct))
 
         gromacs.setup.MD(dirname=dirname, struct=structure, qscript=self.qscript, 
-                         qname=self.prefix+jobid_s,
+                         qname=self.prefix+jobid_s, startdir=self.remotepath(dirname),
                          **kwargs) 
         self.put(dirname)
         self.logger.info("Run %s on %s in %s/%s" % (dirname, self.hostname, self.uri, dirname))

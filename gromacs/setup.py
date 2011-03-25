@@ -738,7 +738,7 @@ def _setup_MD(dirname,
               struct=None,
               top='top/system.top', ndx=None,
               mainselection='"Protein"',
-              qscript=config.qscript_template, qname=None, mdrun_opts="", budget=None, walltime=1/3.,
+              qscript=config.qscript_template, qname=None, startdir=None, mdrun_opts="", budget=None, walltime=1/3.,
               dt=0.002, runtime=1e3, **mdp_kwargs):
     """Generic function to set up a ``mdrun`` MD simulation.
 
@@ -851,7 +851,7 @@ def _setup_MD(dirname,
 
         runscripts = gromacs.qsub.generate_submit_scripts(
             qscript_template, deffnm=deffnm, jobname=qname, budget=budget, 
-            mdrun_opts=mdrun_opts, walltime=walltime)
+            startdir=startdir, mdrun_opts=mdrun_opts, walltime=walltime)
 
     logger.info("[%(dirname)s] All files set up for a run time of %(runtime)g ps "
                 "(dt=%(dt)g, nsteps=%(nsteps)g)" % vars())
