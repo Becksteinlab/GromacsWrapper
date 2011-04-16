@@ -150,6 +150,7 @@ completely transparent to the user.
 
 .. autodata:: qscriptdir
 .. autodata:: templatesdir
+.. autodata:: managerdir
 .. autodata:: templates
 .. autodata:: qscript_template
 
@@ -229,7 +230,7 @@ templatesdir = defaults['templatesdir']
 #: Directory to store configuration files for remote queuing systems
 #: :class:`gromacs.qsub.Manager` instances.
 #: The default value is ``~/.gromacswrapper/managers``.
-managerdir = defaults['managesdir']
+managerdir = defaults['managerdir']
 
 #: List of all configuration directories.
 config_directories = [configdir, qscriptdir, templatesdir, managerdir]
