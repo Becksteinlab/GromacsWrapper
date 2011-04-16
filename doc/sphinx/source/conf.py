@@ -36,7 +36,7 @@ master_doc = 'index'
 
 # General substitutions.
 project = u'GromacsWrapper'
-copyright = u'2009-2010, Oliver Beckstein'
+copyright = u'2009-2011, Oliver Beckstein'
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.

@@ -6,6 +6,8 @@ SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 PAPER         =
 
+HTMLDIR = ../html
+
 # Internal variables.
 PAPEROPT_a4     = -D latex_paper_size=a4
 PAPEROPT_letter = -D latex_paper_size=letter
@@ -24,12 +26,13 @@ help:
 
 clean:
 	-rm -rf build/*
+	-rm -rf $(HTMLHELP)
 
 html:
-	mkdir -p build/html build/doctrees
-	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) build/html
+	mkdir -p $(HTMLDIR) build/doctrees
+	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(HTMLDIR)
 	@echo
-	@echo "Build finished. The HTML pages are in build/html."
+	@echo "Build finished. The HTML pages are in $(HTMLDIR)."
 
 pickle:
 	mkdir -p build/pickle build/doctrees
