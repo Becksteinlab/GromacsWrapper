@@ -8,29 +8,28 @@
 ==========================================================
 
 The config module provides configurable options for the whole package;
-eventually it might grow into a sophisticated configuration system such as
-matplotlib's rc system but right now it mostly serves to define which gromacs
-tools and other scripts are offered in the package and where template files are
-located. If the user wants to change anything they will still have to do it
-here in source until a better mechanism with rc files has been implemented.
+It mostly serves to define which gromacs tools and other scripts are
+exposed in the :mod:`gromacs` package and where template files are
+located. The user can configure *GromacsWrapper* by
 
-User-supplied templates are stored under
-:data:`gromacs.config.configdir`. Eventually this will also contain the
-configuration options currently hard-coded in :mod:`gromacs.config`.
+1. editing the global configuration file ``~/.gromacswrapper.cfg``
 
-.. autodata:: configdir
-.. autodata:: path
+2. placing template files into directories under ``~/.gromacswrapper``
+   (:data:`gromacs.config.configdir`) which can be processed instead
+   of the files that come with *GromacsWrapper*
 
-The user should execute :func:`gromacs.config.setup` at least once to
-prepare the user configurable area in their home directory and to
-generate the default global configuration file
-``~/.gromacswrapper.cfg`` (as defined in :data:`CONFIGNAME`)::
+In order to **set up a basic configuration file and the directories**
+a user should execute :func:`gromacs.config.setup` at least once. It
+will prepare the user configurable area in their home directory and it
+will generate a default global configuration file
+``~/.gromacswrapper.cfg`` (the name is defined in
+:data:`CONFIGNAME`)::
 
   import gromacs
   gromacs.config.setup()
 
 If the configuration file is edited then one can force a rereading of
-the new config file with ::
+the new config file with :func:`gromacs.config.get_configuration`::
 
  gromacs.config.get_configuration()
 
@@ -40,8 +39,21 @@ executables were added to a tool group). In this case one either has to
 :mod:`gromacs.tools`) although it is by far easier simply to quit python and
 freshly ``import gromacs``.
 
+Almost all aspects of *GromacsWrapper* (paths, names, what is loaded)
+can be changed from within the configuration file. The only exception
+is the name of the configuration file itself: This is hard-coded as
+``~/.gromacswrapper.cfg`` although it is possible to read other
+configuration files with the *filename* argument to
+:func:`~gromacs.config.get_configuration`.
+
+
 Configuration management
 ------------------------
+
+Important configuration variables are
+
+.. autodata:: configdir
+.. autodata:: path
 
 Users
 ~~~~~
@@ -67,7 +79,7 @@ values and the user configuration file values.
    :members:
 
 A subset of important data is also made available as top-level package
-variables as described under :ref:`Location of template files`_ (for historical
+variables as described under `Location of template files`_ (for historical
 reasons); the same variable are also available in the dict
 :data:`gromacs.config.configuration`.
 
@@ -393,12 +405,12 @@ class GMXConfigParser(SafeConfigParser):
           """Reads and parses the configuration file.
 
           Default values are loaded and then replaced with the values from
-          ``~/.bornprofiler.cfg`` if that file exists. The global
-          configuration instance :data:`bornprofiler.config.cfg` is updated
+          ``~/.gromacswrapper.cfg`` if that file exists. The global
+          configuration instance :data:`gromacswrapper.config.cfg` is updated
           as are a number of global variables such as :data:`configdir`,
           :data:`qscriptdir`, :data:`templatesdir`, :data:`logfilename`, ...
 
-          Normally, the configuration is only loaded when the :mod:`bornprofiler`
+          Normally, the configuration is only loaded when the :mod:`gromacswrapper`
           package is imported but a re-reading of the configuration can be forced
           anytime by calling :func:`get_configuration`.
           """
@@ -481,12 +493,12 @@ def get_configuration(filename=CONFIGNAME):
     """Reads and parses the configuration file.
 
     Default values are loaded and then replaced with the values from
-    ``~/.bornprofiler.cfg`` if that file exists. The global
-    configuration instance :data:`bornprofiler.config.cfg` is updated
+    ``~/.gromacswrapper.cfg`` if that file exists. The global
+    configuration instance :data:`gromacswrapper.config.cfg` is updated
     as are a number of global variables such as :data:`configdir`,
     :data:`qscriptdir`, :data:`templatesdir`, :data:`logfilename`, ...
 
-    Normally, the configuration is only loaded when the :mod:`bornprofiler`
+    Normally, the configuration is only loaded when the :mod:`gromacs`
     package is imported but a re-reading of the configuration can be forced
     anytime by calling :func:`get_configuration`.
 
