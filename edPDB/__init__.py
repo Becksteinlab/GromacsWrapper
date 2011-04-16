@@ -20,6 +20,14 @@ study the source and use them as examples.
 
 Built on top of :mod:`Bio.PDB` from Biopython_.
 
+.. Warning:: :mod:`edPDB` is **deprecated** and will be removed in
+             release 0.3
+
+.. SeeAlso:: MDAnalysis_ is a more mature and more flexible library
+   than this module and we recommend using MDAnalysis_ instead of
+   :mod:`edPDB`.
+
+.. _MDAnalysis: http://mdanalysis.googlecode.com
 .. _Biopython: http://biopython.org
 
 Modules
@@ -69,6 +77,13 @@ del h
 # add standard logging
 import log
 logger = log.create()
+
+import warnings
+wmsg = "edPDB will not be developed any further and removed in 0.3; have a look at MDAnalysis\n" \
+       "http://mdanalysis.googlecode.com which is better suited to the job."
+warnings.warn(wmsg, DeprecationWarning)
+logger.warn(wmsg)
+del wmsg
 
 
 import xpdb
