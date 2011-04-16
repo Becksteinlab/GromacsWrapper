@@ -156,9 +156,20 @@ rmsd_backbone = tools.G_rms(what='rmsd', fit='rot+trans',
                             doc="""
 Computes RMSD of backbone after fitting to the backbone.""")
 
+trj_fitted = tools.Trjconv(fit='rot+trans',
+                           input=('backbone', 'system'),
+                           doc="""
+Writes a trajectory fitted to the protein backbone.
+
+Note that this does *not* center; if center is required, the *input*
+selection should have the group to be centered on in second position,
+e.g. ``input = ('backbone', 'Protein', System')``.
+""")
+
+
 # Gromacs 4.x
 trj_xyfitted = tools.Trjconv(fit='rotxy+transxy',
-                            center=True, boxcenter='rect', pbc='whole',
+                            center=True, boxcenter='rect',  # is boxcenter=rect really needed??
                             input=('backbone', 'protein','system'),
                             doc="""
 Writes a trajectory centered and fitted to the protein in the XY-plane only.
@@ -174,7 +185,12 @@ def trj_fitandcenter(xy=False, **kwargs):
 
     :Keywords:
        *s*
-           input structure file (tpr file required to make molecule whole)
+           input structure file (tpr file required to make molecule whole);
+           if a list or tuple is provided then s[0] is used for pass 1 (should be a tpr)
+           and s[1] is used for the fitting step (can be a pdb of the whole system)
+
+           If a second structure is supplied then it is assumed that the fitted
+           trajectory should *not* be centered.
        *f*
            input trajectory
        *o*
@@ -231,10 +247,10 @@ def trj_fitandcenter(xy=False, **kwargs):
 
     We follow the `g_spatial documentation`_ in preparing the trajectories::
 
-       trjconv -s a.tpr -f a.xtc -o b.xtc -center tric -ur compact -pbc none
+       trjconv -s a.tpr -f a.xtc -o b.xtc -center tric -ur compact -pbc mol
        trjconv -s a.tpr -f b.xtc -o c.xtc -fit rot+trans
     
-    .. _`g_spatial documentation`: http://oldwiki.gromacs.org/index.php/Manual:g_spatial_4.0.3
+    .. _`g_spatial documentation`: http://www.gromacs.org/Documentation/Gromacs_Utilities/g_spatial
     """
     if xy:
         fitmode = 'rotxy+transxy'
@@ -252,7 +268,16 @@ def trj_fitandcenter(xy=False, **kwargs):
 
     ndx = kwargs.pop('n', None)
     ndxcompact = kwargs.pop('n1', ndx)
-    
+
+    structures = kwargs.pop('s', None)
+    if type(structures) in (tuple, list):
+        try:
+            compact_structure, fit_structure = structures
+        except:
+            raise ValueError("argument s must be a pair of tpr/pdb files or a single structure file")
+    else:
+        compact_structure = fit_structure = structures
+        
 
     inpfit = kwargs.pop('input', ('backbone', 'protein','system'))    
     try:
@@ -261,14 +286,30 @@ def trj_fitandcenter(xy=False, **kwargs):
         _inpcompact = None
     inpcompact = kwargs.pop('input1', _inpcompact)  # ... or the user supplied ones
 
-    fd, tmptrj = tempfile.mkstemp(suffix=suffix, prefix='fitted_')
+    fd, tmptrj = tempfile.mkstemp(suffix=suffix, prefix='pbc_compact_')
 
-    logger.info("Input trajectory:  %(intrj)r\nOutput trajectory: %(outtrj)r"% vars())
-    logger.info("... writing temporary trajectory %(tmptrj)r (will be auto-cleaned)." % vars())
+    logger.info("Input structure for PBC:  %(compact_structure)r" % vars())
+    logger.info("Input structure for fit:  %(fit_structure)r" % vars())
+    logger.info("Input trajectory:  %(intrj)r" % vars())
+    logger.info("Output trajectory: %(outtrj)r"% vars())
+    logger.debug("Writing temporary trajectory %(tmptrj)r (will be auto-cleaned)." % vars())
     sys.stdout.flush()
     try:
-        trj_compact(f=intrj, o=tmptrj, n=ndxcompact, input=inpcompact, **kwargs)
-        trj_xyfitted(f=tmptrj, o=outtrj, n=ndx, fit=fitmode, input=inpfit, **kwargs)
+        gromacs.trjconv(s=compact_structure, f=intrj, o=tmptrj, n=ndxcompact, 
+                        ur='compact', center=True, boxcenter='tric', pbc='mol',
+                        input=inpcompact, **kwargs)
+        # explicitly set pbc="none" for the fitting stage (anything else will produce rubbish and/or
+        # complaints from Gromacs)
+        kwargs['pbc'] = "none"
+        if compact_structure == fit_structure:
+            # fit as ususal, including centering 
+            # (Is center=True really necessary? -- note, if I remove center=True then 
+            # I MUST fiddle inpfit as below!!)
+            gromacs.trjconv(s=fit_structure, f=tmptrj, o=outtrj, n=ndx, fit=fitmode, center=True, input=inpfit, **kwargs)
+        else:
+            # make sure that we fit EXACTLY as the user wants
+            inpfit = [inpfit[0], inpfit[-1]]
+            gromacs.trjconv(s=fit_structure, f=tmptrj, o=outtrj, n=ndx, fit=fitmode, input=inpfit, **kwargs)
     finally:
         utilities.unlink_gmx(tmptrj)
 
@@ -681,8 +722,12 @@ def edit_mdp(mdp, new_mdp=None, extend_parameters=None, **substitutions):
             makes mostly sense for a single parameter, namely 'include', which
             is set as the default. Set to ``[]`` to disable. ['include']
         *substitutions*
-            parameter=value pairs, where parameter is defined by the Gromacs mdp file; 
-            dashes in parameter names have to be replaced by underscores.
+            parameter=value pairs, where parameter is defined by the Gromacs
+            mdp file; dashes in parameter names have to be replaced by
+            underscores. If a value is a list-like object then the items are
+            written as a sequence, joined with spaces, e.g. ::
+
+               ref_t=[310,310,310] --->  ref_t = 310 310 310
 
     :Returns:    
         Dict of parameters that have *not* been substituted.
@@ -756,7 +801,9 @@ def edit_mdp(mdp, new_mdp=None, extend_parameters=None, **substitutions):
                     if p in extend_parameters:
                         # keep original value and add new stuff at end
                         new_line += str(m.group('value')) + ' '
-                    new_line += str(substitutions[p]) + comment
+                    # automatically transform lists into space-separated string values
+                    value = " ".join(map(str, asiterable(substitutions[p])))
+                    new_line += value + comment
                     params.remove(p)
                     break
             target.write(new_line+'\n')

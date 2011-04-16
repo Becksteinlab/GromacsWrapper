@@ -54,6 +54,8 @@ sending it to the `package author`_. You will be acknowledged in the list below.
    ==========================  =========  ========================================
    :class:`Trajectories`          [#OB]_  write xy-fitted trajectories
 
+   :class:`FitCompact  `          [#OB]_  write fitted trajectories
+
    :class:`StripWater`            [#OB]_  remove solvent (and optionally fit to 
                                           reference)
 
@@ -91,6 +93,8 @@ Plugin classes
    :members:
 .. autoclass:: Trajectories
    :members:
+.. autoclass:: FitCompact
+   :members:
 .. autoclass:: StripWater
    :members:
 .. autoclass:: ProteinOnly
@@ -119,7 +123,7 @@ __docformat__ = "restructuredtext en"
 #: file ``plugins/distances.py``).
 __plugins__ = ['CysAccessibility', 'Distances', 'MinDistances', 'Dihedrals',
                'COM', 'RMSF', 'RMSD', 'Energy', 'HelixBundle',
-               'Trajectories', 'StripWater', 'ProteinOnly', 'Ls',
+               'Trajectories', 'FitCompact',  'StripWater', 'ProteinOnly', 'Ls',
                ]
 __all__ = []
 __all__.extend(__plugins__)

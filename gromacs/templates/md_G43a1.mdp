@@ -32,10 +32,13 @@ comm-grps                = SYSTEM
 
 ns_type                  = grid
 nstlist                  = 10
-
 rlist                    = 1.0
+
 rcoulomb                 = 1.0
 ; GROMOS96 was parametrised with a LJ cut-off of 1.4
+; For Berger lipids: change rvdw = 1.0
+; Gromos96 has rvdw 1.4 nm but for Berger lipids use 1.0 and PME
+; [Patra BJ 84 (2003)]
 rvdw                     = 1.4
 vdwtype                  = cut-off
 coulombtype              = PME

@@ -1,23 +1,20 @@
-# $Id$
+# plugin for GromacsWrapper: stripwater.py
 # Copyright (c) 2009 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
 
 """
-Trajectories
-============
+FitCompact
+==========
 
-Write centered trajectories. Trajectories will be stored under the
-base dir / trj.  
-
-- full fitxy 
-- fitxy at 100 ps intervals
-
+Write a trajectory fitted and centered on the protein, with the box
+represented in a "compact" manner.. This uses
+:func:`gromacs.cbook.trj_fitandcenter`.
 
 Plugin class
 ------------
 
-.. autoclass:: Trajectories
+.. autoclass:: FitCompact
    :members: worker_class
    :undoc-members:
 
@@ -26,7 +23,7 @@ Worker class
 
 The worker class performs the analysis.
 
-.. autoclass:: _Trajectories
+.. autoclass:: _FitCompact
    :members:
 
 
@@ -44,31 +41,31 @@ from gromacs.utilities import AttributeDict
 from gromacs.analysis.core import Worker, Plugin
 
 import logging
-logger = logging.getLogger('gromacs.analysis.plugins.trajectories')
+logger = logging.getLogger('gromacs.analysis.plugins.fitcompact')
 
 # Worker classes that are registered via Plugins (see below)
 # ----------------------------------------------------------
 # These must be defined before the plugins.
 
-class _Trajectories(Worker):
-    """Trajectories worker class."""
+class _FitCompact(Worker):
+    """FitCompact worker class."""
 
     def __init__(self,**kwargs):
-        """Set up  Trajectories
+        """Set up  FitCompact
 
         :Arguments:
-           None at the moment, everything is hard coded.
+          *xy* : bool
+              Rot+trans fit in 3D (``False``) or trans+rot in x-y plane (``True``) [``False``]
         """
-        # specific arguments: take them before calling the super class that
-        # does not know what to do with them
-        dt = kwargs.pop('dt', 100)   # reduced xtc: write steps every dt ps
+        xy = kwargs.pop('xy', False)
+        # maybe also allow input?
 
         # super class init: do this before doing anything else
         # (also sets up self.parameters and self.results)
-        super(_Trajectories, self).__init__(**kwargs)
+        super(_FitCompact, self).__init__(**kwargs)
 
         # process specific parameters now and set instance variables
-        self.parameters.dt = dt
+        self.parameters.xy = xy
 
         # self.simulation might have been set by the super class
         # already; just leave this snippet at the end. Do all
@@ -80,16 +77,15 @@ class _Trajectories(Worker):
     def _register_hook(self, **kwargs):
         """Run when registering; requires simulation."""
 
-        super(_Trajectories, self)._register_hook(**kwargs)
+        super(_FitCompact, self)._register_hook(**kwargs)
         assert not self.simulation is None        
 
         xtcdir,xtcname = os.path.split(self.simulation.xtc)
         xtcbasename, xtcext = os.path.splitext(xtcname)
         trjdir = os.path.join(xtcdir, 'trj')
-        fitxy_gro = os.path.join(trjdir, xtcbasename+'_fitxy'+'.gro')
-        fitxy_pdb = os.path.join(trjdir, xtcbasename+'_fitxy'+'.pdb')
-        fitxy_xtc = os.path.join(trjdir, xtcbasename+'_fitxy'+xtcext)
-        fitxydt_xtc = os.path.join(trjdir, (xtcbasename+'_fitxy_dt%dps'+xtcext) % self.parameters.dt)
+        fitcompact_gro = os.path.join(trjdir, xtcbasename+'_fitcompact'+'.gro')
+        fitcompact_pdb = os.path.join(trjdir, xtcbasename+'_fitcompact'+'.pdb')
+        fitcompact_xtc = os.path.join(trjdir, xtcbasename+'_fitcompact'+xtcext)
 
         # make sure trjdir exists
         try:
@@ -100,10 +96,9 @@ class _Trajectories(Worker):
 
         self.parameters.trjdir = trjdir        
         self.parameters.filenames = {
-            'gro': fitxy_gro,
-            'pdb': fitxy_pdb,
-            'fitxy': fitxy_xtc,
-            'fitxydt': fitxydt_xtc,
+            'gro': fitcompact_gro,
+            'pdb': fitcompact_pdb,
+            'fitcompact': fitcompact_xtc,
             }
 
     # override 'API' methods of base class
@@ -114,25 +109,22 @@ class _Trajectories(Worker):
         filename = self.parameters.filenames['gro']
         if not self.check_file_exists(filename, resolve='warning') or force:
             logger.info("Writing fitted GRO file...")
-            gromacs.cbook.trj_fitandcenter(xy=True, s=self.simulation.tpr, f=self.simulation.xtc, 
+            gromacs.cbook.trj_fitandcenter(xy=self.parameters.xy, s=self.simulation.tpr, 
+                                           f=self.simulation.xtc, 
                                            o=filename, dump=0)
 
         filename = self.parameters.filenames['pdb']
         if not self.check_file_exists(filename, resolve='warning') or force:
             logger.info("Writing fitted PDB file...")
-            gromacs.cbook.trj_fitandcenter(xy=True, s=self.simulation.tpr, f=self.simulation.xtc, 
+            gromacs.cbook.trj_fitandcenter(xy=self.parameters.xy, s=self.simulation.tpr, 
+                                           f=self.simulation.xtc, 
                                            o=filename, dump=0)
 
-        filename = self.parameters.filenames['fitxydt']
-        if not self.check_file_exists(filename, resolve='warning') or force:
-            logger.info("Writing fitted xtc file (frame every %d ps)..." % self.parameters.dt)
-            gromacs.cbook.trj_fitandcenter(xy=True, s=self.simulation.tpr, f=self.simulation.xtc, 
-                                           o=filename, dt=self.parameters.dt)
-
-        filename = self.parameters.filenames['fitxy']
+        filename = self.parameters.filenames['fitcompact']
         if not self.check_file_exists(filename, resolve='warning') or force:
             logger.info("Writing fitted xtc file (all frames)...")
-            gromacs.cbook.trj_fitandcenter(xy=True, s=self.simulation.tpr, f=self.simulation.xtc, 
+            gromacs.cbook.trj_fitandcenter(xy=self.parameters.xy, s=self.simulation.tpr, 
+                                           f=self.simulation.xtc, 
                                            o=filename)
 
         logger.info("New trajectories can be found in %r." % self.parameters.trjdir)
@@ -150,26 +142,26 @@ class _Trajectories(Worker):
 # Public classes that register the worker classes
 #------------------------------------------------
 
-class Trajectories(Plugin):
-    """*Trajectories* plugin.
+class FitCompact(Plugin):
+    """*FitCompact* plugin.
 
-    Write new xy-fitted trajectories (see :func:`gromacs.cbook.trj_fitandcenter`),
+    Write new trajectories (see :func:`gromacs.cbook.trj_fitandcenter`),
 
-    .. class:: Trajectories([dt[,[name[, simulation]]])
+    .. class:: FitCompact([xy[,[name[,simulation]]])
 
-    The plugin has only one user-settable argument; everything is hard-coded,
-    including the output filenames: *_fitxy* is always inserted before the
-    suffix.
+    The plugin uses the defaults of
+    :func:`gromacs.book.trj_fitancenter`; in particular it fits on the
+    *backbone*, centers on *protein*, and writes *system*.
     
     :Arguments:
-        *dt*
-            time step in ps of the output trajectory
+        *xy* : bool
+            Rot+trans fit in 3D (``False``) or trans+rot in x-y plane (``True``) [``False``]
         *name* : string
             plugin name (used to access it)
         *simulation* : instance
             The :class:`gromacs.analysis.Simulation` instance that owns the plugin.
 
     """
-    worker_class = _Trajectories
+    worker_class = _FitCompact
 
 

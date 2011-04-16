@@ -54,6 +54,9 @@ will use the :class:`plugins.CysAccessibility` and the
   S.analyze()                               # analyze output files
   S.plot(figure=True)                       # plot and save the figure
 
+.. Note:: Absolute paths for the files and *analysisdir* are a good
+          idea because many plugins change directory freely.
+
 The plugins can be supplied when the ``Simulation`` object is
 constructed, or they can be later added, e.g. ::
 

@@ -137,7 +137,7 @@ import gromacs.cbook
 from gromacs.cbook import add_mdp_includes
 import gromacs.qsub
 import gromacs.utilities
-from gromacs.utilities import in_dir, realpath, Timedelta, asiterable
+from gromacs.utilities import in_dir, realpath, Timedelta, asiterable, firstof
 
 
 #: Concentration of water at standard conditions in mol/L.
@@ -160,6 +160,9 @@ rlist        1.4 ?      1.0
 
 
     
+trj_compact_main = gromacs.tools.Trjconv(ur='compact', center=True, boxcenter='tric', pbc='mol',
+                                         input=('__main__','system'),
+                                         doc="Returns a compact representation of the system centered on the __main__ group")
 
 
 # TODO:
@@ -194,21 +197,14 @@ def topology(struct=None, protein='protein',
 
     new_struct = protein + '.pdb'
     posres = protein + '_posres.itp'
-    tmp_top = "tmp.top"
 
-    pdb2gmx_args.update({'f': structure, 'o': new_struct, 'p': tmp_top, 'i': posres})
+    pdb2gmx_args.update({'f': structure, 'o': new_struct, 'p': top, 'i': posres})
 
     with in_dir(dirname):
         logger.info("[%(dirname)s] Building topology %(top)r from struct = %(struct)r" % vars())
+        # perhaps parse output from pdb2gmx 4.5.x to get the names of the chain itp files?
         gromacs.pdb2gmx(**pdb2gmx_args)
-        # need some editing  protein_tmp --> system.top and protein.itp
-        # here... for the time being we just copy
-        shutil.copy(tmp_top, top)
     return {'top': realpath(dirname, top), 'struct': realpath(dirname, new_struct)}
-
-trj_compact_main = gromacs.tools.Trjconv(ur='compact', center=True, boxcenter='tric', pbc='mol',
-                                         input=('__main__','system'),
-                                         doc="Returns a compact representation of the system centered on the __main__ group")
 
 def make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None):
     """Make index file with the special groups.
@@ -742,7 +738,7 @@ def _setup_MD(dirname,
               struct=None,
               top='top/system.top', ndx=None,
               mainselection='"Protein"',
-              qscript=config.qscript_template, qname=None, mdrun_opts="", budget=None, walltime=1/3.,
+              qscript=config.qscript_template, qname=None, startdir=None, mdrun_opts="", budget=None, walltime=1/3.,
               dt=0.002, runtime=1e3, **mdp_kwargs):
     """Generic function to set up a ``mdrun`` MD simulation.
 
@@ -785,6 +781,7 @@ def _setup_MD(dirname,
             groups = make_main_index(structure, selection=mainselection,
                                      oldndx=index, ndx=mainindex)
             natoms = dict([(g['name'], float(g['natoms'])) for g in groups])
+            tc_group_names = ('__main__', '__environment__')   # defined in make_main_index()
             try:
                 x = natoms['__main__']/natoms['__environment__']
             except KeyError:
@@ -798,20 +795,43 @@ def _setup_MD(dirname,
                 logger.warn(wmsg)
                 warnings.warn(wmsg, category=AutoCorrectionWarning)
             if x < 0.1:
-                # TODO: does not handle properly multiple groups in arglist yet
-                tau_t = mdp_parameters.pop('tau_t', 0.1)
-                ref_t = mdp_parameters.pop('ref_t', 300)
+                # couple everything together
+                tau_t = firstof(mdp_parameters.pop('tau_t', 0.1))
+                ref_t = firstof(mdp_parameters.pop('ref_t', 300))
                 # combine all in one T-coupling group
                 mdp_parameters['tc-grps'] = 'System'
                 mdp_parameters['tau_t'] = tau_t   # this overrides the commandline!
                 mdp_parameters['ref_t'] = ref_t   # this overrides the commandline!
-                mdp_parameters['gen-temp'] = ref_t
+                mdp_parameters['gen-temp'] = mdp_parameters.pop('gen_temp', ref_t)
                 wmsg = "Size of __main__ is only %.1f%% of __environment__ so " \
-                       "we use 'System' for T-coupling and ref_t = %g and " \
-                       "tau_t = %g (can be changed in mdp_parameters).\n" \
+                       "we use 'System' for T-coupling and ref_t = %g K and " \
+                       "tau_t = %g 1/ps (can be changed in mdp_parameters).\n" \
                        % (x * 100, ref_t, tau_t)
                 logger.warn(wmsg)
                 warnings.warn(wmsg, category=AutoCorrectionWarning)
+            else:
+                # couple protein and bath separately
+                n_tc_groups = len(tc_group_names)
+                tau_t = asiterable(mdp_parameters.pop('tau_t', 0.1))
+                ref_t = asiterable(mdp_parameters.pop('ref_t', 300))
+
+                if len(tau_t) != n_tc_groups:
+                    tau_t = n_tc_groups * [tau_t[0]] 
+                    wmsg = "%d coupling constants should have been supplied for tau_t. "\
+                        "Using %f 1/ps for all of them." % (n_tc_groups, tau_t[0])
+                    logger.warn(wmsg)
+                    warnings.warn(wmsg, category=AutoCorrectionWarning)
+                if len(ref_t) != n_tc_groups:
+                    ref_t = n_tc_groups * [ref_t[0]] 
+                    wmsg = "%d temperatures should have been supplied for ref_t. "\
+                        "Using %g K for all of them." % (n_tc_groups, ref_t[0])
+                    logger.warn(wmsg)
+                    warnings.warn(wmsg, category=AutoCorrectionWarning)
+
+                mdp_parameters['tc-grps'] = tc_group_names
+                mdp_parameters['tau_t'] = tau_t
+                mdp_parameters['ref_t'] = ref_t
+                mdp_parameters['gen-temp'] = mdp_parameters.pop('gen_temp', ref_t[0])
             index = realpath(mainindex)
         if mdp_parameters.get('Tcoupl','').lower() == 'no':
             logger.info("Tcoupl == no: disabling all temperature coupling mdp options")
@@ -831,7 +851,7 @@ def _setup_MD(dirname,
 
         runscripts = gromacs.qsub.generate_submit_scripts(
             qscript_template, deffnm=deffnm, jobname=qname, budget=budget, 
-            mdrun_opts=mdrun_opts, walltime=walltime)
+            startdir=startdir, mdrun_opts=mdrun_opts, walltime=walltime)
 
     logger.info("[%(dirname)s] All files set up for a run time of %(runtime)g ps "
                 "(dt=%(dt)g, nsteps=%(nsteps)g)" % vars())

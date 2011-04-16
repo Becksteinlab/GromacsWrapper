@@ -270,7 +270,7 @@ class COM(Plugin):
      
     .. class:: COM(group_names, [ndx[, offset [, name[, simulation]]]])
 
-  """
+    """
     worker_class = _COM
 
 

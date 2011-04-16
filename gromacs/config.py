@@ -188,7 +188,7 @@ defaults = {
 }
 defaults['qscriptdir'] = os.path.join(defaults['configdir'], 'qscripts')
 defaults['templatesdir'] = os.path.join(defaults['configdir'], 'templates')
-
+defaults['managerdir'] = os.path.join(defaults['configdir'], 'managers')
 
 
 # Logging
@@ -225,6 +225,14 @@ qscriptdir = defaults['qscriptdir']
 #: Directory to store user supplied template files such as mdp files.
 #: The default value is ``~/.gromacswrapper/templates``.
 templatesdir = defaults['templatesdir']
+
+#: Directory to store configuration files for remote queuing systems
+#: :class:`gromacs.qsub.Manager` instances.
+#: The default value is ``~/.gromacswrapper/managers``.
+managerdir = defaults['managesdir']
+
+#: List of all configuration directories.
+config_directories = [configdir, qscriptdir, templatesdir, managerdir]
 
 
 #: Search path for user queuing scripts and templates. The internal package-supplied
@@ -404,6 +412,8 @@ class GMXConfigParser(SafeConfigParser):
                   os.path.join("%(configdir)s", os.path.basename(defaults['qscriptdir'])))
           self.set('DEFAULT', 'templatesdir', 
                   os.path.join("%(configdir)s", os.path.basename(defaults['templatesdir'])))
+          self.set('DEFAULT', 'managerdir', 
+                  os.path.join("%(configdir)s", os.path.basename(defaults['managerdir'])))
           self.add_section('Gromacs')
           self.set("Gromacs", "tools", "pdb2gmx editconf grompp genbox genion mdrun trjcat trjconv")
           self.set("Gromacs", "extra", "")
@@ -520,9 +530,8 @@ def setup(filename=CONFIGNAME):
                print msg
 
      # directories
-     utilities.mkdir_p(configdir)
-     utilities.mkdir_p(qscriptdir)
-     utilities.mkdir_p(templatesdir)
+     for d in config_directories:
+          utilities.mkdir_p(d)
 
 def check_setup():
      """Check if templates directories are setup and issue a warning and help."""
@@ -534,8 +543,7 @@ def check_setup():
           print "      >>> import gromacs"
           print "      >>> gromacs.config.setup()"
 
-     missing = [d for d in (configdir, qscriptdir, templatesdir)
-                if not os.path.exists(d)]
+     missing = [d for d in config_directories if not os.path.exists(d)]
      if len(missing) > 0:
           is_complete = False
           print "NOTE: Some configuration directories are not set up yet"
