@@ -1,5 +1,5 @@
 # setuptools installation of GromacsWrapper
-# Copyright (c) 2008-2010 Oliver Beckstein <orbeckst@gmail.com>
+# Copyright (c) 2008-2011 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the GNU Public License 3 (or higher, your choice)
 #
 # See the files INSTALL and README for details or visit 
@@ -32,7 +32,7 @@ more complicated analysis tasks.
       packages=find_packages(exclude=['tests','scripts','extras','doc/examples']),
       package_data={'gromacs': ['templates/*.sge', 'templates/*.pbs',  # template files           
                                 'templates/*.ll', 'templates/*.sh', 
-                                'templates/*.mdp',
+                                'templates/*.mdp', 'templates/*.cfg',
                                 'external/GridMAT-MD_v1.0.2/GridMAT-MD.pl'],    # external bundled scripts
                     'vmd': ['*.tcl'],                                  # server start in VMD
                     },

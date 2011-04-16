@@ -1,5 +1,5 @@
 # GromacsWrapper config.py
-# Copyright (c) 2009 Oliver Beckstein <orbeckst@gmail.com>
+# Copyright (c) 2009-2011 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
 
@@ -22,10 +22,71 @@ configuration options currently hard-coded in :mod:`gromacs.config`.
 .. autodata:: path
 
 The user should execute :func:`gromacs.config.setup` at least once to
-prepare the user configurable area in their home directory::
+prepare the user configurable area in their home directory and to
+generate the default global configuration file
+``~/.gromacswrapper.cfg`` (as defined in :data:`CONFIGNAME`)::
 
   import gromacs
   gromacs.config.setup()
+
+If the configuration file is edited then one can force a rereading of
+the new config file with ::
+
+ gromacs.config.get_configuration()
+
+However, this will not update the available command classes (e.g. when new
+executables were added to a tool group). In this case one either has to
+:func:`reload` a number of modules (:mod:`gromacs`, :mod:`gromacs.config`,
+:mod:`gromacs.tools`) although it is by far easier simply to quit python and
+freshly ``import gromacs``.
+
+Configuration management
+------------------------
+
+Users
+~~~~~
+
+Users will likely only need to run :func:`gromacs.config.setup` once and
+perhaps occasionally execute :func:`gromacs.config.get_configuration`. Mainly
+the user is expected to configure *GromacsWrapper* by editing the configuration
+file ``~/.gromacswrapper.cfg`` (which has ini-file syntax as described in
+:mod:`ConfigParser`).
+
+.. autofunction:: setup
+.. autofunction:: get_configuration
+
+Developers
+~~~~~~~~~~
+
+Developers are able to access all configuration data through
+:data:`gromacs.config.cfg`, which represents the merger of the package default
+values and the user configuration file values.
+
+.. autodata:: cfg
+.. autoclass:: GMXConfigParser
+   :members:
+
+A subset of important data is also made available as top-level package
+variables as described under :ref:`Location of template files`_ (for historical
+reasons); the same variable are also available in the dict
+:data:`gromacs.config.configuration`.
+
+.. autodata:: configuration
+
+Default values are hard-coded in
+
+.. autodata:: CONFIGNAME
+.. autodata:: defaults
+
+Accessing configuration and template files
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The following functions can be used to access configuration data. Note that
+files are searched first with their full filename, then in all directories
+listed in :data:`gromacs.config.path`, and finally within the package itself.
+
+.. autofunction:: get_template
+.. autofunction:: get_templates
 
 
 Logging
@@ -50,17 +111,33 @@ parts of the code which packages and scripts should be wrapped.
 .. autodata:: load_tools
 .. autodata:: load_scripts
 
-:data:`load_tools` is populated by listing ``gmx_*`` tool group variables in
-:data:`gmx_tool_groups`. 
+:data:`load_tools` is populated from lists of executable names in the
+configuration file.
 
-.. autodata:: gmx_tool_groups
+The tool groups are strings that contain white-space separated file
+names of Gromacs tools. These lists determine which tools are made
+available as classes in :mod:`gromacs.tools`.
 
-The tool groups variables are strings that contain white-space separated file
-names of Gromacs tools. These lists determine which tools are made available as
-classes in :mod:`gromacs.tools`.
+A typical Gromacs tools section of the config file looks like this::
 
-.. autodata:: gmx_tools
-.. autodata:: gmx_extra_tools
+   [Gromacs]
+   # Release of the Gromacs package to which information in this sections applies.
+   release = 4.5.3
+
+   # tools contains the file names of all Gromacs tools for which classes are generated.
+   # Editing this list has only an effect when the package is reloaded.
+   # (Note that this example has a much shorter list than the actual default.)
+   tools = 
+         editconf make_ndx grompp genion genbox
+         grompp pdb2gmx mdrun
+
+   # Additional gromacs tools that should be made available.
+   extra = 
+         g_count     g_flux 
+         a_gridcalc  a_ri3Dc  g_ri3Dc
+
+   # which tool groups to make available as gromacs.NAME
+   groups = tools extra
 
 
 Location of template files
@@ -75,80 +152,80 @@ completely transparent to the user.
 .. autodata:: templatesdir
 .. autodata:: templates
 .. autodata:: qscript_template
-.. autofunction:: setup
-
-Accessing configuration data
-----------------------------
-
-The following functions can be used to access configuration data. Note that
-files are searched first with their full filename, then in all directories
-listed in :data:`gromacs.config.path`, and finally within the package itself.
-
-.. autofunction:: get_template
-.. autofunction:: get_templates
 
 """
+from __future__ import with_statement
 
-import os
+import os, errno
+from ConfigParser import SafeConfigParser
+
 from pkg_resources import resource_filename, resource_listdir
 
 import utilities
 
+# Defaults
+# --------
+# hard-coded package defaults
+
+#: name of the global configuration file.
+CONFIGNAME = os.path.expanduser(os.path.join("~",".gromacswrapper.cfg"))
+
+#: Holds the default values for important file and directory locations.
+#: configdir 
+#:    Directory to store user templates and rc files.
+#:    The default value is ``~/.gromacswrapper``.
+#: qscriptdir
+#:    Directory to store user supplied queuing system scripts.
+#:    The default value is ``~/.gromacswrapper/qscripts``.
+#: templatesdir
+#:    Directory to store user supplied template files such as mdp files.
+#:    The default value is ``~/.gromacswrapper/templates``.
+defaults = {
+     'configdir': os.path.expanduser(os.path.join("~",".gromacswrapper")),
+     'logfilename': "gromacs.log",
+     'loglevel_console': 'INFO',
+     'loglevel_file': 'DEBUG',
+}
+defaults['qscriptdir'] = os.path.join(defaults['configdir'], 'qscripts')
+defaults['templatesdir'] = os.path.join(defaults['configdir'], 'templates')
+
+
+
 # Logging
 # -------
 import logging
+logger = logging.getLogger("gromacs.config")
 
 #: File name for the log file; all gromacs command and many utility functions (e.g. in
 #: :mod:`gromacs.cbook` and :mod:`gromacs.setup`) append messages there. Warnings and
 #: errors are also recorded here. The default is *gromacs.log*.
-logfilename = "gromacs.log"
+logfilename = defaults['logfilename']
 
 #: The default loglevel that is still printed to the console.
-loglevel_console = logging.INFO
+loglevel_console = logging.getLevelName(defaults['loglevel_console'])
 
 #: The default loglevel that is still written to the :data:`logfilename`.
-loglevel_file = logging.DEBUG
+loglevel_file = logging.getLevelName(defaults['loglevel_file'])
 
 
 # User-accessible configuration
 # -----------------------------
 
+# (written in a clumsy manner because of legacy code and because of
+# the way I currently generate the documentation)
+
 #: Directory to store user templates and rc files.
 #: The default value is ``~/.gromacswrapper``.
-configdir = os.path.expanduser(os.path.join("~",".gromacswrapper"))
+configdir = defaults['configdir']
 
 #: Directory to store user supplied queuing system scripts.
 #: The default value is ``~/.gromacswrapper/qscripts``.
-qscriptdir = os.path.join(configdir, 'qscripts')
+qscriptdir = defaults['qscriptdir']
 
 #: Directory to store user supplied template files such as mdp files.
 #: The default value is ``~/.gromacswrapper/templates``.
-templatesdir = os.path.join(configdir, 'templates')
+templatesdir = defaults['templatesdir']
 
-def setup():
-     """Create the directories in which the user can store template and config files.
-
-     This function can be run repeatedly without harm.
-     """
-     # setup() must be separate and NOT run automatically when config
-     # is loaded so that easy_install installations work
-     # (otherwise we get a sandbox violation)
-     utilities.mkdir_p(configdir)
-     utilities.mkdir_p(qscriptdir)
-     utilities.mkdir_p(templatesdir)
-
-def check_setup():
-     """Check if templates directories are setup and issue a warning and help."""
-     missing = [d for d in (configdir, qscriptdir, templatesdir)
-                if not os.path.exists(d)]
-     if len(missing) > 0:
-          print "NOTE: Some configuration directories are not set up yet"
-          print "      %r" % missing
-          print "      You can create them with the command"
-          print "      >>> gromacs.config.setup()"
-     return len(missing) == 0
-check_setup()
-               
 
 #: Search path for user queuing scripts and templates. The internal package-supplied
 #: templates are always searched last via :func:`gromacs.config.get_templates`. 
@@ -157,126 +234,8 @@ check_setup()
 #: templatesdir]``. 
 #: (Note that it is not a good idea to have template files and qscripts with the
 #: same name as they are both searched on the same path.)
+#: :data:`path` is updated whenever cfg is re-read with :func:`get_configuration`.
 path = [os.path.curdir, qscriptdir, templatesdir]
-
-# Gromacs tools
-# -------------
-
-#: List of the variables in gromacs.tools that should be loaded. Possible values:
-#: *gmx_tools*, *gmx_extra_tools*. Right now these are variable names in
-#: :mod:`gromacs.config`, referencing :data:`gromacs.config.gmx_tools` and
-#: :data:`gromacs.config.gmx_extra_tools`.
-gmx_tool_groups = ['gmx_tools', 'gmx_extra_tools' ]
-
-#: Contains the file names of all Gromacs tools for which classes are generated.
-#: Editing this list has only an effect when the package is reloaded.  If you want
-#: additional tools then add the, to the source (``config.py``) or derive new
-#: classes manually from :class:`gromacs.core.GromacsCommand`.  (Eventually, this
-#: functionality will be in a per-user configurable file.)  The current list was
-#: generated from Gromacs 4.0.99 (git).
-#: Removed (because of various issues)
-#:   - g_kinetics
-gmx_tools = """\
-anadock      g_current     g_helix        g_rama     g_traj     mdrun_d
-             g_density     g_helixorient  g_rdf      g_vanhove  mk_angndx
-do_dssp      g_densmap                    g_rms      g_velacc   pdb2gmx
-editconf     g_dielectric  g_lie                     g_wham     protonate
-eneconv      g_dih         g_mdmat        g_rmsf     genbox     sigeps
-g_anaeig     g_dipoles     g_mindist      g_rotacf   genconf    tpbconv
-g_analyze    g_disre       g_morph        g_saltbr   genion     trjcat
-g_angle      g_dist        g_msd          g_sas      genrestr   trjconv
-g_bond       g_dyndom      g_nmeig        g_sdf      gmxcheck   trjorder
-g_bundle     g_enemat      g_nmens        g_sgangle  gmxdump    wheel
-g_chi        g_energy      g_nmtraj       g_sham     grompp     x2top
-g_cluster    g_filter      g_order        g_sorient  luck       
-g_clustsize  g_gyrate      g_polystat     g_spatial  make_edi   xpm2ps
-g_confrms    g_h2order     g_potential    g_spol     make_ndx
-g_covar      g_hbond       g_principal    g_tcaf     mdrun
-"""
-
-gmx_tools_402 = """\
-anadock      g_current     g_helix        g_rama     g_traj     mdrun_d
-demux.pl     g_density     g_helixorient  g_rdf      g_vanhove  mk_angndx
-do_dssp      g_densmap     g_kinetics     g_rms      g_velacc   pdb2gmx
-editconf     g_dielectric  g_lie          g_rmsdist  g_wham     protonate
-eneconv      g_dih         g_mdmat        g_rmsf     genbox     sigeps
-g_anaeig     g_dipoles     g_mindist      g_rotacf   genconf    tpbconv
-g_analyze    g_disre       g_morph        g_saltbr   genion     trjcat
-g_angle      g_dist        g_msd          g_sas      genrestr   trjconv
-g_bond       g_dyndom      g_nmeig        g_sdf      gmxcheck   trjorder
-g_bundle     g_enemat      g_nmens        g_sgangle  gmxdump    wheel
-g_chi        g_energy      g_nmtraj       g_sham     grompp     x2top
-g_cluster    g_filter      g_order        g_sorient  luck       xplor2gmx.pl
-g_clustsize  g_gyrate      g_polystat     g_spatial  make_edi   xpm2ps
-g_confrms    g_h2order     g_potential    g_spol     make_ndx
-g_covar      g_hbond       g_principal    g_tcaf     mdrun
-"""
-
-
-#: Additional gromacs tools (add *gmx_extra_tools* to
-#: :data:`gromacs.config.gmx_tool_groups` to enable them, provided the binaries
-#: have been provided on the :envvar:`PATH`).
-gmx_extra_tools = """\
-g_count      g_flux        g_zcoord
-g_ri3Dc      a_ri3Dc       a_gridcalc
-"""
-
-#: Python list of all tool file names. Automatically filled from :data:`gmx_tools`
-#: and :data:`gmx_extra_tools`, depending on the values in
-#: :data:`gmx_tool_groups`.
-load_tools = []
-
-for g in gmx_tool_groups:
-     load_tools.extend(globals()[g].split())
-del g
-
-# Adding additional 3rd party scripts
-# -----------------------------------
-
-# HACK-Alert: we're temporarily "installing" scripts from the egg  ... this is a hack:
-# Must extract because it is part of a zipped python egg;
-# see http://peak.telecommunity.com/DevCenter/PythonEggs#accessing-package-resources
-GridMAT_MD = resource_filename(__name__,'external/GridMAT-MD_v1.0.2/GridMAT-MD.pl')
-os.chmod(GridMAT_MD, 0755)
-
-
-#: 3rd party analysis scripts and tools; this is a list of triplets of
-#:
-#:   (*script name/path*, *command name*, *doc string*)
-#:
-#: (See the source code for examples.) 
-load_scripts = [
-    (GridMAT_MD,
-     'GridMAT_MD',
-     """GridMAT-MD: A Grid-based Membrane Analysis Tool for use with Molecular Dynamics.
-
-*This* ``GridMAT-MD`` is a patched version of the original
-``GridMAT-MD.pl`` v1.0.2, written by WJ Allen, JA Lemkul and DR
-Bevan. The original version is available from the `GridMAT-MD`_ home
-page,
-   
-.. _`GridMAT-MD`: http://www.bevanlab.biochem.vt.edu/GridMAT-MD/index.html
-
-Please cite 
-
-  W. J. Allen, J. A. Lemkul, and D. R. Bevan. (2009) "GridMAT-MD: A
-  Grid-based Membrane Analysis Tool for Use With Molecular Dynamics."
-  J. Comput. Chem. 30 (12): 1952-1958.
-
-when using this programme.
-
-Usage:
-
-.. class:: GridMAT_MD(config[,structure])
-
-:Arguments:
-   - *config* : See the original documentation for a description for the
-     configuration file.
-   - *structure* : A gro or pdb file that overrides the value for
-     *bilayer* in the configuration file.
-
-"""),
-    ]
 
 
 # Location of template files
@@ -415,4 +374,238 @@ def _get_template(t):
          if not _t_found:            # 5) nothing else to try...
               raise ValueError("Failed to locate the template file %(t)r." % vars())
     return os.path.realpath(t)
+
+
+class GMXConfigParser(SafeConfigParser):
+     """Customized :class:`ConfigParser.SafeConfigParser`."""
+     cfg_template = 'gromacswrapper.cfg'
+
+     def __init__(self, *args, **kwargs):
+          """Reads and parses the configuration file.
+
+          Default values are loaded and then replaced with the values from
+          ``~/.bornprofiler.cfg`` if that file exists. The global
+          configuration instance :data:`bornprofiler.config.cfg` is updated
+          as are a number of global variables such as :data:`configdir`,
+          :data:`qscriptdir`, :data:`templatesdir`, :data:`logfilename`, ...
+
+          Normally, the configuration is only loaded when the :mod:`bornprofiler`
+          package is imported but a re-reading of the configuration can be forced
+          anytime by calling :func:`get_configuration`.
+          """
+
+          self.filename = kwargs.pop('filename', CONFIGNAME)
+
+          args = tuple([self] + list(args))
+          SafeConfigParser.__init__(*args, **kwargs)  # old style class ... grmbl
+          # defaults
+          self.set('DEFAULT', 'configdir', defaults['configdir'])
+          self.set('DEFAULT', 'qscriptdir', 
+                  os.path.join("%(configdir)s", os.path.basename(defaults['qscriptdir'])))
+          self.set('DEFAULT', 'templatesdir', 
+                  os.path.join("%(configdir)s", os.path.basename(defaults['templatesdir'])))
+          self.add_section('Gromacs')
+          self.set("Gromacs", "tools", "pdb2gmx editconf grompp genbox genion mdrun trjcat trjconv")
+          self.set("Gromacs", "extra", "")
+          self.set("Gromacs", "groups", "tools")
+          self.add_section('Logging')
+          self.set('Logging', 'logfilename', defaults['logfilename'])
+          self.set('Logging', 'loglevel_console', defaults['loglevel_console'])
+          self.set('Logging', 'loglevel_file', defaults['loglevel_file'])
+
+          # bundled defaults (should be ok to use get_template())
+          default_cfg = get_template(self.cfg_template)
+          self.readfp(open(default_cfg))
+
+          # defaults are overriden by existing user global cfg file
+          self.read([self.filename])
+
+     @property
+     def configuration(self):
+          """Dict of variables that we make available as globals in the module.
+
+          Can be used as ::
+
+             globals().update(GMXConfigParser.configuration)        # update configdir, templatesdir ...
+          """
+          configuration = {
+               'configfilename': self.filename,
+               'logfilename': self.getpath('Logging', 'logfilename'),
+               'loglevel_console': self.getLogLevel('Logging', 'loglevel_console'),
+               'loglevel_file': self.getLogLevel('Logging', 'loglevel_file'),
+               'configdir': self.getpath('DEFAULT', 'configdir'),
+               'qscriptdir': self.getpath('DEFAULT', 'qscriptdir'),
+               'templatesdir': self.getpath('DEFAULT', 'templatesdir'),
+               }
+          configuration['path'] = [os.path.curdir, 
+                                   configuration['qscriptdir'], 
+                                   configuration['templatesdir']]
+          return configuration
+
+     def getpath(self, section, option):
+          """Return option as an expanded path."""
+          return os.path.expanduser(os.path.expandvars(self.get(section, option)))
+
+     def getlist(self, section, option, separator=None, sort=True):
+          """Return *option* as a a list of strings.
+
+          Split on white space or *separator*. Sort for *sort* = ``True``.
+          """
+          l = self.get(section, option).split(separator)
+          if sort:
+               l.sort()
+          return l
+
+     def getLogLevel(self, section, option):
+          """Return the textual representation of logging level 'option' or the number.
+
+          Note that option is always interpreted as an UPPERCASE string
+          and hence integer log levels will not be recognized.
+
+          .. SeeAlso: :mod:`logging` and :func:`logging.getLevelName`
+          """
+          return logging.getLevelName(self.get(section, option).upper())
+
+def get_configuration(filename=CONFIGNAME):
+    """Reads and parses the configuration file.
+
+    Default values are loaded and then replaced with the values from
+    ``~/.bornprofiler.cfg`` if that file exists. The global
+    configuration instance :data:`bornprofiler.config.cfg` is updated
+    as are a number of global variables such as :data:`configdir`,
+    :data:`qscriptdir`, :data:`templatesdir`, :data:`logfilename`, ...
+
+    Normally, the configuration is only loaded when the :mod:`bornprofiler`
+    package is imported but a re-reading of the configuration can be forced
+    anytime by calling :func:`get_configuration`.
+
+    :Returns: a dict with all updated global configuration variables
+    """
+    global cfg, configuration    # very iffy --- most of the whole config mod should a class
+
+    #: :data:`cfg` is the instance of :class:`GMXConfigParser` that makes all
+    #: global configuration data accessible
+    cfg = GMXConfigParser(filename=filename)   # update module-level cfg
+    globals().update(cfg.configuration)        # update configdir, templatesdir ...
+    configuration = cfg.configuration          # update module-level configuration
+    return cfg
+
+#: :data:`cfg` is the instance of :class:`GMXConfigParser` that makes all
+#: global configuration data accessible
+cfg = GMXConfigParser()
+globals().update(cfg.configuration)        # update configdir, templatesdir ...
+
+#: Dict containing important configuration variables, populated by 
+#: :func:`get_configuration` (mainly a shortcut; use :data:`cfg` in most cases).
+configuration = cfg.configuration
+
+def setup(filename=CONFIGNAME):
+     """Prepare a default GromacsWrapper global environment.
+
+     1) Create the global config file.
+     2) Create the directories in which the user can store template and config files.
+    
+     This function can be run repeatedly without harm.
+     """
+     # setup() must be separate and NOT run automatically when config
+     # is loaded so that easy_install installations work
+     # (otherwise we get a sandbox violation)
+     # populate cfg with defaults (or existing data)
+     get_configuration()
+     if not os.path.exists(filename):
+          with open(filename, 'w') as configfile:
+               cfg.write(configfile)  # write the default file so that user can edit
+               msg = "NOTE: GromacsWrapper created the configuration file \n\t%r\n" \
+                     "      for you. Edit the file to customize the package." % filename
+               print msg
+
+     # directories
+     utilities.mkdir_p(configdir)
+     utilities.mkdir_p(qscriptdir)
+     utilities.mkdir_p(templatesdir)
+
+def check_setup():
+     """Check if templates directories are setup and issue a warning and help."""
+     is_complete = True
+     if not os.path.exists(CONFIGNAME):
+          is_complete = False
+          print "NOTE: The global configuration file %(CONFIGNAME)r is missing." % globals()
+          print "      You can create a basic configuration file from within python:"
+          print "      >>> import gromacs"
+          print "      >>> gromacs.config.setup()"
+
+     missing = [d for d in (configdir, qscriptdir, templatesdir)
+                if not os.path.exists(d)]
+     if len(missing) > 0:
+          is_complete = False
+          print "NOTE: Some configuration directories are not set up yet"
+          print "      %r" % missing
+          print "      You can create them with the command from within Python"
+          print "      >>> import gromacs"
+          print "      >>> gromacs.config.setup()"
+     return is_complete
+
+check_setup()
+               
+
+
+# Gromacs tools
+# -------------
+
+#: Python list of all tool file names. Filled from values in the tool
+#: groups in the configuration file.
+load_tools = []
+for g in cfg.getlist('Gromacs', 'groups', sort=False):
+     load_tools.extend(cfg.getlist('Gromacs', g))
+del g
+
+
+# Adding additional 3rd party scripts
+# -----------------------------------
+
+# HACK-Alert: we're temporarily "installing" scripts from the egg  ... this is a hack:
+# Must extract because it is part of a zipped python egg;
+# see http://peak.telecommunity.com/DevCenter/PythonEggs#accessing-package-resources
+GridMAT_MD = resource_filename(__name__,'external/GridMAT-MD_v1.0.2/GridMAT-MD.pl')
+os.chmod(GridMAT_MD, 0755)
+
+
+#: 3rd party bundled analysis scripts and tools; this is a list of triplets of
+#:
+#:   (*script name/path*, *command name*, *doc string*)
+#:
+#: (See the source code for examples.) 
+load_scripts = [
+    (GridMAT_MD,
+     'GridMAT_MD',
+     """GridMAT-MD: A Grid-based Membrane Analysis Tool for use with Molecular Dynamics.
+
+*This* ``GridMAT-MD`` is a patched version of the original
+``GridMAT-MD.pl`` v1.0.2, written by WJ Allen, JA Lemkul and DR
+Bevan. The original version is available from the `GridMAT-MD`_ home
+page,
+   
+.. _`GridMAT-MD`: http://www.bevanlab.biochem.vt.edu/GridMAT-MD/index.html
+
+Please cite 
+
+  W. J. Allen, J. A. Lemkul, and D. R. Bevan. (2009) "GridMAT-MD: A
+  Grid-based Membrane Analysis Tool for Use With Molecular Dynamics."
+  J. Comput. Chem. 30 (12): 1952-1958.
+
+when using this programme.
+
+Usage:
+
+.. class:: GridMAT_MD(config[,structure])
+
+:Arguments:
+   - *config* : See the original documentation for a description for the
+     configuration file.
+   - *structure* : A gro or pdb file that overrides the value for
+     *bilayer* in the configuration file.
+
+"""),
+    ]
+
 
