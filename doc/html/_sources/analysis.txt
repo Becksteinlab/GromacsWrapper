@@ -5,7 +5,7 @@
 ==========
 
 The analysis package uses the :mod:`gromacs` package and various other third
-party ones such as `numpy`_ and `pylab`_. It provides a frame work to
+party ones such as `numpy`_ and `pylab`_. It provides a framework to
 analyze `Gromacs`_ MD simulations.
 
 .. _numpy: http://numpy.scipy.org

@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.utilities – Helper functions and classes &mdash; GromacsWrapper v0.1.14 documentation</title>
+    <title>gromacs.utilities – Helper functions and classes &mdash; GromacsWrapper v0.2.0 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.1.14',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.1.14 documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper v0.2.0 documentation" href="../../index.html" />
     <link rel="up" title="Gromacs core modules" href="../core.html" />
     <link rel="next" title="gromacs.tools – Gromacs commands classes" href="tools.html" />
     <link rel="prev" title="gromacs.formats – Accessing various files" href="formats.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="formats.html" title="gromacs.formats – Accessing various files"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.1.14 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.2.0 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" accesskey="U">Gromacs core modules</a> &raquo;</li> 
       </ul>
@@ -57,7 +57,7 @@
   <span class="target" id="module-gromacs.utilities"></span><div class="section" id="gromacs-utilities-helper-functions-and-classes">
 <h1><a class="reference internal" href="#module-gromacs.utilities" title="gromacs.utilities"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.utilities</span></tt></a> &#8211; Helper functions and classes<a class="headerlink" href="#gromacs-utilities-helper-functions-and-classes" title="Permalink to this headline">¶</a></h1>
 <p>The module defines some convenience functions and classes that are
-used in other modules; they do <em>not</em> make use of <a class="reference internal" href="../tools.html#module-gromacs.tools" title="gromacs.tools"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.tools</span></tt></a>
+used in other modules; they do <em>not</em> make use of <a class="reference internal" href="tools.html#module-gromacs.tools" title="gromacs.tools"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.tools</span></tt></a>
 or <a class="reference internal" href="../blocks/cbook.html#module-gromacs.cbook" title="gromacs.cbook"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.cbook</span></tt></a> and can be safely imported at any time.</p>
 <div class="section" id="classes">
 <h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
@@ -240,6 +240,13 @@ strings as lists:</p>
 <dd><p>Returns obj so that it can be iterated over; a string is <em>not</em> treated as iterable</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="gromacs.utilities.firstof">
+<tt class="descclassname">gromacs.utilities.</tt><tt class="descname">firstof</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#gromacs.utilities.firstof" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the first entry of a sequence or the obj.</p>
+<p>Treats strings as single objects.</p>
+</dd></dl>
+
 <p>Functions that help handling Gromacs files:</p>
 <dl class="function">
 <dt id="gromacs.utilities.unlink_f">
@@ -334,7 +341,7 @@ overwrites the subplot instead of activating it.</p>
                         title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="tools.html"
-                        title="next chapter"><tt class="docutils literal docutils literal"><span class="pre">gromacs.tools</span></tt> &#8211; Gromacs commands classes</a></p>
+                        title="next chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">gromacs.tools</span></tt> &#8211; Gromacs commands classes</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/gromacs/core/utilities.txt"
@@ -372,15 +379,15 @@ overwrites the subplot instead of activating it.</p>
         <li class="right" >
           <a href="formats.html" title="gromacs.formats – Accessing various files"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.1.14 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.2.0 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" >Gromacs core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2009-2010, Oliver Beckstein.
-      Last updated on Sep 26, 2010.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.2.
+        &copy; Copyright 2009-2011, Oliver Beckstein.
+      Last updated on Apr 16, 2011.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
     </div>
   </body>
 </html>

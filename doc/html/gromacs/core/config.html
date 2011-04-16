@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.config – Configuration for GromacsWrapper &mdash; GromacsWrapper v0.1.14 documentation</title>
+    <title>gromacs.config – Configuration for GromacsWrapper &mdash; GromacsWrapper v0.2.0 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.1.14',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.1.14 documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper v0.2.0 documentation" href="../../index.html" />
     <link rel="up" title="Gromacs core modules" href="../core.html" />
     <link rel="next" title="gromacs.formats – Accessing various files" href="formats.html" />
     <link rel="prev" title="gromacs.core – Core functionality" href="core.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="core.html" title="gromacs.core – Core functionality"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.1.14 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.2.0 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" accesskey="U">Gromacs core modules</a> &raquo;</li> 
       </ul>
@@ -57,14 +57,44 @@
   <span class="target" id="module-gromacs.config"></span><div class="section" id="gromacs-config-configuration-for-gromacswrapper">
 <h1><a class="reference internal" href="#module-gromacs.config" title="gromacs.config"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.config</span></tt></a> &#8211; Configuration for GromacsWrapper<a class="headerlink" href="#gromacs-config-configuration-for-gromacswrapper" title="Permalink to this headline">¶</a></h1>
 <p>The config module provides configurable options for the whole package;
-eventually it might grow into a sophisticated configuration system such as
-matplotlib&#8217;s rc system but right now it mostly serves to define which gromacs
-tools and other scripts are offered in the package and where template files are
-located. If the user wants to change anything they will still have to do it
-here in source until a better mechanism with rc files has been implemented.</p>
-<p>User-supplied templates are stored under
-<a class="reference internal" href="#gromacs.config.configdir" title="gromacs.config.configdir"><tt class="xref py py-data docutils literal"><span class="pre">gromacs.config.configdir</span></tt></a>. Eventually this will also contain the
-configuration options currently hard-coded in <a class="reference internal" href="#module-gromacs.config" title="gromacs.config"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.config</span></tt></a>.</p>
+It mostly serves to define which gromacs tools and other scripts are
+exposed in the <a class="reference internal" href="../init.html#module-gromacs" title="gromacs"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs</span></tt></a> package and where template files are
+located. The user can configure <em>GromacsWrapper</em> by</p>
+<ol class="arabic simple">
+<li>editing the global configuration file <tt class="docutils literal"><span class="pre">~/.gromacswrapper.cfg</span></tt></li>
+<li>placing template files into directories under <tt class="docutils literal"><span class="pre">~/.gromacswrapper</span></tt>
+(<a class="reference internal" href="#gromacs.config.configdir" title="gromacs.config.configdir"><tt class="xref py py-data docutils literal"><span class="pre">gromacs.config.configdir</span></tt></a>) which can be processed instead
+of the files that come with <em>GromacsWrapper</em></li>
+</ol>
+<p>In order to <strong>set up a basic configuration file and the directories</strong>
+a user should execute <a class="reference internal" href="#gromacs.config.setup" title="gromacs.config.setup"><tt class="xref py py-func docutils literal"><span class="pre">gromacs.config.setup()</span></tt></a> at least once. It
+will prepare the user configurable area in their home directory and it
+will generate a default global configuration file
+<tt class="docutils literal"><span class="pre">~/.gromacswrapper.cfg</span></tt> (the name is defined in
+<a class="reference internal" href="#gromacs.config.CONFIGNAME" title="gromacs.config.CONFIGNAME"><tt class="xref py py-data docutils literal"><span class="pre">CONFIGNAME</span></tt></a>):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">gromacs</span>
+<span class="n">gromacs</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>If the configuration file is edited then one can force a rereading of
+the new config file with <a class="reference internal" href="#gromacs.config.get_configuration" title="gromacs.config.get_configuration"><tt class="xref py py-func docutils literal"><span class="pre">gromacs.config.get_configuration()</span></tt></a>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">gromacs</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_configuration</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>However, this will not update the available command classes (e.g. when new
+executables were added to a tool group). In this case one either has to
+<a class="reference external" href="http://docs.python.org/library/functions.html#reload" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">reload()</span></tt></a> a number of modules (<a class="reference internal" href="../init.html#module-gromacs" title="gromacs"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs</span></tt></a>, <a class="reference internal" href="#module-gromacs.config" title="gromacs.config"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.config</span></tt></a>,
+<a class="reference internal" href="tools.html#module-gromacs.tools" title="gromacs.tools"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.tools</span></tt></a>) although it is by far easier simply to quit python and
+freshly <tt class="docutils literal"><span class="pre">import</span> <span class="pre">gromacs</span></tt>.</p>
+<p>Almost all aspects of <em>GromacsWrapper</em> (paths, names, what is loaded)
+can be changed from within the configuration file. The only exception
+is the name of the configuration file itself: This is hard-coded as
+<tt class="docutils literal"><span class="pre">~/.gromacswrapper.cfg</span></tt> although it is possible to read other
+configuration files with the <em>filename</em> argument to
+<a class="reference internal" href="#gromacs.config.get_configuration" title="gromacs.config.get_configuration"><tt class="xref py py-func docutils literal"><span class="pre">get_configuration()</span></tt></a>.</p>
+<div class="section" id="configuration-management">
+<h2>Configuration management<a class="headerlink" href="#configuration-management" title="Permalink to this headline">¶</a></h2>
+<p>Important configuration variables are</p>
 <dl class="data">
 <dt id="gromacs.config.configdir">
 <tt class="descclassname">gromacs.config.</tt><tt class="descname">configdir</tt><a class="headerlink" href="#gromacs.config.configdir" title="Permalink to this definition">¶</a></dt>
@@ -81,167 +111,152 @@ Modify <a class="reference internal" href="#gromacs.config.path" title="gromacs.
 and qscript searching. By default it has the value <tt class="docutils literal"><span class="pre">['.',</span> <span class="pre">qscriptdir,</span>
 <span class="pre">templatesdir]</span></tt>.
 (Note that it is not a good idea to have template files and qscripts with the
-same name as they are both searched on the same path.)</p>
+same name as they are both searched on the same path.)
+<a class="reference internal" href="#gromacs.config.path" title="gromacs.config.path"><tt class="xref py py-data docutils literal"><span class="pre">path</span></tt></a> is updated whenever cfg is re-read with <a class="reference internal" href="#gromacs.config.get_configuration" title="gromacs.config.get_configuration"><tt class="xref py py-func docutils literal"><span class="pre">get_configuration()</span></tt></a>.</p>
 </dd></dl>
 
-<p>The user should execute <a class="reference internal" href="#gromacs.config.setup" title="gromacs.config.setup"><tt class="xref py py-func docutils literal"><span class="pre">gromacs.config.setup()</span></tt></a> at least once to
-prepare the user configurable area in their home directory:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">gromacs</span>
-<span class="n">gromacs</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
-</pre></div>
-</div>
-<div class="section" id="logging">
-<h2>Logging<a class="headerlink" href="#logging" title="Permalink to this headline">¶</a></h2>
-<p>Gromacs commands log their invocation to a log file; typically at
-loglevel <em>INFO</em> (see the python <a class="reference external" href="http://docs.python.org/library/logging.html">logging module</a> for details).</p>
-<dl class="data">
-<dt id="gromacs.config.logfilename">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">logfilename</tt><a class="headerlink" href="#gromacs.config.logfilename" title="Permalink to this definition">¶</a></dt>
-<dd><p>File name for the log file; all gromacs command and many utility functions (e.g. in
-<a class="reference internal" href="../blocks/cbook.html#module-gromacs.cbook" title="gromacs.cbook"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.cbook</span></tt></a> and <a class="reference internal" href="../blocks/setup.html#module-gromacs.setup" title="gromacs.setup"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.setup</span></tt></a>) append messages there. Warnings and
-errors are also recorded here. The default is <em>gromacs.log</em>.</p>
-</dd></dl>
-
-<dl class="data">
-<dt id="gromacs.config.loglevel_console">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">loglevel_console</tt><a class="headerlink" href="#gromacs.config.loglevel_console" title="Permalink to this definition">¶</a></dt>
-<dd><p>The default loglevel that is still printed to the console.</p>
-</dd></dl>
-
-<dl class="data">
-<dt id="gromacs.config.loglevel_file">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">loglevel_file</tt><a class="headerlink" href="#gromacs.config.loglevel_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>The default loglevel that is still written to the <a class="reference internal" href="#gromacs.config.logfilename" title="gromacs.config.logfilename"><tt class="xref py py-data docutils literal"><span class="pre">logfilename</span></tt></a>.</p>
-</dd></dl>
-
-</div>
-<div class="section" id="gromacs-tools-and-scripts">
-<h2>Gromacs tools and scripts<a class="headerlink" href="#gromacs-tools-and-scripts" title="Permalink to this headline">¶</a></h2>
-<p><tt class="docutils literal"><span class="pre">load_*</span></tt> variables are lists that contain instructions to other
-parts of the code which packages and scripts should be wrapped.</p>
-<dl class="data">
-<dt id="gromacs.config.load_tools">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">load_tools</tt><a class="headerlink" href="#gromacs.config.load_tools" title="Permalink to this definition">¶</a></dt>
-<dd><p>Python list of all tool file names. Automatically filled from <a class="reference internal" href="#gromacs.config.gmx_tools" title="gromacs.config.gmx_tools"><tt class="xref py py-data docutils literal"><span class="pre">gmx_tools</span></tt></a>
-and <a class="reference internal" href="#gromacs.config.gmx_extra_tools" title="gromacs.config.gmx_extra_tools"><tt class="xref py py-data docutils literal"><span class="pre">gmx_extra_tools</span></tt></a>, depending on the values in
-<a class="reference internal" href="#gromacs.config.gmx_tool_groups" title="gromacs.config.gmx_tool_groups"><tt class="xref py py-data docutils literal"><span class="pre">gmx_tool_groups</span></tt></a>.</p>
-</dd></dl>
-
-<dl class="data">
-<dt id="gromacs.config.load_scripts">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">load_scripts</tt><a class="headerlink" href="#gromacs.config.load_scripts" title="Permalink to this definition">¶</a></dt>
-<dd><p>3rd party analysis scripts and tools; this is a list of triplets of</p>
-<blockquote>
-(<em>script name/path</em>, <em>command name</em>, <em>doc string</em>)</blockquote>
-<p>(See the source code for examples.)</p>
-</dd></dl>
-
-<p><a class="reference internal" href="#gromacs.config.load_tools" title="gromacs.config.load_tools"><tt class="xref py py-data docutils literal"><span class="pre">load_tools</span></tt></a> is populated by listing <tt class="docutils literal"><span class="pre">gmx_*</span></tt> tool group variables in
-<a class="reference internal" href="#gromacs.config.gmx_tool_groups" title="gromacs.config.gmx_tool_groups"><tt class="xref py py-data docutils literal"><span class="pre">gmx_tool_groups</span></tt></a>.</p>
-<dl class="data">
-<dt id="gromacs.config.gmx_tool_groups">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">gmx_tool_groups</tt><a class="headerlink" href="#gromacs.config.gmx_tool_groups" title="Permalink to this definition">¶</a></dt>
-<dd><p>List of the variables in gromacs.tools that should be loaded. Possible values:
-<em>gmx_tools</em>, <em>gmx_extra_tools</em>. Right now these are variable names in
-<a class="reference internal" href="#module-gromacs.config" title="gromacs.config"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.config</span></tt></a>, referencing <a class="reference internal" href="#gromacs.config.gmx_tools" title="gromacs.config.gmx_tools"><tt class="xref py py-data docutils literal"><span class="pre">gromacs.config.gmx_tools</span></tt></a> and
-<a class="reference internal" href="#gromacs.config.gmx_extra_tools" title="gromacs.config.gmx_extra_tools"><tt class="xref py py-data docutils literal"><span class="pre">gromacs.config.gmx_extra_tools</span></tt></a>.</p>
-</dd></dl>
-
-<p>The tool groups variables are strings that contain white-space separated file
-names of Gromacs tools. These lists determine which tools are made available as
-classes in <a class="reference internal" href="../tools.html#module-gromacs.tools" title="gromacs.tools"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.tools</span></tt></a>.</p>
-<dl class="data">
-<dt id="gromacs.config.gmx_tools">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">gmx_tools</tt><a class="headerlink" href="#gromacs.config.gmx_tools" title="Permalink to this definition">¶</a></dt>
-<dd><p>Contains the file names of all Gromacs tools for which classes are generated.
-Editing this list has only an effect when the package is reloaded.  If you want
-additional tools then add the, to the source (<tt class="docutils literal"><span class="pre">config.py</span></tt>) or derive new
-classes manually from <a class="reference internal" href="core.html#gromacs.core.GromacsCommand" title="gromacs.core.GromacsCommand"><tt class="xref py py-class docutils literal"><span class="pre">gromacs.core.GromacsCommand</span></tt></a>.  (Eventually, this
-functionality will be in a per-user configurable file.)  The current list was
-generated from Gromacs 4.0.99 (git).
-Removed (because of various issues)</p>
-<blockquote>
-<ul class="simple">
-<li>g_kinetics</li>
-</ul>
-</blockquote>
-</dd></dl>
-
-<dl class="data">
-<dt id="gromacs.config.gmx_extra_tools">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">gmx_extra_tools</tt><a class="headerlink" href="#gromacs.config.gmx_extra_tools" title="Permalink to this definition">¶</a></dt>
-<dd><p>Additional gromacs tools (add <em>gmx_extra_tools</em> to
-<a class="reference internal" href="#gromacs.config.gmx_tool_groups" title="gromacs.config.gmx_tool_groups"><tt class="xref py py-data docutils literal"><span class="pre">gromacs.config.gmx_tool_groups</span></tt></a> to enable them, provided the binaries
-have been provided on the <span class="target" id="index-0"></span><tt class="xref std std-envvar docutils literal"><span class="pre">PATH</span></tt>).</p>
-</dd></dl>
-
-</div>
-<div class="section" id="location-of-template-files">
-<h2>Location of template files<a class="headerlink" href="#location-of-template-files" title="Permalink to this headline">¶</a></h2>
-<p><em>Template variables</em> list files in the package that can be used as
-templates such as run input files. Because the package can be a zipped
-egg we actually have to unwrap these files at this stage but this is
-completely transparent to the user.</p>
-<dl class="data">
-<dt id="gromacs.config.qscriptdir">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">qscriptdir</tt><a class="headerlink" href="#gromacs.config.qscriptdir" title="Permalink to this definition">¶</a></dt>
-<dd><p>Directory to store user supplied queuing system scripts.
-The default value is <tt class="docutils literal"><span class="pre">~/.gromacswrapper/qscripts</span></tt>.</p>
-</dd></dl>
-
-<dl class="data">
-<dt id="gromacs.config.templatesdir">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">templatesdir</tt><a class="headerlink" href="#gromacs.config.templatesdir" title="Permalink to this definition">¶</a></dt>
-<dd><p>Directory to store user supplied template files such as mdp files.
-The default value is <tt class="docutils literal"><span class="pre">~/.gromacswrapper/templates</span></tt>.</p>
-</dd></dl>
-
-<dl class="data">
-<dt id="gromacs.config.templates">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">templates</tt><a class="headerlink" href="#gromacs.config.templates" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>GromacsWrapper</em> comes with a number of templates for run input files
-and queuing system scripts. They are provided as a convenience and
-examples but <strong>WITHOUT ANY GUARANTEE FOR CORRECTNESS OR SUITABILITY FOR
-ANY PURPOSE</strong>.</p>
-<p>All template filenames are stored in
-<a class="reference internal" href="#gromacs.config.templates" title="gromacs.config.templates"><tt class="xref py py-data docutils literal"><span class="pre">gromacs.config.templates</span></tt></a>. Templates have to be extracted from
-the GromacsWrapper python egg file because they are used by external
-code: find the actual file locations from this variable.</p>
-<p><strong>Gromacs mdp templates</strong></p>
-<blockquote>
-<p>These are supplied as examples and there is <strong>NO GUARANTEE THAT THEY
-PRODUCE SENSIBLE OUTPUT</strong> &#8212; check for yourself!  Note that only
-existing parameter names can be modified with
-<a class="reference internal" href="../blocks/cbook.html#gromacs.cbook.edit_mdp" title="gromacs.cbook.edit_mdp"><tt class="xref py py-func docutils literal"><span class="pre">gromacs.cbook.edit_mdp()</span></tt></a> at the moment; if in doubt add the
-parameter with its gromacs default value (or empty values) and
-modify later with <a class="reference internal" href="../blocks/cbook.html#gromacs.cbook.edit_mdp" title="gromacs.cbook.edit_mdp"><tt class="xref py py-func docutils literal"><span class="pre">edit_mdp()</span></tt></a>.</p>
-<p>The safest bet is to use one of the <tt class="docutils literal"><span class="pre">mdout.mdp</span></tt> files produced by
-<tt class="xref py py-func docutils literal"><span class="pre">gromacs.grompp()</span></tt> as a template as this mdp contains all
-parameters that are legal in the current version of Gromacs.</p>
-</blockquote>
-<p><strong>Queuing system templates</strong></p>
-<blockquote>
-The queing system scripts are highly specific and you will need to add your
-own into <a class="reference internal" href="#gromacs.config.qscriptdir" title="gromacs.config.qscriptdir"><tt class="xref py py-data docutils literal"><span class="pre">gromacs.config.qscriptdir</span></tt></a>.
-See <a class="reference internal" href="../blocks/qsub.html#module-gromacs.qsub" title="gromacs.qsub"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.qsub</span></tt></a> for the format and how these files are processed.</blockquote>
-</dd></dl>
-
-<dl class="data">
-<dt id="gromacs.config.qscript_template">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">qscript_template</tt><a class="headerlink" href="#gromacs.config.qscript_template" title="Permalink to this definition">¶</a></dt>
-<dd><p>The default template for SGE/PBS run scripts.</p>
-</dd></dl>
-
+<div class="section" id="users">
+<h3>Users<a class="headerlink" href="#users" title="Permalink to this headline">¶</a></h3>
+<p>Users will likely only need to run <a class="reference internal" href="#gromacs.config.setup" title="gromacs.config.setup"><tt class="xref py py-func docutils literal"><span class="pre">gromacs.config.setup()</span></tt></a> once and
+perhaps occasionally execute <a class="reference internal" href="#gromacs.config.get_configuration" title="gromacs.config.get_configuration"><tt class="xref py py-func docutils literal"><span class="pre">gromacs.config.get_configuration()</span></tt></a>. Mainly
+the user is expected to configure <em>GromacsWrapper</em> by editing the configuration
+file <tt class="docutils literal"><span class="pre">~/.gromacswrapper.cfg</span></tt> (which has ini-file syntax as described in
+<a class="reference external" href="http://docs.python.org/library/configparser.html#module-ConfigParser" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">ConfigParser</span></tt></a>).</p>
 <dl class="function">
 <dt id="gromacs.config.setup">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">setup</tt><big>(</big><big>)</big><a class="headerlink" href="#gromacs.config.setup" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create the directories in which the user can store template and config files.</p>
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">setup</tt><big>(</big><em>filename='/Users/oliver/.gromacswrapper.cfg'</em><big>)</big><a class="headerlink" href="#gromacs.config.setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepare a default GromacsWrapper global environment.</p>
+<ol class="arabic simple">
+<li>Create the global config file.</li>
+<li>Create the directories in which the user can store template and config files.</li>
+</ol>
 <p>This function can be run repeatedly without harm.</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="gromacs.config.get_configuration">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">get_configuration</tt><big>(</big><em>filename='/Users/oliver/.gromacswrapper.cfg'</em><big>)</big><a class="headerlink" href="#gromacs.config.get_configuration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads and parses the configuration file.</p>
+<p>Default values are loaded and then replaced with the values from
+<tt class="docutils literal"><span class="pre">~/.gromacswrapper.cfg</span></tt> if that file exists. The global
+configuration instance <tt class="xref py py-data docutils literal"><span class="pre">gromacswrapper.config.cfg</span></tt> is updated
+as are a number of global variables such as <a class="reference internal" href="#gromacs.config.configdir" title="gromacs.config.configdir"><tt class="xref py py-data docutils literal"><span class="pre">configdir</span></tt></a>,
+<a class="reference internal" href="#gromacs.config.qscriptdir" title="gromacs.config.qscriptdir"><tt class="xref py py-data docutils literal"><span class="pre">qscriptdir</span></tt></a>, <a class="reference internal" href="#gromacs.config.templatesdir" title="gromacs.config.templatesdir"><tt class="xref py py-data docutils literal"><span class="pre">templatesdir</span></tt></a>, <a class="reference internal" href="#gromacs.config.logfilename" title="gromacs.config.logfilename"><tt class="xref py py-data docutils literal"><span class="pre">logfilename</span></tt></a>, ...</p>
+<p>Normally, the configuration is only loaded when the <a class="reference internal" href="../init.html#module-gromacs" title="gromacs"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs</span></tt></a>
+package is imported but a re-reading of the configuration can be forced
+anytime by calling <a class="reference internal" href="#gromacs.config.get_configuration" title="gromacs.config.get_configuration"><tt class="xref py py-func docutils literal"><span class="pre">get_configuration()</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body">a dict with all updated global configuration variables</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
-<div class="section" id="accessing-configuration-data">
-<h2>Accessing configuration data<a class="headerlink" href="#accessing-configuration-data" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="developers">
+<h3>Developers<a class="headerlink" href="#developers" title="Permalink to this headline">¶</a></h3>
+<p>Developers are able to access all configuration data through
+<a class="reference internal" href="#gromacs.config.cfg" title="gromacs.config.cfg"><tt class="xref py py-data docutils literal"><span class="pre">gromacs.config.cfg</span></tt></a>, which represents the merger of the package default
+values and the user configuration file values.</p>
+<dl class="data">
+<dt id="gromacs.config.cfg">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">cfg</tt><a class="headerlink" href="#gromacs.config.cfg" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#gromacs.config.cfg" title="gromacs.config.cfg"><tt class="xref py py-data docutils literal"><span class="pre">cfg</span></tt></a> is the instance of <a class="reference internal" href="#gromacs.config.GMXConfigParser" title="gromacs.config.GMXConfigParser"><tt class="xref py py-class docutils literal"><span class="pre">GMXConfigParser</span></tt></a> that makes all
+global configuration data accessible</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="gromacs.config.GMXConfigParser">
+<em class="property">class </em><tt class="descclassname">gromacs.config.</tt><tt class="descname">GMXConfigParser</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.config.GMXConfigParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Customized <a class="reference external" href="http://docs.python.org/library/configparser.html#ConfigParser.SafeConfigParser" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">ConfigParser.SafeConfigParser</span></tt></a>.</p>
+<p>Reads and parses the configuration file.</p>
+<p>Default values are loaded and then replaced with the values from
+<tt class="docutils literal"><span class="pre">~/.gromacswrapper.cfg</span></tt> if that file exists. The global
+configuration instance <tt class="xref py py-data docutils literal"><span class="pre">gromacswrapper.config.cfg</span></tt> is updated
+as are a number of global variables such as <a class="reference internal" href="#gromacs.config.configdir" title="gromacs.config.configdir"><tt class="xref py py-data docutils literal"><span class="pre">configdir</span></tt></a>,
+<a class="reference internal" href="#gromacs.config.qscriptdir" title="gromacs.config.qscriptdir"><tt class="xref py py-data docutils literal"><span class="pre">qscriptdir</span></tt></a>, <a class="reference internal" href="#gromacs.config.templatesdir" title="gromacs.config.templatesdir"><tt class="xref py py-data docutils literal"><span class="pre">templatesdir</span></tt></a>, <a class="reference internal" href="#gromacs.config.logfilename" title="gromacs.config.logfilename"><tt class="xref py py-data docutils literal"><span class="pre">logfilename</span></tt></a>, ...</p>
+<p>Normally, the configuration is only loaded when the <tt class="xref py py-mod docutils literal"><span class="pre">gromacswrapper</span></tt>
+package is imported but a re-reading of the configuration can be forced
+anytime by calling <a class="reference internal" href="#gromacs.config.get_configuration" title="gromacs.config.get_configuration"><tt class="xref py py-func docutils literal"><span class="pre">get_configuration()</span></tt></a>.</p>
+<dl class="attribute">
+<dt id="gromacs.config.GMXConfigParser.configuration">
+<tt class="descname">configuration</tt><a class="headerlink" href="#gromacs.config.GMXConfigParser.configuration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dict of variables that we make available as globals in the module.</p>
+<p>Can be used as</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="nb">globals</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">GMXConfigParser</span><span class="o">.</span><span class="n">configuration</span><span class="p">)</span>        <span class="c"># update configdir, templatesdir ...</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.config.GMXConfigParser.getLogLevel">
+<tt class="descname">getLogLevel</tt><big>(</big><em>section</em>, <em>option</em><big>)</big><a class="headerlink" href="#gromacs.config.GMXConfigParser.getLogLevel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the textual representation of logging level &#8216;option&#8217; or the number.</p>
+<p>Note that option is always interpreted as an UPPERCASE string
+and hence integer log levels will not be recognized.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.config.GMXConfigParser.getlist">
+<tt class="descname">getlist</tt><big>(</big><em>section</em>, <em>option</em>, <em>separator=None</em>, <em>sort=True</em><big>)</big><a class="headerlink" href="#gromacs.config.GMXConfigParser.getlist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return <em>option</em> as a a list of strings.</p>
+<p>Split on white space or <em>separator</em>. Sort for <em>sort</em> = <tt class="xref docutils literal"><span class="pre">True</span></tt>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.config.GMXConfigParser.getpath">
+<tt class="descname">getpath</tt><big>(</big><em>section</em>, <em>option</em><big>)</big><a class="headerlink" href="#gromacs.config.GMXConfigParser.getpath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return option as an expanded path.</p>
+</dd></dl>
+
+</dd></dl>
+
+<p>A subset of important data is also made available as top-level package
+variables as described under <a class="reference internal" href="#location-of-template-files">Location of template files</a> (for historical
+reasons); the same variable are also available in the dict
+<a class="reference internal" href="#gromacs.config.configuration" title="gromacs.config.configuration"><tt class="xref py py-data docutils literal"><span class="pre">gromacs.config.configuration</span></tt></a>.</p>
+<dl class="data">
+<dt id="gromacs.config.configuration">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">configuration</tt><a class="headerlink" href="#gromacs.config.configuration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dict containing important configuration variables, populated by
+<a class="reference internal" href="#gromacs.config.get_configuration" title="gromacs.config.get_configuration"><tt class="xref py py-func docutils literal"><span class="pre">get_configuration()</span></tt></a> (mainly a shortcut; use <a class="reference internal" href="#gromacs.config.cfg" title="gromacs.config.cfg"><tt class="xref py py-data docutils literal"><span class="pre">cfg</span></tt></a> in most cases).</p>
+</dd></dl>
+
+<p>Default values are hard-coded in</p>
+<dl class="data">
+<dt id="gromacs.config.CONFIGNAME">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">CONFIGNAME</tt><a class="headerlink" href="#gromacs.config.CONFIGNAME" title="Permalink to this definition">¶</a></dt>
+<dd><p>name of the global configuration file.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="gromacs.config.defaults">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">defaults</tt><a class="headerlink" href="#gromacs.config.defaults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Holds the default values for important file and directory locations.</p>
+<dl class="docutils">
+<dt><a class="reference internal" href="#gromacs.config.configdir" title="gromacs.config.configdir"><tt class="xref py py-data docutils literal"><span class="pre">configdir</span></tt></a></dt>
+<dd>Directory to store user templates and configurations.
+The default value is <tt class="docutils literal"><span class="pre">~/.gromacswrapper</span></tt>.</dd>
+<dt><a class="reference internal" href="#gromacs.config.qscriptdir" title="gromacs.config.qscriptdir"><tt class="xref py py-data docutils literal"><span class="pre">qscriptdir</span></tt></a></dt>
+<dd>Directory to store user supplied queuing system scripts as
+used by <a class="reference internal" href="../blocks/qsub.html#module-gromacs.qsub" title="gromacs.qsub"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.qsub</span></tt></a>.
+The default value is <tt class="docutils literal"><span class="pre">~/.gromacswrapper/qscripts</span></tt>.</dd>
+<dt><a class="reference internal" href="#gromacs.config.templatesdir" title="gromacs.config.templatesdir"><tt class="xref py py-data docutils literal"><span class="pre">templatesdir</span></tt></a></dt>
+<dd>Directory to store user supplied template files such as mdp files.
+The default value is <tt class="docutils literal"><span class="pre">~/.gromacswrapper/templates</span></tt>.</dd>
+<dt><a class="reference internal" href="#gromacs.config.managerdir" title="gromacs.config.managerdir"><tt class="xref py py-data docutils literal"><span class="pre">managerdir</span></tt></a></dt>
+<dd>Directory to store configuration files for different queuing system
+managers as used in <a class="reference internal" href="../blocks/manager.html#module-gromacs.manager" title="gromacs.manager"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.manager</span></tt></a>.
+The default value is <tt class="docutils literal"><span class="pre">~/.gromacswrapper/managers</span></tt>.</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="accessing-configuration-and-template-files">
+<h3>Accessing configuration and template files<a class="headerlink" href="#accessing-configuration-and-template-files" title="Permalink to this headline">¶</a></h3>
 <p>The following functions can be used to access configuration data. Note that
 files are searched first with their full filename, then in all directories
 listed in <a class="reference internal" href="#gromacs.config.path" title="gromacs.config.path"><tt class="xref py py-data docutils literal"><span class="pre">gromacs.config.path</span></tt></a>, and finally within the package itself.</p>
@@ -305,6 +320,143 @@ be one of</p>
 
 </div>
 </div>
+<div class="section" id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Permalink to this headline">¶</a></h2>
+<p>Gromacs commands log their invocation to a log file; typically at
+loglevel <em>INFO</em> (see the python <a class="reference external" href="http://docs.python.org/library/logging.html">logging module</a> for details).</p>
+<dl class="data">
+<dt id="gromacs.config.logfilename">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">logfilename</tt><a class="headerlink" href="#gromacs.config.logfilename" title="Permalink to this definition">¶</a></dt>
+<dd><p>File name for the log file; all gromacs command and many utility functions (e.g. in
+<a class="reference internal" href="../blocks/cbook.html#module-gromacs.cbook" title="gromacs.cbook"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.cbook</span></tt></a> and <a class="reference internal" href="../blocks/setup.html#module-gromacs.setup" title="gromacs.setup"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.setup</span></tt></a>) append messages there. Warnings and
+errors are also recorded here. The default is <em>gromacs.log</em>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="gromacs.config.loglevel_console">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">loglevel_console</tt><a class="headerlink" href="#gromacs.config.loglevel_console" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default loglevel that is still printed to the console.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="gromacs.config.loglevel_file">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">loglevel_file</tt><a class="headerlink" href="#gromacs.config.loglevel_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default loglevel that is still written to the <a class="reference internal" href="#gromacs.config.logfilename" title="gromacs.config.logfilename"><tt class="xref py py-data docutils literal"><span class="pre">logfilename</span></tt></a>.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="gromacs-tools-and-scripts">
+<h2>Gromacs tools and scripts<a class="headerlink" href="#gromacs-tools-and-scripts" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">load_*</span></tt> variables are lists that contain instructions to other
+parts of the code which packages and scripts should be wrapped.</p>
+<dl class="data">
+<dt id="gromacs.config.load_tools">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">load_tools</tt><a class="headerlink" href="#gromacs.config.load_tools" title="Permalink to this definition">¶</a></dt>
+<dd><p>Python list of all tool file names. Filled from values in the tool
+groups in the configuration file.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="gromacs.config.load_scripts">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">load_scripts</tt><a class="headerlink" href="#gromacs.config.load_scripts" title="Permalink to this definition">¶</a></dt>
+<dd><p>3rd party bundled analysis scripts and tools; this is a list of triplets of</p>
+<blockquote>
+(<em>script name/path</em>, <em>command name</em>, <em>doc string</em>)</blockquote>
+<p>(See the source code for examples.)</p>
+</dd></dl>
+
+<p><a class="reference internal" href="#gromacs.config.load_tools" title="gromacs.config.load_tools"><tt class="xref py py-data docutils literal"><span class="pre">load_tools</span></tt></a> is populated from lists of executable names in the
+configuration file.</p>
+<p>The tool groups are strings that contain white-space separated file
+names of Gromacs tools. These lists determine which tools are made
+available as classes in <a class="reference internal" href="tools.html#module-gromacs.tools" title="gromacs.tools"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.tools</span></tt></a>.</p>
+<p>A typical Gromacs tools section of the config file looks like this:</p>
+<div class="highlight-python"><pre>[Gromacs]
+# Release of the Gromacs package to which information in this sections applies.
+release = 4.5.3
+
+# tools contains the file names of all Gromacs tools for which classes are generated.
+# Editing this list has only an effect when the package is reloaded.
+# (Note that this example has a much shorter list than the actual default.)
+tools = 
+      editconf make_ndx grompp genion genbox
+      grompp pdb2gmx mdrun
+
+# Additional gromacs tools that should be made available.
+extra = 
+      g_count     g_flux 
+      a_gridcalc  a_ri3Dc  g_ri3Dc
+
+# which tool groups to make available as gromacs.NAME
+groups = tools extra</pre>
+</div>
+</div>
+<div class="section" id="location-of-template-files">
+<h2>Location of template files<a class="headerlink" href="#location-of-template-files" title="Permalink to this headline">¶</a></h2>
+<p><em>Template variables</em> list files in the package that can be used as
+templates such as run input files. Because the package can be a zipped
+egg we actually have to unwrap these files at this stage but this is
+completely transparent to the user.</p>
+<dl class="data">
+<dt id="gromacs.config.qscriptdir">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">qscriptdir</tt><a class="headerlink" href="#gromacs.config.qscriptdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Directory to store user supplied queuing system scripts.
+The default value is <tt class="docutils literal"><span class="pre">~/.gromacswrapper/qscripts</span></tt>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="gromacs.config.templatesdir">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">templatesdir</tt><a class="headerlink" href="#gromacs.config.templatesdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Directory to store user supplied template files such as mdp files.
+The default value is <tt class="docutils literal"><span class="pre">~/.gromacswrapper/templates</span></tt>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="gromacs.config.managerdir">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">managerdir</tt><a class="headerlink" href="#gromacs.config.managerdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Directory to store configuration files for remote queuing systems
+<tt class="xref py py-class docutils literal"><span class="pre">gromacs.qsub.Manager</span></tt> instances.
+The default value is <tt class="docutils literal"><span class="pre">~/.gromacswrapper/managers</span></tt>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="gromacs.config.templates">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">templates</tt><a class="headerlink" href="#gromacs.config.templates" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>GromacsWrapper</em> comes with a number of templates for run input files
+and queuing system scripts. They are provided as a convenience and
+examples but <strong>WITHOUT ANY GUARANTEE FOR CORRECTNESS OR SUITABILITY FOR
+ANY PURPOSE</strong>.</p>
+<p>All template filenames are stored in
+<a class="reference internal" href="#gromacs.config.templates" title="gromacs.config.templates"><tt class="xref py py-data docutils literal"><span class="pre">gromacs.config.templates</span></tt></a>. Templates have to be extracted from
+the GromacsWrapper python egg file because they are used by external
+code: find the actual file locations from this variable.</p>
+<p><strong>Gromacs mdp templates</strong></p>
+<blockquote>
+<p>These are supplied as examples and there is <strong>NO GUARANTEE THAT THEY
+PRODUCE SENSIBLE OUTPUT</strong> &#8212; check for yourself!  Note that only
+existing parameter names can be modified with
+<a class="reference internal" href="../blocks/cbook.html#gromacs.cbook.edit_mdp" title="gromacs.cbook.edit_mdp"><tt class="xref py py-func docutils literal"><span class="pre">gromacs.cbook.edit_mdp()</span></tt></a> at the moment; if in doubt add the
+parameter with its gromacs default value (or empty values) and
+modify later with <a class="reference internal" href="../blocks/cbook.html#gromacs.cbook.edit_mdp" title="gromacs.cbook.edit_mdp"><tt class="xref py py-func docutils literal"><span class="pre">edit_mdp()</span></tt></a>.</p>
+<p>The safest bet is to use one of the <tt class="docutils literal"><span class="pre">mdout.mdp</span></tt> files produced by
+<tt class="xref py py-func docutils literal"><span class="pre">gromacs.grompp()</span></tt> as a template as this mdp contains all
+parameters that are legal in the current version of Gromacs.</p>
+</blockquote>
+<p><strong>Queuing system templates</strong></p>
+<blockquote>
+The queing system scripts are highly specific and you will need to add your
+own into <a class="reference internal" href="#gromacs.config.qscriptdir" title="gromacs.config.qscriptdir"><tt class="xref py py-data docutils literal"><span class="pre">gromacs.config.qscriptdir</span></tt></a>.
+See <a class="reference internal" href="../blocks/qsub.html#module-gromacs.qsub" title="gromacs.qsub"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.qsub</span></tt></a> for the format and how these files are processed.</blockquote>
+</dd></dl>
+
+<dl class="data">
+<dt id="gromacs.config.qscript_template">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">qscript_template</tt><a class="headerlink" href="#gromacs.config.qscript_template" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default template for SGE/PBS run scripts.</p>
+</dd></dl>
+
+</div>
+</div>
 
 
           </div>
@@ -315,10 +467,15 @@ be one of</p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">gromacs.config</span></tt> &#8211; Configuration for GromacsWrapper</a><ul>
+<li><a class="reference internal" href="#configuration-management">Configuration management</a><ul>
+<li><a class="reference internal" href="#users">Users</a></li>
+<li><a class="reference internal" href="#developers">Developers</a></li>
+<li><a class="reference internal" href="#accessing-configuration-and-template-files">Accessing configuration and template files</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#logging">Logging</a></li>
 <li><a class="reference internal" href="#gromacs-tools-and-scripts">Gromacs tools and scripts</a></li>
 <li><a class="reference internal" href="#location-of-template-files">Location of template files</a></li>
-<li><a class="reference internal" href="#accessing-configuration-data">Accessing configuration data</a></li>
 </ul>
 </li>
 </ul>
@@ -366,15 +523,15 @@ be one of</p>
         <li class="right" >
           <a href="core.html" title="gromacs.core – Core functionality"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.1.14 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.2.0 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" >Gromacs core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2009-2010, Oliver Beckstein.
-      Last updated on Sep 26, 2010.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.2.
+        &copy; Copyright 2009-2011, Oliver Beckstein.
+      Last updated on Apr 16, 2011.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
     </div>
   </body>
 </html>

@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.setup – Setting up a Gromacs MD run &mdash; GromacsWrapper v0.1.14 documentation</title>
+    <title>gromacs.setup – Setting up a Gromacs MD run &mdash; GromacsWrapper v0.2.0 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.1.14',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.1.14 documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper v0.2.0 documentation" href="../../index.html" />
     <link rel="up" title="Gromacs building blocks" href="../building_blocks.html" />
     <link rel="next" title="gromacs.qsub – utilities for batch submission systems" href="qsub.html" />
     <link rel="prev" title="gromacs.cbook – Gromacs Cook Book" href="cbook.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="cbook.html" title="gromacs.cbook – Gromacs Cook Book"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.1.14 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.2.0 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" accesskey="U">Gromacs building blocks</a> &raquo;</li> 
       </ul>
@@ -209,14 +209,14 @@ Set <em>boxtype</em>  to <tt class="xref docutils literal"><span class="pre">Non
 file (gro or pdb).</p>
 </dd>
 <dt><em>boxtype</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first">Any of the box types supported by <a class="reference internal" href="../tools.html#gromacs.tools.Editconf" title="gromacs.tools.Editconf"><tt class="xref py py-class docutils literal"><span class="pre">Editconf</span></tt></a> 
+<dd><p class="first">Any of the box types supported by <tt class="xref py py-class docutils literal"><span class="pre">Editconf</span></tt> 
 (triclinic, cubic, dodecahedron, octahedron). Set the box dimensions 
 either with <em>distance</em> or the <em>box</em> and <em>angle</em> keywords.</p>
 <p class="last">If set to <tt class="xref docutils literal"><span class="pre">None</span></tt> it will ignore <em>distance</em> and use the box
 inside the <em>struct</em> file.</p>
 </dd>
 <dt><em>box</em></dt>
-<dd><p class="first last">List of three box lengths [A,B,C] that are used by <a class="reference internal" href="../tools.html#gromacs.tools.Editconf" title="gromacs.tools.Editconf"><tt class="xref py py-class docutils literal"><span class="pre">Editconf</span></tt></a>
+<dd><p class="first last">List of three box lengths [A,B,C] that are used by <tt class="xref py py-class docutils literal"><span class="pre">Editconf</span></tt>
 in combination with <em>boxtype</em> (<tt class="docutils literal"><span class="pre">bt</span></tt> in <strong class="program">editconf</strong>) and <em>angles</em>.
 Setting <em>box</em> overrides <em>distance</em>.</p>
 </dd>
@@ -250,7 +250,7 @@ lipids. Default is <tt class="xref docutils literal"><span class="pre">False</sp
 <dd><p class="first last">How to name the index file that is produced by this function.</p>
 </dd>
 <dt><em>mainselection</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first last">A string that is fed to <a class="reference internal" href="../tools.html#gromacs.tools.Make_ndx" title="gromacs.tools.Make_ndx"><tt class="xref py py-class docutils literal"><span class="pre">Make_ndx</span></tt></a> and
+<dd><p class="first last">A string that is fed to <tt class="xref py py-class docutils literal"><span class="pre">Make_ndx</span></tt> and
 which should select the solute.</p>
 </dd>
 <dt><em>dirname</em> <span class="classifier-delimiter">:</span> <span class="classifier">directory name</span></dt>
@@ -261,7 +261,7 @@ which should select the solute.</p>
 </dd>
 <dt><em>kwargs</em></dt>
 <dd><p class="first last">Additional arguments are passed on to
-<a class="reference internal" href="../tools.html#gromacs.tools.Editconf" title="gromacs.tools.Editconf"><tt class="xref py py-class docutils literal"><span class="pre">Editconf</span></tt></a> or are interpreted as parameters to be 
+<tt class="xref py py-class docutils literal"><span class="pre">Editconf</span></tt> or are interpreted as parameters to be 
 changed in the mdp file.</p>
 </dd>
 </dl>
@@ -623,7 +623,7 @@ resnames. Add more if necessary.</p>
 
 <dl class="function">
 <dt id="gromacs.setup._setup_MD">
-<tt class="descclassname">gromacs.setup.</tt><tt class="descname">_setup_MD</tt><big>(</big><em>dirname</em>, <em>deffnm='md'</em>, <em>mdp='/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/md_OPLSAA.mdp'</em>, <em>struct=None</em>, <em>top='top/system.top'</em>, <em>ndx=None</em>, <em>mainselection='&quot;Protein&quot;'</em>, <em>qscript='/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/local.sh'</em>, <em>qname=None</em>, <em>mdrun_opts=''</em>, <em>budget=None</em>, <em>walltime=0.33333333333333331</em>, <em>dt=0.002</em>, <em>runtime=1000.0</em>, <em>**mdp_kwargs</em><big>)</big><a class="headerlink" href="#gromacs.setup._setup_MD" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.setup.</tt><tt class="descname">_setup_MD</tt><big>(</big><em>dirname</em>, <em>deffnm='md'</em>, <em>mdp='/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/md_OPLSAA.mdp'</em>, <em>struct=None</em>, <em>top='top/system.top'</em>, <em>ndx=None</em>, <em>mainselection='&quot;Protein&quot;'</em>, <em>qscript='/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/local.sh'</em>, <em>qname=None</em>, <em>startdir=None</em>, <em>mdrun_opts=''</em>, <em>budget=None</em>, <em>walltime=0.33333333333333331</em>, <em>dt=0.002</em>, <em>runtime=1000.0</em>, <em>**mdp_kwargs</em><big>)</big><a class="headerlink" href="#gromacs.setup._setup_MD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generic function to set up a <tt class="docutils literal"><span class="pre">mdrun</span></tt> MD simulation.</p>
 <p>See the user functions for usage.</p>
 </dd></dl>
@@ -677,7 +677,7 @@ c = n/V = m/(V*M) = rho/M  = 55.345 mol/L.</p>
                         title="previous chapter"><tt class="docutils literal docutils literal"><span class="pre">gromacs.cbook</span></tt> &#8211; Gromacs Cook Book</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="qsub.html"
-                        title="next chapter"><tt class="docutils literal docutils literal"><span class="pre">gromacs.qsub</span></tt> &#8211; utilities for batch submission systems</a></p>
+                        title="next chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">gromacs.qsub</span></tt> &#8211; utilities for batch submission systems</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/gromacs/blocks/setup.txt"
@@ -715,15 +715,15 @@ c = n/V = m/(V*M) = rho/M  = 55.345 mol/L.</p>
         <li class="right" >
           <a href="cbook.html" title="gromacs.cbook – Gromacs Cook Book"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.1.14 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.2.0 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" >Gromacs building blocks</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2009-2010, Oliver Beckstein.
-      Last updated on Sep 26, 2010.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.2.
+        &copy; Copyright 2009-2011, Oliver Beckstein.
+      Last updated on Apr 16, 2011.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
     </div>
   </body>
 </html>

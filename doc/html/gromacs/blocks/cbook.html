@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.cbook – Gromacs Cook Book &mdash; GromacsWrapper v0.1.14 documentation</title>
+    <title>gromacs.cbook – Gromacs Cook Book &mdash; GromacsWrapper v0.2.0 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.1.14',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.1.14 documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper v0.2.0 documentation" href="../../index.html" />
     <link rel="up" title="Gromacs building blocks" href="../building_blocks.html" />
     <link rel="next" title="gromacs.setup – Setting up a Gromacs MD run" href="setup.html" />
     <link rel="prev" title="Gromacs building blocks" href="../building_blocks.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="../building_blocks.html" title="Gromacs building blocks"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.1.14 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.2.0 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" accesskey="U">Gromacs building blocks</a> &raquo;</li> 
       </ul>
@@ -65,7 +65,7 @@ how to do simple things.</p>
 <div class="section" id="miscellaneous-canned-gromacs-commands">
 <h2>Miscellaneous canned Gromacs commands<a class="headerlink" href="#miscellaneous-canned-gromacs-commands" title="Permalink to this headline">¶</a></h2>
 <p>Simple commands with new default options so that they solve a specific
-problem (see also <a class="reference external" href="#manipulating-trajectories-and-structures">Manipulating trajectories and structures</a>):</p>
+problem (see also <a class="reference internal" href="#manipulating-trajectories-and-structures">Manipulating trajectories and structures</a>):</p>
 <dl class="function">
 <dt id="gromacs.cbook.rmsd_backbone">
 <tt class="descclassname">gromacs.cbook.</tt><tt class="descname">rmsd_backbone</tt><big>(</big><span class="optional">[</span><em>s=&quot;md.tpr&quot;</em>, <em>f=&quot;md.xtc&quot;</em><span class="optional">[</span>, <em>...</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#gromacs.cbook.rmsd_backbone" title="Permalink to this definition">¶</a></dt>
@@ -109,7 +109,11 @@ changed with the <em>input</em> = <tt class="docutils literal"><span class="pre"
 <tbody valign="top">
 <tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>s</em></dt>
-<dd><p class="first last">input structure file (tpr file required to make molecule whole)</p>
+<dd><p class="first">input structure file (tpr file required to make molecule whole);
+if a list or tuple is provided then s[0] is used for pass 1 (should be a tpr)
+and s[1] is used for the fitting step (can be a pdb of the whole system)</p>
+<p class="last">If a second structure is supplied then it is assumed that the fitted
+trajectory should <em>not</em> be centered.</p>
 </dd>
 <dt><em>f</em></dt>
 <dd><p class="first last">input trajectory</p>
@@ -143,7 +147,7 @@ for the fitting stage (pass 2) and <em>input1</em> for the centering (pass 1).</
 (good for membrane simulations); default is <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
 </dd>
 <dt><em>kwargs</em></dt>
-<dd><p class="first last">All other arguments are passed to <a class="reference internal" href="../tools.html#gromacs.tools.Trjconv" title="gromacs.tools.Trjconv"><tt class="xref py py-class docutils literal"><span class="pre">Trjconv</span></tt></a>.</p>
+<dd><p class="first last">All other arguments are passed to <tt class="xref py py-class docutils literal"><span class="pre">Trjconv</span></tt>.</p>
 </dd>
 </dl>
 </td>
@@ -161,7 +165,7 @@ where columns of solvent appear cut out from the box&#8212;it probably means
 that after rotation the information for the periodic boundaries is not
 correct any more.</p>
 <p>Most kwargs are passed to both invocations of
-<a class="reference internal" href="../tools.html#gromacs.tools.Trjconv" title="gromacs.tools.Trjconv"><tt class="xref py py-class docutils literal"><span class="pre">gromacs.tools.Trjconv</span></tt></a> so it does not really make sense to use eg
+<tt class="xref py py-class docutils literal"><span class="pre">gromacs.tools.Trjconv</span></tt> so it does not really make sense to use eg
 <em>skip</em>; in this case do things manually.</p>
 <p>By default the <em>input</em> to the fit command is (&#8216;backbone&#8217;,
 &#8216;protein&#8217;,&#8217;system&#8217;); the compact command always uses the second and third
@@ -177,8 +181,8 @@ the output file also a trr suffix.</p>
 <p class="last">For big trajectories it can <strong>take a very long time</strong>
 and consume a <strong>large amount of temporary diskspace</strong>.</p>
 </div>
-<p>We follow the <a class="reference external" href="http://oldwiki.gromacs.org/index.php/Manual:g_spatial_4.0.3">g_spatial documentation</a> in preparing the trajectories:</p>
-<div class="highlight-python"><pre>trjconv -s a.tpr -f a.xtc -o b.xtc -center tric -ur compact -pbc none
+<p>We follow the <a class="reference external" href="http://www.gromacs.org/Documentation/Gromacs_Utilities/g_spatial">g_spatial documentation</a> in preparing the trajectories:</p>
+<div class="highlight-python"><pre>trjconv -s a.tpr -f a.xtc -o b.xtc -center tric -ur compact -pbc mol
 trjconv -s a.tpr -f b.xtc -o c.xtc -fit rot+trans</pre>
 </div>
 </dd></dl>
@@ -785,8 +789,12 @@ makes mostly sense for a single parameter, namely &#8216;include&#8217;, which
 is set as the default. Set to <tt class="docutils literal"><span class="pre">[]</span></tt> to disable. [&#8216;include&#8217;]</p>
 </dd>
 <dt><em>substitutions</em></dt>
-<dd><p class="first last">parameter=value pairs, where parameter is defined by the Gromacs mdp file; 
-dashes in parameter names have to be replaced by underscores.</p>
+<dd><p class="first">parameter=value pairs, where parameter is defined by the Gromacs
+mdp file; dashes in parameter names have to be replaced by
+underscores. If a value is a list-like object then the items are
+written as a sequence, joined with spaces, e.g.</p>
+<div class="last highlight-python"><pre>ref_t=[310,310,310] ---&gt;  ref_t = 310 310 310</pre>
+</div>
 </dd>
 </dl>
 </td>
@@ -1203,8 +1211,12 @@ makes mostly sense for a single parameter, namely &#8216;include&#8217;, which
 is set as the default. Set to <tt class="docutils literal"><span class="pre">[]</span></tt> to disable. [&#8216;include&#8217;]</p>
 </dd>
 <dt><em>substitutions</em></dt>
-<dd><p class="first last">parameter=value pairs, where parameter is defined by the Gromacs mdp file; 
-dashes in parameter names have to be replaced by underscores.</p>
+<dd><p class="first">parameter=value pairs, where parameter is defined by the Gromacs
+mdp file; dashes in parameter names have to be replaced by
+underscores. If a value is a list-like object then the items are
+written as a sequence, joined with spaces, e.g.</p>
+<div class="last highlight-python"><pre>ref_t=[310,310,310] ---&gt;  ref_t = 310 310 310</pre>
+</div>
 </dd>
 </dl>
 </td>
@@ -1366,15 +1378,15 @@ empty string or similar.</li>
         <li class="right" >
           <a href="../building_blocks.html" title="Gromacs building blocks"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.1.14 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.2.0 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" >Gromacs building blocks</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2009-2010, Oliver Beckstein.
-      Last updated on Sep 26, 2010.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.2.
+        &copy; Copyright 2009-2011, Oliver Beckstein.
+      Last updated on Apr 16, 2011.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
     </div>
   </body>
 </html>

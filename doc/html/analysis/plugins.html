@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Analysis plugins &mdash; GromacsWrapper v0.1.14 documentation</title>
+    <title>Analysis plugins &mdash; GromacsWrapper v0.2.0 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1.14',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.1.14 documentation" href="../index.html" />
+    <link rel="top" title="GromacsWrapper v0.2.0 documentation" href="../index.html" />
     <link rel="up" title="Analysis" href="../analysis.html" />
     <link rel="next" title="Auxiliary modules" href="../auxiliary.html" />
     <link rel="prev" title="Support modules" href="support.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="support.html" title="Support modules"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper v0.1.14 documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper v0.2.0 documentation</a> &raquo;</li>
           <li><a href="../analysis.html" accesskey="U">Analysis</a> &raquo;</li> 
       </ul>
     </div>  
@@ -145,18 +145,22 @@ residues by water</td>
 <td><a class="footnote-reference" href="#ob" id="id10">[1]</a></td>
 <td>write xy-fitted trajectories</td>
 </tr>
+<tr><td>:class:<a href="#id11"><span class="problematic" id="id12">`</span></a>FitCompact  `</td>
+<td><a class="footnote-reference" href="#ob" id="id13">[1]</a></td>
+<td>write fitted trajectories</td>
+</tr>
 <tr><td><a class="reference internal" href="#gromacs.analysis.plugins.StripWater" title="gromacs.analysis.plugins.StripWater"><tt class="xref py py-class docutils literal"><span class="pre">StripWater</span></tt></a></td>
-<td><a class="footnote-reference" href="#ob" id="id11">[1]</a></td>
+<td><a class="footnote-reference" href="#ob" id="id14">[1]</a></td>
 <td>remove solvent (and optionally fit to
 reference)</td>
 </tr>
-<tr><td>:class:<a href="#id12"><span class="problematic" id="id13">`</span></a>ProteinOnly</td>
-<td><a class="footnote-reference" href="#ob" id="id14">[1]</a></td>
+<tr><td>:class:<a href="#id15"><span class="problematic" id="id16">`</span></a>ProteinOnly</td>
+<td><a class="footnote-reference" href="#ob" id="id17">[1]</a></td>
 <td>remove all atoms except the Protein
 (and optionally fit to reference)</td>
 </tr>
 <tr><td><a class="reference internal" href="#gromacs.analysis.plugins.Ls" title="gromacs.analysis.plugins.Ls"><tt class="xref py py-class docutils literal"><span class="pre">Ls</span></tt></a></td>
-<td><a class="footnote-reference" href="#ob" id="id15">[1]</a></td>
+<td><a class="footnote-reference" href="#ob" id="id18">[1]</a></td>
 <td>simple <strong class="program">ls</strong> (for testing)</td>
 </tr>
 </tbody>
@@ -165,7 +169,7 @@ reference)</td>
 <table class="docutils footnote" frame="void" id="ob" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>, <a class="fn-backref" href="#id3">3</a>, <a class="fn-backref" href="#id4">4</a>, <a class="fn-backref" href="#id5">5</a>, <a class="fn-backref" href="#id6">6</a>, <a class="fn-backref" href="#id7">7</a>, <a class="fn-backref" href="#id8">8</a>, <a class="fn-backref" href="#id9">9</a>, <a class="fn-backref" href="#id10">10</a>, <a class="fn-backref" href="#id11">11</a>, <a class="fn-backref" href="#id14">12</a>, <a class="fn-backref" href="#id15">13</a>)</em> Oliver Beckstein &lt;<a class="reference external" href="mailto:oliver&#46;beckstein&#37;&#52;&#48;bioch&#46;ox&#46;ac&#46;uk">oliver<span>&#46;</span>beckstein<span>&#64;</span>bioch<span>&#46;</span>ox<span>&#46;</span>ac<span>&#46;</span>uk</a>&gt;</td></tr>
+<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>, <a class="fn-backref" href="#id3">3</a>, <a class="fn-backref" href="#id4">4</a>, <a class="fn-backref" href="#id5">5</a>, <a class="fn-backref" href="#id6">6</a>, <a class="fn-backref" href="#id7">7</a>, <a class="fn-backref" href="#id8">8</a>, <a class="fn-backref" href="#id9">9</a>, <a class="fn-backref" href="#id10">10</a>, <a class="fn-backref" href="#id13">11</a>, <a class="fn-backref" href="#id14">12</a>, <a class="fn-backref" href="#id17">13</a>, <a class="fn-backref" href="#id18">14</a>)</em> Oliver Beckstein &lt;<a class="reference external" href="mailto:oliver&#46;beckstein&#37;&#52;&#48;bioch&#46;ox&#46;ac&#46;uk">oliver<span>&#46;</span>beckstein<span>&#64;</span>bioch<span>&#46;</span>ox<span>&#46;</span>ac<span>&#46;</span>uk</a>&gt;</td></tr>
 </tbody>
 </table>
 </div>
@@ -347,7 +351,7 @@ calculated for each time step and written to files.</p>
 </dd>
 <dt>groups <span class="classifier-delimiter">:</span> <span class="classifier">list of index group names</span></dt>
 <dd><p class="first last">The first entry is the <em>primary group</em>, the second is the
-<a href="#id16"><span class="problematic" id="id17">*</span></a>secondary group.</p>
+<a href="#id19"><span class="problematic" id="id20">*</span></a>secondary group.</p>
 </dd>
 <dt>ndx <span class="classifier-delimiter">:</span> <span class="classifier">index filename or list</span></dt>
 <dd><p class="first last">All index files that contain the listed groups.</p>
@@ -749,8 +753,22 @@ with a simulation instance later.</p>
 <dl class="class">
 <dt id="gromacs.analysis.plugins.Energy.Energy">
 <em class="property">class </em><tt class="descname">Energy</tt><big>(</big><span class="optional">[</span><em>name</em><span class="optional">[</span>, <em>simulation</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.Energy.Energy" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>The following energy terms are extracted from the edr file:</p>
+<blockquote>
+<ul class="simple">
+<li>&#8216;Potential&#8217;</li>
+<li>&#8216;Kinetic-En.&#8217;</li>
+<li>&#8216;Total-Energy&#8217;</li>
+<li>&#8216;Temperature&#8217;</li>
+<li>&#8216;Pressure&#8217;</li>
+<li>&#8216;Volume&#8217;</li>
+<li>&#8216;Box-X&#8217;, &#8216;Box-Y&#8217;, &#8216;Box-Z&#8217;</li>
+</ul>
+</blockquote>
+</dd></dl>
 
+<p>The list of terms corresponds to input values for <tt class="xref py py-func docutils literal"><span class="pre">gromacs.g_energy()</span></tt>
+and is defined in the attribute <tt class="xref py py-attr docutils literal"><span class="pre">_Energy.terms</span></tt>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -807,14 +825,20 @@ with a simulation instance later.</p>
 <p>Write new xy-fitted trajectories (see <a class="reference internal" href="../gromacs/blocks/cbook.html#gromacs.cbook.trj_fitandcenter" title="gromacs.cbook.trj_fitandcenter"><tt class="xref py py-func docutils literal"><span class="pre">gromacs.cbook.trj_fitandcenter()</span></tt></a>),</p>
 <dl class="class">
 <dt id="gromacs.analysis.plugins.Trajectories.Trajectories">
-<em class="property">class </em><tt class="descname">Trajectories</tt><big>(</big><span class="optional">[</span><em>name</em><span class="optional">[</span>, <em>simulation</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.Trajectories.Trajectories" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descname">Trajectories</tt><big>(</big><em>[dt[,[name[, simulation]]]</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.Trajectories.Trajectories" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<p>The plugin has only one user-settable argument; everything is hard-coded,
+including the output filenames: <em>_fitxy</em> is always inserted before the
+suffix.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>dt</em></dt>
+<dd><p class="first last">time step in ps of the output trajectory</p>
+</dd>
 <dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">plugin name (used to access it)</p>
 </dd>
@@ -860,13 +884,78 @@ with a simulation instance later.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="gromacs.analysis.plugins.FitCompact">
+<em class="property">class </em><tt class="descclassname">gromacs.analysis.plugins.</tt><tt class="descname">FitCompact</tt><big>(</big><em>name=None</em>, <em>simulation=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.FitCompact" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>FitCompact</em> plugin.</p>
+<p>Write new trajectories (see <a class="reference internal" href="../gromacs/blocks/cbook.html#gromacs.cbook.trj_fitandcenter" title="gromacs.cbook.trj_fitandcenter"><tt class="xref py py-func docutils literal"><span class="pre">gromacs.cbook.trj_fitandcenter()</span></tt></a>),</p>
+<dl class="class">
+<dt id="gromacs.analysis.plugins.FitCompact.FitCompact">
+<em class="property">class </em><tt class="descname">FitCompact</tt><big>(</big><em>[xy[,[name[,simulation]]]</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.FitCompact.FitCompact" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>The plugin uses the defaults of
+<tt class="xref py py-func docutils literal"><span class="pre">gromacs.book.trj_fitancenter()</span></tt>; in particular it fits on the
+<em>backbone</em>, centers on <em>protein</em>, and writes <em>system</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>xy</em> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd><p class="first last">Rot+trans fit in 3D (<tt class="xref docutils literal"><span class="pre">False</span></tt>) or trans+rot in x-y plane (<tt class="xref docutils literal"><span class="pre">True</span></tt>) [<tt class="xref docutils literal"><span class="pre">False</span></tt>]</p>
+</dd>
+<dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">plugin name (used to access it)</p>
+</dd>
+<dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">instance</span></dt>
+<dd><p class="first last">The <a class="reference internal" href="core.html#gromacs.analysis.Simulation" title="gromacs.analysis.Simulation"><tt class="xref py py-class docutils literal"><span class="pre">gromacs.analysis.Simulation</span></tt></a> instance that owns the plugin.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Registers the plugin with the simulation class.</p>
+<p>Specific keyword arguments are listed below, all other kwargs
+are passed through.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Name of the plugin. Should differ for different
+instances. Defaults to the class name.</p>
+</dd>
+<dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">Simulation instance</span></dt>
+<dd><p class="first last">The <tt class="xref py py-class docutils literal"><span class="pre">Simulation</span></tt> instance that owns this plugin instance. Can be
+<tt class="xref docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref py py-meth docutils literal"><span class="pre">register()</span></tt> method has to be called manually
+with a simulation instance later.</p>
+</dd>
+<dt><em>kwargs</em></dt>
+<dd><p class="first last">All other keyword arguments are passed to the Worker.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="gromacs.analysis.plugins.FitCompact.worker_class">
+<tt class="descclassname">FitCompact.</tt><tt class="descname">worker_class</tt><a class="headerlink" href="#gromacs.analysis.plugins.FitCompact.worker_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">_FitCompact</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="gromacs.analysis.plugins.StripWater">
 <em class="property">class </em><tt class="descclassname">gromacs.analysis.plugins.</tt><tt class="descname">StripWater</tt><big>(</big><em>name=None</em>, <em>simulation=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.StripWater" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>StripWater</em> plugin.</p>
 <p>Write a new trajectory which has the water index group removed.</p>
 <dl class="class">
 <dt id="gromacs.analysis.plugins.StripWater.StripWater">
-<em class="property">class </em><tt class="descname">StripWater</tt><big>(</big><span class="optional">[</span><em>selection</em><span class="optional">[</span>, <em>name</em><span class="optional">[</span>, <em>simulation</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.StripWater.StripWater" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descname">StripWater</tt><big>(</big><span class="optional">[</span><em>resn</em><span class="optional">[</span>, <em>force</em><span class="optional">[</span>, <em>dt</em><span class="optional">[</span>, <em>compact</em><span class="optional">[</span>, <em>fit</em><span class="optional">[</span>, <em>name</em><span class="optional">[</span>, <em>simulation</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.StripWater.StripWater" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <table class="docutils field-list" frame="void" rules="none">
@@ -874,8 +963,37 @@ with a simulation instance later.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
-<dt><em>selection</em></dt>
-<dd><p class="first last">optional selection for the water instead of &#8220;SOL&#8221;</p>
+<dt><em>resn</em></dt>
+<dd><p class="first last">name of the residues that are stripped (typically it is
+safe to leave this at the default &#8216;SOL&#8217;)</p>
+</dd>
+<dt><em>force</em></dt>
+<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt> will always regenerate trajectories even if they 
+already exist, <tt class="xref docutils literal"><span class="pre">False</span></tt> raises an exception, <tt class="xref docutils literal"><span class="pre">None</span></tt>
+does the sensible thing in most cases (i.e. notify and
+then move on).</p>
+</dd>
+<dt><em>dt</em> <span class="classifier-delimiter">:</span> <span class="classifier">float or list of floats</span></dt>
+<dd><p class="first last">only write every dt timestep (in ps); if a list of floats is 
+supplied, write multiple trajectories, one for each dt.</p>
+</dd>
+<dt><em>compact</em> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
+<dd><p class="first last">write a compact representation</p>
+</dd>
+<dt><em>fit</em>          </dt>
+<dd><p class="first">Create an additional trajectory from the stripped one in which
+the Protein group is rms-fitted to the initial structure. See
+<a class="reference internal" href="../gromacs/blocks/cbook.html#gromacs.cbook.Transformer.fit" title="gromacs.cbook.Transformer.fit"><tt class="xref py py-meth docutils literal"><span class="pre">gromacs.cbook.Transformer.fit()</span></tt></a> for details. Useful 
+values:</p>
+<blockquote>
+<ul class="simple">
+<li>&#8220;xy&#8221; : perform a rot+trans fit in the x-y plane</li>
+<li>&#8220;all&#8221;: rot+trans</li>
+<li><tt class="xref docutils literal"><span class="pre">None</span></tt>: no fitting</li>
+</ul>
+</blockquote>
+<p class="last">If <em>fit</em> is not supplied then the constructore-default is used
+(<tt class="xref py py-attr docutils literal"><span class="pre">_StripWater.parameters.fit</span></tt>).</p>
 </dd>
 <dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">plugin name (used to access it)</p>
@@ -976,7 +1094,7 @@ values:</p>
 <dt><em>keepalso</em></dt>
 <dd><p class="first last">List of literal <tt class="docutils literal"><span class="pre">make_ndx</span></tt> selections that select additional
 groups of atoms that should also be kept in addition to the
-protein. For example <a href="#id18"><span class="problematic" id="id19">*</span></a>keepalso*=[&#8216;&#8220;POPC&#8221;&#8217;, &#8216;resname DRUG&#8217;].</p>
+protein. For example <a href="#id21"><span class="problematic" id="id22">*</span></a>keepalso*=[&#8216;&#8220;POPC&#8221;&#8217;, &#8216;resname DRUG&#8217;].</p>
 </dd>
 </dl>
 </td>
@@ -1162,7 +1280,7 @@ distances below the cutoff).</p>
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last"><a class="reference internal" href="../gromacs/tools.html#gromacs.tools.G_mindist" title="gromacs.tools.G_mindist"><tt class="xref py py-class docutils literal"><span class="pre">gromacs.tools.G_mindist</span></tt></a> is apparently providing
+<p class="last"><tt class="xref py py-class docutils literal"><span class="pre">gromacs.tools.G_mindist</span></tt> is apparently providing
 exactly the service that is required: a timeseries of
 the minimum distance between two groups. Feel free to
 use that tool instead :-).</p>
@@ -1305,7 +1423,7 @@ accept filenames on the command line.</p>
 <table class="docutils citation" frame="void" id="allen2009" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id20">[Allen2009]</a></td><td>W. J. Allen, J. A. Lemkul, and D. R. Bevan. (2009) &#8220;GridMAT-MD: A
+<tr><td class="label"><a class="fn-backref" href="#id23">[Allen2009]</a></td><td>W. J. Allen, J. A. Lemkul, and D. R. Bevan. (2009) &#8220;GridMAT-MD: A
 Grid-based Membrane Analysis Tool for Use With Molecular Dynamics.&#8221;
 J. Comput. Chem. 30 (12): 1952-1958.</td></tr>
 </tbody>
@@ -1342,7 +1460,7 @@ such a list</p>
 <dl class="attribute">
 <dt id="gromacs.analysis.plugins.gridmatmd.GridMatMD.GridMatMD">
 <tt class="descname">GridMatMD</tt><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatMD.GridMatMD" title="Permalink to this definition">¶</a></dt>
-<dd><p>Instance of <a class="reference internal" href="../gromacs/tools.html#gromacs.tools.GridMAT_MD" title="gromacs.tools.GridMAT_MD"><tt class="xref py py-class docutils literal"><span class="pre">gromacs.tools.GridMAT_MD</span></tt></a> which always
+<dd><p>Instance of <a class="reference internal" href="../gromacs/core/tools.html#gromacs.tools.GridMAT_MD" title="gromacs.tools.GridMAT_MD"><tt class="xref py py-class docutils literal"><span class="pre">gromacs.tools.GridMAT_MD</span></tt></a> which always
 uses <em>config</em> for input.</p>
 </dd></dl>
 
@@ -1613,14 +1731,14 @@ defined. Each operation returns a new <a class="reference internal" href="#groma
         <li class="right" >
           <a href="support.html" title="Support modules"
              >previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper v0.1.14 documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper v0.2.0 documentation</a> &raquo;</li>
           <li><a href="../analysis.html" >Analysis</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2009-2010, Oliver Beckstein.
-      Last updated on Sep 26, 2010.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.2.
+        &copy; Copyright 2009-2011, Oliver Beckstein.
+      Last updated on Apr 16, 2011.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
     </div>
   </body>
 </html>

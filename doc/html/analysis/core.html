@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Analysis core modules &mdash; GromacsWrapper v0.1.14 documentation</title>
+    <title>Analysis core modules &mdash; GromacsWrapper v0.2.0 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.1.14',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.1.14 documentation" href="../index.html" />
+    <link rel="top" title="GromacsWrapper v0.2.0 documentation" href="../index.html" />
     <link rel="up" title="Analysis" href="../analysis.html" />
     <link rel="next" title="Support modules" href="support.html" />
     <link rel="prev" title="Analysis" href="../analysis.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="../analysis.html" title="Analysis"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper v0.1.14 documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper v0.2.0 documentation</a> &raquo;</li>
           <li><a href="../analysis.html" accesskey="U">Analysis</a> &raquo;</li> 
       </ul>
     </div>  
@@ -80,7 +80,7 @@ will be acknowledged in the list of plugin authors in
 <h3>Simulation class<a class="headerlink" href="#simulation-class" title="Permalink to this headline">¶</a></h3>
 <p>The <a class="reference internal" href="#gromacs.analysis.Simulation" title="gromacs.analysis.Simulation"><tt class="xref py py-class docutils literal"><span class="pre">Simulation</span></tt></a> class is central for doing analysis. The user can
 derive a custom analysis class that pre-defines values for plugins as seen in
-the <a class="reference external" href="#example">Example</a>.</p>
+the <a class="reference internal" href="#example">Example</a>.</p>
 <dl class="class">
 <dt id="gromacs.analysis.Simulation">
 <em class="property">class </em><tt class="descclassname">gromacs.analysis.</tt><tt class="descname">Simulation</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.analysis.Simulation" title="Permalink to this definition">¶</a></dt>
@@ -117,6 +117,10 @@ as <em>xtc</em> override the values in <em>sim</em>.</p>
 </dd>
 <dt><em>ndx</em></dt>
 <dd><p class="first last">Gromacs index file</p>
+</dd>
+<dt><em>absolute</em></dt>
+<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt>: Turn file names into absolute paths (typically required
+for most plugins); <tt class="xref docutils literal"><span class="pre">False</span></tt> keep a they are [<tt class="xref docutils literal"><span class="pre">True</span></tt>]</p>
 </dd>
 <dt><em>analysisdir</em></dt>
 <dd><p class="first last">directory under which derived data are stored;
@@ -244,6 +248,11 @@ will use the <a class="reference internal" href="plugins.html#gromacs.analysis.p
 <span class="n">S</span><span class="o">.</span><span class="n">analyze</span><span class="p">()</span>                               <span class="c"># analyze output files</span>
 <span class="n">S</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">figure</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>                       <span class="c"># plot and save the figure</span>
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Absolute paths for the files and <em>analysisdir</em> are a good
+idea because many plugins change directory freely.</p>
 </div>
 <p>The plugins can be supplied when the <tt class="docutils literal"><span class="pre">Simulation</span></tt> object is
 constructed, or they can be later added, e.g.</p>
@@ -380,6 +389,10 @@ as <em>xtc</em> override the values in <em>sim</em>.</p>
 </dd>
 <dt><em>ndx</em></dt>
 <dd><p class="first last">Gromacs index file</p>
+</dd>
+<dt><em>absolute</em></dt>
+<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt>: Turn file names into absolute paths (typically required
+for most plugins); <tt class="xref docutils literal"><span class="pre">False</span></tt> keep a they are [<tt class="xref docutils literal"><span class="pre">True</span></tt>]</p>
 </dd>
 <dt><em>analysisdir</em></dt>
 <dd><p class="first last">directory under which derived data are stored;
@@ -774,14 +787,14 @@ mechanism.</p>
         <li class="right" >
           <a href="../analysis.html" title="Analysis"
              >previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper v0.1.14 documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper v0.2.0 documentation</a> &raquo;</li>
           <li><a href="../analysis.html" >Analysis</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2009-2010, Oliver Beckstein.
-      Last updated on Sep 26, 2010.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.2.
+        &copy; Copyright 2009-2011, Oliver Beckstein.
+      Last updated on Apr 16, 2011.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
     </div>
   </body>
 </html>

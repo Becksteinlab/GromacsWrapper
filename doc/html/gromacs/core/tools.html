@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.tools – Gromacs commands classes &mdash; GromacsWrapper v0.1.14 documentation</title>
+    <title>gromacs.tools – Gromacs commands classes &mdash; GromacsWrapper v0.2.0 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.1.14',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.1.14 documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper v0.2.0 documentation" href="../../index.html" />
     <link rel="up" title="Gromacs core modules" href="../core.html" />
     <link rel="next" title="Gromacs building blocks" href="../building_blocks.html" />
     <link rel="prev" title="gromacs.utilities – Helper functions and classes" href="utilities.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="utilities.html" title="gromacs.utilities – Helper functions and classes"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.1.14 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.2.0 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" accesskey="U">Gromacs core modules</a> &raquo;</li> 
       </ul>
@@ -62,7 +62,7 @@ with initial default values.</p>
 <p>By convention, a class has the capitalized name of the corresponding Gromacs
 tool; dots are replaced by underscores to make it a valid python identifier.</p>
 <p>The list of Gromacs tools to be loaded is configured in
-<a class="reference internal" href="config.html#gromacs.config.gmx_tool_groups" title="gromacs.config.gmx_tool_groups"><tt class="xref py py-data docutils literal"><span class="pre">gromacs.config.gmx_tool_groups</span></tt></a>.</p>
+<tt class="xref py py-data docutils literal"><span class="pre">gromacs.config.gmx_tool_groups</span></tt>.</p>
 <p>It is also possible to extend the basic commands and patch in additional
 functionality. For example, the <a class="reference internal" href="#gromacs.tools.GromacsCommandMultiIndex" title="gromacs.tools.GromacsCommandMultiIndex"><tt class="xref py py-class docutils literal"><span class="pre">GromacsCommandMultiIndex</span></tt></a> class makes a
 command accept multiple index files and concatenates them on the fly; the
@@ -318,7 +318,7 @@ sequence of positional arguments.</p>
 
 <dl class="class">
 <dt>
-<em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">Anadock</tt></dt>
+<em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">Demux_pl</tt></dt>
 <dd></dd></dl>
 
 <dl class="class">
@@ -338,6 +338,11 @@ sequence of positional arguments.</p>
 
 <dl class="class">
 <dt>
+<em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">G_anadock</tt></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt>
 <em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">G_anaeig</tt></dt>
 <dd></dd></dl>
 
@@ -349,6 +354,11 @@ sequence of positional arguments.</p>
 <dl class="class">
 <dt>
 <em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">G_angle</tt></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">G_bar</tt></dt>
 <dd></dd></dl>
 
 <dl class="class">
@@ -483,12 +493,27 @@ sequence of positional arguments.</p>
 
 <dl class="class">
 <dt>
+<em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">G_kinetics</tt></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt>
 <em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">G_lie</tt></dt>
 <dd></dd></dl>
 
 <dl class="class">
 <dt>
+<em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">G_luck</tt></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt>
 <em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">G_mdmat</tt></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">G_membed</tt></dt>
 <dd></dd></dl>
 
 <dl class="class">
@@ -528,6 +553,11 @@ sequence of positional arguments.</p>
 
 <dl class="class">
 <dt>
+<em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">G_pme_error</tt></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt>
 <em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">G_polystat</tt></dt>
 <dd></dd></dl>
 
@@ -539,6 +569,11 @@ sequence of positional arguments.</p>
 <dl class="class">
 <dt>
 <em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">G_principal</tt></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">G_protonate</tt></dt>
 <dd></dd></dl>
 
 <dl class="class">
@@ -563,12 +598,22 @@ sequence of positional arguments.</p>
 
 <dl class="class">
 <dt>
+<em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">G_rmsdist</tt></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt>
 <em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">G_rmsf</tt></dt>
 <dd></dd></dl>
 
 <dl class="class">
 <dt>
 <em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">G_rotacf</tt></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">G_rotmat</tt></dt>
 <dd></dd></dl>
 
 <dl class="class">
@@ -583,7 +628,7 @@ sequence of positional arguments.</p>
 
 <dl class="class">
 <dt>
-<em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">G_sdf</tt></dt>
+<em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">G_select</tt></dt>
 <dd></dd></dl>
 
 <dl class="class">
@@ -594,6 +639,11 @@ sequence of positional arguments.</p>
 <dl class="class">
 <dt>
 <em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">G_sham</tt></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">G_sigeps</tt></dt>
 <dd></dd></dl>
 
 <dl class="class">
@@ -623,6 +673,11 @@ sequence of positional arguments.</p>
 
 <dl class="class">
 <dt>
+<em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">G_tune_pme</tt></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt>
 <em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">G_vanhove</tt></dt>
 <dd></dd></dl>
 
@@ -638,7 +693,12 @@ sequence of positional arguments.</p>
 
 <dl class="class">
 <dt>
-<em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">G_zcoord</tt></dt>
+<em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">G_wheel</tt></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">G_x2top</tt></dt>
 <dd></dd></dl>
 
 <dl class="class">
@@ -678,11 +738,6 @@ sequence of positional arguments.</p>
 
 <dl class="class">
 <dt>
-<em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">Luck</tt></dt>
-<dd></dd></dl>
-
-<dl class="class">
-<dt>
 <em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">Make_edi</tt></dt>
 <dd></dd></dl>
 
@@ -713,16 +768,6 @@ sequence of positional arguments.</p>
 
 <dl class="class">
 <dt>
-<em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">Protonate</tt></dt>
-<dd></dd></dl>
-
-<dl class="class">
-<dt>
-<em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">Sigeps</tt></dt>
-<dd></dd></dl>
-
-<dl class="class">
-<dt>
 <em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">Tpbconv</tt></dt>
 <dd></dd></dl>
 
@@ -743,12 +788,7 @@ sequence of positional arguments.</p>
 
 <dl class="class">
 <dt>
-<em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">Wheel</tt></dt>
-<dd></dd></dl>
-
-<dl class="class">
-<dt>
-<em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">X2top</tt></dt>
+<em class="property">class </em><tt class="descclassname">gromacs.tools.</tt><tt class="descname">Xplor2gmx_pl</tt></dt>
 <dd></dd></dl>
 
 <dl class="class">
@@ -776,7 +816,7 @@ sequence of positional arguments.</p>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="utilities.html"
-                        title="previous chapter"><tt class="docutils literal"><span class="pre">gromacs.utilities</span></tt> &#8211; Helper functions and classes</a></p>
+                        title="previous chapter"><tt class="docutils literal docutils literal"><span class="pre">gromacs.utilities</span></tt> &#8211; Helper functions and classes</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="../building_blocks.html"
                         title="next chapter">Gromacs building blocks</a></p>
@@ -817,15 +857,15 @@ sequence of positional arguments.</p>
         <li class="right" >
           <a href="utilities.html" title="gromacs.utilities – Helper functions and classes"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.1.14 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.2.0 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" >Gromacs core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2009-2010, Oliver Beckstein.
-      Last updated on Sep 26, 2010.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.2.
+        &copy; Copyright 2009-2011, Oliver Beckstein.
+      Last updated on Apr 16, 2011.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
     </div>
   </body>
 </html>
