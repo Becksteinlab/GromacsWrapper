@@ -184,15 +184,21 @@ import utilities
 CONFIGNAME = os.path.expanduser(os.path.join("~",".gromacswrapper.cfg"))
 
 #: Holds the default values for important file and directory locations.
-#: configdir 
-#:    Directory to store user templates and rc files.
+#:
+#: :data:`configdir`
+#:    Directory to store user templates and configurations.
 #:    The default value is ``~/.gromacswrapper``.
-#: qscriptdir
-#:    Directory to store user supplied queuing system scripts.
+#: :data:`qscriptdir`
+#:    Directory to store user supplied queuing system scripts as
+#:    used by :mod:`gromacs.qsub`.
 #:    The default value is ``~/.gromacswrapper/qscripts``.
-#: templatesdir
+#: :data:`templatesdir`
 #:    Directory to store user supplied template files such as mdp files.
 #:    The default value is ``~/.gromacswrapper/templates``.
+#: :data:`managerdir`
+#:    Directory to store configuration files for different queuing system
+#:    managers as used in :mod:`gromacs.manager`. 
+#:    The default value is ``~/.gromacswrapper/managers``.
 defaults = {
      'configdir': os.path.expanduser(os.path.join("~",".gromacswrapper")),
      'logfilename': "gromacs.log",
