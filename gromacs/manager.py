@@ -4,15 +4,42 @@ Managing jobs remotely
 
 .. Warning:: Experimental code, use at your own risk.
 
+The :class:`Manager` encapsulates knowledge of how to run a job on a
+remote system. This basically means the host name, where are the
+scratch directories, what queuing system is running, etc. It simply
+uses :program:`ssh` to communicate with the remote system and thus it
+is necessary to set up :program:`ssh` with public key authentication
+to make this work smoothly.
+
+* The manager can move files between the local file system and the
+remote scratch directories back and forth (using :program:`scp`).
+
+* It can remotely launch a job (by running :program:`qsub`).
+
+* It can also check on the progress by inspecting (in a primitive
+  fashion) the log file of :program:`mdrun` on the remote system.
+
+The remote directory name is constructed in the following way:
+
+1. *topdir* is stripped from the local working directory to give WDIR
+2. *scratchdir*/WDIR is the directory on the remote system
+
+
+:func:`get_manager` creates a :class:`Manager` from a configuration file.
+
+
 Configuration file
 ------------------
+
+See :class:`Manager` for how the values in the configuration file are
+used.
 
 Example::
 
    [DEFAULT]
    name = leviathan
 
-   [local]   
+   [local]
    topdir = ~
 
    [remote]
@@ -23,18 +50,67 @@ Example::
    name = PBS
    qscript = leviathan.pbs
    walltime = 24.0
+   start_cwd = True
 
-All entries except *walltime* are required; *walltime* can be omitted or set to ``None``.
+All entries except *walltime* and *start_cwd* are required; *walltime*
+can be omitted or set to ``None``.
 
-The remote directory name is constructed in the following way:
+*DEFAULT* section
+~~~~~~~~~~~~~~~~~
 
-1. *topdir* is stripped from the local working directory to give WDIR
-2. *scratchdir*/WDIR is the directory on the remote system
+*name*
+
+  identifier of the configuration; should also be the name of the
+  configuration file, i.e. `name.cfg`
+
+*local* section
+~~~~~~~~~~~~~~~
+
+*topdir*
+
+  path component under which the local files are stored; see below
+
+*remote* section
+~~~~~~~~~~~~~~~~
+
+*hostname*
+
+  fully qualified domain name of the host; used for running ``ssh
+  hostname`` or ``scp FILES hostname:DIR``
+
+*scratchdir*
+
+  top level directory on the remote host udner which the working
+  directories are constructed; see below for how this is done
 
 
-See :class:`Manager` for how these values are used.
+*queuing_system* section
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-:func:`get_manager` creates a :class:`Manager` from a configuration file.
+*name*
+
+  identifier for the queuing system (should be a valid python
+  identifier)
+
+*qscript*
+
+  default queuing system script template; store it in ``~/.gromacswrapper/qscripts``
+
+*walltime*
+
+  maximum allowed run time on the system; job files are written in
+  such a way that Gromacs stops run at 0.99 or walltime. If ommitted
+  then the job runs until it is done (provided the queuing system
+  policy allows that)
+
+*start_cwd*
+
+  Set to ``True`` means that the queuing system requires the queuing
+  system script to ``cd`` into the job directory; this seems to be a
+  bug in some versions of PBS, which we can work-around in
+  :meth:`Manager.qsub`
+
+
 
 Queuing system Manager
 ----------------------
@@ -116,6 +192,7 @@ def get_manager_config(filename):
     cfg.add_section("remote")
     cfg.add_section("queuing_system")
     cfg.set("queuing_system", "walltime", "None")
+    cfg.set("queuing_system", "start_cwd", "False")
     cfg.set("DEFAULT", "filename", filename)
     cfg.readfp(open(filename))
     return cfg
@@ -131,7 +208,7 @@ class Manager(object):
     Derive a class from :class:`Manager` and override the attributes
 
      - :attr:`Manager._hostname` (hostname of the machine)
-     - :attr:`Manager._scratchdir` (all files and directories will be created under 
+     - :attr:`Manager._scratchdir` (all files and directories will be created under
        this scratch directory; it must be a path on the remote host)
      - :attr:`Manager._qscript` (the default queuing system script template)
      - :attr:`Manager._walltime` (if there is a limit to the run time
@@ -172,7 +249,7 @@ class Manager(object):
           *dirname*
               directory component under the remote scratch dir (should
               be different for different jobs); the default is to strip
-              *topdir* from the config file from the full path of the 
+              *topdir* from the config file from the full path of the
               current directory
           *prefix*
               identifier for job names [MD]
@@ -193,6 +270,7 @@ class Manager(object):
             'queuing_system': cfg.get('queuing_system', 'name'),
             'qscript': cfg.get('queuing_system', 'qscript'),
             'walltime': cfg.getfloat('queuing_system', 'walltime'),
+            'start_cwd': cfg.getboolean('queuing_system', 'start_cwd'),
             }
         if attribs['name'] != self.name:
             errmsg = "Sanity check failed: requested name %r does not match the Manager name %r "\
@@ -241,7 +319,7 @@ class Manager(object):
         :Returns: return code from scp
         """
         self.logger.info("Copying %r to %r" % (dirname, self.uri))
-	return call(["scp", "-r", dirname, self.uri])
+        return call(["scp", "-r", dirname, self.uri])
 
     def putfile(self, filename, dirname):
         """scp *filename* to host in *dirname*.
@@ -251,7 +329,7 @@ class Manager(object):
         """
         destdir = self.remoteuri(dirname)
         self.logger.info("Copying %(filename)r to %(destdir)r" % vars())
-	return call(["scp", filename,  destdir])
+        return call(["scp", filename,  destdir])
 
     def get(self, dirname, checkfile=None, targetdir=os.path.curdir):
         """``scp -r`` *dirname* from host into *targetdir*
@@ -269,7 +347,7 @@ class Manager(object):
         if not checkfile is None:
             if not os.path.exists(os.path.join(targetdir, dirname, checkfile)):
                 self.logger.error("Failed to get %r from %s", checkfile, self.hostname)
-                raise OSError(errno.ENOENT, checkfile, 
+                raise OSError(errno.ENOENT, checkfile,
                               "Failed to download file from %(hostname)r" % vars(self))
         return rc
 
@@ -292,7 +370,7 @@ class Manager(object):
                 self.cat(dirname, prefix=prefix, cleanup=cleanup)
             if not os.path.exists(checkpath):
                 self.logger.error("Failed to get %r from %s", checkfile, self.hostname)
-                raise OSError(errno.ENOENT, checkfile, 
+                raise OSError(errno.ENOENT, checkfile,
                               "Failed to download file from %(hostname)r" % vars(self))
         return checkpath
 
@@ -325,7 +403,7 @@ class Manager(object):
             partsdir = os.path.join(dirname, 'parts')  # default of cat
             self.logger.info("Manager.cat(): Removing cat dir %r", partsdir)
             shutil.rmtree(partsdir)
-    
+
     def qsub(self, dirname, **kwargs):
         """Submit job remotely on host.
 
@@ -334,12 +412,49 @@ class Manager(object):
            cd remotedir && qsub qscript
 
         on :attr:`Manager._hostname`. *remotedir* is *dirname* under
-        :attr:`Manager._scratchdir` and *qscript* defaults to the queuing system
-        script hat was produced from the template :attr:`Manager._qscript`.
+        :attr:`Manager._scratchdir` and *qscript* is the name of the
+        queuing system script in *remotedir*.
+
+        :Arguments:
+          *dirname*
+              directory, relative to the current one, under which the
+              all job files reside (typically, this is also were the
+              queuing system script *qscript* lives)
+          *qscript*
+              name of the queuing system script; defaults to the
+              queuing system script hat was produced from the template
+              :attr:`Manager._qscript`; searched in the current
+              directory (``.``) and under *dirname*
+          *remotedir*
+              full path to the job directory on the remote system; in
+              most cases it should be sufficient to let the programme
+              choose the appropriate value based on *dirname* and the
+              configuration of the manager
+
         """
 
         remotedir = kwargs.pop('remotedir', self.remotepath(dirname))
         qscript = kwargs.pop('qscript', os.path.basename(self.qscript))
+
+        if self.start_cwd:
+            # hack for queuing systems that require hard coding of the
+            # start directory into the queuing system script (see setup_MD below)
+            from gromacs.cbook import edit_txt
+            qscriptpath = qscript
+            if not os.path.exists(qscript):
+                # catch the common case that the qscript resides within the job dir
+                qscriptpath = os.path.join(dirname, qscript)
+            if not os.path.exists(qscriptpath):
+                logger.error("Failed to find qscript %(qscript)r under %(dirname)r or current dir.", vars())
+                raise OSError(errno.ENOENT, "Missing qscript", qscript)
+            edit_txt(qscriptpath, [('^ *STARTDIR=', '(?<==)(.*)', remotedir),])   # in-place!
+            rc = self.putfile(qscriptpath, dirname)
+            if rc != 0:
+                errmsg = "Failed to scp updated qscript %(qscriptpath)r to remote %(remotedir)r" % vars()
+                logger.error(errmsg)
+                raise IOError(rc, errmsg)
+            logger.debug("Using qscript %(qscriptpath)r with hard-coded remote cd %(remotedir)r", vars())
+
         rc = call(['ssh', self.hostname, 'cd %s && qsub %s' % (remotedir, qscript)])
         if rc == 0:
             self.logger.info("Submitted job %r on %s.", qscript, self.hostname )
@@ -380,11 +495,11 @@ class Manager(object):
         sshcmd = """files=$(ls %(remotefile)s); """ \
             """test -n "$files" && tail -n 500 $(echo $files | tr ' ' '\n' | sort | tail -n 1) """\
             """|| exit 255""" % vars()
-        p = Popen(['ssh', self.hostname, sshcmd], 
+        p = Popen(['ssh', self.hostname, sshcmd],
                   stdout=PIPE, stderr=PIPE, universal_newlines=True)
         out, err = p.communicate()
         rc = p.returncode
-        
+
         status = {'exceeded': False, 'completed': False, 'started': False}
         performance = None
         if rc == 0:
@@ -395,7 +510,7 @@ class Manager(object):
                 elif m.group('exceeded'):
                     status['exceeded'] = True
                 elif m.group('performance'):
-                    performance = dict(zip(['Mnbf/s', 'GFlops', 'ns/day', 'hour/ns'], 
+                    performance = dict(zip(['Mnbf/s', 'GFlops', 'ns/day', 'hour/ns'],
                                            map(float, m.group('performance').split())))
         elif rc == 255:
             loginfo("No output file (yet) for job on %(hostname)s." % vars(self))
@@ -416,7 +531,7 @@ class Manager(object):
             loginfo("Job on %(hostname)s is still RUNNING." % vars(self))
             if err:
                 self.logger.error("remote: %r", err)
-            lines = out.split('\n').__iter__()  
+            lines = out.split('\n').__iter__()
             values = ['NAN', 'NAN', 'NAN']   # set a stupid default in case we don't find any time step
             for line in lines:
                 if re.match('\s*Step\s+Time\s+Lambda', line):
@@ -456,7 +571,7 @@ class Manager(object):
         import math
         perf = performance or self.performance    # in ns/d
         wt = walltime or self.walltime            # max runtime of job in h (None = inf)
-        
+
         if wt is None or wt == float('inf'):
             return 1
 
@@ -464,7 +579,7 @@ class Manager(object):
             raise ValueError("No performance data available. Run get_status()?")
 
         return int(math.ceil(runtime/(perf*0.99*wt/24.)))
-        
+
     def waitfor(self, dirname, **kwargs):
         """Wait until the job associated with *dirname* is done.
 
@@ -494,15 +609,15 @@ class Manager(object):
         """Set up position restraints run and transfer to host.
 
         *kwargs* are passed to :func:`gromacs.setup.MD_restrained`
-        
+
         """
-        
+
         dirname = 'MD_POSRES'
         struct = self.local_get('em','em.pdb')
         qscript = kwargs.pop('qscript', self.qscript)
-        gromacs.setup.MD_restrained(dirname=dirname, struct=struct, qscript=qscript, 
+        gromacs.setup.MD_restrained(dirname=dirname, struct=struct, qscript=qscript,
                                     qname=self.prefix+'pr', startdir=self.remotepath(dirname),
-                                    **kwargs) 
+                                    **kwargs)
         self.put(dirname)
         self.logger.info("Run %s on %s in %s/%s" % (dirname, self.hostname, self.uri, dirname))
         self.logger.info(">> qsub('%s')", dirname)
@@ -510,7 +625,7 @@ class Manager(object):
 
     def setup_MD(self, jobnumber, struct=os.path.join('MD_POSRES', 'md.pdb'), **kwargs):
         """Set up production and transfer to host.
-        
+
         :Arguments:
           - *jobnumber*: 1,2 ...
           - *struct* is the starting structure (default from POSRES
@@ -524,16 +639,16 @@ class Manager(object):
         structure = self.local_get(os.path.dirname(struct), os.path.basename(struct))
         qscript = kwargs.pop('qscript', self.qscript)
 
-        gromacs.setup.MD(dirname=dirname, struct=structure, qscript=qscript, 
+        gromacs.setup.MD(dirname=dirname, struct=structure, qscript=qscript,
                          qname=self.prefix+jobid_s, startdir=self.remotepath(dirname),
-                         **kwargs) 
+                         **kwargs)
         self.put(dirname)
         self.logger.info("Run %s on %s in %s/%s" % (dirname, self.hostname, self.uri, dirname))
         self.logger.info("Or use %s.qsub(%r)" % (self.__class__.__name__, dirname))
 
         return dirname
-        
-    
+
+
 
 # def get_manager(name):
 #     """Factory function that creates a new Manager class, based on a config file.
@@ -541,7 +656,7 @@ class Manager(object):
 #     :Arguments:
 #        *name*
 #           name of the config file, `~/.gromacswrapper/managers/name.cfg`
-#     """    
+#     """
 #     import qsub
 #     warnings.warn("Old-style, derives from qsub.Manager", DeprecationWarning)
 #     cfg = get_manager_config(find_manager_config(name))

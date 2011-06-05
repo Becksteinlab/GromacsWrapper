@@ -56,10 +56,11 @@ LoadLeveler_ have similar constructs; e.g. PBS commands start with
 
 Lines with place holders should not have any white space at the beginning. The
 regular expression pattern ("regex") is used to find the lines for the
-replacement and the literal default values ("default") are replaced. Not all
-place holders have to occur in a template; for instance, if a queue has no run
-time limitation then one would probably not include *walltime* and *WALL_HOURS*
-place holders.
+replacement and the literal default values ("default") are replaced. (Exception:
+any value that follows an equals sign "=" is replaced, regardless of the
+default value in the table.) Not all place holders have to occur in a template;
+for instance, if a queue has no run time limitation then one would probably not
+include *walltime* and *WALL_HOURS* place holders.
 
 The line ``# JOB_ARRAY_PLACEHOLDER`` can be replaced by
 :func:`~gromacs.qsub.generate_submit_array` to produce a "job array"
@@ -116,7 +117,7 @@ they are or they will not be subject to replacement). ::
    # queuing system: PBS
 
    # set this to the same value as walltime; mdrun will stop cleanly
-   # at 0.99 * WALL_HOURS 
+   # at 0.99 * WALL_HOURS
    WALL_HOURS=0.33
    #          ++++
 
@@ -146,7 +147,7 @@ they are or they will not be subject to replacement). ::
    GMXBIN="/opt/software/SGI/gromacs/4.0.3/bin"
    MPIRUN=/usr/pbs/bin/mpiexec
    APPLICATION=$GMXBIN/mdrun_mpi
-   
+
    $MPIRUN $APPLICATION -stepout 1000 -deffnm ${DEFFNM} -s ${TPR} -c ${PDB} -cpi \
                         $MDRUN_OPTS \
                         -maxh ${WALL_HOURS} > $OUTPUT
@@ -230,7 +231,7 @@ except ImportError:
         if not rel_list:
             return os.path.curdir
         return os.path.join(*rel_list)
-    
+
 
 class QueuingSystem(object):
     """Class that represents minimum information about a batch submission system."""
@@ -284,7 +285,7 @@ class QueuingSystem(object):
         hrule = '#'+60*'-'
         lines = [
             '',
-            hrule, 
+            hrule,
             '# job array:',
             self.array_flag(directories),
             hrule,
@@ -326,7 +327,7 @@ def detect_queuing_system(scriptfile):
             return qs
     return None
 
-def generate_submit_scripts(templates, prefix=None, deffnm='md', jobname='MD', budget=None, 
+def generate_submit_scripts(templates, prefix=None, deffnm='md', jobname='MD', budget=None,
                             mdrun_opts=None, walltime=1.0, jobarray_string=None, startdir=None,
                             **kwargs):
     """Write scripts for queuing systems.
@@ -388,14 +389,14 @@ def generate_submit_scripts(templates, prefix=None, deffnm='md', jobname='MD', b
         logger.info("Setting up queuing system script %(submitscript)r..." % vars())
         # These substitution rules are documented for the user in the module doc string
         gromacs.cbook.edit_txt(template,
-                               [('^ *DEFFNM=','md', deffnm), 
+                               [('^ *DEFFNM=','md', deffnm),
                                 ('^#.*(-N|job_name)', 'GMX_MD', jobname),
                                 ('^#.*(-A|account_no)', 'BUDGET', budget),
                                 ('^#.*(-l walltime|wall_clock_limit)', '00:20:00', walltime),
-                                ('^ *WALL_HOURS=', '0\.33', wall_hours),
-                                ('^ *STARTDIR=', '\.', startdir),
-                                ('^ *MDRUN_OPTS=', '""', mdrun_opts),
-                                ('^# JOB_ARRAY_PLACEHOLDER', '^.*$', jobarray_string), 
+                                ('^ *WALL_HOURS=', '(?<==)(.*)', wall_hours),
+                                ('^ *STARTDIR=', '(?<==)(.*)', startdir),
+                                ('^ *MDRUN_OPTS=', '(?<==)(.*)', mdrun_opts),
+                                ('^# JOB_ARRAY_PLACEHOLDER', '^.*$', jobarray_string),
                                 ],
                                newname=submitscript)
         ext = os.path.splitext(submitscript)[1]
@@ -412,20 +413,20 @@ def generate_submit_array(templates, directories, **kwargs):
     For each ``work_dir`` in *directories*, the array job will
      1. cd into ``work_dir``
      2. run the job as detailed in the template
-    It will use all the queuing system directives found in the 
+    It will use all the queuing system directives found in the
     template. If more complicated set ups are required, then this
     function cannot be used.
 
     :Arguments:
        *templates*
-          Basic template for a single job; the job array logic is spliced into 
+          Basic template for a single job; the job array logic is spliced into
           the position of the line ::
               # JOB_ARRAY_PLACEHOLDER
           The appropriate commands for common queuing systems (Sun Gridengine, PBS)
-          are hard coded here. The queuing system is detected from the suffix of 
+          are hard coded here. The queuing system is detected from the suffix of
           the template.
        *directories*
-          List of directories under *dirname*. One task is set up for each 
+          List of directories under *dirname*. One task is set up for each
           directory.
        *dirname*
           The array script will be placed in this directory. The *directories*
@@ -451,6 +452,10 @@ def generate_submit_array(templates, directories, **kwargs):
     # must use config.get_templates() because we need to access the file for detecting
     return [write_script(template) for template in gromacs.config.get_templates(templates)]
 
+#-------
+# Why is Job/Manager/... still here? Isn't this already in manager.py?
+# 2011-06-05 [ob]
+
 class Job(dict):
     """Properties of a job."""
 
@@ -462,7 +467,7 @@ class Manager(object):
     Derive a class from :class:`Manager` and override the attributes
 
      - :attr:`Manager._hostname` (hostname of the machine)
-     - :attr:`Manager._scratchdir` (all files and directories will be created under 
+     - :attr:`Manager._scratchdir` (all files and directories will be created under
        this scratch directory; it must be a path on the remote host)
      - :attr:`Manager._qscript` (the default queuing system script template)
      - :attr:`Manager._walltime` (if there is a limit to the run time
@@ -488,7 +493,7 @@ class Manager(object):
     # override
     #: hostname of the super computer (**required**)
     _hostname = None
-    #: scratch dir on hostname (**required**)    
+    #: scratch dir on hostname (**required**)
     _scratchdir = None
     #: name of the template submission script appropriate for the
     #: queuing system on :attr:`Manager._hostname`; can be a path to a
@@ -570,7 +575,7 @@ class Manager(object):
         :Returns: return code from scp
         """
         self.logger.info("Copying %r to %r" % (dirname, self.uri))
-	return call(["scp", "-r", dirname, self.uri])
+        return call(["scp", "-r", dirname, self.uri])
 
     def putfile(self, filename, dirname):
         """scp *filename* to host in *dirname*.
@@ -580,7 +585,7 @@ class Manager(object):
         """
         destdir = self.remoteuri(dirname)
         self.logger.info("Copying %(filename)r to %(destdir)r" % vars())
-	return call(["scp", filename,  destdir])
+        return call(["scp", filename,  destdir])
 
     def get(self, dirname, checkfile=None, targetdir=os.path.curdir):
         """``scp -r`` *dirname* from host into *targetdir*
@@ -598,7 +603,7 @@ class Manager(object):
         if not checkfile is None:
             if not os.path.exists(os.path.join(targetdir, dirname, checkfile)):
                 self.logger.error("Failed to get %r from %s", checkfile, self.hostname)
-                raise OSError(errno.ENOENT, checkfile, 
+                raise OSError(errno.ENOENT, checkfile,
                               "Failed to download file from %(hostname)r" % vars(self))
         return rc
 
@@ -621,7 +626,7 @@ class Manager(object):
                 self.cat(dirname, prefix=prefix, cleanup=cleanup)
             if not os.path.exists(checkpath):
                 self.logger.error("Failed to get %r from %s", checkfile, self.hostname)
-                raise OSError(errno.ENOENT, checkfile, 
+                raise OSError(errno.ENOENT, checkfile,
                               "Failed to download file from %(hostname)r" % vars(self))
         return checkpath
 
@@ -654,7 +659,7 @@ class Manager(object):
             partsdir = os.path.join(dirname, 'parts')  # default of cat
             self.logger.info("Manager.cat(): Removing cat dir %r", partsdir)
             shutil.rmtree(partsdir)
-    
+
     def qsub(self, dirname, **kwargs):
         """Submit job remotely on host.
 
@@ -709,11 +714,11 @@ class Manager(object):
         sshcmd = """files=$(ls %(remotefile)s); """ \
             """test -n "$files" && tail -n 500 $(echo $files | tr ' ' '\n' | sort | tail -n 1) """\
             """|| exit 255""" % vars()
-        p = Popen(['ssh', self.hostname, sshcmd], 
+        p = Popen(['ssh', self.hostname, sshcmd],
                   stdout=PIPE, stderr=PIPE, universal_newlines=True)
         out, err = p.communicate()
         rc = p.returncode
-        
+
         status = {'exceeded': False, 'completed': False, 'started': False}
         performance = None
         if rc == 0:
@@ -724,7 +729,7 @@ class Manager(object):
                 elif m.group('exceeded'):
                     status['exceeded'] = True
                 elif m.group('performance'):
-                    performance = dict(zip(['Mnbf/s', 'GFlops', 'ns/day', 'hour/ns'], 
+                    performance = dict(zip(['Mnbf/s', 'GFlops', 'ns/day', 'hour/ns'],
                                            map(float, m.group('performance').split())))
         elif rc == 255:
             loginfo("No output file (yet) for job on %(hostname)s." % vars(self))
@@ -745,7 +750,7 @@ class Manager(object):
             loginfo("Job on %(hostname)s is still RUNNING." % vars(self))
             if err:
                 self.logger.error("remote: %r", err)
-            lines = out.split('\n').__iter__()  
+            lines = out.split('\n').__iter__()
             values = ['NAN', 'NAN', 'NAN']   # set a stupid default in case we don't find any time step
             for line in lines:
                 if re.match('\s*Step\s+Time\s+Lambda', line):
@@ -785,7 +790,7 @@ class Manager(object):
         import math
         perf = performance or self.performance    # in ns/d
         wt = walltime or self.walltime            # max runtime of job in h (None = inf)
-        
+
         if wt is None or wt == float('inf'):
             return 1
 
@@ -793,7 +798,7 @@ class Manager(object):
             raise ValueError("No performance data available. Run get_status()?")
 
         return int(math.ceil(runtime/(perf*0.99*wt/24.)))
-        
+
     def waitfor(self, dirname, **kwargs):
         """Wait until the job associated with *dirname* is done.
 
@@ -823,14 +828,14 @@ class Manager(object):
         """Set up position restraints run and transfer to host.
 
         *kwargs* are passed to :func:`gromacs.setup.MD_restrained`
-        
+
         """
-        
+
         dirname = 'MD_POSRES'
         struct = self.local_get('em','em.pdb')
         gromacs.setup.MD_restrained(dirname=dirname, struct=struct,
                                     qscript=self.qscript, qname=self.prefix+'pr',
-                                    **kwargs) 
+                                    **kwargs)
         self.put(dirname)
         self.logger.info("Run %s on %s in %s/%s" % (dirname, self.hostname, self.uri, dirname))
         self.logger.info(">> qsub('%s')", dirname)
@@ -838,7 +843,7 @@ class Manager(object):
 
     def setup_MD(self, jobnumber, struct=os.path.join('MD_POSRES', 'md.pdb'), **kwargs):
         """Set up production and transfer to host.
-        
+
         :Arguments:
           - *jobnumber*: 1,2 ...
           - *struct* is the starting structure (default from POSRES
@@ -851,9 +856,9 @@ class Manager(object):
         dirname = 'MD_'+jobid_s
         structure = self.local_get(os.path.dirname(struct), os.path.basename(struct))
 
-        gromacs.setup.MD(dirname=dirname, struct=structure, qscript=self.qscript, 
+        gromacs.setup.MD(dirname=dirname, struct=structure, qscript=self.qscript,
                          qname=self.prefix+jobid_s, startdir=self.remotepath(dirname),
-                         **kwargs) 
+                         **kwargs)
         self.put(dirname)
         self.logger.info("Run %s on %s in %s/%s" % (dirname, self.hostname, self.uri, dirname))
         self.logger.info("Or use %s.qsub(%r)" % (self.__class__.__name__, dirname))

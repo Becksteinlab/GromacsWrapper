@@ -92,7 +92,7 @@ Gromacs flags are given as python keyword arguments::
 
 Input to stdin of the command can be supplied::
 
-   gromacs.make_ndx(f='topol.tpr', o='md.ndx', 
+   gromacs.make_ndx(f='topol.tpr', o='md.ndx',
                     input=('keep "SOL"', '"SOL" | r NA | r CL', 'name 2 solvent', 'q'))
 
 Output of the command can be caught in a variable and analyzed::
@@ -117,7 +117,7 @@ warnings (:exc:`Gromacs*Warning`, :exc:`AutoCorrectionWarning`,
 
 If you want to stop execution at, for instance, a :exc:`AutoCorrectionWarning` or
 :exc:`BadParameterWarning` then use the python :mod:`warnings` filter::
- 
+
   import warnings
   warnings.simplefilter('error', gromacs.AutoCorrectionWarning)
   warnings.simplefilter('error', gromacs.BadParameterWarning)
@@ -170,7 +170,7 @@ The package version can be queried with the :func:`gromacs.get_version` function
 __docformat__ = "restructuredtext en"
 
 #: Package version; this is the only place where it is set.
-VERSION = 0,2,0
+VERSION = 0,2,1
 
 def get_version():
     """Return current package version as a string."""
@@ -230,7 +230,7 @@ class LowAccuracyWarning(Warning):
 import warnings
 # These warnings should always be displayed because other parameters
 # can have changed, eg during interactive use.
-for w in (AutoCorrectionWarning, BadParameterWarning, UsageWarning,  
+for w in (AutoCorrectionWarning, BadParameterWarning, UsageWarning,
           GromacsFailureWarning, GromacsValueWarning, LowAccuracyWarning):
     warnings.simplefilter('always', category=w)
 del w
@@ -326,7 +326,7 @@ def filter_gromacs_warnings(action, categories=None):
     *categories* must be a list of warning classes or strings.
     ``None`` selects the defaults,  :data:`gromacs.less_important_warnings`.
     """
-    
+
     if categories is None:
         categories = less_important_warnings
     for c in categories:
@@ -354,4 +354,4 @@ def enable_gromacs_warnings(categories=None):
     ``None`` selects the defaults, :data:`gromacs._less_important_warnings`.
 
     """
-    filter_gromacs_warnings('always', categories=categories)    
+    filter_gromacs_warnings('always', categories=categories)
