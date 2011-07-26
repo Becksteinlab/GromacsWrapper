@@ -42,7 +42,7 @@ directories:
    Context manager to execute a code block in a directory.
 
    * The *directory* is created if it does not exist (unless
-     *create* = ``False`` is set)   
+     *create* = ``False`` is set)
    * At the end or after an exception code always returns to
      the directory that was the current directory before entering
      the block.
@@ -109,7 +109,7 @@ def Property(func):
     See eg http://adam.gomaa.us/blog/2008/aug/11/the-python-property-builtin/
     """
     return property(**func())
-    
+
 
 class AttributeDict(dict):
     """A dictionary with pythonic access to keys as attributes --- useful for interactive work."""
@@ -131,26 +131,42 @@ class AttributeDict(dict):
         self.update(state)
 
 @contextmanager
-def openany(datasource, mode='r'):
-    """Open the datasource and close it when the context exits."""
-    stream, filename = anyopen(datasource, mode=mode)
+def openany(datasource, mode='r', **kwargs):
+    """Open the datasource and close it when the context exits.
+
+    :Arguments:
+       *datasource*
+          a stream or a filename
+       *mode*
+          ``'r'`` opens for reading, ``'w'`` for writing ['r']
+       *kwargs*
+          additional keyword arguments that are passed through to the
+          actual handler; if these are not appropriate then an
+          exception will be raised by the handler
+
+    """
+    stream, filename = anyopen(datasource, mode=mode, **kwargs)
     try:
         yield stream
     finally:
         stream.close()
 
-def anyopen(datasource, mode='r'):
+def anyopen(datasource, mode='r', **kwargs):
     """Open datasource (gzipped, bzipped, uncompressed) and return a stream.
 
     :Arguments:
-    - *datasource*: a file or a stream
-    - *mode*: 'r' or 'w'
-    """
-    # TODO: - make this act as ContextManager (and not return filename)
-    #       - need to add binary 'b' to mode for compressed files?
+       *datasource*
+          a stream or a filename
+       *mode*
+          ``'r'`` opens for reading, ``'w'`` for writing ['r']
+       *kwargs*
+          additional keyword arguments that are passed through to the
+          actual handler; if these are not appropriate then an
+          exception will be raised by the handler
 
+    """
     handlers = {'bz2': bz2.BZ2File, 'gz': gzip.open, '': file}
-    
+
     if mode.startswith('r'):
         if hasattr(datasource,'next') or hasattr(datasource,'readline'):
             stream = datasource
@@ -160,7 +176,7 @@ def anyopen(datasource, mode='r'):
             filename = datasource
             for ext in ('bz2', 'gz', ''):   # file == '' should be last
                 openfunc = handlers[ext]
-                stream = _get_stream(datasource, openfunc, mode=mode)
+                stream = _get_stream(datasource, openfunc, mode=mode, **kwargs)
                 if not stream is None:
                     break
             if stream is None:
@@ -173,12 +189,12 @@ def anyopen(datasource, mode='r'):
             stream = None
             filename = datasource
             name, ext = os.path.splitext(filename)
-            if ext.startswith('.'):
+            if ext.startswith(os.path.extsep):
                 ext = ext[1:]
             if not ext in ('bz2', 'gz'):
                 ext = ''   # anything else but bz2 or gz is just a normal file
             openfunc = handlers[ext]
-            stream = openfunc(datasource, mode=mode)
+            stream = openfunc(datasource, mode=mode, **kwargs)
             if stream is None:
                 raise IOError("Cannot open %(filename)r in mode=%(mode)r with type %(ext)r." % vars())
     else:
@@ -264,13 +280,13 @@ def find_first(filename, suffices=None):
       *filename*
          base filename; this file name is checked first
       *suffices*
-         list of suffices that are tried in turn on the root of *filename*; can contain the 
+         list of suffices that are tried in turn on the root of *filename*; can contain the
          ext separator (:data:`os.path.extsep`) or not
 
     :Returns: The first match or ``None``.
     """
     # struct is not reliable as it depends on qscript so now we just try everything...
-    
+
     root,extension = os.path.splitext(filename)
     if suffices is None:
         suffices = []
@@ -304,7 +320,7 @@ def find_files(directory, pattern):
             if fnmatch.fnmatch(basename, pattern):
                 filename = os.path.join(root, basename)
                 yield filename
-            
+
 
 class FileUtils(object):
     """Mixin class to provide additional file-related capabilities."""
@@ -326,7 +342,7 @@ class FileUtils(object):
 
         """
 
-        extension = ext or self.default_extension        
+        extension = ext or self.default_extension
         filename = self.filename(filename, ext=extension, use_my_ext=True, set_default=True)
         #: Current full path of the object for reading and writing I/O.
         self.real_filename = os.path.realpath(filename)
@@ -344,7 +360,7 @@ class FileUtils(object):
 
         The returned filename is stripped of the extension
         (``use_my_ext=False``) and if provided, another extension is
-        appended. Chooses a default if no filename is given.  
+        appended. Chooses a default if no filename is given.
 
         Raises a ``ValueError`` exception if no default file name is known.
 
@@ -355,7 +371,7 @@ class FileUtils(object):
         """
         if filename is None:
             if not hasattr(self,'_filename'):
-                self._filename = None        # add attribute to class 
+                self._filename = None        # add attribute to class
             if self._filename:
                 filename = self._filename
             else:
@@ -365,7 +381,7 @@ class FileUtils(object):
             filename, my_ext = os.path.splitext(filename)
             if set_default:                  # replaces existing default file name
                 self._filename = filename
-        if my_ext and use_my_ext:  
+        if my_ext and use_my_ext:
             ext = my_ext
         if ext is not None:
             if ext.startswith('.'):
@@ -418,7 +434,7 @@ class FileUtils(object):
             resolve = 'ignore'
         elif force is False:
             resolve = 'exception'
-            
+
         if not os.path.isfile(filename):
             return False
         else:
@@ -450,10 +466,10 @@ def iterable(obj):
         return False    # avoid iterating over characters of a string
 
     if hasattr(obj, 'next'):
-        return True    # any iterator will do 
-    try: 
+        return True    # any iterator will do
+    try:
         len(obj)       # anything else that might work
-    except TypeError: 
+    except TypeError:
         return False
     return True
 
@@ -519,7 +535,7 @@ def cat(f=None, o=None):
         msg = "failed with return code %d: cat %r > %r " % (rc, " ".join(infiles), target)
         logger.exception(msg)
         raise OSError(errno.EIO, msg, target)
-        
+
 
 # helpers for matplotlib
 def activate_subplot(numPlot):
@@ -543,7 +559,7 @@ def remove_legend(ax=None):
         ax = gca()
     ax.legend_ = None
     draw()
-    
+
 
 # time functions
 class Timedelta(datetime.timedelta):
@@ -552,7 +568,7 @@ class Timedelta(datetime.timedelta):
     Provides attributes ddays, dhours, dminutes, dseconds to measure
     the delta in normal time units.
 
-    ashours gives the total time in fractional hours. 
+    ashours gives the total time in fractional hours.
     """
 
     @property
@@ -584,7 +600,7 @@ class Timedelta(datetime.timedelta):
           ============   ==========================
           %d             day as integer
           %H             hour  [00-23]
-          %h             hours including days 
+          %h             hours including days
           %M             minute as integer [00-59]
           %S             second as integer [00-59]
           ============   ==========================
@@ -601,7 +617,7 @@ class Timedelta(datetime.timedelta):
             s = s.replace(search, replacement)
         return s
 
-    
+
 NUMBERED_PDB = re.compile(r"(?P<PREFIX>.*\D)(?P<NUMBER>\d+)\.(?P<SUFFIX>pdb)")
 
 def number_pdbs(*args, **kwargs):
