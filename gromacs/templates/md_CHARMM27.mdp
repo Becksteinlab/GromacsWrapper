@@ -1,5 +1,7 @@
 ; Template for MD with CHARMM27
 ; (tried to approximate typical CHARMM NBOND options)
+; http://www.charmm.org/documentation/c35b1/nbonds.html
+; http://www.charmm.org/documentation/c35b1/ewald.html
 ;
 ; ==================================================================
 ;      DO NOT USE THIS INPUT FILE WITHOUT CHECKING ALL SETTINGS.
@@ -39,42 +41,37 @@ pbc                      = xyz
 periodic_molecules       = no
 ; nblist cut-off
 ; NBOND CUTNB  (see notes on ELEC below)
-rlist                    = 1.2
-rlistlong                = -1
+rlist                    = 1.4
 
 ; OPTIONS FOR ELECTROSTATICS AND VDW
 ; Method for doing electrostatics
 ; From the CHARMM docs (ewald.doc):
-;   EWALD PMEWald KAPPa 0.34 ORDEr 6 CTOFNB 12.0 CUTNB 14.0
-; corresponds to rlist=1.4 rcoulomb=1.2 rcoulomb-switch=1.1
-; In LAMMPS I used: 
-;   pair_style      lj/charmm/coul/long/opt 8 10
-; which was taken as the template for the values below: 
-coulombtype              = PME-Switch
-rcoulomb-switch          = 0.8
-rcoulomb                 = 1.0
+;   NBOND EWALD PMEWald KAPPa 0.34 ORDEr 6 CTOFNB 12.0 CUTNB 14.0
+coulombtype              = PME
+rcoulomb                 = 1.2
 ; Relative dielectric constant for the medium and the reaction field
 epsilon_r                = 1
 epsilon_rf               = 1
 ; Method for doing Van der Waals
-; VSWI
+;   NBOND VATOM VSWI CTONNB 10.0 CTOFNB 12.0 CUTNB 14.0
 vdw-type                 = Switch
 ; cut-off lengths       
-rvdw-switch              = 0.8
-rvdw                     = 1.0
+rvdw-switch              = 1.0
+rvdw                     = 1.2
 ; Apply long range dispersion corrections for Energy and Pressure 
-; LRC
+;   NBOND LRC
 DispCorr                 = EnerPres
 ; Seperate tables between energy group pairs
 energygrp_table          = 
 ; Spacing for the PME/PPPM FFT grid
-; EWALD recommended spacing: 0.8 A - 1.2 A and 6th Order
+; CHARMM: EWALD recommended spacing: 0.8 A - 1.2 A and 6th Order spline
 fourierspacing           = 0.12
 ; FFT grid size, when a value is 0 fourierspacing will be used
 fourier_nx               = 0
 fourier_ny               = 0
 fourier_nz               = 0
 ; EWALD/PME/PPPM parameters
+; (possibly increase pme_order to 6 to match the CHARMM recommendation)
 pme_order                = 4
 ewald_rtol               = 1e-05
 ewald_geometry           = 3d
