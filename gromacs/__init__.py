@@ -170,7 +170,12 @@ The package version can be queried with the :func:`gromacs.get_version` function
 __docformat__ = "restructuredtext en"
 
 #: Package version; this is the only place where it is set.
-VERSION = 0,2,2
+VERSION = 0,2,3
+#: Set to ``True`` for a release. If set to ``False`` then the patch level
+#: will have the suffix "-dev".
+RELEASE = False
+if not RELEASE:
+    VERSION = VERSION[:2] + (str(VERSION[2]) + '-dev',)
 
 def get_version():
     """Return current package version as a string."""
@@ -178,7 +183,7 @@ def get_version():
 
 def get_version_tuple():
     """Return current package version as a tuple (*MAJOR*, *MINOR*, *PATCHLEVEL*)."""
-    return tuple(VERSION)
+    return tuple(map(str,VERSION))
 
 # __all__ is extended with all gromacs command instances later
 __all__ = ['config', 'tools', 'cbook']
