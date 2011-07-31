@@ -41,7 +41,9 @@ pbc                      = xyz
 periodic_molecules       = no
 ; nblist cut-off
 ; NBOND CUTNB  (see notes on ELEC below)
-rlist                    = 1.4
+; NOTE: rlist cannot be set to 1.4 because Gromacs only allows 
+; rlist == rcoulomb with PME.
+rlist                    = 1.2
 
 ; OPTIONS FOR ELECTROSTATICS AND VDW
 ; Method for doing electrostatics
