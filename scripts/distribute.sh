@@ -67,10 +67,8 @@ make_epydocs() {
 
 make_sphinx () {
   (cd doc/sphinx && make clean && make html) || die "Failed making sphinx docs"
-  (cd doc; rm -rf html; (cd sphinx/build && find html -type d) | xargs mkdir -p) && \
-      (cd doc/sphinx/build && find html -type f -exec ln -v '{}' '../../{}' \;)
   echo "Created doc/html"
-  RSYNC -vrP --delete doc/sphinx/build/html $DOCS
+  RSYNC -vrP --delete doc/html $DOCS
 }
 
 make_pdf () {
