@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.qsub – utilities for batch submission systems &mdash; GromacsWrapper v0.2.0 documentation</title>
+    <title>gromacs.qsub – utilities for batch submission systems &mdash; GromacsWrapper v0.2.3-dev documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.2.0',
+        VERSION:     '0.2.3-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.2.0 documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper v0.2.3-dev documentation" href="../../index.html" />
     <link rel="up" title="Gromacs building blocks" href="../building_blocks.html" />
     <link rel="next" title="Managing jobs remotely" href="manager.html" />
     <link rel="prev" title="gromacs.setup – Setting up a Gromacs MD run" href="setup.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="setup.html" title="gromacs.setup – Setting up a Gromacs MD run"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.2.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.2.3-dev documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" accesskey="U">Gromacs building blocks</a> &raquo;</li> 
       </ul>
@@ -146,10 +146,11 @@ submission system commands. The table shows <a class="reference external" href="
 </table>
 <p>Lines with place holders should not have any white space at the beginning. The
 regular expression pattern (&#8220;regex&#8221;) is used to find the lines for the
-replacement and the literal default values (&#8220;default&#8221;) are replaced. Not all
-place holders have to occur in a template; for instance, if a queue has no run
-time limitation then one would probably not include <em>walltime</em> and <em>WALL_HOURS</em>
-place holders.</p>
+replacement and the literal default values (&#8220;default&#8221;) are replaced. (Exception:
+any value that follows an equals sign &#8220;=&#8221; is replaced, regardless of the
+default value in the table.) Not all place holders have to occur in a template;
+for instance, if a queue has no run time limitation then one would probably not
+include <em>walltime</em> and <em>WALL_HOURS</em> place holders.</p>
 <p>The line <tt class="docutils literal"><span class="pre">#</span> <span class="pre">JOB_ARRAY_PLACEHOLDER</span></tt> can be replaced by
 <a class="reference internal" href="#gromacs.qsub.generate_submit_array" title="gromacs.qsub.generate_submit_array"><tt class="xref py py-func docutils literal"><span class="pre">generate_submit_array()</span></tt></a> to produce a &#8220;job array&#8221;
 (also known as a &#8220;task array&#8221;) script that runs a large number of
@@ -214,7 +215,7 @@ they are or they will not be subject to replacement).</p>
 # queuing system: PBS
 
 # set this to the same value as walltime; mdrun will stop cleanly
-# at 0.99 * WALL_HOURS 
+# at 0.99 * WALL_HOURS
 WALL_HOURS=0.33
 #          ++++
 
@@ -419,7 +420,7 @@ into this directory at the beginning of execution) [None]</p>
 </ol>
 </dd>
 </dl>
-<p>It will use all the queuing system directives found in the 
+<p>It will use all the queuing system directives found in the
 template. If more complicated set ups are required, then this
 function cannot be used.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -428,17 +429,17 @@ function cannot be used.</p>
 <tbody valign="top">
 <tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>templates</em></dt>
-<dd><p class="first">Basic template for a single job; the job array logic is spliced into 
+<dd><p class="first">Basic template for a single job; the job array logic is spliced into
 the position of the line</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># JOB_ARRAY_PLACEHOLDER</span>
 </pre></div>
 </div>
 <p class="last">The appropriate commands for common queuing systems (Sun Gridengine, PBS)
-are hard coded here. The queuing system is detected from the suffix of 
+are hard coded here. The queuing system is detected from the suffix of
 the template.</p>
 </dd>
 <dt><em>directories</em></dt>
-<dd><p class="first last">List of directories under <em>dirname</em>. One task is set up for each 
+<dd><p class="first last">List of directories under <em>dirname</em>. One task is set up for each
 directory.</p>
 </dd>
 <dt><em>dirname</em></dt>
@@ -535,15 +536,15 @@ directory.</p>
         <li class="right" >
           <a href="setup.html" title="gromacs.setup – Setting up a Gromacs MD run"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.2.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.2.3-dev documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" >Gromacs building blocks</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Apr 18, 2011.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+      Last updated on Aug 01, 2011.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
     </div>
   </body>
 </html>
