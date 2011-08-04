@@ -71,7 +71,7 @@ class _TEMPLATEplugin(Worker):
         """
         # specific arguments: take them before calling the super class that
         # does not know what to do with them
-        ## x1 = kwargs.pop('keyword_1',None) 
+        ## x1 = kwargs.pop('keyword_1',None)
         ## x2 = kwargs.pop('keyword_1', 1.234)   # nm
 
         # super class init: do this before doing anything else
@@ -108,7 +108,7 @@ class _TEMPLATEplugin(Worker):
 
 
     # override 'API' methods of base class
-        
+
     def run(self, cutoff=None, force=False, **gmxargs):
         """Short description of what is performed.
 
@@ -135,8 +135,8 @@ class _TEMPLATEplugin(Worker):
           *kw1*
              description
         :Returns:  a dictionary of the results and also sets ``self.results``.
-        """        
-        from gromacs.utilities import XVG
+        """
+        from gromacs.formats import XVG
 
         results = AttributeDict()
 
@@ -161,7 +161,7 @@ class _TEMPLATEplugin(Worker):
                - ``False``: only show on screen
            formats : sequence
                sequence of all formats that should be saved [('png', 'pdf')]
-           plotargs    
+           plotargs
                keyword arguments for pylab.plot()
         """
 
@@ -174,7 +174,7 @@ class _TEMPLATEplugin(Worker):
                 result.plot(**kwargs)      # This requires result classes with a plot() method!!
             except AttributeError:
                 warnings.warn("Sorry, plotting of result %(name)r is not implemented" % vars(),
-                              category=UserWarning)                
+                              category=UserWarning)
         pylab.legend(loc='best')
         if figure is True:
             for ext in extensions:
@@ -182,7 +182,7 @@ class _TEMPLATEplugin(Worker):
         elif figure:
             self.savefig(filename=figure)
 
-    
+
 
 
 # Public classes that register the worker classes
@@ -190,7 +190,7 @@ class _TEMPLATEplugin(Worker):
 
 class TEMPLATEplugin(Plugin):
     """*TEMPLATE* plugin.
-    
+
     Describe the plugin in detail here. This is what the user will
     see. Add citations etc.
 
@@ -203,7 +203,7 @@ class TEMPLATEplugin(Plugin):
     # The name and simulation parameters are always present.
 
     .. class:: TEMPLATEplugin(parameter_1[, kwparameter_2[, name[, simulation]]])
-    
+
     :Arguments:
         *parameter_1*
             required, otherwise the plugin won't be able to do anything

@@ -65,8 +65,8 @@ API requirements
   doc strings and setting the :attr:`Plugin.worker_class` class attribute to a
   :class:`Worker` class.
 
-* The corresponding worker class is derived from :class:`Worker` and must implement 
-  
+* The corresponding worker class is derived from :class:`Worker` and must implement
+
   - :meth:`Worker.__init__` which can only use keyword arguments to initialize
     the plugin. It must ensure that init methods of super classes are also
     called. See the existing plugins for details.
@@ -88,7 +88,7 @@ API requirements
 
   This also means that one cannot use the directory methods such as
   :meth:`Worker.plugindir` because they depend on :meth:`Simulation.topdir` and
-  :meth:`Simulation.plugindir`. 
+  :meth:`Simulation.plugindir`.
 
   Any initialization that requires access to the :class:`Simulation` instance
   should be moved into the :meth:`Worker._register_hook` method. It is called
@@ -131,9 +131,9 @@ Classes
    .. attribute:: Plugin.worker
 
       The :class:`Worker` instance of the plugin.
-            
 
-.. autoclass:: Worker   
+
+.. autoclass:: Worker
    :members: topdir, plugindir, savefig, _register_hook
    :show-inheritance:
 
@@ -154,12 +154,12 @@ logger = logging.getLogger("gromacs.analysis")
 class Simulation(object):
     """Class that represents one simulation.
 
-    Analysis capabilities are added via plugins. 
+    Analysis capabilities are added via plugins.
 
-    1. Set the *active plugin* with the :meth:`Simulation.set_plugin` method. 
-    2. Analyze the trajectory with the active plugin by calling the 
+    1. Set the *active plugin* with the :meth:`Simulation.set_plugin` method.
+    2. Analyze the trajectory with the active plugin by calling the
        :meth:`Simulation.run` method.
-    3. Analyze the output from :meth:`run` with :meth:`Simulation.analyze`; results are stored 
+    3. Analyze the output from :meth:`run` with :meth:`Simulation.analyze`; results are stored
        in the plugin's :attr:`~Worker.results` dictionary.
     4. Plot results with :meth:`Simulation.plot`.
     """
@@ -173,7 +173,7 @@ class Simulation(object):
              Any object that contains the attributes *tpr*, *xtc*,
              and optionally *ndx*
              (e.g. :class:`gromacs.cbook.Transformer`). The individual keywords such
-             as *xtc* override the values in *sim*.    
+             as *xtc* override the values in *sim*.
            *tpr*
              Gromacs tpr file (**required**)
            *xtc*
@@ -238,7 +238,7 @@ class Simulation(object):
         #      all instances using register() ?
         # XXX: ... this API should be cleaned up. It seems to be connected
         #      back and forth in vicious circles. -- OB 2009-07-10
-        
+
 
         plugins = kwargs.pop('plugins', [])
         # list of tuples (plugin, kwargs) or just (plugin,) if no kwords required (eg if plugin is an instance)
@@ -260,6 +260,8 @@ class Simulation(object):
         # setup so let's not pretend it does: hence comment out the super-init
         # call:
         ## super(Simulation, self).__init__(**kwargs)
+        logger.info("Simulation instance initialised.")
+        logger.info(str(self))
 
     def add_plugin(self, plugin, **kwargs):
         """Add a plugin to the registry.
@@ -281,14 +283,14 @@ class Simulation(object):
                corresponding class is added. In both cases any parameters for
                initizlization should be provided.
 
-               If *plugin* is already a :class:`Plugin` instance then the kwargs 
+               If *plugin* is already a :class:`Plugin` instance then the kwargs
                will be ignored.
             *kwargs*
                The kwargs are specific for the plugin and should be
                described in its documentation.
         """
         # simulation=self must be provided so that plugin knows who owns it
-        
+
         try:
             plugin.register(simulation=self)
         except (TypeError, AttributeError):
@@ -298,10 +300,10 @@ class Simulation(object):
                 plugin = plugins.__plugin_classes__[plugin]
             # plugin registers itself in self.plugins
             plugin(simulation=self, **kwargs)  # simulation=self is REQUIRED!
-        
+
 
     def topdir(self,*args):
-        """Returns a path under self.analysis_dir, which is guaranteed to exist. 
+        """Returns a path under self.analysis_dir, which is guaranteed to exist.
 
         .. Note:: Parent dirs are created if necessary."""
         p = os.path.join(self.analysis_dir, *args)
@@ -373,7 +375,7 @@ class Simulation(object):
 
     def analyze(self,plugin_name=None,**kwargs):
         """Run analysis for the plugin."""
-        return self.get_plugin(plugin_name).analyze(**kwargs)    
+        return self.get_plugin(plugin_name).analyze(**kwargs)
 
     def analyze_all(self,**kwargs):
         """Execute the analyze() method for all registered plugins."""
@@ -397,7 +399,7 @@ class Simulation(object):
               ultimately by :func:`pylab.plot`)
         """
         kwargs['figure'] = figure
-        return self.get_plugin(plugin_name).plot(**kwargs)    
+        return self.get_plugin(plugin_name).plot(**kwargs)
 
     def _apply_all(self, func, **kwargs):
         """Execute *func* for all plugins."""
@@ -407,7 +409,7 @@ class Simulation(object):
         return results
 
     def __str__(self):
-        return 'Simulation(tpr=%(tpr)r,xtc=%(xtc)r,analysisdir=%(analysis_dir)r)' % vars(self)
+        return 'Simulation(tpr=%(tpr)r,xtc=%(xtc)r,edr=%(edr),analysisdir=%(analysis_dir)r)' % vars(self)
     def __repr__(self):
         return str(self)
 
@@ -423,7 +425,7 @@ class Worker(FileUtils):
 
     def __init__(self,**kwargs):
         """Set up Worker class.
-        
+
         :Keywords:
           *plugin* : instance
              The :class:`Plugin` instance that owns this worker. **Must be supplied.**
@@ -435,7 +437,7 @@ class Worker(FileUtils):
         """
 
         self.plugin = kwargs.pop('plugin', None)
-        """:class:`Plugin` instance that owns this Worker."""        
+        """:class:`Plugin` instance that owns this Worker."""
         assert not self.plugin is None                   # must be supplied, non-opt kw arg
         self.plugin_name = self.plugin.plugin_name
         """Name of the plugin that this Worker belongs to."""
@@ -462,8 +464,8 @@ class Worker(FileUtils):
         """
 
         simulation = kwargs.pop('simulation', self.simulation)
-        # XXX: should we 
-        # XXX: 'try: super(Worker, self)._register_hook(**kwargs) except AttributeError: pass' 
+        # XXX: should we
+        # XXX: 'try: super(Worker, self)._register_hook(**kwargs) except AttributeError: pass'
         # XXX: just in case?
         if not simulation is None:
             self.simulation = simulation
@@ -471,7 +473,7 @@ class Worker(FileUtils):
     def topdir(self, *args):
         """Returns a directory located under the simulation top directory."""
         return self.simulation.topdir(*args)
-    
+
     def plugindir(self, *args):
         """Returns a directory located under the plugin top directory."""
         return self.topdir(self.location, *args)
@@ -503,7 +505,7 @@ class Worker(FileUtils):
 
     def store_xvg(self, name, a, **kwargs):
         """Store array *a* as :class:`~gromacs.formats.XVG` in result *name*.
-       
+
         kwargs are passed to :class:`gromacs.formats.XVG`.
 
         This is a helper method that simplifies the task of storing
@@ -519,9 +521,9 @@ class Worker(FileUtils):
         xvg.set(a)
         xvg.write(filename)
         self.results[name] = xvg
-        self.parameters.filenames[name] = filename        
+        self.parameters.filenames[name] = filename
         return filename
-            
+
     def __repr__(self):
         """Represent the worker with the plugin name."""
         return "<%s (name %s) Worker>" % (self.plugin.__class__.__name__, self.plugin_name)
@@ -551,7 +553,7 @@ class Plugin(object):
               interactions with the user. There are no sanity checks:
               A newer plugin with the same *name* simply replaces the
               previous one.
-    """    
+    """
     #: actual plugin :class:`gromacs.analysis.core.Worker` class (name with leading underscore)
     worker_class = None
 
@@ -592,13 +594,13 @@ class Plugin(object):
         #: The :class:`Worker` instance of the plugin.
         self.worker = self.worker_class(**kwargs)      # create Worker instance
 
-        #: The :class:`Simulation` instance who owns the plugin. Can be ``None`` 
+        #: The :class:`Simulation` instance who owns the plugin. Can be ``None``
         #: until a successful call to :meth:`~Plugin.register`.
         self.simulation = simulation
 
         if not simulation is None:                     # can delay registration
             self.register(simulation)
-            
+
         super(Plugin, self).__init__()      # maybe pointless because all kwargs go to Worker
 
     def register(self, simulation):
@@ -627,4 +629,4 @@ class Plugin(object):
                 self.worker.__doc__ = self.__doc__ + "\n"+header+"\n" + self.worker.__doc__
         except AttributeError:
             pass
-            
+

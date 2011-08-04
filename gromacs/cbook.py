@@ -29,7 +29,7 @@ problem (see also `Manipulating trajectories and structures`_):
 Manipulating trajectories and structures
 ----------------------------------------
 
-Standard invocations for manipulating trajectories. 
+Standard invocations for manipulating trajectories.
 
 .. function:: trj_compact([s="md.tpr", f="md.xtc", o="compact.xtc"[, ...]])
 
@@ -48,7 +48,7 @@ Standard invocations for manipulating trajectories.
    changed with the *input* = ``('backbone', 'protein','system')`` keyword.
 
    .. Note:: Gromacs 4.x only
-    
+
 .. autofunction:: trj_fitandcenter
 .. autofunction:: cat
 .. autoclass:: Frames
@@ -61,7 +61,7 @@ Processing output
 -----------------
 
 There are cases when a script has to to do different things depending
-on the output from a Gromacs tool. 
+on the output from a Gromacs tool.
 
 For instance, a common case is to check the total charge after
 grompping a tpr file. The ``grompp_qtot`` function does just that.
@@ -120,7 +120,7 @@ file. For specialized cases the two following functions are useful:
 # * the underlying gromacs tool is executed to extract the help string; this
 #   adds to the import time
 # * adding documentation is awkward
-# 
+#
 # For more complicated cases one is probably better off by properly deriving a
 # new class and set arguments explicitly in init (using kwargs['flag'] =
 # default) ... or I can write some meta(??) class to do this nicely
@@ -196,7 +196,7 @@ def trj_fitandcenter(xy=False, **kwargs):
        *o*
            output trajectory
        *input*
-           A list with three groups. The default is 
+           A list with three groups. The default is
                ['backbone', 'protein','system']
            The fit command uses all three (1st for least square fit,
            2nd for centering, 3rd for output), the centered/make-whole stage use
@@ -247,9 +247,9 @@ def trj_fitandcenter(xy=False, **kwargs):
 
     We follow the `g_spatial documentation`_ in preparing the trajectories::
 
-       trjconv -s a.tpr -f a.xtc -o b.xtc -center tric -ur compact -pbc mol
+       trjconv -s a.tpr -f a.xtc -o b.xtc -center -boxcenter tric -ur compact -pbc mol
        trjconv -s a.tpr -f b.xtc -o c.xtc -fit rot+trans
-    
+
     .. _`g_spatial documentation`: http://www.gromacs.org/Documentation/Gromacs_Utilities/g_spatial
     """
     if xy:
@@ -257,7 +257,7 @@ def trj_fitandcenter(xy=False, **kwargs):
         kwargs.pop('fit', None)
     else:
         fitmode = kwargs.pop('fit', 'rot+trans')  # user can use progressive, too
-        
+
     intrj = kwargs.pop('f', None)
     # get the correct suffix for the intermediate step: only trr will
     # keep velocities/forces!
@@ -277,9 +277,9 @@ def trj_fitandcenter(xy=False, **kwargs):
             raise ValueError("argument s must be a pair of tpr/pdb files or a single structure file")
     else:
         compact_structure = fit_structure = structures
-        
 
-    inpfit = kwargs.pop('input', ('backbone', 'protein','system'))    
+
+    inpfit = kwargs.pop('input', ('backbone', 'protein','system'))
     try:
         _inpcompact = inpfit[1:]     # use 2nd and 3rd group for compact
     except TypeError:
@@ -295,15 +295,15 @@ def trj_fitandcenter(xy=False, **kwargs):
     logger.debug("Writing temporary trajectory %(tmptrj)r (will be auto-cleaned)." % vars())
     sys.stdout.flush()
     try:
-        gromacs.trjconv(s=compact_structure, f=intrj, o=tmptrj, n=ndxcompact, 
+        gromacs.trjconv(s=compact_structure, f=intrj, o=tmptrj, n=ndxcompact,
                         ur='compact', center=True, boxcenter='tric', pbc='mol',
                         input=inpcompact, **kwargs)
         # explicitly set pbc="none" for the fitting stage (anything else will produce rubbish and/or
         # complaints from Gromacs)
         kwargs['pbc'] = "none"
         if compact_structure == fit_structure:
-            # fit as ususal, including centering 
-            # (Is center=True really necessary? -- note, if I remove center=True then 
+            # fit as ususal, including centering
+            # (Is center=True really necessary? -- note, if I remove center=True then
             # I MUST fiddle inpfit as below!!)
             gromacs.trjconv(s=fit_structure, f=tmptrj, o=outtrj, n=ndx, fit=fitmode, center=True, input=inpfit, **kwargs)
         else:
@@ -313,7 +313,7 @@ def trj_fitandcenter(xy=False, **kwargs):
     finally:
         utilities.unlink_gmx(tmptrj)
 
-def cat(prefix="md", dirname=os.path.curdir, partsdir="parts", fulldir="full", 
+def cat(prefix="md", dirname=os.path.curdir, partsdir="parts", fulldir="full",
         resolve_multi="pass"):
     """Concatenate all parts of a simulation.
 
@@ -321,11 +321,11 @@ def cat(prefix="md", dirname=os.path.curdir, partsdir="parts", fulldir="full",
     prefix.part0002.xtc, prefix.part0003.xtc, ... are
 
        1) moved to the *partsdir* (under *dirname*)
-       2) concatenated with the Gromacs tools to yield prefix.xtc, prefix.trr, 
+       2) concatenated with the Gromacs tools to yield prefix.xtc, prefix.trr,
           prefix.edr, prefix.gro (or prefix.md) in *dirname*
        3) Store these trajectories in *fulldir*
 
-    .. Note:: Trajectory files are *never* deleted by this function to avoid 
+    .. Note:: Trajectory files are *never* deleted by this function to avoid
               data loss in case of bugs. You will have to clean up yourself
               by deleting *dirname*/*partsdir*.
 
@@ -355,7 +355,7 @@ def cat(prefix="md", dirname=os.path.curdir, partsdir="parts", fulldir="full",
              directory where to store the input files (they are moved out of the way);
              *partsdir* must be manually deleted [parts]
         *fulldir*
-             directory where to store the final results [full]           
+             directory where to store the final results [full]
     """
 
     gmxcat = {'xtc': gromacs.trjcat,
@@ -373,7 +373,7 @@ def cat(prefix="md", dirname=os.path.curdir, partsdir="parts", fulldir="full",
             return None
         nonempty_files = []
         for f in filenames:
-            if os.stat(f).st_size == 0:                
+            if os.stat(f).st_size == 0:
                 logger.warn("File %(f)r is empty, skipping" % vars())
                 continue
             if os.path.islink(f):
@@ -429,7 +429,7 @@ def cat(prefix="md", dirname=os.path.curdir, partsdir="parts", fulldir="full",
             logger.info("[%(dirname)s] collected final structure %(final)r "
                         "(from %(pick)r)", vars())
 
-                        
+
     partsdirpath = utilities.realpath(dirname, partsdir)
     logger.warn("[%(dirname)s] cat() complete in %(fulldir)r but original files "
                 "in %(partsdirpath)r must be manually removed", vars())
@@ -445,7 +445,7 @@ def glob_parts(prefix, ext):
 
 class Frames(object):
     """A iterator that transparently provides frames from a trajectory.
-    
+
     The iterator chops a trajectory into individual frames for
     analysis tools that only work on separate structures such as
     ``gro`` or ``pdb`` files. Instead of turning the whole trajectory
@@ -464,7 +464,7 @@ class Frames(object):
                  the *dt* option or similar to keep the number of frames
                  manageable.
     """
-    
+
     def __init__(self, structure, trj, maxframes=None, format='pdb', **kwargs):
         """Set up the Frames iterator.
 
@@ -483,7 +483,7 @@ class Frames(object):
              All other arguments are passed to
              `class:~gromacs.tools.Trjconv`; the only options that
              cannot be changed are *sep* and the output file name *o*.
-             
+
         """
         self.structure = structure  # tpr or equivalent
         self.trj = trj              # xtc, trr, ...
@@ -498,8 +498,8 @@ class Frames(object):
         kwargs['sep'] = True
         kwargs['o'] = self.frameprefix + '.' + format
         kwargs.setdefault('input', ('System',))
-        self.extractor = tools.Trjconv(s=self.structure, f=self.trj, **kwargs)        
-        
+        self.extractor = tools.Trjconv(s=self.structure, f=self.trj, **kwargs)
+
         #: Holds the current frame number of the currently extracted
         #: batch of frames. Increases when iterating.
         self.framenumber = 0
@@ -528,12 +528,12 @@ class Frames(object):
             frames = self.all_frames
 
         # filenames are 'Frame0.pdb', 'Frame11.pdb', ... so I must
-        # order manually because glob does not give it in sequence.        
+        # order manually because glob does not give it in sequence.
         for i in xrange(len(frames)):
             self.framenumber = i
             yield self.current_framename
         self.totalframes += len(frames)
-            
+
     def delete_frames(self):
         """Delete all frames."""
         for frame in glob.glob(self.frameglob):
@@ -554,7 +554,7 @@ class Frames(object):
 def grompp_qtot(*args, **kwargs):
     """Run ``gromacs.grompp`` and return the total charge of the  system.
 
-    :Arguments:  
+    :Arguments:
        The arguments are the ones one would pass to :func:`gromacs.grompp`.
     :Returns:
        The total charge as reported
@@ -564,7 +564,7 @@ def grompp_qtot(*args, **kwargs):
     * The stdout output of grompp is not shown. This can make debugging
       pretty hard.  Try running the normal :func:`gromacs.grompp` command and
       analyze the output if the debugging messages are not sufficient.
-    * Check that ``qtot`` is correct; because the function is based on pattern 
+    * Check that ``qtot`` is correct; because the function is based on pattern
       matching of the output it can break when the output format changes.
     """
 
@@ -634,7 +634,7 @@ def add_mdp_includes(topology=None, kwargs=None):
         topology_dir = os.path.dirname(topology)
         include_dirs = ['.', '..', topology_dir]   # should . & .. always be added?
 
-    include_dirs.extend(asiterable(kwargs.pop('includes', [])))  # includes can be a list or a string    
+    include_dirs.extend(asiterable(kwargs.pop('includes', [])))  # includes can be a list or a string
 
     # 1. setdefault: we do nothing if user defined include
     # 2. modify input in place!
@@ -675,7 +675,7 @@ def create_portable_topology(topol, struct, **kwargs):
         try:
             gromacs.grompp(v=False, f=mdp.name, p=topol, c=struct, pp=processed)
         finally:
-            utilities.unlink_gmx('topol.tpr', 'mdout.mdp')            
+            utilities.unlink_gmx('topol.tpr', 'mdout.mdp')
     return utilities.realpath(processed)
 
 def get_volume(f):
@@ -699,7 +699,7 @@ def edit_mdp(mdp, new_mdp=None, extend_parameters=None, **substitutions):
     """Change values in a Gromacs mdp file.
 
     Parameters and values are supplied as substitutions, eg ``nsteps=1000``.
-    
+
     By default the template mdp file is **overwritten in place**.
 
     If a parameter does not exist in the template then it cannot be substituted
@@ -717,8 +717,8 @@ def edit_mdp(mdp, new_mdp=None, extend_parameters=None, **substitutions):
         *new_mdp* : filename
             filename of alternative output mdp file [None]
         *extend_parameters* : string or list of strings
-            single parameter or list of parameters for which the new values 
-            should be appended to the existing value in the mdp file. This 
+            single parameter or list of parameters for which the new values
+            should be appended to the existing value in the mdp file. This
             makes mostly sense for a single parameter, namely 'include', which
             is set as the default. Set to ``[]`` to disable. ['include']
         *substitutions*
@@ -729,7 +729,7 @@ def edit_mdp(mdp, new_mdp=None, extend_parameters=None, **substitutions):
 
                ref_t=[310,310,310] --->  ref_t = 310 310 310
 
-    :Returns:    
+    :Returns:
         Dict of parameters that have *not* been substituted.
 
     **Example** ::
@@ -737,16 +737,16 @@ def edit_mdp(mdp, new_mdp=None, extend_parameters=None, **substitutions):
        edit_mdp('md.mdp', new_mdp='long_md.mdp', nsteps=100000, nstxtcout=1000, lincs_iter=2)
 
     .. Note::
-    
+
        * Dashes in Gromacs mdp parameters have to be replaced by an underscore
          when supplied as python keyword arguments (a limitation of python). For example
-         the MDP syntax is  ``lincs-iter = 4`` but the corresponding  keyword would be 
+         the MDP syntax is  ``lincs-iter = 4`` but the corresponding  keyword would be
          ``lincs_iter = 4``.
        * If the keyword is set as a dict key, eg ``mdp_params['lincs-iter']=4`` then one
          does not have to substitute.
        * Parameters *aa_bb* and *aa-bb* are considered the same (although this should
-         not be a problem in practice because there are no mdp parameters that only 
-         differ by a underscore). 
+         not be a problem in practice because there are no mdp parameters that only
+         differ by a underscore).
        * This code is more compact in ``Perl`` as one can use ``s///`` operators:
          ``s/^(\s*${key}\s*=\s*).*/$1${val}/``
 
@@ -773,7 +773,7 @@ def edit_mdp(mdp, new_mdp=None, extend_parameters=None, **substitutions):
                       re.compile("""\
                        (?P<assignment>\s*%s\s*=\s*)  # parameter == everything before the value
                        (?P<value>[^;]*)              # value (stop before comment=;)
-                       (?P<comment>\s*;.*)?          # optional comment           
+                       (?P<comment>\s*;.*)?          # optional comment
                        """ % demangled(parameter), re.VERBOSE))
                      for parameter in substitutions])
 
@@ -832,12 +832,12 @@ def edit_txt(filename, substitutions, newname=None):
            substitution commands (see below for format)
        *newname*
            output filename; if ``None`` then *filename* is changed in
-           place [``None``]       
+           place [``None``]
 
     *substitutions* is a list of triplets; the first two elements are regular
     expression strings, the last is the substitution value. It mimics
     ``sed`` search and replace. The rules for *substitutions*:
-        
+
     .. productionlist::
        substitutions: "[" search_replace_tuple, ... "]"
        search_replace_tuple: "(" line_match_RE "," search_RE "," replacement ")"
@@ -856,10 +856,10 @@ def edit_txt(filename, substitutions, newname=None):
     - ``False``: the line is deleted (even if other rules match)
 
     .. note::
-    
+
        * No sanity checks are performed and the substitutions must be supplied
          exactly as shown.
-       * All substitutions are applied to a line; thus the order of the substitution 
+       * All substitutions are applied to a line; thus the order of the substitution
          commands may matter when one substitution generates a match for a subsequent rule.
        * If replacement is set to ``None`` then the whole expression is ignored and
          whatever is in the template is used. To unset values you must provided an
@@ -882,7 +882,7 @@ def edit_txt(filename, substitutions, newname=None):
         for line in src:
             keep_line = True
             for subst in _substitutions:
-                m = subst['lRE'].match(line)    
+                m = subst['lRE'].match(line)
                 if m:              # apply substition to this line?
                     logger.debug('match:    '+line.rstrip())
                     if subst['repl'] is False:   # special rule: delete line
@@ -904,7 +904,7 @@ def edit_txt(filename, substitutions, newname=None):
 def remove_molecules_from_topology(filename, **kwargs):
     """Remove autogenerated [ molecules ] entries from *filename*.
 
-    Valid entries in ``[ molecules ]`` below the default *marker* 
+    Valid entries in ``[ molecules ]`` below the default *marker*
     are removed. For example, a topology file such as ::
 
        [ molecules ]
@@ -912,11 +912,11 @@ def remove_molecules_from_topology(filename, **kwargs):
        SOL      213
        ; The next line is the marker!
        ; Gromacs auto-generated entries follow:
-       SOL            12345        
-       NA+     15                  
-       CL-      16                 
+       SOL            12345
+       NA+     15
+       CL-      16
        ; This is a comment that is NOT deleted.
-       SOL            333          
+       SOL            333
 
     would become::
 
@@ -932,13 +932,13 @@ def remove_molecules_from_topology(filename, **kwargs):
 
     In order to use this function, the marker line has to be manually
     added to the topology file.
-   
+
     :Arguments:
       *filename*
          The topology file that includes the  ``[ molecules ]`` section.
          It is **edited in place**.
       *marker*
-         Any ``[ molecules ]`` entries below this pattern (python regular 
+         Any ``[ molecules ]`` entries below this pattern (python regular
          expression) are removed. Leading white space is ignored. ``None``
          uses the default as described above.
     """
@@ -989,7 +989,7 @@ NDXLIST = re.compile(r""">\s+\n    # '> ' marker line from '' input (input not e
                     \n
                    )+              # multiple repeats
                   )""", re.VERBOSE)
-#: compiled regular expression to match a single line of 
+#: compiled regular expression to match a single line of
 #: ``make_ndx`` output (e.g. after a successful group creation)
 NDXGROUP = re.compile(r"""
                      \s*(?P<GROUPNUMBER>\d+)      # group number
@@ -1002,7 +1002,7 @@ def make_ndx_captured(**kwargs):
 
     Standard :func:`~gromacs.make_ndx` command with the input and
     output pre-set in such a way that it can be conveniently used for
-    :func:`parse_ndxlist`.     
+    :func:`parse_ndxlist`.
 
     Example::
       ndx_groups = parse_ndxlist(make_ndx_captured(n=ndx)[0])
@@ -1025,10 +1025,10 @@ def make_ndx_captured(**kwargs):
 def get_ndx_groups(ndx, **kwargs):
     """Return a list of index groups in the index file *ndx*.
 
-    :Arguments:  
+    :Arguments:
         - *ndx*  is a Gromacs index file.
         - kwargs are passed to :func:`make_ndx_captured`.
-        
+
     :Returns:
         list of groups as supplied by :func:`parse_ndxlist`
 
@@ -1067,9 +1067,9 @@ def parse_ndxlist(output):
            number of the group (starts at 0)
        natoms
            number of atoms in the group
-           
+
     """
-    
+
     m = NDXLIST.search(output)    # make sure we pick up a proper full list
     grouplist = m.group('LIST')
     return parse_groups(grouplist)
@@ -1095,16 +1095,16 @@ class IndexBuilder(object):
     **Example**
 
        How to use the :class:`IndexBuilder`::
- 
-          G = gromacs.cbook.IndexBuilder('md_posres.pdb', 
-                        ['S312:OG','T313:OG1','A38:O','A309:O','@a62549 & r NA'], 
+
+          G = gromacs.cbook.IndexBuilder('md_posres.pdb',
+                        ['S312:OG','T313:OG1','A38:O','A309:O','@a62549 & r NA'],
                         offset=-9, out_ndx='selection.ndx')
           groupname, ndx = G.combine()
           del G
 
        The residue numbers are given with their canonical resids from the
        sequence or pdb. *offset=-9* says that one calculates Gromacs topology
-       resids by subtracting 9 from the canonical resid. 
+       resids by subtracting 9 from the canonical resid.
 
        The combined selection is ``OR`` ed by default and written to
        *selection.ndx*. One can also add all the groups in the initial *ndx*
@@ -1162,7 +1162,7 @@ class IndexBuilder(object):
                      name.
 
                      example: ``"S312:OA"`` or ``"A22"`` (equivalent to ``"A22:CA"``)
-                 
+
                  ("<1-letter aa code><resid>", "<1-letter aa code><resid>, ["<atom name>"])
 
                     Selects a *range* of residues. If only two residue
@@ -1186,7 +1186,7 @@ class IndexBuilder(object):
 
            offset : int, dict
               This number is added to the resids in the first selection scheme; this
-              allows names to be the same as in a crystal structure. If offset is a 
+              allows names to be the same as in a crystal structure. If offset is a
               dict then it is used to directly look up the resids.
 
            ndx : filename or list of filenames
@@ -1194,15 +1194,15 @@ class IndexBuilder(object):
 
            out_ndx : filename
               Output index file.
-              
+
         """
         self.structure = struct
         self.ndx = ndx
         self.output = out_ndx
         self.name_all = name_all
-        #: *offset* as a number is added to the resids in the first selection 
+        #: *offset* as a number is added to the resids in the first selection
         #: scheme; this
-        #: allows names to be the same as in a crystal structure. If *offset* is a 
+        #: allows names to be the same as in a crystal structure. If *offset* is a
         #: dict then it is used to directly look up the resids. Use :meth:`gmx_resid`
         #: to transform a crystal resid to a gromacs resid.
         #:
@@ -1219,8 +1219,8 @@ class IndexBuilder(object):
         self.selections = selections
         if names is None:
             names = [None] * len(selections)
-        
-        #: Specialized ``make_ndx`` that  always uses same structure 
+
+        #: Specialized ``make_ndx`` that  always uses same structure
         #: and redirection (can be overridden)
         self.make_ndx = tools.Make_ndx(f=self.structure, n=self.ndx,
                                        stdout=False, stderr=False)
@@ -1228,9 +1228,9 @@ class IndexBuilder(object):
         #: dict, keyed by group name and pointing to index file for group
         #: (Groups are built in separate files because that is more robust
         #: as I can clear groups easily.)
-        self.indexfiles = dict([self.parse_selection(selection, name) 
+        self.indexfiles = dict([self.parse_selection(selection, name)
                                 for selection, name in zip(selections, names)])
-        
+
     @property
     def names(self):
         """Names of all generated index groups."""
@@ -1249,7 +1249,7 @@ class IndexBuilder(object):
     def combine(self, name_all=None, out_ndx=None, operation='|', defaultgroups=False):
         """Combine individual groups into a single one and write output.
 
-        :Keywords:         
+        :Keywords:
            name_all : string
               Name of the combined group, ``None`` generates a name.  [``None``]
            out_ndx : filename
@@ -1260,7 +1260,7 @@ class IndexBuilder(object):
               Logical operation that is used to generate the combined group from
               the individual groups: "|" (OR) or "&" (AND) ["|"]
            defaultgroups : bool
-              ``True``: append everything to the default groups produced by 
+              ``True``: append everything to the default groups produced by
               :program:`make_ndx` (or rather, the groups provided in the ndx file on
               initialization --- if this was ``None`` then these are truly default groups);
               ``False``: only use the generated groups
@@ -1278,11 +1278,11 @@ class IndexBuilder(object):
         if name_all is None:
             name_all = self.name_all or operation.join(self.indexfiles)
         if not operation in ('|', '&'):
-            raise ValueError("Illegal operation %r, only '|' (OR) and '&' (AND) allowed." % 
+            raise ValueError("Illegal operation %r, only '|' (OR) and '&' (AND) allowed." %
                              operation)
         if out_ndx is None:
             out_ndx = self.output
-            
+
         if defaultgroups:
             # make a default file (using the original ndx where provided!!)
             fd, default_ndx = tempfile.mkstemp(suffix='.ndx', prefix='default__')
@@ -1306,14 +1306,14 @@ class IndexBuilder(object):
                    '', 'q']
             rc,out,err = self.make_ndx(n=ndxfiles, o=tmp_ndx, input=cmd)
             if self._is_empty_group(out):
-                warnings.warn("No atoms found for %(cmd)r" % vars(), 
+                warnings.warn("No atoms found for %(cmd)r" % vars(),
                               category=BadParameterWarning)
 
             # second pass for naming, sigh (or: use NDX ?)
             groups = parse_ndxlist(out)
             last = groups[-1]
             # name this group
-            name_cmd = ["name %d %s" % (last['nr'], name_all), 
+            name_cmd = ["name %d %s" % (last['nr'], name_all),
                         'q']
             rc,out,err = self.make_ndx(n=tmp_ndx, o=out_ndx, input=name_cmd)
             # For debugging, look at out and err or set stdout=True, stderr=True
@@ -1324,7 +1324,7 @@ class IndexBuilder(object):
             utilities.unlink_gmx(tmp_ndx)
             if defaultgroups:
                 utilities.unlink_gmx(default_ndx)
-        
+
         return name_all, out_ndx
 
     def cat(self, out_ndx=None):
@@ -1336,8 +1336,8 @@ class IndexBuilder(object):
 
         :Arguments:
            out_ndx : filename
-              Name of the output index file; if ``None`` then use the default 
-              provided to the constructore. [``None``]. 
+              Name of the output index file; if ``None`` then use the default
+              provided to the constructore. [``None``].
         """
         if out_ndx is None:
             out_ndx = self.output
@@ -1360,11 +1360,11 @@ class IndexBuilder(object):
 
     def _process_command(self, command, name=None):
         """Process ``make_ndx`` command and  return name and temp index file."""
-    
-        self._command_counter += 1    
+
+        self._command_counter += 1
         if name is None:
             name = "CMD%03d" % self._command_counter
-    
+
         # Need to build it with two make_ndx calls because I cannot reliably
         # name the new group without knowing its number.
         try:
@@ -1381,7 +1381,7 @@ class IndexBuilder(object):
             last = groups[-1]
             # reduce and name this group
             fd, ndx = tempfile.mkstemp(suffix='.ndx', prefix=name+'__')
-            name_cmd = ["keep %d" % last['nr'], 
+            name_cmd = ["keep %d" % last['nr'],
                         "name 0 %s" % name, 'q']
             rc,out,err = self.make_ndx(n=tmp_ndx, o=ndx, input=name_cmd)
         finally:
@@ -1398,9 +1398,9 @@ class IndexBuilder(object):
                  (?P<resid>\d+)                    # resid
                  (:                                # separator ':'
                    (?P<atom>\w+)                   # atom name
-                 )?                                # possibly one 
+                 )?                                # possibly one
             """, re.VERBOSE)
-    
+
     def _process_residue(self, selection, name=None):
         """Process residue/atom selection and return name and temp index file."""
 
@@ -1424,7 +1424,7 @@ class IndexBuilder(object):
 
         #: select residue <gmx_resname><gmx_resid> atom <gmx_atomname>
         _selection = 'r %(gmx_resid)d & r %(gmx_resname)s & a %(gmx_atomname)s' % vars()
-        cmd = ['keep 0', 'del 0', 
+        cmd = ['keep 0', 'del 0',
                _selection,
                'name 0 %(name)s' % vars(),
                'q']
@@ -1442,11 +1442,11 @@ class IndexBuilder(object):
         """Process a range selection.
 
         ("S234", "A300", "CA")   --> selected all CA in this range
-        ("S234", "A300")         --> selected all atoms in this range        
+        ("S234", "A300")         --> selected all atoms in this range
 
         .. Note:: Ignores residue type, only cares about the resid (but still required)
         """
-        
+
         try:
             first, last, gmx_atomname = selection
         except ValueError:
@@ -1458,12 +1458,12 @@ class IndexBuilder(object):
                 raise
         if name is None:
             name = "%(first)s-%(last)s_%(gmx_atomname)s" % vars()
-        
+
         _first = self._translate_residue(first, default_atomname=gmx_atomname)
         _last = self._translate_residue(last, default_atomname=gmx_atomname)
 
         _selection = 'r %d - %d & & a %s' % (_first['resid'],  _last['resid'], gmx_atomname)
-        cmd = ['keep 0', 'del 0', 
+        cmd = ['keep 0', 'del 0',
                _selection,
                'name 0 %(name)s' % vars(),
                'q']
@@ -1499,7 +1499,7 @@ class IndexBuilder(object):
 
         return {'resname':gmx_resname, 'resid':gmx_resid, 'atomname':gmx_atomname}
 
-            
+
 
     def check_output(self, make_ndx_output, message=None, err=None):
         """Simple tests to flag problems with a ``make_ndx`` run."""
@@ -1513,7 +1513,7 @@ class IndexBuilder(object):
 
         rc = True
         if self._is_empty_group(make_ndx_output):
-            warnings.warn("Selection produced empty group.%(message)s" 
+            warnings.warn("Selection produced empty group.%(message)s"
                           % vars(), category=GromacsValueWarning)
             rc = False
         if self._has_syntax_error(make_ndx_output):
@@ -1535,7 +1535,7 @@ class IndexBuilder(object):
     def _has_syntax_error(self, make_ndx_output):
         m = re.search('Syntax error:', make_ndx_output)
         return not (m is None)
-        
+
 
     def __del__(self):
         try:
@@ -1566,7 +1566,7 @@ class Transformer(utilities.FileUtils):
         Supply *n* = tpr, *f* = xtc (and *n* = ndx) relative to dirname.
 
         :Keywords:
-           *s* 
+           *s*
               tpr file (or similar); note that this should not contain
               position restraints if it is to be used with a reduced
               system (see :meth:`~Transformer.strip_water`)
@@ -1616,7 +1616,7 @@ class Transformer(utilities.FileUtils):
     def center_fit(self, **kwargs):
         """Write compact xtc that is fitted to the tpr reference structure.
 
-        See :func:gromacs.cbook.trj_fitandcenter` for details and
+        See :func:`gromacs.cbook.trj_fitandcenter` for details and
         description of *kwargs*. The most important ones are listed
         here but in most cases the defaults should work.
 
@@ -1625,7 +1625,7 @@ class Transformer(utilities.FileUtils):
              Input structure (typically the default tpr file but can be set to
              some other file with a different conformation for fitting)
            *n*
-             Alternative index file.           
+             Alternative index file.
            *o*
              Name of the output trajectory.
            *xy* : Boolean
@@ -1634,11 +1634,11 @@ class Transformer(utilities.FileUtils):
            *force*
              - ``True``: overwrite existing trajectories
              - ``False``: throw a IOError exception
-             - ``None``: skip existing and log a warning [default]           
+             - ``None``: skip existing and log a warning [default]
 
-        :Returns: 
+        :Returns:
               dictionary with keys *tpr*, *xtc*, which are the names of the
-              the new files              
+              the new files
         """
         kwargs.setdefault('s', self.tpr)
         kwargs.setdefault('n', self.ndx)
@@ -1665,9 +1665,9 @@ class Transformer(utilities.FileUtils):
              Input structure (typically the default tpr file but can be set to
              some other file with a different conformation for fitting)
            *n*
-             Alternative index file.           
+             Alternative index file.
            *o*
-             Name of the output trajectory. A default name is created. 
+             Name of the output trajectory. A default name is created.
              If e.g. *dt* = 100  is one of the *kwargs* then the default name includes
              "_dt100ps".
           *xy* : boolean
@@ -1678,11 +1678,11 @@ class Transformer(utilities.FileUtils):
             ``False``: throw a IOError exception
             ``None``: skip existing and log a warning [default]
           *kwargs*
-             kwargs are passed to :func:`~gromacs.cbook.trj_xyfitted`           
+             kwargs are passed to :func:`~gromacs.cbook.trj_xyfitted`
 
-        :Returns: 
+        :Returns:
               dictionary with keys *tpr*, *xtc*, which are the names of the
-              the new files              
+              the new files
         """
         kwargs.setdefault('s', self.tpr)
         kwargs.setdefault('n', self.ndx)
@@ -1711,7 +1711,7 @@ class Transformer(utilities.FileUtils):
                 logger.info("Fitted trajectory (fitmode=%s): %r.", fitmode, kwargs['o'])
         return {'tpr': self.rp(kwargs['s']), 'xtc': self.rp(kwargs['o'])}
 
-    def strip_water(self, os=None, o=None, on=None, compact=False, 
+    def strip_water(self, os=None, o=None, on=None, compact=False,
                     resn="SOL", groupname="notwater", **kwargs):
         """Write xtc and tpr with water (by resname) removed.
 
@@ -1735,20 +1735,20 @@ class Transformer(utilities.FileUtils):
            *force* : Boolean
              - ``True``: overwrite existing trajectories
              - ``False``: throw a IOError exception
-             - ``None``: skip existing and log a warning [default]           
-           *kwargs* 
+             - ``None``: skip existing and log a warning [default]
+           *kwargs*
               are passed on to :func:`gromacs.cbook.trj_compact` (unless the
               values have to be set to certain values such as s, f, n, o
               keywords). The *input* keyword is always mangled: Only the first
               entry (the group to centre the trajectory on) is kept, and as a
               second group (the output group) *groupname* is used.
 
-        :Returns: 
+        :Returns:
               dictionary with keys *tpr*, *xtc*, *ndx* which are the names of the
               the new files
-              
+
         .. warning:: The input tpr file should *not* have *any position restraints*;
-                     otherwise Gromacs will throw a hissy-fit and say 
+                     otherwise Gromacs will throw a hissy-fit and say
 
                      *Software inconsistency error: Position restraint coordinates are
                      missing*
@@ -1756,7 +1756,7 @@ class Transformer(utilities.FileUtils):
                      (This appears to be a bug in Gromacs 4.x.)
         """
         force = kwargs.pop('force', self.force)
-        
+
         newtpr = self.infix_filename(os, self.tpr, '_nowater')
         newxtc = self.infix_filename(o, self.xtc, '_nowater')
         newndx = self.infix_filename(on, self.tpr, '_nowater', 'ndx')
@@ -1794,7 +1794,7 @@ class Transformer(utilities.FileUtils):
                 kwargs['o'] = newxtc
                 TRJCONV(**kwargs)
 
-                logger.info("pdb and gro for visualization")            
+                logger.info("pdb and gro for visualization")
                 for ext in 'pdb', 'gro':
                     try:
                         # see warning in doc ... so we don't use the new xtc but the old one
@@ -1805,7 +1805,7 @@ class Transformer(utilities.FileUtils):
                                          "Position restraints in tpr file (see docs)?" % vars())
             logger.info("strip_water() complete")
 
-        self.nowater[newxtc] = Transformer(dirname=self.dirname, s=newtpr, 
+        self.nowater[newxtc] = Transformer(dirname=self.dirname, s=newtpr,
                                            f=newxtc, n=newndx)
         return {'tpr':self.rp(newtpr), 'xtc':self.rp(newxtc), 'ndx':self.rp(newndx)}
 
@@ -1813,7 +1813,7 @@ class Transformer(utilities.FileUtils):
     # TODO: could probably unify strip_water() and keep_protein_only()
     # (given that the latter was produced by copy&paste+search&replace...)
 
-    def keep_protein_only(self, os=None, o=None, on=None, compact=False, 
+    def keep_protein_only(self, os=None, o=None, on=None, compact=False,
                           groupname="proteinonly", **kwargs):
         """Write xtc and tpr only containing the protein.
 
@@ -1832,25 +1832,25 @@ class Transformer(utilities.FileUtils):
            *groupname*
               Name of the protein-only group.
            *keepalso*
-              List of literal make_ndx selections of additional groups that should 
+              List of literal make_ndx selections of additional groups that should
               be kept, e.g. ['resname DRUG', 'atom 6789'].
            *force* : Boolean
              - ``True``: overwrite existing trajectories
              - ``False``: throw a IOError exception
-             - ``None``: skip existing and log a warning [default]           
-           *kwargs* 
+             - ``None``: skip existing and log a warning [default]
+           *kwargs*
               are passed on to :func:`gromacs.cbook.trj_compact` (unless the
               values have to be set to certain values such as s, f, n, o
               keywords). The *input* keyword is always mangled: Only the first
               entry (the group to centre the trajectory on) is kept, and as a
               second group (the output group) *groupname* is used.
 
-        :Returns: 
+        :Returns:
               dictionary with keys *tpr*, *xtc*, *ndx* which are the names of the
               the new files
-              
+
         .. warning:: The input tpr file should *not* have *any position restraints*;
-                     otherwise Gromacs will throw a hissy-fit and say 
+                     otherwise Gromacs will throw a hissy-fit and say
 
                      *Software inconsistency error: Position restraint coordinates are
                      missing*
@@ -1897,7 +1897,7 @@ class Transformer(utilities.FileUtils):
                 kwargs['o'] = newxtc
                 TRJCONV(**kwargs)
 
-                logger.info("pdb and gro for visualization")            
+                logger.info("pdb and gro for visualization")
                 for ext in 'pdb', 'gro':
                     try:
                         # see warning in doc ... so we don't use the new xtc but the old one
@@ -1908,10 +1908,10 @@ class Transformer(utilities.FileUtils):
                                          "Position restraints in tpr file (see docs)?" % vars())
             logger.info("keep_protein_only() complete")
 
-        self.proteinonly[newxtc] = Transformer(dirname=self.dirname, s=newtpr, 
+        self.proteinonly[newxtc] = Transformer(dirname=self.dirname, s=newtpr,
                                                f=newxtc, n=newndx)
         return {'tpr':self.rp(newtpr), 'xtc':self.rp(newxtc), 'ndx':self.rp(newndx)}
 
 
-        
-        
+
+
