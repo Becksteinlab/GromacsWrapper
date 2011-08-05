@@ -185,6 +185,10 @@ class Simulation(object):
            *absolute*
              ``True``: Turn file names into absolute paths (typically required
              for most plugins); ``False`` keep a they are [``True``]
+           *strict*
+             ``True``: missing required file keyword raises a :exc:`TypeError`
+             and missing the file itself raises a :exc:`IOError`.  ``False``:
+             missing required files only give a warning. [``True``]
            *analysisdir*
              directory under which derived data are stored;
              defaults to the directory containing the tpr [None]
@@ -192,9 +196,13 @@ class Simulation(object):
              plugin instances or tuples (*plugin class*, *kwarg dict*) or tuples
              (*plugin_class_name*, *kwarg dict*) to be used; more can be
              added later with :meth:`Simulation.add_plugin`.
+
         """
+        logger.info("Loading simulation data")
+
         sim = kwargs.pop('sim', None)
-        def getpop(attr, required=False):
+        strict = kwargs.pop('strict', True)
+        def getpop(attr, required=False, strict=strict):
             """Return attribute from from kwargs or sim or None"""
             val = kwargs.pop(attr, None)  # must pop from kwargs to clean it
             if not val is None:
@@ -203,7 +211,13 @@ class Simulation(object):
                 return sim.__getattribute__(attr)
             except AttributeError:
                 if required:
-                    raise TypeError("Required attribute %r not found in kwargs or sim" % attr)
+                    errmsg = "Required attribute %r not found in kwargs or sim" % attr
+                    if strict:
+                        logger.fatal(errmsg)
+                        raise TypeError(errmsg)
+                    else:
+                        logger.warn(errmsg+"... continuing because of strict=False")
+                        warnings.warn(errmsg)
                 return None
 
         make_absolute = kwargs.pop('absolute', True)
@@ -223,8 +237,11 @@ class Simulation(object):
         self.edr = canonical(getpop('edr'))
 
         # check existence of required files
+        resolve = "exception"
+        if not strict:
+            resolve = "warn"
         for v in ('tpr', 'xtc'):
-            self.check_file(v, self.__getattribute__(v))
+            self.check_file(v, self.__getattribute__(v), resolve=resolve)
 
         self.analysis_dir = kwargs.pop('analysisdir', os.path.dirname(self.tpr))
 
@@ -241,7 +258,8 @@ class Simulation(object):
 
 
         plugins = kwargs.pop('plugins', [])
-        # list of tuples (plugin, kwargs) or just (plugin,) if no kwords required (eg if plugin is an instance)
+        # list of tuples (plugin, kwargs) or just (plugin,) if no kwords
+        # required (eg if plugin is an instance)
         for x in plugins:
             try:
                 P, kwargs = asiterable(x)   # make sure to wrap strings, especially 2-letter ones!
@@ -260,7 +278,7 @@ class Simulation(object):
         # setup so let's not pretend it does: hence comment out the super-init
         # call:
         ## super(Simulation, self).__init__(**kwargs)
-        logger.info("Simulation instance initialised.")
+        logger.info("Simulation instance initialised:")
         logger.info(str(self))
 
     def add_plugin(self, plugin, **kwargs):
@@ -323,10 +341,44 @@ class Simulation(object):
         """Directory where the plugin saves figures."""
         return self.get_plugin(plugin_name).figdir(*args)
 
-    def check_file(self,filetype,path):
-        """Raise :exc:`ValueError` if path does not exist. Uses *filetype* in message."""
+    def check_file(self, filetype, path, resolve="exception"):
+        """Raise :exc:`ValueError` if path does not exist. Uses *filetype* in message.
+
+        :Arguments:
+           *filetype*
+              type of file, for error message
+           *path*
+              path to file
+           *resolve*
+              "ignore"
+                   always return ``True``
+              "indicate"
+                   return ``True`` if it exists, ``False`` otherwise
+              "warn"
+                   indicate and issue a :exc:`UserWarning`
+              "exception"
+                   raise :exc:`IOError` if it does not exist [default]
+
+        """
+        msg = "Missing required file %(filetype)r, got %(path)r." % vars()
+        def _warn(x):
+            logger.warn(msg)
+            warnings.warn(msg)
+            return False
+        def _raise(x):
+            logger.error(msg)
+            raise IOError(errno.ENOENT, msg, x)
+        # what happens if the file does NOT exist:
+        solutions = {'ignore': lambda x: True,
+                     'indicate': lambda x: False,
+                     'warn': _warn,
+                     'warning': _warn,
+                     'exception': _raise,
+                     'raise': _raise,
+                     }
+
         if path is None or not os.path.isfile(path):
-            raise ValueError("Missing required file %(filetype)r, got %(path)r." % vars())
+            return solutions[resolve](path)
         return True
 
     def check_plugin_name(self,plugin_name):
@@ -409,7 +461,7 @@ class Simulation(object):
         return results
 
     def __str__(self):
-        return 'Simulation(tpr=%(tpr)r,xtc=%(xtc)r,edr=%(edr),analysisdir=%(analysis_dir)r)' % vars(self)
+        return 'Simulation(tpr=%(tpr)r,xtc=%(xtc)r,edr=%(edr)r,analysisdir=%(analysis_dir)r)' % vars(self)
     def __repr__(self):
         return str(self)
 
