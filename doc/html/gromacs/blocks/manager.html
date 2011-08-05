@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Managing jobs remotely &mdash; GromacsWrapper v0.2.0 documentation</title>
+    <title>Managing jobs remotely &mdash; GromacsWrapper v0.2.3-dev documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.2.0',
+        VERSION:     '0.2.3-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.2.0 documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper v0.2.3-dev documentation" href="../../index.html" />
     <link rel="up" title="Gromacs building blocks" href="../building_blocks.html" />
     <link rel="next" title="gromacs.run – Running simulations" href="simulation.html" />
     <link rel="prev" title="gromacs.qsub – utilities for batch submission systems" href="qsub.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="qsub.html" title="gromacs.qsub – utilities for batch submission systems"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.2.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.2.3-dev documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" accesskey="U">Gromacs building blocks</a> &raquo;</li> 
       </ul>
@@ -60,13 +60,36 @@
 <p class="first admonition-title">Warning</p>
 <p class="last">Experimental code, use at your own risk.</p>
 </div>
+<p>The <a class="reference internal" href="#gromacs.manager.Manager" title="gromacs.manager.Manager"><tt class="xref py py-class docutils literal"><span class="pre">Manager</span></tt></a> encapsulates knowledge of how to run a job on a
+remote system. This basically means the host name, where are the
+scratch directories, what queuing system is running, etc. It simply
+uses <strong class="program">ssh</strong> to communicate with the remote system and thus it
+is necessary to set up <strong class="program">ssh</strong> with public key authentication
+to make this work smoothly.</p>
+<ul class="simple">
+<li>The manager can move files between the local file system and the</li>
+</ul>
+<p>remote scratch directories back and forth (using <strong class="program">scp</strong>).</p>
+<ul class="simple">
+<li>It can remotely launch a job (by running <strong class="program">qsub</strong>).</li>
+<li>It can also check on the progress by inspecting (in a primitive
+fashion) the log file of <strong class="program">mdrun</strong> on the remote system.</li>
+</ul>
+<p>The remote directory name is constructed in the following way:</p>
+<ol class="arabic simple">
+<li><em>topdir</em> is stripped from the local working directory to give WDIR</li>
+<li><em>scratchdir</em>/WDIR is the directory on the remote system</li>
+</ol>
+<p><tt class="xref py py-func docutils literal"><span class="pre">get_manager()</span></tt> creates a <a class="reference internal" href="#gromacs.manager.Manager" title="gromacs.manager.Manager"><tt class="xref py py-class docutils literal"><span class="pre">Manager</span></tt></a> from a configuration file.</p>
 <div class="section" id="configuration-file">
 <h2>Configuration file<a class="headerlink" href="#configuration-file" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference internal" href="#gromacs.manager.Manager" title="gromacs.manager.Manager"><tt class="xref py py-class docutils literal"><span class="pre">Manager</span></tt></a> for how the values in the configuration file are
+used.</p>
 <p>Example:</p>
 <div class="highlight-python"><pre>[DEFAULT]
 name = leviathan
 
-[local]   
+[local]
 topdir = ~
 
 [remote]
@@ -76,16 +99,57 @@ scratchdir = /scratch/username/Projects
 [queuing_system]
 name = PBS
 qscript = leviathan.pbs
-walltime = 24.0</pre>
+walltime = 24.0
+start_cwd = True</pre>
 </div>
-<p>All entries except <em>walltime</em> are required; <em>walltime</em> can be omitted or set to <tt class="xref docutils literal"><span class="pre">None</span></tt>.</p>
-<p>The remote directory name is constructed in the following way:</p>
-<ol class="arabic simple">
-<li><em>topdir</em> is stripped from the local working directory to give WDIR</li>
-<li><em>scratchdir</em>/WDIR is the directory on the remote system</li>
-</ol>
-<p>See <a class="reference internal" href="#gromacs.manager.Manager" title="gromacs.manager.Manager"><tt class="xref py py-class docutils literal"><span class="pre">Manager</span></tt></a> for how these values are used.</p>
-<p><tt class="xref py py-func docutils literal"><span class="pre">get_manager()</span></tt> creates a <a class="reference internal" href="#gromacs.manager.Manager" title="gromacs.manager.Manager"><tt class="xref py py-class docutils literal"><span class="pre">Manager</span></tt></a> from a configuration file.</p>
+<p>All entries except <em>walltime</em> and <em>start_cwd</em> are required; <em>walltime</em>
+can be omitted or set to <tt class="xref docutils literal"><span class="pre">None</span></tt>.</p>
+<div class="section" id="default-section">
+<h3><em>DEFAULT</em> section<a class="headerlink" href="#default-section" title="Permalink to this headline">¶</a></h3>
+<p><em>name</em></p>
+<blockquote>
+identifier of the configuration; should also be the name of the
+configuration file, i.e. <cite>name.cfg</cite></blockquote>
+</div>
+<div class="section" id="local-section">
+<h3><em>local</em> section<a class="headerlink" href="#local-section" title="Permalink to this headline">¶</a></h3>
+<p><em>topdir</em></p>
+<blockquote>
+path component under which the local files are stored; see below</blockquote>
+</div>
+<div class="section" id="remote-section">
+<h3><em>remote</em> section<a class="headerlink" href="#remote-section" title="Permalink to this headline">¶</a></h3>
+<p><em>hostname</em></p>
+<blockquote>
+fully qualified domain name of the host; used for running <tt class="docutils literal"><span class="pre">ssh</span>
+<span class="pre">hostname</span></tt> or <tt class="docutils literal"><span class="pre">scp</span> <span class="pre">FILES</span> <span class="pre">hostname:DIR</span></tt></blockquote>
+<p><em>scratchdir</em></p>
+<blockquote>
+top level directory on the remote host udner which the working
+directories are constructed; see below for how this is done</blockquote>
+</div>
+<div class="section" id="queuing-system-section">
+<h3><em>queuing_system</em> section<a class="headerlink" href="#queuing-system-section" title="Permalink to this headline">¶</a></h3>
+<p><em>name</em></p>
+<blockquote>
+identifier for the queuing system (should be a valid python
+identifier)</blockquote>
+<p><em>qscript</em></p>
+<blockquote>
+default queuing system script template; store it in <tt class="docutils literal"><span class="pre">~/.gromacswrapper/qscripts</span></tt></blockquote>
+<p><em>walltime</em></p>
+<blockquote>
+maximum allowed run time on the system; job files are written in
+such a way that Gromacs stops run at 0.99 or walltime. If ommitted
+then the job runs until it is done (provided the queuing system
+policy allows that)</blockquote>
+<p><em>start_cwd</em></p>
+<blockquote>
+Set to <tt class="xref docutils literal"><span class="pre">True</span></tt> means that the queuing system requires the queuing
+system script to <tt class="docutils literal"><span class="pre">cd</span></tt> into the job directory; this seems to be a
+bug in some versions of PBS, which we can work-around in
+<a class="reference internal" href="#gromacs.manager.Manager.qsub" title="gromacs.manager.Manager.qsub"><tt class="xref py py-meth docutils literal"><span class="pre">Manager.qsub()</span></tt></a></blockquote>
+</div>
 </div>
 <div class="section" id="queuing-system-manager">
 <h2>Queuing system Manager<a class="headerlink" href="#queuing-system-manager" title="Permalink to this headline">¶</a></h2>
@@ -101,7 +165,7 @@ jobs remotely (using <a class="reference external" href="http://www.openssh.com/
 <blockquote>
 <ul class="simple">
 <li><tt class="xref py py-attr docutils literal"><span class="pre">Manager._hostname</span></tt> (hostname of the machine)</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">Manager._scratchdir</span></tt> (all files and directories will be created under 
+<li><tt class="xref py py-attr docutils literal"><span class="pre">Manager._scratchdir</span></tt> (all files and directories will be created under
 this scratch directory; it must be a path on the remote host)</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">Manager._qscript</span></tt> (the default queuing system script template)</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">Manager._walltime</span></tt> (if there is a limit to the run time
@@ -132,7 +196,7 @@ order to avoid typing your password all the time.</p>
 <dt><em>dirname</em></dt>
 <dd><p class="first last">directory component under the remote scratch dir (should
 be different for different jobs); the default is to strip
-<em>topdir</em> from the config file from the full path of the 
+<em>topdir</em> from the config file from the full path of the
 current directory</p>
 </dd>
 <dt><em>prefix</em></dt>
@@ -344,8 +408,35 @@ n = ceil(runtime/(performance*0.99*walltime)</blockquote>
 <div class="highlight-python"><pre>cd remotedir &amp;&amp; qsub qscript</pre>
 </div>
 <p>on <tt class="xref py py-attr docutils literal"><span class="pre">Manager._hostname</span></tt>. <em>remotedir</em> is <em>dirname</em> under
-<tt class="xref py py-attr docutils literal"><span class="pre">Manager._scratchdir</span></tt> and <em>qscript</em> defaults to the queuing system
-script hat was produced from the template <tt class="xref py py-attr docutils literal"><span class="pre">Manager._qscript</span></tt>.</p>
+<tt class="xref py py-attr docutils literal"><span class="pre">Manager._scratchdir</span></tt> and <em>qscript</em> is the name of the
+queuing system script in <em>remotedir</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>dirname</em></dt>
+<dd><p class="first last">directory, relative to the current one, under which the
+all job files reside (typically, this is also were the
+queuing system script <em>qscript</em> lives)</p>
+</dd>
+<dt><em>qscript</em></dt>
+<dd><p class="first last">name of the queuing system script; defaults to the
+queuing system script hat was produced from the template
+<tt class="xref py py-attr docutils literal"><span class="pre">Manager._qscript</span></tt>; searched in the current
+directory (<tt class="docutils literal"><span class="pre">.</span></tt>) and under <em>dirname</em></p>
+</dd>
+<dt><em>remotedir</em></dt>
+<dd><p class="first last">full path to the job directory on the remote system; in
+most cases it should be sufficient to let the programme
+choose the appropriate value based on <em>dirname</em> and the
+configuration of the manager</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -424,7 +515,13 @@ run but that is just a guess);</li>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Managing jobs remotely</a><ul>
-<li><a class="reference internal" href="#configuration-file">Configuration file</a></li>
+<li><a class="reference internal" href="#configuration-file">Configuration file</a><ul>
+<li><a class="reference internal" href="#default-section"><em>DEFAULT</em> section</a></li>
+<li><a class="reference internal" href="#local-section"><em>local</em> section</a></li>
+<li><a class="reference internal" href="#remote-section"><em>remote</em> section</a></li>
+<li><a class="reference internal" href="#queuing-system-section"><em>queuing_system</em> section</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#queuing-system-manager">Queuing system Manager</a></li>
 </ul>
 </li>
@@ -473,15 +570,15 @@ run but that is just a guess);</li>
         <li class="right" >
           <a href="qsub.html" title="gromacs.qsub – utilities for batch submission systems"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.2.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.2.3-dev documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" >Gromacs building blocks</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Apr 18, 2011.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+      Last updated on Aug 01, 2011.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
     </div>
   </body>
 </html>

@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.utilities – Helper functions and classes &mdash; GromacsWrapper v0.2.0 documentation</title>
+    <title>gromacs.utilities – Helper functions and classes &mdash; GromacsWrapper v0.2.3-dev documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.2.0',
+        VERSION:     '0.2.3-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.2.0 documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper v0.2.3-dev documentation" href="../../index.html" />
     <link rel="up" title="Gromacs core modules" href="../core.html" />
     <link rel="next" title="gromacs.tools – Gromacs commands classes" href="tools.html" />
     <link rel="prev" title="gromacs.formats – Accessing various files" href="formats.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="formats.html" title="gromacs.formats – Accessing various files"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.2.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.2.3-dev documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" accesskey="U">Gromacs core modules</a> &raquo;</li> 
       </ul>
@@ -158,20 +158,29 @@ directories:</p>
 
 <dl class="function">
 <dt id="gromacs.utilities.anyopen">
-<tt class="descclassname">gromacs.utilities.</tt><tt class="descname">anyopen</tt><big>(</big><em>datasource</em>, <em>mode='r'</em><big>)</big><a class="headerlink" href="#gromacs.utilities.anyopen" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.utilities.</tt><tt class="descname">anyopen</tt><big>(</big><em>datasource</em>, <em>mode='r'</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.utilities.anyopen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Open datasource (gzipped, bzipped, uncompressed) and return a stream.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"></td>
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>datasource</em></dt>
+<dd><p class="first last">a stream or a filename</p>
+</dd>
+<dt><em>mode</em></dt>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">'r'</span></tt> opens for reading, <tt class="docutils literal"><span class="pre">'w'</span></tt> for writing [&#8216;r&#8217;]</p>
+</dd>
+<dt><em>kwargs</em></dt>
+<dd><p class="first last">additional keyword arguments that are passed through to the
+actual handler; if these are not appropriate then an
+exception will be raised by the handler</p>
+</dd>
+</dl>
+</td>
 </tr>
 </tbody>
 </table>
-<ul class="simple">
-<li><em>datasource</em>: a file or a stream</li>
-<li><em>mode</em>: &#8216;r&#8217; or &#8216;w&#8217;</li>
-</ul>
 </dd></dl>
 
 <dl class="function">
@@ -207,7 +216,7 @@ the block.</li>
 <dd><p class="first last">base filename; this file name is checked first</p>
 </dd>
 <dt><em>suffices</em></dt>
-<dd><p class="first last">list of suffices that are tried in turn on the root of <em>filename</em>; can contain the 
+<dd><p class="first last">list of suffices that are tried in turn on the root of <em>filename</em>; can contain the
 ext separator (<tt class="xref py py-data docutils literal"><span class="pre">os.path.extsep</span></tt>) or not</p>
 </dd>
 </dl>
@@ -379,15 +388,15 @@ overwrites the subplot instead of activating it.</p>
         <li class="right" >
           <a href="formats.html" title="gromacs.formats – Accessing various files"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.2.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.2.3-dev documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" >Gromacs core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Apr 18, 2011.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.5.
+      Last updated on Aug 01, 2011.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
     </div>
   </body>
 </html>
