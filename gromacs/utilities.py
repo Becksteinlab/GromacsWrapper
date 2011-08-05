@@ -384,9 +384,9 @@ class FileUtils(object):
         if my_ext and use_my_ext:
             ext = my_ext
         if ext is not None:
-            if ext.startswith('.'):
+            if ext.startswith(os.extsep):
                 ext = ext[1:]  # strip a dot to avoid annoying mistakes
-            filename = filename + '.' + ext
+            filename = filename + os.extsep + ext
         return filename
 
     def check_file_exists(self, filename, resolve='exception', force=None):
@@ -446,7 +446,7 @@ class FileUtils(object):
             p, oldext = os.path.splitext(default)
             if ext is None:
                 ext = oldext
-            if ext.startswith('.'):
+            if ext.startswith(os.extsep):
                 ext = ext[1:]
             name = self.filename(p+infix, ext=ext)
         return name
