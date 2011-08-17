@@ -52,19 +52,19 @@ class _StripWater(Worker):
 
         :Arguments:
           *force*
-             ``True`` will always regenerate trajectories even if they 
+             ``True`` will always regenerate trajectories even if they
              already exist, ``False`` raises an exception, ``None``
              does the sensible thing in most cases (i.e. notify and
              then move on).
           *dt* : float or list of floats
-             only write every dt timestep (in ps); if a list of floats is 
-             supplied, write multiple trajectories, one for each dt.             
+             only write every dt timestep (in ps); if a list of floats is
+             supplied, write multiple trajectories, one for each dt.
           *compact* : bool
              write a compact representation
-          *fit*          
+          *fit*
              Create an additional trajectory from the stripped one in which
              the Protein group is rms-fitted to the initial structure. See
-             :meth:`gromacs.cbook.Transformer.fit` for details. Useful 
+             :meth:`gromacs.cbook.Transformer.fit` for details. Useful
              values:
                - "xy" : perform a rot+trans fit in the x-y plane
                - "all": rot+trans
@@ -74,6 +74,10 @@ class _StripWater(Worker):
           *resn*
              name of the residues that are stripped (typically it is
              safe to leave this at the default 'SOL')
+
+        .. Note:: If set, *dt* is only applied to a fit step; the
+                  no-water trajectory is always generated for all time
+                  steps of the input.
         """
         # specific arguments: take them before calling the super class that
         # does not know what to do with them
@@ -113,7 +117,7 @@ class _StripWater(Worker):
             s=self.simulation.tpr, f=self.simulation.xtc, n=self.simulation.ndx)
 
     # override 'API' methods of base class
-        
+
     def run(self, **kwargs):
         """Write new trajectory with water index group stripped.
 
@@ -123,19 +127,19 @@ class _StripWater(Worker):
 
         :Keywords:
           *force*
-             ``True`` will always regenerate trajectories even if they 
+             ``True`` will always regenerate trajectories even if they
              already exist, ``False`` raises an exception, ``None``
              does the sensible thing in most cases (i.e. notify and
              then move on).
           *dt* : float or list of floats
-             only write every dt timestep (in ps); if a list of floats is 
-             supplied, write multiple trajectories, one for each dt.             
+             only write every dt timestep (in ps); if a list of floats is
+             supplied, write multiple trajectories, one for each dt.
           *compact* : bool
              write a compact representation
-          *fit*          
+          *fit*
              Create an additional trajectory from the stripped one in which
              the Protein group is rms-fitted to the initial structure. See
-             :meth:`gromacs.cbook.Transformer.fit` for details. Useful 
+             :meth:`gromacs.cbook.Transformer.fit` for details. Useful
              values:
                - "xy" : perform a rot+trans fit in the x-y plane
                - "all": rot+trans
@@ -152,7 +156,7 @@ class _StripWater(Worker):
         """
         dt = kwargs.pop('dt', self.parameters.dt)
         fit = kwargs.pop('fit', self.parameters.fit)
-                
+
         kwargs.setdefault('compact', self.parameters.compact)
         kwargs.setdefault('resn', self.parameters.resn)
         kwargs.setdefault('force', self.parameters.force)
@@ -164,13 +168,13 @@ class _StripWater(Worker):
             if self.parameters.fit == "xy":
                 xy = True
             else:
-                xy = False        
+                xy = False
             transformer_nowater = self.transformer.nowater.values()[0]
             for delta_t in asiterable(dt):
                 transformer_nowater.fit(xy=xy, dt=delta_t, force=kwargs['force'])
 
     def analyze(self,**kwargs):
-        """No postprocessing."""        
+        """No postprocessing."""
         pass
 
 
@@ -185,28 +189,28 @@ class _StripWater(Worker):
 class StripWater(Plugin):
     """*StripWater* plugin.
 
-    Write a new trajectory which has the water index group removed. 
+    Write a new trajectory which has the water index group removed.
 
     .. class:: StripWater([resn[,force[,dt[,compact[,fit[,name[,simulation]]]]]]])
-    
+
     :Arguments:
         *resn*
            name of the residues that are stripped (typically it is
            safe to leave this at the default 'SOL')
         *force*
-           ``True`` will always regenerate trajectories even if they 
+           ``True`` will always regenerate trajectories even if they
            already exist, ``False`` raises an exception, ``None``
            does the sensible thing in most cases (i.e. notify and
            then move on).
         *dt* : float or list of floats
-           only write every dt timestep (in ps); if a list of floats is 
-           supplied, write multiple trajectories, one for each dt.             
+           only write every dt timestep (in ps); if a list of floats is
+           supplied, write multiple trajectories, one for each dt.
         *compact* : bool
            write a compact representation
-        *fit*          
+        *fit*
            Create an additional trajectory from the stripped one in which
            the Protein group is rms-fitted to the initial structure. See
-           :meth:`gromacs.cbook.Transformer.fit` for details. Useful 
+           :meth:`gromacs.cbook.Transformer.fit` for details. Useful
            values:
              - "xy" : perform a rot+trans fit in the x-y plane
              - "all": rot+trans
@@ -217,6 +221,11 @@ class StripWater(Plugin):
             plugin name (used to access it)
         *simulation* : instance
             The :class:`gromacs.analysis.Simulation` instance that owns the plugin.
+
+    .. Note:: If set, *dt* is only applied to a fit step; the
+              no-water trajectory is always generated for all time
+              steps of the input.
+
     """
     worker_class = _StripWater
 
