@@ -409,7 +409,7 @@ class Simulation(object):
         return results
 
     def __str__(self):
-        return 'Simulation(tpr=%(tpr)r,xtc=%(xtc)r,edr=%(edr),analysisdir=%(analysis_dir)r)' % vars(self)
+        return 'Simulation(tpr=%(tpr)r,xtc=%(xtc)r,edr=%(edr)r,analysisdir=%(analysis_dir)r)' % vars(self)
     def __repr__(self):
         return str(self)
 
