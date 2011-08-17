@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.cbook – Gromacs Cook Book &mdash; GromacsWrapper v0.2.3-dev documentation</title>
+    <title>gromacs.cbook – Gromacs Cook Book &mdash; GromacsWrapper v0.2.3 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.2.3-dev',
+        VERSION:     '0.2.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.2.3-dev documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper v0.2.3 documentation" href="../../index.html" />
     <link rel="up" title="Gromacs building blocks" href="../building_blocks.html" />
     <link rel="next" title="gromacs.setup – Setting up a Gromacs MD run" href="setup.html" />
     <link rel="prev" title="Gromacs building blocks" href="../building_blocks.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="../building_blocks.html" title="Gromacs building blocks"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.2.3-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.2.3 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" accesskey="U">Gromacs building blocks</a> &raquo;</li> 
       </ul>
@@ -123,7 +123,7 @@ trajectory should <em>not</em> be centered.</p>
 </dd>
 <dt><em>input</em></dt>
 <dd><dl class="first docutils">
-<dt>A list with three groups. The default is </dt>
+<dt>A list with three groups. The default is</dt>
 <dd><p class="first last">[&#8216;backbone&#8217;, &#8216;protein&#8217;,&#8217;system&#8217;]</p>
 </dd>
 </dl>
@@ -182,7 +182,7 @@ the output file also a trr suffix.</p>
 and consume a <strong>large amount of temporary diskspace</strong>.</p>
 </div>
 <p>We follow the <a class="reference external" href="http://www.gromacs.org/Documentation/Gromacs_Utilities/g_spatial">g_spatial documentation</a> in preparing the trajectories:</p>
-<div class="highlight-python"><pre>trjconv -s a.tpr -f a.xtc -o b.xtc -center tric -ur compact -pbc mol
+<div class="highlight-python"><pre>trjconv -s a.tpr -f a.xtc -o b.xtc -center -boxcenter tric -ur compact -pbc mol
 trjconv -s a.tpr -f b.xtc -o c.xtc -fit rot+trans</pre>
 </div>
 </dd></dl>
@@ -196,14 +196,14 @@ prefix.part0002.xtc, prefix.part0003.xtc, ... are</p>
 <blockquote>
 <ol class="arabic simple">
 <li>moved to the <em>partsdir</em> (under <em>dirname</em>)</li>
-<li>concatenated with the Gromacs tools to yield prefix.xtc, prefix.trr, 
+<li>concatenated with the Gromacs tools to yield prefix.xtc, prefix.trr,
 prefix.edr, prefix.gro (or prefix.md) in <em>dirname</em></li>
 <li>Store these trajectories in <em>fulldir</em></li>
 </ol>
 </blockquote>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>Trajectory files are <em>never</em> deleted by this function to avoid 
+<p>Trajectory files are <em>never</em> deleted by this function to avoid
 data loss in case of bugs. You will have to clean up yourself
 by deleting <em>dirname</em>/<em>partsdir</em>.</p>
 <p class="last">Symlinks for the trajectories are <em>not</em> handled well and
@@ -371,7 +371,7 @@ batch of frames. Increases when iterating.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
-<dt><em>s</em> </dt>
+<dt><em>s</em></dt>
 <dd><p class="first last">tpr file (or similar); note that this should not contain
 position restraints if it is to be used with a reduced
 system (see <a class="reference internal" href="#gromacs.cbook.Transformer.strip_water" title="gromacs.cbook.Transformer.strip_water"><tt class="xref py py-meth docutils literal"><span class="pre">strip_water()</span></tt></a>)</p>
@@ -404,7 +404,7 @@ groups this should contain those groups)</p>
 <dt id="gromacs.cbook.Transformer.center_fit">
 <tt class="descname">center_fit</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.cbook.Transformer.center_fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write compact xtc that is fitted to the tpr reference structure.</p>
-<p>See :func:gromacs.cbook.trj_fitandcenter` for details and
+<p>See <a class="reference internal" href="#gromacs.cbook.trj_fitandcenter" title="gromacs.cbook.trj_fitandcenter"><tt class="xref py py-func docutils literal"><span class="pre">gromacs.cbook.trj_fitandcenter()</span></tt></a> for details and
 description of <em>kwargs</em>. The most important ones are listed
 here but in most cases the defaults should work.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -465,7 +465,7 @@ some other file with a different conformation for fitting)</p>
 <dd><p class="first last">Alternative index file.</p>
 </dd>
 <dt><em>o</em></dt>
-<dd><p class="first last">Name of the output trajectory. A default name is created. 
+<dd><p class="first last">Name of the output trajectory. A default name is created.
 If e.g. <em>dt</em> = 100  is one of the <em>kwargs</em> then the default name includes
 &#8220;_dt100ps&#8221;.</p>
 </dd>
@@ -523,7 +523,7 @@ insert &#8220;proteinonly&#8221; before suffix.</p>
 <dd><p class="first last">Name of the protein-only group.</p>
 </dd>
 <dt><em>keepalso</em></dt>
-<dd><p class="first last">List of literal make_ndx selections of additional groups that should 
+<dd><p class="first last">List of literal make_ndx selections of additional groups that should
 be kept, e.g. [&#8216;resname DRUG&#8217;, &#8216;atom 6789&#8217;].</p>
 </dd>
 <dt><em>force</em> <span class="classifier-delimiter">:</span> <span class="classifier">Boolean</span></dt>
@@ -533,7 +533,7 @@ be kept, e.g. [&#8216;resname DRUG&#8217;, &#8216;atom 6789&#8217;].</p>
 <li><tt class="xref docutils literal"><span class="pre">None</span></tt>: skip existing and log a warning [default]</li>
 </ul>
 </dd>
-<dt><em>kwargs</em> </dt>
+<dt><em>kwargs</em></dt>
 <dd><p class="first last">are passed on to <a class="reference internal" href="#gromacs.cbook.trj_compact" title="gromacs.cbook.trj_compact"><tt class="xref py py-func docutils literal"><span class="pre">gromacs.cbook.trj_compact()</span></tt></a> (unless the
 values have to be set to certain values such as s, f, n, o
 keywords). The <em>input</em> keyword is always mangled: Only the first
@@ -604,7 +604,7 @@ from the system.</p>
 <li><tt class="xref docutils literal"><span class="pre">None</span></tt>: skip existing and log a warning [default]</li>
 </ul>
 </dd>
-<dt><em>kwargs</em> </dt>
+<dt><em>kwargs</em></dt>
 <dd><p class="first last">are passed on to <a class="reference internal" href="#gromacs.cbook.trj_compact" title="gromacs.cbook.trj_compact"><tt class="xref py py-func docutils literal"><span class="pre">gromacs.cbook.trj_compact()</span></tt></a> (unless the
 values have to be set to certain values such as s, f, n, o
 keywords). The <em>input</em> keyword is always mangled: Only the first
@@ -665,7 +665,7 @@ grompping a tpr file. The <tt class="docutils literal"><span class="pre">grompp_
 <li>The stdout output of grompp is not shown. This can make debugging
 pretty hard.  Try running the normal <tt class="xref py py-func docutils literal"><span class="pre">gromacs.grompp()</span></tt> command and
 analyze the output if the debugging messages are not sufficient.</li>
-<li>Check that <tt class="docutils literal"><span class="pre">qtot</span></tt> is correct; because the function is based on pattern 
+<li>Check that <tt class="docutils literal"><span class="pre">qtot</span></tt> is correct; because the function is based on pattern
 matching of the output it can break when the output format changes.</li>
 </ul>
 </dd></dl>
@@ -783,8 +783,8 @@ names with underscores (see the notes below on dashes/underscores).</p>
 <dd><p class="first last">filename of alternative output mdp file [None]</p>
 </dd>
 <dt><em>extend_parameters</em> <span class="classifier-delimiter">:</span> <span class="classifier">string or list of strings</span></dt>
-<dd><p class="first last">single parameter or list of parameters for which the new values 
-should be appended to the existing value in the mdp file. This 
+<dd><p class="first last">single parameter or list of parameters for which the new values
+should be appended to the existing value in the mdp file. This
 makes mostly sense for a single parameter, namely &#8216;include&#8217;, which
 is set as the default. Set to <tt class="docutils literal"><span class="pre">[]</span></tt> to disable. [&#8216;include&#8217;]</p>
 </dd>
@@ -813,12 +813,12 @@ written as a sequence, joined with spaces, e.g.</p>
 <ul class="last simple">
 <li>Dashes in Gromacs mdp parameters have to be replaced by an underscore
 when supplied as python keyword arguments (a limitation of python). For example
-the MDP syntax is  <tt class="docutils literal"><span class="pre">lincs-iter</span> <span class="pre">=</span> <span class="pre">4</span></tt> but the corresponding  keyword would be 
+the MDP syntax is  <tt class="docutils literal"><span class="pre">lincs-iter</span> <span class="pre">=</span> <span class="pre">4</span></tt> but the corresponding  keyword would be
 <tt class="docutils literal"><span class="pre">lincs_iter</span> <span class="pre">=</span> <span class="pre">4</span></tt>.</li>
 <li>If the keyword is set as a dict key, eg <tt class="docutils literal"><span class="pre">mdp_params['lincs-iter']=4</span></tt> then one
 does not have to substitute.</li>
 <li>Parameters <em>aa_bb</em> and <em>aa-bb</em> are considered the same (although this should
-not be a problem in practice because there are no mdp parameters that only 
+not be a problem in practice because there are no mdp parameters that only
 differ by a underscore).</li>
 <li>This code is more compact in <tt class="docutils literal"><span class="pre">Perl</span></tt> as one can use <tt class="docutils literal"><span class="pre">s///</span></tt> operators:
 <tt class="docutils literal"><span class="pre">s/^(\s*${key}\s*=\s*).*/$1${val}/</span></tt></li>
@@ -904,7 +904,7 @@ all setup functions become methods in a nice class.</p>
 <li>The stdout output of grompp is not shown. This can make debugging
 pretty hard.  Try running the normal <tt class="xref py py-func docutils literal"><span class="pre">gromacs.grompp()</span></tt> command and
 analyze the output if the debugging messages are not sufficient.</li>
-<li>Check that <tt class="docutils literal"><span class="pre">qtot</span></tt> is correct; because the function is based on pattern 
+<li>Check that <tt class="docutils literal"><span class="pre">qtot</span></tt> is correct; because the function is based on pattern
 matching of the output it can break when the output format changes.</li>
 </ul>
 </dd></dl>
@@ -931,8 +931,8 @@ MDAnalysis but a very quick hack.</p>
 <p><strong>Example</strong></p>
 <blockquote>
 <p>How to use the <a class="reference internal" href="#gromacs.cbook.IndexBuilder" title="gromacs.cbook.IndexBuilder"><tt class="xref py py-class docutils literal"><span class="pre">IndexBuilder</span></tt></a>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">G</span> <span class="o">=</span> <span class="n">gromacs</span><span class="o">.</span><span class="n">cbook</span><span class="o">.</span><span class="n">IndexBuilder</span><span class="p">(</span><span class="s">&#39;md_posres.pdb&#39;</span><span class="p">,</span> 
-              <span class="p">[</span><span class="s">&#39;S312:OG&#39;</span><span class="p">,</span><span class="s">&#39;T313:OG1&#39;</span><span class="p">,</span><span class="s">&#39;A38:O&#39;</span><span class="p">,</span><span class="s">&#39;A309:O&#39;</span><span class="p">,</span><span class="s">&#39;@a62549 &amp; r NA&#39;</span><span class="p">],</span> 
+<div class="highlight-python"><div class="highlight"><pre><span class="n">G</span> <span class="o">=</span> <span class="n">gromacs</span><span class="o">.</span><span class="n">cbook</span><span class="o">.</span><span class="n">IndexBuilder</span><span class="p">(</span><span class="s">&#39;md_posres.pdb&#39;</span><span class="p">,</span>
+              <span class="p">[</span><span class="s">&#39;S312:OG&#39;</span><span class="p">,</span><span class="s">&#39;T313:OG1&#39;</span><span class="p">,</span><span class="s">&#39;A38:O&#39;</span><span class="p">,</span><span class="s">&#39;A309:O&#39;</span><span class="p">,</span><span class="s">&#39;@a62549 &amp; r NA&#39;</span><span class="p">],</span>
               <span class="n">offset</span><span class="o">=-</span><span class="mi">9</span><span class="p">,</span> <span class="n">out_ndx</span><span class="o">=</span><span class="s">&#39;selection.ndx&#39;</span><span class="p">)</span>
 <span class="n">groupname</span><span class="p">,</span> <span class="n">ndx</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">combine</span><span class="p">()</span>
 <span class="k">del</span> <span class="n">G</span>
@@ -1022,7 +1022,7 @@ are <tt class="xref docutils literal"><span class="pre">None</span></tt> then a 
 </dd>
 <dt>offset <span class="classifier-delimiter">:</span> <span class="classifier">int, dict</span></dt>
 <dd><p class="first last">This number is added to the resids in the first selection scheme; this
-allows names to be the same as in a crystal structure. If offset is a 
+allows names to be the same as in a crystal structure. If offset is a
 dict then it is used to directly look up the resids.</p>
 </dd>
 <dt>ndx <span class="classifier-delimiter">:</span> <span class="classifier">filename or list of filenames</span></dt>
@@ -1058,7 +1058,7 @@ constructor is used. [<tt class="xref docutils literal"><span class="pre">None</
 the individual groups: &#8220;|&#8221; (OR) or &#8220;&amp;&#8221; (AND) [&#8220;|&#8221;]</p>
 </dd>
 <dt>defaultgroups <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt>: append everything to the default groups produced by 
+<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt>: append everything to the default groups produced by
 <strong class="program">make_ndx</strong> (or rather, the groups provided in the ndx file on
 initialization &#8212; if this was <tt class="xref docutils literal"><span class="pre">None</span></tt> then these are truly default groups);
 <tt class="xref docutils literal"><span class="pre">False</span></tt>: only use the generated groups</p>
@@ -1205,8 +1205,8 @@ names with underscores (see the notes below on dashes/underscores).</p>
 <dd><p class="first last">filename of alternative output mdp file [None]</p>
 </dd>
 <dt><em>extend_parameters</em> <span class="classifier-delimiter">:</span> <span class="classifier">string or list of strings</span></dt>
-<dd><p class="first last">single parameter or list of parameters for which the new values 
-should be appended to the existing value in the mdp file. This 
+<dd><p class="first last">single parameter or list of parameters for which the new values
+should be appended to the existing value in the mdp file. This
 makes mostly sense for a single parameter, namely &#8216;include&#8217;, which
 is set as the default. Set to <tt class="docutils literal"><span class="pre">[]</span></tt> to disable. [&#8216;include&#8217;]</p>
 </dd>
@@ -1235,12 +1235,12 @@ written as a sequence, joined with spaces, e.g.</p>
 <ul class="last simple">
 <li>Dashes in Gromacs mdp parameters have to be replaced by an underscore
 when supplied as python keyword arguments (a limitation of python). For example
-the MDP syntax is  <tt class="docutils literal"><span class="pre">lincs-iter</span> <span class="pre">=</span> <span class="pre">4</span></tt> but the corresponding  keyword would be 
+the MDP syntax is  <tt class="docutils literal"><span class="pre">lincs-iter</span> <span class="pre">=</span> <span class="pre">4</span></tt> but the corresponding  keyword would be
 <tt class="docutils literal"><span class="pre">lincs_iter</span> <span class="pre">=</span> <span class="pre">4</span></tt>.</li>
 <li>If the keyword is set as a dict key, eg <tt class="docutils literal"><span class="pre">mdp_params['lincs-iter']=4</span></tt> then one
 does not have to substitute.</li>
 <li>Parameters <em>aa_bb</em> and <em>aa-bb</em> are considered the same (although this should
-not be a problem in practice because there are no mdp parameters that only 
+not be a problem in practice because there are no mdp parameters that only
 differ by a underscore).</li>
 <li>This code is more compact in <tt class="docutils literal"><span class="pre">Perl</span></tt> as one can use <tt class="docutils literal"><span class="pre">s///</span></tt> operators:
 <tt class="docutils literal"><span class="pre">s/^(\s*${key}\s*=\s*).*/$1${val}/</span></tt></li>
@@ -1303,7 +1303,7 @@ expression strings, the last is the substitution value. It mimics
 <ul class="last simple">
 <li>No sanity checks are performed and the substitutions must be supplied
 exactly as shown.</li>
-<li>All substitutions are applied to a line; thus the order of the substitution 
+<li>All substitutions are applied to a line; thus the order of the substitution
 commands may matter when one substitution generates a match for a subsequent rule.</li>
 <li>If replacement is set to <tt class="xref docutils literal"><span class="pre">None</span></tt> then the whole expression is ignored and
 whatever is in the template is used. To unset values you must provided an
@@ -1378,14 +1378,14 @@ empty string or similar.</li>
         <li class="right" >
           <a href="../building_blocks.html" title="Gromacs building blocks"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.2.3-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.2.3 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" >Gromacs building blocks</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Aug 01, 2011.
+      Last updated on Aug 17, 2011.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
     </div>
   </body>
