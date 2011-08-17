@@ -8,9 +8,9 @@ Trajectories
 ============
 
 Write centered trajectories. Trajectories will be stored under the
-base dir / trj.  
+base dir / trj.
 
-- full fitxy 
+- full fitxy
 - fitxy at 100 ps intervals
 
 
@@ -57,7 +57,10 @@ class _Trajectories(Worker):
         """Set up  Trajectories
 
         :Arguments:
-           None at the moment, everything is hard coded.
+           *dt*
+              time step in ps of the output trajectory
+
+        Everything else is hard coded, including file names.
         """
         # specific arguments: take them before calling the super class that
         # does not know what to do with them
@@ -81,7 +84,7 @@ class _Trajectories(Worker):
         """Run when registering; requires simulation."""
 
         super(_Trajectories, self)._register_hook(**kwargs)
-        assert not self.simulation is None        
+        assert not self.simulation is None
 
         xtcdir,xtcname = os.path.split(self.simulation.xtc)
         xtcbasename, xtcext = os.path.splitext(xtcname)
@@ -98,7 +101,7 @@ class _Trajectories(Worker):
             if err.errno == errno.EEXIST:
                 pass
 
-        self.parameters.trjdir = trjdir        
+        self.parameters.trjdir = trjdir
         self.parameters.filenames = {
             'gro': fitxy_gro,
             'pdb': fitxy_pdb,
@@ -107,38 +110,38 @@ class _Trajectories(Worker):
             }
 
     # override 'API' methods of base class
-        
+
     def run(self, force=False, **gmxargs):
         """Write new trajectories"""
 
         filename = self.parameters.filenames['gro']
         if not self.check_file_exists(filename, resolve='warning') or force:
             logger.info("Writing fitted GRO file...")
-            gromacs.cbook.trj_fitandcenter(xy=True, s=self.simulation.tpr, f=self.simulation.xtc, 
+            gromacs.cbook.trj_fitandcenter(xy=True, s=self.simulation.tpr, f=self.simulation.xtc,
                                            o=filename, dump=0)
 
         filename = self.parameters.filenames['pdb']
         if not self.check_file_exists(filename, resolve='warning') or force:
             logger.info("Writing fitted PDB file...")
-            gromacs.cbook.trj_fitandcenter(xy=True, s=self.simulation.tpr, f=self.simulation.xtc, 
+            gromacs.cbook.trj_fitandcenter(xy=True, s=self.simulation.tpr, f=self.simulation.xtc,
                                            o=filename, dump=0)
 
         filename = self.parameters.filenames['fitxydt']
         if not self.check_file_exists(filename, resolve='warning') or force:
             logger.info("Writing fitted xtc file (frame every %d ps)..." % self.parameters.dt)
-            gromacs.cbook.trj_fitandcenter(xy=True, s=self.simulation.tpr, f=self.simulation.xtc, 
+            gromacs.cbook.trj_fitandcenter(xy=True, s=self.simulation.tpr, f=self.simulation.xtc,
                                            o=filename, dt=self.parameters.dt)
 
         filename = self.parameters.filenames['fitxy']
         if not self.check_file_exists(filename, resolve='warning') or force:
             logger.info("Writing fitted xtc file (all frames)...")
-            gromacs.cbook.trj_fitandcenter(xy=True, s=self.simulation.tpr, f=self.simulation.xtc, 
+            gromacs.cbook.trj_fitandcenter(xy=True, s=self.simulation.tpr, f=self.simulation.xtc,
                                            o=filename)
 
         logger.info("New trajectories can be found in %r." % self.parameters.trjdir)
 
     def analyze(self,**kwargs):
-        """No postprocessing."""        
+        """No postprocessing."""
         pass
 
 
@@ -160,7 +163,7 @@ class Trajectories(Plugin):
     The plugin has only one user-settable argument; everything is hard-coded,
     including the output filenames: *_fitxy* is always inserted before the
     suffix.
-    
+
     :Arguments:
         *dt*
             time step in ps of the output trajectory
