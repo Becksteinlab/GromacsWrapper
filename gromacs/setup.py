@@ -159,7 +159,7 @@ rlist        1.4 ?      1.0
 """
 
 
-    
+
 trj_compact_main = gromacs.tools.Trjconv(ur='compact', center=True, boxcenter='tric', pbc='mol',
                                          input=('__main__','system'),
                                          doc="Returns a compact representation of the system centered on the __main__ group")
@@ -219,14 +219,14 @@ def make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None):
     These groups are mainly useful if the default groups "Protein" and "Non-Protein"
     are not appropriate. By using symbolic names such as __main__ one
     can keep scripts more general.
-        
+
     :Returns:
       *groups* is a list of dictionaries that describe the index groups. See
       :func:`gromacs.cbook.parse_ndxlist` for details.
 
-    :Arguments:    
+    :Arguments:
       *struct* : filename
-        structure (tpr, pdb, gro)    
+        structure (tpr, pdb, gro)
       *selection* : string
         is a ``make_ndx`` command such as ``"Protein"`` or ``r DRG`` which
         determines what is considered the main group for centering etc. It is
@@ -236,7 +236,7 @@ def make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None):
       *oldndx* : string
          name of index file that should be used as a basis; if None
          then the ``make_ndx`` default groups are used.
-                  
+
     This routine is very dumb at the moment; maybe some heuristics will be
     added later as could be other symbolic groups such as __membrane__.
     """
@@ -250,7 +250,7 @@ def make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None):
     groups = gromacs.cbook.parse_ndxlist(out)
     last = len(groups) - 1
     assert last == groups[-1]['nr']
-    
+
     # pass 2:
     # 1) last group is __main__
     # 2) __environment__ is everything else (eg SOL, ions, ...)
@@ -272,7 +272,7 @@ vdw_lipid_atom_radii = {'C': 0.25, 'N': 0.16, 'O': 0.155, 'H': 0.09}
 
 def get_lipid_vdwradii(outdir=os.path.curdir, libdir=None):
     """Find vdwradii.dat and add special entries for lipids.
-    
+
     See :data:`gromacs.setup.vdw_lipid_resnames` for lipid
     resnames. Add more if necessary.
     """
@@ -301,9 +301,9 @@ def get_lipid_vdwradii(outdir=os.path.curdir, libdir=None):
 
     # make sure to catch 3 and 4 letter resnames
     patterns = vdw_lipid_resnames + list(set([x[:3] for x in vdw_lipid_resnames]))
-    # TODO: should do a tempfile...    
+    # TODO: should do a tempfile...
     with open(vdwradii_dat, 'w') as outfile:
-        # write lipid stuff before general 
+        # write lipid stuff before general
         outfile.write('; Special larger vdw radii for solvating lipid membranes\n')
         for resname in patterns:
             for atom,radius in vdw_lipid_atom_radii.items():
@@ -348,12 +348,12 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
           Set *boxtype*  to ``None`` in order to use a box size in the input
           file (gro or pdb).
       *boxtype* : string
-          Any of the box types supported by :class:`~gromacs.tools.Editconf` 
-          (triclinic, cubic, dodecahedron, octahedron). Set the box dimensions 
-          either with *distance* or the *box* and *angle* keywords. 
+          Any of the box types supported by :class:`~gromacs.tools.Editconf`
+          (triclinic, cubic, dodecahedron, octahedron). Set the box dimensions
+          either with *distance* or the *box* and *angle* keywords.
 
           If set to ``None`` it will ignore *distance* and use the box
-          inside the *struct* file. 
+          inside the *struct* file.
       *box*
           List of three box lengths [A,B,C] that are used by :class:`~gromacs.tools.Editconf`
           in combination with *boxtype* (``bt`` in :program:`editconf`) and *angles*.
@@ -368,7 +368,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
       *water* : string
           Name of the water model; one of "spc", "spce", "tip3p",
           "tip4p". This should be appropriate for the chosen force
-          field. If an alternative solvent is required, simply supply the path to a box 
+          field. If an alternative solvent is required, simply supply the path to a box
           with solvent molecules (used by :func:`~gromacs.genbox`'s  *cs* argument)
           and also supply the molecule name via *solvent_name*.
       *solvent_name*
@@ -376,7 +376,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
           Typically needs to be changed when using non-standard/non-water solvents.
           ["SOL"]
       *with_membrane* : bool
-           ``True``: use special ``vdwradii.dat`` with 0.1 nm-increased radii on 
+           ``True``: use special ``vdwradii.dat`` with 0.1 nm-increased radii on
            lipids. Default is ``False``.
       *ndx* : filename
           How to name the index file that is produced by this function.
@@ -389,7 +389,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
           List of additional directories to add to the mdp include path
       *kwargs*
           Additional arguments are passed on to
-          :class:`~gromacs.tools.Editconf` or are interpreted as parameters to be 
+          :class:`~gromacs.tools.Editconf` or are interpreted as parameters to be
           changed in the mdp file.
 
     """
@@ -399,7 +399,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
     # arguments for editconf that we honour
     editconf_keywords = ["box","angles","c","center","aligncenter","align","translate",
                          "rotate","princ"]
-    editconf_kwargs = dict((k,kwargs.pop(k,None)) for k in editconf_keywords) 
+    editconf_kwargs = dict((k,kwargs.pop(k,None)) for k in editconf_keywords)
 
     # needed for topology scrubbing
     scrubber_kwargs = {'marker': kwargs.pop('marker',None)}
@@ -428,7 +428,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
     # this stage the user cannot do much about it (can be set to any
     # value but is kept undocumented...)
     grompp_maxwarn = kwargs.pop('maxwarn',10)
-    
+
     # clean topology (if user added the marker; the default marker is
     # ; Gromacs auto-generated entries follow:
     n_removed = gromacs.cbook.remove_molecules_from_topology(topology, **scrubber_kwargs)
@@ -441,7 +441,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
             if ext == '.gro':
                 hasBox = True
             elif ext == '.pdb':
-                with open(structure) as struct:                
+                with open(structure) as struct:
                     for line in struct:
                         if line.startswith('CRYST'):
                             hasBox = True
@@ -469,7 +469,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
         logger.info("Solvated system with %s", water)
 
         with open('none.mdp','w') as mdp:
-            mdp.write('; empty mdp file\ninclude = %(include)s\n' % mdp_kwargs)            
+            mdp.write('; empty mdp file\ninclude = %(include)s\n' % mdp_kwargs)
         qtotgmx = gromacs.cbook.grompp_qtot(f='none.mdp', o='topol.tpr', c='solvated.gro',
                                             p=topology, stdout=False, maxwarn=grompp_maxwarn)
         qtot = round(qtotgmx)
@@ -486,14 +486,14 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
                                               input=('keep 0', 'del 0', 'a OW*', 'name 0 OW', '', 'q'),
                                               stdout=False, stderr=True)
             groups = gromacs.cbook.parse_ndxlist(output)
-            gdict = dict([(g['name'], g) for g in groups])   # overkill... 
+            gdict = dict([(g['name'], g) for g in groups])   # overkill...
             N_water = gdict['OW']['natoms']                  # ... but dict lookup is nice
             N_ions = int(N_water * concentration/CONC_WATER) # number of monovalents
         else:
             N_ions = 0
 
         # neutralize (or try -neutral switch of genion???)
-        n_cation = n_anion = 0        
+        n_cation = n_anion = 0
         if qtot > 0:
             n_anion = int(abs(qtot))
         elif qtot < 0:
@@ -543,8 +543,8 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
             logger.warn(wmsg)
             warnings.warn(wmsg, category=GromacsFailureWarning)
 
-    return {'qtot': qtot, 
-            'struct': realpath(dirname, 'ionized.gro'), 
+    return {'qtot': qtot,
+            'struct': realpath(dirname, 'ionized.gro'),
             'ndx': realpath(dirname, ndx),      # not sure why this is propagated-is it used?
             'mainselection': mainselection,
             }
@@ -560,7 +560,7 @@ def check_mdpargs(d):
 
 def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
                     struct='solvate/ionized.gro', top='top/system.top',
-                    output='em.pdb', deffnm="em", 
+                    output='em.pdb', deffnm="em",
                     mdrunner=None, **kwargs):
     """Energy minimize the system.
 
@@ -569,7 +569,7 @@ def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
 
     Additional itp files should be in the same directory as the top file.
 
-    Many of the keyword arguments below already have sensible values. 
+    Many of the keyword arguments below already have sensible values.
 
     :Keywords:
        *dirname*
@@ -592,7 +592,7 @@ def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
           MDrunner class gives the user the ability to run mpi jobs
           etc. [None]
        *kwargs*
-          remaining key/value pairs that should be changed in the 
+          remaining key/value pairs that should be changed in the
           template mdp file, eg ``nstxtcout=250, nstfout=250``.
 
     .. note:: If :func:`~gromacs.mdrun_d` is not found, the function
@@ -614,7 +614,7 @@ def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
     kwargs.pop('ndx', None)
     # mainselection is not used but only passed through; right now we
     # set it to the default that is being used in all argument lists
-    # but that is not pretty. TODO.    
+    # but that is not pretty. TODO.
     mainselection = kwargs.pop('mainselection', '"Protein"')
     # only interesting when passed from solvate()
     qtot = kwargs.pop('qtot', 0)
@@ -627,7 +627,7 @@ def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
     add_mdp_includes(topology, kwargs)
 
     if qtot != 0:
-        # At the moment this is purely user-reported and really only here because 
+        # At the moment this is purely user-reported and really only here because
         # it might get fed into the function when using the keyword-expansion pipeline
         # usage paradigm.
         wmsg = "Total charge was reported as qtot = %(qtot)g <> 0; probably a problem." % vars()
@@ -682,8 +682,8 @@ def em_schedule(**kwargs):
       *kwargs*
            mostly passed to :func:`gromacs.setup.energy_minimize`
 
-    :Returns: dictionary with paths to final structure ('struct') and 
-              other files        
+    :Returns: dictionary with paths to final structure ('struct') and
+              other files
 
     :Example:
        Conduct three minimizations:
@@ -697,8 +697,8 @@ def em_schedule(**kwargs):
 
           import gromacs.run
           gromacs.setup.em_schedule(struct='solvate/ionized.gro',
-                    mdrunner=gromacs.run.MDrunnerOpenMP64,  
-                    integrators=['l-bfgs', 'steep', 'l-bfgs'], 
+                    mdrunner=gromacs.run.MDrunnerOpenMP64,
+                    integrators=['l-bfgs', 'steep', 'l-bfgs'],
                     nsteps=[50,200, 50])
 
     .. Note:: You might have to prepare the mdp file carefully because at the
@@ -719,7 +719,7 @@ def em_schedule(**kwargs):
     for i, integrator in enumerate(integrators):
         struct = files['struct']
         logger.info("[em %d] energy minimize with %s for maximum %d steps", i, integrator, nsteps[i])
-        kwargs.update({'struct':struct, 'output':outputs[i], 
+        kwargs.update({'struct':struct, 'output':outputs[i],
                        'integrator':integrator, 'nsteps': nsteps[i]})
         if not integrator == 'l-bfgs':
             kwargs['mdrunner'] = mdrunner
@@ -751,9 +751,9 @@ def _setup_MD(dirname,
     topology = realpath(top)
     try:
         index = realpath(ndx)
-    except AttributeError:  # (that's what realpath(None) throws...) 
+    except AttributeError:  # (that's what realpath(None) throws...)
         index = None        # None is handled fine below
-    
+
     qname = mdp_kwargs.pop('sgename', qname)    # compatibility for old scripts
     qscript = mdp_kwargs.pop('sge', qscript)    # compatibility for old scripts
     qscript_template = config.get_template(qscript)
@@ -771,11 +771,11 @@ def _setup_MD(dirname,
     mdp_parameters.update(mdp_kwargs)
 
     add_mdp_includes(topology, mdp_parameters)
-    
-    with in_dir(dirname):        
+
+    with in_dir(dirname):
         if not (mdp_parameters.get('Tcoupl','').lower() == 'no' or mainselection is None):
             logger.info("[%(dirname)s] Automatic adjustment of T-coupling groups" % vars())
-            
+
             # make index file in almost all cases; with mainselection == None the user
             # takes FULL control and also has to provide the template or index
             groups = make_main_index(structure, selection=mainselection,
@@ -816,13 +816,13 @@ def _setup_MD(dirname,
                 ref_t = asiterable(mdp_parameters.pop('ref_t', 300))
 
                 if len(tau_t) != n_tc_groups:
-                    tau_t = n_tc_groups * [tau_t[0]] 
+                    tau_t = n_tc_groups * [tau_t[0]]
                     wmsg = "%d coupling constants should have been supplied for tau_t. "\
                         "Using %f 1/ps for all of them." % (n_tc_groups, tau_t[0])
                     logger.warn(wmsg)
                     warnings.warn(wmsg, category=AutoCorrectionWarning)
                 if len(ref_t) != n_tc_groups:
-                    ref_t = n_tc_groups * [ref_t[0]] 
+                    ref_t = n_tc_groups * [ref_t[0]]
                     wmsg = "%d temperatures should have been supplied for ref_t. "\
                         "Using %g K for all of them." % (n_tc_groups, ref_t[0])
                     logger.warn(wmsg)
@@ -850,7 +850,7 @@ def _setup_MD(dirname,
         gromacs.grompp(f=mdp, p=topology, c=structure, n=index, o=tpr, **unprocessed)
 
         runscripts = gromacs.qsub.generate_submit_scripts(
-            qscript_template, deffnm=deffnm, jobname=qname, budget=budget, 
+            qscript_template, deffnm=deffnm, jobname=qname, budget=budget,
             startdir=startdir, mdrun_opts=mdrun_opts, walltime=walltime)
 
     logger.info("[%(dirname)s] All files set up for a run time of %(runtime)g ps "
@@ -860,7 +860,9 @@ def _setup_MD(dirname,
               'top': topology,
               'ndx': index,            # possibly mainindex
               'qscript': runscripts,
-              'mainselection': mainselection}
+              'mainselection': mainselection,
+              'deffnm': deffnm,        # return deffnm (tpr = deffnm.tpr!)
+              }
     kwargs.update(mdp_kwargs)  # return extra mdp args so that one can use them for prod run
     kwargs.pop('define', None) # but make sure that -DPOSRES does not stay...
     return kwargs
@@ -887,13 +889,13 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
        *ndx*
           index file (supply when using a custom mdp)
        *includes*
-          additional directories to search for itp files          
+          additional directories to search for itp files
        *mainselection*
           :program:`make_ndx` selection to select main group ["Protein"]
           (If ``None`` then no canonical index file is generated and
           it is the user's responsibility to set *tc_grps*,
           *tau_t*, and *ref_t* as keyword arguments, or provide the mdp template
-          with all parameter pre-set in *mdp* and probably also your own *ndx* 
+          with all parameter pre-set in *mdp* and probably also your own *ndx*
           index file.)
        *deffnm*
           default filename for Gromacs run [md]
@@ -903,8 +905,8 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
           integration time step in ps [0.002]
        *qscript*
           script to submit to the queuing system; by default
-          uses the template :data:`gromacs.config.qscript_template`, which can 
-          be manually set to another template from :data:`gromacs.config.templates`; 
+          uses the template :data:`gromacs.config.qscript_template`, which can
+          be manually set to another template from :data:`gromacs.config.templates`;
           can also be a list of template names.
        *qname*
           name to be used for the job in the queuing system [PR_GMX]
@@ -970,13 +972,13 @@ def MD(dirname='MD', **kwargs):
        *ndx*
           index file (supply when using a custom mdp)
        *includes*
-          additional directories to search for itp files          
+          additional directories to search for itp files
        *mainselection*
           ``make_ndx`` selection to select main group ["Protein"]
           (If ``None`` then no canonical index file is generated and
           it is the user's responsibility to set *tc_grps*,
           *tau_t*, and *ref_t* as keyword arguments, or provide the mdp template
-          with all parameter pre-set in *mdp* and probably also your own *ndx* 
+          with all parameter pre-set in *mdp* and probably also your own *ndx*
           index file.)
        *deffnm*
           default filename for Gromacs run [md]
@@ -986,8 +988,8 @@ def MD(dirname='MD', **kwargs):
           integration time step in ps [0.002]
        *qscript*
           script to submit to the queuing system; by default
-          uses the template :data:`gromacs.config.qscript_template`, which can 
-          be manually set to another template from :data:`gromacs.config.templates`; 
+          uses the template :data:`gromacs.config.qscript_template`, which can
+          be manually set to another template from :data:`gromacs.config.templates`;
           can also be a list of template names.
        *qname*
           name to be used for the job in the queuing system [MD_GMX]
