@@ -21,8 +21,8 @@ cmd           description
 -----         -----------------
 distribution  make sdist and egg, copy to $PACKAGES
 dist
-docs          'make_epydoc make_sphinx'
-make_epydoc   source code docs, copy to $DOCS/epydoc
+docs          'make_sphinx'
+make_epydoc   source code docs, copy to $DOCS/epydoc # BROKEN
 make_sphinx   documentation, copy to $DOCS/html
 
 
@@ -83,9 +83,9 @@ sphinx () {
 }    
 
 docs () {
-  make_epydocs 
+  #make_epydocs 
   make_sphinx
-  make_pdf
+  #make_pdf
 }
 
 
