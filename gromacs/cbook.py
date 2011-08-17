@@ -1393,13 +1393,13 @@ class IndexBuilder(object):
     RESIDUE = re.compile("""
                  (?P<aa>([ACDEFGHIKLMNPQRSTVWY])   # 1-letter amino acid
                         |                          #   or
-                        (\S\S\S)                   # 3-letter residue name
+                        ([A-Z][A-Z][A-Z][A-Z]?)    # 3-letter or 4-letter residue name
                  )
                  (?P<resid>\d+)                    # resid
                  (:                                # separator ':'
                    (?P<atom>\w+)                   # atom name
                  )?                                # possibly one
-            """, re.VERBOSE)
+            """, re.VERBOSE | re.IGNORECASE)
 
     def _process_residue(self, selection, name=None):
         """Process residue/atom selection and return name and temp index file."""
