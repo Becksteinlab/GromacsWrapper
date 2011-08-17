@@ -170,10 +170,10 @@ The package version can be queried with the :func:`gromacs.get_version` function
 __docformat__ = "restructuredtext en"
 
 #: Package version; this is the only place where it is set.
-VERSION = 0,2,3
+VERSION = 0,2,4
 #: Set to ``True`` for a release. If set to ``False`` then the patch level
 #: will have the suffix "-dev".
-RELEASE = True
+RELEASE = False
 if not RELEASE:
     VERSION = VERSION[:2] + (str(VERSION[2]) + '-dev',)
 
