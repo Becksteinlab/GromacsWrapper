@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Analysis core modules &mdash; GromacsWrapper v0.2.3-dev documentation</title>
+    <title>Analysis core modules &mdash; GromacsWrapper v0.2.3 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.3-dev',
+        VERSION:     '0.2.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.2.3-dev documentation" href="../index.html" />
+    <link rel="top" title="GromacsWrapper v0.2.3 documentation" href="../index.html" />
     <link rel="up" title="Analysis" href="../analysis.html" />
     <link rel="next" title="Support modules" href="support.html" />
     <link rel="prev" title="Analysis" href="../analysis.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="../analysis.html" title="Analysis"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper v0.2.3-dev documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper v0.2.3 documentation</a> &raquo;</li>
           <li><a href="../analysis.html" accesskey="U">Analysis</a> &raquo;</li> 
       </ul>
     </div>  
@@ -88,9 +88,9 @@ the <a class="reference internal" href="#example">Example</a>.</p>
 <p>Analysis capabilities are added via plugins.</p>
 <ol class="arabic simple">
 <li>Set the <em>active plugin</em> with the <a class="reference internal" href="#gromacs.analysis.Simulation.set_plugin" title="gromacs.analysis.Simulation.set_plugin"><tt class="xref py py-meth docutils literal"><span class="pre">Simulation.set_plugin()</span></tt></a> method.</li>
-<li>Analyze the trajectory with the active plugin by calling the 
+<li>Analyze the trajectory with the active plugin by calling the
 <a class="reference internal" href="#gromacs.analysis.Simulation.run" title="gromacs.analysis.Simulation.run"><tt class="xref py py-meth docutils literal"><span class="pre">Simulation.run()</span></tt></a> method.</li>
-<li>Analyze the output from <a class="reference internal" href="#gromacs.analysis.Simulation.run" title="gromacs.analysis.Simulation.run"><tt class="xref py py-meth docutils literal"><span class="pre">run()</span></tt></a> with <a class="reference internal" href="#gromacs.analysis.Simulation.analyze" title="gromacs.analysis.Simulation.analyze"><tt class="xref py py-meth docutils literal"><span class="pre">Simulation.analyze()</span></tt></a>; results are stored 
+<li>Analyze the output from <a class="reference internal" href="#gromacs.analysis.Simulation.run" title="gromacs.analysis.Simulation.run"><tt class="xref py py-meth docutils literal"><span class="pre">run()</span></tt></a> with <a class="reference internal" href="#gromacs.analysis.Simulation.analyze" title="gromacs.analysis.Simulation.analyze"><tt class="xref py py-meth docutils literal"><span class="pre">Simulation.analyze()</span></tt></a>; results are stored
 in the plugin&#8217;s <tt class="xref py py-attr docutils literal"><span class="pre">results</span></tt> dictionary.</li>
 <li>Plot results with <a class="reference internal" href="#gromacs.analysis.Simulation.plot" title="gromacs.analysis.Simulation.plot"><tt class="xref py py-meth docutils literal"><span class="pre">Simulation.plot()</span></tt></a>.</li>
 </ol>
@@ -121,6 +121,11 @@ as <em>xtc</em> override the values in <em>sim</em>.</p>
 <dt><em>absolute</em></dt>
 <dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt>: Turn file names into absolute paths (typically required
 for most plugins); <tt class="xref docutils literal"><span class="pre">False</span></tt> keep a they are [<tt class="xref docutils literal"><span class="pre">True</span></tt>]</p>
+</dd>
+<dt><em>strict</em></dt>
+<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt>: missing required file keyword raises a <tt class="xref py py-exc docutils literal"><span class="pre">TypeError</span></tt>
+and missing the file itself raises a <tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt>.  <tt class="xref docutils literal"><span class="pre">False</span></tt>:
+missing required files only give a warning. [<tt class="xref docutils literal"><span class="pre">True</span></tt>]</p>
 </dd>
 <dt><em>analysisdir</em></dt>
 <dd><p class="first last">directory under which derived data are stored;
@@ -160,7 +165,7 @@ from <tt class="xref py py-class docutils literal"><span class="pre">Plugin</spa
 plugin name in <a class="reference internal" href="plugins.html#module-gromacs.analysis.plugins" title="gromacs.analysis.plugins"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.analysis.plugins</span></tt></a> and the
 corresponding class is added. In both cases any parameters for
 initizlization should be provided.</p>
-<p class="last">If <em>plugin</em> is already a <tt class="xref py py-class docutils literal"><span class="pre">Plugin</span></tt> instance then the kwargs 
+<p class="last">If <em>plugin</em> is already a <tt class="xref py py-class docutils literal"><span class="pre">Plugin</span></tt> instance then the kwargs
 will be ignored.</p>
 </dd>
 <dt><em>kwargs</em></dt>
@@ -360,9 +365,9 @@ attributes or as key/value pairs, see the container class
 <p>Analysis capabilities are added via plugins.</p>
 <ol class="arabic simple">
 <li>Set the <em>active plugin</em> with the <a class="reference internal" href="#gromacs.analysis.core.Simulation.set_plugin" title="gromacs.analysis.core.Simulation.set_plugin"><tt class="xref py py-meth docutils literal"><span class="pre">Simulation.set_plugin()</span></tt></a> method.</li>
-<li>Analyze the trajectory with the active plugin by calling the 
+<li>Analyze the trajectory with the active plugin by calling the
 <a class="reference internal" href="#gromacs.analysis.core.Simulation.run" title="gromacs.analysis.core.Simulation.run"><tt class="xref py py-meth docutils literal"><span class="pre">Simulation.run()</span></tt></a> method.</li>
-<li>Analyze the output from <a class="reference internal" href="#gromacs.analysis.core.Simulation.run" title="gromacs.analysis.core.Simulation.run"><tt class="xref py py-meth docutils literal"><span class="pre">run()</span></tt></a> with <a class="reference internal" href="#gromacs.analysis.core.Simulation.analyze" title="gromacs.analysis.core.Simulation.analyze"><tt class="xref py py-meth docutils literal"><span class="pre">Simulation.analyze()</span></tt></a>; results are stored 
+<li>Analyze the output from <a class="reference internal" href="#gromacs.analysis.core.Simulation.run" title="gromacs.analysis.core.Simulation.run"><tt class="xref py py-meth docutils literal"><span class="pre">run()</span></tt></a> with <a class="reference internal" href="#gromacs.analysis.core.Simulation.analyze" title="gromacs.analysis.core.Simulation.analyze"><tt class="xref py py-meth docutils literal"><span class="pre">Simulation.analyze()</span></tt></a>; results are stored
 in the plugin&#8217;s <tt class="xref py py-attr docutils literal"><span class="pre">results</span></tt> dictionary.</li>
 <li>Plot results with <a class="reference internal" href="#gromacs.analysis.core.Simulation.plot" title="gromacs.analysis.core.Simulation.plot"><tt class="xref py py-meth docutils literal"><span class="pre">Simulation.plot()</span></tt></a>.</li>
 </ol>
@@ -393,6 +398,11 @@ as <em>xtc</em> override the values in <em>sim</em>.</p>
 <dt><em>absolute</em></dt>
 <dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt>: Turn file names into absolute paths (typically required
 for most plugins); <tt class="xref docutils literal"><span class="pre">False</span></tt> keep a they are [<tt class="xref docutils literal"><span class="pre">True</span></tt>]</p>
+</dd>
+<dt><em>strict</em></dt>
+<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt>: missing required file keyword raises a <tt class="xref py py-exc docutils literal"><span class="pre">TypeError</span></tt>
+and missing the file itself raises a <tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt>.  <tt class="xref docutils literal"><span class="pre">False</span></tt>:
+missing required files only give a warning. [<tt class="xref docutils literal"><span class="pre">True</span></tt>]</p>
 </dd>
 <dt><em>analysisdir</em></dt>
 <dd><p class="first last">directory under which derived data are stored;
@@ -432,7 +442,7 @@ from <a class="reference internal" href="#gromacs.analysis.core.Plugin" title="g
 plugin name in <a class="reference internal" href="plugins.html#module-gromacs.analysis.plugins" title="gromacs.analysis.plugins"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.analysis.plugins</span></tt></a> and the
 corresponding class is added. In both cases any parameters for
 initizlization should be provided.</p>
-<p class="last">If <em>plugin</em> is already a <a class="reference internal" href="#gromacs.analysis.core.Plugin" title="gromacs.analysis.core.Plugin"><tt class="xref py py-class docutils literal"><span class="pre">Plugin</span></tt></a> instance then the kwargs 
+<p class="last">If <em>plugin</em> is already a <a class="reference internal" href="#gromacs.analysis.core.Plugin" title="gromacs.analysis.core.Plugin"><tt class="xref py py-class docutils literal"><span class="pre">Plugin</span></tt></a> instance then the kwargs
 will be ignored.</p>
 </dd>
 <dt><em>kwargs</em></dt>
@@ -542,8 +552,40 @@ ultimately by <tt class="xref py py-func docutils literal"><span class="pre">pyl
 
 <dl class="method">
 <dt id="gromacs.analysis.core.Simulation.check_file">
-<tt class="descname">check_file</tt><big>(</big><em>filetype</em>, <em>path</em><big>)</big><a class="headerlink" href="#gromacs.analysis.core.Simulation.check_file" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">check_file</tt><big>(</big><em>filetype</em>, <em>path</em>, <em>resolve='exception'</em><big>)</big><a class="headerlink" href="#gromacs.analysis.core.Simulation.check_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raise <tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt> if path does not exist. Uses <em>filetype</em> in message.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>filetype</em></dt>
+<dd><p class="first last">type of file, for error message</p>
+</dd>
+<dt><em>path</em></dt>
+<dd><p class="first last">path to file</p>
+</dd>
+<dt><em>resolve</em></dt>
+<dd><dl class="first last docutils">
+<dt>&#8220;ignore&#8221;</dt>
+<dd><p class="first last">always return <tt class="xref docutils literal"><span class="pre">True</span></tt></p>
+</dd>
+<dt>&#8220;indicate&#8221;</dt>
+<dd><p class="first last">return <tt class="xref docutils literal"><span class="pre">True</span></tt> if it exists, <tt class="xref docutils literal"><span class="pre">False</span></tt> otherwise</p>
+</dd>
+<dt>&#8220;warn&#8221;</dt>
+<dd><p class="first last">indicate and issue a <tt class="xref py py-exc docutils literal"><span class="pre">UserWarning</span></tt></p>
+</dd>
+<dt>&#8220;exception&#8221;</dt>
+<dd><p class="first last">raise <tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> if it does not exist [default]</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -787,13 +829,13 @@ mechanism.</p>
         <li class="right" >
           <a href="../analysis.html" title="Analysis"
              >previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper v0.2.3-dev documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper v0.2.3 documentation</a> &raquo;</li>
           <li><a href="../analysis.html" >Analysis</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Aug 01, 2011.
+      Last updated on Aug 17, 2011.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
     </div>
   </body>

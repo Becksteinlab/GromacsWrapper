@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Analysis plugins &mdash; GromacsWrapper v0.2.3-dev documentation</title>
+    <title>Analysis plugins &mdash; GromacsWrapper v0.2.3 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.3-dev',
+        VERSION:     '0.2.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.2.3-dev documentation" href="../index.html" />
+    <link rel="top" title="GromacsWrapper v0.2.3 documentation" href="../index.html" />
     <link rel="up" title="Analysis" href="../analysis.html" />
     <link rel="next" title="Auxiliary modules" href="../auxiliary.html" />
     <link rel="prev" title="Support modules" href="support.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="support.html" title="Support modules"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper v0.2.3-dev documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper v0.2.3 documentation</a> &raquo;</li>
           <li><a href="../analysis.html" accesskey="U">Analysis</a> &raquo;</li> 
       </ul>
     </div>  
@@ -968,22 +968,22 @@ with a simulation instance later.</p>
 safe to leave this at the default &#8216;SOL&#8217;)</p>
 </dd>
 <dt><em>force</em></dt>
-<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt> will always regenerate trajectories even if they 
+<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt> will always regenerate trajectories even if they
 already exist, <tt class="xref docutils literal"><span class="pre">False</span></tt> raises an exception, <tt class="xref docutils literal"><span class="pre">None</span></tt>
 does the sensible thing in most cases (i.e. notify and
 then move on).</p>
 </dd>
 <dt><em>dt</em> <span class="classifier-delimiter">:</span> <span class="classifier">float or list of floats</span></dt>
-<dd><p class="first last">only write every dt timestep (in ps); if a list of floats is 
+<dd><p class="first last">only write every dt timestep (in ps); if a list of floats is
 supplied, write multiple trajectories, one for each dt.</p>
 </dd>
 <dt><em>compact</em> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">write a compact representation</p>
 </dd>
-<dt><em>fit</em>          </dt>
+<dt><em>fit</em></dt>
 <dd><p class="first">Create an additional trajectory from the stripped one in which
 the Protein group is rms-fitted to the initial structure. See
-<a class="reference internal" href="../gromacs/blocks/cbook.html#gromacs.cbook.Transformer.fit" title="gromacs.cbook.Transformer.fit"><tt class="xref py py-meth docutils literal"><span class="pre">gromacs.cbook.Transformer.fit()</span></tt></a> for details. Useful 
+<a class="reference internal" href="../gromacs/blocks/cbook.html#gromacs.cbook.Transformer.fit" title="gromacs.cbook.Transformer.fit"><tt class="xref py py-meth docutils literal"><span class="pre">gromacs.cbook.Transformer.fit()</span></tt></a> for details. Useful
 values:</p>
 <blockquote>
 <ul class="simple">
@@ -1006,6 +1006,12 @@ values:</p>
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If set, <em>dt</em> is only applied to a fit step; the
+no-water trajectory is always generated for all time
+steps of the input.</p>
+</div>
 <p>Registers the plugin with the simulation class.</p>
 <p>Specific keyword arguments are listed below, all other kwargs
 are passed through.</p>
@@ -1731,13 +1737,13 @@ defined. Each operation returns a new <a class="reference internal" href="#groma
         <li class="right" >
           <a href="support.html" title="Support modules"
              >previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper v0.2.3-dev documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper v0.2.3 documentation</a> &raquo;</li>
           <li><a href="../analysis.html" >Analysis</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Aug 01, 2011.
+      Last updated on Aug 17, 2011.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
     </div>
   </body>
