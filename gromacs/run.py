@@ -69,9 +69,9 @@ class MDrunner(utilities.FileUtils):
         """
         # run MD in this directory (input files must be relative to this dir!)
         self.dirname = dirname
-        
+
         # use a GromacsCommand class for handling arguments
-        cls = type('MDRUN', (core.GromacsCommand,), 
+        cls = type('MDRUN', (core.GromacsCommand,),
                    {'command_name': self.mdrun,
                     '__doc__': "MDRUN command %r" % self.mdrun})
 
@@ -87,14 +87,14 @@ class MDrunner(utilities.FileUtils):
                 logname = deffnm
         self.logname = os.path.realpath(
             os.path.join(self.dirname, self.filename(logname, ext='log')))
-    
+
     def commandline(self, **mpiargs):
         """Returns simple command line to invoke mdrun.
 
         If :attr:`mpiexec` is set then :meth:`mpicommand` provides the mpi
         launcher command that prefixes the actual ``mdrun`` invocation:
 
-           :attr:`mpiexec` [*mpiargs*]  :attr:`mdrun` [*mdrun-args*] 
+           :attr:`mpiexec` [*mpiargs*]  :attr:`mdrun` [*mdrun-args*]
 
         The *mdrun-args* are set on initializing the class. Override
         :meth:`mpicommand` to fit your system if the simple default
@@ -127,7 +127,7 @@ class MDrunner(utilities.FileUtils):
     def posthook(self, **kwargs):
         """Called directly after the process terminated (also if it failed)."""
         return
-    
+
     def run(self, pre=None, post=None, **mpiargs):
         """Execute the mdrun command (possibly as a MPI command) and run the simulation.
 
@@ -144,13 +144,13 @@ class MDrunner(utilities.FileUtils):
             pre = {}
         if post is None:
             post = {}
-        
-        cmd = self.commandline(**mpiargs)    
+
+        cmd = self.commandline(**mpiargs)
 
         with utilities.in_dir(self.dirname, create=False):
            try:
                self.prehook(**pre)
-               logger.info(" ".join(cmd))               
+               logger.info(" ".join(cmd))
                rc = subprocess.call(cmd)
            except:
                logger.exception("Failed MD run for unknown reasons.")
@@ -169,11 +169,11 @@ class MDrunner(utilities.FileUtils):
         This works by looking at the mdrun log file for 'Finished
         mdrun on node'. It is useful to implement robust simulation
         techniques.
-        
+
         :Arguments:
            *kwargs* are keyword arguments that are passed on to
            :meth:`run` (typically used for mpi things)
-           
+
         :Returns:
            - ``True`` if run completed successfully
            - ``False`` otherwise
@@ -201,7 +201,7 @@ class MDrunnerDoublePrecision(MDrunner):
     """Manage running :program:`mdrun_d`.
     """
     mdrun = "mdrun_d"
-        
+
 class MDrunnerOpenMP(MDrunner):
     """Manage running :program:`mdrun` as an OpenMP_ multiprocessor job.
 
@@ -236,11 +236,11 @@ class MDrunnerMpich2Smpd(MDrunner):
     def posthook(self, **kwargs):
         """Shut down smpd"""
         cmd = ['smpd', '-shutdown']
-        logger.info("Shutting down smpd: "+" ".join(cmd))        
+        logger.info("Shutting down smpd: "+" ".join(cmd))
         rc = subprocess.call(cmd)
         return rc
-        
-    
+
+
 
 def check_mdrun_success(logfile):
     """Check if ``mdrun`` finished successfully.
@@ -250,12 +250,17 @@ def check_mdrun_success(logfile):
     the file. (The file must be seeakable.)
 
     :Arguments:
-      logfile : filename
+      *logfile* : filename
          Logfile produced by ``mdrun``.
-    :Returns: boolean (``True`` if all ok, ``False`` otherwise)
+
+    :Returns: ``True`` if all ok, ``False`` if not finished, and
+              ``None`` if the *logfile* cannot be opened
     """
     status = False
-    log = open(logfile)
+    try:
+        log = open(logfile)
+    except IOError:
+        return None
     try:
         log.seek(-1024L, 2)
         for line in log:
@@ -266,4 +271,4 @@ def check_mdrun_success(logfile):
         log.close()
 
     return status
-    
+
