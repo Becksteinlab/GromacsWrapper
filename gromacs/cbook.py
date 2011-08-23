@@ -628,11 +628,11 @@ def add_mdp_includes(topology=None, kwargs=None):
     if kwargs is None:
         kwargs = {}
 
-    if not topology is None:
-        # half-hack: find additional itps in the same directory as the
-        # topology
+    include_dirs = ['.', '..']      # should . & .. always be added?
+    if topology is not None:
+        # half-hack: find additional itps in the same directory as the topology
         topology_dir = os.path.dirname(topology)
-        include_dirs = ['.', '..', topology_dir]   # should . & .. always be added?
+        include_dirs.append(topology_dir)
 
     include_dirs.extend(asiterable(kwargs.pop('includes', [])))  # includes can be a list or a string
 
@@ -641,6 +641,22 @@ def add_mdp_includes(topology=None, kwargs=None):
     kwargs.setdefault('include', _mdp_include_string(include_dirs))
     return kwargs
 
+def filter_grompp_options(**kwargs):
+    """Returns one dictionary only containing valid :program:`grompp` options and everything else.
+
+    Option list is hard coded and nased on :class:`~gromacs.tools.grompp` 4.5.3.
+
+    :Returns: ``(grompp_dict, other_dict)``
+
+    .. versionadded:: 0.2.4
+    """
+    grompp_options = ('f','po','c','r','rb','n','p','pp','o','t','e',  # files
+                      'h', 'noh', 'version', 'noversion', 'nice', 'v', 'nov',
+                      'time', 'rmvsbds', 'normvsbds', 'maxwarn', 'zero', 'nozero',
+                      'renum', 'norenum')
+    grompp = dict((k,v) for k,v in kwargs.items() if k in grompp_options)
+    other =  dict((k,v) for k,v in kwargs.items() if k not in grompp_options)
+    return grompp, other
 
 def create_portable_topology(topol, struct, **kwargs):
     """Create a processed topology.
@@ -663,17 +679,26 @@ def create_portable_topology(topol, struct, **kwargs):
       *includes*
           path or list of paths of directories in which itp files are
           searched for
+      *grompp_kwargs**
+          other options for :program:`grompp` such as ``maxwarn=2`` can
+          also be supplied
 
-    :Returns: full path to the processed trajectory
+    :Returns: full path to the processed topology
     """
     _topoldir, _topol = os.path.split(topol)
     processed = kwargs.pop('processed', os.path.join(_topoldir, 'pp_'+_topol))
-    mdp_kwargs = add_mdp_includes(topol, kwargs)
+    grompp_kwargs, mdp_kwargs = filter_grompp_options(**kwargs)
+    mdp_kwargs = add_mdp_includes(topol, mdp_kwargs)
     with tempfile.NamedTemporaryFile(suffix='.mdp') as mdp:
         mdp.write('; empty mdp file\ninclude = %(include)s\n' % mdp_kwargs)
         mdp.flush()
+        grompp_kwargs['p'] = topol
+        grompp_kwargs['pp'] = processed
+        grompp_kwargs['f'] =  mdp.name
+        grompp_kwargs['c'] = struct
+        grompp_kwargs['v'] = False
         try:
-            gromacs.grompp(v=False, f=mdp.name, p=topol, c=struct, pp=processed)
+            gromacs.grompp(**grompp_kwargs)
         finally:
             utilities.unlink_gmx('topol.tpr', 'mdout.mdp')
     return utilities.realpath(processed)
