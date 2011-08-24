@@ -270,10 +270,22 @@ del h
 #     import logging
 #     logger = logging.getLogger('gromacs.MODULENAME')
 
-# add standard logging -- remove when integrating in a library??
-import log
-logger = log.create('gromacs', logfile='gromacs.log')
-del log
+def start_logging(logfile="gromacs.log"):
+    """Start logging of messages to file and console.
+
+    The default logfile is named ``gromacs.log`` and messages are
+    logged with the tag *gromacs*.
+    """
+    import log
+    log.create("gromacs", logfile=logfile)
+    logging.getLogger("gromacs").info("GromacsWrapper STARTED logging to %r", logfile)
+
+def stop_logging():
+    """Stop logging to logfile and console."""
+    import log
+    logger = logging.getLogger("gromacs")
+    logger.info("GromacsWrapper STOPPED logging")
+    log.clear_handlers(logger)  # this _should_ do the job...
 
 
 # Add gromacs command **instances** to the top level.
