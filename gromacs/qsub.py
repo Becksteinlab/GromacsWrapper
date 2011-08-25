@@ -435,12 +435,13 @@ def generate_submit_array(templates, directories, **kwargs):
     missing = [p for p in (os.path.join(dirname, subdir) for subdir in reldirs)
                if not os.path.exists(p)]
     if len(missing) > 0:
+        logger.debug("template=%(template)r: dirname=%(dirname)r reldirs=%(reldirs)r", vars())
         logger.error("Some directories are not accessible from the array script: "
-                     "%(missing)r" % vars())
+                     "%(missing)r", vars())
     def write_script(template):
         qsystem = detect_queuing_system(template)
         if qsystem is None or not qsystem.has_arrays():
-            logger.warning("Not known how to make a job array for %(template)r; skipping..." % vars())
+            logger.warning("Not known how to make a job array for %(template)r; skipping...", vars())
             return None
         kwargs['jobarray_string'] = qsystem.array(reldirs)
         return generate_submit_scripts(template, **kwargs)[0]   # returns list of length 1
