@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Analysis plugins &mdash; GromacsWrapper v0.2.3 documentation</title>
+    <title>Analysis plugins &mdash; GromacsWrapper v0.2.4 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.3',
+        VERSION:     '0.2.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.2.3 documentation" href="../index.html" />
+    <link rel="top" title="GromacsWrapper v0.2.4 documentation" href="../index.html" />
     <link rel="up" title="Analysis" href="../analysis.html" />
     <link rel="next" title="Auxiliary modules" href="../auxiliary.html" />
     <link rel="prev" title="Support modules" href="support.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="support.html" title="Support modules"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper v0.2.3 documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper v0.2.4 documentation</a> &raquo;</li>
           <li><a href="../analysis.html" accesskey="U">Analysis</a> &raquo;</li> 
       </ul>
     </div>  
@@ -755,7 +755,7 @@ with a simulation instance later.</p>
 <em class="property">class </em><tt class="descname">Energy</tt><big>(</big><span class="optional">[</span><em>name</em><span class="optional">[</span>, <em>simulation</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.Energy.Energy" title="Permalink to this definition">¶</a></dt>
 <dd><p>The following energy terms are extracted from the edr file:</p>
 <blockquote>
-<ul class="simple">
+<div><ul class="simple">
 <li>&#8216;Potential&#8217;</li>
 <li>&#8216;Kinetic-En.&#8217;</li>
 <li>&#8216;Total-Energy&#8217;</li>
@@ -764,7 +764,7 @@ with a simulation instance later.</p>
 <li>&#8216;Volume&#8217;</li>
 <li>&#8216;Box-X&#8217;, &#8216;Box-Y&#8217;, &#8216;Box-Z&#8217;</li>
 </ul>
-</blockquote>
+</div></blockquote>
 </dd></dl>
 
 <p>The list of terms corresponds to input values for <tt class="xref py py-func docutils literal"><span class="pre">gromacs.g_energy()</span></tt>
@@ -986,12 +986,12 @@ the Protein group is rms-fitted to the initial structure. See
 <a class="reference internal" href="../gromacs/blocks/cbook.html#gromacs.cbook.Transformer.fit" title="gromacs.cbook.Transformer.fit"><tt class="xref py py-meth docutils literal"><span class="pre">gromacs.cbook.Transformer.fit()</span></tt></a> for details. Useful
 values:</p>
 <blockquote>
-<ul class="simple">
+<div><ul class="simple">
 <li>&#8220;xy&#8221; : perform a rot+trans fit in the x-y plane</li>
 <li>&#8220;all&#8221;: rot+trans</li>
 <li><tt class="xref docutils literal"><span class="pre">None</span></tt>: no fitting</li>
 </ul>
-</blockquote>
+</div></blockquote>
 <p class="last">If <em>fit</em> is not supplied then the constructore-default is used
 (<tt class="xref py py-attr docutils literal"><span class="pre">_StripWater.parameters.fit</span></tt>).</p>
 </dd>
@@ -1088,12 +1088,12 @@ the Protein group is rms-fitted to the initial structure. See
 <a class="reference internal" href="../gromacs/blocks/cbook.html#gromacs.cbook.Transformer.fit" title="gromacs.cbook.Transformer.fit"><tt class="xref py py-meth docutils literal"><span class="pre">gromacs.cbook.Transformer.fit()</span></tt></a> for details. Useful 
 values:</p>
 <blockquote>
-<ul class="simple">
+<div><ul class="simple">
 <li>&#8220;xy&#8221; : perform a rot+trans fit in the x-y plane</li>
 <li>&#8220;all&#8221;: rot+trans</li>
 <li><tt class="xref docutils literal"><span class="pre">None</span></tt>: no fitting</li>
 </ul>
-</blockquote>
+</div></blockquote>
 <p class="last">If <em>fit</em> is not supplied then the constructore-default is used
 (<tt class="xref py py-attr docutils literal"><span class="pre">_ProteinOnly.parameters.fit</span></tt>).</p>
 </dd>
@@ -1390,7 +1390,7 @@ histogram only contains a single bin (and then get more data)!</p>
 instance to get the data line by line. Each line consists of a
 tuple</p>
 <blockquote>
-(<em>frame</em>, <em>distance</em>)</blockquote>
+<div>(<em>frame</em>, <em>distance</em>)</div></blockquote>
 <p>Initialize with an open stream to the data (eg stdin or file).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1737,14 +1737,14 @@ defined. Each operation returns a new <a class="reference internal" href="#groma
         <li class="right" >
           <a href="support.html" title="Support modules"
              >previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper v0.2.3 documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper v0.2.4 documentation</a> &raquo;</li>
           <li><a href="../analysis.html" >Analysis</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Aug 17, 2011.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+      Last updated on Aug 25, 2011.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>

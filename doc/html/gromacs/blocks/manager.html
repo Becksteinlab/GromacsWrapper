@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Managing jobs remotely &mdash; GromacsWrapper v0.2.3 documentation</title>
+    <title>Managing jobs remotely &mdash; GromacsWrapper v0.2.4 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.2.3',
+        VERSION:     '0.2.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.2.3 documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper v0.2.4 documentation" href="../../index.html" />
     <link rel="up" title="Gromacs building blocks" href="../building_blocks.html" />
     <link rel="next" title="gromacs.run – Running simulations" href="simulation.html" />
     <link rel="prev" title="gromacs.qsub – utilities for batch submission systems" href="qsub.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="qsub.html" title="gromacs.qsub – utilities for batch submission systems"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.2.3 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.2.4 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" accesskey="U">Gromacs building blocks</a> &raquo;</li> 
       </ul>
@@ -108,47 +108,47 @@ can be omitted or set to <tt class="xref docutils literal"><span class="pre">Non
 <h3><em>DEFAULT</em> section<a class="headerlink" href="#default-section" title="Permalink to this headline">¶</a></h3>
 <p><em>name</em></p>
 <blockquote>
-identifier of the configuration; should also be the name of the
-configuration file, i.e. <cite>name.cfg</cite></blockquote>
+<div>identifier of the configuration; should also be the name of the
+configuration file, i.e. <cite>name.cfg</cite></div></blockquote>
 </div>
 <div class="section" id="local-section">
 <h3><em>local</em> section<a class="headerlink" href="#local-section" title="Permalink to this headline">¶</a></h3>
 <p><em>topdir</em></p>
 <blockquote>
-path component under which the local files are stored; see below</blockquote>
+<div>path component under which the local files are stored; see below</div></blockquote>
 </div>
 <div class="section" id="remote-section">
 <h3><em>remote</em> section<a class="headerlink" href="#remote-section" title="Permalink to this headline">¶</a></h3>
 <p><em>hostname</em></p>
 <blockquote>
-fully qualified domain name of the host; used for running <tt class="docutils literal"><span class="pre">ssh</span>
-<span class="pre">hostname</span></tt> or <tt class="docutils literal"><span class="pre">scp</span> <span class="pre">FILES</span> <span class="pre">hostname:DIR</span></tt></blockquote>
+<div>fully qualified domain name of the host; used for running <tt class="docutils literal"><span class="pre">ssh</span>
+<span class="pre">hostname</span></tt> or <tt class="docutils literal"><span class="pre">scp</span> <span class="pre">FILES</span> <span class="pre">hostname:DIR</span></tt></div></blockquote>
 <p><em>scratchdir</em></p>
 <blockquote>
-top level directory on the remote host udner which the working
-directories are constructed; see below for how this is done</blockquote>
+<div>top level directory on the remote host udner which the working
+directories are constructed; see below for how this is done</div></blockquote>
 </div>
 <div class="section" id="queuing-system-section">
 <h3><em>queuing_system</em> section<a class="headerlink" href="#queuing-system-section" title="Permalink to this headline">¶</a></h3>
 <p><em>name</em></p>
 <blockquote>
-identifier for the queuing system (should be a valid python
-identifier)</blockquote>
+<div>identifier for the queuing system (should be a valid python
+identifier)</div></blockquote>
 <p><em>qscript</em></p>
 <blockquote>
-default queuing system script template; store it in <tt class="docutils literal"><span class="pre">~/.gromacswrapper/qscripts</span></tt></blockquote>
+<div>default queuing system script template; store it in <tt class="docutils literal"><span class="pre">~/.gromacswrapper/qscripts</span></tt></div></blockquote>
 <p><em>walltime</em></p>
 <blockquote>
-maximum allowed run time on the system; job files are written in
+<div>maximum allowed run time on the system; job files are written in
 such a way that Gromacs stops run at 0.99 or walltime. If ommitted
 then the job runs until it is done (provided the queuing system
-policy allows that)</blockquote>
+policy allows that)</div></blockquote>
 <p><em>start_cwd</em></p>
 <blockquote>
-Set to <tt class="xref docutils literal"><span class="pre">True</span></tt> means that the queuing system requires the queuing
+<div>Set to <tt class="xref docutils literal"><span class="pre">True</span></tt> means that the queuing system requires the queuing
 system script to <tt class="docutils literal"><span class="pre">cd</span></tt> into the job directory; this seems to be a
 bug in some versions of PBS, which we can work-around in
-<a class="reference internal" href="#gromacs.manager.Manager.qsub" title="gromacs.manager.Manager.qsub"><tt class="xref py py-meth docutils literal"><span class="pre">Manager.qsub()</span></tt></a></blockquote>
+<a class="reference internal" href="#gromacs.manager.Manager.qsub" title="gromacs.manager.Manager.qsub"><tt class="xref py py-meth docutils literal"><span class="pre">Manager.qsub()</span></tt></a></div></blockquote>
 </div>
 </div>
 <div class="section" id="queuing-system-manager">
@@ -163,7 +163,7 @@ jobs remotely (using <a class="reference external" href="http://www.openssh.com/
 <p>Basically, ssh into machine and run job.</p>
 <p>Derive a class from <a class="reference internal" href="#gromacs.manager.Manager" title="gromacs.manager.Manager"><tt class="xref py py-class docutils literal"><span class="pre">Manager</span></tt></a> and override the attributes</p>
 <blockquote>
-<ul class="simple">
+<div><ul class="simple">
 <li><tt class="xref py py-attr docutils literal"><span class="pre">Manager._hostname</span></tt> (hostname of the machine)</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">Manager._scratchdir</span></tt> (all files and directories will be created under
 this scratch directory; it must be a path on the remote host)</li>
@@ -171,7 +171,7 @@ this scratch directory; it must be a path on the remote host)</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">Manager._walltime</span></tt> (if there is a limit to the run time
 of a job; in hours)</li>
 </ul>
-</blockquote>
+</div></blockquote>
 <p>and implement a specialized <a class="reference internal" href="#gromacs.manager.Manager.qsub" title="gromacs.manager.Manager.qsub"><tt class="xref py py-meth docutils literal"><span class="pre">Manager.qsub()</span></tt></a> method if needed.</p>
 <p><a class="reference external" href="http://www.openssh.com/">ssh</a> must be set up (via <a class="reference external" href="http://linux.die.net/man/5/ssh_config">~/.ssh/config</a>) to allow access via a
 commandline such as</p>
@@ -343,7 +343,7 @@ the logfile from <strong class="program">mdrun</strong>.</p>
 <p>Uses <em>performance</em> in ns/d (gathered from <a class="reference internal" href="#gromacs.manager.Manager.get_status" title="gromacs.manager.Manager.get_status"><tt class="xref py py-meth docutils literal"><span class="pre">get_status()</span></tt></a>) and job max
 <em>walltime</em> (in hours) from the class unless provided as keywords.</p>
 <blockquote>
-n = ceil(runtime/(performance*0.99*walltime)</blockquote>
+<div>n = ceil(runtime/(performance*0.99*walltime)</div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -570,15 +570,15 @@ run but that is just a guess);</li>
         <li class="right" >
           <a href="qsub.html" title="gromacs.qsub – utilities for batch submission systems"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.2.3 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.2.4 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" >Gromacs building blocks</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Aug 17, 2011.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+      Last updated on Aug 25, 2011.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>

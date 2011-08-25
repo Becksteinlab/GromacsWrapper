@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>staging.SunGridEngine — staging class for SunGridEngine &mdash; GromacsWrapper v0.2.3 documentation</title>
+    <title>staging.SunGridEngine — staging class for SunGridEngine &mdash; GromacsWrapper v0.2.4 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.3',
+        VERSION:     '0.2.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.2.3 documentation" href="../index.html" />
+    <link rel="top" title="GromacsWrapper v0.2.4 documentation" href="../index.html" />
     <link rel="up" title="staging — Staging of input/output files on a queuing system" href="../staging.html" />
     <link rel="next" title="staging.Local — staging class for running local jobs" href="Local.html" />
     <link rel="prev" title="staging — Staging module overview" href="init.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="init.html" title="staging — Staging module overview"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper v0.2.3 documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper v0.2.4 documentation</a> &raquo;</li>
           <li><a href="../auxiliary.html" >Auxiliary modules</a> &raquo;</li>
           <li><a href="../staging.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal"><span class="pre">staging</span></tt> &#8212; Staging of input/output files on a queuing system</a> &raquo;</li> 
       </ul>
@@ -248,7 +248,7 @@ job = cPickle.load(open(&lt;filename&gt;,'r'))</pre>
 <tt class="descclassname">staging.SunGridEngine.</tt><tt class="descname">getline_from_arraylist</tt><big>(</big><em>filename=None</em>, <em>ENVNAME='ARRAYLIST'</em>, <em>default='arraylist.txt'</em><big>)</big><a class="headerlink" href="#staging.SunGridEngine.getline_from_arraylist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a list of values from filename and return the line that corresponds to the current SGE_TASK_ID.</p>
 <blockquote>
-line = get_line_from_arraylist(filename=None,ENVNAME=&#8217;ARRAYLIST&#8217;,default=&#8221;arraylist.txt&#8221;)</blockquote>
+<div>line = get_line_from_arraylist(filename=None,ENVNAME=&#8217;ARRAYLIST&#8217;,default=&#8221;arraylist.txt&#8221;)</div></blockquote>
 <p>fields will be different depending on the value of <span class="target" id="index-1"></span><tt class="xref std std-envvar docutils literal"><span class="pre">SGE_TASK_ID</span></tt>
 (set by SunGridengine).  The lines are simply numbered consecutively.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -288,7 +288,7 @@ stripped of left and right white space.</p>
 <tt class="descclassname">staging.SunGridEngine.</tt><tt class="descname">get_fields_from_arraylist</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#staging.SunGridEngine.get_fields_from_arraylist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a list of values from filename and return the line that corresponds to the current SGE_TASK_ID.</p>
 <blockquote>
-get_line_from_arraylist(filename=None,ENVNAME=&#8217;ARRAYLIST&#8217;,default=&#8221;arraylist.txt&#8221;) -&gt; fields</blockquote>
+<div>get_line_from_arraylist(filename=None,ENVNAME=&#8217;ARRAYLIST&#8217;,default=&#8221;arraylist.txt&#8221;) -&gt; fields</div></blockquote>
 <p>fields will be different depending on the value of SGE_TASK_ID (set by SunGridengine).
 The lines are simply numbered consecutively.</p>
 <p>See <a class="reference internal" href="#staging.SunGridEngine.getline_from_arraylist" title="staging.SunGridEngine.getline_from_arraylist"><tt class="xref py py-func docutils literal"><span class="pre">getline_from_arraylist()</span></tt></a> for more details.</p>
@@ -363,15 +363,15 @@ The lines are simply numbered consecutively.</p>
         <li class="right" >
           <a href="init.html" title="staging — Staging module overview"
              >previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper v0.2.3 documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper v0.2.4 documentation</a> &raquo;</li>
           <li><a href="../auxiliary.html" >Auxiliary modules</a> &raquo;</li>
           <li><a href="../staging.html" ><tt class="docutils literal docutils literal docutils literal docutils literal"><span class="pre">staging</span></tt> &#8212; Staging of input/output files on a queuing system</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Aug 17, 2011.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+      Last updated on Aug 25, 2011.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>

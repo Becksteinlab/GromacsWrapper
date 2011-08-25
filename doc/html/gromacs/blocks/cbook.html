@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.cbook – Gromacs Cook Book &mdash; GromacsWrapper v0.2.3 documentation</title>
+    <title>gromacs.cbook – Gromacs Cook Book &mdash; GromacsWrapper v0.2.4 documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.2.3',
+        VERSION:     '0.2.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.2.3 documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper v0.2.4 documentation" href="../../index.html" />
     <link rel="up" title="Gromacs building blocks" href="../building_blocks.html" />
     <link rel="next" title="gromacs.setup – Setting up a Gromacs MD run" href="setup.html" />
     <link rel="prev" title="Gromacs building blocks" href="../building_blocks.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="../building_blocks.html" title="Gromacs building blocks"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.2.3 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.2.4 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" accesskey="U">Gromacs building blocks</a> &raquo;</li> 
       </ul>
@@ -194,13 +194,13 @@ trjconv -s a.tpr -f b.xtc -o c.xtc -fit rot+trans</pre>
 <p>The xtc, trr, and edr files in <em>dirname</em> such as prefix.xtc,
 prefix.part0002.xtc, prefix.part0003.xtc, ... are</p>
 <blockquote>
-<ol class="arabic simple">
+<div><ol class="arabic simple">
 <li>moved to the <em>partsdir</em> (under <em>dirname</em>)</li>
 <li>concatenated with the Gromacs tools to yield prefix.xtc, prefix.trr,
 prefix.edr, prefix.gro (or prefix.md) in <em>dirname</em></li>
 <li>Store these trajectories in <em>fulldir</em></li>
 </ol>
-</blockquote>
+</div></blockquote>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>Trajectory files are <em>never</em> deleted by this function to avoid
@@ -231,7 +231,7 @@ generated files so far but <em>check carefully</em>!</p>
 only be one but in case of restarting from the checkpoint of a finished
 simulation one can end up with multiple identical ones.</p>
 <blockquote class="last">
-<ul>
+<div><ul>
 <li><p class="first">&#8220;pass&#8221; : do nothing and log a warning</p>
 </li>
 <li><dl class="first docutils">
@@ -241,7 +241,7 @@ simulation one can end up with multiple identical ones.</p>
 </dl>
 </li>
 </ul>
-</blockquote>
+</div></blockquote>
 </dd>
 <dt><em>dirname</em></dt>
 <dd><p class="first last">change to <em>dirname</em> and assume all tarjectories are located there [.]</p>
@@ -456,7 +456,7 @@ here but in most cases the defaults should work.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><blockquote class="first">
-<dl class="docutils">
+<div><dl class="docutils">
 <dt><em>s</em></dt>
 <dd><p class="first last">Input structure (typically the default tpr file but can be set to
 some other file with a different conformation for fitting)</p>
@@ -470,7 +470,7 @@ If e.g. <em>dt</em> = 100  is one of the <em>kwargs</em> then the default name i
 &#8220;_dt100ps&#8221;.</p>
 </dd>
 </dl>
-</blockquote>
+</div></blockquote>
 <dl class="docutils">
 <dt><em>xy</em> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
 <dd><p class="first last">If <tt class="xref docutils literal"><span class="pre">True</span></tt> then only do a rot+trans fit in the xy plane
@@ -690,7 +690,7 @@ matching of the output it can break when the output format changes.</li>
 </div>
 <p>(or simply use</p>
 <blockquote>
-rc,output,junk = cbook.make_ndx_captured(...)</blockquote>
+<div>rc,output,junk = cbook.make_ndx_captured(...)</div></blockquote>
 <p>which presets input, stdout and stderr; of course input can be overriden.)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -748,10 +748,14 @@ files available.</p>
 <dd><p class="first last">path or list of paths of directories in which itp files are
 searched for</p>
 </dd>
+<dt><em>grompp_kwargs*</em></dt>
+<dd><p class="first last">other options for <strong class="program">grompp</strong> such as <tt class="docutils literal"><span class="pre">maxwarn=2</span></tt> can
+also be supplied</p>
+</dd>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">full path to the processed trajectory</p>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">full path to the processed topology</p>
 </td>
 </tr>
 </tbody>
@@ -930,7 +934,7 @@ functions here.</p>
 MDAnalysis but a very quick hack.</p>
 <p><strong>Example</strong></p>
 <blockquote>
-<p>How to use the <a class="reference internal" href="#gromacs.cbook.IndexBuilder" title="gromacs.cbook.IndexBuilder"><tt class="xref py py-class docutils literal"><span class="pre">IndexBuilder</span></tt></a>:</p>
+<div><p>How to use the <a class="reference internal" href="#gromacs.cbook.IndexBuilder" title="gromacs.cbook.IndexBuilder"><tt class="xref py py-class docutils literal"><span class="pre">IndexBuilder</span></tt></a>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">G</span> <span class="o">=</span> <span class="n">gromacs</span><span class="o">.</span><span class="n">cbook</span><span class="o">.</span><span class="n">IndexBuilder</span><span class="p">(</span><span class="s">&#39;md_posres.pdb&#39;</span><span class="p">,</span>
               <span class="p">[</span><span class="s">&#39;S312:OG&#39;</span><span class="p">,</span><span class="s">&#39;T313:OG1&#39;</span><span class="p">,</span><span class="s">&#39;A38:O&#39;</span><span class="p">,</span><span class="s">&#39;A309:O&#39;</span><span class="p">,</span><span class="s">&#39;@a62549 &amp; r NA&#39;</span><span class="p">],</span>
               <span class="n">offset</span><span class="o">=-</span><span class="mi">9</span><span class="p">,</span> <span class="n">out_ndx</span><span class="o">=</span><span class="s">&#39;selection.ndx&#39;</span><span class="p">)</span>
@@ -949,7 +953,7 @@ file (or the <strong class="program">make_ndx</strong> default groups) to the ou
 <a class="reference internal" href="#gromacs.cbook.IndexBuilder.combine" title="gromacs.cbook.IndexBuilder.combine"><tt class="xref py py-meth docutils literal"><span class="pre">combine()</span></tt></a> even if there is only a single group.</p>
 <p>Deleting the class removes all temporary files associated with it (see
 <tt class="xref py py-attr docutils literal"><span class="pre">IndexBuilder.indexfiles</span></tt>).</p>
-</blockquote>
+</div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -992,29 +996,29 @@ them into a joint selection.</p>
 <dd><p class="first">The list must contain strings or tuples, which must be be one of
 the following constructs:</p>
 <blockquote class="last">
-<p>&#8220;&lt;1-letter aa code&gt;&lt;resid&gt;[:&lt;atom name]&#8221;</p>
+<div><p>&#8220;&lt;1-letter aa code&gt;&lt;resid&gt;[:&lt;atom name]&#8221;</p>
 <blockquote>
-<p>Selects the CA of the residue or the specified atom
+<div><p>Selects the CA of the residue or the specified atom
 name.</p>
 <p>example: <tt class="docutils literal"><span class="pre">&quot;S312:OA&quot;</span></tt> or <tt class="docutils literal"><span class="pre">&quot;A22&quot;</span></tt> (equivalent to <tt class="docutils literal"><span class="pre">&quot;A22:CA&quot;</span></tt>)</p>
-</blockquote>
+</div></blockquote>
 <p>(&#8220;&lt;1-letter aa code&gt;&lt;resid&gt;&#8221;, &#8220;&lt;1-letter aa code&gt;&lt;resid&gt;, [&#8220;&lt;atom name&gt;&#8221;])</p>
 <blockquote>
-<p>Selects a <em>range</em> of residues. If only two residue
+<div><p>Selects a <em>range</em> of residues. If only two residue
 identifiers are provided then all atoms are
 selected. With an optional third atom identifier,
 only this atom anme is selected for each residue
 in the range. [EXPERIMENTAL]</p>
-</blockquote>
+</div></blockquote>
 <p>&#8220;&#64;&lt;make_ndx selection&gt;&#8221;</p>
 <blockquote>
-<p>The <tt class="docutils literal"><span class="pre">&#64;</span></tt> letter introduces a verbatim <tt class="docutils literal"><span class="pre">make_ndx</span></tt>
+<div><p>The <tt class="docutils literal"><span class="pre">&#64;</span></tt> letter introduces a verbatim <tt class="docutils literal"><span class="pre">make_ndx</span></tt>
 command. It will apply the given selection without any
 further processing or checks.</p>
 <p>example: <tt class="docutils literal"><span class="pre">&quot;&#64;a</span> <span class="pre">6234</span> <span class="pre">-</span> <span class="pre">6238&quot;</span></tt> or <tt class="docutils literal"><span class="pre">'&#64;&quot;SOL&quot;'</span></tt> (note the quoting)
 or <tt class="docutils literal"><span class="pre">&quot;&#64;r</span> <span class="pre">SER</span> <span class="pre">&amp;</span> <span class="pre">r</span> <span class="pre">312</span> <span class="pre">&amp;</span> <span class="pre">t</span> <span class="pre">OA&quot;</span></tt>.</p>
-</blockquote>
-</blockquote>
+</div></blockquote>
+</div></blockquote>
 </dd>
 <dt>names <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
 <dd><p class="first last">Strings to name the selections; if not supplied or if individuals
@@ -1103,7 +1107,7 @@ Use <a class="reference internal" href="../core/formats.html#gromacs.formats.NDX
 </div>
 <p>(or simply use</p>
 <blockquote>
-rc,output,junk = cbook.make_ndx_captured(...)</blockquote>
+<div>rc,output,junk = cbook.make_ndx_captured(...)</div></blockquote>
 <p>which presets input, stdout and stderr; of course input can be overriden.)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1378,15 +1382,15 @@ empty string or similar.</li>
         <li class="right" >
           <a href="../building_blocks.html" title="Gromacs building blocks"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.2.3 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.2.4 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" >Gromacs building blocks</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Aug 17, 2011.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+      Last updated on Aug 25, 2011.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>

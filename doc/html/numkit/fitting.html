@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>numkit.fitting — Fitting data &mdash; GromacsWrapper v0.2.3 documentation</title>
+    <title>numkit.fitting — Fitting data &mdash; GromacsWrapper v0.2.4 documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.3',
+        VERSION:     '0.2.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.2.3 documentation" href="../index.html" />
+    <link rel="top" title="GromacsWrapper v0.2.4 documentation" href="../index.html" />
     <link rel="up" title="numkit — Numerical analysis toolkit" href="../numkit.html" />
     <link rel="next" title="numkit.timeseries — Time series manipulation and analysis" href="timeseries.html" />
     <link rel="prev" title="numkit — Numerical analysis toolkit" href="../numkit.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="../numkit.html" title="numkit — Numerical analysis toolkit"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper v0.2.3 documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper v0.2.4 documentation</a> &raquo;</li>
           <li><a href="../auxiliary.html" >Auxiliary modules</a> &raquo;</li>
           <li><a href="../numkit.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a> &raquo;</li> 
       </ul>
@@ -61,7 +61,7 @@
 <tt class="descclassname">numkit.fitting.</tt><tt class="descname">Pearson_r</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="headerlink" href="#numkit.fitting.Pearson_r" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pearson&#8217;s r (correlation coefficient).</p>
 <blockquote>
-Pearson(x,y) &#8211;&gt; correlation coefficient</blockquote>
+<div>Pearson(x,y) &#8211;&gt; correlation coefficient</div></blockquote>
 <p><em>x</em> and <em>y</em> are arrays of same length.</p>
 <dl class="docutils">
 <dt>Historical note &#8211; Naive implementation of Pearson&#8217;s r ::</dt>
@@ -79,7 +79,7 @@ r = covxy/math.sqrt(numpy.sum((x-Ex)**2)*numpy.sum((y-Ey)**2))</dd>
 <p>Errors on y should be provided in dy in order to assess the
 goodness of the fit and derive errors on the parameters.</p>
 <blockquote>
-linfit(x,y[,dy]) &#8211;&gt; result_dict</blockquote>
+<div>linfit(x,y[,dy]) &#8211;&gt; result_dict</div></blockquote>
 <p>Fit y = a + bx to the data in x and y by analytically minimizing
 chi^2. dy holds the standard deviations of the individual y_i. If
 dy is not given, they are assumed to be constant (note that in
@@ -234,15 +234,15 @@ Override for derived classes.</p>
         <li class="right" >
           <a href="../numkit.html" title="numkit — Numerical analysis toolkit"
              >previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper v0.2.3 documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper v0.2.4 documentation</a> &raquo;</li>
           <li><a href="../auxiliary.html" >Auxiliary modules</a> &raquo;</li>
           <li><a href="../numkit.html" ><tt class="docutils literal docutils literal docutils literal docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Aug 17, 2011.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+      Last updated on Aug 25, 2011.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>
