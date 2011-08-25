@@ -10,3 +10,4 @@ gromacs.log
 edPDB.log
 doc/sphinx/*.log
 setuptools-0.6c9-py2.5.egg
+*~
