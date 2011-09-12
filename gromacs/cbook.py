@@ -1830,7 +1830,7 @@ class Transformer(utilities.FileUtils):
                                          "Position restraints in tpr file (see docs)?" % vars())
             logger.info("strip_water() complete")
 
-        self.nowater[newxtc] = Transformer(dirname=self.dirname, s=newtpr,
+        self.nowater[self.rp(newxtc)] = Transformer(dirname=self.dirname, s=newtpr,
                                            f=newxtc, n=newndx)
         return {'tpr':self.rp(newtpr), 'xtc':self.rp(newxtc), 'ndx':self.rp(newndx)}
 
@@ -1933,10 +1933,36 @@ class Transformer(utilities.FileUtils):
                                          "Position restraints in tpr file (see docs)?" % vars())
             logger.info("keep_protein_only() complete")
 
-        self.proteinonly[newxtc] = Transformer(dirname=self.dirname, s=newtpr,
+        self.proteinonly[self.rp(newxtc)] = Transformer(dirname=self.dirname, s=newtpr,
                                                f=newxtc, n=newndx)
         return {'tpr':self.rp(newtpr), 'xtc':self.rp(newxtc), 'ndx':self.rp(newndx)}
 
+    def strip_fit(self, **kwargs):
+        """Strip water and fit to the remaining system.
+
+        First runs :meth:`strip_water` and then :meth:`fit`; see there
+        for arguments.
+
+        - *strip_input* is used for :meth:`strip_water` (but is only useful in 
+          special cases, e.g. when there is no Protein group defined. Then set
+          *strip_input* = ``['Other']``.
+
+        - *input* is passed on to :meth:`fit` and can contain the 
+          [center_group, fit_group, output_group] 
+
+        - By default *fit* = "rot+trans" (and *fit* is passed to :meth:`fit`,
+          together with the *xy* = ``False`` keyword)
+        """
+        kwargs.setdefault('fit', 'rot+trans')
+        kw_fit = {}
+        for k in ('xy', 'fit', 'input'):
+            if k in kwargs:
+                kw_fit[k] = kwargs.pop(k)
+        kwargs['input'] = kwargs.pop('strip_input', ['Protein'])      
+
+        paths = self.strip_water(**kwargs)    # updates self.nowater
+        nowater = self.nowater[paths['xtc']]  # make sure to get the one we just produced
+        return nowater.fit(**kw_fit)          # use new Transformer's fit()
 
 
 
