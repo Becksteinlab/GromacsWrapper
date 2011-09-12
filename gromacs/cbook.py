@@ -1943,12 +1943,12 @@ class Transformer(utilities.FileUtils):
         First runs :meth:`strip_water` and then :meth:`fit`; see there
         for arguments.
 
-        - *strip_input* is used for :meth:`strip_water` (but is only useful in 
+        - *strip_input* is used for :meth:`strip_water` (but is only useful in
           special cases, e.g. when there is no Protein group defined. Then set
           *strip_input* = ``['Other']``.
 
-        - *input* is passed on to :meth:`fit` and can contain the 
-          [center_group, fit_group, output_group] 
+        - *input* is passed on to :meth:`fit` and can contain the
+          [center_group, fit_group, output_group]
 
         - By default *fit* = "rot+trans" (and *fit* is passed to :meth:`fit`,
           together with the *xy* = ``False`` keyword)
@@ -1958,11 +1958,10 @@ class Transformer(utilities.FileUtils):
         for k in ('xy', 'fit', 'input'):
             if k in kwargs:
                 kw_fit[k] = kwargs.pop(k)
-        kwargs['input'] = kwargs.pop('strip_input', ['Protein'])      
+        kwargs['input'] = kwargs.pop('strip_input', ['Protein'])
 
         paths = self.strip_water(**kwargs)    # updates self.nowater
         nowater = self.nowater[paths['xtc']]  # make sure to get the one we just produced
         return nowater.fit(**kw_fit)          # use new Transformer's fit()
-
 
 
