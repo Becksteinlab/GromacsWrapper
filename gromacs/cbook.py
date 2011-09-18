@@ -1624,6 +1624,11 @@ class Transformer(utilities.FileUtils):
                     msg = "Possible problem: File %(f)r not found in %(dirname)r." % vars()
                     warnings.warn(msg, category=MissingDataWarning)
                     logger.warn(msg)
+        logger.info("%r initialised", self)
+
+    def __repr__(self):
+            return "%s(s=%r, f=%r, n=%r, force=%r)" % (self.__class__.__name__,
+                                                       self.tpr, self.xtc, self.ndx, self.force)
 
     def rp(self, *args):
         """Return canonical path to file under *dirname* with components *args*
@@ -1786,7 +1791,7 @@ class Transformer(utilities.FileUtils):
         newxtc = self.infix_filename(o, self.xtc, '_nowater')
         newndx = self.infix_filename(on, self.tpr, '_nowater', 'ndx')
 
-        nowater_ndx = "nowater.ndx"    # refers to original tpr
+        nowater_ndx = self._join_dirname(newtpr, "nowater.ndx")    # refers to original tpr
 
         if compact:
             TRJCONV = trj_compact
@@ -1831,7 +1836,7 @@ class Transformer(utilities.FileUtils):
             logger.info("strip_water() complete")
 
         self.nowater[self.rp(newxtc)] = Transformer(dirname=self.dirname, s=newtpr,
-                                           f=newxtc, n=newndx)
+                                           f=newxtc, n=newndx, force=force)
         return {'tpr':self.rp(newtpr), 'xtc':self.rp(newxtc), 'ndx':self.rp(newndx)}
 
 
@@ -1934,7 +1939,7 @@ class Transformer(utilities.FileUtils):
             logger.info("keep_protein_only() complete")
 
         self.proteinonly[self.rp(newxtc)] = Transformer(dirname=self.dirname, s=newtpr,
-                                               f=newxtc, n=newndx)
+                                               f=newxtc, n=newndx, force=force)
         return {'tpr':self.rp(newtpr), 'xtc':self.rp(newxtc), 'ndx':self.rp(newndx)}
 
     def strip_fit(self, **kwargs):
@@ -1958,10 +1963,18 @@ class Transformer(utilities.FileUtils):
         for k in ('xy', 'fit', 'input'):
             if k in kwargs:
                 kw_fit[k] = kwargs.pop(k)
+
         kwargs['input'] = kwargs.pop('strip_input', ['Protein'])
+        kwargs['force'] = kw_fit['force'] = kwargs.pop('force', self.force)
 
         paths = self.strip_water(**kwargs)    # updates self.nowater
-        nowater = self.nowater[paths['xtc']]  # make sure to get the one we just produced
-        return nowater.fit(**kw_fit)          # use new Transformer's fit()
+        transformer_nowater = self.nowater[paths['xtc']]  # make sure to get the one we just produced
+        return transformer_nowater.fit(**kw_fit)          # use new Transformer's fit()
+
+    def _join_dirname(self, *args):
+        """return os.path.join(os.path.dirname(args[0]), *args[1:])"""
+        # extra function because I need to use it in a method that defines
+        # the kwarg 'os', which collides with os.path...
+        return os.path.join(os.path.dirname(args[0]), *args[1:])
 
 
