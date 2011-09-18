@@ -1624,6 +1624,11 @@ class Transformer(utilities.FileUtils):
                     msg = "Possible problem: File %(f)r not found in %(dirname)r." % vars()
                     warnings.warn(msg, category=MissingDataWarning)
                     logger.warn(msg)
+        logger.info("%r initialised", self)
+
+    def __repr__(self):
+            return "%s(s=%r, f=%r, n=%r, force=%r)" % (self.__class__.__name__,
+                                                       self.tpr, self.xtc, self.ndx, self.force)
 
     def rp(self, *args):
         """Return canonical path to file under *dirname* with components *args*
@@ -1959,6 +1964,7 @@ class Transformer(utilities.FileUtils):
             if k in kwargs:
                 kw_fit[k] = kwargs.pop(k)
         kwargs['input'] = kwargs.pop('strip_input', ['Protein'])      
+        kwargs['force'] = kwargs.pop('force', self.force)
 
         paths = self.strip_water(**kwargs)    # updates self.nowater
         nowater = self.nowater[paths['xtc']]  # make sure to get the one we just produced

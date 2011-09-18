@@ -251,7 +251,7 @@ def in_dir(directory, create=True):
     try:
         try:
             os.chdir(directory)
-            logger.info("Working in %(directory)r..." % vars())
+            logger.debug("Working in %(directory)r..." % vars())
         except OSError, err:
             if create and err.errno == errno.ENOENT:
                 os.makedirs(directory)
@@ -421,7 +421,7 @@ class FileUtils(object):
         def _raise(x):
             msg = "File %r already exists." % x
             logger.error(msg)
-            raise IOError(errno.EEXIST, msg)
+            raise IOError(errno.EEXIST, x, msg)
         solutions = {'ignore': lambda x: False,      # file exists, but we pretend that it doesn't
                      'indicate': lambda x: True,     # yes, file exists
                      'warn': _warn,
