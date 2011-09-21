@@ -75,7 +75,7 @@ Functions that make working with matplotlib_ easier:
 Miscellaneous functions:
 
 .. autofunction:: convert_aa_code
-
+.. autofunction:: autoconvert
 
 Data
 ----
@@ -129,6 +129,21 @@ class AttributeDict(dict):
 
     def __setstate__(self, state):
         self.update(state)
+
+def autoconvert(s):
+    """Convert input to a numerical type if possible.
+
+    1. A non-string object is returned as it is
+    2. Try conversion to int, float, str.
+    """
+    if not type(s) is str:
+        return s
+    for converter in int, float, str:   # try them in increasing order of lenience
+        try:
+            return converter(s)
+        except ValueError:
+            pass
+    raise ValueError("Failed to autoconvert %r" % s)
 
 @contextmanager
 def openany(datasource, mode='r', **kwargs):
