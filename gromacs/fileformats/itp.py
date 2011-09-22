@@ -16,12 +16,24 @@ awkward. See documentation for :class:`ITP`.
 
 .. rubric:: Limitations
 
+- only one ``[moleculetype]`` at the moment (need to distinguish by molecule
+  name) or maybe subsequent ones overwrite previous ones --- not tested so
+  better only use a single moleculetype (TODO)
+
 - merges multiple dihedral sections into one
+
 - probably fails for FEP itps (TODO)
+
 - does not reproduce positions of comment-only lines in sections
   (in fact, currently we do not even write them out again, only trailing
   line comments are kept and the header before the first section)
-- fails with preprocessor directives such as ``#ifdef POSRES``
+
+- only simple preprocessor directives such as ``#ifdef POSRES`` are processed by
+  the :class:`~gromacs.fileformats.preprocessor.Preprocessor`.  Preprocessor
+  directives are evaluated *and stripped* so that :class:`ITP` represents one
+  functional itp file. The directives are not stored and cannot be written out
+  or accessed.
+
 
 User classes
 ------------
@@ -55,7 +67,25 @@ Classes corresponding to ITP sections
 The ITP file is parsed with a simple recursive descending depth-first
 algorithm. Classes contain a dictionary of sub-section parsers.
 
+The section hierarchy is
+
+* :class:`Header`
+
+  * :class:`Atomtypes`
+  * :class:`Moleculetype` (Note: currently only a *single* moleculetype allowed)
+
+     * :class:`Atoms`
+     * :class:`Bonds`
+     * :class:`Angles`
+     * :class:`Dihedrals` (Note: multiple adjacent dihedral sections are
+       merged, for non-adjacent ones the last one overwrites earlier ones ---
+       this is a bug)
+     * :class:`Pairs`
+
 .. autoclass:: Header
+   :members:
+
+.. autoclass:: Atomtypes
    :members:
 
 .. autoclass:: Moleculetype
@@ -91,6 +121,8 @@ import numpy
 from gromacs import ParseError, AutoCorrectionWarning
 import gromacs.utilities as utilities
 from gromacs.odict import odict
+
+from preprocessor import Preprocessor
 
 import logging
 
@@ -156,6 +188,7 @@ class ITPsection(object):
                 line = stream.next().strip()
             except (StopIteration, EOFError):
                 break                  # done reading the input
+            #self.logger.debug("[%s] %s", current_section, line)
 
             if len(line) == 0:
                 continue               # skip empty lines for now
@@ -175,6 +208,8 @@ class ITPsection(object):
                     # no parsers in this section...  but need to
                     # unread the line so that the next parser can get
                     # the section...
+                    # NOTE: This means we cannot check here if we know about the
+                    #       the section.
                     stream.unread()
                     break
                 self.sections[current_section] = parser
@@ -308,13 +343,21 @@ class ITPdata(ITPsection):
 class Header(ITPsection):
     """The customary comments section before the first section.
 
+    Example format::
+
+       ; itp file for Benzene
+       ; example "header"
+
     .. versionadded:: 0.2.5
     """
     name = "header"
 
     def __init__(self, *args, **kwargs):
         super(Header, self).__init__(*args, **kwargs)
-        self.parsers = {'moleculetype': Moleculetype}
+        self.parsers = {
+            'atomtypes': Atomtypes,
+            'moleculetype': Moleculetype,
+            }
 
     def process(self, line):
         self.data.append(line)
@@ -324,7 +367,8 @@ class Header(ITPsection):
 class Moleculetype(ITPsection):
     """ITP ``[ moleculetype ]`` section
 
-    ::
+    Example format::
+
        [ moleculetype ]
        ; Name      nrexcl
        5FH              3
@@ -379,20 +423,36 @@ class Moleculetype(ITPsection):
     def __repr__(self):
         return "<ITP::moleculetype %(name)s nrexcl=%(nrexcl)d>" % self.data
 
+class Atomtypes(ITPdata):
+    """ITP ``[atomtypes]`` section.
+
+    Example format::
+
+       [ atomtypes ]
+       ;name  bond_type      mass  charge ptype       sigma     epsilon
+       c3            c3    0.0000  0.0000 A     3.39967e-01 4.57730e-01
+       hc            hc    0.0000  0.0000 A     2.64953e-01 6.56888e-02
+
+    .. versionadded:: 0.2.5
+    """
+    name = "atomtypes"
+    dtypes = [("name", "S4"), ("bond_type", "S12"), ("mass", "f8"), ("charge", "f8"),
+              ("ptype", "S4"), ("sigma", "f8"), ("epsilon", "f8"),
+              ]
+    fmt = ["%-5s", "%9s", "%9.4f", "%8.4f",
+           "%-5s", "%11.5e", "%11.5e"]
+    column_comment = ";name  bond_type     mass   charge ptype       sigma     epsilon"
+
 
 class Atoms(ITPdata):
     """ITP ``[ atoms ]`` section
 
-    ::
+    Example format::
+
        [ atoms ]
        ; atomnr  atomtype   resnr  resname  atomname  chargegrp   charge       mass
               1  opls_145       1      5FH        C7          7   -0.115   12.01100 ; CA # Benzene C - 12 site JACS,112,4768-90. Use #145B for biphenyl
               2  opls_146       1      5FH       H71          7    0.115    1.00800 ; HA # Benzene H - 12 site.
-
-
-    .. Warning:: Currently fails to correctly parse ITPs containing multiple
-                 states for an atom as used in FEP calculations. The parser only
-                 handles files with the same number of columns for each entry.
 
     The data itself are stored in :attr:`data`, a :class:`numpy.rec.array`.
     :attr:`data` is a managed attribute but the values inside can be
@@ -426,7 +486,9 @@ class Atoms(ITPdata):
 
 class Bonds(ITPdata):
     """ITP ``[ bonds ]`` section
-    ::
+
+    Example format::
+
        [ bonds ]
        ; ai   aj  funct  r  k
          1    2      1 ; CA-HA # PHE, etc.
@@ -451,7 +513,8 @@ class Bonds(ITPdata):
 class Angles(ITPdata):
     """ITP ``[ angles ]`` section
 
-    ::
+    Example format::
+
        [ angles ]
        ; ai   aj   ak  funct  theta   cth
           2    1    3      1 ; HA-CA-CA #
@@ -477,16 +540,19 @@ class Angles(ITPdata):
 class Dihedrals(ITPdata):
     """ITP ``[ dihedrals ]`` section
 
-    ::
+    Example format::
+
        [ dihedrals ]
        ; ai   aj   ak   al  funct   C0  ...  C5
           2    1    3    4      3 ; HA-CA-CA-HA # aromatic ring (X-CA-CA-X generic proper dihedral)
           2    1    3    5      3 ; HA-CA-CA-CA # aromatic ring (X-CA-CA-X generic proper dihedral)
 
-    .. Note:: Multiple dihedral sections are currently merged into a single
-             dihedral section. This means that if you separated proper and
-             improper dihedrals into two different sections then they will now
-             appear one after another under a single ``[ dihedrals ]`` section.
+    .. Note:: Multiple *adjacent* dihedral sections are currently merged into a
+              single dihedral section. This means that if you separated proper
+              and improper dihedrals into two different sections then they will
+              now appear one after another under a single ``[ dihedrals ]``
+              section. If two dihedral sections are separated by another
+              section then the last one overwrites the previous one.
 
     .. versionadded:: 0.2.5
     """
@@ -511,7 +577,8 @@ class Dihedrals(ITPdata):
 class Pairs(ITPdata):
     """ITP [ pairs ] section
 
-    ::
+    Example format::
+
        [ pairs ]
        ; ai   aj  funct
           1    6      1
@@ -535,10 +602,17 @@ class Dummy(ITPsection):
 class ITP(utilities.FileUtils):
     """Class that represents a Gromacs topology itp file.
 
-    The file is represented by the sections (and subsections) of the
-    attribute :attr:`ITP.sections`.
+    The file is processed by a
+    :class:`~gromacs.fileformats.preprocessor.Preprocessor` according to
+    directves in the file and variables defined in the constructor keyword
+    arguments. Thus, the class :class:`ITP` represents one particularly state
+    of the itp file with *any preprocessor constructs excluded*.
 
-    Data of (sub)sections is stored in :attr:`data`, e.g. ::
+    The file is parsed into a hierarchy of sections (and subsections), which
+    are accessible in the attribute :attr:`ITP.sections`.
+
+    Data of (sub)sections is stored in :attr:`data`, e.g. the ``[atoms]``
+    section ::
 
         itp.sections['header'].sections['moleculetype'].sections['atoms'].data
 
@@ -551,28 +625,34 @@ class ITP(utilities.FileUtils):
     The top-level section is called *"header"* and simply contains all
     comment lines before the first real parsed section.
 
+    .. Warning:: Not all section types are implemented. Only a single
+                 ``[moleculetype]`` is currently supported.
+
     .. versionadded:: 0.2.5
     """
     default_extension = "itp"
     logger = logging.getLogger('gromacs.formats.ITP')
 
-    def __init__(self, filename=None, autoconvert=True, **kwargs):
-        """Initialize mdp structure.
+    def __init__(self, filename=None, **kwargs):
+        """Initialize ITP structure.
 
         :Arguments:
           *filename*
               read from mdp file
-          *autoconvert* : boolean
-              ``True`` converts numerical values to python numerical types;
-              ``False`` keeps everything as strings [``True``]
           *kwargs*
-              Populate the MDP with key=value pairs. (NO SANITY CHECKS; and also
-              does not work for keys that are not legal python variable names such
-              as anything that includes a minus '-' sign or starts with a number).
+              ``#define`` *VAR*  variables that are used at the pre-processing
+              stage of the itp file, e.g. *POSRES* ``= True`` will activate a
+              ``#ifdef POSRES`` section in the itp file.
+
+        .. SeeAlso:: :mod:`~gromacs.fileformats.preprocessor` describes details about the
+                     implementation of preprocessing of the itp file, including
+                     the (limited) syntax understood by the preprocesser.
         """
+        self.defines = kwargs
+        kwargs = {}
+
         super(ITP, self).__init__(**kwargs)
 
-        self.autoconvert = autoconvert
         self.sections = odict()
         self.parsers  = {
             'header': Header,
@@ -583,19 +663,32 @@ class ITP(utilities.FileUtils):
             self._init_filename(filename)
             self.read(filename)
 
-    def _transform(self, value):
-        if self.autoconvert:
-            return autoconvert(value)
-        else:
-            return value
+    def read(self, filename=None, preprocess=True, **defines):
+        """Preprocess, read and parse itp file *filename*.
 
-    def read(self, filename=None):
-        """Read and parse itp file *filename*."""
+        Any keywords in *defines* are use to modify the default preprocessor
+        variables (see
+        :meth:`gromacs.fileformats.preprocessor.Preprocessor.parse` for
+        details). Setting *preprocess* = ``False`` skips the preprocessing
+        step.
+        """
         self._init_filename(filename)
 
-        with open(self.real_filename) as itp:
+        if preprocess:
+            kwargs = self.defines.copy()
+            kwargs['commentchar'] = ';'
+            kwargs['clean'] = True
+            ppitp = Preprocessor(self.real_filename, **kwargs)
+            ppitp.parse(**defines)
+            itp = ppitp.StringIO()
+        else:
+            itp = open(self.real_filename)
+
+        try:
             stream = OneLineBuffer(itp.next)
             self.parse(stream)
+        finally:
+            itp.close()
 
     def parse(self, stream):
         """Simple recursive descent parsing of ITP.
@@ -632,7 +725,7 @@ class ITP(utilities.FileUtils):
         By default, *func* is ``str(section)``. Thus, the whole itp
         file can be printed out with ::
 
-          print "\n".join(itp.walk_sections())
+          print "\\n".join(itp.walk_sections())
 
         (See :meth:`write` for writing out the ITP.)
         """

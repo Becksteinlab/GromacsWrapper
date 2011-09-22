@@ -89,6 +89,14 @@ GridMat-MD
 
   .. _compatible with GPL: http://www.fsf.org/licensing/licenses/index_html
 
+``gromacs.fileformats.preprocess``
+  - The preprocessor is based on ``pypreprocessor.py`` from
+    `pypreprocessor`_, release 0.4.0.
+  - copyright: (c) 2010 Evan Plaice
+  - license: MIT (`compatible with GPL`_)
+  - http://code.google.com/p/pypreprocessor/
+
+  .. _pypreprocessor: http://code.google.com/p/pypreprocessor/
 
 
 Citing
