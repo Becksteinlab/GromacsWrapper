@@ -35,6 +35,9 @@ Classes
    :members:
 .. autoclass:: MDP
    :members:
+.. autoclass:: ITP
+   :members:
+
 """
 __docformat__ = "restructuredtext en"
 

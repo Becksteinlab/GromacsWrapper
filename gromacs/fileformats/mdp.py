@@ -2,6 +2,21 @@
 # Copyright (c) 2009-2011 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
+"""
+Gromacs parameter MDP file format
+=================================
+
+The `.mdp file`_ contains a list of keywords that are used to set up a
+simulation with :class:`~gromacs.tools.Grompp`. The class :class:`MDP`
+parses this file and provides access to the keys and values as ordered
+dictionary.
+
+.. _`.mdp file`: http://www.gromacs.org/Documentation/File_Formats/.mdp_File
+
+.. autoclass:: MDP
+   :members:
+"""
+
 
 from __future__ import with_statement
 import os, errno

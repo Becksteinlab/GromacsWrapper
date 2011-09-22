@@ -3,6 +3,26 @@
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
 
+"""
+Gromacs NDX index file format
+=============================
+
+The `.ndx file`_ contains lists of atom indices that are grouped in
+sections by *group names*. The classes :class:`NDX` and
+:class:`uniqueNDX` can parse such ndx files and provide convenient
+access to the individual groups.
+
+.. _`.ndx file`: http://www.gromacs.org/Documentation/File_Formats/.ndx_File
+
+.. autoclass:: NDX
+   :members:
+
+.. autoclass:: uniqueNDX
+   :members:
+
+.. autoclass:: IndexSet
+"""
+
 from __future__ import with_statement
 import os, errno
 import re
@@ -177,8 +197,10 @@ class uniqueNDX(NDX):
     - see :meth:`~gromacs.formats.join` for ORing multiple groups (x+y+z+...)
 
     **Example** ::
+
        I = uniqueNDX('system.ndx')
        I['SOLVENT'] = I['SOL'] + I['NA+'] + I['CL-']
+
     """
 
     def join(self, *groupnames):

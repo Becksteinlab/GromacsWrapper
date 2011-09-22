@@ -2,6 +2,21 @@
 # Copyright (c) 2009-2011 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
+"""
+Simple xmgrace XVG file format
+==============================
+
+Gromacs produces graphs in the `xmgrace`_ ("xvg") format. These are
+simple multi-column data files. The class :class:`XVG` encapsulates
+access to such files and adds a number of methods to access the data
+(as NumPy arrays), compute aggregates, or quickly plot it.
+
+.. _xmgrace: http://plasma-gate.weizmann.ac.il/Grace/
+
+.. autoclass:: XVG
+   :members:
+"""
+
 
 from __future__ import with_statement
 import os, errno

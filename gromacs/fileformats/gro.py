@@ -2,6 +2,22 @@
 # Copyright (c) 2009-2011 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
+"""
+GRO structure file format
+=========================
+
+**Not implemented.**
+
+..SeeAlso:: MDAnalysis_ has a working Python `GRO reader`_.
+
+.. _MDAnalysis: http://mdanalysis.googlecode.com
+.. _GRO reader: http://mdanalysis.googlecode.com/svn/trunk/doc/html/documentation_pages/coordinates/GRO.html
+
+.. autoclass:: GRO
+   :members:
+
+"""
+
 
 from __future__ import with_statement
 import os, errno
