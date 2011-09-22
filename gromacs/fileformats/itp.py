@@ -282,7 +282,8 @@ class ITPdata(ITPsection):
     def _canonical_records(self, nmax=None):
         """Bring records to shape with nmax columns.
 
-        Empty columns are filled with ``None``.
+        Empty columns are filled with ``None``. :meth:`section` filters out any
+        ``None`` entries.
         """
         if nmax is None:
             nmax = numpy.max([len(record)  for record, comment in self.__records])
@@ -320,21 +321,36 @@ class ITPdata(ITPsection):
 
         self.logger.warn("[%s] not parsing line: %r", self.name, line)
 
+    def _clean_records(self):
+        """Generator returning data records with ``None`` or ``nan`` entries stripped,"""
+        def is_NONE(x):
+            if x is None:
+                return True
+            try:
+                return numpy.isnan(x)
+            except NotImplementedError:
+                pass
+            return False
+        for rec in self.data:
+            yield tuple([x for x in rec if not is_NONE(x)])
+
     def section(self):
-        def clean_records(data):
-            for rec in data:
-                yield tuple([x for x in rec if x is not None])
+        """Return a string of the section data in ITP format.
 
-        lines = ["[ %s ]" % self.name]
-        lines.append(self.column_comment)
+        Data entries containing ``None`` are stripped from the output. In
+        accordance with Gromacs ITP parsing rules, data columns can only be
+        ommitted from the right.
+        """
+        lines = ["[ %s ]" % self.name]          # start with section header
+        lines.append(self.column_comment)       # add fixed column descriptors
 
-        for rec in clean_records(self.data):
-            numcols = len(rec) - 1    # subtract 1 because comment is always last field in record
-            fmt = " ".join(self.fmt[:numcols])
-            if rec[-1]:
+        for rec in self._clean_records():
+            numcols = len(rec) - 1              # subtract 1 because comment is always last field in record
+            fmt = " ".join(self.fmt[:numcols])  # fill columns left-to-right
+            if rec[-1]:                         # add non-empty comment
                 fmt += " ; %s"
                 line = fmt % tuple(rec)
-            else:
+            else:                               # line without trailing comment
                 line = fmt % tuple(rec)[:-1]
             lines.append(line)
 

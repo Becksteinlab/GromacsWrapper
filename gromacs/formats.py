@@ -41,7 +41,8 @@ Classes
 """
 __docformat__ = "restructuredtext en"
 
+__all__ = ["XVG", "MDP", "NDX", "uniqueNDX", "ITP"]
 
-from fileformats import XVG, MDP, NDX, uniqueNDX
+from fileformats import XVG, MDP, NDX, uniqueNDX, ITP
 
 
