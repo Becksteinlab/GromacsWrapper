@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs – GromacsWrapper Package Overview &mdash; GromacsWrapper v0.2.4 documentation</title>
+    <title>gromacs – GromacsWrapper Package Overview &mdash; GromacsWrapper v0.2.5-dev documentation</title>
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.2.4',
+        VERSION:     '0.2.5-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.2.4 documentation" href="../index.html" />
+    <link rel="top" title="GromacsWrapper v0.2.5-dev documentation" href="../index.html" />
     <link rel="up" title="Gromacs package" href="../gromacs.html" />
     <link rel="next" title="Gromacs core modules" href="core.html" />
     <link rel="prev" title="Gromacs package" href="../gromacs.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="../gromacs.html" title="Gromacs package"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper v0.2.4 documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper v0.2.5-dev documentation</a> &raquo;</li>
           <li><a href="../gromacs.html" accesskey="U">Gromacs package</a> &raquo;</li> 
       </ul>
     </div>  
@@ -74,7 +74,7 @@ a tool.</dd>
 <dt><a class="reference internal" href="core/tools.html#module-gromacs.tools" title="gromacs.tools"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.tools</span></tt></a></dt>
 <dd>Contains classes that wrap the gromacs tools. They are automatically
 generated from the list of tools in <tt class="xref py py-data docutils literal"><span class="pre">gromacs.tools.gmx_tools</span></tt>.</dd>
-<dt><a class="reference internal" href="core/formats.html#module-gromacs.formats" title="gromacs.formats"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.formats</span></tt></a></dt>
+<dt><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.formats</span></tt></dt>
 <dd>Classes to represent data files in various formats such as
 xmgrace graphs. The classes allow reading and writing and for
 graphs, also plotting of the data.</dd>
@@ -90,7 +90,7 @@ equilibrium MD.</dd>
 <dt><a class="reference internal" href="blocks/simulation.html#module-gromacs.run" title="gromacs.run"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.run</span></tt></a></dt>
 <dd>Classes to run <strong class="program">mdrun</strong> in various way, including on
 multiprocessor systems.</dd>
-<dt><a class="reference internal" href="../analysis/core.html#module-gromacs.analysis" title="gromacs.analysis"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.analysis</span></tt></a></dt>
+<dt><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.analysis</span></tt></dt>
 <dd>A package that collects whole analysis tasks. It uses the gromacs but is
 otherwise only loosely coupled with the rest. At the moment it only
 contains the infrastructure and an example application. See the package
@@ -167,8 +167,8 @@ to always report, eg:</p>
 <dt id="gromacs.MissingDataError">
 <em class="property">exception </em><tt class="descclassname">gromacs.</tt><tt class="descname">MissingDataError</tt><a class="headerlink" href="#gromacs.MissingDataError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Error raised when prerequisite data are not available.</p>
-<p>For analysis with <a class="reference internal" href="../analysis/core.html#gromacs.analysis.core.Simulation" title="gromacs.analysis.core.Simulation"><tt class="xref py py-class docutils literal"><span class="pre">gromacs.analysis.core.Simulation</span></tt></a> this typically
-means that the <a class="reference internal" href="../analysis/core.html#gromacs.analysis.core.Simulation.analyze" title="gromacs.analysis.core.Simulation.analyze"><tt class="xref py py-meth docutils literal"><span class="pre">analyze()</span></tt></a> method has
+<p>For analysis with <tt class="xref py py-class docutils literal"><span class="pre">gromacs.analysis.core.Simulation</span></tt> this typically
+means that the <tt class="xref py py-meth docutils literal"><span class="pre">analyze()</span></tt> method has
 to be run first.</p>
 </dd></dl>
 
@@ -321,13 +321,13 @@ for more details on configuration.</p>
         <li class="right" >
           <a href="../gromacs.html" title="Gromacs package"
              >previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper v0.2.4 documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper v0.2.5-dev documentation</a> &raquo;</li>
           <li><a href="../gromacs.html" >Gromacs package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Aug 25, 2011.
+      Last updated on Sep 22, 2011.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>

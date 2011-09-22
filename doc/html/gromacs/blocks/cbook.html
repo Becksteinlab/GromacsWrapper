@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.cbook – Gromacs Cook Book &mdash; GromacsWrapper v0.2.4 documentation</title>
+    <title>gromacs.cbook – Gromacs Cook Book &mdash; GromacsWrapper v0.2.5-dev documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.2.4',
+        VERSION:     '0.2.5-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.2.4 documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper v0.2.5-dev documentation" href="../../index.html" />
     <link rel="up" title="Gromacs building blocks" href="../building_blocks.html" />
     <link rel="next" title="gromacs.setup – Setting up a Gromacs MD run" href="setup.html" />
     <link rel="prev" title="Gromacs building blocks" href="../building_blocks.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="../building_blocks.html" title="Gromacs building blocks"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.2.4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.2.5-dev documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" accesskey="U">Gromacs building blocks</a> &raquo;</li> 
       </ul>
@@ -567,6 +567,23 @@ missing</em></p>
 </dd></dl>
 
 <dl class="method">
+<dt id="gromacs.cbook.Transformer.strip_fit">
+<tt class="descname">strip_fit</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.cbook.Transformer.strip_fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Strip water and fit to the remaining system.</p>
+<p>First runs <a class="reference internal" href="#gromacs.cbook.Transformer.strip_water" title="gromacs.cbook.Transformer.strip_water"><tt class="xref py py-meth docutils literal"><span class="pre">strip_water()</span></tt></a> and then <a class="reference internal" href="#gromacs.cbook.Transformer.fit" title="gromacs.cbook.Transformer.fit"><tt class="xref py py-meth docutils literal"><span class="pre">fit()</span></tt></a>; see there
+for arguments.</p>
+<ul class="simple">
+<li><em>strip_input</em> is used for <a class="reference internal" href="#gromacs.cbook.Transformer.strip_water" title="gromacs.cbook.Transformer.strip_water"><tt class="xref py py-meth docutils literal"><span class="pre">strip_water()</span></tt></a> (but is only useful in
+special cases, e.g. when there is no Protein group defined. Then set
+<em>strip_input</em> = <tt class="docutils literal"><span class="pre">['Other']</span></tt>.</li>
+<li><em>input</em> is passed on to <a class="reference internal" href="#gromacs.cbook.Transformer.fit" title="gromacs.cbook.Transformer.fit"><tt class="xref py py-meth docutils literal"><span class="pre">fit()</span></tt></a> and can contain the
+[center_group, fit_group, output_group]</li>
+<li>By default <em>fit</em> = &#8220;rot+trans&#8221; (and <em>fit</em> is passed to <a class="reference internal" href="#gromacs.cbook.Transformer.fit" title="gromacs.cbook.Transformer.fit"><tt class="xref py py-meth docutils literal"><span class="pre">fit()</span></tt></a>,
+together with the <em>xy</em> = <tt class="xref docutils literal"><span class="pre">False</span></tt> keyword)</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
 <dt id="gromacs.cbook.Transformer.strip_water">
 <tt class="descname">strip_water</tt><big>(</big><em>os=None</em>, <em>o=None</em>, <em>on=None</em>, <em>compact=False</em>, <em>resn='SOL'</em>, <em>groupname='notwater'</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.cbook.Transformer.strip_water" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write xtc and tpr with water (by resname) removed.</p>
@@ -922,7 +939,7 @@ full-fledged atom selection expression as available in <a class="reference exter
 <a class="reference external" href="http://mdanalysis.googlecode.com">MDAnalysis</a>. Some tools help in building and interpreting index files.</p>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last">The <a class="reference internal" href="../core/formats.html#gromacs.formats.NDX" title="gromacs.formats.NDX"><tt class="xref py py-class docutils literal"><span class="pre">gromacs.formats.NDX</span></tt></a> class can solve a number
+<p class="last">The <tt class="xref py py-class docutils literal"><span class="pre">gromacs.formats.NDX</span></tt> class can solve a number
 of index problems in a cleaner way than the classes and
 functions here.</p>
 </div>
@@ -977,7 +994,7 @@ could be.</p>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last">In some cases it might be more straightforward to use
-<a class="reference internal" href="../core/formats.html#gromacs.formats.NDX" title="gromacs.formats.NDX"><tt class="xref py py-class docutils literal"><span class="pre">gromacs.formats.NDX</span></tt></a>.</p>
+<tt class="xref py py-class docutils literal"><span class="pre">gromacs.formats.NDX</span></tt>.</p>
 </div>
 <p>Build a index group from the selection arguments.</p>
 <p>If selections and a structure file are supplied then the individual
@@ -1082,7 +1099,7 @@ actual group name and the name of the file; useful when all names are autogenera
 <em>not</em> guaranteed to be the same as the selections on input because
 <tt class="docutils literal"><span class="pre">make_ndx</span></tt> sorts them ascending. Thus you should be careful when
 using these index files for calculations of angles and dihedrals.
-Use <a class="reference internal" href="../core/formats.html#gromacs.formats.NDX" title="gromacs.formats.NDX"><tt class="xref py py-class docutils literal"><span class="pre">gromacs.formats.NDX</span></tt></a> in these cases.</p>
+Use <tt class="xref py py-class docutils literal"><span class="pre">gromacs.formats.NDX</span></tt> in these cases.</p>
 </div>
 </dd></dl>
 
@@ -1151,7 +1168,7 @@ Use <a class="reference internal" href="../core/formats.html#gromacs.formats.NDX
 </tbody>
 </table>
 <p>Alternatively, load the index file with
-<a class="reference internal" href="../core/formats.html#gromacs.formats.NDX" title="gromacs.formats.NDX"><tt class="xref py py-class docutils literal"><span class="pre">gromacs.formats.NDX</span></tt></a> for full control.</p>
+<tt class="xref py py-class docutils literal"><span class="pre">gromacs.formats.NDX</span></tt> for full control.</p>
 </dd></dl>
 
 <dl class="function">
@@ -1382,14 +1399,14 @@ empty string or similar.</li>
         <li class="right" >
           <a href="../building_blocks.html" title="Gromacs building blocks"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.2.4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.2.5-dev documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" >Gromacs building blocks</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Aug 25, 2011.
+      Last updated on Sep 22, 2011.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>

@@ -1,11 +1,17 @@
 .. -*- mode: rst -*-
-.. The whole GromacsWrapper package is Copyright (c) 2009-2010 Oliver Beckstein,
+.. The whole GromacsWrapper package is Copyright (c) 2009-2011 Oliver Beckstein,
 .. except where noted otherwise.
 
 
-========
- README
-========
+================
+ GromacsWrapper
+================
+
+A primitive wrapper around the Gromacs tools until we have proper
+python bindings. It also provides a small library (cook book) of
+often-used recipes and an optional analysis module with plugins for
+more complicated analysis tasks.
+
 
 See :doc:`INSTALL` for installation instructions. `Documentation`_ is
 mostly provided through the python doc strings. See `Download and
@@ -83,6 +89,14 @@ GridMat-MD
 
   .. _compatible with GPL: http://www.fsf.org/licensing/licenses/index_html
 
+``gromacs.fileformats.preprocess``
+  - The preprocessor is based on ``pypreprocessor.py`` from
+    `pypreprocessor`_, release 0.4.0.
+  - copyright: (c) 2010 Evan Plaice
+  - license: MIT (`compatible with GPL`_)
+  - http://code.google.com/p/pypreprocessor/
+
+  .. _pypreprocessor: http://code.google.com/p/pypreprocessor/
 
 
 Citing
@@ -92,7 +106,7 @@ If you find this package useful and use it in published work I'd be
 grateful if it was acknowledged in text as
 
   "... used GromacsWrapper (Oliver Beckstein,
-  http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/)"
+  http://github.com/orbeckst/GromacsWrapper)"
 
 or in the Acknowledgements section.
 
@@ -139,4 +153,4 @@ general feedback and inquiries can be sent to `Oliver Beckstein`_ by
 e-mail.
 
 .. _Issue Tracker: http://github.com/orbeckst/GromacsWrapper/issues
-.. _Oliver Beckstein: oliver.beckstein@bioch.ox.ac.uk
+.. _Oliver Beckstein: orbeckst@gmail.com

@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.utilities – Helper functions and classes &mdash; GromacsWrapper v0.2.4 documentation</title>
+    <title>gromacs.utilities – Helper functions and classes &mdash; GromacsWrapper v0.2.5-dev documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.2.4',
+        VERSION:     '0.2.5-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,10 +22,10 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.2.4 documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper v0.2.5-dev documentation" href="../../index.html" />
     <link rel="up" title="Gromacs core modules" href="../core.html" />
     <link rel="next" title="gromacs.tools – Gromacs commands classes" href="tools.html" />
-    <link rel="prev" title="gromacs.formats – Accessing various files" href="formats.html" /> 
+    <link rel="prev" title="&lt;no title&gt;" href="fileformats/preprocessor.html" /> 
   </head>
   <body>
     <div class="related">
@@ -41,9 +41,9 @@
           <a href="tools.html" title="gromacs.tools – Gromacs commands classes"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="formats.html" title="gromacs.formats – Accessing various files"
+          <a href="fileformats/preprocessor.html" title="&lt;no title&gt;"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.2.4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.2.5-dev documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" accesskey="U">Gromacs core modules</a> &raquo;</li> 
       </ul>
@@ -62,7 +62,7 @@ or <a class="reference internal" href="../blocks/cbook.html#module-gromacs.cbook
 <div class="section" id="classes">
 <h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="#gromacs.utilities.FileUtils" title="gromacs.utilities.FileUtils"><tt class="xref py py-class docutils literal"><span class="pre">FileUtils</span></tt></a> provides functions related to filename handling. It
-can be used as a base or mixin class. The <a class="reference internal" href="../../analysis/core.html#gromacs.analysis.Simulation" title="gromacs.analysis.Simulation"><tt class="xref py py-class docutils literal"><span class="pre">gromacs.analysis.Simulation</span></tt></a>
+can be used as a base or mixin class. The <tt class="xref py py-class docutils literal"><span class="pre">gromacs.analysis.Simulation</span></tt>
 class is derived from it.</p>
 <dl class="class">
 <dt id="gromacs.utilities.FileUtils">
@@ -316,6 +316,16 @@ overwrites the subplot instead of activating it.</p>
 <dd><p>Converts between 3-letter and 1-letter amino acid codes.</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="gromacs.utilities.autoconvert">
+<tt class="descclassname">gromacs.utilities.</tt><tt class="descname">autoconvert</tt><big>(</big><em>s</em><big>)</big><a class="headerlink" href="#gromacs.utilities.autoconvert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert input to a numerical type if possible.</p>
+<ol class="arabic simple">
+<li>A non-string object is returned as it is</li>
+<li>Try conversion to int, float, str.</li>
+</ol>
+</dd></dl>
+
 </div>
 <div class="section" id="data">
 <h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
@@ -346,8 +356,8 @@ overwrites the subplot instead of activating it.</p>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="formats.html"
-                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a></p>
+  <p class="topless"><a href="fileformats/preprocessor.html"
+                        title="previous chapter">&lt;no title&gt;</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="tools.html"
                         title="next chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">gromacs.tools</span></tt> &#8211; Gromacs commands classes</a></p>
@@ -386,16 +396,16 @@ overwrites the subplot instead of activating it.</p>
           <a href="tools.html" title="gromacs.tools – Gromacs commands classes"
              >next</a> |</li>
         <li class="right" >
-          <a href="formats.html" title="gromacs.formats – Accessing various files"
+          <a href="fileformats/preprocessor.html" title="&lt;no title&gt;"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.2.4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.2.5-dev documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" >Gromacs core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Aug 25, 2011.
+      Last updated on Sep 22, 2011.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>

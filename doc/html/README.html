@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>README &mdash; GromacsWrapper v0.2.4 documentation</title>
+    <title>GromacsWrapper &mdash; GromacsWrapper v0.2.5-dev documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.2.4',
+        VERSION:     '0.2.5-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.2.4 documentation" href="index.html" />
+    <link rel="top" title="GromacsWrapper v0.2.5-dev documentation" href="index.html" />
     <link rel="next" title="INSTALL" href="INSTALL.html" />
     <link rel="prev" title="GromacsWrapper — a python framework for Gromacs" href="index.html" /> 
   </head>
@@ -42,7 +42,7 @@
         <li class="right" >
           <a href="index.html" title="GromacsWrapper — a python framework for Gromacs"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">GromacsWrapper v0.2.4 documentation</a> &raquo;</li> 
+        <li><a href="index.html">GromacsWrapper v0.2.5-dev documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -51,8 +51,12 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="readme">
-<h1>README<a class="headerlink" href="#readme" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="gromacswrapper">
+<h1>GromacsWrapper<a class="headerlink" href="#gromacswrapper" title="Permalink to this headline">¶</a></h1>
+<p>A primitive wrapper around the Gromacs tools until we have proper
+python bindings. It also provides a small library (cook book) of
+often-used recipes and an optional analysis module with plugins for
+more complicated analysis tasks.</p>
 <p>See <a class="reference internal" href="INSTALL.html"><em>INSTALL</em></a> for installation instructions. <a class="reference external" href="http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/html/index.html">Documentation</a> is
 mostly provided through the python doc strings. See <a class="reference internal" href="#download-and-availability">Download and
 Availability</a> for download instructions if the instructions in
@@ -79,7 +83,7 @@ published under the <a class="reference external" href="http://www.biopython.org
 the authors but distributed under licences compatible with this
 package license. Where permitted and necessary, software/files were
 modified to integrate with GromacsWrapper.</p>
-<p>In case of problems please direct error reports to <a class="reference external" href="mailto:oliver&#46;beckstein&#37;&#52;&#48;bioch&#46;ox&#46;ac&#46;uk">Oliver Beckstein</a>
+<p>In case of problems please direct error reports to <a class="reference external" href="mailto:orbeckst&#37;&#52;&#48;gmail&#46;com">Oliver Beckstein</a>
 in the first instance as these bugs might not have been present in the
 original software or files.</p>
 <p>Included third party content:</p>
@@ -87,7 +91,7 @@ original software or files.</p>
 <dt>GridMat-MD</dt>
 <dd><ul class="first last simple">
 <li>Grid-based Membrane Analysis Tool for use with Molecular Dynamics
-<a class="reference internal" href="analysis/plugins.html#allen2009">[Allen2009]</a></li>
+<a class="reference internal" href="#allen2009">[Allen2009]</a></li>
 <li>version: 1.0.2</li>
 <li>license: GPL 3.0</li>
 <li>W. J. Allen, J. A. Lemkul, and D. R. Bevan. (2009) &#8220;GridMAT-MD: A
@@ -104,6 +108,15 @@ Dynamics.&#8221; J. Comput. Chem. 30 (12): 1952-1958.</li>
 <li><a class="reference external" href="http://dev.pocoo.org/hg/sandbox/raw-file/tip/odict.py">http://dev.pocoo.org/hg/sandbox/raw-file/tip/odict.py</a></li>
 </ul>
 </dd>
+<dt><tt class="docutils literal"><span class="pre">gromacs.fileformats.preprocess</span></tt></dt>
+<dd><ul class="first last simple">
+<li>The preprocessor is based on <tt class="docutils literal"><span class="pre">pypreprocessor.py</span></tt> from
+<a class="reference external" href="http://code.google.com/p/pypreprocessor/">pypreprocessor</a>, release 0.4.0.</li>
+<li>copyright: (c) 2010 Evan Plaice</li>
+<li>license: MIT (<a class="reference external" href="http://www.fsf.org/licensing/licenses/index_html">compatible with GPL</a>)</li>
+<li><a class="reference external" href="http://code.google.com/p/pypreprocessor/">http://code.google.com/p/pypreprocessor/</a></li>
+</ul>
+</dd>
 </dl>
 </div>
 <div class="section" id="citing">
@@ -112,9 +125,9 @@ Dynamics.&#8221; J. Comput. Chem. 30 (12): 1952-1958.</li>
 grateful if it was acknowledged in text as</p>
 <blockquote>
 <div>&#8221;... used GromacsWrapper (Oliver Beckstein,
-<a class="reference external" href="http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/">http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/</a>)&#8221;</div></blockquote>
+<a class="reference external" href="http://github.com/orbeckst/GromacsWrapper">http://github.com/orbeckst/GromacsWrapper</a>)&#8221;</div></blockquote>
 <p>or in the Acknowledgements section.</p>
-<p>If you use the <tt class="docutils literal"><span class="pre">gridmatmd</span></tt> plugin also cite <a class="reference internal" href="analysis/plugins.html#allen2009">[Allen2009]</a>.</p>
+<p>If you use the <tt class="docutils literal"><span class="pre">gridmatmd</span></tt> plugin also cite <a class="reference internal" href="#allen2009">[Allen2009]</a>.</p>
 <p>Thank you.</p>
 <p class="rubric">References</p>
 <table class="docutils citation" frame="void" id="allen2009" rules="none">
@@ -145,7 +158,7 @@ your own development:</p>
 <div class="section" id="contact">
 <h2>Contact<a class="headerlink" href="#contact" title="Permalink to this headline">¶</a></h2>
 <p>Please use the <a class="reference external" href="http://github.com/orbeckst/GromacsWrapper/issues">Issue Tracker</a> to report bugs and feature requests;
-general feedback and inquiries can be sent to <a class="reference external" href="mailto:oliver&#46;beckstein&#37;&#52;&#48;bioch&#46;ox&#46;ac&#46;uk">Oliver Beckstein</a> by
+general feedback and inquiries can be sent to <a class="reference external" href="mailto:orbeckst&#37;&#52;&#48;gmail&#46;com">Oliver Beckstein</a> by
 e-mail.</p>
 </div>
 </div>
@@ -158,7 +171,7 @@ e-mail.</p>
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">README</a><ul>
+<li><a class="reference internal" href="#">GromacsWrapper</a><ul>
 <li><a class="reference internal" href="#licence">Licence</a></li>
 <li><a class="reference internal" href="#included-software">Included Software</a></li>
 <li><a class="reference internal" href="#citing">Citing</a></li>
@@ -211,12 +224,12 @@ e-mail.</p>
         <li class="right" >
           <a href="index.html" title="GromacsWrapper — a python framework for Gromacs"
              >previous</a> |</li>
-        <li><a href="index.html">GromacsWrapper v0.2.4 documentation</a> &raquo;</li> 
+        <li><a href="index.html">GromacsWrapper v0.2.5-dev documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Aug 25, 2011.
+      Last updated on Sep 22, 2011.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>

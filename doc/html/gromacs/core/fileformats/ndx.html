@@ -1,0 +1,259 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Gromacs NDX index file format &mdash; GromacsWrapper v0.2.5-dev documentation</title>
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.2.5-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="GromacsWrapper v0.2.5-dev documentation" href="../../../index.html" />
+    <link rel="up" title="gromacs.formats – Accessing various files" href="../formats.html" />
+    <link rel="next" title="Gromacs topology file (ITP) parser" href="itp.html" />
+    <link rel="prev" title="Gromacs parameter MDP file format" href="mdp.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="itp.html" title="Gromacs topology file (ITP) parser"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="mdp.html" title="Gromacs parameter MDP file format"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../../index.html">GromacsWrapper v0.2.5-dev documentation</a> &raquo;</li>
+          <li><a href="../../../gromacs.html" >Gromacs package</a> &raquo;</li>
+          <li><a href="../../core.html" >Gromacs core modules</a> &raquo;</li>
+          <li><a href="../formats.html" accesskey="U"><tt class="docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-gromacs.fileformats.ndx"></span><div class="section" id="gromacs-ndx-index-file-format">
+<h1>Gromacs NDX index file format<a class="headerlink" href="#gromacs-ndx-index-file-format" title="Permalink to this headline">¶</a></h1>
+<p>The <a class="reference external" href="http://www.gromacs.org/Documentation/File_Formats/.ndx_File">.ndx file</a> contains lists of atom indices that are grouped in
+sections by <em>group names</em>. The classes <a class="reference internal" href="#gromacs.fileformats.ndx.NDX" title="gromacs.fileformats.ndx.NDX"><tt class="xref py py-class docutils literal"><span class="pre">NDX</span></tt></a> and
+<a class="reference internal" href="#gromacs.fileformats.ndx.uniqueNDX" title="gromacs.fileformats.ndx.uniqueNDX"><tt class="xref py py-class docutils literal"><span class="pre">uniqueNDX</span></tt></a> can parse such ndx files and provide convenient
+access to the individual groups.</p>
+<dl class="class">
+<dt id="gromacs.fileformats.ndx.NDX">
+<em class="property">class </em><tt class="descclassname">gromacs.fileformats.ndx.</tt><tt class="descname">NDX</tt><big>(</big><em>filename=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.ndx.NDX" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gromacs index file.</p>
+<p>Represented as a ordered dict where the keys are index group names and
+values are numpy arrays of atom numbers.</p>
+<p>Use the <a class="reference internal" href="#gromacs.fileformats.ndx.NDX.read" title="gromacs.fileformats.ndx.NDX.read"><tt class="xref py py-meth docutils literal"><span class="pre">NDX.read()</span></tt></a> and <a class="reference internal" href="#gromacs.fileformats.ndx.NDX.write" title="gromacs.fileformats.ndx.NDX.write"><tt class="xref py py-meth docutils literal"><span class="pre">NDX.write()</span></tt></a> methods for
+I/O. Access groups by name via the <a class="reference internal" href="#gromacs.fileformats.ndx.NDX.get" title="gromacs.fileformats.ndx.NDX.get"><tt class="xref py py-meth docutils literal"><span class="pre">NDX.get()</span></tt></a> and
+<a class="reference internal" href="#gromacs.fileformats.ndx.NDX.set" title="gromacs.fileformats.ndx.NDX.set"><tt class="xref py py-meth docutils literal"><span class="pre">NDX.set()</span></tt></a> methods.</p>
+<p>Alternatively, simply treat the <a class="reference internal" href="#gromacs.fileformats.ndx.NDX" title="gromacs.fileformats.ndx.NDX"><tt class="xref py py-class docutils literal"><span class="pre">NDX</span></tt></a> instance as a
+dictionary. Setting a key automatically transforms the new value
+into a integer 1D numpy array (<em>not</em> a set, as would be the
+<strong class="program">make_ndx</strong> behaviour).</p>
+<p><strong>Example</strong></p>
+<blockquote>
+<div><p>Read index file, make new group and write to disk:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">ndx</span> <span class="o">=</span> <span class="n">NDX</span><span class="p">()</span>
+<span class="n">ndx</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s">&#39;system.ndx&#39;</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">ndx</span><span class="p">[</span><span class="s">&#39;Protein&#39;</span><span class="p">]</span>
+<span class="n">ndx</span><span class="p">[</span><span class="s">&#39;my_group&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>   <span class="c"># add new group</span>
+<span class="n">ndx</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;new.ndx&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Or quicker (replacing the input file <tt class="docutils literal"><span class="pre">system.ndx</span></tt>):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">ndx</span> <span class="o">=</span> <span class="n">NDX</span><span class="p">(</span><span class="s">&#39;system&#39;</span><span class="p">)</span>          <span class="c"># suffix .ndx is automatically added</span>
+<span class="n">ndx</span><span class="p">[</span><span class="s">&#39;chi1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+<span class="n">ndx</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></blockquote>
+<dl class="attribute">
+<dt id="gromacs.fileformats.ndx.NDX.format">
+<tt class="descname">format</tt><a class="headerlink" href="#gromacs.fileformats.ndx.NDX.format" title="Permalink to this definition">¶</a></dt>
+<dd><p>standard ndx file format: &#8216;%6d&#8217;</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.fileformats.ndx.NDX.get">
+<tt class="descname">get</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.ndx.NDX.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return index array for index group <em>name</em>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.fileformats.ndx.NDX.groups">
+<tt class="descname">groups</tt><a class="headerlink" href="#gromacs.fileformats.ndx.NDX.groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of all groups.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.fileformats.ndx.NDX.ncol">
+<tt class="descname">ncol</tt><a class="headerlink" href="#gromacs.fileformats.ndx.NDX.ncol" title="Permalink to this definition">¶</a></dt>
+<dd><p>standard ndx file format: 15 columns</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.fileformats.ndx.NDX.ndxlist">
+<tt class="descname">ndxlist</tt><a class="headerlink" href="#gromacs.fileformats.ndx.NDX.ndxlist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of groups in the same format as  <a class="reference internal" href="../../blocks/cbook.html#gromacs.cbook.get_ndx_groups" title="gromacs.cbook.get_ndx_groups"><tt class="xref py py-func docutils literal"><span class="pre">gromacs.cbook.get_ndx_groups()</span></tt></a>.</p>
+<dl class="docutils">
+<dt>Format:</dt>
+<dd>[ {&#8216;name&#8217;: group_name, &#8216;natoms&#8217;: number_atoms, &#8216;nr&#8217;:  # group_number}, ....]</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.fileformats.ndx.NDX.read">
+<tt class="descname">read</tt><big>(</big><em>filename=None</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.ndx.NDX.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read and parse index file <em>filename</em>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.fileformats.ndx.NDX.set">
+<tt class="descname">set</tt><big>(</big><em>name</em>, <em>value</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.ndx.NDX.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set or add group <em>name</em> as a 1D numpy array.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.fileformats.ndx.NDX.size">
+<tt class="descname">size</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.ndx.NDX.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return number of entries for group <em>name</em>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.fileformats.ndx.NDX.sizes">
+<tt class="descname">sizes</tt><a class="headerlink" href="#gromacs.fileformats.ndx.NDX.sizes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a dict with group names and number of entries,</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.fileformats.ndx.NDX.write">
+<tt class="descname">write</tt><big>(</big><em>filename=None</em>, <em>ncol=15</em>, <em>format='%6d'</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.ndx.NDX.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write index file to <em>filename</em> (or overwrite the file that the index was read from)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gromacs.fileformats.ndx.uniqueNDX">
+<em class="property">class </em><tt class="descclassname">gromacs.fileformats.ndx.</tt><tt class="descname">uniqueNDX</tt><big>(</big><em>filename=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.ndx.uniqueNDX" title="Permalink to this definition">¶</a></dt>
+<dd><p>Index that behaves like make_ndx, i.e. entries behaves as sets,
+not lists.</p>
+<p>The index lists behave like sets:
+- adding sets with &#8216;+&#8217; is equivalent to a logical OR: x + y == &#8220;x | y&#8221;
+- subtraction &#8216;-&#8216; is AND: x - y == &#8220;x &amp; y&#8221;
+- see <tt class="xref py py-meth docutils literal"><span class="pre">join()</span></tt> for ORing multiple groups (x+y+z+...)</p>
+<p><strong>Example</strong></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">I</span> <span class="o">=</span> <span class="n">uniqueNDX</span><span class="p">(</span><span class="s">&#39;system.ndx&#39;</span><span class="p">)</span>
+<span class="n">I</span><span class="p">[</span><span class="s">&#39;SOLVENT&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">I</span><span class="p">[</span><span class="s">&#39;SOL&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">I</span><span class="p">[</span><span class="s">&#39;NA+&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">I</span><span class="p">[</span><span class="s">&#39;CL-&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="gromacs.fileformats.ndx.uniqueNDX.join">
+<tt class="descname">join</tt><big>(</big><em>*groupnames</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.ndx.uniqueNDX.join" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an index group that contains atoms from all  <em>groupnames</em>.</p>
+<p>The method will silently ignore any groups that are not in the
+index.</p>
+<p><strong>Example</strong></p>
+<p>Always make a solvent group from water and ions, even if not
+all ions are present in all simulations:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">I</span><span class="p">[</span><span class="s">&#39;SOLVENT&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">I</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s">&#39;SOL&#39;</span><span class="p">,</span> <span class="s">&#39;NA+&#39;</span><span class="p">,</span> <span class="s">&#39;K+&#39;</span><span class="p">,</span> <span class="s">&#39;CL-&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gromacs.fileformats.ndx.IndexSet">
+<em class="property">class </em><tt class="descclassname">gromacs.fileformats.ndx.</tt><tt class="descname">IndexSet</tt><a class="headerlink" href="#gromacs.fileformats.ndx.IndexSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>set which defines &#8216;+&#8217; as union (OR) and &#8216;-&#8216; as intersection  (AND).</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="mdp.html"
+                        title="previous chapter">Gromacs parameter MDP file format</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="itp.html"
+                        title="next chapter">Gromacs topology file (ITP) parser</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../../_sources/gromacs/core/fileformats/ndx.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="itp.html" title="Gromacs topology file (ITP) parser"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="mdp.html" title="Gromacs parameter MDP file format"
+             >previous</a> |</li>
+        <li><a href="../../../index.html">GromacsWrapper v0.2.5-dev documentation</a> &raquo;</li>
+          <li><a href="../../../gromacs.html" >Gromacs package</a> &raquo;</li>
+          <li><a href="../../core.html" >Gromacs core modules</a> &raquo;</li>
+          <li><a href="../formats.html" ><tt class="docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2009-2011, Oliver Beckstein.
+      Last updated on Sep 22, 2011.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

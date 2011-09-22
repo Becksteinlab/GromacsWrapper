@@ -1,0 +1,394 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Simple xmgrace XVG file format &mdash; GromacsWrapper v0.2.5-dev documentation</title>
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.2.5-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="GromacsWrapper v0.2.5-dev documentation" href="../../../index.html" />
+    <link rel="up" title="gromacs.formats – Accessing various files" href="../formats.html" />
+    <link rel="next" title="Gromacs parameter MDP file format" href="mdp.html" />
+    <link rel="prev" title="gromacs.formats – Accessing various files" href="../formats.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mdp.html" title="Gromacs parameter MDP file format"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../formats.html" title="gromacs.formats – Accessing various files"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../../index.html">GromacsWrapper v0.2.5-dev documentation</a> &raquo;</li>
+          <li><a href="../../../gromacs.html" >Gromacs package</a> &raquo;</li>
+          <li><a href="../../core.html" >Gromacs core modules</a> &raquo;</li>
+          <li><a href="../formats.html" accesskey="U"><tt class="docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-gromacs.fileformats.xvg"></span><div class="section" id="simple-xmgrace-xvg-file-format">
+<h1>Simple xmgrace XVG file format<a class="headerlink" href="#simple-xmgrace-xvg-file-format" title="Permalink to this headline">¶</a></h1>
+<p>Gromacs produces graphs in the <a class="reference external" href="http://plasma-gate.weizmann.ac.il/Grace/">xmgrace</a> (&#8220;xvg&#8221;) format. These are
+simple multi-column data files. The class <a class="reference internal" href="#gromacs.fileformats.xvg.XVG" title="gromacs.fileformats.xvg.XVG"><tt class="xref py py-class docutils literal"><span class="pre">XVG</span></tt></a> encapsulates
+access to such files and adds a number of methods to access the data
+(as NumPy arrays), compute aggregates, or quickly plot it.</p>
+<dl class="class">
+<dt id="gromacs.fileformats.xvg.XVG">
+<em class="property">class </em><tt class="descclassname">gromacs.fileformats.xvg.</tt><tt class="descname">XVG</tt><big>(</big><em>filename=None</em>, <em>names=None</em>, <em>permissive=False</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.xvg.XVG" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that represents the numerical data in a grace xvg file.</p>
+<p>All data must be numerical. <tt class="xref py py-const docutils literal"><span class="pre">NAN</span></tt> and <tt class="xref py py-const docutils literal"><span class="pre">INF</span></tt> values are
+supported via python&#8217;s <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">float()</span></tt></a> builtin function.</p>
+<p>The <a class="reference internal" href="#gromacs.fileformats.xvg.XVG.array" title="gromacs.fileformats.xvg.XVG.array"><tt class="xref py py-attr docutils literal"><span class="pre">array</span></tt></a> attribute can be used to access the the
+array once it has been read and parsed. The <a class="reference internal" href="#gromacs.fileformats.xvg.XVG.ma" title="gromacs.fileformats.xvg.XVG.ma"><tt class="xref py py-attr docutils literal"><span class="pre">ma</span></tt></a>
+attribute is a numpy masked array (good for plotting).</p>
+<p>Conceptually, the file on disk and the XVG instance are considered the same
+data. Whenever the filename for I/O (<a class="reference internal" href="#gromacs.fileformats.xvg.XVG.read" title="gromacs.fileformats.xvg.XVG.read"><tt class="xref py py-meth docutils literal"><span class="pre">XVG.read()</span></tt></a> and <a class="reference internal" href="#gromacs.fileformats.xvg.XVG.write" title="gromacs.fileformats.xvg.XVG.write"><tt class="xref py py-meth docutils literal"><span class="pre">XVG.write()</span></tt></a>) is
+changed then the filename associated with the instance is also changed to reflect
+the association between file and instance.</p>
+<p>With the <em>permissive</em> = <tt class="xref docutils literal"><span class="pre">True</span></tt> flag one can instruct the file reader to skip
+unparseable lines. In this case the line numbers of the skipped lines are stored
+in <tt class="xref py py-attr docutils literal"><span class="pre">XVG.corrupted_lineno</span></tt>.</p>
+<p>A number of attributes are defined to give quick access to simple statistics such as</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference internal" href="#gromacs.fileformats.xvg.XVG.mean" title="gromacs.fileformats.xvg.XVG.mean"><tt class="xref py py-attr docutils literal"><span class="pre">mean</span></tt></a>: mean of all data columns</li>
+<li><a class="reference internal" href="#gromacs.fileformats.xvg.XVG.std" title="gromacs.fileformats.xvg.XVG.std"><tt class="xref py py-attr docutils literal"><span class="pre">std</span></tt></a>: standard deviation</li>
+<li><a class="reference internal" href="#gromacs.fileformats.xvg.XVG.min" title="gromacs.fileformats.xvg.XVG.min"><tt class="xref py py-attr docutils literal"><span class="pre">min</span></tt></a>: minimum of data</li>
+<li><a class="reference internal" href="#gromacs.fileformats.xvg.XVG.max" title="gromacs.fileformats.xvg.XVG.max"><tt class="xref py py-attr docutils literal"><span class="pre">max</span></tt></a>: maximum of data</li>
+<li><a class="reference internal" href="#gromacs.fileformats.xvg.XVG.error" title="gromacs.fileformats.xvg.XVG.error"><tt class="xref py py-attr docutils literal"><span class="pre">error</span></tt></a>: error on the mean, taking correlation times into
+account (see also <a class="reference internal" href="#gromacs.fileformats.xvg.XVG.set_correlparameters" title="gromacs.fileformats.xvg.XVG.set_correlparameters"><tt class="xref py py-meth docutils literal"><span class="pre">XVG.set_correlparameters()</span></tt></a>)</li>
+<li><a class="reference internal" href="#gromacs.fileformats.xvg.XVG.tc" title="gromacs.fileformats.xvg.XVG.tc"><tt class="xref py py-attr docutils literal"><span class="pre">tc</span></tt></a>: correlation time of the data (assuming a simple
+exponential decay of the fluctuations around the mean)</li>
+</ul>
+</div></blockquote>
+<p>These attributes are numpy arrays that correspond to the data columns,
+i.e. :attr:<a href="#id1"><span class="problematic" id="id2">`</span></a>XVG.array`[1:].</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ul class="last simple">
+<li>Only simple XY or NXY files are currently supported, <em>not</em>
+Grace files that contain multiple data sets separated by &#8216;&amp;&#8217;.</li>
+<li>Any kind of formatting (i.e. <strong class="program">xmgrace</strong> commands) is discarded.</li>
+</ul>
+</div>
+<p>Initialize the class from a xvg file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>filename</em></dt>
+<dd><p class="first last">is the xvg file; it can only be of type XY or
+NXY. If it is supplied then it is read and parsed
+when <a class="reference internal" href="#gromacs.fileformats.xvg.XVG.array" title="gromacs.fileformats.xvg.XVG.array"><tt class="xref py py-attr docutils literal"><span class="pre">XVG.array</span></tt></a> is accessed.</p>
+</dd>
+<dt><em>names</em></dt>
+<dd><p class="first last">optional labels for the columns (currently only
+written as comments to file); string with columns
+separated by commas or a list of strings</p>
+</dd>
+<dt><em>permissive</em></dt>
+<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">False</span></tt> raises a <tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt> and logs and errior
+when encountering data lines that it cannot parse.
+<tt class="xref docutils literal"><span class="pre">True</span></tt> ignores those lines and logs a warning&#8212;this is
+a risk because it might read a corrupted input file [<tt class="xref docutils literal"><span class="pre">False</span></tt>]</p>
+</dd>
+<dt><em>stride</em></dt>
+<dd><p class="first last">Only read every <em>stride</em> line of data [1].</p>
+</dd>
+<dt><em>savedata</em></dt>
+<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt> includes the data (<tt class="xref py py-attr docutils literal"><span class="pre">XVG.array`</span></tt> and
+associated caches) when the instance is pickled (see
+<a class="reference external" href="http://docs.python.org/library/pickle.html#module-pickle" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">pickle</span></tt></a>); this is oftens not desirable because the
+data are already on disk (the xvg file <em>filename</em>) and the
+resulting pickle file can become very big. <tt class="xref docutils literal"><span class="pre">False</span></tt> omits
+those data from a pickle. [<tt class="xref docutils literal"><span class="pre">False</span></tt>]</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="gromacs.fileformats.xvg.XVG.array">
+<tt class="descname">array</tt><a class="headerlink" href="#gromacs.fileformats.xvg.XVG.array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represent xvg data as a (cached) numpy array.</p>
+<p>The array is returned with column-first indexing, i.e. for a data file with
+columns X Y1 Y2 Y3 ... the array a will be a[0] = X, a[1] = Y1, ... .</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.fileformats.xvg.XVG.default_extension">
+<tt class="descname">default_extension</tt><a class="headerlink" href="#gromacs.fileformats.xvg.XVG.default_extension" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default extension of XVG files.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.fileformats.xvg.XVG.error">
+<tt class="descname">error</tt><a class="headerlink" href="#gromacs.fileformats.xvg.XVG.error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Error on the mean of the data, taking the correlation time into account.</p>
+<p>See <a class="reference internal" href="#frenkelsmit2002">[FrenkelSmit2002]</a> <a class="reference external" href="http://books.google.co.uk/books?id=XmyO2oRUg0cC&amp;pg=PA526">p526</a>:</p>
+<blockquote>
+<div>error = sqrt(2*tc*acf[0]/T)</div></blockquote>
+<p>where acf() is the autocorrelation function of the fluctuations around
+the mean, y-&lt;y&gt;, tc is the correlation time, and T the total length of
+the simulation.</p>
+<table class="docutils citation" frame="void" id="frenkelsmit2002" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[FrenkelSmit2002]</a></td><td>D. Frenkel and B. Smit, Understanding
+Molecular Simulation. Academic Press, San
+Diego 2002</td></tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.fileformats.xvg.XVG.errorbar">
+<tt class="descname">errorbar</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.xvg.XVG.errorbar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quick hack: errorbar plot.</p>
+<p>Set <em>columns</em> keyword to select [x, y, dy] or [x, y, dx, dy],
+e.g. <tt class="docutils literal"><span class="pre">columns=[0,1,2]</span></tt>. See <a class="reference internal" href="#gromacs.fileformats.xvg.XVG.plot" title="gromacs.fileformats.xvg.XVG.plot"><tt class="xref py py-meth docutils literal"><span class="pre">XVG.plot()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.fileformats.xvg.XVG.ma">
+<tt class="descname">ma</tt><a class="headerlink" href="#gromacs.fileformats.xvg.XVG.ma" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represent data as a masked array.</p>
+<p>The array is returned with column-first indexing, i.e. for a data file with
+columns X Y1 Y2 Y3 ... the array a will be a[0] = X, a[1] = Y1, ... .</p>
+<p>inf and nan are filtered via <tt class="xref py py-func docutils literal"><span class="pre">numpy.isfinite()</span></tt>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.fileformats.xvg.XVG.max">
+<tt class="descname">max</tt><a class="headerlink" href="#gromacs.fileformats.xvg.XVG.max" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximum of the data columns.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.fileformats.xvg.XVG.mean">
+<tt class="descname">mean</tt><a class="headerlink" href="#gromacs.fileformats.xvg.XVG.mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mean value of all data columns.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.fileformats.xvg.XVG.min">
+<tt class="descname">min</tt><a class="headerlink" href="#gromacs.fileformats.xvg.XVG.min" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimum of the data columns.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.fileformats.xvg.XVG.parse">
+<tt class="descname">parse</tt><big>(</big><em>stride=None</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.xvg.XVG.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read and cache the file as a numpy array.</p>
+<p>Store every <em>stride</em> line of data; if <tt class="xref docutils literal"><span class="pre">None</span></tt> then the class default is used.</p>
+<p>The array is returned with column-first indexing, i.e. for a data file with
+columns X Y1 Y2 Y3 ... the array a will be a[0] = X, a[1] = Y1, ... .</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.fileformats.xvg.XVG.plot">
+<tt class="descname">plot</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.xvg.XVG.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot xvg file data.</p>
+<p>The first column of the data is always taken as the abscissa
+X. Additional columns are plotted as ordinates Y1, Y2, ...</p>
+<p>In the special case that there is only a single column then this column
+is plotted against the index, i.e. (N, Y).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>columns</em> <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">Select the columns of the data to be plotted; the list
+is used as a numpy.array extended slice. The default is
+to use all columns. Columns are selected <em>after</em> a transform.</p>
+</dd>
+<dt><em>transform</em> <span class="classifier-delimiter">:</span> <span class="classifier">function</span></dt>
+<dd><p class="first last">function <tt class="docutils literal"><span class="pre">transform(array)</span> <span class="pre">-&gt;</span> <span class="pre">array</span></tt> which transforms
+the original array; must return a 2D numpy array of
+shape [X, Y1, Y2, ...] where X, Y1, ... are column
+vectors.  By default the transformation is the
+identity [<tt class="docutils literal"><span class="pre">lambda</span> <span class="pre">x:</span> <span class="pre">x</span></tt>].</p>
+</dd>
+<dt><em>maxpoints</em> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">limit the total number of data points; matplotlib has issues processing
+png files with &gt;100,000 points and pdfs take forever to display. Set to
+<tt class="xref docutils literal"><span class="pre">None</span></tt> if really all data should be displayed. At the moment we simply
+subsample the data at regular intervals. [10000]</p>
+</dd>
+<dt><em>kwargs</em></dt>
+<dd><p class="first last">All other keyword arguments are passed on to <tt class="xref py py-func docutils literal"><span class="pre">pylab.plot()</span></tt>.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.fileformats.xvg.XVG.read">
+<tt class="descname">read</tt><big>(</big><em>filename=None</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.xvg.XVG.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read and parse xvg file <em>filename</em>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.fileformats.xvg.XVG.set">
+<tt class="descname">set</tt><big>(</big><em>a</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.xvg.XVG.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the <em>array</em> data from <em>a</em> (i.e. completely replace).</p>
+<p>No sanity checks at the moment...</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.fileformats.xvg.XVG.set_correlparameters">
+<tt class="descname">set_correlparameters</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.xvg.XVG.set_correlparameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set and change the parameters for calculations with  correlation functions.</p>
+<p>The parameters persist until explicitly changed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>nstep</em></dt>
+<dd><p class="first last">only process every <em>nstep</em> data point to speed up the FFT; if
+left empty a default is chosen that produces roughly 25,000 data
+points (or whatever is set in <em>ncorrel</em>)</p>
+</dd>
+<dt><em>ncorrel</em></dt>
+<dd><p class="first last">If no <em>nstep</em> is supplied, aim at using <em>ncorrel</em> data points for
+the FFT; sets <tt class="xref py py-attr docutils literal"><span class="pre">XVG.ncorrel</span></tt> [25000]</p>
+</dd>
+<dt><em>force</em></dt>
+<dd><p class="first last">force recalculating correlation data even if cached values are
+available</p>
+</dd>
+<dt><em>kwargs</em></dt>
+<dd><p class="first last">see <a class="reference internal" href="../../../numkit/timeseries.html#numkit.timeseries.tcorrel" title="numkit.timeseries.tcorrel"><tt class="xref py py-func docutils literal"><span class="pre">numkit.timeseries.tcorrel()</span></tt></a> for other options</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.fileformats.xvg.XVG.std">
+<tt class="descname">std</tt><a class="headerlink" href="#gromacs.fileformats.xvg.XVG.std" title="Permalink to this definition">¶</a></dt>
+<dd><p>Standard deviation from the mean of all data columns.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.fileformats.xvg.XVG.tc">
+<tt class="descname">tc</tt><a class="headerlink" href="#gromacs.fileformats.xvg.XVG.tc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Correlation time of the data.</p>
+<p>See <a class="reference internal" href="#gromacs.fileformats.xvg.XVG.error" title="gromacs.fileformats.xvg.XVG.error"><tt class="xref py py-meth docutils literal"><span class="pre">XVG.error()</span></tt></a> for details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.fileformats.xvg.XVG.write">
+<tt class="descname">write</tt><big>(</big><em>filename=None</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.xvg.XVG.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write array to xvg file <em>filename</em> in NXY format.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Only plain files working at the moment, not compressed.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../formats.html"
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="mdp.html"
+                        title="next chapter">Gromacs parameter MDP file format</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../../_sources/gromacs/core/fileformats/xvg.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mdp.html" title="Gromacs parameter MDP file format"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../formats.html" title="gromacs.formats – Accessing various files"
+             >previous</a> |</li>
+        <li><a href="../../../index.html">GromacsWrapper v0.2.5-dev documentation</a> &raquo;</li>
+          <li><a href="../../../gromacs.html" >Gromacs package</a> &raquo;</li>
+          <li><a href="../../core.html" >Gromacs core modules</a> &raquo;</li>
+          <li><a href="../formats.html" ><tt class="docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2009-2011, Oliver Beckstein.
+      Last updated on Sep 22, 2011.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

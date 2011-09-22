@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Index &mdash; GromacsWrapper v0.2.4 documentation</title>
+    <title>Index &mdash; GromacsWrapper v0.2.5-dev documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.2.4',
+        VERSION:     '0.2.5-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.2.4 documentation" href="index.html" /> 
+    <link rel="top" title="GromacsWrapper v0.2.5-dev documentation" href="index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -34,7 +34,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="index.html">GromacsWrapper v0.2.4 documentation</a> &raquo;</li> 
+        <li><a href="index.html">GromacsWrapper v0.2.5-dev documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -87,11 +87,12 @@
       <dt><a href="analysis/core.html#gromacs.analysis.Simulation.analyze">(gromacs.analysis.Simulation method)</a></dt>
   </dl></dd>
     <dt><a href="analysis/core.html#gromacs.analysis.core.Simulation.analyze_all">analyze_all() (gromacs.analysis.core.Simulation method)</a></dt>
+    <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.Angles">Angles (class in gromacs.fileformats.itp)</a></dt>
     <dt><a href="gromacs/core/utilities.html#gromacs.utilities.anyopen">anyopen() (in module gromacs.utilities)</a></dt>
-    <dt><a href="gromacs/core/formats.html#gromacs.formats.XVG.array">array (gromacs.formats.XVG attribute)</a></dt>
+    <dt><a href="gromacs/core/fileformats/xvg.html#gromacs.fileformats.xvg.XVG.array">array (gromacs.fileformats.xvg.XVG attribute)</a></dt>
+    <dt><a href="gromacs/blocks/qsub.html#gromacs.qsub.QueuingSystem.array">array() (gromacs.qsub.QueuingSystem method)</a></dt>
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
-    <dt><a href="gromacs/blocks/qsub.html#gromacs.qsub.QueuingSystem.array">array() (gromacs.qsub.QueuingSystem method)</a></dt>
     <dt><a href="gromacs/blocks/qsub.html#gromacs.qsub.QueuingSystem.array_flag">array_flag() (gromacs.qsub.QueuingSystem method)</a></dt>
     <dt><a href="edpdb/helpers.html#edPDB.utilities.asiterable">asiterable() (in module edPDB.utilities)</a></dt>
     <dd><dl>
@@ -100,7 +101,10 @@
     <dt><a href="numkit/observables.html#numkit.observables.QuantityWithError.asQuantityWithError">asQuantityWithError() (numkit.observables.QuantityWithError static method)</a></dt>
     <dt><a href="numkit/observables.html#numkit.observables.QuantityWithError.astuple">astuple() (numkit.observables.QuantityWithError method)</a></dt>
     <dt><a href="edpdb/xpdb.html#edPDB.xpdb.AtomGroup">AtomGroup (class in edPDB.xpdb)</a></dt>
+    <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.Atoms">Atoms (class in gromacs.fileformats.itp)</a></dt>
+    <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.Atomtypes">Atomtypes (class in gromacs.fileformats.itp)</a></dt>
     <dt><a href="gromacs/core/utilities.html#gromacs.utilities.AttributeDict">AttributeDict (class in gromacs.utilities)</a></dt>
+    <dt><a href="gromacs/core/utilities.html#gromacs.utilities.autoconvert">autoconvert() (in module gromacs.utilities)</a></dt>
     <dt><a href="gromacs/init.html#gromacs.AutoCorrectionWarning">AutoCorrectionWarning</a></dt>
     <dt><a href="numkit/timeseries.html#numkit.timeseries.autocorrelation_fft">autocorrelation_fft() (in module numkit.timeseries)</a></dt>
     <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.gridmatmd.GridMatMD.averages">averages (gromacs.analysis.plugins.gridmatmd.GridMatMD attribute)</a></dt>
@@ -111,6 +115,10 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
     <dt><a href="gromacs/init.html#gromacs.BadParameterWarning">BadParameterWarning</a></dt>
+    <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.Bonds">Bonds (class in gromacs.fileformats.itp)</a></dt>
+</dl></td>
+  <td style="width: 33%" valign="top"><dl>
+    <dt><a href="gromacs/core/fileformats/preprocessor.html#gromacs.fileformats.preprocessor.Preprocessor.buffer">buffer (gromacs.fileformats.preprocessor.Preprocessor attribute)</a></dt>
 </dl></td>
 </tr></table>
 
@@ -147,6 +155,7 @@
       <dt><a href="gromacs/blocks/simulation.html#gromacs.run.MDrunner.commandline">(gromacs.run.MDrunner method)</a></dt>
   </dl></dd>
     <dt><a href="gromacs/core/core.html#gromacs.core.PopenWithInput.communicate">communicate() (gromacs.core.PopenWithInput method)</a></dt>
+    <dt><a href="gromacs/core/fileformats/preprocessor.html#gromacs.fileformats.preprocessor.Preprocessor.compare_defines_and_conditions">compare_defines_and_conditions() (gromacs.fileformats.preprocessor.Preprocessor method)</a></dt>
     <dt><a href="gromacs/blocks/setup.html#gromacs.setup.CONC_WATER">CONC_WATER (in module gromacs.setup)</a></dt>
     <dt><a href="gromacs/core/config.html#gromacs.config.configdir">configdir (in module gromacs.config)</a></dt>
     <dt><a href="gromacs/core/config.html#gromacs.config.CONFIGNAME">CONFIGNAME (in module gromacs.config)</a></dt>
@@ -166,21 +175,33 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
+    <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.ITPdata.data">data (gromacs.fileformats.itp.ITPdata attribute)</a></dt>
     <dt><a href="numkit/observables.html#numkit.observables.QuantityWithError.deepcopy">deepcopy() (numkit.observables.QuantityWithError method)</a></dt>
-    <dt><a href="gromacs/core/formats.html#gromacs.formats.XVG.default_extension">default_extension (gromacs.formats.XVG attribute)</a></dt>
+    <dt><a href="gromacs/core/fileformats/xvg.html#gromacs.fileformats.xvg.XVG.default_extension">default_extension (gromacs.fileformats.xvg.XVG attribute)</a></dt>
     <dd><dl>
       <dt><a href="gromacs/core/utilities.html#gromacs.utilities.FileUtils.default_extension">(gromacs.utilities.FileUtils attribute)</a></dt>
   </dl></dd>
     <dt><a href="gromacs/core/config.html#gromacs.config.defaults">defaults (in module gromacs.config)</a></dt>
+    <dt><a href="gromacs/core/fileformats/preprocessor.html#gromacs.fileformats.preprocessor.Preprocessor.define">define() (gromacs.fileformats.preprocessor.Preprocessor method)</a></dt>
     <dt><a href="gromacs/blocks/cbook.html#gromacs.cbook.Frames.delete_frames">delete_frames() (gromacs.cbook.Frames method)</a></dt>
     <dt><a href="gromacs/blocks/qsub.html#gromacs.qsub.detect_queuing_system">detect_queuing_system() (in module gromacs.qsub)</a></dt>
     <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.Dihedrals">Dihedrals (class in gromacs.analysis.plugins)</a></dt>
+    <dd><dl>
+      <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.Dihedrals">(class in gromacs.fileformats.itp)</a></dt>
+  </dl></dd>
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
     <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.Dihedrals.Dihedrals">Dihedrals.Dihedrals (class in gromacs.analysis.plugins)</a></dt>
     <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.dist.Mindist.dist">dist (gromacs.analysis.plugins.dist.Mindist attribute)</a></dt>
     <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.Distances">Distances (class in gromacs.analysis.plugins)</a></dt>
     <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.Distances.Distances">Distances.Distances (class in gromacs.analysis.plugins)</a></dt>
+    <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.Angles.dtypes">dtypes (gromacs.fileformats.itp.Angles attribute)</a></dt>
+    <dd><dl>
+      <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.Atoms.dtypes">(gromacs.fileformats.itp.Atoms attribute)</a></dt>
+      <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.Bonds.dtypes">(gromacs.fileformats.itp.Bonds attribute)</a></dt>
+      <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.Dihedrals.dtypes">(gromacs.fileformats.itp.Dihedrals attribute)</a></dt>
+  </dl></dd>
+    <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.Dummy">Dummy (class in gromacs.fileformats.itp)</a></dt>
     <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.gridmatmd.GridMatMD.dx">dx (gromacs.analysis.plugins.gridmatmd.GridMatMD attribute)</a></dt>
     <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.gridmatmd.GridMatMD.dy">dy (gromacs.analysis.plugins.gridmatmd.GridMatMD attribute)</a></dt>
 </dl></td>
@@ -210,11 +231,11 @@
       <dt><a href="gromacs/blocks/simulation.html#index-0">PATH</a>, <a href="gromacs/core/core.html#index-0">[1]</a></dt>
       <dt><a href="staging/SunGridEngine.html#index-1">SGE_TASK_ID</a></dt>
   </dl></dd>
-    <dt><a href="gromacs/core/formats.html#gromacs.formats.XVG.error">error (gromacs.formats.XVG attribute)</a></dt>
+    <dt><a href="gromacs/core/fileformats/xvg.html#gromacs.fileformats.xvg.XVG.error">error (gromacs.fileformats.xvg.XVG attribute)</a></dt>
     <dd><dl>
       <dt><a href="numkit/observables.html#numkit.observables.QuantityWithError.error">(numkit.observables.QuantityWithError attribute)</a></dt>
   </dl></dd>
-    <dt><a href="gromacs/core/formats.html#gromacs.formats.XVG.errorbar">errorbar() (gromacs.formats.XVG method)</a></dt>
+    <dt><a href="gromacs/core/fileformats/xvg.html#gromacs.fileformats.xvg.XVG.errorbar">errorbar() (gromacs.fileformats.xvg.XVG method)</a></dt>
     <dt><a href="gromacs/blocks/cbook.html#gromacs.cbook.Frames.extract">extract() (gromacs.cbook.Frames method)</a></dt>
     <dt><a href="edpdb/cbook.html#edPDB.cbook.PDB.extract_lipids">extract_lipids() (edPDB.cbook.PDB method)</a></dt>
     <dt><a href="edpdb/cbook.html#edPDB.cbook.PDB.extract_notprotein">extract_notprotein() (edPDB.cbook.PDB method)</a></dt>
@@ -239,15 +260,22 @@
       <dt><a href="numkit/fitting.html#numkit.fitting.FitFunc.fit">(numkit.fitting.FitFunc method)</a></dt>
   </dl></dd>
     <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.FitCompact">FitCompact (class in gromacs.analysis.plugins)</a></dt>
+    <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.FitCompact.FitCompact">FitCompact.FitCompact (class in gromacs.analysis.plugins)</a></dt>
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
-    <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.FitCompact.FitCompact">FitCompact.FitCompact (class in gromacs.analysis.plugins)</a></dt>
     <dt><a href="numkit/fitting.html#numkit.fitting.FitExp">FitExp (class in numkit.fitting)</a></dt>
     <dt><a href="numkit/fitting.html#numkit.fitting.FitExp2">FitExp2 (class in numkit.fitting)</a></dt>
     <dt><a href="numkit/fitting.html#numkit.fitting.FitFunc">FitFunc (class in numkit.fitting)</a></dt>
     <dt><a href="numkit/fitting.html#numkit.fitting.FitLin">FitLin (class in numkit.fitting)</a></dt>
     <dt><a href="gromacs/blocks/qsub.html#gromacs.qsub.QueuingSystem.flag">flag() (gromacs.qsub.QueuingSystem method)</a></dt>
-    <dt><a href="gromacs/core/formats.html#gromacs.formats.NDX.format">format (gromacs.formats.NDX attribute)</a></dt>
+    <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.flatten">flatten() (in module gromacs.fileformats.itp)</a></dt>
+    <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.Angles.fmt">fmt (gromacs.fileformats.itp.Angles attribute)</a></dt>
+    <dd><dl>
+      <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.Atoms.fmt">(gromacs.fileformats.itp.Atoms attribute)</a></dt>
+      <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.Bonds.fmt">(gromacs.fileformats.itp.Bonds attribute)</a></dt>
+      <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.Dihedrals.fmt">(gromacs.fileformats.itp.Dihedrals attribute)</a></dt>
+  </dl></dd>
+    <dt><a href="gromacs/core/fileformats/ndx.html#gromacs.fileformats.ndx.NDX.format">format (gromacs.fileformats.ndx.NDX attribute)</a></dt>
     <dt><a href="gromacs/blocks/cbook.html#gromacs.cbook.Frames.framenumber">framenumber (gromacs.cbook.Frames attribute)</a></dt>
     <dt><a href="gromacs/blocks/cbook.html#gromacs.cbook.Frames">Frames (class in gromacs.cbook)</a></dt>
 </dl></td>
@@ -259,7 +287,7 @@
     <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.dist.GdistData">GdistData (class in gromacs.analysis.plugins.dist)</a></dt>
     <dt><a href="gromacs/blocks/qsub.html#gromacs.qsub.generate_submit_array">generate_submit_array() (in module gromacs.qsub)</a></dt>
     <dt><a href="gromacs/blocks/qsub.html#gromacs.qsub.generate_submit_scripts">generate_submit_scripts() (in module gromacs.qsub)</a></dt>
-    <dt><a href="gromacs/core/formats.html#gromacs.formats.NDX.get">get() (gromacs.formats.NDX method)</a></dt>
+    <dt><a href="gromacs/core/fileformats/ndx.html#gromacs.fileformats.ndx.NDX.get">get() (gromacs.fileformats.ndx.NDX method)</a></dt>
     <dd><dl>
       <dt><a href="gromacs/blocks/manager.html#gromacs.manager.Manager.get">(gromacs.manager.Manager method)</a></dt>
   </dl></dd>
@@ -287,14 +315,14 @@
     <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.gridmatmd.Grid2D">Grid2D (class in gromacs.analysis.plugins.gridmatmd)</a></dt>
     <dt><a href="gromacs/core/tools.html#gromacs.tools.GridMAT_MD">GridMAT_MD (class in gromacs.tools)</a></dt>
     <dt><a href="gromacs/core/tools.html#gromacs.tools.GridMAT_MD.GridMAT_MD">GridMAT_MD.GridMAT_MD (class in gromacs.tools)</a></dt>
-</dl></td>
-  <td style="width: 33%" valign="top"><dl>
     <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.gridmatmd.GridMatData">GridMatData (class in gromacs.analysis.plugins.gridmatmd)</a></dt>
     <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.gridmatmd.GridMatMD">GridMatMD (class in gromacs.analysis.plugins.gridmatmd)</a></dt>
     <dd><dl>
       <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.gridmatmd.GridMatMD.GridMatMD">(gromacs.analysis.plugins.gridmatmd.GridMatMD attribute)</a></dt>
   </dl></dd>
-    <dt><a href="gromacs/core/formats.html#gromacs.formats.GRO">GRO (class in gromacs.formats)</a></dt>
+    <dt><a href="gromacs/core/fileformats/gro.html#gromacs.fileformats.gro.GRO">GRO (class in gromacs.fileformats.gro)</a></dt>
+</dl></td>
+  <td style="width: 33%" valign="top"><dl>
     <dt><a href="gromacs/init.html#module-gromacs">gromacs (module)</a></dt>
     <dt><a href="analysis/core.html#module-gromacs.analysis">gromacs.analysis (module)</a></dt>
     <dt><a href="analysis/support.html#module-gromacs.analysis.collections">gromacs.analysis.collections (module)</a></dt>
@@ -305,7 +333,12 @@
     <dt><a href="gromacs/blocks/cbook.html#module-gromacs.cbook">gromacs.cbook (module)</a></dt>
     <dt><a href="gromacs/core/config.html#module-gromacs.config">gromacs.config (module)</a></dt>
     <dt><a href="gromacs/core/core.html#module-gromacs.core">gromacs.core (module)</a></dt>
-    <dt><a href="gromacs/core/formats.html#module-gromacs.formats">gromacs.formats (module)</a></dt>
+    <dt><a href="gromacs/core/fileformats/gro.html#module-gromacs.fileformats.gro">gromacs.fileformats.gro (module)</a></dt>
+    <dt><a href="gromacs/core/fileformats/itp.html#module-gromacs.fileformats.itp">gromacs.fileformats.itp (module)</a></dt>
+    <dt><a href="gromacs/core/fileformats/mdp.html#module-gromacs.fileformats.mdp">gromacs.fileformats.mdp (module)</a></dt>
+    <dt><a href="gromacs/core/fileformats/ndx.html#module-gromacs.fileformats.ndx">gromacs.fileformats.ndx (module)</a></dt>
+    <dt><a href="gromacs/core/fileformats/preprocessor.html#module-gromacs.fileformats.preprocessor">gromacs.fileformats.preprocessor (module)</a></dt>
+    <dt><a href="gromacs/core/fileformats/xvg.html#module-gromacs.fileformats.xvg">gromacs.fileformats.xvg (module)</a></dt>
     <dt><a href="gromacs/blocks/manager.html#module-gromacs.manager">gromacs.manager (module)</a></dt>
     <dt><a href="gromacs/blocks/qsub.html#module-gromacs.qsub">gromacs.qsub (module)</a></dt>
     <dt><a href="gromacs/blocks/simulation.html#module-gromacs.run">gromacs.run (module)</a></dt>
@@ -319,7 +352,7 @@
     <dt><a href="gromacs/init.html#gromacs.GromacsImportWarning">GromacsImportWarning</a></dt>
     <dt><a href="gromacs/init.html#gromacs.GromacsValueWarning">GromacsValueWarning</a></dt>
     <dt><a href="gromacs/blocks/cbook.html#gromacs.cbook.grompp_qtot">grompp_qtot() (in module gromacs.cbook)</a>, <a href="gromacs/blocks/cbook.html#gromacs.cbook.grompp_qtot">[1]</a></dt>
-    <dt><a href="gromacs/core/formats.html#gromacs.formats.NDX.groups">groups (gromacs.formats.NDX attribute)</a></dt>
+    <dt><a href="gromacs/core/fileformats/ndx.html#gromacs.fileformats.ndx.NDX.groups">groups (gromacs.fileformats.ndx.NDX attribute)</a></dt>
 </dl></td>
 </tr></table>
 
@@ -328,10 +361,11 @@
   <td style="width: 33%" valign="top"><dl>
     <dt><a href="gromacs/blocks/qsub.html#gromacs.qsub.QueuingSystem.has_arrays">has_arrays() (gromacs.qsub.QueuingSystem method)</a></dt>
     <dt><a href="analysis/core.html#gromacs.analysis.core.Simulation.has_plugin">has_plugin() (gromacs.analysis.core.Simulation method)</a></dt>
+    <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.Header">Header (class in gromacs.fileformats.itp)</a></dt>
     <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.HelixBundle">HelixBundle (class in gromacs.analysis.plugins)</a></dt>
-    <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.HelixBundle.HelixBundle">HelixBundle.HelixBundle (class in gromacs.analysis.plugins)</a></dt>
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
+    <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.HelixBundle.HelixBundle">HelixBundle.HelixBundle (class in gromacs.analysis.plugins)</a></dt>
     <dt><a href="gromacs/core/core.html#gromacs.core.Command.help">help() (gromacs.core.Command method)</a></dt>
     <dd><dl>
       <dt><a href="gromacs/core/core.html#gromacs.core.GromacsCommand.help">(gromacs.core.GromacsCommand method)</a></dt>
@@ -351,16 +385,22 @@
   </dl></dd>
     <dt><a href="gromacs/core/utilities.html#gromacs.utilities.in_dir">in_dir() (in module gromacs.utilities)</a></dt>
     <dt><a href="gromacs/blocks/cbook.html#gromacs.cbook.IndexBuilder">IndexBuilder (class in gromacs.cbook)</a></dt>
+    <dt><a href="gromacs/core/fileformats/ndx.html#gromacs.fileformats.ndx.IndexSet">IndexSet (class in gromacs.fileformats.ndx)</a></dt>
     <dt><a href="gromacs/core/utilities.html#gromacs.utilities.FileUtils.infix_filename">infix_filename() (gromacs.utilities.FileUtils method)</a></dt>
-</dl></td>
-  <td style="width: 33%" valign="top"><dl>
     <dt><a href="numkit/fitting.html#numkit.fitting.FitFunc.initial_values">initial_values() (numkit.fitting.FitFunc method)</a></dt>
     <dt><a href="gromacs/blocks/qsub.html#gromacs.qsub.QueuingSystem.isMine">isMine() (gromacs.qsub.QueuingSystem method)</a></dt>
+</dl></td>
+  <td style="width: 33%" valign="top"><dl>
     <dt><a href="numkit/observables.html#numkit.observables.QuantityWithError.isSame">isSame() (numkit.observables.QuantityWithError method)</a></dt>
     <dt><a href="edpdb/helpers.html#edPDB.utilities.iterable">iterable() (in module edPDB.utilities)</a></dt>
     <dd><dl>
       <dt><a href="gromacs/core/utilities.html#gromacs.utilities.iterable">(in module gromacs.utilities)</a></dt>
   </dl></dd>
+    <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.ITP">ITP (class in gromacs.fileformats.itp)</a></dt>
+    <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.ITP.func">ITP.func() (in module gromacs.fileformats.itp)</a></dt>
+    <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.ITPdata">ITPdata (class in gromacs.fileformats.itp)</a></dt>
+    <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.ITPsection">ITPsection (class in gromacs.fileformats.itp)</a></dt>
+    <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.ITPsection.func">ITPsection.func() (in module gromacs.fileformats.itp)</a></dt>
 </dl></td>
 </tr></table>
 
@@ -375,7 +415,7 @@
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
     <dt><a href="staging/SunGridEngine.html#index-0">JOB_NAME</a></dt>
-    <dt><a href="gromacs/core/formats.html#gromacs.formats.uniqueNDX.join">join() (gromacs.formats.uniqueNDX method)</a></dt>
+    <dt><a href="gromacs/core/fileformats/ndx.html#gromacs.fileformats.ndx.uniqueNDX.join">join() (gromacs.fileformats.ndx.uniqueNDX method)</a></dt>
 </dl></td>
 </tr></table>
 
@@ -389,14 +429,15 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
+    <dt><a href="gromacs/core/fileformats/preprocessor.html#gromacs.fileformats.preprocessor.Preprocessor.lexer">lexer() (gromacs.fileformats.preprocessor.Preprocessor method)</a></dt>
     <dt><a href="numkit/fitting.html#numkit.fitting.linfit">linfit() (in module numkit.fitting)</a></dt>
     <dt><a href="gromacs/core/config.html#gromacs.config.load_scripts">load_scripts (in module gromacs.config)</a></dt>
     <dt><a href="gromacs/core/config.html#gromacs.config.load_tools">load_tools (in module gromacs.config)</a></dt>
     <dt><a href="gromacs/blocks/manager.html#gromacs.manager.Manager.local_get">local_get() (gromacs.manager.Manager method)</a></dt>
     <dt><a href="gromacs/blocks/manager.html#gromacs.manager.Manager.log_RE">log_RE (gromacs.manager.Manager attribute)</a></dt>
-    <dt><a href="gromacs/core/config.html#gromacs.config.logfilename">logfilename (in module gromacs.config)</a></dt>
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
+    <dt><a href="gromacs/core/config.html#gromacs.config.logfilename">logfilename (in module gromacs.config)</a></dt>
     <dt><a href="gromacs/core/config.html#gromacs.config.loglevel_console">loglevel_console (in module gromacs.config)</a></dt>
     <dt><a href="gromacs/core/config.html#gromacs.config.loglevel_file">loglevel_file (in module gromacs.config)</a></dt>
     <dt><a href="numkit/timeseries.html#numkit.timeseries.LowAccuracyWarning">LowAccuracyWarning</a>, <a href="gromacs/init.html#gromacs.LowAccuracyWarning">[1]</a></dt>
@@ -408,14 +449,15 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
-    <dt><a href="gromacs/core/formats.html#gromacs.formats.XVG.ma">ma (gromacs.formats.XVG attribute)</a></dt>
+    <dt><a href="gromacs/core/fileformats/xvg.html#gromacs.fileformats.xvg.XVG.ma">ma (gromacs.fileformats.xvg.XVG attribute)</a></dt>
     <dt><a href="gromacs/blocks/setup.html#gromacs.setup.make_main_index">make_main_index() (in module gromacs.setup)</a></dt>
     <dt><a href="gromacs/blocks/cbook.html#gromacs.cbook.make_ndx_captured">make_ndx_captured() (in module gromacs.cbook)</a></dt>
     <dt><a href="gromacs/blocks/manager.html#gromacs.manager.Manager">Manager (class in gromacs.manager)</a></dt>
     <dt><a href="gromacs/core/config.html#gromacs.config.managerdir">managerdir (in module gromacs.config)</a></dt>
-    <dt><a href="gromacs/core/formats.html#gromacs.formats.XVG.max">max (gromacs.formats.XVG attribute)</a></dt>
+    <dt><a href="gromacs/core/fileformats/xvg.html#gromacs.fileformats.xvg.XVG.max">max (gromacs.fileformats.xvg.XVG attribute)</a></dt>
     <dt><a href="gromacs/blocks/setup.html#gromacs.setup.MD">MD() (in module gromacs.setup)</a></dt>
     <dt><a href="gromacs/blocks/setup.html#gromacs.setup.MD_restrained">MD_restrained() (in module gromacs.setup)</a></dt>
+    <dt><a href="gromacs/core/fileformats/mdp.html#gromacs.fileformats.mdp.MDP">MDP (class in gromacs.fileformats.mdp)</a></dt>
     <dt><a href="gromacs/core/tools.html#gromacs.tools.Mdrun">Mdrun (class in gromacs.tools)</a></dt>
     <dt><a href="gromacs/blocks/simulation.html#gromacs.run.MDrunner.mdrun">mdrun (gromacs.run.MDrunner attribute)</a></dt>
     <dt><a href="gromacs/blocks/simulation.html#gromacs.run.MDrunner">MDrunner (class in gromacs.run)</a></dt>
@@ -424,14 +466,15 @@
   <td style="width: 33%" valign="top"><dl>
     <dt><a href="gromacs/blocks/simulation.html#gromacs.run.MDrunnerOpenMP">MDrunnerOpenMP (class in gromacs.run)</a></dt>
     <dt><a href="gromacs/blocks/simulation.html#gromacs.run.MDrunnerOpenMP64">MDrunnerOpenMP64 (class in gromacs.run)</a></dt>
-    <dt><a href="gromacs/core/formats.html#gromacs.formats.XVG.mean">mean (gromacs.formats.XVG attribute)</a></dt>
+    <dt><a href="gromacs/core/fileformats/xvg.html#gromacs.fileformats.xvg.XVG.mean">mean (gromacs.fileformats.xvg.XVG attribute)</a></dt>
     <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.dist.Mindist.midpoints">midpoints (gromacs.analysis.plugins.dist.Mindist attribute)</a></dt>
-    <dt><a href="gromacs/core/formats.html#gromacs.formats.XVG.min">min (gromacs.formats.XVG attribute)</a></dt>
+    <dt><a href="gromacs/core/fileformats/xvg.html#gromacs.fileformats.xvg.XVG.min">min (gromacs.fileformats.xvg.XVG attribute)</a></dt>
     <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.dist.Mindist">Mindist (class in gromacs.analysis.plugins.dist)</a></dt>
     <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.MinDistances">MinDistances (class in gromacs.analysis.plugins)</a></dt>
     <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.MinDistances.Distances">MinDistances.Distances (class in gromacs.analysis.plugins)</a></dt>
     <dt><a href="gromacs/init.html#gromacs.MissingDataError">MissingDataError</a></dt>
     <dt><a href="gromacs/init.html#gromacs.MissingDataWarning">MissingDataWarning</a></dt>
+    <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.Moleculetype">Moleculetype (class in gromacs.fileformats.itp)</a></dt>
     <dt><a href="gromacs/blocks/simulation.html#gromacs.run.MDrunner.mpicommand">mpicommand() (gromacs.run.MDrunner method)</a></dt>
     <dt><a href="gromacs/blocks/simulation.html#gromacs.run.MDrunner.mpiexec">mpiexec (gromacs.run.MDrunner attribute)</a></dt>
 </dl></td>
@@ -440,15 +483,16 @@
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
-    <dt><a href="gromacs/core/formats.html#gromacs.formats.NDX.ncol">ncol (gromacs.formats.NDX attribute)</a></dt>
+    <dt><a href="gromacs/core/fileformats/ndx.html#gromacs.fileformats.ndx.NDX.ncol">ncol (gromacs.fileformats.ndx.NDX attribute)</a></dt>
     <dt><a href="gromacs/blocks/manager.html#gromacs.manager.Manager.ndependent">ndependent() (gromacs.manager.Manager method)</a></dt>
-    <dt><a href="gromacs/core/formats.html#gromacs.formats.NDX">NDX (class in gromacs.formats)</a></dt>
-    <dt><a href="gromacs/core/formats.html#gromacs.formats.NDX.ndxlist">ndxlist (gromacs.formats.NDX attribute)</a></dt>
+    <dt><a href="gromacs/core/fileformats/ndx.html#gromacs.fileformats.ndx.NDX">NDX (class in gromacs.fileformats.ndx)</a></dt>
+    <dt><a href="gromacs/core/fileformats/ndx.html#gromacs.fileformats.ndx.NDX.ndxlist">ndxlist (gromacs.fileformats.ndx.NDX attribute)</a></dt>
+    <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.OneLineBuffer.next">next() (gromacs.fileformats.itp.OneLineBuffer method)</a></dt>
     <dt><a href="edpdb/selections.html#edPDB.selections.NotProteinSelect">NotProteinSelect (class in edPDB.selections)</a></dt>
     <dt><a href="edpdb/selections.html#edPDB.selections.NotResidueSelect">NotResidueSelect (class in edPDB.selections)</a></dt>
-    <dt><a href="gromacs/core/utilities.html#gromacs.utilities.number_pdbs">number_pdbs() (in module gromacs.utilities)</a></dt>
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
+    <dt><a href="gromacs/core/utilities.html#gromacs.utilities.number_pdbs">number_pdbs() (in module gromacs.utilities)</a></dt>
     <dt><a href="numkit/fitting.html#module-numkit.fitting">numkit.fitting (module)</a></dt>
     <dt><a href="numkit/integration.html#module-numkit.integration">numkit.integration (module)</a></dt>
     <dt><a href="numkit/observables.html#module-numkit.observables">numkit.observables (module)</a></dt>
@@ -461,6 +505,10 @@
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
+    <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.OneLineBuffer">OneLineBuffer (class in gromacs.fileformats.itp)</a></dt>
+    <dt><a href="gromacs/core/fileformats/preprocessor.html#gromacs.fileformats.preprocessor.Preprocessor.open">open() (gromacs.fileformats.preprocessor.Preprocessor method)</a></dt>
+</dl></td>
+  <td style="width: 33%" valign="top"><dl>
     <dt><a href="gromacs/core/utilities.html#gromacs.utilities.openany">openany() (in module gromacs.utilities)</a></dt>
 </dl></td>
 </tr></table>
@@ -468,7 +516,12 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
-    <dt><a href="gromacs/core/formats.html#gromacs.formats.XVG.parse">parse() (gromacs.formats.XVG method)</a></dt>
+    <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.Pairs">Pairs (class in gromacs.fileformats.itp)</a></dt>
+    <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.ITP.parse">parse() (gromacs.fileformats.itp.ITP method)</a></dt>
+    <dd><dl>
+      <dt><a href="gromacs/core/fileformats/preprocessor.html#gromacs.fileformats.preprocessor.Preprocessor.parse">(gromacs.fileformats.preprocessor.Preprocessor method)</a></dt>
+      <dt><a href="gromacs/core/fileformats/xvg.html#gromacs.fileformats.xvg.XVG.parse">(gromacs.fileformats.xvg.XVG method)</a></dt>
+  </dl></dd>
     <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.gridmatmd.GridMatData.parse_filename">parse_filename() (gromacs.analysis.plugins.gridmatmd.GridMatData method)</a></dt>
     <dt><a href="gromacs/blocks/cbook.html#gromacs.cbook.parse_ndxlist">parse_ndxlist() (in module gromacs.cbook)</a>, <a href="gromacs/blocks/cbook.html#gromacs.cbook.parse_ndxlist">[1]</a></dt>
     <dt><a href="gromacs/init.html#gromacs.ParseError">ParseError</a></dt>
@@ -480,7 +533,7 @@
     <dd><dl>
       <dt><a href="analysis/core.html#gromacs.analysis.Simulation.plot">(gromacs.analysis.Simulation method)</a></dt>
       <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.dist.Mindist.plot">(gromacs.analysis.plugins.dist.Mindist method)</a></dt>
-      <dt><a href="gromacs/core/formats.html#gromacs.formats.XVG.plot">(gromacs.formats.XVG method)</a></dt>
+      <dt><a href="gromacs/core/fileformats/xvg.html#gromacs.fileformats.xvg.XVG.plot">(gromacs.fileformats.xvg.XVG method)</a></dt>
   </dl></dd>
     <dt><a href="analysis/core.html#gromacs.analysis.core.Plugin">Plugin (class in gromacs.analysis.core)</a></dt>
     <dt><a href="analysis/core.html#gromacs.analysis.core.Plugin.plugin_name">plugin_name (gromacs.analysis.core.Plugin attribute)</a></dt>
@@ -497,6 +550,7 @@
     <dt><a href="gromacs/core/core.html#gromacs.core.PopenWithInput">PopenWithInput (class in gromacs.core)</a></dt>
     <dt><a href="gromacs/blocks/simulation.html#gromacs.run.MDrunner.posthook">posthook() (gromacs.run.MDrunner method)</a></dt>
     <dt><a href="gromacs/blocks/simulation.html#gromacs.run.MDrunner.prehook">prehook() (gromacs.run.MDrunner method)</a></dt>
+    <dt><a href="gromacs/core/fileformats/preprocessor.html#gromacs.fileformats.preprocessor.Preprocessor">Preprocessor (class in gromacs.fileformats.preprocessor)</a></dt>
     <dt><a href="edpdb/selections.html#edPDB.selections.PROTEIN_RESNAMES">PROTEIN_RESNAMES (in module edPDB.selections)</a></dt>
     <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.ProteinOnly">ProteinOnly (class in gromacs.analysis.plugins)</a></dt>
     <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.ProteinOnly.ProteinOnly">ProteinOnly.ProteinOnly (class in gromacs.analysis.plugins)</a></dt>
@@ -526,10 +580,13 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
-    <dt><a href="gromacs/core/formats.html#gromacs.formats.GRO.read">read() (gromacs.formats.GRO method)</a></dt>
+    <dt><a href="gromacs/core/fileformats/preprocessor.html#gromacs.fileformats.preprocessor.Preprocessor.raise_error">raise_error() (gromacs.fileformats.preprocessor.Preprocessor method)</a></dt>
+    <dt><a href="gromacs/core/fileformats/gro.html#gromacs.fileformats.gro.GRO.read">read() (gromacs.fileformats.gro.GRO method)</a></dt>
     <dd><dl>
-      <dt><a href="gromacs/core/formats.html#gromacs.formats.NDX.read">(gromacs.formats.NDX method)</a></dt>
-      <dt><a href="gromacs/core/formats.html#gromacs.formats.XVG.read">(gromacs.formats.XVG method)</a></dt>
+      <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.ITP.read">(gromacs.fileformats.itp.ITP method)</a></dt>
+      <dt><a href="gromacs/core/fileformats/mdp.html#gromacs.fileformats.mdp.MDP.read">(gromacs.fileformats.mdp.MDP method)</a></dt>
+      <dt><a href="gromacs/core/fileformats/ndx.html#gromacs.fileformats.ndx.NDX.read">(gromacs.fileformats.ndx.NDX method)</a></dt>
+      <dt><a href="gromacs/core/fileformats/xvg.html#gromacs.fileformats.xvg.XVG.read">(gromacs.fileformats.xvg.XVG method)</a></dt>
   </dl></dd>
     <dt><a href="gromacs/core/utilities.html#gromacs.utilities.realpath">realpath() (in module gromacs.utilities)</a></dt>
     <dt><a href="analysis/core.html#gromacs.analysis.core.Plugin.register">register() (gromacs.analysis.core.Plugin method)</a></dt>
@@ -546,9 +603,9 @@
       <dt><a href="edpdb/selections.html#edPDB.selections.residues_by_selection">(in module edPDB.selections)</a></dt>
   </dl></dd>
     <dt><a href="edpdb/selections.html#edPDB.selections.ResidueSelect">ResidueSelect (class in edPDB.selections)</a></dt>
-    <dt><a href="edpdb/selections.html#edPDB.selections.ResnameSelect">ResnameSelect (class in edPDB.selections)</a></dt>
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
+    <dt><a href="edpdb/selections.html#edPDB.selections.ResnameSelect">ResnameSelect (class in edPDB.selections)</a></dt>
     <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.RMSD">RMSD (class in gromacs.analysis.plugins)</a></dt>
     <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.RMSD.RMSD">RMSD.RMSD (class in gromacs.analysis.plugins)</a></dt>
     <dt><a href="gromacs/blocks/cbook.html#gromacs.cbook.rmsd_backbone">rmsd_backbone() (in module gromacs.cbook)</a></dt>
@@ -579,15 +636,18 @@
       <dt><a href="staging/SunGridEngine.html#staging.SunGridEngine.Job.save">(staging.SunGridEngine.Job method)</a></dt>
   </dl></dd>
     <dt><a href="analysis/core.html#gromacs.analysis.core.Worker.savefig">savefig() (gromacs.analysis.core.Worker method)</a></dt>
-    <dt><a href="gromacs/core/formats.html#gromacs.formats.NDX.set">set() (gromacs.formats.NDX method)</a></dt>
+    <dt><a href="gromacs/core/fileformats/preprocessor.html#gromacs.fileformats.preprocessor.Preprocessor.search_defines">search_defines() (gromacs.fileformats.preprocessor.Preprocessor method)</a></dt>
+    <dt><a href="gromacs/core/fileformats/ndx.html#gromacs.fileformats.ndx.NDX.set">set() (gromacs.fileformats.ndx.NDX method)</a></dt>
     <dd><dl>
-      <dt><a href="gromacs/core/formats.html#gromacs.formats.XVG.set">(gromacs.formats.XVG method)</a></dt>
+      <dt><a href="gromacs/core/fileformats/xvg.html#gromacs.fileformats.xvg.XVG.set">(gromacs.fileformats.xvg.XVG method)</a></dt>
   </dl></dd>
-    <dt><a href="gromacs/core/formats.html#gromacs.formats.XVG.set_correlparameters">set_correlparameters() (gromacs.formats.XVG method)</a></dt>
+    <dt><a href="gromacs/core/fileformats/xvg.html#gromacs.fileformats.xvg.XVG.set_correlparameters">set_correlparameters() (gromacs.fileformats.xvg.XVG method)</a></dt>
+    <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.Moleculetype.set_moleculename">set_moleculename() (gromacs.fileformats.itp.Moleculetype method)</a></dt>
     <dt><a href="analysis/core.html#gromacs.analysis.core.Simulation.set_plugin">set_plugin() (gromacs.analysis.core.Simulation method)</a></dt>
     <dd><dl>
       <dt><a href="analysis/core.html#gromacs.analysis.Simulation.set_plugin">(gromacs.analysis.Simulation method)</a></dt>
   </dl></dd>
+    <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.Atoms.set_resname">set_resname() (gromacs.fileformats.itp.Atoms method)</a></dt>
     <dt><a href="gromacs/core/config.html#gromacs.config.setup">setup() (in module gromacs.config)</a></dt>
     <dt><a href="gromacs/blocks/manager.html#gromacs.manager.Manager.setup_MD">setup_MD() (gromacs.manager.Manager method)</a></dt>
     <dt><a href="gromacs/blocks/manager.html#gromacs.manager.Manager.setup_posres">setup_posres() (gromacs.manager.Manager method)</a></dt>
@@ -598,10 +658,10 @@
       <dt><a href="analysis/core.html#gromacs.analysis.core.Simulation">(class in gromacs.analysis.core)</a></dt>
   </dl></dd>
     <dt><a href="analysis/core.html#gromacs.analysis.core.Plugin.simulation">simulation (gromacs.analysis.core.Plugin attribute)</a></dt>
-    <dt><a href="gromacs/core/formats.html#gromacs.formats.NDX.size">size() (gromacs.formats.NDX method)</a></dt>
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
-    <dt><a href="gromacs/core/formats.html#gromacs.formats.NDX.sizes">sizes (gromacs.formats.NDX attribute)</a></dt>
+    <dt><a href="gromacs/core/fileformats/ndx.html#gromacs.fileformats.ndx.NDX.size">size() (gromacs.fileformats.ndx.NDX method)</a></dt>
+    <dt><a href="gromacs/core/fileformats/ndx.html#gromacs.fileformats.ndx.NDX.sizes">sizes (gromacs.fileformats.ndx.NDX attribute)</a></dt>
     <dt><a href="edpdb/xpdb.html#edPDB.xpdb.SloppyPDBIO">SloppyPDBIO (class in edPDB.xpdb)</a></dt>
     <dt><a href="edpdb/xpdb.html#edPDB.xpdb.SloppyStructureBuilder">SloppyStructureBuilder (class in edPDB.xpdb)</a></dt>
     <dt><a href="gromacs/blocks/setup.html#gromacs.setup.solvate">solvate() (in module gromacs.setup)</a></dt>
@@ -609,7 +669,9 @@
     <dt><a href="staging/init.html#module-staging">staging (module)</a></dt>
     <dt><a href="staging/Local.html#module-staging.Local">staging.Local (module)</a></dt>
     <dt><a href="staging/SunGridEngine.html#module-staging.SunGridEngine">staging.SunGridEngine (module)</a></dt>
-    <dt><a href="gromacs/core/formats.html#gromacs.formats.XVG.std">std (gromacs.formats.XVG attribute)</a></dt>
+    <dt><a href="gromacs/core/fileformats/xvg.html#gromacs.fileformats.xvg.XVG.std">std (gromacs.fileformats.xvg.XVG attribute)</a></dt>
+    <dt><a href="gromacs/core/fileformats/preprocessor.html#gromacs.fileformats.preprocessor.Preprocessor.StringIO">StringIO() (gromacs.fileformats.preprocessor.Preprocessor method)</a></dt>
+    <dt><a href="gromacs/blocks/cbook.html#gromacs.cbook.Transformer.strip_fit">strip_fit() (gromacs.cbook.Transformer method)</a></dt>
     <dt><a href="gromacs/blocks/cbook.html#gromacs.cbook.Transformer.strip_water">strip_water() (gromacs.cbook.Transformer method)</a></dt>
     <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.StripWater">StripWater (class in gromacs.analysis.plugins)</a></dt>
     <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.StripWater.StripWater">StripWater.StripWater (class in gromacs.analysis.plugins)</a></dt>
@@ -619,7 +681,7 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
-    <dt><a href="gromacs/core/formats.html#gromacs.formats.XVG.tc">tc (gromacs.formats.XVG attribute)</a></dt>
+    <dt><a href="gromacs/core/fileformats/xvg.html#gromacs.fileformats.xvg.XVG.tc">tc (gromacs.fileformats.xvg.XVG attribute)</a></dt>
     <dt><a href="numkit/timeseries.html#numkit.timeseries.tcorrel">tcorrel() (in module numkit.timeseries)</a></dt>
     <dt><a href="gromacs/core/config.html#gromacs.config.templates">templates (in module gromacs.config)</a></dt>
     <dt><a href="gromacs/core/config.html#gromacs.config.templatesdir">templatesdir (in module gromacs.config)</a></dt>
@@ -649,12 +711,14 @@
 <h2 id="U">U</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
-    <dt><a href="gromacs/core/formats.html#gromacs.formats.uniqueNDX">uniqueNDX (class in gromacs.formats)</a></dt>
+    <dt><a href="gromacs/core/fileformats/preprocessor.html#gromacs.fileformats.preprocessor.Preprocessor.undefine">undefine() (gromacs.fileformats.preprocessor.Preprocessor method)</a></dt>
+    <dt><a href="gromacs/core/fileformats/ndx.html#gromacs.fileformats.ndx.uniqueNDX">uniqueNDX (class in gromacs.fileformats.ndx)</a></dt>
     <dt><a href="gromacs/core/utilities.html#gromacs.utilities.unlink_f">unlink_f() (in module gromacs.utilities)</a></dt>
     <dt><a href="gromacs/core/utilities.html#gromacs.utilities.unlink_gmx">unlink_gmx() (in module gromacs.utilities)</a></dt>
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
     <dt><a href="gromacs/core/utilities.html#gromacs.utilities.unlink_gmx_backups">unlink_gmx_backups() (in module gromacs.utilities)</a></dt>
+    <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.OneLineBuffer.unread">unread() (gromacs.fileformats.itp.OneLineBuffer method)</a></dt>
     <dt><a href="staging/SunGridEngine.html#staging.SunGridEngine.Job.unstage">unstage() (staging.SunGridEngine.Job method)</a></dt>
     <dt><a href="gromacs/init.html#gromacs.UsageWarning">UsageWarning</a></dt>
 </dl></td>
@@ -678,11 +742,15 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
     <dt><a href="gromacs/blocks/manager.html#gromacs.manager.Manager.waitfor">waitfor() (gromacs.manager.Manager method)</a></dt>
+    <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.ITP.walk_sections">walk_sections() (gromacs.fileformats.itp.ITP method)</a></dt>
+    <dd><dl>
+      <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.ITPsection.walk_sections">(gromacs.fileformats.itp.ITPsection method)</a></dt>
+  </dl></dd>
     <dt><a href="gromacs/core/utilities.html#gromacs.utilities.withextsep">withextsep() (in module gromacs.utilities)</a></dt>
     <dt><a href="analysis/core.html#gromacs.analysis.core.Worker">Worker (class in gromacs.analysis.core)</a></dt>
-    <dt><a href="analysis/core.html#gromacs.analysis.core.Plugin.worker">worker (gromacs.analysis.core.Plugin attribute)</a></dt>
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
+    <dt><a href="analysis/core.html#gromacs.analysis.core.Plugin.worker">worker (gromacs.analysis.core.Plugin attribute)</a></dt>
     <dt><a href="analysis/core.html#gromacs.analysis.core.Plugin.worker_class">worker_class (gromacs.analysis.core.Plugin attribute)</a></dt>
     <dd><dl>
       <dt><a href="analysis/plugins.html#gromacs.analysis.plugins.COM.worker_class">(gromacs.analysis.plugins.COM attribute)</a></dt>
@@ -702,8 +770,11 @@
   </dl></dd>
     <dt><a href="edpdb/cbook.html#edPDB.cbook.PDB.write">write() (edPDB.cbook.PDB method)</a></dt>
     <dd><dl>
-      <dt><a href="gromacs/core/formats.html#gromacs.formats.NDX.write">(gromacs.formats.NDX method)</a></dt>
-      <dt><a href="gromacs/core/formats.html#gromacs.formats.XVG.write">(gromacs.formats.XVG method)</a></dt>
+      <dt><a href="gromacs/core/fileformats/itp.html#gromacs.fileformats.itp.ITP.write">(gromacs.fileformats.itp.ITP method)</a></dt>
+      <dt><a href="gromacs/core/fileformats/mdp.html#gromacs.fileformats.mdp.MDP.write">(gromacs.fileformats.mdp.MDP method)</a></dt>
+      <dt><a href="gromacs/core/fileformats/ndx.html#gromacs.fileformats.ndx.NDX.write">(gromacs.fileformats.ndx.NDX method)</a></dt>
+      <dt><a href="gromacs/core/fileformats/preprocessor.html#gromacs.fileformats.preprocessor.Preprocessor.write">(gromacs.fileformats.preprocessor.Preprocessor method)</a></dt>
+      <dt><a href="gromacs/core/fileformats/xvg.html#gromacs.fileformats.xvg.XVG.write">(gromacs.fileformats.xvg.XVG method)</a></dt>
   </dl></dd>
     <dt><a href="edpdb/xpdb.html#edPDB.xpdb.write_pdb">write_pdb() (in module edPDB.xpdb)</a></dt>
 </dl></td>
@@ -712,7 +783,7 @@
 <h2 id="X">X</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
-    <dt><a href="gromacs/core/formats.html#gromacs.formats.XVG">XVG (class in gromacs.formats)</a></dt>
+    <dt><a href="gromacs/core/fileformats/xvg.html#gromacs.fileformats.xvg.XVG">XVG (class in gromacs.fileformats.xvg)</a></dt>
 </dl></td>
 </tr></table>
 
@@ -752,12 +823,12 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="index.html">GromacsWrapper v0.2.4 documentation</a> &raquo;</li> 
+        <li><a href="index.html">GromacsWrapper v0.2.5-dev documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Aug 25, 2011.
+      Last updated on Sep 22, 2011.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
