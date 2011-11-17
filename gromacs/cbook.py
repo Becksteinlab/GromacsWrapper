@@ -551,6 +551,12 @@ class Frames(object):
 # Working with topologies
 # -----------------------
 
+# grompp that does not raise an exception; setting up runs the command to get the docs so
+# we only want to do this once at the module level and not inside a function that can be called
+# repeatedly
+grompp_warnonly = tools.Grompp(failure="warn",
+                               doc="grompp wrapper that only warns on failure but does not raise :exc:`GromacsError`")
+
 def grompp_qtot(*args, **kwargs):
     """Run ``gromacs.grompp`` and return the total charge of the  system.
 
@@ -561,17 +567,31 @@ def grompp_qtot(*args, **kwargs):
 
     Some things to keep in mind:
 
-    * The stdout output of grompp is not shown. This can make debugging
-      pretty hard.  Try running the normal :func:`gromacs.grompp` command and
-      analyze the output if the debugging messages are not sufficient.
-    * Check that ``qtot`` is correct; because the function is based on pattern
-      matching of the output it can break when the output format changes.
-    """
+    * The stdout output of grompp is only shown when an error occurs. For
+      debugging, look at the log file or screen output and try running the
+      normal :func:`gromacs.grompp` command and analyze the output if the
+      debugging messages are not sufficient.
 
-    # match '  System has non-zero total charge: -4.000001e+00',
+    * Check that ``qtot`` is correct. Because the function is based on pattern
+      matching of the informative output of :program:`grompp` it can break when
+      the output format changes. This version recognizes lines like ::
+
+            '  System has non-zero total charge: -4.000001e+00'
+
+      using the regular expression
+      :regexp:`System has non-zero total charge: *(?P<qtot>[-+]?\d*\.\d+[eE][-+]\d+)`.
+
+    """
     qtot_pattern = re.compile('System has non-zero total charge: *(?P<qtot>[-+]?\d*\.\d+[eE][-+]\d+)')
     kwargs['stdout'] = False
-    rc, output, junk = gromacs.grompp(*args, **kwargs)
+    rc, output, error = grompp_warnonly(*args, **kwargs)
+    if rc != 0:
+        # error occured and we want to see the whole output for debugging
+        msg = "grompp_qtot() failed. See warning and screen output for clues."
+        logger.error(msg)
+        gmxoutput = "\n".join([x for x in [output, error] if not x is None])
+        print gmxoutput
+        raise GromacsError(rc, msg)
     qtot = 0
     for line in output.split('\n'):
         m = qtot_pattern.search(line)

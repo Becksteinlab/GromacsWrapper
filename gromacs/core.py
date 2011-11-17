@@ -21,7 +21,7 @@ this package.
 .. autoclass:: Command
    :members:  __call__, run, transform_args, Popen, help,
              command_name
-   
+
 .. autoclass:: PopenWithInput
    :members:
 """
@@ -58,7 +58,7 @@ class Command(object):
         In addition one can also use keyword arguments such as
 
           ``c="config.conf", o="output.dat", repeats=3, v=True``
-          
+
         These are automatically transformed appropriately according to
         simple rules:
 
@@ -74,7 +74,7 @@ class Command(object):
         UNIX ``find`` command) then provide options and values in the
         sequence of positional arguments.
         """
-          
+
         self.args = args
         self.kwargs = kwargs
 
@@ -123,13 +123,13 @@ class Command(object):
         """
 
         stderr = kwargs.pop('stderr', STDOUT)   # default: Merge with stdout
-        if stderr is False:                     # False: capture it 
+        if stderr is False:                     # False: capture it
             stderr = PIPE
         elif stderr is True:
             stderr = None                       # use stderr
 
         stdout = kwargs.pop('stdout', None)     # either set to PIPE for capturing output
-        if stdout is False:                     # ... or to False 
+        if stdout is False:                     # ... or to False
             stdout = PIPE
         elif stdout is True:
             stdout = None                       # for consistency, make True write to screen
@@ -149,8 +149,8 @@ class Command(object):
                 except TypeError:
                     # so maybe we are a file or something ... and hope for the best
                     pass
-                
-        cmd = self._commandline(*args, **kwargs)   # lots of magic happening here 
+
+        cmd = self._commandline(*args, **kwargs)   # lots of magic happening here
                                                    # (cannot move out of method because filtering of stdin etc)
         try:
             p = PopenWithInput(cmd, stdin=stdin, stderr=stderr, stdout=stdout,
@@ -183,13 +183,13 @@ class Command(object):
                 continue
             elif value is False:
                 raise ValueError('A False value is ambiguous for option %r' % option)
-            
+
             if option[:2] == '--':
                 options.append(option + '=' + str(value))    # GNU option
             else:
                 options.extend((option, str(value)))         # POSIX style
         return options + list(args)
-                            
+
     def help(self,long=False):
         """Print help; same as using ``?`` in ``ipython``. long=True also gives call signature."""
         print "\ncommand: %s\n\n" % self.command_name
@@ -197,18 +197,18 @@ class Command(object):
         if long:
             print "\ncall method: command():\n"
             print self.__call__.__doc__
-        
+
     def __call__(self,*args,**kwargs):
         """Run command with the given arguments::
 
            rc,stdout,stderr = command(*args, input=None, **kwargs)
-           
+
         All positional parameters *args* and all gromacs *kwargs* are passed on
         to the Gromacs command. input and output keywords allow communication
         with the process via the python subprocess module.
-        
+
         :Arguments:
-          *input* : string, sequence            
+          *input* : string, sequence
              to be fed to the process' standard input;
              elements of a sequence are concatenated with
              newlines, including a trailing one    [``None``]
@@ -222,7 +222,7 @@ class Command(object):
              ``None`` or ``True``
                     to see  output on screen
              ``False`` or ``PIPE``
-                     returns the output as a string in  the stdout parameter 
+                     returns the output as a string in  the stdout parameter
 
           *stderr*
              how to handle the stderr stream [``STDOUT``]
@@ -235,7 +235,7 @@ class Command(object):
                      keeps it on stderr (and presumably on screen)
 
         All other kwargs are passed on to the Gromacs tool.
-     
+
         :Returns:
 
            The shell return code rc of the command is always returned. Depending
@@ -267,7 +267,7 @@ class Command(object):
 
 class GromacsCommand(Command):
     """Base class for wrapping a g_* command.
-    
+
     Limitations: User must have sourced ``GMXRC`` so that the python script can
     inherit the environment and find the gromacs programs.
 
@@ -289,7 +289,7 @@ class GromacsCommand(Command):
     # -------------------------------------------------------
     # Program <program_name>, VERSION <version>
     # ... <message>
-    # -------------------------------------------------------    
+    # -------------------------------------------------------
 
     #: Available failure modes.
     failuremodes = ('raise', 'warn', None)
@@ -302,7 +302,7 @@ class GromacsCommand(Command):
         this generic documentation.
 
         As an example, a generic Gromacs command could use the following flags::
-     
+
           cmd = GromacsCommand('v', f=['md1.xtc','md2.xtc'], o='processed.xtc', t=200, ...)
 
         which would correspond to running the command in the shell as ::
@@ -334,7 +334,7 @@ class GromacsCommand(Command):
            with an underscore (``_``) and the underscore will be silently
            stripped. For instance, ``-or`` translates to the illegal keyword
            ``or`` so it must be underscore-quoted::
-               
+
               cmd(...., _or='mindistres.xvg')
 
         **Command execution**
@@ -352,8 +352,10 @@ class GromacsCommand(Command):
         **Non-Gromacs keyword arguments**
 
            The other keyword arguments (listed below) are not passed on to the
-           Gromacs tool but determine how the command class behaves. They are
-           only useful when instantiating a class. This is mostly of interest
+           Gromacs tool but determine how the command class behaves. *They are
+           only useful when instantiating a class*, i.e. they determine how
+           this tool behaves during all future invocations although it can be
+           changed by setting :attr:`failuremode`. This is mostly of interest
            to developers.
 
         :Keywords:
@@ -371,13 +373,33 @@ class GromacsCommand(Command):
            *doc* : string
               additional documentation []
         """
-
+        self.__failuremode = None
         self.failuremode = kwargs.pop('failure','raise')
         self.extra_doc = kwargs.pop('doc',None)
-        if not self.failuremode in self.failuremodes:
-            raise ValueError('failuremode must be one of\n%(failuremodes)r' % vars(self))
         self.gmxargs = self._combineargs(*args, **kwargs)
         self.__doc__ = self.gmxdoc
+
+    def failuremode():
+        doc = """mode determines how the GromacsCommand behaves during failure
+
+        It can be one of the following:
+
+              'raise'
+                   raises GromacsError if command fails
+              'warn'
+                   issue a :exc:`GromacsFailureWarning`
+              ``None``
+                   just continue silently
+
+        """
+        def fget(self):
+            return self.__failuremode
+        def fset(self, mode):
+            if not mode in self.failuremodes:
+                raise ValueError('failuremode must be one of %r' % (self.failuremodes,))
+            self.__failuremode = mode
+        return locals()
+    failuremode = property(**failuremode())
 
     def _combine_arglist(self, args, kwargs):
         """Combine the default values and the supplied values."""
@@ -398,7 +420,7 @@ class GromacsCommand(Command):
                 msg = "\n".join(\
                     [msg, "Gromacs command %(program_name)r fatal error message:" % m.groupdict()] +
                     formatted_message)
-            if self.failuremode == 'raise':                
+            if self.failuremode == 'raise':
                 raise GromacsError(rc, msg)
             elif self.failuremode == 'warn':
                 warnings.warn(msg + '\nError code: %r\n' % rc, category=GromacsFailureWarning)
@@ -407,13 +429,13 @@ class GromacsCommand(Command):
             else:
                 raise ValueError('unknown failure mode %r' % self.failuremode)
         return had_success
-            
+
     def _combineargs(self,*args,**kwargs):
         """Add switches as 'options' with value True to the options dict."""
         d = dict([(arg, True) for arg in args])   # switches are kwargs with value True
         d.update(kwargs)
         return d
-    
+
     def _build_arg_list(self,**kwargs):
         """Build list of arguments from the dict; keys must be valid  gromacs flags."""
         arglist = []
@@ -439,7 +461,7 @@ class GromacsCommand(Command):
                     arglist.extend([flag] + value) # option with value list
                 except TypeError:
                     arglist.extend([flag, value])  # option with single value
-        return map(str, arglist)  # all arguments MUST be strings 
+        return map(str, arglist)  # all arguments MUST be strings
 
     def _run_command(self,*args,**kwargs):
         """Execute the gromacs command; see the docs for __call__."""
@@ -457,7 +479,7 @@ class GromacsCommand(Command):
         return self._build_arg_list(**newargs)
 
     def _get_gmx_docs(self):
-        """Extract standard gromacs doc by running the program and chopping the header."""        
+        """Extract standard gromacs doc by running the program and chopping the header."""
         # Uses the class-wide arguments so that 'canned invocations' in cbook
         # are accurately reflected. Might be a problem when these invocations
         # supply wrong arguments... TODO: maybe check rc for that?
@@ -472,7 +494,7 @@ class GromacsCommand(Command):
         if m is None:
             return "(No Gromacs documentation available)"
         return m.group('DOCS')
-        
+
     def gmxdoc():
         doc = """Usage for the underlying Gromacs tool (cached)."""
         def fget(self):
@@ -515,7 +537,7 @@ class PopenWithInput(subprocess.Popen):
         :Keywords:
            *input*
                string that is piped into the command
-           
+
         """
         kwargs.setdefault('close_fds', True)   # fixes 'Too many open fds' with 2.6
         self.input = kwargs.pop('input',None)
