@@ -13,6 +13,52 @@ generated from it. The documentation of :class:`GromacsCommand`
 applies to all wrapped Gromacs commands should be read by anyone using
 this package.
 
+
+Input and Output
+----------------
+
+Each command wrapped by either :class:`GromacsCommand` or :class:`Command`
+takes three additional keyword arguments: *stdout*, *stderr*, and
+*input*. *stdout* and *stderr* determine how the command returns its own
+output.
+
+The *input* keyword is a string that is fed to the standard input of the
+command (actually, :attr:`subprocess.Popen.stdin`). Or, if it is not string-like
+then we assume it's actually a file-like object that we can read from, e.g. a
+:attr:`subprocess.Popen.stdout` or a :class:`File`.
+
+By setting the *stdout* and *stderr* keywords appropriately, one can have the
+output simply printed to the screen (use ``True``; this is the default,
+although see below for the use of the ``capture_output``
+:mod:`gromacs.environment` flag), capture in a python variable as a string for
+further processing (use ``False``), write to a file (use a :class:`File`
+instance) or as input for another command (e.g. use the
+:attr:`subprocess.Popen.stdin`).
+
+When writing setup- and analysis pipelines it can be rather cumbersome to have
+the gromacs output on the screen. For these cases GromacsWrapper allows you to
+change its behaviour globally. By setting the value of the
+:mod:`gromacs.environment` :class:`~gromacs.environment.Flag`
+``capture_output`` to ``True`` ::
+
+  import gromacs.environment
+  gromacs.environment.flags['capture_output'] = True
+
+all commands will capture their output (like *stderr* = ``False`` and *stdout*
+= ``False``). Explicitly setting these keywords overrides the global default.
+
+.. Warning::
+
+   One downside of ``capture_output = True`` is that it becomes much harder to
+   debug scripts unless the script is written in such a way to show the output
+   when the command fails. Therefore, it is advisable to only capture output on
+   well-tested scripts.
+
+
+
+Classes
+-------
+
 .. autoclass:: GromacsCommand
    :members: __call__, run, transform_args, Popen, help,
              check_failure, gmxdoc
@@ -39,6 +85,7 @@ logger = logging.getLogger('gromacs.core')
 
 
 from gromacs import GromacsError, GromacsFailureWarning
+import gromacs.environment
 
 class Command(object):
     """Wrap simple script or command."""
@@ -121,6 +168,9 @@ class Command(object):
         :TODO:
           Write example.
         """
+        if gromacs.environment.flags['capture_output']:
+            kwargs.setdefault('stderr', STDOUT)
+            kwargs.setdefault('stdout', PIPE)
 
         stderr = kwargs.pop('stderr', STDOUT)   # default: Merge with stdout
         if stderr is False:                     # False: capture it
