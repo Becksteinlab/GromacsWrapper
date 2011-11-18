@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.cbook – Gromacs Cook Book &mdash; GromacsWrapper v0.2.5-dev documentation</title>
+    <title>gromacs.cbook – Gromacs Cook Book &mdash; GromacsWrapper v0.3.0-dev documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.2.5-dev',
+        VERSION:     '0.3.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.2.5-dev documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper v0.3.0-dev documentation" href="../../index.html" />
     <link rel="up" title="Gromacs building blocks" href="../building_blocks.html" />
     <link rel="next" title="gromacs.setup – Setting up a Gromacs MD run" href="setup.html" />
     <link rel="prev" title="Gromacs building blocks" href="../building_blocks.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="../building_blocks.html" title="Gromacs building blocks"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.2.5-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" accesskey="U">Gromacs building blocks</a> &raquo;</li> 
       </ul>
@@ -678,12 +678,21 @@ grompping a tpr file. The <tt class="docutils literal"><span class="pre">grompp_
 </tbody>
 </table>
 <p>Some things to keep in mind:</p>
-<ul class="simple">
-<li>The stdout output of grompp is not shown. This can make debugging
-pretty hard.  Try running the normal <tt class="xref py py-func docutils literal"><span class="pre">gromacs.grompp()</span></tt> command and
-analyze the output if the debugging messages are not sufficient.</li>
-<li>Check that <tt class="docutils literal"><span class="pre">qtot</span></tt> is correct; because the function is based on pattern
-matching of the output it can break when the output format changes.</li>
+<ul>
+<li><p class="first">The stdout output of grompp is only shown when an error occurs. For
+debugging, look at the log file or screen output and try running the
+normal <tt class="xref py py-func docutils literal"><span class="pre">gromacs.grompp()</span></tt> command and analyze the output if the
+debugging messages are not sufficient.</p>
+</li>
+<li><p class="first">Check that <tt class="docutils literal"><span class="pre">qtot</span></tt> is correct. Because the function is based on pattern
+matching of the informative output of <strong class="program">grompp</strong> it can break when
+the output format changes. This version recognizes lines like</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="s">&#39;  System has non-zero total charge: -4.000001e+00&#39;</span>
+</pre></div>
+</div>
+<p>using the regular expression
+<tt class="regexp docutils literal"><span class="pre">System</span> <span class="pre">has</span> <span class="pre">non-zero</span> <span class="pre">total</span> <span class="pre">charge:</span> <span class="pre">*(?P&lt;qtot&gt;[-+]?d*.d+[eE][-+]d+)</span></tt>.</p>
+</li>
 </ul>
 </dd></dl>
 
@@ -921,12 +930,21 @@ all setup functions become methods in a nice class.</p>
 </tbody>
 </table>
 <p>Some things to keep in mind:</p>
-<ul class="simple">
-<li>The stdout output of grompp is not shown. This can make debugging
-pretty hard.  Try running the normal <tt class="xref py py-func docutils literal"><span class="pre">gromacs.grompp()</span></tt> command and
-analyze the output if the debugging messages are not sufficient.</li>
-<li>Check that <tt class="docutils literal"><span class="pre">qtot</span></tt> is correct; because the function is based on pattern
-matching of the output it can break when the output format changes.</li>
+<ul>
+<li><p class="first">The stdout output of grompp is only shown when an error occurs. For
+debugging, look at the log file or screen output and try running the
+normal <tt class="xref py py-func docutils literal"><span class="pre">gromacs.grompp()</span></tt> command and analyze the output if the
+debugging messages are not sufficient.</p>
+</li>
+<li><p class="first">Check that <tt class="docutils literal"><span class="pre">qtot</span></tt> is correct. Because the function is based on pattern
+matching of the informative output of <strong class="program">grompp</strong> it can break when
+the output format changes. This version recognizes lines like</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="s">&#39;  System has non-zero total charge: -4.000001e+00&#39;</span>
+</pre></div>
+</div>
+<p>using the regular expression
+<tt class="regexp docutils literal"><span class="pre">System</span> <span class="pre">has</span> <span class="pre">non-zero</span> <span class="pre">total</span> <span class="pre">charge:</span> <span class="pre">*(?P&lt;qtot&gt;[-+]?d*.d+[eE][-+]d+)</span></tt>.</p>
+</li>
 </ul>
 </dd></dl>
 
@@ -1399,14 +1417,14 @@ empty string or similar.</li>
         <li class="right" >
           <a href="../building_blocks.html" title="Gromacs building blocks"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.2.5-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" >Gromacs building blocks</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Sep 22, 2011.
+      Last updated on Nov 18, 2011.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>

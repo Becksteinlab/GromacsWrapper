@@ -140,7 +140,7 @@ jobs remotely (using ssh_).
                alias for :meth:`get_status`
 
 
-The actual config file cantents can be retrieved with
+The actual config file contents can be retrieved with
 :func:`get_manager_config`.
 
 

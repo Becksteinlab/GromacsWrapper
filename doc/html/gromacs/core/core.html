@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.core – Core functionality &mdash; GromacsWrapper v0.2.5-dev documentation</title>
+    <title>gromacs.core – Core functionality &mdash; GromacsWrapper v0.3.0-dev documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.2.5-dev',
+        VERSION:     '0.3.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.2.5-dev documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper v0.3.0-dev documentation" href="../../index.html" />
     <link rel="up" title="Gromacs core modules" href="../core.html" />
     <link rel="next" title="gromacs.config – Configuration for GromacsWrapper" href="config.html" />
     <link rel="prev" title="Gromacs core modules" href="../core.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="../core.html" title="Gromacs core modules"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.2.5-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" accesskey="U">Gromacs core modules</a> &raquo;</li> 
       </ul>
@@ -56,11 +56,74 @@
             
   <span class="target" id="module-gromacs.core"></span><div class="section" id="gromacs-core-core-functionality">
 <h1><a class="reference internal" href="#module-gromacs.core" title="gromacs.core"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.core</span></tt></a> &#8211; Core functionality<a class="headerlink" href="#gromacs-core-core-functionality" title="Permalink to this headline">¶</a></h1>
-<p>Here the basic command class <a class="reference internal" href="#gromacs.core.GromacsCommand" title="gromacs.core.GromacsCommand"><tt class="xref py py-class docutils literal"><span class="pre">GromacsCommand</span></tt></a> is defined. All
-Gromacs command classes in <a class="reference internal" href="tools.html#module-gromacs.tools" title="gromacs.tools"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.tools</span></tt></a> are automatically
-generated from it. The documentation of <a class="reference internal" href="#gromacs.core.GromacsCommand" title="gromacs.core.GromacsCommand"><tt class="xref py py-class docutils literal"><span class="pre">GromacsCommand</span></tt></a>
-applies to all wrapped Gromacs commands should be read by anyone using
-this package.</p>
+<p>Here the basic command class <a class="reference internal" href="#gromacs.core.GromacsCommand" title="gromacs.core.GromacsCommand"><tt class="xref py py-class docutils literal"><span class="pre">GromacsCommand</span></tt></a> is defined. All Gromacs
+command classes in <a class="reference internal" href="tools.html#module-gromacs.tools" title="gromacs.tools"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.tools</span></tt></a> are automatically generated from
+it. The documentation of <a class="reference internal" href="#gromacs.core.GromacsCommand" title="gromacs.core.GromacsCommand"><tt class="xref py py-class docutils literal"><span class="pre">GromacsCommand</span></tt></a> applies to all wrapped Gromacs
+commands and should be read by anyone using this package.</p>
+<div class="section" id="input-and-output">
+<h2>Input and Output<a class="headerlink" href="#input-and-output" title="Permalink to this headline">¶</a></h2>
+<p>Each command wrapped by either <a class="reference internal" href="#gromacs.core.GromacsCommand" title="gromacs.core.GromacsCommand"><tt class="xref py py-class docutils literal"><span class="pre">GromacsCommand</span></tt></a> or <a class="reference internal" href="#gromacs.core.Command" title="gromacs.core.Command"><tt class="xref py py-class docutils literal"><span class="pre">Command</span></tt></a>
+takes three additional keyword arguments: <em>stdout</em>, <em>stderr</em>, and
+<em>input</em>. <em>stdout</em> and <em>stderr</em> determine how the command returns its own
+output.</p>
+<p>The <em>input</em> keyword is a string that is fed to the standard input of the
+command (actually, <a class="reference external" href="http://docs.python.org/library/subprocess.html#subprocess.Popen.stdin" title="(in Python v2.7)"><tt class="xref py py-attr docutils literal"><span class="pre">subprocess.Popen.stdin</span></tt></a>). Or, if it is not string-like
+then we assume it&#8217;s actually a file-like object that we can read from, e.g. a
+<a class="reference external" href="http://docs.python.org/library/subprocess.html#subprocess.Popen.stdout" title="(in Python v2.7)"><tt class="xref py py-attr docutils literal"><span class="pre">subprocess.Popen.stdout</span></tt></a> or a <tt class="xref py py-class docutils literal"><span class="pre">File</span></tt>.</p>
+<p>By setting the <em>stdout</em> and <em>stderr</em> keywords appropriately, one can have the
+output simply printed to the screen (use <tt class="xref docutils literal"><span class="pre">True</span></tt>; this is the default,
+although see below for the use of the <tt class="docutils literal"><span class="pre">capture_output</span></tt>
+<a class="reference internal" href="environment.html#module-gromacs.environment" title="gromacs.environment"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.environment</span></tt></a> flag), capture in a python variable as a string for
+further processing (use <tt class="xref docutils literal"><span class="pre">False</span></tt>), write to a file (use a <tt class="xref py py-class docutils literal"><span class="pre">File</span></tt>
+instance) or as input for another command (e.g. use the
+<a class="reference external" href="http://docs.python.org/library/subprocess.html#subprocess.Popen.stdin" title="(in Python v2.7)"><tt class="xref py py-attr docutils literal"><span class="pre">subprocess.Popen.stdin</span></tt></a>).</p>
+<p>When writing setup- and analysis pipelines it can be rather cumbersome to have
+the gromacs output on the screen. For these cases GromacsWrapper allows you to
+change its behaviour globally. By setting the value of the
+<a class="reference internal" href="environment.html#module-gromacs.environment" title="gromacs.environment"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.environment</span></tt></a> <a class="reference internal" href="environment.html#gromacs.environment.Flag" title="gromacs.environment.Flag"><tt class="xref py py-class docutils literal"><span class="pre">Flag</span></tt></a>
+<tt class="docutils literal"><span class="pre">capture_output</span></tt> to <tt class="xref docutils literal"><span class="pre">True</span></tt> (in the GromacsWrapper
+<a class="reference internal" href="environment.html#gromacs.environment.flags" title="gromacs.environment.flags"><tt class="xref py py-data docutils literal"><span class="pre">gromacs.environment.flags</span></tt></a> registry)</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">gromacs.environment</span>
+<span class="n">gromacs</span><span class="o">.</span><span class="n">environment</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;capture_output&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+</pre></div>
+</div>
+<p>all commands will capture their output (like <em>stderr</em> = <tt class="xref docutils literal"><span class="pre">False</span></tt> and <em>stdout</em>
+= <tt class="xref docutils literal"><span class="pre">False</span></tt>). Explicitly setting these keywords overrides the global
+default. The default value for <tt class="docutils literal"><span class="pre">flags['capture_output']</span></tt> is <tt class="xref docutils literal"><span class="pre">False</span></tt>,
+i.e. output is directed through STDOUT and STDERR.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">One downside of <tt class="docutils literal"><span class="pre">flags['capture_output']</span> <span class="pre">=</span> <span class="pre">True</span></tt> is that it becomes much
+harder to debug scripts unless the script is written in such a way to show
+the output when the command fails. Therefore, it is advisable to only
+capture output on well-tested scripts.</p>
+</div>
+<p>A third value of <tt class="docutils literal"><span class="pre">capture_output</span></tt> is the value <tt class="docutils literal"><span class="pre">&quot;file&quot;</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">gromacs</span><span class="o">.</span><span class="n">environment</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;capture_output&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;file&quot;</span>
+</pre></div>
+</div>
+<p>This writes the captured output to a file. The file name is specified in
+<tt class="docutils literal"><span class="pre">flags['capture_output_filename'</span></tt> and defaults to
+<em>&#8220;gromacs_captured_output.txt&#8221;</em>. This file is <em>over-written</em> for each
+command. In this way one can investigate the output from the last command
+(presumably because it failed). STDOUT and STDERR are captured into this file
+by default. STDERR is printed first and then STDOUT, which does not necessarily
+reflect the order of output one would see on the screen. If your code captures
+STDOUT for further processing then an uncaptured STDERR is written to the
+capture file.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">There are some commands for which capturing output
+(<tt class="docutils literal"><span class="pre">flags['capture_output']</span> <span class="pre">=</span> <span class="pre">True</span></tt>) might be problematic. If the command
+produces a large or inifinite amount of data then a memory error will occur
+because Python nevertheless stores the output internally first. Thus one
+should avoid capturing progress output from
+e.g. <a class="reference internal" href="tools.html#gromacs.tools.Mdrun" title="gromacs.tools.Mdrun"><tt class="xref py py-class docutils literal"><span class="pre">Mdrun</span></tt></a> unless the output has been throttled
+appropriately.</p>
+</div>
+</div>
+<div class="section" id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="gromacs.core.GromacsCommand">
 <em class="property">class </em><tt class="descclassname">gromacs.core.</tt><tt class="descname">GromacsCommand</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.core.GromacsCommand" title="Permalink to this definition">¶</a></dt>
@@ -120,8 +183,10 @@ supplying Gromacs flags apply as described above.</p>
 <p><strong>Non-Gromacs keyword arguments</strong></p>
 <blockquote>
 <div>The other keyword arguments (listed below) are not passed on to the
-Gromacs tool but determine how the command class behaves. They are
-only useful when instantiating a class. This is mostly of interest
+Gromacs tool but determine how the command class behaves. <em>They are
+only useful when instantiating a class</em>, i.e. they determine how
+this tool behaves during all future invocations although it can be
+changed by setting <a class="reference internal" href="#gromacs.core.GromacsCommand.failuremode" title="gromacs.core.GromacsCommand.failuremode"><tt class="xref py py-attr docutils literal"><span class="pre">failuremode</span></tt></a>. This is mostly of interest
 to developers.</div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -173,6 +238,23 @@ one command to an input from another.</p>
 <dt id="gromacs.core.GromacsCommand.commandline">
 <tt class="descname">commandline</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.core.GromacsCommand.commandline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the commandline that run() uses (without pipes).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.core.GromacsCommand.failuremode">
+<tt class="descname">failuremode</tt><a class="headerlink" href="#gromacs.core.GromacsCommand.failuremode" title="Permalink to this definition">¶</a></dt>
+<dd><p>mode determines how the GromacsCommand behaves during failure</p>
+<p>It can be one of the following:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>&#8216;raise&#8217;</dt>
+<dd>raises GromacsError if command fails</dd>
+<dt>&#8216;warn&#8217;</dt>
+<dd>issue a <tt class="xref py py-exc docutils literal"><span class="pre">GromacsFailureWarning</span></tt></dd>
+<dt><tt class="xref docutils literal"><span class="pre">None</span></tt></dt>
+<dd>just continue silently</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="attribute">
@@ -247,7 +329,7 @@ with the process via the python subprocess module.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
-<dt><em>input</em> <span class="classifier-delimiter">:</span> <span class="classifier">string, sequence            </span></dt>
+<dt><em>input</em> <span class="classifier-delimiter">:</span> <span class="classifier">string, sequence</span></dt>
 <dd><p class="first last">to be fed to the process&#8217; standard input;
 elements of a sequence are concatenated with
 newlines, including a trailing one    [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
@@ -270,7 +352,7 @@ newlines, including a trailing one    [<tt class="xref docutils literal"><span c
 </dl>
 </dd>
 <dt><em>stderr</em></dt>
-<dd><p class="first">how to handle the stderr stream [<tt class="docutils literal"><span class="pre">STDOUT</span></tt>]</p>
+<dd><p class="first">how to handle the stderr stream [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
 <dl class="last docutils">
 <dt><tt class="docutils literal"><span class="pre">STDOUT</span></tt></dt>
 <dd><p class="first last">merges standard error with the standard out stream</p>
@@ -288,6 +370,9 @@ newlines, including a trailing one    [<tt class="xref docutils literal"><span c
 </tr>
 </tbody>
 </table>
+<p>Depending on the value of the GromacsWrapper flag
+<tt class="xref py py-data docutils literal"><span class="pre">gromacs.environment.flags```['capture_output']`</span></tt> the above
+default behaviour can be different.</p>
 <p>All other kwargs are passed on to the Gromacs tool.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -298,8 +383,7 @@ on the value of output, various strings are filled with output from the
 command.</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Notes :</th><td class="field-body"><p class="first">By default, the process stdout and stderr are merged.</p>
-<p>In order to chain different commands via pipes one must use the special
+<tr class="field"><th class="field-name">Notes :</th><td class="field-body"><p class="first">In order to chain different commands via pipes one must use the special
 <a class="reference internal" href="#gromacs.core.PopenWithInput" title="gromacs.core.PopenWithInput"><tt class="xref py py-class docutils literal"><span class="pre">PopenWithInput</span></tt></a> object (see <a class="reference internal" href="#gromacs.core.GromacsCommand.Popen" title="gromacs.core.GromacsCommand.Popen"><tt class="xref py py-meth docutils literal"><span class="pre">GromacsCommand.Popen()</span></tt></a> method) instead of the simple
 call described here and first construct the pipeline explicitly and then
 call the <a class="reference internal" href="#gromacs.core.PopenWithInput.communicate" title="gromacs.core.PopenWithInput.communicate"><tt class="xref py py-meth docutils literal"><span class="pre">PopenWithInput.communicate()</span></tt></a> method.</p>
@@ -407,6 +491,7 @@ different scripts.</p>
 </dd></dl>
 
 </div>
+</div>
 
 
           </div>
@@ -414,6 +499,15 @@ different scripts.</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">gromacs.core</span></tt> &#8211; Core functionality</a><ul>
+<li><a class="reference internal" href="#input-and-output">Input and Output</a></li>
+<li><a class="reference internal" href="#classes">Classes</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="../core.html"
                         title="previous chapter">Gromacs core modules</a></p>
@@ -457,14 +551,14 @@ different scripts.</p>
         <li class="right" >
           <a href="../core.html" title="Gromacs core modules"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.2.5-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" >Gromacs core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Sep 22, 2011.
+      Last updated on Nov 18, 2011.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>

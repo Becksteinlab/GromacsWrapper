@@ -12,6 +12,7 @@ mostly relevant to anyone who wants to extend the package.
 
    core/core
    core/config
+   core/environment
    core/formats
    core/utilities   
    core/tools

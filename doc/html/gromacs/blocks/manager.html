@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Managing jobs remotely &mdash; GromacsWrapper v0.2.5-dev documentation</title>
+    <title>Managing jobs remotely &mdash; GromacsWrapper v0.3.0-dev documentation</title>
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.2.5-dev',
+        VERSION:     '0.3.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.2.5-dev documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper v0.3.0-dev documentation" href="../../index.html" />
     <link rel="up" title="Gromacs building blocks" href="../building_blocks.html" />
     <link rel="next" title="gromacs.run – Running simulations" href="simulation.html" />
     <link rel="prev" title="gromacs.qsub – utilities for batch submission systems" href="qsub.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="qsub.html" title="gromacs.qsub – utilities for batch submission systems"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.2.5-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" accesskey="U">Gromacs building blocks</a> &raquo;</li> 
       </ul>
@@ -67,10 +67,8 @@ uses <strong class="program">ssh</strong> to communicate with the remote system 
 is necessary to set up <strong class="program">ssh</strong> with public key authentication
 to make this work smoothly.</p>
 <ul class="simple">
-<li>The manager can move files between the local file system and the</li>
-</ul>
-<p>remote scratch directories back and forth (using <strong class="program">scp</strong>).</p>
-<ul class="simple">
+<li>The manager can move files between the local file system and the
+remote scratch directories back and forth (using <strong class="program">scp</strong>).</li>
 <li>It can remotely launch a job (by running <strong class="program">qsub</strong>).</li>
 <li>It can also check on the progress by inspecting (in a primitive
 fashion) the log file of <strong class="program">mdrun</strong> on the remote system.</li>
@@ -80,9 +78,8 @@ fashion) the log file of <strong class="program">mdrun</strong> on the remote sy
 <li><em>topdir</em> is stripped from the local working directory to give WDIR</li>
 <li><em>scratchdir</em>/WDIR is the directory on the remote system</li>
 </ol>
-<p><tt class="xref py py-func docutils literal"><span class="pre">get_manager()</span></tt> creates a <a class="reference internal" href="#gromacs.manager.Manager" title="gromacs.manager.Manager"><tt class="xref py py-class docutils literal"><span class="pre">Manager</span></tt></a> from a configuration file.</p>
 <div class="section" id="configuration-file">
-<h2>Configuration file<a class="headerlink" href="#configuration-file" title="Permalink to this headline">¶</a></h2>
+<span id="manager-config-file"></span><h2>Configuration file<a class="headerlink" href="#configuration-file" title="Permalink to this headline">¶</a></h2>
 <p>See <a class="reference internal" href="#gromacs.manager.Manager" title="gromacs.manager.Manager"><tt class="xref py py-class docutils literal"><span class="pre">Manager</span></tt></a> for how the values in the configuration file are
 used.</p>
 <p>Example:</p>
@@ -153,26 +150,23 @@ bug in some versions of PBS, which we can work-around in
 </div>
 <div class="section" id="queuing-system-manager">
 <h2>Queuing system Manager<a class="headerlink" href="#queuing-system-manager" title="Permalink to this headline">¶</a></h2>
+<p>The configuration files are stored in the <cite>~.gromacswrapper/manager</cite>
+directory. A file named &#8220;foo.cfg&#8221; corresponds to the manager named
+&#8220;foo&#8221;.</p>
 <p>The <a class="reference internal" href="#gromacs.manager.Manager" title="gromacs.manager.Manager"><tt class="xref py py-class docutils literal"><span class="pre">Manager</span></tt></a> class must be customized for each system such as
-a cluster or a super computer. It then allows submission and control of
+a cluster or a super computer through a cfg file (see
+<a class="reference internal" href="#manager-config-file"><em>Configuration file</em></a>). It then allows submission and control of
 jobs remotely (using <a class="reference external" href="http://www.openssh.com/">ssh</a>).</p>
 <dl class="class">
 <dt id="gromacs.manager.Manager">
 <em class="property">class </em><tt class="descclassname">gromacs.manager.</tt><tt class="descname">Manager</tt><big>(</big><em>name</em>, <em>dirname=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.manager.Manager" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class to launch simulations remotely on computers with queuing systems.</p>
 <p>Basically, ssh into machine and run job.</p>
-<p>Derive a class from <a class="reference internal" href="#gromacs.manager.Manager" title="gromacs.manager.Manager"><tt class="xref py py-class docutils literal"><span class="pre">Manager</span></tt></a> and override the attributes</p>
-<blockquote>
-<div><ul class="simple">
-<li><tt class="xref py py-attr docutils literal"><span class="pre">Manager._hostname</span></tt> (hostname of the machine)</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">Manager._scratchdir</span></tt> (all files and directories will be created under
-this scratch directory; it must be a path on the remote host)</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">Manager._qscript</span></tt> (the default queuing system script template)</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">Manager._walltime</span></tt> (if there is a limit to the run time
-of a job; in hours)</li>
-</ul>
-</div></blockquote>
-<p>and implement a specialized <a class="reference internal" href="#gromacs.manager.Manager.qsub" title="gromacs.manager.Manager.qsub"><tt class="xref py py-meth docutils literal"><span class="pre">Manager.qsub()</span></tt></a> method if needed.</p>
+<p>The manager is configured through a cfg file &#8220;<em>name</em>.cfg&#8221;, whose
+format is described in <a class="reference internal" href="#manager-config-file"><em>Configuration file</em></a>.</p>
+<p>If a special job submission procedure is required then a class
+must be dreived that implements a specialized <a class="reference internal" href="#gromacs.manager.Manager.qsub" title="gromacs.manager.Manager.qsub"><tt class="xref py py-meth docutils literal"><span class="pre">Manager.qsub()</span></tt></a>
+method.</p>
 <p><a class="reference external" href="http://www.openssh.com/">ssh</a> must be set up (via <a class="reference external" href="http://linux.die.net/man/5/ssh_config">~/.ssh/config</a>) to allow access via a
 commandline such as</p>
 <div class="highlight-python"><pre>ssh &lt;hostname&gt; &lt;command&gt; ...</pre>
@@ -503,6 +497,147 @@ run but that is just a guess);</li>
 
 </dd></dl>
 
+<p>The actual config file contents can be retrieved with
+<a class="reference internal" href="#gromacs.manager.get_manager_config" title="gromacs.manager.get_manager_config"><tt class="xref py py-func docutils literal"><span class="pre">get_manager_config()</span></tt></a>.</p>
+<dl class="function">
+<dt id="gromacs.manager.get_manager_config">
+<tt class="descclassname">gromacs.manager.</tt><tt class="descname">get_manager_config</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#gromacs.manager.get_manager_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load manager configuration file from <em>filename</em>.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="helper-classes-and-functions">
+<h2>Helper classes and functions<a class="headerlink" href="#helper-classes-and-functions" title="Permalink to this headline">¶</a></h2>
+<p>The following classes and functions are mainly documented for developers.</p>
+<dl class="class">
+<dt id="gromacs.manager.ManagerConfigParser">
+<em class="property">class </em><tt class="descclassname">gromacs.manager.</tt><tt class="descname">ManagerConfigParser</tt><big>(</big><em>defaults=None</em>, <em>dict_type=&lt;type 'dict'&gt;</em><big>)</big><a class="headerlink" href="#gromacs.manager.ManagerConfigParser" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="gromacs.manager.ManagerConfigParser.add_section">
+<tt class="descname">add_section</tt><big>(</big><em>section</em><big>)</big><a class="headerlink" href="#gromacs.manager.ManagerConfigParser.add_section" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new section in the configuration.</p>
+<p>Raise DuplicateSectionError if a section by the specified name
+already exists. Raise ValueError if name is DEFAULT or any of it&#8217;s
+case-insensitive variants.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.manager.ManagerConfigParser.get">
+<tt class="descname">get</tt><big>(</big><em>section</em>, <em>option</em>, <em>raw=False</em>, <em>vars=None</em><big>)</big><a class="headerlink" href="#gromacs.manager.ManagerConfigParser.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get an option value for a given section.</p>
+<p>If <a href="#id1"><span class="problematic" id="id2">`</span></a>vars&#8217; is provided, it must be a dictionary. The option is looked up
+in <a href="#id3"><span class="problematic" id="id4">`</span></a>vars&#8217; (if provided), <a href="#id5"><span class="problematic" id="id6">`</span></a>section&#8217;, and in <a href="#id7"><span class="problematic" id="id8">`</span></a>defaults&#8217; in that order.</p>
+<p>All % interpolations are expanded in the return values, unless the
+optional argument <a href="#id9"><span class="problematic" id="id10">`</span></a>raw&#8217; is true. Values for interpolation keys are
+looked up in the same manner as the option.</p>
+<p>The section DEFAULT is special.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.manager.ManagerConfigParser.getfloat">
+<tt class="descname">getfloat</tt><big>(</big><em>section</em>, <em>option</em><big>)</big><a class="headerlink" href="#gromacs.manager.ManagerConfigParser.getfloat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return as <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">float()</span></tt></a> or <tt class="xref docutils literal"><span class="pre">None</span></tt>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.manager.ManagerConfigParser.getpath">
+<tt class="descname">getpath</tt><big>(</big><em>section</em>, <em>option</em><big>)</big><a class="headerlink" href="#gromacs.manager.ManagerConfigParser.getpath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return option as an expanded path.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.manager.ManagerConfigParser.has_option">
+<tt class="descname">has_option</tt><big>(</big><em>section</em>, <em>option</em><big>)</big><a class="headerlink" href="#gromacs.manager.ManagerConfigParser.has_option" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check for the existence of a given option in a given section.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.manager.ManagerConfigParser.has_section">
+<tt class="descname">has_section</tt><big>(</big><em>section</em><big>)</big><a class="headerlink" href="#gromacs.manager.ManagerConfigParser.has_section" title="Permalink to this definition">¶</a></dt>
+<dd><p>Indicate whether the named section is present in the configuration.</p>
+<p>The DEFAULT section is not acknowledged.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.manager.ManagerConfigParser.items">
+<tt class="descname">items</tt><big>(</big><em>section</em>, <em>raw=False</em>, <em>vars=None</em><big>)</big><a class="headerlink" href="#gromacs.manager.ManagerConfigParser.items" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of tuples with (name, value) for each option
+in the section.</p>
+<p>All % interpolations are expanded in the return values, based on the
+defaults passed into the constructor, unless the optional argument
+<a href="#id11"><span class="problematic" id="id12">`</span></a>raw&#8217; is true.  Additional substitutions may be provided using the
+<a href="#id13"><span class="problematic" id="id14">`</span></a>vars&#8217; argument, which must be a dictionary whose contents overrides
+any pre-existing defaults.</p>
+<p>The section DEFAULT is special.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.manager.ManagerConfigParser.options">
+<tt class="descname">options</tt><big>(</big><em>section</em><big>)</big><a class="headerlink" href="#gromacs.manager.ManagerConfigParser.options" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of option names for the given section name.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.manager.ManagerConfigParser.read">
+<tt class="descname">read</tt><big>(</big><em>filenames</em><big>)</big><a class="headerlink" href="#gromacs.manager.ManagerConfigParser.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read and parse a filename or a list of filenames.</p>
+<p>Files that cannot be opened are silently ignored; this is
+designed so that you can specify a list of potential
+configuration file locations (e.g. current directory, user&#8217;s
+home directory, systemwide directory), and all existing
+configuration files in the list will be read.  A single
+filename may also be given.</p>
+<p>Return list of successfully read files.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.manager.ManagerConfigParser.readfp">
+<tt class="descname">readfp</tt><big>(</big><em>fp</em>, <em>filename=None</em><big>)</big><a class="headerlink" href="#gromacs.manager.ManagerConfigParser.readfp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Like read() but the argument must be a file-like object.</p>
+<p>The <a href="#id15"><span class="problematic" id="id16">`</span></a>fp&#8217; argument must have a <a href="#id17"><span class="problematic" id="id18">`</span></a>readline&#8217; method.  Optional
+second argument is the <a href="#id19"><span class="problematic" id="id20">`</span></a>filename&#8217;, which if not given, is
+taken from fp.name.  If fp has no <a href="#id21"><span class="problematic" id="id22">`</span></a>name&#8217; attribute, <a href="#id23"><span class="problematic" id="id24">`</span></a>&lt;???&gt;&#8217; is
+used.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.manager.ManagerConfigParser.remove_option">
+<tt class="descname">remove_option</tt><big>(</big><em>section</em>, <em>option</em><big>)</big><a class="headerlink" href="#gromacs.manager.ManagerConfigParser.remove_option" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove an option.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.manager.ManagerConfigParser.remove_section">
+<tt class="descname">remove_section</tt><big>(</big><em>section</em><big>)</big><a class="headerlink" href="#gromacs.manager.ManagerConfigParser.remove_section" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a file section.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.manager.ManagerConfigParser.sections">
+<tt class="descname">sections</tt><big>(</big><big>)</big><a class="headerlink" href="#gromacs.manager.ManagerConfigParser.sections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of section names, excluding [DEFAULT]</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.manager.ManagerConfigParser.set">
+<tt class="descname">set</tt><big>(</big><em>section</em>, <em>option</em>, <em>value</em><big>)</big><a class="headerlink" href="#gromacs.manager.ManagerConfigParser.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set an option.  Extend ConfigParser.set: check for string values.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.manager.ManagerConfigParser.write">
+<tt class="descname">write</tt><big>(</big><em>fp</em><big>)</big><a class="headerlink" href="#gromacs.manager.ManagerConfigParser.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write an .ini-format representation of the configuration state.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gromacs.manager.Job">
+<em class="property">class </em><tt class="descclassname">gromacs.manager.</tt><tt class="descname">Job</tt><a class="headerlink" href="#gromacs.manager.Job" title="Permalink to this definition">¶</a></dt>
+<dd><p>Properties of a job.</p>
+</dd></dl>
+
 </div>
 </div>
 
@@ -523,6 +658,7 @@ run but that is just a guess);</li>
 </ul>
 </li>
 <li><a class="reference internal" href="#queuing-system-manager">Queuing system Manager</a></li>
+<li><a class="reference internal" href="#helper-classes-and-functions">Helper classes and functions</a></li>
 </ul>
 </li>
 </ul>
@@ -570,14 +706,14 @@ run but that is just a guess);</li>
         <li class="right" >
           <a href="qsub.html" title="gromacs.qsub – utilities for batch submission systems"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.2.5-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" >Gromacs building blocks</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Sep 22, 2011.
+      Last updated on Nov 18, 2011.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
