@@ -1,3 +1,8 @@
+# GromacsWrapper
+# Copyright (c) 2009-2011 Oliver Beckstein <orbeckst@gmail.com>
+# Released under the GNU Public License 3 (or higher, your choice)
+# See the file COPYING for details.
+
 """
 Managing jobs remotely
 ======================
@@ -12,7 +17,7 @@ is necessary to set up :program:`ssh` with public key authentication
 to make this work smoothly.
 
 * The manager can move files between the local file system and the
-remote scratch directories back and forth (using :program:`scp`).
+  remote scratch directories back and forth (using :program:`scp`).
 
 * It can remotely launch a job (by running :program:`qsub`).
 
@@ -25,8 +30,7 @@ The remote directory name is constructed in the following way:
 2. *scratchdir*/WDIR is the directory on the remote system
 
 
-:func:`get_manager` creates a :class:`Manager` from a configuration file.
-
+.. _manager-config-file:
 
 Configuration file
 ------------------
@@ -111,22 +115,22 @@ can be omitted or set to ``None``.
   :meth:`Manager.qsub`
 
 
-
 Queuing system Manager
 ----------------------
 
+The configuration files are stored in the `~.gromacswrapper/manager`
+directory. A file named "foo.cfg" corresponds to the manager named
+"foo".
+
 The :class:`Manager` class must be customized for each system such as
-a cluster or a super computer. It then allows submission and control of
+a cluster or a super computer through a cfg file (see
+:ref:`manager-config-file`). It then allows submission and control of
 jobs remotely (using ssh_).
 
 .. autoclass:: Manager
    :members:
    :exclude-members: job_done, qstat
 
-   .. autoattribute:: _hostname
-   .. autoattribute:: _scratchdir
-   .. autoattribute:: _qscript
-   .. autoattribute:: _walltime
    .. method:: job_done
 
                alias for :meth:`get_status`
@@ -134,6 +138,27 @@ jobs remotely (using ssh_).
    .. method:: qstat
 
                alias for :meth:`get_status`
+
+
+The actual config file cantents can be retrieved with
+:func:`get_manager_config`.
+
+
+.. autofunction:: get_manager_config
+
+
+Helper classes and functions
+----------------------------
+
+The following classes and functions are mainly documented for developers.
+
+.. autofunctions:: find_manager_config
+
+.. autoclass:: ManagerConfigParser
+   :members:
+   :inherited-members:
+
+.. autoclass:: Job
 
 
 .. _ssh: http://www.openssh.com/
@@ -205,16 +230,12 @@ class Manager(object):
 
     Basically, ssh into machine and run job.
 
-    Derive a class from :class:`Manager` and override the attributes
+    The manager is configured through a cfg file "*name*.cfg", whose
+    format is described in :ref:`manager-config-file`.
 
-     - :attr:`Manager._hostname` (hostname of the machine)
-     - :attr:`Manager._scratchdir` (all files and directories will be created under
-       this scratch directory; it must be a path on the remote host)
-     - :attr:`Manager._qscript` (the default queuing system script template)
-     - :attr:`Manager._walltime` (if there is a limit to the run time
-       of a job; in hours)
-
-    and implement a specialized :meth:`Manager.qsub` method if needed.
+    If a special job submission procedure is required then a class
+    must be dreived that implements a specialized :meth:`Manager.qsub`
+    method.
 
     ssh_ must be set up (via `~/.ssh/config`_) to allow access via a
     commandline such as ::
@@ -648,7 +669,7 @@ class Manager(object):
 
         return dirname
 
-
+# :func:`get_manager` creates a :class:`Manager` from a configuration file.
 
 # def get_manager(name):
 #     """Factory function that creates a new Manager class, based on a config file.
