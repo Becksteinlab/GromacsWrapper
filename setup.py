@@ -54,7 +54,6 @@ setup(name="GromacsWrapper",
                              'RecSQL>=0.7',
                              ],
                 'numkit': ['scipy'],
-                'edPDB': ['Bio'],         # deprecated, to be removed for 0.3 release
                 },
       zip_safe = True,
 )
