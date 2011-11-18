@@ -1,5 +1,5 @@
-# GromacsWrapper config.py
-# Copyright (c) 2009-2011 Oliver Beckstein <orbeckst@gmail.com>
+# GromacsWrapper environment.py
+# Copyright (c) 2011 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
 
@@ -58,7 +58,7 @@ class Flags(dict):
     instance as an argument.
     """
     def __init__(self,*args):
-        """For DEVELOPERS: Initialize Flags registry with a *list* of :class:`Flag` instances."""
+        """For **developers**: Initialize Flags registry with a *list* of :class:`Flag` instances."""
         super(Flags,self).__init__([(flag.name,flag) for flag in args])
     def get_flag(self,name):
         return super(Flags,self).__getitem__(name)
@@ -66,10 +66,10 @@ class Flags(dict):
         """Shows doc strings for all flags."""
         return "\n\n".join([flag.__doc__ for flag in self._itervalues()])
     def register(self,flag):
-        """Register a new Flag instance with the Flags registry."""
+        """Register a new :class:`Flag` instance with the Flags registry."""
         super(Flags,self).__setitem__(flag.name,flag)
     def update(self,*flags):
-        """Update Flags registry with a list of Flag instances."""
+        """Update Flags registry with a list of :class:`Flag` instances."""
         super(Flags,self).update([(flag.name,flag) for flag in flags])
     def setdefault(self,k,d=None):
         raise NotImplementedError
@@ -168,16 +168,19 @@ _flags = [
           False,
           {True: True,
            False: False,
+           'file': 'file',
            },
           """
             Select if Gromacs command output is *always* captured.
 
-            >>> flags['%(name)s'] = value
+            >>> flags['%(name)s'] = %(value)r
 
             By default a :class:`~gromacs.core.GromacsCommand` will
-            redirect STDOUT and STDERR output from the command itself
-            to the screen. When running the command, this can be
-            changed with the keywords *stdout* and *stderr*.
+            direct STDOUT and STDERR output from the command itself to
+            the screen (through /dev/stdout and /dev/stderr). When
+            running the command, this can be changed with the keywords
+            *stdout* and *stderr* as described in :mod:`gromacs.core`
+            and :class:`~gromacs.core.Command`.
 
             If this flag is set to ``True`` then by default STDOUT and
             STDERR are captured as if one had set ::
@@ -186,8 +189,29 @@ _flags = [
 
             Explicitly setting *stdout* and/or *stderr* overrides the
             behaviour described above.
+
+            If set to the special keyword ``"file"` then the command
+            writes to the file whose name is given by
+            ``flags['capture_output_filename']``. This file is
+            *over-written* for each command. In this way one can
+            investigate the output from the last command (presumably
+            because it failed). STDOUT and STDERR are captured into
+            this file by default. STDERR is printed first and then
+            STDOUT, which does not necessarily reflect the order of
+            output one would see on the screen.
+
+            The default is %(default)r.
           """
           ),
+    _Flag('capture_output_filename',
+          'gromacs_captured_output.txt',
+          doc="""
+            Name of the file that captures output if ``flags['capture_output'] = "file"
+
+            >>> flags['%(name)s'] = %(value)r
+
+            This is an *experimental* feature. The default is %(default)r.
+          """),
     ]
 
 #: Global flag registry for :mod:`gromacs.environment`.

@@ -7,11 +7,10 @@
 :mod:`gromacs.core` -- Core functionality
 =========================================
 
-Here the basic command class :class:`GromacsCommand` is defined. All
-Gromacs command classes in :mod:`gromacs.tools` are automatically
-generated from it. The documentation of :class:`GromacsCommand`
-applies to all wrapped Gromacs commands should be read by anyone using
-this package.
+Here the basic command class :class:`GromacsCommand` is defined. All Gromacs
+command classes in :mod:`gromacs.tools` are automatically generated from
+it. The documentation of :class:`GromacsCommand` applies to all wrapped Gromacs
+commands and should be read by anyone using this package.
 
 
 Input and Output
@@ -39,21 +38,47 @@ When writing setup- and analysis pipelines it can be rather cumbersome to have
 the gromacs output on the screen. For these cases GromacsWrapper allows you to
 change its behaviour globally. By setting the value of the
 :mod:`gromacs.environment` :class:`~gromacs.environment.Flag`
-``capture_output`` to ``True`` ::
+``capture_output`` to ``True`` (in the GromacsWrapper
+:data:`gromacs.environment.flags` registry) ::
 
   import gromacs.environment
   gromacs.environment.flags['capture_output'] = True
 
 all commands will capture their output (like *stderr* = ``False`` and *stdout*
-= ``False``). Explicitly setting these keywords overrides the global default.
+= ``False``). Explicitly setting these keywords overrides the global
+default. The default value for ``flags['capture_output']`` is ``False``,
+i.e. output is directed through STDOUT and STDERR.
 
 .. Warning::
 
-   One downside of ``capture_output = True`` is that it becomes much harder to
-   debug scripts unless the script is written in such a way to show the output
-   when the command fails. Therefore, it is advisable to only capture output on
-   well-tested scripts.
+   One downside of ``flags['capture_output'] = True`` is that it becomes much
+   harder to debug scripts unless the script is written in such a way to show
+   the output when the command fails. Therefore, it is advisable to only
+   capture output on well-tested scripts.
 
+A third value of ``capture_output`` is the value ``"file"``::
+
+    gromacs.environment.flags['capture_output'] = "file"
+
+This writes the captured output to a file. The file name is specified in
+``flags['capture_output_filename'`` and defaults to
+*"gromacs_captured_output.txt"*. This file is *over-written* for each
+command. In this way one can investigate the output from the last command
+(presumably because it failed). STDOUT and STDERR are captured into this file
+by default. STDERR is printed first and then STDOUT, which does not necessarily
+reflect the order of output one would see on the screen. If your code captures
+STDOUT for further processing then an uncaptured STDERR is written to the
+capture file.
+
+.. Note::
+
+   There are some commands for which capturing output
+   (``flags['capture_output'] = True``) might be problematic. If the command
+   produces a large or inifinite amount of data then a memory error will occur
+   because Python nevertheless stores the output internally first. Thus one
+   should avoid capturing progress output from
+   e.g. :class:`~gromacs.tools.Mdrun` unless the output has been throttled
+   appropriately.
 
 
 Classes
@@ -128,7 +153,8 @@ class Command(object):
     def run(self,*args,**kwargs):
         """Run the command; args/kwargs are added or replace the ones given to the constructor."""
         _args, _kwargs = self._combine_arglist(args, kwargs)
-        return self._run_command(*_args, **_kwargs)
+        results, p = self._run_command(*_args, **_kwargs)
+        return results
 
     def _combine_arglist(self, args, kwargs):
         """Combine the default values and the supplied values."""
@@ -138,13 +164,49 @@ class Command(object):
         return _args, _kwargs
 
     def _run_command(self,*args,**kwargs):
-        """Execute the command; see the docs for __call__."""
-        use_input = kwargs.pop('use_input', True)     # hack to run command WITHOUT input (-h...)
-        p = self.Popen(*args, **kwargs)
-        out, err = p.communicate(use_input=use_input) # special Popen knows input!
+        """Execute the command; see the docs for __call__.
+
+        :Returns: a tuple of the *results* tuple ``(rc, stdout, stderr)`` and
+                  the :class:`Popen` instance.
+        """
+        # hack to run command WITHOUT input (-h...) even though user defined
+        # input (should have named it "ignore_input" with opposite values...)
+        use_input = kwargs.pop('use_input', True)
+
+        # logic for capturing output (see docs on I/O and the flags)
+        capturefile = None
+        if gromacs.environment.flags['capture_output'] is True:
+            # capture into Python vars (see subprocess.Popen.communicate())
+            kwargs.setdefault('stderr', PIPE)
+            kwargs.setdefault('stdout', PIPE)
+        elif gromacs.environment.flags['capture_output'] == "file":
+            if 'stdout' in kwargs and 'stderr' in kwargs:
+                pass
+            else:
+                # XXX: not race or thread proof; potentially many commands write to the same file
+                fn = gromacs.environment.flags['capture_output_filename']
+                capturefile = file(fn, "w")   # overwrite (clobber) capture file
+                if 'stdout' in kwargs and 'stderr' not in kwargs:
+                    # special case of stdout used by code but stderr should be captured to file
+                    kwargs.setdefault('stderr', capturefile)
+                else:
+                    # merge stderr with stdout and write stdout to file
+                    # (stderr comes *before* stdout in capture file, could split...)
+                    kwargs.setdefault('stderr', STDOUT)
+                    kwargs.setdefault('stdout', capturefile)
+
+        try:
+            p = self.Popen(*args, **kwargs)
+            out, err = p.communicate(use_input=use_input) # special Popen knows input!
+        except:
+            if capturefile is not None:
+                logger.error("Use captured command output in %r for diagnosis.", capturefile)
+            raise
+        finally:
+            if capturefile is not None:
+                capturefile.close()
         rc = p.returncode
-        result = rc, out, err
-        return result
+        return (rc, out, err), p
 
     def _commandline(self, *args, **kwargs):
         """Returns the command line (without pipes) as a list."""
@@ -168,11 +230,7 @@ class Command(object):
         :TODO:
           Write example.
         """
-        if gromacs.environment.flags['capture_output']:
-            kwargs.setdefault('stderr', STDOUT)
-            kwargs.setdefault('stdout', PIPE)
-
-        stderr = kwargs.pop('stderr', STDOUT)   # default: Merge with stdout
+        stderr = kwargs.pop('stderr', None)     # default: print to stderr (if STDOUT then merge)
         if stderr is False:                     # False: capture it
             stderr = PIPE
         elif stderr is True:
@@ -188,13 +246,14 @@ class Command(object):
         input = kwargs.pop('input', None)
         if input:
             stdin = PIPE
-            if type(input) is str:
+            if isinstance(input, basestring):
                 # make sure that input is a simple string with \n line endings
                 if not input.endswith('\n'):
                     input += '\n'
             else:
                 try:
                     # make sure that input is a simple string with \n line endings
+                    # XXX: this is probably not unicode safe because of the suse of str()
                     input = '\n'.join(map(str, input)) + '\n'
                 except TypeError:
                     # so maybe we are a file or something ... and hope for the best
@@ -275,7 +334,7 @@ class Command(object):
                      returns the output as a string in  the stdout parameter
 
           *stderr*
-             how to handle the stderr stream [``STDOUT``]
+             how to handle the stderr stream [``None``]
 
              ``STDOUT``
                      merges standard error with the standard out stream
@@ -283,6 +342,10 @@ class Command(object):
                      returns the output as a string in the stderr return parameter
              ``None`` or ``True``
                      keeps it on stderr (and presumably on screen)
+
+        Depending on the value of the GromacsWrapper flag
+        :data:`gromacs.environment.flags```['capture_output']`` the above
+        default behaviour can be different.
 
         All other kwargs are passed on to the Gromacs tool.
 
@@ -293,8 +356,6 @@ class Command(object):
            command.
 
         :Notes:
-
-           By default, the process stdout and stderr are merged.
 
            In order to chain different commands via pipes one must use the special
            :class:`PopenWithInput` object (see :meth:`GromacsCommand.Popen` method) instead of the simple
@@ -515,13 +576,9 @@ class GromacsCommand(Command):
 
     def _run_command(self,*args,**kwargs):
         """Execute the gromacs command; see the docs for __call__."""
-        use_input = kwargs.pop('use_input', True)     # hack to run command WITHOUT input (-h...)
-        p = self.Popen(*args, **kwargs)
-        out, err = p.communicate(use_input=use_input) # special Popen knows input!
-        rc = p.returncode
-        result = rc, out, err
+        result, p = super(GromacsCommand, self)._run_command(*args, **kwargs)
         self.check_failure(result, command_string=p.command_string)
-        return result
+        return result, p
 
     def transform_args(self,*args,**kwargs):
         """Combine arguments and turn them into gromacs tool arguments."""
@@ -529,7 +586,12 @@ class GromacsCommand(Command):
         return self._build_arg_list(**newargs)
 
     def _get_gmx_docs(self):
-        """Extract standard gromacs doc by running the program and chopping the header."""
+        """Extract standard gromacs doc by running the program and chopping the header.
+
+        .. Note::
+
+           The header is on STDOUT and is ignored. The docs are read from STDERR.
+        """
         # Uses the class-wide arguments so that 'canned invocations' in cbook
         # are accurately reflected. Might be a problem when these invocations
         # supply wrong arguments... TODO: maybe check rc for that?
@@ -537,7 +599,7 @@ class GromacsCommand(Command):
         old_level = logger.getEffectiveLevel()   # temporarily throttle logger to avoid
         logger.setLevel(9999)                    # reading about the help function invocation or not found
         try:
-            rc,docs,nothing = self.run('h', stdout=PIPE, use_input=False)
+            rc,header,docs = self.run('h', stdout=PIPE, stderr=PIPE, use_input=False)
         finally:
             logger.setLevel(old_level)           # ALWAYS restore logging....
         m = re.match(self.doc_pattern, docs, re.DOTALL)    # keep from DESCRIPTION onwards
@@ -545,19 +607,17 @@ class GromacsCommand(Command):
             return "(No Gromacs documentation available)"
         return m.group('DOCS')
 
-    def gmxdoc():
-        doc = """Usage for the underlying Gromacs tool (cached)."""
-        def fget(self):
-            if not (hasattr(self, '__doc_cache') and self.__doc_cache):
-                self.__doc_cache = self._get_gmx_docs()
-            docs = self.__doc_cache
-            if self.extra_doc:
-                docs = '\n'.join([self.extra_doc,'',
-                                  "Documentation of the gromacs tool", 34*'=',
-                                  docs])
-            return docs
-        return locals()
-    gmxdoc = property(**gmxdoc())
+    @property
+    def gmxdoc(self):
+        """Usage for the underlying Gromacs tool (cached)."""
+        if not (hasattr(self, '__doc_cache') and self.__doc_cache):
+            self.__doc_cache = self._get_gmx_docs()
+        docs = self.__doc_cache
+        if self.extra_doc:
+            docs = '\n'.join([self.extra_doc,'',
+                              "Documentation of the gromacs tool", 34*'=',
+                              docs])
+        return docs
 
 
 
