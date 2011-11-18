@@ -245,7 +245,7 @@ def make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None):
 
     # pass 1: select
     # empty command '' important to get final list of groups
-    rc,out,nothing = gromacs.make_ndx(f=struct, n=oldndx, o=ndx, stdout=False, stderr=True,
+    rc,out,nothing = gromacs.make_ndx(f=struct, n=oldndx, o=ndx, stdout=False,
                                       input=(selection, '', 'q'))
     groups = gromacs.cbook.parse_ndxlist(out)
     last = len(groups) - 1
@@ -255,7 +255,7 @@ def make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None):
     # 1) last group is __main__
     # 2) __environment__ is everything else (eg SOL, ions, ...)
     rc,out,nothing = gromacs.make_ndx(f=struct, n=ndx, o=ndx,
-                                      stdout=False, stderr=True,
+                                      stdout=False,
                                       input=('name %d __main__' % last,
                                              '! "__main__"',  # is now group last+1
                                              'name %d __environment__' % (last+1),
@@ -484,7 +484,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
             # get number of waters (count OW ... works for SPC*, TIP*P water models)
             rc,output,junk = gromacs.make_ndx(f='topol.tpr', o='ow.ndx',
                                               input=('keep 0', 'del 0', 'a OW*', 'name 0 OW', '', 'q'),
-                                              stdout=False, stderr=True)
+                                              stdout=False)
             groups = gromacs.cbook.parse_ndxlist(output)
             gdict = dict([(g['name'], g) for g in groups])   # overkill...
             N_water = gdict['OW']['natoms']                  # ... but dict lookup is nice

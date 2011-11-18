@@ -1061,7 +1061,6 @@ def make_ndx_captured(**kwargs):
         (*returncode*, *output*, ``None``)
     """
     kwargs['stdout']=False   # required for proper output as described in doc
-    kwargs['stderr']=True    # ...
     user_input = kwargs.pop('input',[])
     user_input = [cmd for cmd in user_input if cmd != 'q']  # filter any quit
     kwargs['input'] = user_input + ['', 'q']                # necessary commands
