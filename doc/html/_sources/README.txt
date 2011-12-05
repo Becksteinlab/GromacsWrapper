@@ -27,7 +27,7 @@ running simulations with sensible parameters.
 
 
 .. _Documentation: 
-   http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/html/index.html
+   http://orbeckst.github.com/GromacsWrapper/index.html
 .. Online source code is not necessarily uptodate; check the git repository
 .. _online source code documentation:
    http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/epydoc/index.html

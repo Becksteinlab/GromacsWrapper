@@ -40,7 +40,7 @@ package :doc:`README` for contact details.
 .. _Gromacs: http://www.gromacs.org
 .. _python: http://www.python.org
 .. _Documentation: 
-   http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/html/index.html
+   http://orbeckst.github.com/GromacsWrapper/index.html
 .. Note that the online source code documentaion is only infrequently
 .. updated. Please refer to the code on github in GromacsWrapper git repository.
 .. _online source code documentation:
