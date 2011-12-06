@@ -88,7 +88,7 @@ MDAnalysis_ (N. Michaud-Agrawal, E. J. Dennning, and O. Beckstein)
 Please let `me`_ know of other efforts so that I can add them here. Thanks.
 
 .. _XTC Library: http://www.gromacs.org/Developer_Zone/Programming_Guide/XTC_Library
-.. _pymacs: http://www.mpibpc.mpg.de/groups/de_groot/dseelig/pymacs.html
+.. _pymacs: http://wwwuser.gwdg.de/~dseelig/pymacs.html
 .. _[gmx-developers] Python interface for Gromacs:
     http://lists.gromacs.org/pipermail/gmx-developers/2009-March/003179.html
 .. _ctypes: http://docs.python.org/library/ctypes.html
