@@ -188,8 +188,8 @@ latex_documents = [
 # http://sphinx.pocoo.org/latest/ext/intersphinx.html
 intersphinx_mapping = {'http://docs.python.org/': None,
                        'http://docs.scipy.org/doc/numpy/': None,
-                       'http://docs.scipy.org/doc/scipy/reference/': None,                       
-                       'http://sbcb.bioch.ox.ac.uk/oliver/software/RecSQL/html/': None}
+                       'http://docs.scipy.org/doc/scipy/reference/': None,
+                       'http://http://orbeckst.github.com/RecSQL/': None}
 
 
 # Options for ext.autodoc
