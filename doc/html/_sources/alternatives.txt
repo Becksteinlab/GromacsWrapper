@@ -1,3 +1,5 @@
+.. -*- encoding: utf-8 -*-
+
 ==============================
 Alternatives to GromacsWrapper
 ==============================
@@ -8,6 +10,18 @@ gromacs tools. Some people find this very crude (the author
 included). Other people have given more thought to the problem and you
 are encouraged to see if their efforts speed up your work more than
 does *GromacsWrapper*.
+
+JGromacs_ (Márton Münz and Philip C Biggin)
+   JGromacs is a Java library designed to facilitate the development
+   of cross-platform analysis applications for Molecular Dynamics (MD)
+   simulations. The package contains parsers for file formats applied
+   by GROMACS. It provides a multilevel object-oriented representation
+   of simulation data to integrate and interconvert sequence,
+   structure and dynamics information. In addititon, a basic analysis
+   toolkit is included in the package. The programmer is also provided
+   with simple tools (e.g. XML-based configuration) to create
+   applications with a user interface resembling the command-line UI
+   of Gromacs applications.
 
 pymacs_ (Daniel Seeliger)
    pymacs is a python module for dealing with structure files and
@@ -88,7 +102,8 @@ MDAnalysis_ (N. Michaud-Agrawal, E. J. Dennning, and O. Beckstein)
 Please let `me`_ know of other efforts so that I can add them here. Thanks.
 
 .. _XTC Library: http://www.gromacs.org/Developer_Zone/Programming_Guide/XTC_Library
-.. _pymacs: http://www.mpibpc.mpg.de/groups/de_groot/dseelig/pymacs.html
+.. _JGromacs: http://sbcb.bioch.ox.ac.uk/jgromacs/
+.. _pymacs: http://wwwuser.gwdg.de/~dseelig/pymacs.html
 .. _[gmx-developers] Python interface for Gromacs:
     http://lists.gromacs.org/pipermail/gmx-developers/2009-March/003179.html
 .. _ctypes: http://docs.python.org/library/ctypes.html
