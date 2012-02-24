@@ -69,7 +69,7 @@ class _StripWater(Worker):
                - "xy" : perform a rot+trans fit in the x-y plane
                - "all": rot+trans
                - ``None``: no fitting
-             If *fit* is not supplied then the constructore-default is used
+             If *fit* is not supplied then the constructor-default is used
              (:attr:`_StripWater.parameters.fit`).
           *resn*
              name of the residues that are stripped (typically it is
@@ -103,14 +103,14 @@ class _StripWater(Worker):
         # already; just leave this snippet at the end. Do all
         # initialization that requires the simulation class in the
         # _register_hook() method.
-        if not self.simulation is None:
+        if self.simulation is not None:
             self._register_hook()
 
     def _register_hook(self, **kwargs):
         """Run when registering; requires simulation."""
 
         super(_StripWater, self)._register_hook(**kwargs)
-        assert not self.simulation is None
+        assert self.simulation is not None
 
         trjdir = os.path.dirname(self.simulation.tpr)
         self.transformer = gromacs.cbook.Transformer(dirname=trjdir,
@@ -144,7 +144,7 @@ class _StripWater(Worker):
                - "xy" : perform a rot+trans fit in the x-y plane
                - "all": rot+trans
                - ``None``: no fitting
-             If *fit* is not supplied then the constructore-default is used
+             If *fit* is not supplied then the constructor-default is used
              (:attr:`_StripWater.parameters.fit`).
           *resn*
              name of the residues that are stripped (typically it is
@@ -215,7 +215,7 @@ class StripWater(Plugin):
              - "xy" : perform a rot+trans fit in the x-y plane
              - "all": rot+trans
              - ``None``: no fitting
-           If *fit* is not supplied then the constructore-default is used
+           If *fit* is not supplied then the constructor-default is used
            (:attr:`_StripWater.parameters.fit`).
         *name* : string
             plugin name (used to access it)
