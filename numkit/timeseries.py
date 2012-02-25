@@ -1,8 +1,8 @@
-# numkit --- time series manipulation and analysis 
+# numkit --- time series manipulation and analysis
 # Copyright (c) 2010 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the "Modified BSD Licence" (see COPYING).
 """
-:mod:`numkit.timeseries` --- Time series manipulation and analysis 
+:mod:`numkit.timeseries` --- Time series manipulation and analysis
 ==================================================================
 
 .. autofunction:: autocorrelation_fft
@@ -31,18 +31,18 @@ from numkit import LowAccuracyWarning
 def autocorrelation_fft(series, remove_mean=True, paddingcorrection=True,
                         normalize=False, **kwargs):
     """Calculate the auto correlation function.
-    
+
        autocorrelation_fft(series,remove_mean=False,**kwargs) --> acf
 
     The time series is correlated with itself across its whole length. Only the
-    [0,len(series)[ interval is returned. 
+    [0,len(series)[ interval is returned.
 
     By default, the mean of the series is subtracted and the correlation of the
     fluctuations around the mean are investigated.
 
     For the default setting remove_mean=True, acf[0] equals the variance of
     the series, acf[0] = Var(series) = <(series - <series>)**2>.
-    
+
     Optional:
 
     * The series can be normalized to its 0-th element so that acf[0] == 1.
@@ -63,7 +63,7 @@ def autocorrelation_fft(series, remove_mean=True, paddingcorrection=True,
       *paddingcorrection*
         ``False``: corrected for 0-padding; ``True``: return as is it is.
         (the latter is appropriate for periodic signals).
-        The correction for element 0=<i<N amounts to a factor N/(N-i). Only 
+        The correction for element 0=<i<N amounts to a factor N/(N-i). Only
         applied for modes != "valid"       [``True``]
       *normalize*
         ``True`` divides by acf[0] so that the first element is 1;
@@ -96,7 +96,7 @@ def autocorrelation_fft(series, remove_mean=True, paddingcorrection=True,
         # correct for 0 padding
         # XXX: reference? Where did I get this from? (But it makes sense.)
         ac *= len(series)/(len(series) - 1.0*numpy.arange(len(ac)))
-        
+
     norm = ac[0] or 1.0  # to guard against ACFs of zero arrays
     if not normalize:
         # We use the convention that the ACF is divided by the total time,
@@ -109,7 +109,7 @@ def autocorrelation_fft(series, remove_mean=True, paddingcorrection=True,
             else:
                 norm /= numpy.mean(series*series)
         except ZeroDivisionError:
-            norm = 1.0            
+            norm = 1.0
     return ac/norm
 
 def tcorrel(x,y,nstep=100,debug=False):
@@ -173,5 +173,76 @@ def tcorrel(x,y,nstep=100,debug=False):
         result['t'] = _x[:i0]
         result['acf'] = acf[:i0]
     return result
+
+
+def smooth(x, window_len=11, window='flat'):
+    """smooth the data using a window with requested size.
+
+    This method is based on the convolution of a scaled window with the signal.
+    The signal is prepared by introducing reflected copies of the signal
+    (with the window size) in both ends so that transient parts are minimized
+    in the begining and end part of the output signal.
+
+    :Arguments:
+        *x*
+            the input signal, 1D array
+
+        *window_len*
+            the dimension of the smoothing window, always converted to
+            an integer (using :func:`int`) and must be odd
+
+        *window*
+            the type of window from 'flat', 'hanning', 'hamming',
+            'bartlett', 'blackman'; flat window will produce a moving
+            average smoothing ["flat"]
+
+    :Returns: the smoothed signal as a 1D array
+
+    :Example:
+
+    Apply a simple moving average to a noisy harmonic signal::
+
+       >>> import numpy as np
+       >>> t = np.linspace(-2, 2, 201)
+       >>> x = np.sin(t) + np.random.randn(len(t))*0.1
+       >>> y = smooth(x)
+
+    .. See Also::
+
+       :func:`numpy.hanning`, :func:`numpy.hamming`,
+       :func:`numpy.bartlett`, :func:`numpy.blackman`,
+       :func:`numpy.convolve`, :func:`scipy.signal.lfilter`
+
+    .. TODO:: the window parameter could be the window itself if an
+              array instead of a string
+
+    Source: based on http://www.scipy.org/Cookbook/SignalSmooth
+    """
+    windows = ['flat', 'hanning', 'hamming', 'bartlett', 'blackman']
+    window_len = int(window_len)
+
+    if x.ndim != 1:
+        raise ValueError("smooth only accepts 1 dimension arrays.")
+    if x.size < window_len:
+        raise ValueError("Input vector needs to be bigger than window size.")
+    if window_len < 3:
+        return x
+    if window_len % 2 == 0:
+        raise ValueError("window_len should be an odd integer")
+
+    if not window in windows:
+        raise ValueError("Window %r not supported; must be one of %r" %
+                         (window, windows))
+
+    s = numpy.r_[x[window_len-1:0:-1], x, x[-1:-window_len:-1]]
+
+    if window == 'flat': #moving average
+        w = numpy.ones(window_len, dtype=float)
+    else:
+        w = vars(numpy)[window](window_len)
+
+    y = numpy.convolve(w/w.sum(), s, mode='valid')
+    return y[(window_len-1)/2:-(window_len-1)/2]  # take off repeats on ends
+
 
 
