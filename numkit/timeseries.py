@@ -5,8 +5,13 @@
 :mod:`numkit.timeseries` --- Time series manipulation and analysis
 ==================================================================
 
+A time series contains of a sequence of time points (typically spaced
+equally) and a value for each time point.
+
 .. autofunction:: autocorrelation_fft
 .. autofunction:: tcorrel
+.. autofunction:: smooth
+.. autofunction:: smoothing_window_length
 .. autoexception:: LowAccuracyWarning
 
 """
@@ -194,7 +199,9 @@ def smooth(x, window_len=11, window='flat'):
         *window*
             the type of window from 'flat', 'hanning', 'hamming',
             'bartlett', 'blackman'; flat window will produce a moving
-            average smoothing ["flat"]
+            average smoothing. If *window* is a :class:`numpy.ndarray` then
+            this array is directly used as the window (but it still must
+            contain an odd number of points) ["flat"]
 
     :Returns: the smoothed signal as a 1D array
 
@@ -213,36 +220,54 @@ def smooth(x, window_len=11, window='flat'):
        :func:`numpy.bartlett`, :func:`numpy.blackman`,
        :func:`numpy.convolve`, :func:`scipy.signal.lfilter`
 
-    .. TODO:: the window parameter could be the window itself if an
-              array instead of a string
-
     Source: based on http://www.scipy.org/Cookbook/SignalSmooth
     """
     windows = ['flat', 'hanning', 'hamming', 'bartlett', 'blackman']
     window_len = int(window_len)
 
+    if isinstance(window, numpy.ndarray):
+        window_len = len(window)
+        w = numpy.asarray(window, dtype=float)
+    else:
+        if not window in windows:
+            raise ValueError("Window %r not supported; must be one of %r" %
+                             (window, windows))
+        if window == 'flat':
+            # moving average
+            w = numpy.ones(window_len, dtype=float)
+        else:
+            w = vars(numpy)[window](window_len)
+
     if x.ndim != 1:
         raise ValueError("smooth only accepts 1 dimension arrays.")
     if x.size < window_len:
         raise ValueError("Input vector needs to be bigger than window size.")
-    if window_len < 3:
-        return x
     if window_len % 2 == 0:
         raise ValueError("window_len should be an odd integer")
-
-    if not window in windows:
-        raise ValueError("Window %r not supported; must be one of %r" %
-                         (window, windows))
+    if window_len < 3:
+        return x
 
     s = numpy.r_[x[window_len-1:0:-1], x, x[-1:-window_len:-1]]
-
-    if window == 'flat': #moving average
-        w = numpy.ones(window_len, dtype=float)
-    else:
-        w = vars(numpy)[window](window_len)
-
     y = numpy.convolve(w/w.sum(), s, mode='valid')
     return y[(window_len-1)/2:-(window_len-1)/2]  # take off repeats on ends
 
+def smoothing_window_length(resolution, t):
+    """Compute the length of a smooting window of *resolution* time units.
 
+    :Arguments:
 
+       *resolution*
+            length in units of the time in which *t* us supplied
+       *t*
+            array of time points; if not equidistantly spaced, the
+            mean spacing is used to compute the window length
+
+    :Returns: odd integer, the size of a window of approximately *resolution*
+
+    .. SeeAlso:: :func:`smooth`
+    """
+    dt = numpy.mean(numpy.diff(t))
+    N = int(resolution/dt)
+    if N % 2 == 0:
+        N += 1
+    return N
