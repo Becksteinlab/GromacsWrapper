@@ -29,6 +29,8 @@ from gromacs import ParseError, AutoCorrectionWarning
 import gromacs.utilities as utilities
 from gromacs.odict import odict
 
+import numkit.timeseries
+
 import logging
 
 
@@ -72,7 +74,13 @@ class XVG(utilities.FileUtils):
 
     #: Default extension of XVG files.
     default_extension = "xvg"
-    logger = logging.getLogger('gromacs.formats.XVG')  # for pickling: must be class-level
+
+    #: Aim for plotting around that many points
+    maxpoints_default = 10000
+
+    # logger: for pickling to work, this *must* be class-level and
+    # cannot be done in __init__() (because we cannot pickle self.logger)
+    logger = logging.getLogger('gromacs.formats.XVG')
 
     #: If :attr:`XVG.savedata` is ``False`` then any attributes in
     #: :attr:`XVG.__pickle_excluded` are *not* pickled as they are but simply
@@ -194,11 +202,12 @@ class XVG(utilities.FileUtils):
         The 0-th column of the data is interpreted as a time and the
         decay of the data is computed from the autocorrelation
         function (using FFT).
+
+        .. SeeAlso:: :func:`numkit.timeseries.tcorrel`
         """
-        from numkit.timeseries import tcorrel
         from gromacs.analysis.collections import Collection
         t = self.array[0,::nstep]
-        r = Collection([tcorrel(t, Y, nstep=1, **kwargs) for Y in self.array[1:,::nstep]])
+        r = Collection([numkit.timeseries.tcorrel(t, Y, nstep=1, **kwargs) for Y in self.array[1:,::nstep]])
         return r
 
     def set_correlparameters(self, **kwargs):
@@ -356,27 +365,22 @@ class XVG(utilities.FileUtils):
                limit the total number of data points; matplotlib has issues processing
                png files with >100,000 points and pdfs take forever to display. Set to
                ``None`` if really all data should be displayed. At the moment we simply
-               subsample the data at regular intervals. [10000]
+               decimate the data at regular intervals. [10000]
+          *method*
+               method to decimate the data to *maxpoints*, see :meth:`XVG.decimate`
+               for details
           *kwargs*
                All other keyword arguments are passed on to :func:`pylab.plot`.
         """
         import pylab
 
-        maxpoints_default = 10000
         columns = kwargs.pop('columns', Ellipsis)         # slice for everything
-        maxpoints = kwargs.pop('maxpoints', maxpoints_default)
+        maxpoints = kwargs.pop('maxpoints', self.maxpoints_default)
         transform = kwargs.pop('transform', lambda x: x)  # default is identity transformation
-        a = numpy.asarray(transform(self.array))[columns] # (slice o transform)(array)
+        method = kwargs.pop('method', "mean")
 
-        ny = a.shape[-1]   # assume 1D or 2D array with last dimension varying fastest
-        if not maxpoints is None and ny > maxpoints:
-            # reduce size by subsampling (primitive --- can leave out
-            # bits at the end or end up with almost twice of maxpoints)
-            stepsize = int(ny / maxpoints)
-            a = a[..., ::stepsize]
-            if maxpoints == maxpoints_default:  # only warn if user did not set maxpoints
-                warnings.warn("Plot had %d datapoints > maxpoints = %d; subsampled to %d regularly spaced points."
-                              % (ny, maxpoints, a.shape[-1]), category=AutoCorrectionWarning)
+        # (decimate/smooth o slice o transform)(array)
+        a = self.decimate(method, numpy.asarray(transform(self.array))[columns], maxpoints)
 
         if len(a.shape) == 1:
             # special case: plot against index; plot would do this automatically but
@@ -397,6 +401,9 @@ class XVG(utilities.FileUtils):
         Set *columns* keyword to select [x, y, dy] or [x, y, dx, dy],
         e.g. ``columns=[0,1,2]``. See :meth:`XVG.plot` for details.
         """
+        # TODO: This was copy&paste+modify from plot() and hence most of the code is duplicated
+        #       -- needs to be done properly!!
+
         import pylab
 
         kwargs.setdefault('capsize', 0)
@@ -404,21 +411,13 @@ class XVG(utilities.FileUtils):
         kwargs.setdefault('alpha', 0.3)
         kwargs.setdefault('fmt', None)
 
-        maxpoints_default = 10000
         columns = kwargs.pop('columns', Ellipsis)         # slice for everything
-        maxpoints = kwargs.pop('maxpoints', maxpoints_default)
+        maxpoints = kwargs.pop('maxpoints', self.maxpoints_default)
         transform = kwargs.pop('transform', lambda x: x)  # default is identity transformation
-        a = numpy.asarray(transform(self.array))[columns] # (slice o transform)(array)
+        method = kwargs.pop('method', "mean")
 
-        ny = a.shape[-1]   # assume 1D or 2D array with last dimension varying fastest
-        if not maxpoints is None and ny > maxpoints:
-            # reduce size by subsampling (primitive --- can leave out
-            # bits at the end or end up with almost twice of maxpoints)
-            stepsize = int(ny / maxpoints)
-            a = a[..., ::stepsize]
-            if maxpoints == maxpoints_default:  # only warn if user did not set maxpoints
-                warnings.warn("Plot had %d datapoints > maxpoints = %d; subsampled to %d regularly spaced points."
-                              % (ny, maxpoints, a.shape[-1]), category=AutoCorrectionWarning)
+        # (decimate/smooth o slice o transform)(array)
+        a = self.decimate(method, numpy.asarray(transform(self.array))[columns], maxpoints)
 
         if len(a.shape) == 1:
             # special case: plot against index; plot would do this automatically but
@@ -442,6 +441,119 @@ class XVG(utilities.FileUtils):
                 raise TypeError("Either too few columns selected or data does not have a error column")
 
         pylab.errorbar(X, Y, **kwargs)
+
+    def decimate(self, method, a, maxpoints, **kwargs):
+        """Decimate data *a* to *maxpoints* using *method*.
+
+        Methods:
+
+          * "mean", uses :meth:`XVG.decimate_mean` to coarse grain by
+            averaging the data in bins along the time axis
+
+          * "smooth", uses :meth:`XVG.decimate_smooth` to subsample
+            from a smoothed function (generated with a running average
+            of the coarse graining step size derived from the original
+            number of data points and *maxpoints*)
+        """
+        methods = {'mean': self.decimate_mean,
+                   'smooth': self.decimate_smooth,
+                   }
+        return methods[method](a, maxpoints, **kwargs)
+
+    def decimate_mean(self, a, maxpoints, **kwargs):
+        """Return data *a* decimated on *maxpoints*.
+
+        Histograms each column into *maxpoints* bins and calculates
+        the weighted average in each bin as the decimated data, using
+        :func:`numkit.timeseries.mean_histogram`. The coarse grained
+        time in the first column contains the centers of the histogram
+        time.
+
+        If *a* contains <= *maxpoints* then *a* is simply returned;
+        otherwise a new array of the same dimensions but with a
+        reduced number of  *maxpoints* points is returned.
+
+        .. Warning::
+
+           Assumes that the first column is time, except when the
+           input array *a* is 1D and therefore to be assumed to be
+           data at equidistance timepoints.
+
+        """
+        if len(a.shape) == 1:
+            # add first column as index
+            # (probably should do this in class/init anyway...)
+            X = numpy.arange(len(a))
+            a = numpy.vstack([X, a])
+        ny = a.shape[-1]   # assume 1D or 2D array with last dimension varying fastest
+        if maxpoints is None or ny <= maxpoints:
+            return a
+
+        out = numpy.zeros((a.shape[0], maxpoints), dtype=float)
+
+        t = a[0]
+        for i in xrange(1, a.shape[0]):
+            # compute regularised data for each column separately
+            out[i], out[0] = numkit.timeseries.mean_histogrammed_function(t, a[i], bins=maxpoints)
+
+        if maxpoints == self.maxpoints_default:  # only warn if user did not set maxpoints
+            warnings.warn("Plot had %d datapoints > maxpoints = %d; decimated to %d regularly "
+                          "spaced points by computing the bin-means from the histogrammed data."
+                          % (ny, maxpoints, maxpoints),
+                          category=AutoCorrectionWarning)
+        return out
+
+
+    def decimate_smooth(self, a, maxpoints, window="flat"):
+        """Return smoothed data *a* decimated on approximately *maxpoints* points.
+
+        1. Produces a smoothed graph using the smoothing window *window*;
+           "flat" is a running average.
+        2. select points at a step size approximatelt producing maxpoints
+
+        If *a* contains <= *maxpoints* then *a* is simply returned;
+        otherwise a new array of the same dimensions but with a
+        reduced number of points (close to *maxpoints*) is returned.
+
+        .. Warning::
+
+           Assumes that the first column is time (which will *never*
+           be smoothed/averaged), except when the input array *a* is
+           1D and therefore to be assumed to be data at equidistance
+           timepoints.
+
+        TODO:
+        - Allow treating the 1st column as data
+        """
+
+        ny = a.shape[-1]   # assume 1D or 2D array with last dimension varying fastest
+        if maxpoints is None or ny <= maxpoints:
+            return a
+
+        # reduce size by averaging oover stepsize steps and then just
+        # picking every stepsize data points.  (primitive --- can
+        # leave out bits at the end or end up with almost twice of
+        # maxpoints)
+        stepsize = int(ny / maxpoints)
+        if stepsize % 2 == 0:
+            stepsize += 1  # must be odd for the running average/smoothing window
+        out = numpy.empty_like(a)
+
+        # smoothed
+        if len(a.shape) == 1:
+            out[:] = numkit.timeseries.smooth(a, stepsize, window=window)
+        else:
+            out[0,:] = a[0]
+            for i in xrange(1, a.shape[0]):
+                # process columns because smooth() only handles 1D arrays :-p
+                # should change y in place
+                out[i,:] = numkit.timeseries.smooth(a[i], stepsize, window=window)
+        if maxpoints == self.maxpoints_default:  # only warn if user did not set maxpoints
+            warnings.warn("Plot had %d datapoints > maxpoints = %d; decimated to %d regularly "
+                          "spaced points with smoothing (%r) over %d steps."
+                          % (ny, maxpoints, ny/stepsize, window, stepsize),
+                          category=AutoCorrectionWarning)
+        return out[..., ::stepsize]
 
     def __getstate__(self):
         """custom pickling protocol: http://docs.python.org/library/pickle.html

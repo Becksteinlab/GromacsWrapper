@@ -12,6 +12,8 @@ equally) and a value for each time point.
 .. autofunction:: tcorrel
 .. autofunction:: smooth
 .. autofunction:: smoothing_window_length
+.. autofunction:: mean_histogrammed_function
+.. autofunction:: regularized_function
 .. autoexception:: LowAccuracyWarning
 
 """
@@ -22,6 +24,7 @@ equally) and a value for each time point.
 #   where(acf <= 0)[0][0]
 # Alternatively, fit an exponential to the ACF and extract the time constant.
 
+from itertools import izip
 
 import numpy
 import scipy.signal
@@ -222,21 +225,23 @@ def smooth(x, window_len=11, window='flat'):
 
     Source: based on http://www.scipy.org/Cookbook/SignalSmooth
     """
-    windows = ['flat', 'hanning', 'hamming', 'bartlett', 'blackman']
+    windows = {'flat': lambda n: numpy.ones(n, dtype=float),
+               'hanning': numpy.hanning,
+               'hamming': numpy.hamming,
+               'bartlett': numpy.bartlett,
+               'blackman': numpy.blackman,
+               }
     window_len = int(window_len)
 
     if isinstance(window, numpy.ndarray):
         window_len = len(window)
         w = numpy.asarray(window, dtype=float)
     else:
-        if not window in windows:
+        try:
+            w = windows[window](window_len)
+        except KeyError:
             raise ValueError("Window %r not supported; must be one of %r" %
-                             (window, windows))
-        if window == 'flat':
-            # moving average
-            w = numpy.ones(window_len, dtype=float)
-        else:
-            w = vars(numpy)[window](window_len)
+                             (window, windows.keys()))
 
     if x.ndim != 1:
         raise ValueError("smooth only accepts 1 dimension arrays.")
@@ -262,7 +267,8 @@ def smoothing_window_length(resolution, t):
             array of time points; if not equidistantly spaced, the
             mean spacing is used to compute the window length
 
-    :Returns: odd integer, the size of a window of approximately *resolution*
+    :Returns: odd integer, the size of a window of approximately
+              *resolution*
 
     .. SeeAlso:: :func:`smooth`
     """
@@ -271,3 +277,84 @@ def smoothing_window_length(resolution, t):
     if N % 2 == 0:
         N += 1
     return N
+
+def mean_histogrammed_function(t, y, **kwargs):
+    """Compute mean of data *y* in bins along *t*.
+
+    Returns the mean-regularised function *F* and the centers of the bins.
+
+    .. SeeAlso:: :func:`regularized_function` with *func* = :func:`numpy.mean`
+    """
+    F, e = regularized_function(t, y, numpy.mean, **kwargs)
+    return F, 0.5*(e[:-1] + e[1:])
+
+def regularized_function(x, y, func, bins=None, range=None):
+    """Compute func() over data aggregated in bins.
+
+    ``(x,y) --> (x', func(Y'))``  with ``Y' = {y: y(x) where x in x' bin}``
+
+    First the data is collected in bins x' along x and then func is applied to
+    all data points Y' that have been collected in the bin.
+
+    .. Note:: *x* and *y* must be 1D arrays.
+
+    :Arguments:
+       x
+          abscissa values (for binning)
+       y
+          ordinate values (func is applied)
+       func
+          a numpy ufunc that takes one argument, func(Y')
+       bins
+          number or array
+       range
+          limits (used with number of bins)
+
+    :Returns:
+       F,edges
+          function and edges (``midpoints = 0.5*(edges[:-1]+edges[1:])``)
+
+    (This function originated as :func:`recsql.sqlfunctions.regularized_function`.)
+    """
+    _x = numpy.asarray(x)
+    _y = numpy.asarray(y)
+
+    if len(_x.shape) != 1 or len(_y.shape) != 1:
+        raise TypeError("Can only deal with 1D arrays.")
+
+    # setup of bins (taken from numpy.histogram)
+    if (range is not None):
+        mn, mx = range
+        if (mn > mx):
+            raise AttributeError('max must be larger than min in range parameter.')
+
+    if not numpy.iterable(bins):
+        if range is None:
+            range = (_x.min(), _x.max())
+        mn, mx = [float(mi) for mi in range]
+        if mn == mx:
+            mn -= 0.5
+            mx += 0.5
+        bins = numpy.linspace(mn, mx, bins+1, endpoint=True)
+    else:
+        bins = numpy.asarray(bins)
+        if (numpy.diff(bins) < 0).any():
+            raise ValueError('bins must increase monotonically.')
+
+    sorting_index = numpy.argsort(_x)
+    sx = _x[sorting_index]
+    sy = _y[sorting_index]
+
+    # boundaries in SORTED data that demarcate bins; position in bin_index is the bin number
+    bin_index = numpy.r_[sx.searchsorted(bins[:-1], 'left'),
+                         sx.searchsorted(bins[-1], 'right')]
+
+    # naive implementation: apply operator to each chunk = sy[start:stop] separately
+    #
+    # It's not clear to me how one could effectively block this procedure (cf
+    # block = 65536 in numpy.histogram) because there does not seem to be a
+    # general way to combine the chunks for different blocks, just think of
+    # func=median
+    F = numpy.zeros(len(bins)-1)  # final function
+    F[:] = [func(sy[start:stop]) for start,stop in izip(bin_index[:-1],bin_index[1:])]
+    return F,bins
