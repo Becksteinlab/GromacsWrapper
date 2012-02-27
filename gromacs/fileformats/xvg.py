@@ -59,8 +59,8 @@ For simple test data, both approaches give very similar output.
 
 .. SeeAlso:: :meth:`XVG.decimate`
 
-Example
--------
+Examples
+--------
 
 In this example we generate a noisy time series of a sine wave. We
 store the time, the value, and an error. (In a real example, the
@@ -108,6 +108,17 @@ data. For :meth:`XVG.plot`, the *method* keyword can be changed (see
 :meth:`XVG.errorbar`, the method to reduce the data values (typically
 column 1) is fixed to "mean" but the errors (typically columns 2 and
 3) can also be reduced with *error_method* = "rms".
+
+If one wants to show the variation of the raw data together with the
+decimated and smoothed data then one can plot the percentiles of the
+deviation from the mean in each bin.
+
+   >>> xvg.errorbar(columns=[0,1,1], demean=True, maxpoints=1000, color="blue")
+
+The trick is to use the data value column also as the error colum but
+with the *demean* = ``True`` keyword: In this way, the fluctuations
+around the mean are regularized (also works for *error_method* =
+"rms").
 
 
 Classes
@@ -544,6 +555,7 @@ class XVG(utilities.FileUtils):
             raise NotImplementedError("For errors only method == 'mean' is supported.")
         error_method = kwargs.pop('error_method', "percentile")  # can also use 'rms' and 'error'
         percentile = kwargs.pop('percentile', 95.)
+        demean = kwargs.pop('demean', False)
 
         # (decimate/smooth o slice o transform)(array)
         #a = self.decimate(method, numpy.asarray(transform(self.array))[columns], maxpoints)
@@ -558,12 +570,12 @@ class XVG(utilities.FileUtils):
             else:
                 upper_per = 100 - percentile
                 lower_per = percentile
-            upper = a[2:] = self.decimate("percentile", error_data,
-                                          maxpoints, per=upper_per)[1]
-            lower = self.decimate("percentile", error_data,
-                                  maxpoints, per=lower_per)[1]
+            upper = a[2:] = self.decimate("percentile", error_data, maxpoints,
+                                          per=upper_per, demean=demean)[1]
+            lower = self.decimate("percentile", error_data, maxpoints,
+                                  per=lower_per, demean=demean)[1]
         else:
-            a[2:] = self.decimate(error_method, error_data, maxpoints)[1]
+            a[2:] = self.decimate(error_method, error_data, maxpoints, demean=demean)[1]
             lower = None
 
         # now deal with infs, nans etc AFTER all transformations (needed for plotting across inf/nan)

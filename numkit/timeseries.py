@@ -348,11 +348,14 @@ def mean_histogrammed_function(t, y, **kwargs):
 def rms_histogrammed_function(t, y, **kwargs):
     """Compute root mean square of data *y* in bins along *t*.
 
-    Returns the RMS-regularised function *F* and the centers of the bins.
+    Returns the RMS-regularised function *F* and the centers of the
+    bins. *demean* = ``True`` removes the mean first.
 
     .. SeeAlso:: :func:`regularized_function` with *func* = ``sqrt(mean(y*y))``
     """
-    def rms(a):
+    def rms(a, demean=kwargs.pop('demean', False)):
+        if demean:
+            a -= numpy.mean(a)
         return numpy.sqrt(numpy.mean(a*a))
     return apply_histogrammed_function(rms, t, y, **kwargs)
 
@@ -396,10 +399,15 @@ def percentile_histogrammed_function(t, y, **kwargs):
           the data into the lower 75% and upper 25%; 50 is the median
           [50.0]
 
+      *demean*
+          ``True``: remove the mean of the bin data first [``False``]
+
     .. SeeAlso:: :func:`regularized_function` with :func:`scipy.stats.scoreatpercentile`
     """
     def percentile(y, per=kwargs.pop('per', 50.), limit=kwargs.pop('limit', ()),
-                   interpolation_method='fraction'):
+                   demean=kwargs.pop('demean', False), interpolation_method='fraction'):
+        if demean:
+            y -= numpy.mean(y)
         return scipy.stats.scoreatpercentile(y, per, limit=limit)
     return apply_histogrammed_function(percentile, t, y, **kwargs)
 
