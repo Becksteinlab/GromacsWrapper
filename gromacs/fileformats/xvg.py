@@ -59,6 +59,57 @@ For simple test data, both approaches give very similar output.
 
 .. SeeAlso:: :meth:`XVG.decimate`
 
+Example
+=======
+
+In this example we generate a noisy time series of a sine wave. We
+store the time, the value, and an error. (In a real example, the
+value might be the mean over multiple observations and the error might
+be the estimated error of the mean.)
+
+  >>> import numpy as np
+  >>> import gromacs.formats
+  >>> xvg = gromacs.formats.XVG()
+  >>> X = np.linspace(-10,10,50000)
+  >>> yerr = np.random.randn(len(X))*0.05
+  >>> data = np.vstack((X, np.sin(X) + yerr, np.random.randn(len(X))*0.05))
+  >>> xvg.set(data)
+
+Plot value for *all* time points::
+
+  >>> xvg.plot(columns=[0,1], maxpoints=None, color="black", alpha=0.2)
+
+Plot bin-averaged (decimated) data with the errors, over 1000 points::
+
+  >>> xvg.errorbar(maxpoints=1000, color="red")
+
+(see output in Figure :ref:`Plot of Raw vs Decimated data <figure-xvg-decimated-label>`)
+
+.. _figure-xvg-decimated-label:
+
+.. figure:: xvg_decimated.*
+   :figwidth: 40%
+   :scale: 70%
+   :alt: plot of a raw noisy sin(x) graph versus its decimated version
+   :align: right
+
+   **Plot of Raw vs Decimated data.** Example of plotting raw data
+   (sine on 50,000 points, gray) versus the decimated graph (reduced
+   to 1000 points, red line). The errors were also decimated and
+   reduced to the errors within the 5% and the 95% percentile. The
+   decimation is carried out by histogramming the data in the desired
+   number of bins and then the data in each bin is reduced by either
+   :func:`numpy.mean` (for the value) or
+   :func:`scipy.stats.scoreatpercentile` (for errors).
+
+In principle it is possible to use other functions to decimate the
+data. For :meth:`XVG.plot`, the *method* keyword can be changed (see
+:meth:`XVG.decimate` for allowed *method* values). For
+:meth:`XVG.errorbar`, the method to reduce the data values (typically
+column 1) is fixed to "mean" but the errors (typically columns 2 and
+3) can also be reduced with *error_method* = "rms".
+
+
 Classes
 =======
 
@@ -656,7 +707,7 @@ class XVG(utilities.FileUtils):
             percentile as a percentage, e.g. 75 is the value that splits
             the data into the lower 75% and upper 25%; 50 is the median [50.0]
 
-        .. SeeAlso:: :func:`regularized_function` with :func:`scipy.stats.scoreatpercentile`
+        .. SeeAlso:: :func:`numkit.timeseries.regularized_function` with :func:`scipy.stats.scoreatpercentile`
         """
         return self._decimate(numkit.timeseries.percentile_histogrammed_function, a, maxpoints, **kwargs)
 
