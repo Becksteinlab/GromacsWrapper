@@ -51,30 +51,34 @@ class _ProteinOnly(Worker):
         """Set up  ProteinOnly
 
         :Arguments:
+
           *force*
-             ``True`` will always regenerate trajectories even if they 
+             ``True`` will always regenerate trajectories even if they
              already exist, ``False`` raises an exception, ``None``
              does the sensible thing in most cases (i.e. notify and
              then move on).
           *dt* : float or list of floats
-             only write every dt timestep (in ps); if a list of floats is 
-             supplied, write multiple trajectories, one for each dt.             
+             only write every dt timestep (in ps); if a list of floats is
+             supplied, write multiple trajectories, one for each dt.
           *compact* : bool
              write a compact representation
-          *fit*          
+          *fit*
              Create an additional trajectory from the stripped one in which
              the Protein group is rms-fitted to the initial structure. See
-             :meth:`gromacs.cbook.Transformer.fit` for details. Useful 
+             :meth:`gromacs.cbook.Transformer.fit` for details. Useful
              values:
-               - "xy" : perform a rot+trans fit in the x-y plane
-               - "all": rot+trans
-               - ``None``: no fitting
+
+             - "xy" : perform a rot+trans fit in the x-y plane
+             - "all": rot+trans
+             - ``None``: no fitting
+
              If *fit* is not supplied then the constructore-default is used
              (:attr:`_ProteinOnly.parameters.fit`).
           *keepalso*
              List of literal ``make_ndx`` selections that select additional
              groups of atoms that should also be kept in addition to the
-             protein. For example *keepalso*=['"POPC"', 'resname DRUG'].
+             protein. For example *keepalso* = ['"POPC"', 'resname DRUG'].
+
         """
         # specific arguments: take them before calling the super class that
         # does not know what to do with them
@@ -114,7 +118,7 @@ class _ProteinOnly(Worker):
             s=self.simulation.tpr, f=self.simulation.xtc, n=self.simulation.ndx)
 
     # override 'API' methods of base class
-        
+
     def run(self, **kwargs):
         """Write new trajectory with water index group stripped.
 
@@ -123,20 +127,21 @@ class _ProteinOnly(Worker):
         parameters:
 
         :Keywords:
+
           *force*
-             ``True`` will always regenerate trajectories even if they 
+             ``True`` will always regenerate trajectories even if they
              already exist, ``False`` raises an exception, ``None``
              does the sensible thing in most cases (i.e. notify and
              then move on).
           *dt* : float or list of floats
-             only write every dt timestep (in ps); if a list of floats is 
-             supplied, write multiple trajectories, one for each dt.             
+             only write every dt timestep (in ps); if a list of floats is
+             supplied, write multiple trajectories, one for each dt.
           *compact* : bool
              write a compact representation
-          *fit*          
+          *fit*
              Create an additional trajectory from the stripped one in which
              the Protein group is rms-fitted to the initial structure. See
-             :meth:`gromacs.cbook.Transformer.fit` for details. Useful 
+             :meth:`gromacs.cbook.Transformer.fit` for details. Useful
              values:
                - "xy" : perform a rot+trans fit in the x-y plane
                - "all": rot+trans
@@ -146,13 +151,15 @@ class _ProteinOnly(Worker):
           *keepalso*
               List of ``make_ndx`` selections that should also be kept.
 
-        .. Note:: If set, *dt* is only applied to a fit step; the
-                  no-water trajectory is always generated for all time
-                  steps of the input.
+        .. Note::
+
+           If set, *dt* is only applied to a fit step; the no-water
+           trajectory is always generated for all time steps of the
+           input.
         """
         dt = kwargs.pop('dt', self.parameters.dt)
         fit = kwargs.pop('fit', self.parameters.fit)
-                
+
         kwargs.setdefault('compact', self.parameters.compact)
         kwargs.setdefault('force', self.parameters.force)
         kwargs.setdefault('keepalso', self.parameters.keepalso)
@@ -170,7 +177,7 @@ class _ProteinOnly(Worker):
                 transformer_proteinonly.fit(xy=xy, dt=delta_t, force=kwargs['force'])
 
     def analyze(self,**kwargs):
-        """No postprocessing."""        
+        """No postprocessing."""
         pass
 
     def plot(self, **kwargs):
@@ -184,11 +191,12 @@ class _ProteinOnly(Worker):
 class ProteinOnly(Plugin):
     """*ProteinOnly* plugin.
 
-    Write a new trajectory which has the water index group removed. 
+    Write a new trajectory which has the water index group removed.
 
     .. class:: ProteinOnly([selection[, name[, simulation[, ...]]]])
-    
+
     :Arguments:
+
         *selection*
             optional selection for the water instead of "SOL"
         *name* : string
@@ -196,19 +204,19 @@ class ProteinOnly(Plugin):
         *simulation* : instance
             The :class:`gromacs.analysis.Simulation` instance that owns the plugin.
         *force*
-           ``True`` will always regenerate trajectories even if they 
+           ``True`` will always regenerate trajectories even if they
            already exist, ``False`` raises an exception, ``None``
            does the sensible thing in most cases (i.e. notify and
            then move on).
         *dt* : float or list of floats
-           only write every dt timestep (in ps); if a list of floats is 
-           supplied, write multiple trajectories, one for each dt.             
+           only write every dt timestep (in ps); if a list of floats is
+           supplied, write multiple trajectories, one for each dt.
         *compact* : bool
            write a compact representation
-        *fit*          
+        *fit*
            Create an additional trajectory from the stripped one in which
            the Protein group is rms-fitted to the initial structure. See
-           :meth:`gromacs.cbook.Transformer.fit` for details. Useful 
+           :meth:`gromacs.cbook.Transformer.fit` for details. Useful
            values:
              - "xy" : perform a rot+trans fit in the x-y plane
              - "all": rot+trans
@@ -218,7 +226,7 @@ class ProteinOnly(Plugin):
         *keepalso*
            List of literal ``make_ndx`` selections that select additional
            groups of atoms that should also be kept in addition to the
-           protein. For example *keepalso*=['"POPC"', 'resname DRUG'].
+           protein. For example *keepalso* = ['"POPC"', 'resname DRUG'].
 
     """
     worker_class = _ProteinOnly

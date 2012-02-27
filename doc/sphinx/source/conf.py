@@ -189,7 +189,7 @@ latex_documents = [
 intersphinx_mapping = {'http://docs.python.org/': None,
                        'http://docs.scipy.org/doc/numpy/': None,
                        'http://docs.scipy.org/doc/scipy/reference/': None,
-                       'http://http://orbeckst.github.com/RecSQL/': None}
+                       'http://orbeckst.github.com/RecSQL/': None}
 
 
 # Options for ext.autodoc

@@ -51,6 +51,7 @@ class _StripWater(Worker):
         """Set up  StripWater
 
         :Arguments:
+
           *force*
              ``True`` will always regenerate trajectories even if they
              already exist, ``False`` raises an exception, ``None``
@@ -66,18 +67,23 @@ class _StripWater(Worker):
              the Protein group is rms-fitted to the initial structure. See
              :meth:`gromacs.cbook.Transformer.fit` for details. Useful
              values:
-               - "xy" : perform a rot+trans fit in the x-y plane
-               - "all": rot+trans
-               - ``None``: no fitting
+
+             - "xy" : perform a rot+trans fit in the x-y plane
+             - "all": rot+trans
+             - ``None``: no fitting
+
              If *fit* is not supplied then the constructor-default is used
              (:attr:`_StripWater.parameters.fit`).
           *resn*
              name of the residues that are stripped (typically it is
              safe to leave this at the default 'SOL')
 
-        .. Note:: If set, *dt* is only applied to a fit step; the
-                  no-water trajectory is always generated for all time
-                  steps of the input.
+        .. Note::
+
+           If set, *dt* is only applied to a fit step; the no-water
+           trajectory is always generated for all time steps of the
+           input.
+
         """
         # specific arguments: take them before calling the super class that
         # does not know what to do with them
@@ -126,6 +132,7 @@ class _StripWater(Worker):
         parameters:
 
         :Keywords:
+
           *force*
              ``True`` will always regenerate trajectories even if they
              already exist, ``False`` raises an exception, ``None``
@@ -141,18 +148,23 @@ class _StripWater(Worker):
              the Protein group is rms-fitted to the initial structure. See
              :meth:`gromacs.cbook.Transformer.fit` for details. Useful
              values:
-               - "xy" : perform a rot+trans fit in the x-y plane
-               - "all": rot+trans
-               - ``None``: no fitting
+
+             - "xy" : perform a rot+trans fit in the x-y plane
+             - "all": rot+trans
+             - ``None``: no fitting
+
              If *fit* is not supplied then the constructor-default is used
              (:attr:`_StripWater.parameters.fit`).
           *resn*
              name of the residues that are stripped (typically it is
              safe to leave this at the default 'SOL')
 
-        .. Note:: If set, *dt* is only applied to a fit step; the
-                  no-water trajectory is always generated for all time
-                  steps of the input.
+        .. Note::
+
+           If set, *dt* is only applied to a fit step; the no-water
+           trajectory is always generated for all time steps of the
+           input.
+
         """
         dt = kwargs.pop('dt', self.parameters.dt)
         fit = kwargs.pop('fit', self.parameters.fit)

@@ -16,7 +16,7 @@ Overview
 
 The task we are solving is to analyze output from ::
 
-   g_dist -f md.xtc -s md.tpr -n cys_ow.ndx -dist 1.0 | bzip2 -vc > mindist_C60_OW_1nm.dat.bz2 
+   g_dist -f md.xtc -s md.tpr -n cys_ow.ndx -dist 1.0 | bzip2 -vc > mindist_C60_OW_1nm.dat.bz2
 
 and produce a histogram of minimum contact distances. This should
 provide an estimate for water accessibility of the atom (here: SG of
@@ -24,7 +24,7 @@ Cys60).
 
 File format
 -----------
-  
+
 ``g_dist`` with the ``-dist CUTOFF`` option writes to stdout the
 identity of all atoms within the cutoff distance and the distance
 itself::
@@ -40,7 +40,7 @@ itself::
    t: 186  10028 SOL 46031 OW  0.788268 (nm)
    t: 187  6682 SOL 35993 OW  0.997688 (nm)
    ....
-   
+
 
 Classes
 -------
@@ -73,21 +73,23 @@ class Mindist(object):
       * Save analysis to pickle or data files.
       * Export data as simple data files for plotting in other programs.
 
-    .. Note:: :class:`gromacs.tools.G_mindist` is apparently providing
-              exactly the service that is required: a timeseries of
-              the minimum distance between two groups. Feel free to
-              use that tool instead :-).
-      
+    .. Note::
+
+       :class:`gromacs.tools.G_mindist` is apparently providing
+       exactly the service that is required: a timeseries of the
+       minimum distance between two groups. Feel free to use that tool
+       instead :-).
+
     """
 
     def __init__(self,datasource,cutoff=None):
         """Read mindist data from file or stream.
-        
+
         :Arguments:
           *datasource*
              a filename (plain, gzip, bzip2) or file object
           *cutoff*
-             the ``-dist CUTOFF`` that was provided to ``g_dist``; if supplied 
+             the ``-dist CUTOFF`` that was provided to ``g_dist``; if supplied
              we work around a bug in ``g_dist`` (at least in Gromacs 4.0.2) in which
              sometimes numbers >> CUTOFF are printed.
         """
@@ -95,7 +97,7 @@ class Mindist(object):
         try:
             M = GdistData(stream)
             # BIG database in memory ... can be accessed via SQL
-            all_distances = SQLarray('distances', records=M, columns=('frame','distance')) 
+            all_distances = SQLarray('distances', records=M, columns=('frame','distance'))
         finally:
             stream.close()
         if cutoff is None:
@@ -105,9 +107,9 @@ class Mindist(object):
         self.distances = all_distances.selection(
             "SELECT frame, MIN(distance) AS distance FROM __self__ "+cutoff_filter+" GROUP BY frame",
             name="mindistances", cache=False)
-        
+
     def histogram(self,nbins=None,lo=None,hi=None,midpoints=False,normed=True):
-        """Returns a distribution or histogram of the minimum distances::
+        """Returns a distribution or histogram of the minimum distances.
 
         If no values for the bin edges are given then they are set to
         0.1 below and 0.1 above the minimum and maximum values seen in
@@ -118,6 +120,7 @@ class Mindist(object):
         histogram only contains a single bin (and then get more data)!
 
         :Keywords:
+
            *nbins* : int
               number of bins
            *lo* : float
@@ -128,6 +131,7 @@ class Mindist(object):
               False: return edges. True: return midpoints
            *normed* : boolean
               True: return probability distribution. False: histogram
+
         """
         D = self.distances
         if lo is None or hi is None:
@@ -137,13 +141,13 @@ class Mindist(object):
                 if lo < 0:
                     lo = 0.0
             if hi is None:
-                hi = round(dmax + 0.1, 1)            
+                hi = round(dmax + 0.1, 1)
         if nbins is None:
             nbins = int(len(D)/100)
         FUNC = 'distribution'
         if not normed:
             FUNC = 'histogram'
-        SQL = """SELECT %(FUNC)s(distance,%(nbins)d,%(lo)f,%(hi)f) AS "h [Object]" 
+        SQL = """SELECT %(FUNC)s(distance,%(nbins)d,%(lo)f,%(hi)f) AS "h [Object]"
                  FROM __self__""" % vars()
         (((h,e),),) = D.sql(SQL, asrecarray=False)
         # should probably cache this...
@@ -152,7 +156,7 @@ class Mindist(object):
         else:
             self.__histogram = h
         self.__edges = e
-        if midpoints:            
+        if midpoints:
             return h, self.midpoints
         return h, e
 
@@ -206,7 +210,7 @@ class Mindist(object):
         histogram_args = ('nbins','lo','hi','midpoints','normed')
         histargs = kwargs.copy()
         histargs = dict([(k, kwargs.pop(k)) for k in histargs if k in histogram_args])
-        h,m = self.histogram(**histargs)        
+        h,m = self.histogram(**histargs)
 
         pylab.plot(m, h, **kwargs)
         pylab.xlabel('minimum distance (nm)')
