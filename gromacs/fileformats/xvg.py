@@ -20,7 +20,7 @@ data (typically: first column time, further coliumns scalar
 observables).
 
 Errors
-======
+------
 
 The :attr:`XVG.error` attribute contains the statistical error for
 each timeseries. It is computed from the standard deviation of the
@@ -32,7 +32,7 @@ for the calculations of the correlation time are set with
 
 
 Plotting
-========
+--------
 
 The :meth:`XVG.plot` and :meth:`XVG.errorbar` methods are set up to
 produce graphs of multiple columns simultaneously. It is also possible
@@ -60,7 +60,7 @@ For simple test data, both approaches give very similar output.
 .. SeeAlso:: :meth:`XVG.decimate`
 
 Example
-=======
+-------
 
 In this example we generate a noisy time series of a sine wave. We
 store the time, the value, and an error. (In a real example, the
@@ -111,7 +111,7 @@ column 1) is fixed to "mean" but the errors (typically columns 2 and
 
 
 Classes
-=======
+-------
 
 .. autoclass:: XVG
    :members:
