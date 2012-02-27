@@ -46,7 +46,7 @@
         <li><a href="../../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
           <li><a href="../../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../../core.html" >Gromacs core modules</a> &raquo;</li>
-          <li><a href="../formats.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
+          <li><a href="../formats.html" accesskey="U"><tt class="docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -65,9 +65,8 @@ access to such files and adds a number of methods to access the data
 <a class="reference internal" href="#gromacs.fileformats.xvg.XVG.set" title="gromacs.fileformats.xvg.XVG.set"><tt class="xref py py-meth docutils literal"><span class="pre">XVG.set()</span></tt></a> method one can have it deal with any kind of &#8220;NXY&#8221;
 data (typically: first column time, further coliumns scalar
 observables).</p>
-</div>
 <div class="section" id="errors">
-<h1>Errors<a class="headerlink" href="#errors" title="Permalink to this headline">¶</a></h1>
+<h2>Errors<a class="headerlink" href="#errors" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="#gromacs.fileformats.xvg.XVG.error" title="gromacs.fileformats.xvg.XVG.error"><tt class="xref py py-attr docutils literal"><span class="pre">XVG.error</span></tt></a> attribute contains the statistical error for
 each timeseries. It is computed from the standard deviation of the
 fluctuations from the mean and their correlation time. The parameters
@@ -79,7 +78,7 @@ for the calculations of the correlation time are set with
 </div>
 </div>
 <div class="section" id="plotting">
-<h1>Plotting<a class="headerlink" href="#plotting" title="Permalink to this headline">¶</a></h1>
+<h2>Plotting<a class="headerlink" href="#plotting" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="#gromacs.fileformats.xvg.XVG.plot" title="gromacs.fileformats.xvg.XVG.plot"><tt class="xref py py-meth docutils literal"><span class="pre">XVG.plot()</span></tt></a> and <a class="reference internal" href="#gromacs.fileformats.xvg.XVG.errorbar" title="gromacs.fileformats.xvg.XVG.errorbar"><tt class="xref py py-meth docutils literal"><span class="pre">XVG.errorbar()</span></tt></a> methods are set up to
 produce graphs of multiple columns simultaneously. It is also possible
 to coarse grain the data for plotting (which typically results in
@@ -106,7 +105,7 @@ points.</li>
 </div>
 </div>
 <div class="section" id="example">
-<h1>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h1>
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <p>In this example we generate a noisy time series of a sine wave. We
 store the time, the value, and an error. (In a real example, the
 value might be the mean over multiple observations and the error might
@@ -130,7 +129,7 @@ be the estimated error of the mean.)</p>
 </div>
 <p>(see output in Figure <a class="reference internal" href="#figure-xvg-decimated-label"><em>Plot of Raw vs Decimated data</em></a>)</p>
 <div class="figure align-right" id="figure-xvg-decimated-label" style="width: 40%">
-<a class="reference internal image-reference" href="../../../_images/xvg_decimated.png"><img alt="plot of a raw noisy sin(x) graph versus its decimated version" src="../../../_images/xvg_decimated.png" style="width: 382.9px; height: 338.1px;" /></a>
+<a class="reference internal image-reference" href="../../../_images/xvg_decimated1.png"><img alt="plot of a raw noisy sin(x) graph versus its decimated version" src="../../../_images/xvg_decimated1.png" style="width: 382.9px; height: 338.1px;" /></a>
 <p class="caption"><strong>Plot of Raw vs Decimated data.</strong> Example of plotting raw data
 (sine on 50,000 points, gray) versus the decimated graph (reduced
 to 1000 points, red line). The errors were also decimated and
@@ -148,7 +147,7 @@ column 1) is fixed to &#8220;mean&#8221; but the errors (typically columns 2 and
 3) can also be reduced with <em>error_method</em> = &#8220;rms&#8221;.</p>
 </div>
 <div class="section" id="classes">
-<h1>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h1>
+<h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="gromacs.fileformats.xvg.XVG">
 <em class="property">class </em><tt class="descclassname">gromacs.fileformats.xvg.</tt><tt class="descname">XVG</tt><big>(</big><em>filename=None</em>, <em>names=None</em>, <em>permissive=False</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.xvg.XVG" title="Permalink to this definition">¶</a></dt>
@@ -389,7 +388,7 @@ timepoints.</p>
 <dt id="gromacs.fileformats.xvg.XVG.error">
 <tt class="descname">error</tt><a class="headerlink" href="#gromacs.fileformats.xvg.XVG.error" title="Permalink to this definition">¶</a></dt>
 <dd><p>Error on the mean of the data, taking the correlation time into account.</p>
-<p>See <a class="reference internal" href="../../../numkit/timeseries.html#frenkelsmit2002">[FrenkelSmit2002]</a> <a class="reference external" href="http://books.google.co.uk/books?id=XmyO2oRUg0cC&amp;pg=PA526">p526</a>:</p>
+<p>See <a class="reference internal" href="#frenkelsmit2002">[FrenkelSmit2002]</a> <a class="reference external" href="http://books.google.co.uk/books?id=XmyO2oRUg0cC&amp;pg=PA526">p526</a>:</p>
 <blockquote>
 <div>error = sqrt(2*tc*acf[0]/T)</div></blockquote>
 <p>where acf() is the autocorrelation function of the fluctuations around
@@ -588,6 +587,7 @@ available</p>
 </dd></dl>
 
 </div>
+</div>
 
 
           </div>
@@ -597,16 +597,18 @@ available</p>
         <div class="sphinxsidebarwrapper">
   <h3><a href="../../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Simple xmgrace XVG file format</a></li>
+<li><a class="reference internal" href="#">Simple xmgrace XVG file format</a><ul>
 <li><a class="reference internal" href="#errors">Errors</a></li>
 <li><a class="reference internal" href="#plotting">Plotting</a></li>
 <li><a class="reference internal" href="#example">Example</a></li>
 <li><a class="reference internal" href="#classes">Classes</a></li>
 </ul>
+</li>
+</ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="../formats.html"
-                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a></p>
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="mdp.html"
                         title="next chapter">Gromacs parameter MDP file format</a></p>
@@ -650,7 +652,7 @@ available</p>
         <li><a href="../../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
           <li><a href="../../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../../core.html" >Gromacs core modules</a> &raquo;</li>
-          <li><a href="../formats.html" ><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
+          <li><a href="../formats.html" ><tt class="docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
