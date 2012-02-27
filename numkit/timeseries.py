@@ -8,27 +8,85 @@
 A time series contains of a sequence of time points (typically spaced
 equally) and a value for each time point.
 
-.. autofunction:: autocorrelation_fft
-.. autofunction:: tcorrel
-.. autofunction:: smooth
-.. autofunction:: smoothing_window_length
-.. autofunction:: mean_histogrammed_function
-.. autofunction:: regularized_function
 .. autoexception:: LowAccuracyWarning
 
+
+Correlations
+============
+
+.. autofunction:: tcorrel
+.. autofunction:: autocorrelation_fft
+
+Autocorrelation time (time when ACF becomes 0 for the first time)::
+
+   R = gromacs.formats.XVG("./md.xvg")
+   acf = autocorrelation_fft(R.array[1])
+   numpy.where(acf <= 0)[0][0]
+
+Alternatively, fit an exponential to the ACF and extract the time
+constant (see :func:`tcorrel`).
+
+
+Coarse graining time series
+===========================
+
+The functions in this section are all based on
+:func:`regularized_function`. They reduce the number of datapoints in
+a time series to *maxpoints* by histogramming the data into
+*maxpoints* bins and then applying a function to reduce the data in
+each bin. A number of commonly used functions are predefined but it is
+straightforward to either use :func:`apply_histogrammed_function` or
+:func:`regularized_function` directly. For instance,
+:func:`mean_histogrammed_function` is implemented as ::
+
+  def mean_histogrammed_function(t, y, maxpoints):
+      return apply_histogrammed_function(numpy.mean, t, y, maxpoints)
+
+More complicated functions can be defined; for instance, one could use
+:func:`tcorrel` to compute the correlation time of the data in short
+blocks::
+
+   def tc_histogrammed_function(t, y, maxpoints):
+      dt = numpy.mean(numpy.diff(t))
+      def get_tcorrel(y):
+         t = numpy.cumsum(dt*numpy.ones_like(y)) - dt
+         results = tcorrel(t, y, nstep=1)
+         return results['tc']
+      return apply_histogrammed_function(get_tcorrel, t, y, bins=maxpoints)
+
+(This particular function is not very robust, for instance it has
+problems when there are only very few data points in each bin because
+in this case the auto correlation function is not well defined.)
+
+.. autofunction:: mean_histogrammed_function
+.. autofunction:: rms_histogrammed_function
+.. autofunction:: min_histogrammed_function
+.. autofunction:: max_histogrammed_function
+.. autofunction:: median_histogrammed_function
+.. autofunction:: percentile_histogrammed_function
+.. autofunction:: apply_histogrammed_function
+.. autofunction:: regularized_function
+
+
+Smoothing time series
+=====================
+
+Function :func:`smooth` applies a window kernel to a time series and
+smoothes fluctuations. The number of points in the time series stays
+the same.
+
+.. autofunction:: smooth
+.. autofunction:: smoothing_window_length
+
+
 """
-# doc notes:
-# Autocorrelation time (time when ACF becomes 0 for the first time)::
-#   R = gromacs.formats.XVG("./md.xvg")
-#   acf = mdpow.numkit.autocorrelation_fft(R.array[1])
-#   where(acf <= 0)[0][0]
-# Alternatively, fit an exponential to the ACF and extract the time constant.
 
 from itertools import izip
 
 import numpy
 import scipy.signal
 import scipy.integrate
+import scipy.stats
 
 import warnings
 import logging
@@ -120,7 +178,7 @@ def autocorrelation_fft(series, remove_mean=True, paddingcorrection=True,
             norm = 1.0
     return ac/norm
 
-def tcorrel(x,y,nstep=100,debug=False):
+def tcorrel(x, y, nstep=100, debug=False):
     """Calculate the correlation time and an estimate of the error of the mean <y>.
 
     The autocorrelation function f(t) is calculated via FFT on every *nstep* of
@@ -285,10 +343,99 @@ def mean_histogrammed_function(t, y, **kwargs):
 
     .. SeeAlso:: :func:`regularized_function` with *func* = :func:`numpy.mean`
     """
-    F, e = regularized_function(t, y, numpy.mean, **kwargs)
+    return apply_histogrammed_function(numpy.mean, t, y, **kwargs)
+
+def rms_histogrammed_function(t, y, **kwargs):
+    """Compute root mean square of data *y* in bins along *t*.
+
+    Returns the RMS-regularised function *F* and the centers of the bins.
+
+    .. SeeAlso:: :func:`regularized_function` with *func* = ``sqrt(mean(y*y))``
+    """
+    def rms(a):
+        return numpy.sqrt(numpy.mean(a*a))
+    return apply_histogrammed_function(rms, t, y, **kwargs)
+
+def min_histogrammed_function(t, y, **kwargs):
+    """Compute minimum of data *y* in bins along *t*.
+
+    Returns the min-regularised function *F* and the centers of the bins.
+
+    .. SeeAlso:: :func:`regularized_function` with *func* = ``min(y)``
+    """
+    return apply_histogrammed_function(numpy.min, t, y, **kwargs)
+
+def max_histogrammed_function(t, y, **kwargs):
+    """Compute maximum of data *y* in bins along *t*.
+
+    Returns the max-regularised function *F* and the centers of the bins.
+
+    .. SeeAlso:: :func:`regularized_function` with *func* = ``max(y)``
+    """
+    return apply_histogrammed_function(numpy.max, t, y, **kwargs)
+
+def median_histogrammed_function(t, y, **kwargs):
+    """Compute median of data *y* in bins along *t*.
+
+    Returns the median-regularised function *F* and the centers of the bins.
+
+    .. SeeAlso:: :func:`regularized_function` with *func* = ``median(y)``
+    """
+    return apply_histogrammed_function(numpy.median, t, y, **kwargs)
+
+def percentile_histogrammed_function(t, y, **kwargs):
+    """Compute the percentile *per* of data *y* in bins along *t*.
+
+    Returns the percentile-regularised function *F* and the centers of
+    the bins.
+
+    :Keywords:
+
+      *per*
+          percentile as a percentage, e.g. 75 is the value that splits
+          the data into the lower 75% and upper 25%; 50 is the median
+          [50.0]
+
+    .. SeeAlso:: :func:`regularized_function` with :func:`scipy.stats.scoreatpercentile`
+    """
+    def percentile(y, per=kwargs.pop('per', 50.), limit=kwargs.pop('limit', ()),
+                   interpolation_method='fraction'):
+        return scipy.stats.scoreatpercentile(y, per, limit=limit)
+    return apply_histogrammed_function(percentile, t, y, **kwargs)
+
+def tc_histogrammed_function(t, y, **kwargs):
+    """Calculate the correlation time in each bin using :func:`tcorrel`.
+
+    .. Warning:: Not well tested and fragile.
+    """
+    dt = numpy.mean(numpy.diff(t))
+    def get_tcorrel(y):
+        t = numpy.cumsum(dt*numpy.ones_like(y)) - dt
+        results = tcorrel(t, y, nstep=1)
+        return results['tc']
+    return apply_histogrammed_function(get_tcorrel, t, y, **kwargs)
+
+def error_histogrammed_function(t, y, **kwargs):
+    """Calculate the error in each bin using :func:`tcorrel`.
+
+    .. Warning:: Not well tested and fragile.
+    """
+    dt = numpy.mean(numpy.diff(t))
+    def get_tcorrel(y):
+        t = numpy.cumsum(dt*numpy.ones_like(y)) - dt
+        results = tcorrel(t, y, nstep=1)
+        return results['sigma']
+    return apply_histogrammed_function(get_tcorrel, t, y, **kwargs)
+
+def apply_histogrammed_function(func, t, y, **kwargs):
+    """Compute *func* of data *y* in bins along *t*.
+
+    Returns the median-regularised function *F* and the centers of the bins.
+    """
+    F, e = regularized_function(t, y, func, **kwargs)
     return F, 0.5*(e[:-1] + e[1:])
 
-def regularized_function(x, y, func, bins=None, range=None):
+def regularized_function(x, y, func, bins=100, range=None):
     """Compute func() over data aggregated in bins.
 
     ``(x,y) --> (x', func(Y'))``  with ``Y' = {y: y(x) where x in x' bin}``

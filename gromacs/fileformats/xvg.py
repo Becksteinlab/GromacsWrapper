@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 # GromacsWrapper: formats.py
 # Copyright (c) 2009-2011 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the GNU Public License 3 (or higher, your choice)
@@ -12,6 +13,54 @@ access to such files and adds a number of methods to access the data
 (as NumPy arrays), compute aggregates, or quickly plot it.
 
 .. _xmgrace: http://plasma-gate.weizmann.ac.il/Grace/
+
+The :class:`XVG` is useful beyond reading xvg files. With the
+:meth:`XVG.set` method one can have it deal with any kind of "NXY"
+data (typically: first column time, further coliumns scalar
+observables).
+
+Errors
+======
+
+The :attr:`XVG.error` attribute contains the statistical error for
+each timeseries. It is computed from the standard deviation of the
+fluctuations from the mean and their correlation time. The parameters
+for the calculations of the correlation time are set with
+:meth:`XVG.set_correlparameters`.
+
+.. SeeAlso:: :func:`numkit.timeseries.tcorrel`
+
+
+Plotting
+========
+
+The :meth:`XVG.plot` and :meth:`XVG.errorbar` methods are set up to
+produce graphs of multiple columns simultaneously. It is also possible
+to coarse grain the data for plotting (which typically results in
+visually smoothing the graph because noise is averaged out).
+
+Currently, two alternative algorithms to produce "coarse grained"
+(decimated) graphs are implemented and can be selected with the
+*method* keyword for the plotting functions in conjuction with
+*maxpoints* (the number of points to be plotted):
+
+1) **mean** histogram (default) --- bin the data (using
+   :func:`numkit.timeseries.regularized_function` and compute the
+   mean for each bin. Gives the exact number of desired points
+   but the time data are whatever the middle of the bin is.
+
+2) **smooth** subsampled --- smooth the data with a running average
+   (other windows like Hamming are also possible) and then pick data
+   points at a stepsize compatible with the number of data points
+   required. Will give exact times but not the exact number of data
+   points.
+
+For simple test data, both approaches give very similar output.
+
+.. SeeAlso:: :meth:`XVG.decimate`
+
+Classes
+=======
 
 .. autoclass:: XVG
    :members:
@@ -67,9 +116,11 @@ class XVG(utilities.FileUtils):
     These attributes are numpy arrays that correspond to the data columns,
     i.e. :attr:`XVG.array`[1:].
 
-    .. Note:: - Only simple XY or NXY files are currently supported, *not*
-                Grace files that contain multiple data sets separated by '&'.
-              - Any kind of formatting (i.e. :program:`xmgrace` commands) is discarded.
+    .. Note::
+
+       - Only simple XY or NXY files are currently supported, *not*
+         Grace files that contain multiple data sets separated by '&'.
+       - Any kind of formatting (i.e. :program:`xmgrace` commands) is discarded.
     """
 
     #: Default extension of XVG files.
@@ -396,18 +447,41 @@ class XVG(utilities.FileUtils):
         pylab.plot(ma[1:].T, **kwargs)   # plot all other columns in parallel
 
     def errorbar(self, **kwargs):
-        """Quick hack: errorbar plot.
+        """errorbar plot for a single time series with errors.
 
         Set *columns* keyword to select [x, y, dy] or [x, y, dx, dy],
         e.g. ``columns=[0,1,2]``. See :meth:`XVG.plot` for details.
-        """
-        # TODO: This was copy&paste+modify from plot() and hence most of the code is duplicated
-        #       -- needs to be done properly!!
 
+        By default, the data are decimated (see :meth:`XVG.plot`) for
+        the default of *maxpoints* = 50000 by averaging data in
+        *maxpoints* bins.
+
+        x,y,dx,dy data are plotted with error bars in the x- and
+        y-dimension (corresponding to *filled* = ``False``).
+
+        For x,y,dy use *filled* = ``True`` to fill the region between
+        y±dy. *fill_alpha* determines the transparency of the fill
+        color.
+
+        By default, the errors are decimated by plotting the 5% and
+        95% percentile of the data in each bin. The percentile can be
+        changed with the *percentile* keyword; e.g. *percentile* = 1
+        will plot the 1% and 99% perentile (as will *percentile* =
+        99).
+
+        The *error_method* keyword can be used to compute errors as
+        the root mean square sum (*error_metho* = "rms") across each
+        bin instead of percentiles ("percentile").
+        """
         import pylab
+
+        color = kwargs.pop('color', 'black')
+        filled = kwargs.pop('filled', True)
+        fill_alpha = kwargs.pop('fill_alpha', 0.2)
 
         kwargs.setdefault('capsize', 0)
         kwargs.setdefault('elinewidth', 1)
+        kwargs.setdefault('ecolor', color)
         kwargs.setdefault('alpha', 0.3)
         kwargs.setdefault('fmt', None)
 
@@ -415,18 +489,36 @@ class XVG(utilities.FileUtils):
         maxpoints = kwargs.pop('maxpoints', self.maxpoints_default)
         transform = kwargs.pop('transform', lambda x: x)  # default is identity transformation
         method = kwargs.pop('method', "mean")
+        if method != "mean":
+            raise NotImplementedError("For errors only method == 'mean' is supported.")
+        error_method = kwargs.pop('error_method', "percentile")  # can also use 'rms' and 'error'
+        percentile = kwargs.pop('percentile', 95.)
 
         # (decimate/smooth o slice o transform)(array)
-        a = self.decimate(method, numpy.asarray(transform(self.array))[columns], maxpoints)
-
-        if len(a.shape) == 1:
-            # special case: plot against index; plot would do this automatically but
-            # we'll just produce our own xdata and pretend that this was X all along
-            X = numpy.arange(len(a))
-            a = numpy.concatenate([[X], [a]])  # does NOT overwrite original a but make a new one
+        #a = self.decimate(method, numpy.asarray(transform(self.array))[columns], maxpoints)
+        data = numpy.asarray(transform(self.array))[columns]
+        a = numpy.zeros((data.shape[0], maxpoints), dtype=numpy.float64)
+        a[0:2] = self.decimate("mean", data[0:2], maxpoints)
+        error_data = numpy.vstack((data[0], data[2:]))
+        if error_method == "percentile":
+            if percentile > 50:
+                upper_per = percentile
+                lower_per = 100 - percentile
+            else:
+                upper_per = 100 - percentile
+                lower_per = percentile
+            upper = a[2:] = self.decimate("percentile", error_data,
+                                          maxpoints, per=upper_per)[1]
+            lower = self.decimate("percentile", error_data,
+                                  maxpoints, per=lower_per)[1]
+        else:
+            a[2:] = self.decimate(error_method, error_data, maxpoints)[1]
+            lower = None
 
         # now deal with infs, nans etc AFTER all transformations (needed for plotting across inf/nan)
         ma = numpy.ma.MaskedArray(a, mask=numpy.logical_not(numpy.isfinite(a)))
+        if lower is not None:
+            mlower = numpy.ma.MaskedArray(lower, mask=numpy.logical_not(numpy.isfinite(lower)))
 
         # finally plot
         X = ma[0]          # abscissa set separately
@@ -440,15 +532,45 @@ class XVG(utilities.FileUtils):
             except IndexError:
                 raise TypeError("Either too few columns selected or data does not have a error column")
 
-        pylab.errorbar(X, Y, **kwargs)
+        if filled:
+            # can only plot dx
+            if lower is None:
+                y1 = Y - kwargs['yerr']
+            else:
+                y1 = Y + mlower[-1]  # '+' because percentile is on the *signed* values
+            y2 = Y + kwargs['yerr']
+            pylab.fill_between(X, y1, y2, color=color, alpha=fill_alpha)
+        else:
+            pylab.errorbar(X, Y, **kwargs)
+
+        # clean up args for plot
+        for kw in "yerr", "xerr", "capsize", "ecolor", "elinewidth", "fmt":
+            kwargs.pop(kw, None)
+        kwargs['alpha'] = 1.0
+
+        pylab.plot(X, Y, color=color, **kwargs)
 
     def decimate(self, method, a, maxpoints, **kwargs):
         """Decimate data *a* to *maxpoints* using *method*.
 
-        Methods:
+        If *a* is a 1D array then it is promoted to a (2, N) array
+        where the first column simply contains the index.
+
+        If the array contains fewer than *maxpoints* points or if
+        *maxpoints* is ``None`` then it is returned as it is.
+
+        Valid values for the reduction *method*:
 
           * "mean", uses :meth:`XVG.decimate_mean` to coarse grain by
             averaging the data in bins along the time axis
+
+          * "rms", uses :meth:`XVG.decimate_rms` to coarse grain by
+            computing the root mean square sum of the data in bins
+            along the time axis (for averaging standard deviations and
+            errors)
+
+          * "percentile" with keyword *per*: :meth:`XVG.decimate_percentile`
+            reduces data in each bin to the percentile *per*
 
           * "smooth", uses :meth:`XVG.decimate_smooth` to subsample
             from a smoothed function (generated with a running average
@@ -457,29 +579,10 @@ class XVG(utilities.FileUtils):
         """
         methods = {'mean': self.decimate_mean,
                    'smooth': self.decimate_smooth,
+                   'rms': self.decimate_rms,
+                   'percentile': self.decimate_percentile,
+                   'error': self.decimate_error,  # undocumented, not working well
                    }
-        return methods[method](a, maxpoints, **kwargs)
-
-    def decimate_mean(self, a, maxpoints, **kwargs):
-        """Return data *a* decimated on *maxpoints*.
-
-        Histograms each column into *maxpoints* bins and calculates
-        the weighted average in each bin as the decimated data, using
-        :func:`numkit.timeseries.mean_histogram`. The coarse grained
-        time in the first column contains the centers of the histogram
-        time.
-
-        If *a* contains <= *maxpoints* then *a* is simply returned;
-        otherwise a new array of the same dimensions but with a
-        reduced number of  *maxpoints* points is returned.
-
-        .. Warning::
-
-           Assumes that the first column is time, except when the
-           input array *a* is 1D and therefore to be assumed to be
-           data at equidistance timepoints.
-
-        """
         if len(a.shape) == 1:
             # add first column as index
             # (probably should do this in class/init anyway...)
@@ -488,18 +591,115 @@ class XVG(utilities.FileUtils):
         ny = a.shape[-1]   # assume 1D or 2D array with last dimension varying fastest
         if maxpoints is None or ny <= maxpoints:
             return a
+        return methods[method](a, maxpoints, **kwargs)
 
+    def decimate_mean(self, a, maxpoints, **kwargs):
+        """Return data *a* mean-decimated on *maxpoints*.
+
+        Histograms each column into *maxpoints* bins and calculates
+        the weighted average in each bin as the decimated data, using
+        :func:`numkit.timeseries.mean_histogrammed_function`. The coarse grained
+        time in the first column contains the centers of the histogram
+        time.
+
+        If *a* contains <= *maxpoints* then *a* is simply returned;
+        otherwise a new array of the same dimensions but with a
+        reduced number of  *maxpoints* points is returned.
+
+        .. Note::
+
+           Assumes that the first column is time.
+
+        """
+        return self._decimate(numkit.timeseries.mean_histogrammed_function, a, maxpoints, **kwargs)
+
+    def decimate_rms(self, a, maxpoints, **kwargs):
+        """Return data *a* rms-decimated on *maxpoints*.
+
+        Histograms each column into *maxpoints* bins and calculates
+        the root mean square sum in each bin as the decimated data,
+        using :func:`numkit.timeseries.rms_histogrammed_function`. The coarse
+        grained time in the first column contains the centers of the
+        histogram time.
+
+        If *a* contains <= *maxpoints* then *a* is simply returned;
+        otherwise a new array of the same dimensions but with a
+        reduced number of  *maxpoints* points is returned.
+
+        .. Note::
+
+           Assumes that the first column is time.
+
+        """
+        return self._decimate(numkit.timeseries.rms_histogrammed_function, a, maxpoints, **kwargs)
+
+    def decimate_percentile(self, a, maxpoints, **kwargs):
+        """Return data *a* percentile-decimated on *maxpoints*.
+
+        Histograms each column into *maxpoints* bins and calculates
+        the percentile *per* in each bin as the decimated data, using
+        :func:`numkit.timeseries.percentile_histogrammed_function`. The
+        coarse grained time in the first column contains the centers
+        of the histogram time.
+
+        If *a* contains <= *maxpoints* then *a* is simply returned;
+        otherwise a new array of the same dimensions but with a
+        reduced number of  *maxpoints* points is returned.
+
+        .. Note::
+
+           Assumes that the first column is time.
+
+        :Keywords:
+
+        *per*
+            percentile as a percentage, e.g. 75 is the value that splits
+            the data into the lower 75% and upper 25%; 50 is the median [50.0]
+
+        .. SeeAlso:: :func:`regularized_function` with :func:`scipy.stats.scoreatpercentile`
+        """
+        return self._decimate(numkit.timeseries.percentile_histogrammed_function, a, maxpoints, **kwargs)
+
+    def decimate_error(self, a, maxpoints, **kwargs):
+        """Return data *a* error-decimated on *maxpoints*.
+
+        Histograms each column into *maxpoints* bins and calculates an
+        error estimate in each bin as the decimated data, using
+        :func:`numkit.timeseries.error_histogrammed_function`. The
+        coarse grained time in the first column contains the centers
+        of the histogram time.
+
+        If *a* contains <= *maxpoints* then *a* is simply returned;
+        otherwise a new array of the same dimensions but with a
+        reduced number of  *maxpoints* points is returned.
+
+        .. SeeAlso:: :func:`numkit.timeseries.tcorrel`
+
+        .. Note::
+
+           Assumes that the first column is time.
+
+           Does not work very well because often there are too few
+           datapoints to compute a good autocorrelation function.
+
+        """
+        warnings.warn("Using undocumented decimate_error() is highly EXPERIMENTAL",
+                      category=LowAccuracyWarning)
+        return self._decimate(numkit.timeseries.error_histogrammed_function, a, maxpoints, **kwargs)
+
+    def _decimate(self, func, a, maxpoints, **kwargs):
+        ny = a.shape[-1]   # assume 2D array with last dimension varying fastest
         out = numpy.zeros((a.shape[0], maxpoints), dtype=float)
 
         t = a[0]
         for i in xrange(1, a.shape[0]):
             # compute regularised data for each column separately
-            out[i], out[0] = numkit.timeseries.mean_histogrammed_function(t, a[i], bins=maxpoints)
+            out[i], out[0] = func(t, a[i], bins=maxpoints, **kwargs)
 
         if maxpoints == self.maxpoints_default:  # only warn if user did not set maxpoints
             warnings.warn("Plot had %d datapoints > maxpoints = %d; decimated to %d regularly "
-                          "spaced points by computing the bin-means from the histogrammed data."
-                          % (ny, maxpoints, maxpoints),
+                          "spaced points from the histogrammed data with %s()."
+                          % (ny, maxpoints, maxpoints, func.func_name),
                           category=AutoCorrectionWarning)
         return out
 
@@ -515,7 +715,7 @@ class XVG(utilities.FileUtils):
         otherwise a new array of the same dimensions but with a
         reduced number of points (close to *maxpoints*) is returned.
 
-        .. Warning::
+        .. Note::
 
            Assumes that the first column is time (which will *never*
            be smoothed/averaged), except when the input array *a* is
@@ -525,11 +725,7 @@ class XVG(utilities.FileUtils):
         TODO:
         - Allow treating the 1st column as data
         """
-
         ny = a.shape[-1]   # assume 1D or 2D array with last dimension varying fastest
-        if maxpoints is None or ny <= maxpoints:
-            return a
-
         # reduce size by averaging oover stepsize steps and then just
         # picking every stepsize data points.  (primitive --- can
         # leave out bits at the end or end up with almost twice of
@@ -540,14 +736,11 @@ class XVG(utilities.FileUtils):
         out = numpy.empty_like(a)
 
         # smoothed
-        if len(a.shape) == 1:
-            out[:] = numkit.timeseries.smooth(a, stepsize, window=window)
-        else:
-            out[0,:] = a[0]
-            for i in xrange(1, a.shape[0]):
-                # process columns because smooth() only handles 1D arrays :-p
-                # should change y in place
-                out[i,:] = numkit.timeseries.smooth(a[i], stepsize, window=window)
+        out[0,:] = a[0]
+        for i in xrange(1, a.shape[0]):
+            # process columns because smooth() only handles 1D arrays :-p
+            out[i,:] = numkit.timeseries.smooth(a[i], stepsize, window=window)
+
         if maxpoints == self.maxpoints_default:  # only warn if user did not set maxpoints
             warnings.warn("Plot had %d datapoints > maxpoints = %d; decimated to %d regularly "
                           "spaced points with smoothing (%r) over %d steps."
