@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 # GromacsWrapper: formats.py
-# Copyright (c) 2009-2011 Oliver Beckstein <orbeckst@gmail.com>
+# Copyright (c) 2009-2012 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
 """
@@ -14,10 +14,20 @@ access to such files and adds a number of methods to access the data
 
 .. _xmgrace: http://plasma-gate.weizmann.ac.il/Grace/
 
-The :class:`XVG` is useful beyond reading xvg files. With the
+The :class:`XVG` class is useful beyond reading xvg files. With the
 :meth:`XVG.set` method one can have it deal with any kind of "NXY"
-data (typically: first column time, further coliumns scalar
-observables).
+data (typically: first column time or position, further columns scalar
+observables). The data should be a NumPy :class:`numpy.ndarray` array
+``a`` with :attr:`~numpy.array.shape`` ``(M, N)`` where *M*-1 is the
+number of observables and *N* the number of observations, e.g.the
+number of time points in a time series. ``a[0]`` is the time or
+position and ``a[1:]`` the *M*-1 data columns.
+
+Plotting from :class:`XVG` is fairly flexible as one can always pass
+the *columns* keyword to select which columns are to be plotted. It is
+typically assumed that the first column in the selected (sub)array
+contains the abscissa ("x-axis") of the graph and all further columns
+are plotted against the first one.
 
 Errors
 ------
@@ -512,18 +522,23 @@ class XVG(utilities.FileUtils):
         """errorbar plot for a single time series with errors.
 
         Set *columns* keyword to select [x, y, dy] or [x, y, dx, dy],
-        e.g. ``columns=[0,1,2]``. See :meth:`XVG.plot` for details.
+        e.g. ``columns=[0,1,2]``. See :meth:`XVG.plot` for
+        details. Only a single timeseries can be plotted and the user
+        needs to select the appropriate columns with the *columns*
+        keyword.
 
         By default, the data are decimated (see :meth:`XVG.plot`) for
-        the default of *maxpoints* = 50000 by averaging data in
+        the default of *maxpoints* = 10000 by averaging data in
         *maxpoints* bins.
 
-        x,y,dx,dy data are plotted with error bars in the x- and
-        y-dimension (corresponding to *filled* = ``False``).
+        x,y,dx,dy data can plotted with error bars in the x- and
+        y-dimension (use *filled* = ``False``).
 
         For x,y,dy use *filled* = ``True`` to fill the region between
         y±dy. *fill_alpha* determines the transparency of the fill
-        color.
+        color. *filled* = ``False`` will draw lines for the error
+        bars. Additional keywords are passed to
+        :func:`pylab.errorbar`.
 
         By default, the errors are decimated by plotting the 5% and
         95% percentile of the data in each bin. The percentile can be
@@ -534,6 +549,10 @@ class XVG(utilities.FileUtils):
         The *error_method* keyword can be used to compute errors as
         the root mean square sum (*error_metho* = "rms") across each
         bin instead of percentiles ("percentile").
+
+        .. SeeAlso::
+
+           :meth:`XVG.plot` lists keywords common to both methods.
         """
         import pylab
 

@@ -351,7 +351,7 @@ def rms_histogrammed_function(t, y, **kwargs):
     Returns the RMS-regularised function *F* and the centers of the
     bins. *demean* = ``True`` removes the mean first.
 
-    .. SeeAlso:: :func:`regularized_function` with *func* = ``sqrt(mean(y*y))``
+    :func:`regularized_function` with *func* = ``sqrt(mean(y*y))``
     """
     def rms(a, demean=kwargs.pop('demean', False)):
         if demean:
@@ -364,7 +364,7 @@ def min_histogrammed_function(t, y, **kwargs):
 
     Returns the min-regularised function *F* and the centers of the bins.
 
-    .. SeeAlso:: :func:`regularized_function` with *func* = ``min(y)``
+    :func:`regularized_function` with *func* = :func:`numpy.min`
     """
     return apply_histogrammed_function(numpy.min, t, y, **kwargs)
 
@@ -373,7 +373,7 @@ def max_histogrammed_function(t, y, **kwargs):
 
     Returns the max-regularised function *F* and the centers of the bins.
 
-    .. SeeAlso:: :func:`regularized_function` with *func* = ``max(y)``
+    :func:`regularized_function` with *func* = :func:`numpy.max`
     """
     return apply_histogrammed_function(numpy.max, t, y, **kwargs)
 
@@ -382,7 +382,7 @@ def median_histogrammed_function(t, y, **kwargs):
 
     Returns the median-regularised function *F* and the centers of the bins.
 
-    .. SeeAlso:: :func:`regularized_function` with *func* = ``median(y)``
+    :func:`regularized_function` with *func* = :func:`numpy.median`
     """
     return apply_histogrammed_function(numpy.median, t, y, **kwargs)
 
@@ -402,7 +402,7 @@ def percentile_histogrammed_function(t, y, **kwargs):
       *demean*
           ``True``: remove the mean of the bin data first [``False``]
 
-    .. SeeAlso:: :func:`regularized_function` with :func:`scipy.stats.scoreatpercentile`
+    :func:`regularized_function` with :func:`scipy.stats.scoreatpercentile`
     """
     def percentile(y, per=kwargs.pop('per', 50.), limit=kwargs.pop('limit', ()),
                    demean=kwargs.pop('demean', False), interpolation_method='fraction'):
@@ -438,18 +438,32 @@ def error_histogrammed_function(t, y, **kwargs):
 def apply_histogrammed_function(func, t, y, **kwargs):
     """Compute *func* of data *y* in bins along *t*.
 
-    Returns the median-regularised function *F* and the centers of the bins.
+    Returns the *func* -regularised function *F(t')* and the centers
+    of the bins *t'*.
+
+    .. function:: func(y) --> float
+
+       *func* takes exactly one argument, a numpy 1D array *y* (the
+       values in a single bin of the histogram), and reduces it to one
+       scalar float.
+
     """
     F, e = regularized_function(t, y, func, **kwargs)
     return F, 0.5*(e[:-1] + e[1:])
 
 def regularized_function(x, y, func, bins=100, range=None):
-    """Compute func() over data aggregated in bins.
+    """Compute *func()* over data aggregated in bins.
 
     ``(x,y) --> (x', func(Y'))``  with ``Y' = {y: y(x) where x in x' bin}``
 
-    First the data is collected in bins x' along x and then func is applied to
-    all data points Y' that have been collected in the bin.
+    First the data is collected in bins x' along x and then *func* is
+    applied to all data points Y' that have been collected in the bin.
+
+    .. function:: func(y) --> float
+
+       *func* takes exactly one argument, a numpy 1D array *y* (the
+       values in a single bin of the histogram), and reduces it to one
+       scalar float.
 
     .. Note:: *x* and *y* must be 1D arrays.
 
@@ -469,7 +483,8 @@ def regularized_function(x, y, func, bins=100, range=None):
        F,edges
           function and edges (``midpoints = 0.5*(edges[:-1]+edges[1:])``)
 
-    (This function originated as :func:`recsql.sqlfunctions.regularized_function`.)
+    (This function originated as
+    :func:`recsql.sqlfunctions.regularized_function`.)
     """
     _x = numpy.asarray(x)
     _y = numpy.asarray(y)
