@@ -143,7 +143,7 @@ application.)</p>
 warnings (<tt class="xref py py-exc docutils literal"><span class="pre">Gromacs*Warning</span></tt>, <a class="reference internal" href="#gromacs.AutoCorrectionWarning" title="gromacs.AutoCorrectionWarning"><tt class="xref py py-exc docutils literal"><span class="pre">AutoCorrectionWarning</span></tt></a>,
 <a class="reference internal" href="#gromacs.BadParameterWarning" title="gromacs.BadParameterWarning"><tt class="xref py py-exc docutils literal"><span class="pre">BadParameterWarning</span></tt></a>) can be raised.</p>
 <p>If you want to stop execution at, for instance, a <a class="reference internal" href="#gromacs.AutoCorrectionWarning" title="gromacs.AutoCorrectionWarning"><tt class="xref py py-exc docutils literal"><span class="pre">AutoCorrectionWarning</span></tt></a> or
-<a class="reference internal" href="#gromacs.BadParameterWarning" title="gromacs.BadParameterWarning"><tt class="xref py py-exc docutils literal"><span class="pre">BadParameterWarning</span></tt></a> then use the python <a class="reference external" href="http://docs.python.org/library/warnings.html#module-warnings" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">warnings</span></tt></a> filter:</p>
+<a class="reference internal" href="#gromacs.BadParameterWarning" title="gromacs.BadParameterWarning"><tt class="xref py py-exc docutils literal"><span class="pre">BadParameterWarning</span></tt></a> then use the python <a class="reference external" href="http://docs.python.org/library/warnings.html#warnings" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">warnings</span></tt></a> filter:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">warnings</span>
 <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s">&#39;error&#39;</span><span class="p">,</span> <span class="n">gromacs</span><span class="o">.</span><span class="n">AutoCorrectionWarning</span><span class="p">)</span>
 <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s">&#39;error&#39;</span><span class="p">,</span> <span class="n">gromacs</span><span class="o">.</span><span class="n">BadParameterWarning</span><span class="p">)</span>
@@ -327,7 +327,7 @@ for more details on configuration.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Jan 06, 2012.
+      Last updated on Feb 27, 2012.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>

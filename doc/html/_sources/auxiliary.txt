@@ -13,5 +13,4 @@ if we ever get to a 1.0 release...).
 
    numkit
    vmd
-   edpdb
    staging

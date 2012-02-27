@@ -56,63 +56,17 @@
             
   <span class="target" id="module-numkit.timeseries"></span><div class="section" id="numkit-timeseries-time-series-manipulation-and-analysis">
 <h1><a class="reference internal" href="#module-numkit.timeseries" title="numkit.timeseries"><tt class="xref py py-mod docutils literal"><span class="pre">numkit.timeseries</span></tt></a> &#8212; Time series manipulation and analysis<a class="headerlink" href="#numkit-timeseries-time-series-manipulation-and-analysis" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
-<dt id="numkit.timeseries.autocorrelation_fft">
-<tt class="descclassname">numkit.timeseries.</tt><tt class="descname">autocorrelation_fft</tt><big>(</big><em>series</em>, <em>remove_mean=True</em>, <em>paddingcorrection=True</em>, <em>normalize=False</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#numkit.timeseries.autocorrelation_fft" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the auto correlation function.</p>
-<blockquote>
-<div>autocorrelation_fft(series,remove_mean=False,**kwargs) &#8211;&gt; acf</div></blockquote>
-<p>The time series is correlated with itself across its whole length. Only the
-[0,len(series)[ interval is returned.</p>
-<p>By default, the mean of the series is subtracted and the correlation of the
-fluctuations around the mean are investigated.</p>
-<p>For the default setting remove_mean=True, acf[0] equals the variance of
-the series, acf[0] = Var(series) = &lt;(series - &lt;series&gt;)**2&gt;.</p>
-<p>Optional:</p>
-<ul class="simple">
-<li>The series can be normalized to its 0-th element so that acf[0] == 1.</li>
-<li>For calculating the acf, 0-padding is used. The ACF should be corrected
-for the 0-padding (the values for larger lags are increased) unless
-mode=&#8217;valid&#8217; is set (see below).</li>
-</ul>
-<p>Note that the series for mode=&#8217;same&#8217;|&#8217;full&#8217; is inaccurate for long times
-and should probably be truncated at 1/2*len(series)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
-<dt><em>series</em></dt>
-<dd><p class="first last">(time) series, a 1D numpy array of length N</p>
-</dd>
-<dt><em>remove_mean</em></dt>
-<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">False</span></tt>: use series as is;
-<tt class="xref docutils literal"><span class="pre">True</span></tt>: subtract mean(series) from series [<tt class="xref docutils literal"><span class="pre">True</span></tt>]</p>
-</dd>
-<dt><em>paddingcorrection</em></dt>
-<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">False</span></tt>: corrected for 0-padding; <tt class="xref docutils literal"><span class="pre">True</span></tt>: return as is it is.
-(the latter is appropriate for periodic signals).
-The correction for element 0=&lt;i&lt;N amounts to a factor N/(N-i). Only 
-applied for modes != &#8220;valid&#8221;       [<tt class="xref docutils literal"><span class="pre">True</span></tt>]</p>
-</dd>
-<dt><em>normalize</em></dt>
-<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt> divides by acf[0] so that the first element is 1;
-<tt class="xref docutils literal"><span class="pre">False</span></tt> leaves un-normalized [<tt class="xref docutils literal"><span class="pre">False</span></tt>]</p>
-</dd>
-<dt><em>mode</em></dt>
-<dd><p class="first last">&#8220;full&#8221; | &#8220;same&#8221; | &#8220;valid&#8221;: see <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.fftconvolve.html#scipy.signal.fftconvolve" title="(in SciPy v0.11.dev)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.signal.fftconvolve()</span></tt></a>
-[&#8220;full&#8221;]</p>
-</dd>
-<dt><em>kwargs</em></dt>
-<dd><p class="first last">other keyword arguments for <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.fftconvolve.html#scipy.signal.fftconvolve" title="(in SciPy v0.11.dev)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.signal.fftconvolve()</span></tt></a></p>
-</dd>
-</dl>
-</td>
-</tr>
-</tbody>
-</table>
+<p>A time series contains of a sequence of time points (typically spaced
+equally) and a value for each time point.</p>
+<dl class="exception">
+<dt id="numkit.timeseries.LowAccuracyWarning">
+<em class="property">exception </em><tt class="descclassname">numkit.timeseries.</tt><tt class="descname">LowAccuracyWarning</tt><a class="headerlink" href="#numkit.timeseries.LowAccuracyWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Warns that results may possibly have low accuracy.</p>
 </dd></dl>
 
+</div>
+<div class="section" id="correlations">
+<h1>Correlations<a class="headerlink" href="#correlations" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="numkit.timeseries.tcorrel">
 <tt class="descclassname">numkit.timeseries.</tt><tt class="descname">tcorrel</tt><big>(</big><em>x</em>, <em>y</em>, <em>nstep=100</em>, <em>debug=False</em><big>)</big><a class="headerlink" href="#numkit.timeseries.tcorrel" title="Permalink to this definition">¶</a></dt>
@@ -163,10 +117,318 @@ for the mean of y, &lt;y&gt;, corrected for correlations in the data).</p>
 </table>
 </dd></dl>
 
-<dl class="exception">
-<dt id="numkit.timeseries.LowAccuracyWarning">
-<em class="property">exception </em><tt class="descclassname">numkit.timeseries.</tt><tt class="descname">LowAccuracyWarning</tt><a class="headerlink" href="#numkit.timeseries.LowAccuracyWarning" title="Permalink to this definition">¶</a></dt>
-<dd><p>Warns that results may possibly have low accuracy.</p>
+<dl class="function">
+<dt id="numkit.timeseries.autocorrelation_fft">
+<tt class="descclassname">numkit.timeseries.</tt><tt class="descname">autocorrelation_fft</tt><big>(</big><em>series</em>, <em>remove_mean=True</em>, <em>paddingcorrection=True</em>, <em>normalize=False</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#numkit.timeseries.autocorrelation_fft" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the auto correlation function.</p>
+<blockquote>
+<div>autocorrelation_fft(series,remove_mean=False,**kwargs) &#8211;&gt; acf</div></blockquote>
+<p>The time series is correlated with itself across its whole length. Only the
+[0,len(series)[ interval is returned.</p>
+<p>By default, the mean of the series is subtracted and the correlation of the
+fluctuations around the mean are investigated.</p>
+<p>For the default setting remove_mean=True, acf[0] equals the variance of
+the series, acf[0] = Var(series) = &lt;(series - &lt;series&gt;)**2&gt;.</p>
+<p>Optional:</p>
+<ul class="simple">
+<li>The series can be normalized to its 0-th element so that acf[0] == 1.</li>
+<li>For calculating the acf, 0-padding is used. The ACF should be corrected
+for the 0-padding (the values for larger lags are increased) unless
+mode=&#8217;valid&#8217; is set (see below).</li>
+</ul>
+<p>Note that the series for mode=&#8217;same&#8217;|&#8217;full&#8217; is inaccurate for long times
+and should probably be truncated at 1/2*len(series)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>series</em></dt>
+<dd><p class="first last">(time) series, a 1D numpy array of length N</p>
+</dd>
+<dt><em>remove_mean</em></dt>
+<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">False</span></tt>: use series as is;
+<tt class="xref docutils literal"><span class="pre">True</span></tt>: subtract mean(series) from series [<tt class="xref docutils literal"><span class="pre">True</span></tt>]</p>
+</dd>
+<dt><em>paddingcorrection</em></dt>
+<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">False</span></tt>: corrected for 0-padding; <tt class="xref docutils literal"><span class="pre">True</span></tt>: return as is it is.
+(the latter is appropriate for periodic signals).
+The correction for element 0=&lt;i&lt;N amounts to a factor N/(N-i). Only
+applied for modes != &#8220;valid&#8221;       [<tt class="xref docutils literal"><span class="pre">True</span></tt>]</p>
+</dd>
+<dt><em>normalize</em></dt>
+<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt> divides by acf[0] so that the first element is 1;
+<tt class="xref docutils literal"><span class="pre">False</span></tt> leaves un-normalized [<tt class="xref docutils literal"><span class="pre">False</span></tt>]</p>
+</dd>
+<dt><em>mode</em></dt>
+<dd><p class="first last">&#8220;full&#8221; | &#8220;same&#8221; | &#8220;valid&#8221;: see <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.fftconvolve.html#scipy.signal.fftconvolve" title="(in SciPy v0.11.dev)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.signal.fftconvolve()</span></tt></a>
+[&#8220;full&#8221;]</p>
+</dd>
+<dt><em>kwargs</em></dt>
+<dd><p class="first last">other keyword arguments for <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.fftconvolve.html#scipy.signal.fftconvolve" title="(in SciPy v0.11.dev)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.signal.fftconvolve()</span></tt></a></p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>Autocorrelation time (time when ACF becomes 0 for the first time):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">R</span> <span class="o">=</span> <span class="n">gromacs</span><span class="o">.</span><span class="n">formats</span><span class="o">.</span><span class="n">XVG</span><span class="p">(</span><span class="s">&quot;./md.xvg&quot;</span><span class="p">)</span>
+<span class="n">acf</span> <span class="o">=</span> <span class="n">autocorrelation_fft</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">array</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">acf</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Alternatively, fit an exponential to the ACF and extract the time
+constant (see <a class="reference internal" href="#numkit.timeseries.tcorrel" title="numkit.timeseries.tcorrel"><tt class="xref py py-func docutils literal"><span class="pre">tcorrel()</span></tt></a>).</p>
+</div>
+<div class="section" id="coarse-graining-time-series">
+<h1>Coarse graining time series<a class="headerlink" href="#coarse-graining-time-series" title="Permalink to this headline">¶</a></h1>
+<p>The functions in this section are all based on
+<a class="reference internal" href="#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">regularized_function()</span></tt></a>. They reduce the number of datapoints in
+a time series to <em>maxpoints</em> by histogramming the data into
+<em>maxpoints</em> bins and then applying a function to reduce the data in
+each bin. A number of commonly used functions are predefined but it is
+straightforward to either use <a class="reference internal" href="#numkit.timeseries.apply_histogrammed_function" title="numkit.timeseries.apply_histogrammed_function"><tt class="xref py py-func docutils literal"><span class="pre">apply_histogrammed_function()</span></tt></a> or
+<a class="reference internal" href="#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">regularized_function()</span></tt></a> directly. For instance,
+<a class="reference internal" href="#numkit.timeseries.mean_histogrammed_function" title="numkit.timeseries.mean_histogrammed_function"><tt class="xref py py-func docutils literal"><span class="pre">mean_histogrammed_function()</span></tt></a> is implemented as</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">mean_histogrammed_function</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">maxpoints</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">apply_histogrammed_function</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">maxpoints</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>More complicated functions can be defined; for instance, one could use
+<a class="reference internal" href="#numkit.timeseries.tcorrel" title="numkit.timeseries.tcorrel"><tt class="xref py py-func docutils literal"><span class="pre">tcorrel()</span></tt></a> to compute the correlation time of the data in short
+blocks:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">tc_histogrammed_function</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">maxpoints</span><span class="p">):</span>
+   <span class="n">dt</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+   <span class="k">def</span> <span class="nf">get_tcorrel</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
+      <span class="n">t</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">dt</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">y</span><span class="p">))</span> <span class="o">-</span> <span class="n">dt</span>
+      <span class="n">results</span> <span class="o">=</span> <span class="n">tcorrel</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">nstep</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+      <span class="k">return</span> <span class="n">results</span><span class="p">[</span><span class="s">&#39;tc&#39;</span><span class="p">]</span>
+   <span class="k">return</span> <span class="n">apply_histogrammed_function</span><span class="p">(</span><span class="n">get_tcorrel</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">maxpoints</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(This particular function is not very robust, for instance it has
+problems when there are only very few data points in each bin because
+in this case the auto correlation function is not well defined.)</p>
+<dl class="function">
+<dt id="numkit.timeseries.mean_histogrammed_function">
+<tt class="descclassname">numkit.timeseries.</tt><tt class="descname">mean_histogrammed_function</tt><big>(</big><em>t</em>, <em>y</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#numkit.timeseries.mean_histogrammed_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute mean of data <em>y</em> in bins along <em>t</em>.</p>
+<p>Returns the mean-regularised function <em>F</em> and the centers of the bins.</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">regularized_function()</span></tt></a> with <em>func</em> = <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.mean.html#numpy.mean" title="(in NumPy v1.7.dev-3f685a1)"><tt class="xref py py-func docutils literal"><span class="pre">numpy.mean()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="numkit.timeseries.rms_histogrammed_function">
+<tt class="descclassname">numkit.timeseries.</tt><tt class="descname">rms_histogrammed_function</tt><big>(</big><em>t</em>, <em>y</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#numkit.timeseries.rms_histogrammed_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute root mean square of data <em>y</em> in bins along <em>t</em>.</p>
+<p>Returns the RMS-regularised function <em>F</em> and the centers of the bins.</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">regularized_function()</span></tt></a> with <em>func</em> = <tt class="docutils literal"><span class="pre">sqrt(mean(y*y))</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="numkit.timeseries.min_histogrammed_function">
+<tt class="descclassname">numkit.timeseries.</tt><tt class="descname">min_histogrammed_function</tt><big>(</big><em>t</em>, <em>y</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#numkit.timeseries.min_histogrammed_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute minimum of data <em>y</em> in bins along <em>t</em>.</p>
+<p>Returns the min-regularised function <em>F</em> and the centers of the bins.</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">regularized_function()</span></tt></a> with <em>func</em> = <tt class="docutils literal"><span class="pre">min(y)</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="numkit.timeseries.max_histogrammed_function">
+<tt class="descclassname">numkit.timeseries.</tt><tt class="descname">max_histogrammed_function</tt><big>(</big><em>t</em>, <em>y</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#numkit.timeseries.max_histogrammed_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute maximum of data <em>y</em> in bins along <em>t</em>.</p>
+<p>Returns the max-regularised function <em>F</em> and the centers of the bins.</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">regularized_function()</span></tt></a> with <em>func</em> = <tt class="docutils literal"><span class="pre">max(y)</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="numkit.timeseries.median_histogrammed_function">
+<tt class="descclassname">numkit.timeseries.</tt><tt class="descname">median_histogrammed_function</tt><big>(</big><em>t</em>, <em>y</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#numkit.timeseries.median_histogrammed_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute median of data <em>y</em> in bins along <em>t</em>.</p>
+<p>Returns the median-regularised function <em>F</em> and the centers of the bins.</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">regularized_function()</span></tt></a> with <em>func</em> = <tt class="docutils literal"><span class="pre">median(y)</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="numkit.timeseries.percentile_histogrammed_function">
+<tt class="descclassname">numkit.timeseries.</tt><tt class="descname">percentile_histogrammed_function</tt><big>(</big><em>t</em>, <em>y</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#numkit.timeseries.percentile_histogrammed_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the percentile <em>per</em> of data <em>y</em> in bins along <em>t</em>.</p>
+<p>Returns the percentile-regularised function <em>F</em> and the centers of
+the bins.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>per</em></dt>
+<dd><p class="first last">percentile as a percentage, e.g. 75 is the value that splits
+the data into the lower 75% and upper 25%; 50 is the median
+[50.0]</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">regularized_function()</span></tt></a> with <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.scoreatpercentile.html#scipy.stats.scoreatpercentile" title="(in SciPy v0.11.dev)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.stats.scoreatpercentile()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="numkit.timeseries.apply_histogrammed_function">
+<tt class="descclassname">numkit.timeseries.</tt><tt class="descname">apply_histogrammed_function</tt><big>(</big><em>func</em>, <em>t</em>, <em>y</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#numkit.timeseries.apply_histogrammed_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute <em>func</em> of data <em>y</em> in bins along <em>t</em>.</p>
+<p>Returns the median-regularised function <em>F</em> and the centers of the bins.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="numkit.timeseries.regularized_function">
+<tt class="descclassname">numkit.timeseries.</tt><tt class="descname">regularized_function</tt><big>(</big><em>x</em>, <em>y</em>, <em>func</em>, <em>bins=100</em>, <em>range=None</em><big>)</big><a class="headerlink" href="#numkit.timeseries.regularized_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute func() over data aggregated in bins.</p>
+<p><tt class="docutils literal"><span class="pre">(x,y)</span> <span class="pre">--&gt;</span> <span class="pre">(x',</span> <span class="pre">func(Y'))</span></tt>  with <tt class="docutils literal"><span class="pre">Y'</span> <span class="pre">=</span> <span class="pre">{y:</span> <span class="pre">y(x)</span> <span class="pre">where</span> <span class="pre">x</span> <span class="pre">in</span> <span class="pre">x'</span> <span class="pre">bin}</span></tt></p>
+<p>First the data is collected in bins x&#8217; along x and then func is applied to
+all data points Y&#8217; that have been collected in the bin.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><em>x</em> and <em>y</em> must be 1D arrays.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt>x</dt>
+<dd><p class="first last">abscissa values (for binning)</p>
+</dd>
+<dt>y</dt>
+<dd><p class="first last">ordinate values (func is applied)</p>
+</dd>
+<dt>func</dt>
+<dd><p class="first last">a numpy ufunc that takes one argument, func(Y&#8217;)</p>
+</dd>
+<dt>bins</dt>
+<dd><p class="first last">number or array</p>
+</dd>
+<dt>range</dt>
+<dd><p class="first last">limits (used with number of bins)</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
+<dt>F,edges</dt>
+<dd><p class="first last">function and edges (<tt class="docutils literal"><span class="pre">midpoints</span> <span class="pre">=</span> <span class="pre">0.5*(edges[:-1]+edges[1:])</span></tt>)</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p>(This function originated as <a class="reference external" href="http://orbeckst.github.com/RecSQL/programmers.html#recsql.sqlfunctions.regularized_function" title="(in RecSQL v0.7.8-dev)"><tt class="xref py py-func docutils literal"><span class="pre">recsql.sqlfunctions.regularized_function()</span></tt></a>.)</p>
+</dd></dl>
+
+</div>
+<div class="section" id="smoothing-time-series">
+<h1>Smoothing time series<a class="headerlink" href="#smoothing-time-series" title="Permalink to this headline">¶</a></h1>
+<p>Function <a class="reference internal" href="#numkit.timeseries.smooth" title="numkit.timeseries.smooth"><tt class="xref py py-func docutils literal"><span class="pre">smooth()</span></tt></a> applies a window kernel to a time series and
+smoothes fluctuations. The number of points in the time series stays
+the same.</p>
+<dl class="function">
+<dt id="numkit.timeseries.smooth">
+<tt class="descclassname">numkit.timeseries.</tt><tt class="descname">smooth</tt><big>(</big><em>x</em>, <em>window_len=11</em>, <em>window='flat'</em><big>)</big><a class="headerlink" href="#numkit.timeseries.smooth" title="Permalink to this definition">¶</a></dt>
+<dd><p>smooth the data using a window with requested size.</p>
+<p>This method is based on the convolution of a scaled window with the signal.
+The signal is prepared by introducing reflected copies of the signal
+(with the window size) in both ends so that transient parts are minimized
+in the begining and end part of the output signal.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>x</em></dt>
+<dd><p class="first last">the input signal, 1D array</p>
+</dd>
+<dt><em>window_len</em></dt>
+<dd><p class="first last">the dimension of the smoothing window, always converted to
+an integer (using <a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">int()</span></tt></a>) and must be odd</p>
+</dd>
+<dt><em>window</em></dt>
+<dd><p class="first last">the type of window from &#8216;flat&#8217;, &#8216;hanning&#8217;, &#8216;hamming&#8217;,
+&#8216;bartlett&#8217;, &#8216;blackman&#8217;; flat window will produce a moving
+average smoothing. If <em>window</em> is a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7.dev-3f685a1)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> then
+this array is directly used as the window (but it still must
+contain an odd number of points) [&#8220;flat&#8221;]</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">the smoothed signal as a 1D array</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Example :</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>Apply a simple moving average to a noisy harmonic signal:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">201</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">))</span><span class="o">*</span><span class="mf">0.1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">smooth</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Source: based on <a class="reference external" href="http://www.scipy.org/Cookbook/SignalSmooth">http://www.scipy.org/Cookbook/SignalSmooth</a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="numkit.timeseries.smoothing_window_length">
+<tt class="descclassname">numkit.timeseries.</tt><tt class="descname">smoothing_window_length</tt><big>(</big><em>resolution</em>, <em>t</em><big>)</big><a class="headerlink" href="#numkit.timeseries.smoothing_window_length" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the length of a smooting window of <em>resolution</em> time units.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<dt><em>resolution</em></dt>
+<dd><p class="first last">length in units of the time in which <em>t</em> us supplied</p>
+</dd>
+<dt><em>t</em></dt>
+<dd><p class="first last">array of time points; if not equidistantly spaced, the
+mean spacing is used to compute the window length</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">odd integer, the size of a window of approximately
+<em>resolution</em></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#numkit.timeseries.smooth" title="numkit.timeseries.smooth"><tt class="xref py py-func docutils literal"><span class="pre">smooth()</span></tt></a></p>
+</div>
 </dd></dl>
 
 </div>
@@ -177,6 +439,14 @@ for the mean of y, &lt;y&gt;, corrected for correlations in the data).</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">numkit.timeseries</span></tt> &#8212; Time series manipulation and analysis</a></li>
+<li><a class="reference internal" href="#correlations">Correlations</a></li>
+<li><a class="reference internal" href="#coarse-graining-time-series">Coarse graining time series</a></li>
+<li><a class="reference internal" href="#smoothing-time-series">Smoothing time series</a></li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="fitting.html"
                         title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">numkit.fitting</span></tt> &#8212; Fitting data</a></p>
@@ -227,7 +497,7 @@ for the mean of y, &lt;y&gt;, corrected for correlations in the data).</p>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Jan 06, 2012.
+      Last updated on Feb 27, 2012.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>

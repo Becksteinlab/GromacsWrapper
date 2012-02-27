@@ -992,7 +992,7 @@ values:</p>
 <li><tt class="xref docutils literal"><span class="pre">None</span></tt>: no fitting</li>
 </ul>
 </div></blockquote>
-<p class="last">If <em>fit</em> is not supplied then the constructore-default is used
+<p class="last">If <em>fit</em> is not supplied then the constructor-default is used
 (<tt class="xref py py-attr docutils literal"><span class="pre">_StripWater.parameters.fit</span></tt>).</p>
 </dd>
 <dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
@@ -1070,22 +1070,22 @@ with a simulation instance later.</p>
 <dd><p class="first last">The <a class="reference internal" href="core.html#gromacs.analysis.Simulation" title="gromacs.analysis.Simulation"><tt class="xref py py-class docutils literal"><span class="pre">gromacs.analysis.Simulation</span></tt></a> instance that owns the plugin.</p>
 </dd>
 <dt><em>force</em></dt>
-<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt> will always regenerate trajectories even if they 
+<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt> will always regenerate trajectories even if they
 already exist, <tt class="xref docutils literal"><span class="pre">False</span></tt> raises an exception, <tt class="xref docutils literal"><span class="pre">None</span></tt>
 does the sensible thing in most cases (i.e. notify and
 then move on).</p>
 </dd>
 <dt><em>dt</em> <span class="classifier-delimiter">:</span> <span class="classifier">float or list of floats</span></dt>
-<dd><p class="first last">only write every dt timestep (in ps); if a list of floats is 
+<dd><p class="first last">only write every dt timestep (in ps); if a list of floats is
 supplied, write multiple trajectories, one for each dt.</p>
 </dd>
 <dt><em>compact</em> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
 <dd><p class="first last">write a compact representation</p>
 </dd>
-<dt><em>fit</em>          </dt>
+<dt><em>fit</em></dt>
 <dd><p class="first">Create an additional trajectory from the stripped one in which
 the Protein group is rms-fitted to the initial structure. See
-<a class="reference internal" href="../gromacs/blocks/cbook.html#gromacs.cbook.Transformer.fit" title="gromacs.cbook.Transformer.fit"><tt class="xref py py-meth docutils literal"><span class="pre">gromacs.cbook.Transformer.fit()</span></tt></a> for details. Useful 
+<a class="reference internal" href="../gromacs/blocks/cbook.html#gromacs.cbook.Transformer.fit" title="gromacs.cbook.Transformer.fit"><tt class="xref py py-meth docutils literal"><span class="pre">gromacs.cbook.Transformer.fit()</span></tt></a> for details. Useful
 values:</p>
 <blockquote>
 <div><ul class="simple">
@@ -1100,7 +1100,7 @@ values:</p>
 <dt><em>keepalso</em></dt>
 <dd><p class="first last">List of literal <tt class="docutils literal"><span class="pre">make_ndx</span></tt> selections that select additional
 groups of atoms that should also be kept in addition to the
-protein. For example <a href="#id21"><span class="problematic" id="id22">*</span></a>keepalso*=[&#8216;&#8220;POPC&#8221;&#8217;, &#8216;resname DRUG&#8217;].</p>
+protein. For example <em>keepalso</em> = [&#8216;&#8220;POPC&#8221;&#8217;, &#8216;resname DRUG&#8217;].</p>
 </dd>
 </dl>
 </td>
@@ -1237,7 +1237,7 @@ want to make use of the Gromacs command <tt class="docutils literal"><span class
 <div class="section" id="overview">
 <h4>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h4>
 <p>The task we are solving is to analyze output from</p>
-<div class="highlight-python"><pre>g_dist -f md.xtc -s md.tpr -n cys_ow.ndx -dist 1.0 | bzip2 -vc &gt; mindist_C60_OW_1nm.dat.bz2 </pre>
+<div class="highlight-python"><pre>g_dist -f md.xtc -s md.tpr -n cys_ow.ndx -dist 1.0 | bzip2 -vc &gt; mindist_C60_OW_1nm.dat.bz2</pre>
 </div>
 <p>and produce a histogram of minimum contact distances. This should
 provide an estimate for water accessibility of the atom (here: SG of
@@ -1284,6 +1284,13 @@ distances below the cutoff).</p>
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><tt class="xref py py-class docutils literal"><span class="pre">gromacs.tools.G_mindist</span></tt> is apparently providing
+exactly the service that is required: a timeseries of the
+minimum distance between two groups. Feel free to use that tool
+instead :-).</p>
+</div>
 <p>Read mindist data from file or stream.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1294,7 +1301,7 @@ distances below the cutoff).</p>
 <dd><p class="first last">a filename (plain, gzip, bzip2) or file object</p>
 </dd>
 <dt><em>cutoff</em></dt>
-<dd><p class="first last">the <tt class="docutils literal"><span class="pre">-dist</span> <span class="pre">CUTOFF</span></tt> that was provided to <tt class="docutils literal"><span class="pre">g_dist</span></tt>; if supplied 
+<dd><p class="first last">the <tt class="docutils literal"><span class="pre">-dist</span> <span class="pre">CUTOFF</span></tt> that was provided to <tt class="docutils literal"><span class="pre">g_dist</span></tt>; if supplied
 we work around a bug in <tt class="docutils literal"><span class="pre">g_dist</span></tt> (at least in Gromacs 4.0.2) in which
 sometimes numbers &gt;&gt; CUTOFF are printed.</p>
 </dd>
@@ -1306,7 +1313,7 @@ sometimes numbers &gt;&gt; CUTOFF are printed.</p>
 <dl class="method">
 <dt id="gromacs.analysis.plugins.dist.Mindist.histogram">
 <tt class="descname">histogram</tt><big>(</big><em>nbins=None</em>, <em>lo=None</em>, <em>hi=None</em>, <em>midpoints=False</em>, <em>normed=True</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.dist.Mindist.histogram" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a distribution or histogram of the minimum distances:</p>
+<dd><p>Returns a distribution or histogram of the minimum distances.</p>
 <p>If no values for the bin edges are given then they are set to
 0.1 below and 0.1 above the minimum and maximum values seen in
 the data.</p>
@@ -1422,7 +1429,7 @@ accept filenames on the command line.</p>
 <table class="docutils citation" frame="void" id="allen2009" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id23">[Allen2009]</a></td><td>W. J. Allen, J. A. Lemkul, and D. R. Bevan. (2009) &#8220;GridMAT-MD: A
+<tr><td class="label"><a class="fn-backref" href="#id21">[Allen2009]</a></td><td>W. J. Allen, J. A. Lemkul, and D. R. Bevan. (2009) &#8220;GridMAT-MD: A
 Grid-based Membrane Analysis Tool for Use With Molecular Dynamics.&#8221;
 J. Comput. Chem. 30 (12): 1952-1958.</td></tr>
 </tbody>
@@ -1736,7 +1743,7 @@ defined. Each operation returns a new <a class="reference internal" href="#groma
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Jan 06, 2012.
+      Last updated on Feb 27, 2012.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
