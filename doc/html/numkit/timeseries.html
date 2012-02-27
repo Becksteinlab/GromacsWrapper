@@ -45,7 +45,7 @@
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
           <li><a href="../auxiliary.html" >Auxiliary modules</a> &raquo;</li>
-          <li><a href="../numkit.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a> &raquo;</li> 
+          <li><a href="../numkit.html" accesskey="U"><tt class="docutils literal docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -227,7 +227,8 @@ in this case the auto correlation function is not well defined.)</p>
 <dt id="numkit.timeseries.rms_histogrammed_function">
 <tt class="descclassname">numkit.timeseries.</tt><tt class="descname">rms_histogrammed_function</tt><big>(</big><em>t</em>, <em>y</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#numkit.timeseries.rms_histogrammed_function" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute root mean square of data <em>y</em> in bins along <em>t</em>.</p>
-<p>Returns the RMS-regularised function <em>F</em> and the centers of the bins.</p>
+<p>Returns the RMS-regularised function <em>F</em> and the centers of the
+bins. <em>demean</em> = <tt class="xref docutils literal"><span class="pre">True</span></tt> removes the mean first.</p>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">regularized_function()</span></tt></a> with <em>func</em> = <tt class="docutils literal"><span class="pre">sqrt(mean(y*y))</span></tt></p>
@@ -282,6 +283,9 @@ the bins.</p>
 <dd><p class="first last">percentile as a percentage, e.g. 75 is the value that splits
 the data into the lower 75% and upper 25%; 50 is the median
 [50.0]</p>
+</dd>
+<dt><em>demean</em></dt>
+<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt>: remove the mean of the bin data first [<tt class="xref docutils literal"><span class="pre">False</span></tt>]</p>
 </dd>
 </dl>
 </td>
@@ -449,10 +453,10 @@ mean spacing is used to compute the window length</p>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="fitting.html"
-                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">numkit.fitting</span></tt> &#8212; Fitting data</a></p>
+                        title="previous chapter"><tt class="docutils literal docutils literal"><span class="pre">numkit.fitting</span></tt> &#8212; Fitting data</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="integration.html"
-                        title="next chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">numkit.integration</span></tt> &#8212; Numerical integration of data</a></p>
+                        title="next chapter"><tt class="docutils literal"><span class="pre">numkit.integration</span></tt> &#8212; Numerical integration of data</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/numkit/timeseries.txt"
@@ -492,7 +496,7 @@ mean spacing is used to compute the window length</p>
              >previous</a> |</li>
         <li><a href="../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
           <li><a href="../auxiliary.html" >Auxiliary modules</a> &raquo;</li>
-          <li><a href="../numkit.html" ><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a> &raquo;</li> 
+          <li><a href="../numkit.html" ><tt class="docutils literal docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

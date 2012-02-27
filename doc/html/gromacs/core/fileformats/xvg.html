@@ -104,8 +104,8 @@ points.</li>
 <p class="last"><a class="reference internal" href="#gromacs.fileformats.xvg.XVG.decimate" title="gromacs.fileformats.xvg.XVG.decimate"><tt class="xref py py-meth docutils literal"><span class="pre">XVG.decimate()</span></tt></a></p>
 </div>
 </div>
-<div class="section" id="example">
-<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <p>In this example we generate a noisy time series of a sine wave. We
 store the time, the value, and an error. (In a real example, the
 value might be the mean over multiple observations and the error might
@@ -129,7 +129,7 @@ be the estimated error of the mean.)</p>
 </div>
 <p>(see output in Figure <a class="reference internal" href="#figure-xvg-decimated-label"><em>Plot of Raw vs Decimated data</em></a>)</p>
 <div class="figure align-right" id="figure-xvg-decimated-label" style="width: 40%">
-<a class="reference internal image-reference" href="../../../_images/xvg_decimated1.png"><img alt="plot of a raw noisy sin(x) graph versus its decimated version" src="../../../_images/xvg_decimated1.png" style="width: 382.9px; height: 338.1px;" /></a>
+<a class="reference internal image-reference" href="../../../_images/xvg_decimated2.png"><img alt="plot of a raw noisy sin(x) graph versus its decimated version" src="../../../_images/xvg_decimated2.png" style="width: 382.9px; height: 338.1px;" /></a>
 <p class="caption"><strong>Plot of Raw vs Decimated data.</strong> Example of plotting raw data
 (sine on 50,000 points, gray) versus the decimated graph (reduced
 to 1000 points, red line). The errors were also decimated and
@@ -145,6 +145,16 @@ data. For <a class="reference internal" href="#gromacs.fileformats.xvg.XVG.plot"
 <a class="reference internal" href="#gromacs.fileformats.xvg.XVG.errorbar" title="gromacs.fileformats.xvg.XVG.errorbar"><tt class="xref py py-meth docutils literal"><span class="pre">XVG.errorbar()</span></tt></a>, the method to reduce the data values (typically
 column 1) is fixed to &#8220;mean&#8221; but the errors (typically columns 2 and
 3) can also be reduced with <em>error_method</em> = &#8220;rms&#8221;.</p>
+<p>If one wants to show the variation of the raw data together with the
+decimated and smoothed data then one can plot the percentiles of the
+deviation from the mean in each bin.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">xvg</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">demean</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">maxpoints</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&quot;blue&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The trick is to use the data value column also as the error colum but
+with the <em>demean</em> = <tt class="xref docutils literal"><span class="pre">True</span></tt> keyword: In this way, the fluctuations
+around the mean are regularized (also works for <em>error_method</em> =
+&#8220;rms&#8221;).</p>
 </div>
 <div class="section" id="classes">
 <h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
@@ -388,7 +398,7 @@ timepoints.</p>
 <dt id="gromacs.fileformats.xvg.XVG.error">
 <tt class="descname">error</tt><a class="headerlink" href="#gromacs.fileformats.xvg.XVG.error" title="Permalink to this definition">¶</a></dt>
 <dd><p>Error on the mean of the data, taking the correlation time into account.</p>
-<p>See <a class="reference internal" href="#frenkelsmit2002">[FrenkelSmit2002]</a> <a class="reference external" href="http://books.google.co.uk/books?id=XmyO2oRUg0cC&amp;pg=PA526">p526</a>:</p>
+<p>See <a class="reference internal" href="../../../numkit/timeseries.html#frenkelsmit2002">[FrenkelSmit2002]</a> <a class="reference external" href="http://books.google.co.uk/books?id=XmyO2oRUg0cC&amp;pg=PA526">p526</a>:</p>
 <blockquote>
 <div>error = sqrt(2*tc*acf[0]/T)</div></blockquote>
 <p>where acf() is the autocorrelation function of the fluctuations around
@@ -600,7 +610,7 @@ available</p>
 <li><a class="reference internal" href="#">Simple xmgrace XVG file format</a><ul>
 <li><a class="reference internal" href="#errors">Errors</a></li>
 <li><a class="reference internal" href="#plotting">Plotting</a></li>
-<li><a class="reference internal" href="#example">Example</a></li>
+<li><a class="reference internal" href="#examples">Examples</a></li>
 <li><a class="reference internal" href="#classes">Classes</a></li>
 </ul>
 </li>
