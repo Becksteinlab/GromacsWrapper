@@ -12,7 +12,7 @@ equally) and a value for each time point.
 
 
 Correlations
-============
+------------
 
 .. autofunction:: tcorrel
 .. autofunction:: autocorrelation_fft
@@ -28,7 +28,7 @@ constant (see :func:`tcorrel`).
 
 
 Coarse graining time series
-===========================
+---------------------------
 
 The functions in this section are all based on
 :func:`regularized_function`. They reduce the number of datapoints in
@@ -69,7 +69,7 @@ in this case the auto correlation function is not well defined.)
 
 
 Smoothing time series
-=====================
+---------------------
 
 Function :func:`smooth` applies a window kernel to a time series and
 smoothes fluctuations. The number of points in the time series stays
