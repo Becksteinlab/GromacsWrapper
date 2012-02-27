@@ -441,7 +441,7 @@ def apply_histogrammed_function(func, t, y, **kwargs):
     Returns the *func* -regularised function *F(t')* and the centers
     of the bins *t'*.
 
-    .. function:: func(y) --> float
+    .. function:: func(y) -> float
 
        *func* takes exactly one argument, a numpy 1D array *y* (the
        values in a single bin of the histogram), and reduces it to one
@@ -459,7 +459,7 @@ def regularized_function(x, y, func, bins=100, range=None):
     First the data is collected in bins x' along x and then *func* is
     applied to all data points Y' that have been collected in the bin.
 
-    .. function:: func(y) --> float
+    .. function:: func(y) -> float
 
        *func* takes exactly one argument, a numpy 1D array *y* (the
        values in a single bin of the histogram), and reduces it to one

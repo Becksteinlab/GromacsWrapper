@@ -152,7 +152,7 @@ Helper classes and functions
 
 The following classes and functions are mainly documented for developers.
 
-.. autofunctions:: find_manager_config
+.. autofunction:: find_manager_config
 
 .. autoclass:: ManagerConfigParser
    :members:

@@ -52,12 +52,14 @@ class NDX(odict, utilities.FileUtils):
     into a integer 1D numpy array (*not* a set, as would be the
     :program:`make_ndx` behaviour).
 
-    .. Note:: The index entries themselves are ordered and can contain
-              duplicates so that output from NDX can be easily used for
-              :program:`g_dih` and friends. If you need set-like behaviour
-              you will have do use :class:`gromacs.formats.uniqueNDX` or
-              :class:`gromacs.cbook.IndexBuilder` (which uses
-              :program:`make_ndx` throughout).
+    .. Note::
+
+       The index entries themselves are ordered and can contain
+       duplicates so that output from NDX can be easily used for
+       :program:`g_dih` and friends. If you need set-like behaviour
+       you will have do use :class:`gromacs.formats.uniqueNDX` or
+       :class:`gromacs.cbook.IndexBuilder` (which uses
+       :program:`make_ndx` throughout).
 
     **Example**
 

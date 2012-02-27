@@ -18,7 +18,7 @@ The :class:`XVG` class is useful beyond reading xvg files. With the
 :meth:`XVG.set` method one can have it deal with any kind of "NXY"
 data (typically: first column time or position, further columns scalar
 observables). The data should be a NumPy :class:`numpy.ndarray` array
-``a`` with :attr:`~numpy.array.shape`` ``(M, N)`` where *M*-1 is the
+``a`` with :attr:`~numpy.ndarray.shape` ``(M, N)`` where *M*-1 is the
 number of observables and *N* the number of observations, e.g.the
 number of time points in a time series. ``a[0]`` is the time or
 position and ``a[1:]`` the *M*-1 data columns.
