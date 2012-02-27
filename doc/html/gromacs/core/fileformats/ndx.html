@@ -74,6 +74,15 @@ I/O. Access groups by name via the <a class="reference internal" href="#gromacs.
 dictionary. Setting a key automatically transforms the new value
 into a integer 1D numpy array (<em>not</em> a set, as would be the
 <strong class="program">make_ndx</strong> behaviour).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The index entries themselves are ordered and can contain
+duplicates so that output from NDX can be easily used for
+<strong class="program">g_dih</strong> and friends. If you need set-like behaviour
+you will have do use <tt class="xref py py-class docutils literal"><span class="pre">gromacs.formats.uniqueNDX</span></tt> or
+<a class="reference internal" href="../../blocks/cbook.html#gromacs.cbook.IndexBuilder" title="gromacs.cbook.IndexBuilder"><tt class="xref py py-class docutils literal"><span class="pre">gromacs.cbook.IndexBuilder</span></tt></a> (which uses
+<strong class="program">make_ndx</strong> throughout).</p>
+</div>
 <p><strong>Example</strong></p>
 <blockquote>
 <div><p>Read index file, make new group and write to disk:</p>

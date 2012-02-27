@@ -61,10 +61,19 @@
 simple multi-column data files. The class <a class="reference internal" href="#gromacs.fileformats.xvg.XVG" title="gromacs.fileformats.xvg.XVG"><tt class="xref py py-class docutils literal"><span class="pre">XVG</span></tt></a> encapsulates
 access to such files and adds a number of methods to access the data
 (as NumPy arrays), compute aggregates, or quickly plot it.</p>
-<p>The <a class="reference internal" href="#gromacs.fileformats.xvg.XVG" title="gromacs.fileformats.xvg.XVG"><tt class="xref py py-class docutils literal"><span class="pre">XVG</span></tt></a> is useful beyond reading xvg files. With the
+<p>The <a class="reference internal" href="#gromacs.fileformats.xvg.XVG" title="gromacs.fileformats.xvg.XVG"><tt class="xref py py-class docutils literal"><span class="pre">XVG</span></tt></a> class is useful beyond reading xvg files. With the
 <a class="reference internal" href="#gromacs.fileformats.xvg.XVG.set" title="gromacs.fileformats.xvg.XVG.set"><tt class="xref py py-meth docutils literal"><span class="pre">XVG.set()</span></tt></a> method one can have it deal with any kind of &#8220;NXY&#8221;
-data (typically: first column time, further coliumns scalar
-observables).</p>
+data (typically: first column time or position, further columns scalar
+observables). The data should be a NumPy <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7.dev-3f685a1)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> array
+<tt class="docutils literal"><span class="pre">a</span></tt> with <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.shape.html#numpy.ndarray.shape" title="(in NumPy v1.7.dev-3f685a1)"><tt class="xref py py-attr docutils literal"><span class="pre">shape</span></tt></a> <tt class="docutils literal"><span class="pre">(M,</span> <span class="pre">N)</span></tt> where <em>M</em>-1 is the
+number of observables and <em>N</em> the number of observations, e.g.the
+number of time points in a time series. <tt class="docutils literal"><span class="pre">a[0]</span></tt> is the time or
+position and <tt class="docutils literal"><span class="pre">a[1:]</span></tt> the <em>M</em>-1 data columns.</p>
+<p>Plotting from <a class="reference internal" href="#gromacs.fileformats.xvg.XVG" title="gromacs.fileformats.xvg.XVG"><tt class="xref py py-class docutils literal"><span class="pre">XVG</span></tt></a> is fairly flexible as one can always pass
+the <em>columns</em> keyword to select which columns are to be plotted. It is
+typically assumed that the first column in the selected (sub)array
+contains the abscissa (&#8220;x-axis&#8221;) of the graph and all further columns
+are plotted against the first one.</p>
 <div class="section" id="errors">
 <h2>Errors<a class="headerlink" href="#errors" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="#gromacs.fileformats.xvg.XVG.error" title="gromacs.fileformats.xvg.XVG.error"><tt class="xref py py-attr docutils literal"><span class="pre">XVG.error</span></tt></a> attribute contains the statistical error for
@@ -129,7 +138,7 @@ be the estimated error of the mean.)</p>
 </div>
 <p>(see output in Figure <a class="reference internal" href="#figure-xvg-decimated-label"><em>Plot of Raw vs Decimated data</em></a>)</p>
 <div class="figure align-right" id="figure-xvg-decimated-label" style="width: 40%">
-<a class="reference internal image-reference" href="../../../_images/xvg_decimated2.png"><img alt="plot of a raw noisy sin(x) graph versus its decimated version" src="../../../_images/xvg_decimated2.png" style="width: 382.9px; height: 338.1px;" /></a>
+<a class="reference internal image-reference" href="../../../_images/xvg_decimated1.png"><img alt="plot of a raw noisy sin(x) graph versus its decimated version" src="../../../_images/xvg_decimated1.png" style="width: 382.9px; height: 338.1px;" /></a>
 <p class="caption"><strong>Plot of Raw vs Decimated data.</strong> Example of plotting raw data
 (sine on 50,000 points, gray) versus the decimated graph (reduced
 to 1000 points, red line). The errors were also decimated and
@@ -398,7 +407,7 @@ timepoints.</p>
 <dt id="gromacs.fileformats.xvg.XVG.error">
 <tt class="descname">error</tt><a class="headerlink" href="#gromacs.fileformats.xvg.XVG.error" title="Permalink to this definition">¶</a></dt>
 <dd><p>Error on the mean of the data, taking the correlation time into account.</p>
-<p>See <a class="reference internal" href="../../../numkit/timeseries.html#frenkelsmit2002">[FrenkelSmit2002]</a> <a class="reference external" href="http://books.google.co.uk/books?id=XmyO2oRUg0cC&amp;pg=PA526">p526</a>:</p>
+<p>See <a class="reference internal" href="#frenkelsmit2002">[FrenkelSmit2002]</a> <a class="reference external" href="http://books.google.co.uk/books?id=XmyO2oRUg0cC&amp;pg=PA526">p526</a>:</p>
 <blockquote>
 <div>error = sqrt(2*tc*acf[0]/T)</div></blockquote>
 <p>where acf() is the autocorrelation function of the fluctuations around
@@ -419,15 +428,20 @@ Diego 2002</td></tr>
 <tt class="descname">errorbar</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.xvg.XVG.errorbar" title="Permalink to this definition">¶</a></dt>
 <dd><p>errorbar plot for a single time series with errors.</p>
 <p>Set <em>columns</em> keyword to select [x, y, dy] or [x, y, dx, dy],
-e.g. <tt class="docutils literal"><span class="pre">columns=[0,1,2]</span></tt>. See <a class="reference internal" href="#gromacs.fileformats.xvg.XVG.plot" title="gromacs.fileformats.xvg.XVG.plot"><tt class="xref py py-meth docutils literal"><span class="pre">XVG.plot()</span></tt></a> for details.</p>
+e.g. <tt class="docutils literal"><span class="pre">columns=[0,1,2]</span></tt>. See <a class="reference internal" href="#gromacs.fileformats.xvg.XVG.plot" title="gromacs.fileformats.xvg.XVG.plot"><tt class="xref py py-meth docutils literal"><span class="pre">XVG.plot()</span></tt></a> for
+details. Only a single timeseries can be plotted and the user
+needs to select the appropriate columns with the <em>columns</em>
+keyword.</p>
 <p>By default, the data are decimated (see <a class="reference internal" href="#gromacs.fileformats.xvg.XVG.plot" title="gromacs.fileformats.xvg.XVG.plot"><tt class="xref py py-meth docutils literal"><span class="pre">XVG.plot()</span></tt></a>) for
-the default of <em>maxpoints</em> = 50000 by averaging data in
+the default of <em>maxpoints</em> = 10000 by averaging data in
 <em>maxpoints</em> bins.</p>
-<p>x,y,dx,dy data are plotted with error bars in the x- and
-y-dimension (corresponding to <em>filled</em> = <tt class="xref docutils literal"><span class="pre">False</span></tt>).</p>
+<p>x,y,dx,dy data can plotted with error bars in the x- and
+y-dimension (use <em>filled</em> = <tt class="xref docutils literal"><span class="pre">False</span></tt>).</p>
 <p>For x,y,dy use <em>filled</em> = <tt class="xref docutils literal"><span class="pre">True</span></tt> to fill the region between
 y±dy. <em>fill_alpha</em> determines the transparency of the fill
-color.</p>
+color. <em>filled</em> = <tt class="xref docutils literal"><span class="pre">False</span></tt> will draw lines for the error
+bars. Additional keywords are passed to
+<tt class="xref py py-func docutils literal"><span class="pre">pylab.errorbar()</span></tt>.</p>
 <p>By default, the errors are decimated by plotting the 5% and
 95% percentile of the data in each bin. The percentile can be
 changed with the <em>percentile</em> keyword; e.g. <em>percentile</em> = 1
@@ -436,6 +450,10 @@ will plot the 1% and 99% perentile (as will <em>percentile</em> =
 <p>The <em>error_method</em> keyword can be used to compute errors as
 the root mean square sum (<em>error_metho</em> = &#8220;rms&#8221;) across each
 bin instead of percentiles (&#8220;percentile&#8221;).</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#gromacs.fileformats.xvg.XVG.plot" title="gromacs.fileformats.xvg.XVG.plot"><tt class="xref py py-meth docutils literal"><span class="pre">XVG.plot()</span></tt></a> lists keywords common to both methods.</p>
+</div>
 </dd></dl>
 
 <dl class="attribute">

@@ -229,10 +229,7 @@ in this case the auto correlation function is not well defined.)</p>
 <dd><p>Compute root mean square of data <em>y</em> in bins along <em>t</em>.</p>
 <p>Returns the RMS-regularised function <em>F</em> and the centers of the
 bins. <em>demean</em> = <tt class="xref docutils literal"><span class="pre">True</span></tt> removes the mean first.</p>
-<div class="admonition-see-also admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">regularized_function()</span></tt></a> with <em>func</em> = <tt class="docutils literal"><span class="pre">sqrt(mean(y*y))</span></tt></p>
-</div>
+<p><a class="reference internal" href="#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">regularized_function()</span></tt></a> with <em>func</em> = <tt class="docutils literal"><span class="pre">sqrt(mean(y*y))</span></tt></p>
 </dd></dl>
 
 <dl class="function">
@@ -240,10 +237,7 @@ bins. <em>demean</em> = <tt class="xref docutils literal"><span class="pre">True
 <tt class="descclassname">numkit.timeseries.</tt><tt class="descname">min_histogrammed_function</tt><big>(</big><em>t</em>, <em>y</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#numkit.timeseries.min_histogrammed_function" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute minimum of data <em>y</em> in bins along <em>t</em>.</p>
 <p>Returns the min-regularised function <em>F</em> and the centers of the bins.</p>
-<div class="admonition-see-also admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">regularized_function()</span></tt></a> with <em>func</em> = <tt class="docutils literal"><span class="pre">min(y)</span></tt></p>
-</div>
+<p><a class="reference internal" href="#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">regularized_function()</span></tt></a> with <em>func</em> = <tt class="xref py py-func docutils literal"><span class="pre">numpy.min()</span></tt></p>
 </dd></dl>
 
 <dl class="function">
@@ -251,10 +245,7 @@ bins. <em>demean</em> = <tt class="xref docutils literal"><span class="pre">True
 <tt class="descclassname">numkit.timeseries.</tt><tt class="descname">max_histogrammed_function</tt><big>(</big><em>t</em>, <em>y</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#numkit.timeseries.max_histogrammed_function" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute maximum of data <em>y</em> in bins along <em>t</em>.</p>
 <p>Returns the max-regularised function <em>F</em> and the centers of the bins.</p>
-<div class="admonition-see-also admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">regularized_function()</span></tt></a> with <em>func</em> = <tt class="docutils literal"><span class="pre">max(y)</span></tt></p>
-</div>
+<p><a class="reference internal" href="#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">regularized_function()</span></tt></a> with <em>func</em> = <tt class="xref py py-func docutils literal"><span class="pre">numpy.max()</span></tt></p>
 </dd></dl>
 
 <dl class="function">
@@ -262,10 +253,7 @@ bins. <em>demean</em> = <tt class="xref docutils literal"><span class="pre">True
 <tt class="descclassname">numkit.timeseries.</tt><tt class="descname">median_histogrammed_function</tt><big>(</big><em>t</em>, <em>y</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#numkit.timeseries.median_histogrammed_function" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute median of data <em>y</em> in bins along <em>t</em>.</p>
 <p>Returns the median-regularised function <em>F</em> and the centers of the bins.</p>
-<div class="admonition-see-also admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">regularized_function()</span></tt></a> with <em>func</em> = <tt class="docutils literal"><span class="pre">median(y)</span></tt></p>
-</div>
+<p><a class="reference internal" href="#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">regularized_function()</span></tt></a> with <em>func</em> = <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.median.html#numpy.median" title="(in NumPy v1.7.dev-3f685a1)"><tt class="xref py py-func docutils literal"><span class="pre">numpy.median()</span></tt></a></p>
 </dd></dl>
 
 <dl class="function">
@@ -292,26 +280,40 @@ the data into the lower 75% and upper 25%; 50 is the median
 </tr>
 </tbody>
 </table>
-<div class="admonition-see-also admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">regularized_function()</span></tt></a> with <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.scoreatpercentile.html#scipy.stats.scoreatpercentile" title="(in SciPy v0.11.dev)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.stats.scoreatpercentile()</span></tt></a></p>
-</div>
+<p><a class="reference internal" href="#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">regularized_function()</span></tt></a> with <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.scoreatpercentile.html#scipy.stats.scoreatpercentile" title="(in SciPy v0.11.dev)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.stats.scoreatpercentile()</span></tt></a></p>
 </dd></dl>
 
 <dl class="function">
 <dt id="numkit.timeseries.apply_histogrammed_function">
 <tt class="descclassname">numkit.timeseries.</tt><tt class="descname">apply_histogrammed_function</tt><big>(</big><em>func</em>, <em>t</em>, <em>y</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#numkit.timeseries.apply_histogrammed_function" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute <em>func</em> of data <em>y</em> in bins along <em>t</em>.</p>
-<p>Returns the median-regularised function <em>F</em> and the centers of the bins.</p>
+<p>Returns the <em>func</em> -regularised function <em>F(t&#8217;)</em> and the centers
+of the bins <em>t&#8217;</em>.</p>
+<dl class="function">
+<dt id="numkit.timeseries.func">
+<tt class="descclassname">numkit.timeseries.</tt><tt class="descname">func</tt><big>(</big><em>y</em><big>)</big> &rarr; float<a class="headerlink" href="#numkit.timeseries.func" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>func</em> takes exactly one argument, a numpy 1D array <em>y</em> (the
+values in a single bin of the histogram), and reduces it to one
+scalar float.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="function">
 <dt id="numkit.timeseries.regularized_function">
 <tt class="descclassname">numkit.timeseries.</tt><tt class="descname">regularized_function</tt><big>(</big><em>x</em>, <em>y</em>, <em>func</em>, <em>bins=100</em>, <em>range=None</em><big>)</big><a class="headerlink" href="#numkit.timeseries.regularized_function" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute func() over data aggregated in bins.</p>
+<dd><p>Compute <em>func()</em> over data aggregated in bins.</p>
 <p><tt class="docutils literal"><span class="pre">(x,y)</span> <span class="pre">--&gt;</span> <span class="pre">(x',</span> <span class="pre">func(Y'))</span></tt>  with <tt class="docutils literal"><span class="pre">Y'</span> <span class="pre">=</span> <span class="pre">{y:</span> <span class="pre">y(x)</span> <span class="pre">where</span> <span class="pre">x</span> <span class="pre">in</span> <span class="pre">x'</span> <span class="pre">bin}</span></tt></p>
-<p>First the data is collected in bins x&#8217; along x and then func is applied to
-all data points Y&#8217; that have been collected in the bin.</p>
+<p>First the data is collected in bins x&#8217; along x and then <em>func</em> is
+applied to all data points Y&#8217; that have been collected in the bin.</p>
+<dl class="function">
+<dt>
+<tt class="descclassname">numkit.timeseries.</tt><tt class="descname">func</tt><big>(</big><em>y</em><big>)</big> &rarr; float</dt>
+<dd><p><em>func</em> takes exactly one argument, a numpy 1D array <em>y</em> (the
+values in a single bin of the histogram), and reduces it to one
+scalar float.</p>
+</dd></dl>
+
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last"><em>x</em> and <em>y</em> must be 1D arrays.</p>
@@ -348,7 +350,8 @@ all data points Y&#8217; that have been collected in the bin.</p>
 </tr>
 </tbody>
 </table>
-<p>(This function originated as <a class="reference external" href="http://orbeckst.github.com/RecSQL/programmers.html#recsql.sqlfunctions.regularized_function" title="(in RecSQL v0.7.8-dev)"><tt class="xref py py-func docutils literal"><span class="pre">recsql.sqlfunctions.regularized_function()</span></tt></a>.)</p>
+<p>(This function originated as
+<a class="reference external" href="http://orbeckst.github.com/RecSQL/programmers.html#recsql.sqlfunctions.regularized_function" title="(in RecSQL v0.7.8-dev)"><tt class="xref py py-func docutils literal"><span class="pre">recsql.sqlfunctions.regularized_function()</span></tt></a>.)</p>
 </dd></dl>
 
 </div>
