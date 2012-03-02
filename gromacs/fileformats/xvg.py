@@ -144,8 +144,8 @@ In principle it is possible to use other functions to decimate the
 data. For :meth:`XVG.plot`, the *method* keyword can be changed (see
 :meth:`XVG.decimate` for allowed *method* values). For
 :meth:`XVG.errorbar`, the method to reduce the data values (typically
-column 1) is fixed to "mean" but the errors (typically columns 2 and
-3) can also be reduced with *error_method* = "rms".
+column 1) is fixed to "mean" but the errors (typically columns 2 and 3)
+can also be reduced with *error_method* = "rms".
 
 If one wants to show the variation of the raw data together with the
 decimated and smoothed data then one can plot the percentiles of the
@@ -154,7 +154,9 @@ deviation from the mean in each bin:
    >>> xvg.errorbar(columns=[0,1,1], maxpoints=1000, color="blue", demean=True)
 
 The *demean* keyword indicates if fluctuations from the mean are
-regularised [#demean]_.
+regularised [#demean]_. The method :meth:`XVG.plot_coarsened`
+automates this approach and can plot coarsened data selected by the
+*columns* keyword.
 
 .. rubric:: Footnotes
 
@@ -248,6 +250,10 @@ class XVG(utilities.FileUtils):
     #: pickled with the default value.
     __pickle_excluded = {'__array': None}   # note class name un-mangling in __getstate__()!
 
+    #: Default color cycle for :meth:`XVG.plot_coarsened`:
+    #: ``['black', 'red', 'blue', 'orange', 'magenta', 'cyan', 'yellow', 'brown', 'green']``
+    default_color_cycle = ['black', 'red', 'blue', 'orange', 'magenta', 'cyan', 'yellow', 'brown', 'green']
+
     def __init__(self, filename=None, names=None, array=None, permissive=False, **kwargs):
         """Initialize the class from a xvg file.
 
@@ -276,6 +282,8 @@ class XVG(utilities.FileUtils):
                     data are already on disk (the xvg file *filename*) and the
                     resulting pickle file can become very big. ``False`` omits
                     those data from a pickle. [``False``]
+              *metadata*
+                    dictionary of metadata, which is not touched by the class
 
         """
         self.__array = None           # cache for array (BIG) (used by XVG.array)
@@ -290,6 +298,7 @@ class XVG(utilities.FileUtils):
                 self.names = names.split(',')
             except AttributeError:
                 self.names = names
+        self.metadata = kwargs.pop('metadata', {})  # reserved for user data
         self.permissive = permissive
         self.stride = kwargs.pop('stride', 1)
         self.corrupted_lineno = None      # must parse() first before this makes sense
@@ -560,6 +569,51 @@ class XVG(utilities.FileUtils):
         # finally plot
         kwargs['xdata'] = ma[0]          # abscissa set separately
         pylab.plot(ma[1:].T, **kwargs)   # plot all other columns in parallel
+
+    def plot_coarsened(self, **kwargs):
+        """Plot data like :meth:`XVG.plot` with the range of **all** data shown.
+
+        Data are reduced to *maxpoints* (good results are obtained
+        with low values such as 100) and the actual range of observed
+        data is plotted as a translucent error band around the mean.
+
+        Each column in *columns* (except the abscissa, i.e. the first
+        column) is decimated (with :meth:`XVG.decimate`) and the range
+        of data is plotted alongside the mean using
+        :meth:`XVG.errorbar` (see for arguments). Additional
+        arguments:
+
+        :Kewords:
+           *color*
+                single color (used for all plots); sequence of colors
+                (will be repeated as necessary); or a matplotlib
+                colormap (e.g. "jet", see :mod:`matplotlib.cm`). The
+                default is to use the :attr:`XVG.default_color_cycle`.
+
+        The *demean* keyword has no effect as it is required to be ``True``.
+
+        .. SeeAlso:: :meth:`XVG.plot`, :meth:`XVG.error_bar` and :meth:`XVG.decimate`
+        """
+        from itertools import izip, cycle
+        import matplotlib.cm, matplotlib.colors
+
+        columns = kwargs.pop('columns', Ellipsis)         # slice for everything
+        if columns is Ellipsis or columns is None:
+            columns = numpy.arange(self.array.shape[0])
+
+        color = kwargs.pop('color', self.default_color_cycle)
+        try:
+            cmap = matplotlib.cm.get_cmap(color)
+            colors = cmap(matplotlib.colors.Normalize()(numpy.arange(len(columns[1:]), dtype=float)))
+        except TypeError:
+            colors = cycle(utilities.asiterable(color))
+
+        t = columns[0]
+        kwargs['demean'] = True
+        for column, color in izip( columns[1:], colors):
+            kwargs['color'] = color
+            self.errorbar(columns=[t, column, column], **kwargs)
+
 
     def errorbar(self, **kwargs):
         """errorbar plot for a single time series with errors.
