@@ -15,19 +15,15 @@ access to such files and adds a number of methods to access the data
 .. _xmgrace: http://plasma-gate.weizmann.ac.il/Grace/
 
 The :class:`XVG` class is useful beyond reading xvg files. With the
-:meth:`XVG.set` method one can have it deal with any kind of "NXY"
-data (typically: first column time or position, further columns scalar
+*array* keyword or the :meth:`XVG.set` method one can load data from
+an array instead of a file. The array should be simple "NXY" data
+(typically: first column time or position, further columns scalar
 observables). The data should be a NumPy :class:`numpy.ndarray` array
 ``a`` with :attr:`~numpy.ndarray.shape` ``(M, N)`` where *M*-1 is the
 number of observables and *N* the number of observations, e.g.the
 number of time points in a time series. ``a[0]`` is the time or
 position and ``a[1:]`` the *M*-1 data columns.
 
-Plotting from :class:`XVG` is fairly flexible as one can always pass
-the *columns* keyword to select which columns are to be plotted. It is
-typically assumed that the first column in the selected (sub)array
-contains the abscissa ("x-axis") of the graph and all further columns
-are plotted against the first one.
 
 Errors
 ------
@@ -45,9 +41,42 @@ Plotting
 --------
 
 The :meth:`XVG.plot` and :meth:`XVG.errorbar` methods are set up to
-produce graphs of multiple columns simultaneously. It is also possible
-to coarse grain the data for plotting (which typically results in
-visually smoothing the graph because noise is averaged out).
+produce graphs of multiple columns simultaneously. It is
+typically assumed that the first column in the selected (sub)array
+contains the abscissa ("x-axis") of the graph and all further columns
+are plotted against the first one.
+
+Data selection
+~~~~~~~~~~~~~~
+
+Plotting from :class:`XVG` is fairly flexible as one can always pass
+the *columns* keyword to select which columns are to be
+plotted. Assuming that the data contains ``[t, X1, X2, X3]``, then one
+can
+
+1) plot all observable columns (X1 to X3) against t::
+
+     xvg.plot()
+
+2) plot only X2 against t::
+
+     xvg.plot(columns=[0,2])
+
+3) plot X2 and X3 against t::
+
+     xvg.plot(columns=[0,2,3])
+
+4) plot X1 against X3::
+
+     xvg.plot(columns=[2,3])
+
+
+Coarse grainining of data
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+It is also possible to *coarse grain the data* for plotting (which
+typically results in visually smoothing the graph because noise is
+averaged out).
 
 Currently, two alternative algorithms to produce "coarse grained"
 (decimated) graphs are implemented and can be selected with the
@@ -79,11 +108,10 @@ be the estimated error of the mean.)
 
   >>> import numpy as np
   >>> import gromacs.formats
-  >>> xvg = gromacs.formats.XVG()
   >>> X = np.linspace(-10,10,50000)
   >>> yerr = np.random.randn(len(X))*0.05
   >>> data = np.vstack((X, np.sin(X) + yerr, np.random.randn(len(X))*0.05))
-  >>> xvg.set(data)
+  >>> xvg = gromacs.formats.XVG(array=data)
 
 Plot value for *all* time points::
 
@@ -121,14 +149,24 @@ column 1) is fixed to "mean" but the errors (typically columns 2 and
 
 If one wants to show the variation of the raw data together with the
 decimated and smoothed data then one can plot the percentiles of the
-deviation from the mean in each bin.
+deviation from the mean in each bin:
 
-   >>> xvg.errorbar(columns=[0,1,1], demean=True, maxpoints=1000, color="blue")
+   >>> xvg.errorbar(columns=[0,1,1], maxpoints=1000, color="blue", demean=True)
 
-The trick is to use the data value column also as the error colum but
-with the *demean* = ``True`` keyword: In this way, the fluctuations
-around the mean are regularized (also works for *error_method* =
-"rms").
+The *demean* keyword indicates if fluctuations from the mean are
+regularised [#demean]_.
+
+.. rubric:: Footnotes
+
+.. [#demean] When *error_method* = "percentile" is selected for
+             :meth:`XVG.errorbar` then *demean* does not actually
+             force a regularisation of the fluctuations from the
+             mean. Instead, the (symmetric) percentiles are computed
+             on the full data and the error ranges for plotting are
+             directly set to the percentiles. In this way one can
+             easily plot the e.g. 10th-percentile to 90th-percentile
+             band (using keyword *percentile* = 10).
+
 
 
 Classes
@@ -210,7 +248,7 @@ class XVG(utilities.FileUtils):
     #: pickled with the default value.
     __pickle_excluded = {'__array': None}   # note class name un-mangling in __getstate__()!
 
-    def __init__(self, filename=None, names=None, permissive=False, **kwargs):
+    def __init__(self, filename=None, names=None, array=None, permissive=False, **kwargs):
         """Initialize the class from a xvg file.
 
         :Arguments:
@@ -222,6 +260,8 @@ class XVG(utilities.FileUtils):
                     optional labels for the columns (currently only
                     written as comments to file); string with columns
                     separated by commas or a list of strings
+              *array*
+                    read data from *array* (see :meth:`XVG.set`)
               *permissive*
                     ``False`` raises a :exc:`ValueError` and logs and errior
                     when encountering data lines that it cannot parse.
@@ -238,10 +278,10 @@ class XVG(utilities.FileUtils):
                     those data from a pickle. [``False``]
 
         """
-        self.__array = None          # cache for array (BIG) (used by XVG.array)
-        self.__cache = {}            # cache for computed results
+        self.__array = None           # cache for array (BIG) (used by XVG.array)
+        self.__cache = {}             # cache for computed results
         self.savedata = kwargs.pop('savedata', False)
-        if not filename is None:
+        if filename is not None:
             self._init_filename(filename)  # note: reading data from file is delayed until required
         if names is None:
             self.names = []
@@ -256,6 +296,9 @@ class XVG(utilities.FileUtils):
         # default number of data points for calculating correlation times via FFT
         self.ncorrel = kwargs.pop('ncorrel', 25000)
         self.__correlkwargs = {}          # see set_correlparameters()
+
+        if array is not None:
+            self.set(array)
 
     def read(self, filename=None):
         """Read and parse xvg file *filename*."""
@@ -503,7 +546,7 @@ class XVG(utilities.FileUtils):
         method = kwargs.pop('method', "mean")
 
         # (decimate/smooth o slice o transform)(array)
-        a = self.decimate(method, numpy.asarray(transform(self.array))[columns], maxpoints)
+        a = self.decimate(method, numpy.asarray(transform(self.array))[columns], maxpoints=maxpoints)
 
         if len(a.shape) == 1:
             # special case: plot against index; plot would do this automatically but
@@ -547,8 +590,10 @@ class XVG(utilities.FileUtils):
         99).
 
         The *error_method* keyword can be used to compute errors as
-        the root mean square sum (*error_metho* = "rms") across each
-        bin instead of percentiles ("percentile").
+        the root mean square sum (*error_method* = "rms") across each
+        bin instead of percentiles ("percentile"). The value of the
+        keyword *demean* is applied to the decimation of error data
+        alone.
 
         .. SeeAlso::
 
@@ -573,14 +618,13 @@ class XVG(utilities.FileUtils):
         if method != "mean":
             raise NotImplementedError("For errors only method == 'mean' is supported.")
         error_method = kwargs.pop('error_method', "percentile")  # can also use 'rms' and 'error'
-        percentile = kwargs.pop('percentile', 95.)
+        percentile = numpy.abs(kwargs.pop('percentile', 95.))
         demean = kwargs.pop('demean', False)
 
-        # (decimate/smooth o slice o transform)(array)
-        #a = self.decimate(method, numpy.asarray(transform(self.array))[columns], maxpoints)
+        # order: (decimate/smooth o slice o transform)(array)
         data = numpy.asarray(transform(self.array))[columns]
         a = numpy.zeros((data.shape[0], maxpoints), dtype=numpy.float64)
-        a[0:2] = self.decimate("mean", data[0:2], maxpoints)
+        a[0:2] = self.decimate("mean", data[0:2], maxpoints=maxpoints)
         error_data = numpy.vstack((data[0], data[2:]))
         if error_method == "percentile":
             if percentile > 50:
@@ -589,12 +633,14 @@ class XVG(utilities.FileUtils):
             else:
                 upper_per = 100 - percentile
                 lower_per = percentile
-            upper = a[2:] = self.decimate("percentile", error_data, maxpoints,
-                                          per=upper_per, demean=demean)[1]
-            lower = self.decimate("percentile", error_data, maxpoints,
-                                  per=lower_per, demean=demean)[1]
+            # demean generally does not make sense with the percentiles (but for analysing
+            # the regularised data itself we use this as a flag --- see below!)
+            upper = a[2:] = self.decimate("percentile", error_data, maxpoints=maxpoints,
+                                          per=upper_per, demean=False)[1:]
+            lower = self.decimate("percentile", error_data, maxpoints=maxpoints,
+                                  per=lower_per, demean=False)[1:]
         else:
-            a[2:] = self.decimate(error_method, error_data, maxpoints, demean=demean)[1]
+            a[2:] = self.decimate(error_method, error_data, maxpoints=maxpoints, demean=demean)[1:]
             lower = None
 
         # now deal with infs, nans etc AFTER all transformations (needed for plotting across inf/nan)
@@ -615,14 +661,33 @@ class XVG(utilities.FileUtils):
                 raise TypeError("Either too few columns selected or data does not have a error column")
 
         if filled:
-            # can only plot dx
-            if lower is None:
-                y1 = Y - kwargs['yerr']
+            # can only plot dy
+            if error_method == "percentile":
+                if demean:
+                    # signal that we are looking at percentiles of an observable and not error
+                    y1 = mlower[-1]
+                    y2 = kwargs['yerr']
+                else:
+                    # percentiles of real errors (>0)
+                    y1 = Y - mlower[-1]
+                    y2 = Y + kwargs['yerr']
             else:
-                y1 = Y + mlower[-1]  # '+' because percentile is on the *signed* values
-            y2 = Y + kwargs['yerr']
+                y1 = Y - kwargs['yerr']
+                y2 = Y + kwargs['yerr']
             pylab.fill_between(X, y1, y2, color=color, alpha=fill_alpha)
         else:
+            if error_method == "percentile":
+                # errorbars extend to different lengths;
+                if demean:
+                    kwargs['yerr'] = numpy.vstack((mlower[-1], kwargs['yerr']))
+                else:
+                    kwargs['yerr'] = numpy.vstack((Y - mlower[-1], Y + kwargs['yerr']))
+                try:
+                    # xerr only makes sense when the data is a real
+                    # error so we don't even bother with demean=?
+                    kwargs['xerr'] = numpy.vstack((X - mlower[0], X + kwargs['xerr']))
+                except (KeyError, IndexError):
+                    pass
             pylab.errorbar(X, Y, **kwargs)
 
         # clean up args for plot
@@ -632,14 +697,15 @@ class XVG(utilities.FileUtils):
 
         pylab.plot(X, Y, color=color, **kwargs)
 
-    def decimate(self, method, a, maxpoints, **kwargs):
+    def decimate(self, method, a, **kwargs):
         """Decimate data *a* to *maxpoints* using *method*.
 
         If *a* is a 1D array then it is promoted to a (2, N) array
         where the first column simply contains the index.
 
         If the array contains fewer than *maxpoints* points or if
-        *maxpoints* is ``None`` then it is returned as it is.
+        *maxpoints* is ``None`` then it is returned as it is. The
+        default for *maxpoints* is 10000.
 
         Valid values for the reduction *method*:
 
@@ -658,6 +724,10 @@ class XVG(utilities.FileUtils):
             from a smoothed function (generated with a running average
             of the coarse graining step size derived from the original
             number of data points and *maxpoints*)
+
+        :Returns: numpy array ``(M', N')`` from a ``(M', N)`` array
+                  with ``M' == M`` (except when ``M == 1``, see above)
+                  and ``N' <= N`` (``N'`` is *maxpoints*).
         """
         methods = {'mean': self.decimate_mean,
                    'smooth': self.decimate_smooth,
@@ -671,6 +741,7 @@ class XVG(utilities.FileUtils):
             X = numpy.arange(len(a))
             a = numpy.vstack([X, a])
         ny = a.shape[-1]   # assume 1D or 2D array with last dimension varying fastest
+        maxpoints = kwargs.pop("maxpoints", 10000)
         if maxpoints is None or ny <= maxpoints:
             return a
         return methods[method](a, maxpoints, **kwargs)
