@@ -29,16 +29,17 @@ Quick installation instructions
 If you have ``easy_install`` on your system you can directly install
 from the interweb::
 
-  easy_install -f http://sbcb.bioch.ox.ac.uk/oliver/download/Python GromacsWrapper
+  easy_install -f https://github.com/orbeckst/GromacsWrapper/tags GromacsWrapper
 
 This will automatically download and install the latest version.
 
 Manual Download
 ===============
 
-If your prefer to download manually, get the latest version from
+If your prefer to download manually, get the latest stable release
+from
 
-  http://sbcb.bioch.ox.ac.uk/oliver/download/Python
+  https://github.com/orbeckst/GromacsWrapper/tags
 
 and use any of the following methods (in increasing order of
 complexity):
@@ -66,8 +67,8 @@ that allow you to install into non-standard places.
 Source code access
 ==================
 
-The tar archive from http://sbcb.bioch.ox.ac.uk/oliver/download/Python
-contains a full source code distribution. 
+The tar archive from https://github.com/orbeckst/GromacsWrapper/tags
+contains a full source code distribution.
 
 In order to follow code development you can also browse the code
 **git** repository at http://github.com/orbeckst/GromacsWrapper or
@@ -132,7 +133,7 @@ requirements for optional modules then you will have to add the
 additional requirement ``[analysis]`` to the command line. For a web
 install this would look like ::
 
-  easy_install -f http://sbcb.bioch.ox.ac.uk/oliver/download/Python GromacsWrapper[analysis]
+  easy_install -f https://github.com/orbeckst/GromacsWrapper/tags GromacsWrapper[analysis]
 
 For installation from a downloaded source distribution ::
 
