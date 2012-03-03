@@ -354,6 +354,8 @@ def rms_histogrammed_function(t, y, **kwargs):
     :func:`regularized_function` with *func* = ``sqrt(mean(y*y))``
     """
     def rms(a, demean=kwargs.pop('demean', False)):
+        if len(a) == 0:
+            return numpy.NAN
         if demean:
             a -= numpy.mean(a)
         return numpy.sqrt(numpy.mean(a*a))
@@ -366,7 +368,11 @@ def min_histogrammed_function(t, y, **kwargs):
 
     :func:`regularized_function` with *func* = :func:`numpy.min`
     """
-    return apply_histogrammed_function(numpy.min, t, y, **kwargs)
+    def _min(a):
+        if len(a) == 0:
+            return numpy.NAN
+        return numpy.min(a)
+    return apply_histogrammed_function(_min, t, y, **kwargs)
 
 def max_histogrammed_function(t, y, **kwargs):
     """Compute maximum of data *y* in bins along *t*.
@@ -375,7 +381,11 @@ def max_histogrammed_function(t, y, **kwargs):
 
     :func:`regularized_function` with *func* = :func:`numpy.max`
     """
-    return apply_histogrammed_function(numpy.max, t, y, **kwargs)
+    def _max(a):
+        if len(a) == 0:
+            return numpy.NAN
+        return numpy.max(a)
+    return apply_histogrammed_function(_max, t, y, **kwargs)
 
 def median_histogrammed_function(t, y, **kwargs):
     """Compute median of data *y* in bins along *t*.
@@ -404,11 +414,13 @@ def percentile_histogrammed_function(t, y, **kwargs):
 
     :func:`regularized_function` with :func:`scipy.stats.scoreatpercentile`
     """
-    def percentile(y, per=kwargs.pop('per', 50.), limit=kwargs.pop('limit', ()),
+    def percentile(a, per=kwargs.pop('per', 50.), limit=kwargs.pop('limit', ()),
                    demean=kwargs.pop('demean', False), interpolation_method='fraction'):
+        if len(a) == 0:
+            return numpy.NAN
         if demean:
-            y -= numpy.mean(y)
-        return scipy.stats.scoreatpercentile(y, per, limit=limit)
+            a -= numpy.mean(a)
+        return scipy.stats.scoreatpercentile(a, per, limit=limit)
     return apply_histogrammed_function(percentile, t, y, **kwargs)
 
 def tc_histogrammed_function(t, y, **kwargs):
@@ -417,9 +429,11 @@ def tc_histogrammed_function(t, y, **kwargs):
     .. Warning:: Not well tested and fragile.
     """
     dt = numpy.mean(numpy.diff(t))
-    def get_tcorrel(y):
-        t = numpy.cumsum(dt*numpy.ones_like(y)) - dt
-        results = tcorrel(t, y, nstep=1)
+    def get_tcorrel(a):
+        if len(a) == 0:
+            return numpy.NAN
+        t = numpy.cumsum(dt*numpy.ones_like(a)) - dt
+        results = tcorrel(t, a, nstep=1)
         return results['tc']
     return apply_histogrammed_function(get_tcorrel, t, y, **kwargs)
 
@@ -429,9 +443,11 @@ def error_histogrammed_function(t, y, **kwargs):
     .. Warning:: Not well tested and fragile.
     """
     dt = numpy.mean(numpy.diff(t))
-    def get_tcorrel(y):
-        t = numpy.cumsum(dt*numpy.ones_like(y)) - dt
-        results = tcorrel(t, y, nstep=1)
+    def get_tcorrel(a):
+        if len(a) == 0:
+            return numpy.NAN
+        t = numpy.cumsum(dt*numpy.ones_like(a)) - dt
+        results = tcorrel(t, a, nstep=1)
         return results['sigma']
     return apply_histogrammed_function(get_tcorrel, t, y, **kwargs)
 

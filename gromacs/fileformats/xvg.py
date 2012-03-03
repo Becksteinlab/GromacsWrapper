@@ -186,7 +186,7 @@ import warnings
 
 import numpy
 
-from gromacs import ParseError, AutoCorrectionWarning
+from gromacs import ParseError, MissingDataError, AutoCorrectionWarning
 import gromacs.utilities as utilities
 from gromacs.odict import odict
 
@@ -600,6 +600,9 @@ class XVG(utilities.FileUtils):
         columns = kwargs.pop('columns', Ellipsis)         # slice for everything
         if columns is Ellipsis or columns is None:
             columns = numpy.arange(self.array.shape[0])
+        if len(columns) < 2:
+            raise MissingDataError("plot_coarsened() assumes that there is at least one column "
+                                   "of data for the abscissa and one or more for the ordinate.")
 
         color = kwargs.pop('color', self.default_color_cycle)
         try:
