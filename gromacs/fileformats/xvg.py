@@ -186,7 +186,7 @@ import warnings
 
 import numpy
 
-from gromacs import ParseError, MissingDataError, AutoCorrectionWarning
+from gromacs import ParseError, MissingDataError, MissingDataWarning, AutoCorrectionWarning
 import gromacs.utilities as utilities
 from gromacs.odict import odict
 
@@ -544,9 +544,16 @@ class XVG(utilities.FileUtils):
           *method*
                method to decimate the data to *maxpoints*, see :meth:`XVG.decimate`
                for details
+           *color*
+               single color (used for all plots); sequence of colors
+               (will be repeated as necessary); or a matplotlib
+               colormap (e.g. "jet", see :mod:`matplotlib.cm`). The
+               default is to use the :attr:`XVG.default_color_cycle`.
           *kwargs*
                All other keyword arguments are passed on to :func:`pylab.plot`.
         """
+        from itertools import izip, cycle
+        import matplotlib.cm, matplotlib.colors
         import pylab
 
         columns = kwargs.pop('columns', Ellipsis)         # slice for everything
@@ -554,21 +561,40 @@ class XVG(utilities.FileUtils):
         transform = kwargs.pop('transform', lambda x: x)  # default is identity transformation
         method = kwargs.pop('method', "mean")
 
-        # (decimate/smooth o slice o transform)(array)
-        a = self.decimate(method, numpy.asarray(transform(self.array))[columns], maxpoints=maxpoints)
+        if columns is Ellipsis or columns is None:
+            columns = numpy.arange(self.array.shape[0])
+        if len(columns) == 0:
+            raise MissingDataError("plot() needs at least one column of data")
 
-        if len(a.shape) == 1:
+        if len(self.array.shape) == 1 or self.array.shape[0] == 1:
             # special case: plot against index; plot would do this automatically but
             # we'll just produce our own xdata and pretend that this was X all along
+            a = numpy.ravel(self.array)
             X = numpy.arange(len(a))
-            a = numpy.concatenate([[X], [a]])  # does NOT overwrite original a but make a new one
+            a = numpy.vstack((X, a))
+            columns = [0] + [c+1 for c in columns]
+        else:
+            a = self.array
+
+        color = kwargs.pop('color', self.default_color_cycle)
+        try:
+            cmap = matplotlib.cm.get_cmap(color)
+            colors = cmap(matplotlib.colors.Normalize()(numpy.arange(len(columns[1:]), dtype=float)))
+        except TypeError:
+            colors = cycle(utilities.asiterable(color))
+
+        # (decimate/smooth o slice o transform)(array)
+        a = self.decimate(method, numpy.asarray(transform(a))[columns], maxpoints=maxpoints)
 
         # now deal with infs, nans etc AFTER all transformations (needed for plotting across inf/nan)
         ma = numpy.ma.MaskedArray(a, mask=numpy.logical_not(numpy.isfinite(a)))
 
-        # finally plot
-        kwargs['xdata'] = ma[0]          # abscissa set separately
-        pylab.plot(ma[1:].T, **kwargs)   # plot all other columns in parallel
+        # finally plot (each column separately to catch empty sets)
+        for column, color in izip(columns[1:], colors):
+            if len(ma[column]) == 0:
+                warnings.warn("No data to plot for column %(column)d" % vars(), category=MissingDataWarning)
+            kwargs['color'] = color
+            pylab.plot(ma[0], ma[column], **kwargs)   # plot all other columns in parallel
 
     def plot_coarsened(self, **kwargs):
         """Plot data like :meth:`XVG.plot` with the range of **all** data shown.
@@ -613,10 +639,9 @@ class XVG(utilities.FileUtils):
 
         t = columns[0]
         kwargs['demean'] = True
-        for column, color in izip( columns[1:], colors):
+        for column, color in izip(columns[1:], colors):
             kwargs['color'] = color
             self.errorbar(columns=[t, column, column], **kwargs)
-
 
     def errorbar(self, **kwargs):
         """errorbar plot for a single time series with errors.
@@ -680,6 +705,8 @@ class XVG(utilities.FileUtils):
 
         # order: (decimate/smooth o slice o transform)(array)
         data = numpy.asarray(transform(self.array))[columns]
+        if data.shape[-1] == 0:
+            raise MissingDataError("There is no data to be plotted.")
         a = numpy.zeros((data.shape[0], maxpoints), dtype=numpy.float64)
         a[0:2] = self.decimate("mean", data[0:2], maxpoints=maxpoints)
         error_data = numpy.vstack((data[0], data[2:]))
