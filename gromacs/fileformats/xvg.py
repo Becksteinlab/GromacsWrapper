@@ -796,6 +796,8 @@ class XVG(utilities.FileUtils):
           * "mean", uses :meth:`XVG.decimate_mean` to coarse grain by
             averaging the data in bins along the time axis
 
+          * "min" and "max* select the extremum in each bin
+
           * "rms", uses :meth:`XVG.decimate_rms` to coarse grain by
             computing the root mean square sum of the data in bins
             along the time axis (for averaging standard deviations and
@@ -814,6 +816,8 @@ class XVG(utilities.FileUtils):
                   and ``N' <= N`` (``N'`` is *maxpoints*).
         """
         methods = {'mean': self.decimate_mean,
+                   'min': self.decimate_min,
+                   'max': self.decimate_max,
                    'smooth': self.decimate_smooth,
                    'rms': self.decimate_rms,
                    'percentile': self.decimate_percentile,
@@ -849,6 +853,46 @@ class XVG(utilities.FileUtils):
 
         """
         return self._decimate(numkit.timeseries.mean_histogrammed_function, a, maxpoints, **kwargs)
+
+    def decimate_min(self, a, maxpoints, **kwargs):
+        """Return data *a* min-decimated on *maxpoints*.
+
+        Histograms each column into *maxpoints* bins and calculates
+        the minimum in each bin as the decimated data, using
+        :func:`numkit.timeseries.min_histogrammed_function`. The coarse grained
+        time in the first column contains the centers of the histogram
+        time.
+
+        If *a* contains <= *maxpoints* then *a* is simply returned;
+        otherwise a new array of the same dimensions but with a
+        reduced number of  *maxpoints* points is returned.
+
+        .. Note::
+
+           Assumes that the first column is time.
+
+        """
+        return self._decimate(numkit.timeseries.min_histogrammed_function, a, maxpoints, **kwargs)
+
+    def decimate_max(self, a, maxpoints, **kwargs):
+        """Return data *a* max-decimated on *maxpoints*.
+
+        Histograms each column into *maxpoints* bins and calculates
+        the maximum in each bin as the decimated data, using
+        :func:`numkit.timeseries.max_histogrammed_function`. The coarse grained
+        time in the first column contains the centers of the histogram
+        time.
+
+        If *a* contains <= *maxpoints* then *a* is simply returned;
+        otherwise a new array of the same dimensions but with a
+        reduced number of  *maxpoints* points is returned.
+
+        .. Note::
+
+           Assumes that the first column is time.
+
+        """
+        return self._decimate(numkit.timeseries.max_histogrammed_function, a, maxpoints, **kwargs)
 
     def decimate_rms(self, a, maxpoints, **kwargs):
         """Return data *a* rms-decimated on *maxpoints*.
