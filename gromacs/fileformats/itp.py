@@ -165,19 +165,21 @@ class ITPsection(object):
     @property
     def data(self):
         return self.__data
+
     def section(self):
         # incomplete, override!
         return "[ %s ]" % self.name
-    def parse(self, line):
-        pass   # implement in subclasses
+
     def __len__(self):
         try:
             return len(self.data)
         except (TypeError, ValueError):
             return 0
+
     def __str__(self):
         """Print full section as seen in an ITP file"""
         return self.section()
+
     def __repr__(self):
         return "<ITP::%s (%d entries)>" % (self.__class__.__name__, len(self))
 

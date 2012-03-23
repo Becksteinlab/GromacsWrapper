@@ -544,7 +544,7 @@ class XVG(utilities.FileUtils):
           *method*
                method to decimate the data to *maxpoints*, see :meth:`XVG.decimate`
                for details
-           *color*
+          *color*
                single color (used for all plots); sequence of colors
                (will be repeated as necessary); or a matplotlib
                colormap (e.g. "jet", see :mod:`matplotlib.cm`). The
@@ -618,7 +618,7 @@ class XVG(utilities.FileUtils):
 
         The *demean* keyword has no effect as it is required to be ``True``.
 
-        .. SeeAlso:: :meth:`XVG.plot`, :meth:`XVG.error_bar` and :meth:`XVG.decimate`
+        .. SeeAlso:: :meth:`XVG.plot`, :meth:`XVG.errorbar` and :meth:`XVG.decimate`
         """
         from itertools import izip, cycle
         import matplotlib.cm, matplotlib.colors
