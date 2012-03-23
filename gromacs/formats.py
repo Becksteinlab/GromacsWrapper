@@ -37,12 +37,14 @@ Classes
    :members:
 .. autoclass:: ITP
    :members:
+.. autoclass:: XPM
+   :members:
 
 """
 __docformat__ = "restructuredtext en"
 
-__all__ = ["XVG", "MDP", "NDX", "uniqueNDX", "ITP"]
+__all__ = ["XVG", "MDP", "NDX", "uniqueNDX", "ITP", "XPM"]
 
-from fileformats import XVG, MDP, NDX, uniqueNDX, ITP
+from fileformats import XVG, MDP, NDX, uniqueNDX, ITP, XPM
 
 

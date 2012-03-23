@@ -5,10 +5,12 @@
 
 # file formats
 
-__all__ = ["XVG", "MDP", "NDX", "uniqueNDX", "ITP"]
+__all__ = ["XVG", "MDP", "NDX", "uniqueNDX", "ITP", "XPM"]
 
 from xvg import XVG
 from mdp import MDP
 from ndx import NDX, uniqueNDX
 from itp import ITP
+from xpm import XPM
+
 

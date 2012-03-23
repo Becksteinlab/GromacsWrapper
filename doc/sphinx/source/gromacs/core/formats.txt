@@ -23,8 +23,9 @@ can be safely imported at any time.
    :maxdepth: 1
 
    fileformats/xvg
+   fileformats/xpm
    fileformats/mdp
    fileformats/ndx
    fileformats/itp
    fileformats/preprocessor
-
+   fileformats/converter
