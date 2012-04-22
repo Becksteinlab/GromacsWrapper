@@ -47,10 +47,10 @@ setup(name="GromacsWrapper",
                     'vmd': ['*.tcl'],                                  # server start in VMD
                     },
       install_requires = ['numpy>=1.0',
+                          'scipy',        # numkit needs it
                           ],              # basic package (w/o analysis)
       extras_require = {
                 'analysis': ['matplotlib>=0.91.3',
-                             'scipy',
                              'RecSQL>=0.7',
                              ],
                 'numkit': ['scipy'],
