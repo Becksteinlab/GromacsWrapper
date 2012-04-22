@@ -199,8 +199,8 @@ class ITPsection(object):
             if m:
                 if current_section == m.group('name'):
                     self.logger.info("Merging [ %(current_section)s ] sections!", vars())
-                    # Note: If we store sections in a list instead of an odict then
-                    #       we can keep them separate and don't have to merge here.
+                    # Note: If we stored sections in a list instead of an odict then
+                    #       we could keep them separate and don't have to merge here.
                     continue
                 # switch to new section and parser
                 current_section = m.group('name')
@@ -274,7 +274,7 @@ class ITPdata(ITPsection):
         # build empty record array and fill line by line to accomodate
         # lines with variable number of entries
         numcols = [len(record)  for record, comment in self.__records]
-        nmax = numpy.max(numcols)
+        nmax = numpy.max(numcols) if len(numcols) > 0 else 0
         dtype = self.dtypes[:nmax] + [("comment", "S128")]
         a = numpy.recarray((len(self.__records),), dtype=dtype)
         for i, (record, comment) in enumerate(self._canonical_records(nmax=nmax)):
