@@ -1,0 +1,314 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>gromacs.fileformats.convert — converting entries of tables &mdash; GromacsWrapper 0.3.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.3.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="GromacsWrapper 0.3.0 documentation" href="../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-gromacs.fileformats.convert"></span><div class="section" id="gromacs-fileformats-convert-converting-entries-of-tables">
+<h1><a class="reference internal" href="#module-gromacs.fileformats.convert" title="gromacs.fileformats.convert"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.fileformats.convert</span></tt></a> &#8212; converting entries of tables<a class="headerlink" href="#gromacs-fileformats-convert-converting-entries-of-tables" title="Permalink to this headline">¶</a></h1>
+<p>(Used directly from RecSQL, <tt class="xref py py-mod docutils literal"><span class="pre">recsql.converter</span></tt>.)</p>
+<dl class="class">
+<dt id="gromacs.fileformats.convert.Autoconverter">
+<em class="property">class </em><tt class="descclassname">gromacs.fileformats.convert.</tt><tt class="descname">Autoconverter</tt><big>(</big><em>mode='fancy'</em>, <em>mapping=None</em>, <em>active=True</em>, <em>sep=False</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.convert.Autoconverter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Automatically convert an input value to a special python object.</p>
+<p>The <a class="reference internal" href="#gromacs.fileformats.convert.Autoconverter.convert" title="gromacs.fileformats.convert.Autoconverter.convert"><tt class="xref py py-meth docutils literal"><span class="pre">Autoconverter.convert()</span></tt></a> method turns the value into a special
+python value and casts strings to the &#8220;best&#8221; type (see <a class="reference internal" href="#gromacs.fileformats.convert.besttype" title="gromacs.fileformats.convert.besttype"><tt class="xref py py-func docutils literal"><span class="pre">besttype()</span></tt></a>).</p>
+<p>The defaults for the conversion of a input field value to a
+special python value are:</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="42%" />
+<col width="58%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">value</th>
+<th class="head">python</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>&#8216;&#8212;&#8217;</td>
+<td><tt class="docutils literal"><span class="pre">None</span></tt></td>
+</tr>
+<tr class="row-odd"><td>&#8216;&#8217;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&#8216;True&#8217;</td>
+<td><tt class="docutils literal"><span class="pre">True</span></tt></td>
+</tr>
+<tr class="row-odd"><td>&#8216;x&#8217;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&#8216;X&#8217;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&#8216;yes&#8217;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&#8216;Present&#8217;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&#8216;False&#8217;</td>
+<td><tt class="docutils literal"><span class="pre">False</span></tt></td>
+</tr>
+<tr class="row-even"><td>&#8216;-&#8216;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&#8216;no&#8217;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&#8216;None&#8217;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&#8216;none&#8217;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>If the <em>sep</em> keyword is set to a string instead of <tt class="docutils literal"><span class="pre">False</span></tt> then
+values are split into tuples. Probably the most convenient way to
+use this is to set <em>sep</em> = <tt class="docutils literal"><span class="pre">True</span></tt> (or <tt class="docutils literal"><span class="pre">None</span></tt>) because this
+splits on all white space whereas <em>sep</em> = &#8216; &#8216; would split multiple
+spaces.</p>
+<dl class="docutils">
+<dt><strong>Example</strong></dt>
+<dd><ul class="first last simple">
+<li>With <em>sep</em> = <tt class="docutils literal"><span class="pre">True</span></tt>: &#8216;foo bar 22  boing &#8212;&#8217; &#8211;&gt; (&#8216;foo&#8217;, &#8216;boing&#8217;, 22, None)</li>
+<li>With <em>sep</em> = &#8216;,&#8217;:       1,2,3,4 &#8211;&gt; (1,2,3,4)</li>
+</ul>
+</dd>
+</dl>
+<p>Initialize the converter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>mode</em></dt>
+<dd><p class="first">defines what the converter does</p>
+<blockquote class="last">
+<div><dl class="docutils">
+<dt>&#8220;simple&#8221;</dt>
+<dd><p class="first last">convert entries with <a class="reference internal" href="#gromacs.fileformats.convert.besttype" title="gromacs.fileformats.convert.besttype"><tt class="xref py py-func docutils literal"><span class="pre">besttype()</span></tt></a></p>
+</dd>
+<dt>&#8220;singlet&#8221;</dt>
+<dd><p class="first last">convert entries with <a class="reference internal" href="#gromacs.fileformats.convert.besttype" title="gromacs.fileformats.convert.besttype"><tt class="xref py py-func docutils literal"><span class="pre">besttype()</span></tt></a> and apply
+mappings</p>
+</dd>
+<dt>&#8220;fancy&#8221;</dt>
+<dd><p class="first last">first splits fields into lists, tries mappings,
+and does the stuff that &#8220;singlet&#8221; does</p>
+</dd>
+<dt>&#8220;unicode&#8221;</dt>
+<dd><p class="first last">convert all entries with <a class="reference internal" href="#gromacs.fileformats.convert.to_unicode" title="gromacs.fileformats.convert.to_unicode"><tt class="xref py py-func docutils literal"><span class="pre">to_unicode()</span></tt></a></p>
+</dd>
+</dl>
+</div></blockquote>
+</dd>
+<dt><em>mapping</em></dt>
+<dd><p class="first last">any dict-like mapping that supports lookup. If``None`` then the
+hard-coded defaults are used</p>
+</dd>
+<dt><em>active</em> or <em>autoconvert</em></dt>
+<dd><blockquote class="first">
+<div><p>initial state of the <a class="reference internal" href="#gromacs.fileformats.convert.Autoconverter.active" title="gromacs.fileformats.convert.Autoconverter.active"><tt class="xref py py-attr docutils literal"><span class="pre">Autoconverter.active</span></tt></a> toggle.
+<tt class="docutils literal"><span class="pre">False</span></tt> deactivates any conversion. [<tt class="docutils literal"><span class="pre">True</span></tt>]</p>
+</div></blockquote>
+<dl class="last docutils">
+<dt><em>sep</em></dt>
+<dd><p class="first last">character to split on (produces lists); use <tt class="docutils literal"><span class="pre">True</span></tt> or <tt class="docutils literal"><span class="pre">None</span></tt>
+(!) to split on all white space.</p>
+</dd>
+<dt><em>encoding</em></dt>
+<dd><p class="first last">encoding of the input data [utf-8]</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="gromacs.fileformats.convert.Autoconverter.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>mode='fancy'</em>, <em>mapping=None</em>, <em>active=True</em>, <em>sep=False</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.convert.Autoconverter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the converter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>mode</em></dt>
+<dd><p class="first">defines what the converter does</p>
+<blockquote class="last">
+<div><dl class="docutils">
+<dt>&#8220;simple&#8221;</dt>
+<dd><p class="first last">convert entries with <a class="reference internal" href="#gromacs.fileformats.convert.besttype" title="gromacs.fileformats.convert.besttype"><tt class="xref py py-func docutils literal"><span class="pre">besttype()</span></tt></a></p>
+</dd>
+<dt>&#8220;singlet&#8221;</dt>
+<dd><p class="first last">convert entries with <a class="reference internal" href="#gromacs.fileformats.convert.besttype" title="gromacs.fileformats.convert.besttype"><tt class="xref py py-func docutils literal"><span class="pre">besttype()</span></tt></a> and apply
+mappings</p>
+</dd>
+<dt>&#8220;fancy&#8221;</dt>
+<dd><p class="first last">first splits fields into lists, tries mappings,
+and does the stuff that &#8220;singlet&#8221; does</p>
+</dd>
+<dt>&#8220;unicode&#8221;</dt>
+<dd><p class="first last">convert all entries with <a class="reference internal" href="#gromacs.fileformats.convert.to_unicode" title="gromacs.fileformats.convert.to_unicode"><tt class="xref py py-func docutils literal"><span class="pre">to_unicode()</span></tt></a></p>
+</dd>
+</dl>
+</div></blockquote>
+</dd>
+<dt><em>mapping</em></dt>
+<dd><p class="first last">any dict-like mapping that supports lookup. If``None`` then the
+hard-coded defaults are used</p>
+</dd>
+<dt><em>active</em> or <em>autoconvert</em></dt>
+<dd><blockquote class="first">
+<div><p>initial state of the <a class="reference internal" href="#gromacs.fileformats.convert.Autoconverter.active" title="gromacs.fileformats.convert.Autoconverter.active"><tt class="xref py py-attr docutils literal"><span class="pre">Autoconverter.active</span></tt></a> toggle.
+<tt class="docutils literal"><span class="pre">False</span></tt> deactivates any conversion. [<tt class="docutils literal"><span class="pre">True</span></tt>]</p>
+</div></blockquote>
+<dl class="last docutils">
+<dt><em>sep</em></dt>
+<dd><p class="first last">character to split on (produces lists); use <tt class="docutils literal"><span class="pre">True</span></tt> or <tt class="docutils literal"><span class="pre">None</span></tt>
+(!) to split on all white space.</p>
+</dd>
+<dt><em>encoding</em></dt>
+<dd><p class="first last">encoding of the input data [utf-8]</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="gromacs.fileformats.convert.Autoconverter.convert">
+<tt class="descclassname">Autoconverter.</tt><tt class="descname">convert</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.convert.Autoconverter.convert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert <em>x</em> (if in the active state)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.fileformats.convert.Autoconverter.active">
+<tt class="descclassname">Autoconverter.</tt><tt class="descname">active</tt><a class="headerlink" href="#gromacs.fileformats.convert.Autoconverter.active" title="Permalink to this definition">¶</a></dt>
+<dd><p>If set  to <tt class="docutils literal"><span class="pre">True</span></tt> then conversion takes place; <tt class="docutils literal"><span class="pre">False</span></tt>
+just returns <a class="reference internal" href="#gromacs.fileformats.convert.besttype" title="gromacs.fileformats.convert.besttype"><tt class="xref py py-func docutils literal"><span class="pre">besttype()</span></tt></a> applid to the value.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gromacs.fileformats.convert.besttype">
+<tt class="descclassname">gromacs.fileformats.convert.</tt><tt class="descname">besttype</tt><big>(</big><em>x</em>, <em>encoding='utf-8'</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.convert.besttype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert string x to the most useful type, i.e. int, float or unicode string.</p>
+<p>If x is a quoted string (single or double quotes) then the quotes
+are stripped and the enclosed string returned.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Strings will be returned as Unicode strings (using <a class="reference external" href="http://docs.python.org/library/functions.html#unicode" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">unicode()</span></tt></a>),
+based on the <em>encoding</em> argument, which is &#8220;utf-8&#8221; by default.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="gromacs.fileformats.convert.to_unicode">
+<tt class="descclassname">gromacs.fileformats.convert.</tt><tt class="descname">to_unicode</tt><big>(</big><em>obj</em>, <em>encoding='utf-8'</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.convert.to_unicode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert obj to unicode (if it can be be converted)</p>
+<p>from <a class="reference external" href="http://farmdev.com/talks/unicode/">http://farmdev.com/talks/unicode/</a></p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../../_sources/gromacs/core/fileformats/convert.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2009-2011, Oliver Beckstein.
+      Last updated on Apr 24, 2012.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>
