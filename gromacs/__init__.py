@@ -35,7 +35,7 @@ Modules
      Contains classes that wrap the gromacs tools. They are automatically
      generated from the list of tools in :data:`gromacs.tools.gmx_tools`.
 
-:mod:`gromacs.formats`
+:mod:`gromacs.fileformats`
      Classes to represent data files in various formats such as
      xmgrace graphs. The classes allow reading and writing and for
      graphs, also plotting of the data.
@@ -57,10 +57,10 @@ Modules
      multiprocessor systems.
 
 :mod:`gromacs.analysis`
-     A package that collects whole analysis tasks. It uses the gromacs but is
-     otherwise only loosely coupled with the rest. At the moment it only
-     contains the infrastructure and an example application. See the package
-     documentation.
+     A package that collects whole analysis tasks. It uses the
+     :mod:`gromacs` package but is otherwise only loosely coupled with
+     the rest. At the moment it only contains the infrastructure and
+     an example application. See the package documentation.
 
 
 Examples
@@ -155,6 +155,10 @@ doing. In particular, every wrapped Gromacs command logs its command line
 re-use of command lines for very quick and dirty work. The logging facilty
 appends to the log file and time-stamps every entry. See :mod:`gromacs.config`
 for more details on configuration.
+
+It is also possible to capture output from Gromacs commands in a file
+instead of displaying it on screen, as described under
+:ref:`input-output-label`.
 
 .. _logging: http://docs.python.org/library/logging.html
 

@@ -13,6 +13,8 @@ it. The documentation of :class:`GromacsCommand` applies to all wrapped Gromacs
 commands and should be read by anyone using this package.
 
 
+.. _input-output-label:
+
 Input and Output
 ----------------
 

@@ -162,9 +162,10 @@ def besttype(x, encoding="utf-8"):
     If x is a quoted string (single or double quotes) then the quotes
     are stripped and the enclosed string returned.
 
-    .. Note:: Strings will be returned as Unicode strings (using
-              :func:`unicode`), based on the *encoding* argument, which is
-              utf-8 by default.
+    .. Note::
+
+       Strings will be returned as Unicode strings (using :func:`unicode`),
+       based on the *encoding* argument, which is "utf-8" by default.
     """
     def unicodify(x):
         return to_unicode(x, encoding)

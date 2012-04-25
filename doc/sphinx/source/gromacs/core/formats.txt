@@ -28,4 +28,4 @@ can be safely imported at any time.
    fileformats/ndx
    fileformats/itp
    fileformats/preprocessor
-   fileformats/converter
+   fileformats/convert
