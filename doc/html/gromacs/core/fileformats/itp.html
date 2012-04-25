@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Gromacs topology file (ITP) parser &mdash; GromacsWrapper v0.3.0-dev documentation</title>
+    <title>Gromacs topology file (ITP) parser &mdash; GromacsWrapper 0.3.0 documentation</title>
+    
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.3.0-dev',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.3.0-dev documentation" href="../../../index.html" />
+    <link rel="top" title="GromacsWrapper 0.3.0 documentation" href="../../../index.html" />
     <link rel="up" title="gromacs.formats – Accessing various files" href="../formats.html" />
     <link rel="next" title="Preprocessor in Python" href="preprocessor.html" />
     <link rel="prev" title="Gromacs NDX index file format" href="ndx.html" /> 
@@ -43,10 +46,10 @@
         <li class="right" >
           <a href="ndx.html" title="Gromacs NDX index file format"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="../../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../../core.html" >Gromacs core modules</a> &raquo;</li>
-          <li><a href="../formats.html" accesskey="U"><tt class="docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
+          <li><a href="../formats.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -119,7 +122,7 @@ comment lines before the first real parsed section.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">read from mdp file</p>
 </dd>
@@ -155,7 +158,7 @@ call must supply the next line of input or raise
 <p>Any keywords in <em>defines</em> are use to modify the default preprocessor
 variables (see
 <a class="reference internal" href="preprocessor.html#gromacs.fileformats.preprocessor.Preprocessor.parse" title="gromacs.fileformats.preprocessor.Preprocessor.parse"><tt class="xref py py-meth docutils literal"><span class="pre">gromacs.fileformats.preprocessor.Preprocessor.parse()</span></tt></a> for
-details). Setting <em>preprocess</em> = <tt class="xref docutils literal"><span class="pre">False</span></tt> skips the preprocessing
+details). Setting <em>preprocess</em> = <tt class="docutils literal"><span class="pre">False</span></tt> skips the preprocessing
 step.</p>
 </dd></dl>
 
@@ -174,7 +177,7 @@ mostly makes sense to return a string or similar.</p>
 </dd></dl>
 
 <p>at each level and iterates over the individual results. With
-<em>flat</em> = <tt class="xref docutils literal"><span class="pre">True</span></tt> the resulting list is returned flat
+<em>flat</em> = <tt class="docutils literal"><span class="pre">True</span></tt> the resulting list is returned flat
 (default), otherwise the list represents the tree structure of
 the itp file.</p>
 <p>By default, <em>func</em> is <tt class="docutils literal"><span class="pre">str(section)</span></tt>. Thus, the whole itp
@@ -220,6 +223,21 @@ typically overriden.</p>
 <div><p class="versionadded">
 <span class="versionmodified">New in version 0.2.5.</span></p>
 </div></blockquote>
+<dl class="attribute">
+<dt id="gromacs.fileformats.itp.ITPsection.COMMENT">
+<tt class="descname">COMMENT</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x10664c2d0&gt;</em><a class="headerlink" href="#gromacs.fileformats.itp.ITPsection.COMMENT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.fileformats.itp.ITPsection.DATA">
+<tt class="descname">DATA</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x10664f510&gt;</em><a class="headerlink" href="#gromacs.fileformats.itp.ITPsection.DATA" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.fileformats.itp.ITPsection.SECTION">
+<tt class="descname">SECTION</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x106606990&gt;</em><a class="headerlink" href="#gromacs.fileformats.itp.ITPsection.SECTION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="gromacs.fileformats.itp.ITPsection.walk_sections">
 <tt class="descname">walk_sections</tt><big>(</big><em>func=None</em>, <em>flat=True</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.itp.ITPsection.walk_sections" title="Permalink to this definition">¶</a></dt>
@@ -235,7 +253,7 @@ mostly makes sense to return a string or similar.</p>
 </dd></dl>
 
 <p>at each level and iterates over the individual results. With
-<em>flat</em> = <tt class="xref docutils literal"><span class="pre">True</span></tt> the resulting list is returned flat
+<em>flat</em> = <tt class="docutils literal"><span class="pre">True</span></tt> the resulting list is returned flat
 (default), otherwise the list represents the tree structure of
 the itp file.</p>
 <p>By default, <em>func</em> is <tt class="docutils literal"><span class="pre">str(section)</span></tt>.</p>
@@ -265,7 +283,7 @@ the itp file.</p>
 <dt id="gromacs.fileformats.itp.ITPdata.section">
 <tt class="descname">section</tt><big>(</big><big>)</big><a class="headerlink" href="#gromacs.fileformats.itp.ITPdata.section" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a string of the section data in ITP format.</p>
-<p>Data entries containing <tt class="xref docutils literal"><span class="pre">None</span></tt> are stripped from the output. In
+<p>Data entries containing <tt class="docutils literal"><span class="pre">None</span></tt> are stripped from the output. In
 accordance with Gromacs ITP parsing rules, data columns can only be
 ommitted from the right.</p>
 </dd></dl>
@@ -400,13 +418,13 @@ are cut off after 128 characters).</p>
 <span class="versionmodified">New in version 0.2.5.</span></p>
 <dl class="attribute">
 <dt id="gromacs.fileformats.itp.Atoms.dtypes">
-<tt class="descname">dtypes</tt><a class="headerlink" href="#gromacs.fileformats.itp.Atoms.dtypes" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.7.dev-3f685a1)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.dtype</span></tt></a> columns for the data</p>
+<tt class="descname">dtypes</tt><em class="property"> = [('atomnr', 'i4'), ('atomtype', 'S10'), ('resnr', 'i4'), ('resname', 'S4'), ('atomname', 'S4'), ('chargegrp', 'i4'), ('charge', 'f8'), ('mass', 'f8'), ('atomtypeB', 'S10'), ('chargeB', 'f8'), ('massB', 'f8')]</em><a class="headerlink" href="#gromacs.fileformats.itp.Atoms.dtypes" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.7.dev-3cb783e)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.dtype</span></tt></a> columns for the data</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="gromacs.fileformats.itp.Atoms.fmt">
-<tt class="descname">fmt</tt><a class="headerlink" href="#gromacs.fileformats.itp.Atoms.fmt" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">fmt</tt><em class="property"> = ['%8d', '%9s', '%7d', '%8s', '%9s', '%10d', '%8.3f', '%10.5f', '%9s', '%8.3f', '%10.5f']</em><a class="headerlink" href="#gromacs.fileformats.itp.Atoms.fmt" title="Permalink to this definition">¶</a></dt>
 <dd><p>output format (space separated), same ordering as <tt class="xref py py-attr docutils literal"><span class="pre">columns</span></tt></p>
 </dd></dl>
 
@@ -432,13 +450,13 @@ are cut off after 128 characters).</p>
 <span class="versionmodified">New in version 0.2.5.</span></p>
 <dl class="attribute">
 <dt id="gromacs.fileformats.itp.Bonds.dtypes">
-<tt class="descname">dtypes</tt><a class="headerlink" href="#gromacs.fileformats.itp.Bonds.dtypes" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.7.dev-3f685a1)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.dtype</span></tt></a> columns for the data</p>
+<tt class="descname">dtypes</tt><em class="property"> = [('ai', 'i4'), ('aj', 'i4'), ('func', 'i4'), ('b0', 'f8'), ('kb', 'f8')]</em><a class="headerlink" href="#gromacs.fileformats.itp.Bonds.dtypes" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.7.dev-3cb783e)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.dtype</span></tt></a> columns for the data</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="gromacs.fileformats.itp.Bonds.fmt">
-<tt class="descname">fmt</tt><a class="headerlink" href="#gromacs.fileformats.itp.Bonds.fmt" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">fmt</tt><em class="property"> = ['%4d', '%4d', '%6d', '%10.5f', '%10.1f']</em><a class="headerlink" href="#gromacs.fileformats.itp.Bonds.fmt" title="Permalink to this definition">¶</a></dt>
 <dd><p>output format (space separated), same ordering as <tt class="xref py py-attr docutils literal"><span class="pre">columns</span></tt></p>
 </dd></dl>
 
@@ -459,13 +477,13 @@ are cut off after 128 characters).</p>
 <span class="versionmodified">New in version 0.2.5.</span></p>
 <dl class="attribute">
 <dt id="gromacs.fileformats.itp.Angles.dtypes">
-<tt class="descname">dtypes</tt><a class="headerlink" href="#gromacs.fileformats.itp.Angles.dtypes" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.7.dev-3f685a1)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.dtype</span></tt></a> columns for the data</p>
+<tt class="descname">dtypes</tt><em class="property"> = [('ai', 'i4'), ('aj', 'i4'), ('ak', 'i4'), ('func', 'i4'), ('theta0', 'f8'), ('cth', 'f8')]</em><a class="headerlink" href="#gromacs.fileformats.itp.Angles.dtypes" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.7.dev-3cb783e)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.dtype</span></tt></a> columns for the data</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="gromacs.fileformats.itp.Angles.fmt">
-<tt class="descname">fmt</tt><a class="headerlink" href="#gromacs.fileformats.itp.Angles.fmt" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">fmt</tt><em class="property"> = ['%4d', '%4d', '%4d', '%6d', '%9.3f', '%10.3f']</em><a class="headerlink" href="#gromacs.fileformats.itp.Angles.fmt" title="Permalink to this definition">¶</a></dt>
 <dd><p>output format (space separated), same ordering as <tt class="xref py py-attr docutils literal"><span class="pre">columns</span></tt></p>
 </dd></dl>
 
@@ -494,13 +512,13 @@ section then the last one overwrites the previous one.</p>
 <span class="versionmodified">New in version 0.2.5.</span></p>
 <dl class="attribute">
 <dt id="gromacs.fileformats.itp.Dihedrals.dtypes">
-<tt class="descname">dtypes</tt><a class="headerlink" href="#gromacs.fileformats.itp.Dihedrals.dtypes" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.7.dev-3f685a1)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.dtype</span></tt></a> columns for the data</p>
+<tt class="descname">dtypes</tt><em class="property"> = [('ai', 'i4'), ('aj', 'i4'), ('ak', 'i4'), ('al', 'i4'), ('func', 'i4'), ('c0', &lt;type 'object'&gt;), ('c1', &lt;type 'object'&gt;), ('c2', &lt;type 'object'&gt;), ('c3', &lt;type 'object'&gt;), ('c4', &lt;type 'object'&gt;), ('c5', &lt;type 'object'&gt;)]</em><a class="headerlink" href="#gromacs.fileformats.itp.Dihedrals.dtypes" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.7.dev-3cb783e)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.dtype</span></tt></a> columns for the data</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="gromacs.fileformats.itp.Dihedrals.fmt">
-<tt class="descname">fmt</tt><a class="headerlink" href="#gromacs.fileformats.itp.Dihedrals.fmt" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">fmt</tt><em class="property"> = ['%4d', '%4d', '%4d', '%4d', '%5d', '%9s', '%9s', '%9s', '%9s', '%9s', '%9s']</em><a class="headerlink" href="#gromacs.fileformats.itp.Dihedrals.fmt" title="Permalink to this definition">¶</a></dt>
 <dd><p>output format (space separated), same ordering as <tt class="xref py py-attr docutils literal"><span class="pre">columns</span></tt></p>
 </dd></dl>
 
@@ -563,7 +581,7 @@ section then the last one overwrites the previous one.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -592,16 +610,16 @@ section then the last one overwrites the previous one.</p>
         <li class="right" >
           <a href="ndx.html" title="Gromacs NDX index file format"
              >previous</a> |</li>
-        <li><a href="../../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="../../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../../core.html" >Gromacs core modules</a> &raquo;</li>
-          <li><a href="../formats.html" ><tt class="docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
+          <li><a href="../formats.html" ><tt class="docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Feb 27, 2012.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Last updated on Apr 24, 2012.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

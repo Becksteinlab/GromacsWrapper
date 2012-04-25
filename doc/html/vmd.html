@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>vmd — Remote Tcl commands in VMD &mdash; GromacsWrapper v0.3.0-dev documentation</title>
+    <title>vmd — Remote Tcl commands in VMD &mdash; GromacsWrapper 0.3.0 documentation</title>
+    
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.3.0-dev',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.3.0-dev documentation" href="index.html" />
+    <link rel="top" title="GromacsWrapper 0.3.0 documentation" href="index.html" />
     <link rel="up" title="Auxiliary modules" href="auxiliary.html" />
     <link rel="next" title="staging — Staging of input/output files on a queuing system" href="staging.html" />
     <link rel="prev" title="numkit.observables — Observables as quantities with errors" href="numkit/observables.html" /> 
@@ -43,7 +46,7 @@
         <li class="right" >
           <a href="numkit/observables.html" title="numkit.observables — Observables as quantities with errors"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="auxiliary.html" accesskey="U">Auxiliary modules</a> &raquo;</li> 
       </ul>
     </div>  
@@ -62,7 +65,30 @@ available commands.</p>
 <p>The <a class="reference internal" href="#module-vmd" title="vmd"><tt class="xref py py-mod docutils literal"><span class="pre">vmd</span></tt></a> module is independent from <a class="reference internal" href="gromacs/init.html#module-gromacs" title="gromacs"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs</span></tt></a> and
 distribute for convenience. It can be used to implement additional
 visualization and analysis tasks.</p>
-<span class="target" id="module-vmd"></span><span class="target" id="module-vmd.control"></span></div>
+<span class="target" id="module-vmd"></span><div class="section" id="vmd-control">
+<h2>VMD control<a class="headerlink" href="#vmd-control" title="Permalink to this headline">¶</a></h2>
+<p>Simple client to transmit Tcl commands to a server running in <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>.</p>
+<p>VMD and the server run locally and can be started from the module. Once the
+server is running, one can use <tt class="xref py py-class docutils literal"><span class="pre">vmd.client</span></tt> to communicate with the server
+process via a local socket.</p>
+<div class="section" id="example">
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<p>Start a VMD server and connect:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">vmd.control</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">VMD</span> <span class="o">=</span> <span class="n">server</span><span class="p">()</span>
+<span class="n">VMD</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s">&#39;molecule new load 1AKE&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>or start an interactive <a class="reference external" href="http://www.tcl.tk/man/">Tcl</a> session connected to a running VMD 
+server process:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">interactive</span><span class="p">(</span><span class="n">host</span><span class="p">)</span>
+<span class="n">asyncore</span><span class="o">.</span><span class="n">loop</span><span class="p">()</span>      <span class="c"># necessary</span>
+</pre></div>
+</div>
+<p>See <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/current/ug/node107.html">VMD Tcl Text Commands</a> for all available commands.</p>
+</div>
+</div>
+<span class="target" id="module-vmd.control"></span></div>
 
 
           </div>
@@ -70,6 +96,17 @@ visualization and analysis tasks.</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">vmd</span></tt> &#8212; Remote Tcl commands in VMD</a><ul>
+<li><a class="reference internal" href="#vmd-control">VMD control</a><ul>
+<li><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="numkit/observables.html"
                         title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">numkit.observables</span></tt> &#8212; Observables as quantities with errors</a></p>
@@ -84,7 +121,7 @@ visualization and analysis tasks.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -113,14 +150,14 @@ visualization and analysis tasks.</p>
         <li class="right" >
           <a href="numkit/observables.html" title="numkit.observables — Observables as quantities with errors"
              >previous</a> |</li>
-        <li><a href="index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="auxiliary.html" >Auxiliary modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Feb 27, 2012.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Last updated on Apr 24, 2012.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

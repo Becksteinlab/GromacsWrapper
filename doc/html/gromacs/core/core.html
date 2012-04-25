@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.core – Core functionality &mdash; GromacsWrapper v0.3.0-dev documentation</title>
+    <title>gromacs.core – Core functionality &mdash; GromacsWrapper 0.3.0 documentation</title>
+    
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.3.0-dev',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.3.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper 0.3.0 documentation" href="../../index.html" />
     <link rel="up" title="Gromacs core modules" href="../core.html" />
     <link rel="next" title="gromacs.config – Configuration for GromacsWrapper" href="config.html" />
     <link rel="prev" title="Gromacs core modules" href="../core.html" /> 
@@ -43,7 +46,7 @@
         <li class="right" >
           <a href="../core.html" title="Gromacs core modules"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" accesskey="U">Gromacs core modules</a> &raquo;</li> 
       </ul>
@@ -71,25 +74,25 @@ command (actually, <a class="reference external" href="http://docs.python.org/li
 then we assume it&#8217;s actually a file-like object that we can read from, e.g. a
 <a class="reference external" href="http://docs.python.org/library/subprocess.html#subprocess.Popen.stdout" title="(in Python v2.7)"><tt class="xref py py-attr docutils literal"><span class="pre">subprocess.Popen.stdout</span></tt></a> or a <tt class="xref py py-class docutils literal"><span class="pre">File</span></tt>.</p>
 <p>By setting the <em>stdout</em> and <em>stderr</em> keywords appropriately, one can have the
-output simply printed to the screen (use <tt class="xref docutils literal"><span class="pre">True</span></tt>; this is the default,
+output simply printed to the screen (use <tt class="docutils literal"><span class="pre">True</span></tt>; this is the default,
 although see below for the use of the <tt class="docutils literal"><span class="pre">capture_output</span></tt>
 <a class="reference internal" href="environment.html#module-gromacs.environment" title="gromacs.environment"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.environment</span></tt></a> flag), capture in a python variable as a string for
-further processing (use <tt class="xref docutils literal"><span class="pre">False</span></tt>), write to a file (use a <tt class="xref py py-class docutils literal"><span class="pre">File</span></tt>
+further processing (use <tt class="docutils literal"><span class="pre">False</span></tt>), write to a file (use a <tt class="xref py py-class docutils literal"><span class="pre">File</span></tt>
 instance) or as input for another command (e.g. use the
 <a class="reference external" href="http://docs.python.org/library/subprocess.html#subprocess.Popen.stdin" title="(in Python v2.7)"><tt class="xref py py-attr docutils literal"><span class="pre">subprocess.Popen.stdin</span></tt></a>).</p>
 <p>When writing setup- and analysis pipelines it can be rather cumbersome to have
 the gromacs output on the screen. For these cases GromacsWrapper allows you to
 change its behaviour globally. By setting the value of the
 <a class="reference internal" href="environment.html#module-gromacs.environment" title="gromacs.environment"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.environment</span></tt></a> <a class="reference internal" href="environment.html#gromacs.environment.Flag" title="gromacs.environment.Flag"><tt class="xref py py-class docutils literal"><span class="pre">Flag</span></tt></a>
-<tt class="docutils literal"><span class="pre">capture_output</span></tt> to <tt class="xref docutils literal"><span class="pre">True</span></tt> (in the GromacsWrapper
+<tt class="docutils literal"><span class="pre">capture_output</span></tt> to <tt class="docutils literal"><span class="pre">True</span></tt> (in the GromacsWrapper
 <a class="reference internal" href="environment.html#gromacs.environment.flags" title="gromacs.environment.flags"><tt class="xref py py-data docutils literal"><span class="pre">gromacs.environment.flags</span></tt></a> registry)</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">gromacs.environment</span>
 <span class="n">gromacs</span><span class="o">.</span><span class="n">environment</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;capture_output&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
 </pre></div>
 </div>
-<p>all commands will capture their output (like <em>stderr</em> = <tt class="xref docutils literal"><span class="pre">False</span></tt> and <em>stdout</em>
-= <tt class="xref docutils literal"><span class="pre">False</span></tt>). Explicitly setting these keywords overrides the global
-default. The default value for <tt class="docutils literal"><span class="pre">flags['capture_output']</span></tt> is <tt class="xref docutils literal"><span class="pre">False</span></tt>,
+<p>all commands will capture their output (like <em>stderr</em> = <tt class="docutils literal"><span class="pre">False</span></tt> and <em>stdout</em>
+= <tt class="docutils literal"><span class="pre">False</span></tt>). Explicitly setting these keywords overrides the global
+default. The default value for <tt class="docutils literal"><span class="pre">flags['capture_output']</span></tt> is <tt class="docutils literal"><span class="pre">False</span></tt>,
 i.e. output is directed through STDOUT and STDERR.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
@@ -154,7 +157,7 @@ works as expected: it is the same as <tt class="docutils literal"><span class="p
 arguments. If an option takes multiple arguments (such as the
 multi-file input <tt class="docutils literal"><span class="pre">-f</span> <span class="pre">file1</span> <span class="pre">file2</span> <span class="pre">...</span></tt>) then the list of files must be
 supplied as a python list.</p>
-<p>If a keyword has the python value <tt class="xref docutils literal"><span class="pre">None</span></tt> then it will <em>not</em> be
+<p>If a keyword has the python value <tt class="docutils literal"><span class="pre">None</span></tt> then it will <em>not</em> be
 added to the Gromacs command line; this allows for flexible
 scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
@@ -192,7 +195,7 @@ to developers.</div></blockquote>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>failure</em></dt>
 <dd><p class="first">determines how a failure of the gromacs command is treated; it
 can be one of the following:</p>
@@ -203,7 +206,7 @@ can be one of the following:</p>
 <dt>&#8216;warn&#8217;</dt>
 <dd><p class="first last">issue a <tt class="xref py py-exc docutils literal"><span class="pre">GromacsFailureWarning</span></tt></p>
 </dd>
-<dt><tt class="xref docutils literal"><span class="pre">None</span></tt></dt>
+<dt><tt class="docutils literal"><span class="pre">None</span></tt></dt>
 <dd><p class="first last">just continue silently</p>
 </dd>
 </dl>
@@ -228,7 +231,7 @@ one command to an input from another.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Todo :</th><td class="field-body">Write example.</td>
+<tr class="field-odd field"><th class="field-name">Todo :</th><td class="field-body">Write example.</td>
 </tr>
 </tbody>
 </table>
@@ -251,7 +254,7 @@ one command to an input from another.</p>
 <dd>raises GromacsError if command fails</dd>
 <dt>&#8216;warn&#8217;</dt>
 <dd>issue a <tt class="xref py py-exc docutils literal"><span class="pre">GromacsFailureWarning</span></tt></dd>
-<dt><tt class="xref docutils literal"><span class="pre">None</span></tt></dt>
+<dt><tt class="docutils literal"><span class="pre">None</span></tt></dt>
 <dd>just continue silently</dd>
 </dl>
 </div></blockquote>
@@ -259,7 +262,7 @@ one command to an input from another.</p>
 
 <dl class="attribute">
 <dt id="gromacs.core.GromacsCommand.failuremodes">
-<tt class="descname">failuremodes</tt><a class="headerlink" href="#gromacs.core.GromacsCommand.failuremodes" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">failuremodes</tt><em class="property"> = ('raise', 'warn', None)</em><a class="headerlink" href="#gromacs.core.GromacsCommand.failuremodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Available failure modes.</p>
 </dd></dl>
 
@@ -328,39 +331,39 @@ with the process via the python subprocess module.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>input</em> <span class="classifier-delimiter">:</span> <span class="classifier">string, sequence</span></dt>
 <dd><p class="first last">to be fed to the process&#8217; standard input;
 elements of a sequence are concatenated with
-newlines, including a trailing one    [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+newlines, including a trailing one    [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt><em>stdin</em></dt>
-<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">None</span></tt> or automatically set to <tt class="docutils literal"><span class="pre">PIPE</span></tt> if input given [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">None</span></tt> or automatically set to <tt class="docutils literal"><span class="pre">PIPE</span></tt> if input given [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt><em>stdout</em></dt>
-<dd><p class="first">how to handle the program&#8217;s stdout stream [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+<dd><p class="first">how to handle the program&#8217;s stdout stream [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 <dl class="last docutils">
 <dt>filehandle</dt>
 <dd><p class="first last">anything that behaves like a file object</p>
 </dd>
-<dt><tt class="xref docutils literal"><span class="pre">None</span></tt> or <tt class="xref docutils literal"><span class="pre">True</span></tt></dt>
+<dt><tt class="docutils literal"><span class="pre">None</span></tt> or <tt class="docutils literal"><span class="pre">True</span></tt></dt>
 <dd><p class="first last">to see  output on screen</p>
 </dd>
-<dt><tt class="xref docutils literal"><span class="pre">False</span></tt> or <tt class="docutils literal"><span class="pre">PIPE</span></tt></dt>
+<dt><tt class="docutils literal"><span class="pre">False</span></tt> or <tt class="docutils literal"><span class="pre">PIPE</span></tt></dt>
 <dd><p class="first last">returns the output as a string in  the stdout parameter</p>
 </dd>
 </dl>
 </dd>
 <dt><em>stderr</em></dt>
-<dd><p class="first">how to handle the stderr stream [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+<dd><p class="first">how to handle the stderr stream [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 <dl class="last docutils">
 <dt><tt class="docutils literal"><span class="pre">STDOUT</span></tt></dt>
 <dd><p class="first last">merges standard error with the standard out stream</p>
 </dd>
-<dt><tt class="xref docutils literal"><span class="pre">False</span></tt> or <tt class="docutils literal"><span class="pre">PIPE</span></tt></dt>
+<dt><tt class="docutils literal"><span class="pre">False</span></tt> or <tt class="docutils literal"><span class="pre">PIPE</span></tt></dt>
 <dd><p class="first last">returns the output as a string in the stderr return parameter</p>
 </dd>
-<dt><tt class="xref docutils literal"><span class="pre">None</span></tt> or <tt class="xref docutils literal"><span class="pre">True</span></tt></dt>
+<dt><tt class="docutils literal"><span class="pre">None</span></tt> or <tt class="docutils literal"><span class="pre">True</span></tt></dt>
 <dd><p class="first last">keeps it on stderr (and presumably on screen)</p>
 </dd>
 </dl>
@@ -378,12 +381,12 @@ default behaviour can be different.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">The shell return code rc of the command is always returned. Depending
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">The shell return code rc of the command is always returned. Depending
 on the value of output, various strings are filled with output from the
 command.</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Notes :</th><td class="field-body"><p class="first">In order to chain different commands via pipes one must use the special
+<tr class="field-even field"><th class="field-name">Notes :</th><td class="field-body"><p class="first">In order to chain different commands via pipes one must use the special
 <a class="reference internal" href="#gromacs.core.PopenWithInput" title="gromacs.core.PopenWithInput"><tt class="xref py py-class docutils literal"><span class="pre">PopenWithInput</span></tt></a> object (see <a class="reference internal" href="#gromacs.core.GromacsCommand.Popen" title="gromacs.core.GromacsCommand.Popen"><tt class="xref py py-meth docutils literal"><span class="pre">GromacsCommand.Popen()</span></tt></a> method) instead of the simple
 call described here and first construct the pipeline explicitly and then
 call the <a class="reference internal" href="#gromacs.core.PopenWithInput.communicate" title="gromacs.core.PopenWithInput.communicate"><tt class="xref py py-meth docutils literal"><span class="pre">PopenWithInput.communicate()</span></tt></a> method.</p>
@@ -394,7 +397,7 @@ of commands. Use</p>
 </pre></div>
 </div>
 <p>when requiring these special streams (and the special boolean
-switches <tt class="xref docutils literal"><span class="pre">True</span></tt>/<tt class="xref docutils literal"><span class="pre">False</span></tt> cannot do what you need.)</p>
+switches <tt class="docutils literal"><span class="pre">True</span></tt>/<tt class="docutils literal"><span class="pre">False</span></tt> cannot do what you need.)</p>
 <p class="last">(TODO: example for chaining commands)</p>
 </td>
 </tr>
@@ -426,7 +429,7 @@ one command to an input from another.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Todo :</th><td class="field-body">Write example.</td>
+<tr class="field-odd field"><th class="field-name">Todo :</th><td class="field-body">Write example.</td>
 </tr>
 </tbody>
 </table>
@@ -440,7 +443,7 @@ one command to an input from another.</p>
 
 <dl class="attribute">
 <dt id="gromacs.core.Command.command_name">
-<tt class="descname">command_name</tt><a class="headerlink" href="#gromacs.core.Command.command_name" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">command_name</tt><em class="property"> = None</em><a class="headerlink" href="#gromacs.core.Command.command_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Derive a class from command; typically one only has to set <em>command_name</em>
 to the name of the script or executable. The full path is required if it
 cannot be found by searching <span class="target" id="index-0"></span><tt class="xref std std-envvar docutils literal"><span class="pre">PATH</span></tt>.</p>
@@ -473,7 +476,7 @@ different scripts.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>input</em></dt>
 <dd><p class="first last">string that is piped into the command</p>
 </dd>
@@ -485,7 +488,7 @@ different scripts.</p>
 <dl class="method">
 <dt id="gromacs.core.PopenWithInput.communicate">
 <tt class="descname">communicate</tt><big>(</big><em>use_input=True</em><big>)</big><a class="headerlink" href="#gromacs.core.PopenWithInput.communicate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run the command, using the input that was set up on __init__ (for <em>use_input</em> = <tt class="xref docutils literal"><span class="pre">True</span></tt>)</p>
+<dd><p>Run the command, using the input that was set up on __init__ (for <em>use_input</em> = <tt class="docutils literal"><span class="pre">True</span></tt>)</p>
 </dd></dl>
 
 </dd></dl>
@@ -522,7 +525,7 @@ different scripts.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -551,15 +554,15 @@ different scripts.</p>
         <li class="right" >
           <a href="../core.html" title="Gromacs core modules"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" >Gromacs core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Feb 27, 2012.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Last updated on Apr 24, 2012.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

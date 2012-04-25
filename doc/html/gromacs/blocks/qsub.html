@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.qsub – utilities for batch submission systems &mdash; GromacsWrapper v0.3.0-dev documentation</title>
+    <title>gromacs.qsub – utilities for batch submission systems &mdash; GromacsWrapper 0.3.0 documentation</title>
+    
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.3.0-dev',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.3.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper 0.3.0 documentation" href="../../index.html" />
     <link rel="up" title="Gromacs building blocks" href="../building_blocks.html" />
     <link rel="next" title="Managing jobs remotely" href="manager.html" />
     <link rel="prev" title="gromacs.setup – Setting up a Gromacs MD run" href="setup.html" /> 
@@ -43,7 +46,7 @@
         <li class="right" >
           <a href="setup.html" title="gromacs.setup – Setting up a Gromacs MD run"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" accesskey="U">Gromacs building blocks</a> &raquo;</li> 
       </ul>
@@ -92,7 +95,7 @@ submission system commands. The table shows <a class="reference external" href="
 <col width="39%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">place holder</th>
+<tr class="row-odd"><th class="head">place holder</th>
 <th class="head">default</th>
 <th class="head">replacement</th>
 <th class="head">description</th>
@@ -100,43 +103,43 @@ submission system commands. The table shows <a class="reference external" href="
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>#$ -N</td>
+<tr class="row-even"><td>#$ -N</td>
 <td>GMX_MD</td>
 <td><em>sgename</em></td>
 <td>job name</td>
 <td><cite>/^#.*(-N|job_name)/</cite></td>
 </tr>
-<tr><td>#$ -l walltime=</td>
+<tr class="row-odd"><td>#$ -l walltime=</td>
 <td>00:20:00</td>
 <td><em>walltime</em></td>
 <td>max run time</td>
 <td><cite>/^#.*(-l walltime|wall_clock_limit)/</cite></td>
 </tr>
-<tr><td>#$ -A</td>
+<tr class="row-even"><td>#$ -A</td>
 <td>BUDGET</td>
 <td><em>budget</em></td>
 <td>account</td>
 <td><cite>/^#.*(-A|account_no)/</cite></td>
 </tr>
-<tr><td>DEFFNM=</td>
+<tr class="row-odd"><td>DEFFNM=</td>
 <td>md</td>
 <td><em>deffnm</em></td>
 <td>default gmx name</td>
 <td><cite>/^ *DEFFNM=/</cite></td>
 </tr>
-<tr><td>STARTDIR=</td>
+<tr class="row-even"><td>STARTDIR=</td>
 <td>.</td>
 <td><em>startdir</em></td>
 <td>remote jobdir</td>
 <td><cite>/^ *STARTDIR=/</cite></td>
 </tr>
-<tr><td>WALL_HOURS=</td>
+<tr class="row-odd"><td>WALL_HOURS=</td>
 <td>0.33</td>
 <td><em>walltime</em> h</td>
 <td>mdrun&#8217;s -maxh</td>
 <td><cite>/^ *WALL_HOURS=/</cite></td>
 </tr>
-<tr><td>MDRUN_OPTS=</td>
+<tr class="row-even"><td>MDRUN_OPTS=</td>
 <td>&#8220;&#8221;</td>
 <td><em>mdrun_opts</em></td>
 <td>more options</td>
@@ -168,29 +171,29 @@ recognized, as shown in the table below.</p>
 <col width="40%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Queuing system</th>
+<tr class="row-odd"><th class="head">Queuing system</th>
 <th class="head">suffix</th>
 <th class="head">notes</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>Sun Gridengine</td>
+<tr class="row-even"><td>Sun Gridengine</td>
 <td>.sge</td>
 <td>Sun&#8217;s <a class="reference external" href="http://gridengine.sunsource.net/">Sun Gridengine</a></td>
 </tr>
-<tr><td>Portable Batch queuing system</td>
+<tr class="row-odd"><td>Portable Batch queuing system</td>
 <td>.pbs</td>
 <td><a class="reference external" href="http://www.mcs.anl.gov/research/projects/openpbs/">OpenPBS</a> and <a class="reference external" href="http://www.pbsworks.com/Product.aspx?id=1">PBS Pro</a></td>
 </tr>
-<tr><td>LoadLeveler</td>
+<tr class="row-even"><td>LoadLeveler</td>
 <td>.ll</td>
 <td>IBM&#8217;s <a class="reference external" href="http://www-03.ibm.com/systems/software/loadleveler/index.html">LoadLeveler</a></td>
 </tr>
-<tr><td>bash script</td>
+<tr class="row-odd"><td>bash script</td>
 <td>.bash, .sh</td>
 <td><a class="reference external" href="http://tldp.org/LDP/abs/html/">Advanced bash scripting</a></td>
 </tr>
-<tr><td>csh script</td>
+<tr class="row-even"><td>csh script</td>
 <td>.csh</td>
 <td><a class="reference external" href="http://www.grymoire.com/Unix/CshTop10.txt">avoid</a> <a class="reference external" href="http://www.faqs.org/faqs/unix-faq/shell/csh-whynot/">csh</a></td>
 </tr>
@@ -285,7 +288,7 @@ options to <strong class="program">qsub</strong>.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>name</em></dt>
 <dd><p class="first last">name of the queuing system, e.g. &#8216;Sun Gridengine&#8217;</p>
 </dd>
@@ -298,7 +301,7 @@ options to <strong class="program">qsub</strong>.</p>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>array_variable</em></dt>
 <dd><p class="first last">environment variable exported for array jobs, e.g.
 &#8216;SGE_TASK_ID&#8217;</p>
@@ -359,7 +362,7 @@ are made executable.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>templates</em></dt>
 <dd><p class="first last">Template file or list of template files. The &#8220;files&#8221; can also be names
 or symbolic names for templates in the templates directory. See
@@ -401,7 +404,7 @@ into this directory at the beginning of execution) [None]</p>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">list of generated run scripts</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">list of generated run scripts</p>
 </td>
 </tr>
 </tbody>
@@ -427,7 +430,7 @@ function cannot be used.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>templates</em></dt>
 <dd><p class="first">Basic template for a single job; the job array logic is spliced into
 the position of the line</p>
@@ -464,7 +467,7 @@ directory.</p>
 
 <dl class="data">
 <dt id="gromacs.qsub.queuing_systems">
-<tt class="descclassname">gromacs.qsub.</tt><tt class="descname">queuing_systems</tt><a class="headerlink" href="#gromacs.qsub.queuing_systems" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.qsub.</tt><tt class="descname">queuing_systems</tt><em class="property"> = [&lt;Sun Gridengine QueuingSystem instance&gt;, &lt;PBS QueuingSystem instance&gt;, &lt;LoadLeveler QueuingSystem instance&gt;]</em><a class="headerlink" href="#gromacs.qsub.queuing_systems" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pre-defined queuing systems (SGE, PBS). Add your own here.</p>
 </dd></dl>
 
@@ -507,7 +510,7 @@ directory.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -536,15 +539,15 @@ directory.</p>
         <li class="right" >
           <a href="setup.html" title="gromacs.setup – Setting up a Gromacs MD run"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" >Gromacs building blocks</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Feb 27, 2012.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Last updated on Apr 24, 2012.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

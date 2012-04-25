@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Analysis plugins &mdash; GromacsWrapper v0.3.0-dev documentation</title>
+    <title>Analysis plugins &mdash; GromacsWrapper 0.3.0 documentation</title>
+    
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.3.0-dev',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.3.0-dev documentation" href="../index.html" />
+    <link rel="top" title="GromacsWrapper 0.3.0 documentation" href="../index.html" />
     <link rel="up" title="Analysis" href="../analysis.html" />
     <link rel="next" title="Auxiliary modules" href="../auxiliary.html" />
     <link rel="prev" title="Support modules" href="support.html" /> 
@@ -43,7 +46,7 @@
         <li class="right" >
           <a href="support.html" title="Support modules"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="../analysis.html" accesskey="U">Analysis</a> &raquo;</li> 
       </ul>
     </div>  
@@ -82,46 +85,46 @@ sending it to the <a class="reference external" href="mailto:oliver&#46;beckstei
 <col width="53%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">plugin</th>
+<tr class="row-odd"><th class="head">plugin</th>
 <th class="head">author</th>
 <th class="head">description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td><a class="reference internal" href="#gromacs.analysis.plugins.CysAccessibility" title="gromacs.analysis.plugins.CysAccessibility"><tt class="xref py py-class docutils literal"><span class="pre">CysAccessibility</span></tt></a></td>
+<tr class="row-even"><td><a class="reference internal" href="#gromacs.analysis.plugins.CysAccessibility" title="gromacs.analysis.plugins.CysAccessibility"><tt class="xref py py-class docutils literal"><span class="pre">CysAccessibility</span></tt></a></td>
 <td><a class="footnote-reference" href="#ob" id="id1">[1]</a></td>
 <td>estimate accessibility of Cys
 residues by water</td>
 </tr>
-<tr><td><a class="reference internal" href="#gromacs.analysis.plugins.HelixBundle" title="gromacs.analysis.plugins.HelixBundle"><tt class="xref py py-class docutils literal"><span class="pre">HelixBundle</span></tt></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="#gromacs.analysis.plugins.HelixBundle" title="gromacs.analysis.plugins.HelixBundle"><tt class="xref py py-class docutils literal"><span class="pre">HelixBundle</span></tt></a></td>
 <td><a class="footnote-reference" href="#ob" id="id2">[1]</a></td>
 <td>g_bundle analysis of helices</td>
 </tr>
-<tr><td><a class="reference internal" href="#gromacs.analysis.plugins.Distances" title="gromacs.analysis.plugins.Distances"><tt class="xref py py-class docutils literal"><span class="pre">Distances</span></tt></a></td>
+<tr class="row-even"><td><a class="reference internal" href="#gromacs.analysis.plugins.Distances" title="gromacs.analysis.plugins.Distances"><tt class="xref py py-class docutils literal"><span class="pre">Distances</span></tt></a></td>
 <td><a class="footnote-reference" href="#ob" id="id3">[1]</a></td>
 <td>time series of distances</td>
 </tr>
-<tr><td><a class="reference internal" href="#gromacs.analysis.plugins.MinDistances" title="gromacs.analysis.plugins.MinDistances"><tt class="xref py py-class docutils literal"><span class="pre">MinDistances</span></tt></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="#gromacs.analysis.plugins.MinDistances" title="gromacs.analysis.plugins.MinDistances"><tt class="xref py py-class docutils literal"><span class="pre">MinDistances</span></tt></a></td>
 <td><a class="footnote-reference" href="#ob" id="id4">[1]</a></td>
 <td>time series of shortest distances</td>
 </tr>
-<tr><td><a class="reference internal" href="#gromacs.analysis.plugins.COM" title="gromacs.analysis.plugins.COM"><tt class="xref py py-class docutils literal"><span class="pre">COM</span></tt></a></td>
+<tr class="row-even"><td><a class="reference internal" href="#gromacs.analysis.plugins.COM" title="gromacs.analysis.plugins.COM"><tt class="xref py py-class docutils literal"><span class="pre">COM</span></tt></a></td>
 <td><a class="footnote-reference" href="#ob" id="id5">[1]</a></td>
 <td>time series of centres of mass</td>
 </tr>
-<tr><td><a class="reference internal" href="#gromacs.analysis.plugins.Dihedrals" title="gromacs.analysis.plugins.Dihedrals"><tt class="xref py py-class docutils literal"><span class="pre">Dihedrals</span></tt></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="#gromacs.analysis.plugins.Dihedrals" title="gromacs.analysis.plugins.Dihedrals"><tt class="xref py py-class docutils literal"><span class="pre">Dihedrals</span></tt></a></td>
 <td><a class="footnote-reference" href="#ob" id="id6">[1]</a></td>
 <td>analysis of dihedral angles</td>
 </tr>
-<tr><td><a class="reference internal" href="#gromacs.analysis.plugins.RMSF" title="gromacs.analysis.plugins.RMSF"><tt class="xref py py-class docutils literal"><span class="pre">RMSF</span></tt></a></td>
+<tr class="row-even"><td><a class="reference internal" href="#gromacs.analysis.plugins.RMSF" title="gromacs.analysis.plugins.RMSF"><tt class="xref py py-class docutils literal"><span class="pre">RMSF</span></tt></a></td>
 <td><a class="footnote-reference" href="#ob" id="id7">[1]</a></td>
 <td>calculate root mean square fluctuations</td>
 </tr>
-<tr><td><a class="reference internal" href="#gromacs.analysis.plugins.RMSD" title="gromacs.analysis.plugins.RMSD"><tt class="xref py py-class docutils literal"><span class="pre">RMSD</span></tt></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="#gromacs.analysis.plugins.RMSD" title="gromacs.analysis.plugins.RMSD"><tt class="xref py py-class docutils literal"><span class="pre">RMSD</span></tt></a></td>
 <td><a class="footnote-reference" href="#ob" id="id8">[1]</a></td>
 <td>calculate root mean square distance</td>
 </tr>
-<tr><td><a class="reference internal" href="#gromacs.analysis.plugins.Energy" title="gromacs.analysis.plugins.Energy"><tt class="xref py py-class docutils literal"><span class="pre">Energy</span></tt></a></td>
+<tr class="row-even"><td><a class="reference internal" href="#gromacs.analysis.plugins.Energy" title="gromacs.analysis.plugins.Energy"><tt class="xref py py-class docutils literal"><span class="pre">Energy</span></tt></a></td>
 <td><a class="footnote-reference" href="#ob" id="id9">[1]</a></td>
 <td>terms from the energy file</td>
 </tr>
@@ -135,31 +138,31 @@ residues by water</td>
 <col width="53%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">plugin</th>
+<tr class="row-odd"><th class="head">plugin</th>
 <th class="head">author</th>
 <th class="head">description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td><a class="reference internal" href="#gromacs.analysis.plugins.Trajectories" title="gromacs.analysis.plugins.Trajectories"><tt class="xref py py-class docutils literal"><span class="pre">Trajectories</span></tt></a></td>
+<tr class="row-even"><td><a class="reference internal" href="#gromacs.analysis.plugins.Trajectories" title="gromacs.analysis.plugins.Trajectories"><tt class="xref py py-class docutils literal"><span class="pre">Trajectories</span></tt></a></td>
 <td><a class="footnote-reference" href="#ob" id="id10">[1]</a></td>
 <td>write xy-fitted trajectories</td>
 </tr>
-<tr><td>:class:<a href="#id11"><span class="problematic" id="id12">`</span></a>FitCompact  `</td>
+<tr class="row-odd"><td>:class:<a href="#id11"><span class="problematic" id="id12">`</span></a>FitCompact  `</td>
 <td><a class="footnote-reference" href="#ob" id="id13">[1]</a></td>
 <td>write fitted trajectories</td>
 </tr>
-<tr><td><a class="reference internal" href="#gromacs.analysis.plugins.StripWater" title="gromacs.analysis.plugins.StripWater"><tt class="xref py py-class docutils literal"><span class="pre">StripWater</span></tt></a></td>
+<tr class="row-even"><td><a class="reference internal" href="#gromacs.analysis.plugins.StripWater" title="gromacs.analysis.plugins.StripWater"><tt class="xref py py-class docutils literal"><span class="pre">StripWater</span></tt></a></td>
 <td><a class="footnote-reference" href="#ob" id="id14">[1]</a></td>
 <td>remove solvent (and optionally fit to
 reference)</td>
 </tr>
-<tr><td>:class:<a href="#id15"><span class="problematic" id="id16">`</span></a>ProteinOnly</td>
+<tr class="row-odd"><td>:class:<a href="#id15"><span class="problematic" id="id16">`</span></a>ProteinOnly</td>
 <td><a class="footnote-reference" href="#ob" id="id17">[1]</a></td>
 <td>remove all atoms except the Protein
 (and optionally fit to reference)</td>
 </tr>
-<tr><td><a class="reference internal" href="#gromacs.analysis.plugins.Ls" title="gromacs.analysis.plugins.Ls"><tt class="xref py py-class docutils literal"><span class="pre">Ls</span></tt></a></td>
+<tr class="row-even"><td><a class="reference internal" href="#gromacs.analysis.plugins.Ls" title="gromacs.analysis.plugins.Ls"><tt class="xref py py-class docutils literal"><span class="pre">Ls</span></tt></a></td>
 <td><a class="footnote-reference" href="#ob" id="id18">[1]</a></td>
 <td>simple <strong class="program">ls</strong> (for testing)</td>
 </tr>
@@ -194,7 +197,7 @@ group with crosslinking agents.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt>name <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">plugin name (used to access it)</p>
 </dd>
@@ -223,14 +226,14 @@ are passed through.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">Name of the plugin. Should differ for different
 instances. Defaults to the class name.</p>
 </dd>
 <dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">Simulation instance</span></dt>
 <dd><p class="first last">The <tt class="xref py py-class docutils literal"><span class="pre">Simulation</span></tt> instance that owns this plugin instance. Can be
-<tt class="xref docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref py py-meth docutils literal"><span class="pre">register()</span></tt> method has to be called manually
+<tt class="docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref py py-meth docutils literal"><span class="pre">register()</span></tt> method has to be called manually
 with a simulation instance later.</p>
 </dd>
 <dt><em>kwargs</em></dt>
@@ -263,7 +266,7 @@ with a simulation instance later.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>helixtable</em></dt>
 <dd><p class="first last">reST table with columns &#8220;name&#8221;, &#8220;top&#8221;, &#8220;bottom&#8221;,
 &#8220;kink&#8221;; see <tt class="xref py py-mod docutils literal"><span class="pre">gromacs.analysis.plugins.helixbundle</span></tt>
@@ -301,14 +304,14 @@ are passed through.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">Name of the plugin. Should differ for different
 instances. Defaults to the class name.</p>
 </dd>
 <dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">Simulation instance</span></dt>
 <dd><p class="first last">The <tt class="xref py py-class docutils literal"><span class="pre">Simulation</span></tt> instance that owns this plugin instance. Can be
-<tt class="xref docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref py py-meth docutils literal"><span class="pre">register()</span></tt> method has to be called manually
+<tt class="docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref py py-meth docutils literal"><span class="pre">register()</span></tt> method has to be called manually
 with a simulation instance later.</p>
 </dd>
 <dt><em>kwargs</em></dt>
@@ -342,7 +345,7 @@ calculated for each time step and written to files.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt>name <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">plugin name (used to access it)</p>
 </dd>
@@ -389,14 +392,14 @@ are passed through.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">Name of the plugin. Should differ for different
 instances. Defaults to the class name.</p>
 </dd>
 <dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">Simulation instance</span></dt>
 <dd><p class="first last">The <tt class="xref py py-class docutils literal"><span class="pre">Simulation</span></tt> instance that owns this plugin instance. Can be
-<tt class="xref docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref py py-meth docutils literal"><span class="pre">register()</span></tt> method has to be called manually
+<tt class="docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref py py-meth docutils literal"><span class="pre">register()</span></tt> method has to be called manually
 with a simulation instance later.</p>
 </dd>
 <dt><em>kwargs</em></dt>
@@ -431,7 +434,7 @@ step and written to files.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt>name <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">plugin name (used to access it)</p>
 </dd>
@@ -488,14 +491,14 @@ are passed through.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">Name of the plugin. Should differ for different
 instances. Defaults to the class name.</p>
 </dd>
 <dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">Simulation instance</span></dt>
 <dd><p class="first last">The <tt class="xref py py-class docutils literal"><span class="pre">Simulation</span></tt> instance that owns this plugin instance. Can be
-<tt class="xref docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref py py-meth docutils literal"><span class="pre">register()</span></tt> method has to be called manually
+<tt class="docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref py py-meth docutils literal"><span class="pre">register()</span></tt> method has to be called manually
 with a simulation instance later.</p>
 </dd>
 <dt><em>kwargs</em></dt>
@@ -531,14 +534,14 @@ are passed through.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">Name of the plugin. Should differ for different
 instances. Defaults to the class name.</p>
 </dd>
 <dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">Simulation instance</span></dt>
 <dd><p class="first last">The <tt class="xref py py-class docutils literal"><span class="pre">Simulation</span></tt> instance that owns this plugin instance. Can be
-<tt class="xref docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref py py-meth docutils literal"><span class="pre">register()</span></tt> method has to be called manually
+<tt class="docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref py py-meth docutils literal"><span class="pre">register()</span></tt> method has to be called manually
 with a simulation instance later.</p>
 </dd>
 <dt><em>kwargs</em></dt>
@@ -570,7 +573,7 @@ with a simulation instance later.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>dihedrals</em>        </dt>
 <dd><p class="first last">list of tuples; each tuple contains atom indices that define the dihedral.</p>
 </dd>
@@ -596,14 +599,14 @@ are passed through.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">Name of the plugin. Should differ for different
 instances. Defaults to the class name.</p>
 </dd>
 <dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">Simulation instance</span></dt>
 <dd><p class="first last">The <tt class="xref py py-class docutils literal"><span class="pre">Simulation</span></tt> instance that owns this plugin instance. Can be
-<tt class="xref docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref py py-meth docutils literal"><span class="pre">register()</span></tt> method has to be called manually
+<tt class="docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref py py-meth docutils literal"><span class="pre">register()</span></tt> method has to be called manually
 with a simulation instance later.</p>
 </dd>
 <dt><em>kwargs</em></dt>
@@ -638,7 +641,7 @@ in the tpr file.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">plugin name (used to access it)</p>
 </dd>
@@ -657,14 +660,14 @@ are passed through.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">Name of the plugin. Should differ for different
 instances. Defaults to the class name.</p>
 </dd>
 <dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">Simulation instance</span></dt>
 <dd><p class="first last">The <tt class="xref py py-class docutils literal"><span class="pre">Simulation</span></tt> instance that owns this plugin instance. Can be
-<tt class="xref docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref py py-meth docutils literal"><span class="pre">register()</span></tt> method has to be called manually
+<tt class="docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref py py-meth docutils literal"><span class="pre">register()</span></tt> method has to be called manually
 with a simulation instance later.</p>
 </dd>
 <dt><em>kwargs</em></dt>
@@ -700,7 +703,7 @@ tpr file.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">plugin name (used to access it)</p>
 </dd>
@@ -719,14 +722,14 @@ are passed through.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">Name of the plugin. Should differ for different
 instances. Defaults to the class name.</p>
 </dd>
 <dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">Simulation instance</span></dt>
 <dd><p class="first last">The <tt class="xref py py-class docutils literal"><span class="pre">Simulation</span></tt> instance that owns this plugin instance. Can be
-<tt class="xref docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref py py-meth docutils literal"><span class="pre">register()</span></tt> method has to be called manually
+<tt class="docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref py py-meth docutils literal"><span class="pre">register()</span></tt> method has to be called manually
 with a simulation instance later.</p>
 </dd>
 <dt><em>kwargs</em></dt>
@@ -773,7 +776,7 @@ and is defined in the attribute <tt class="xref py py-attr docutils literal"><sp
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">plugin name (used to access it)</p>
 </dd>
@@ -792,14 +795,14 @@ are passed through.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">Name of the plugin. Should differ for different
 instances. Defaults to the class name.</p>
 </dd>
 <dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">Simulation instance</span></dt>
 <dd><p class="first last">The <tt class="xref py py-class docutils literal"><span class="pre">Simulation</span></tt> instance that owns this plugin instance. Can be
-<tt class="xref docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref py py-meth docutils literal"><span class="pre">register()</span></tt> method has to be called manually
+<tt class="docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref py py-meth docutils literal"><span class="pre">register()</span></tt> method has to be called manually
 with a simulation instance later.</p>
 </dd>
 <dt><em>kwargs</em></dt>
@@ -835,7 +838,7 @@ suffix.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>dt</em></dt>
 <dd><p class="first last">time step in ps of the output trajectory</p>
 </dd>
@@ -857,14 +860,14 @@ are passed through.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">Name of the plugin. Should differ for different
 instances. Defaults to the class name.</p>
 </dd>
 <dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">Simulation instance</span></dt>
 <dd><p class="first last">The <tt class="xref py py-class docutils literal"><span class="pre">Simulation</span></tt> instance that owns this plugin instance. Can be
-<tt class="xref docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref py py-meth docutils literal"><span class="pre">register()</span></tt> method has to be called manually
+<tt class="docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref py py-meth docutils literal"><span class="pre">register()</span></tt> method has to be called manually
 with a simulation instance later.</p>
 </dd>
 <dt><em>kwargs</em></dt>
@@ -900,9 +903,9 @@ with a simulation instance later.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>xy</em> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">Rot+trans fit in 3D (<tt class="xref docutils literal"><span class="pre">False</span></tt>) or trans+rot in x-y plane (<tt class="xref docutils literal"><span class="pre">True</span></tt>) [<tt class="xref docutils literal"><span class="pre">False</span></tt>]</p>
+<dd><p class="first last">Rot+trans fit in 3D (<tt class="docutils literal"><span class="pre">False</span></tt>) or trans+rot in x-y plane (<tt class="docutils literal"><span class="pre">True</span></tt>) [<tt class="docutils literal"><span class="pre">False</span></tt>]</p>
 </dd>
 <dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">plugin name (used to access it)</p>
@@ -922,14 +925,14 @@ are passed through.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">Name of the plugin. Should differ for different
 instances. Defaults to the class name.</p>
 </dd>
 <dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">Simulation instance</span></dt>
 <dd><p class="first last">The <tt class="xref py py-class docutils literal"><span class="pre">Simulation</span></tt> instance that owns this plugin instance. Can be
-<tt class="xref docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref py py-meth docutils literal"><span class="pre">register()</span></tt> method has to be called manually
+<tt class="docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref py py-meth docutils literal"><span class="pre">register()</span></tt> method has to be called manually
 with a simulation instance later.</p>
 </dd>
 <dt><em>kwargs</em></dt>
@@ -962,14 +965,14 @@ with a simulation instance later.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>resn</em></dt>
 <dd><p class="first last">name of the residues that are stripped (typically it is
 safe to leave this at the default &#8216;SOL&#8217;)</p>
 </dd>
 <dt><em>force</em></dt>
-<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt> will always regenerate trajectories even if they
-already exist, <tt class="xref docutils literal"><span class="pre">False</span></tt> raises an exception, <tt class="xref docutils literal"><span class="pre">None</span></tt>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt> will always regenerate trajectories even if they
+already exist, <tt class="docutils literal"><span class="pre">False</span></tt> raises an exception, <tt class="docutils literal"><span class="pre">None</span></tt>
 does the sensible thing in most cases (i.e. notify and
 then move on).</p>
 </dd>
@@ -989,7 +992,7 @@ values:</p>
 <div><ul class="simple">
 <li>&#8220;xy&#8221; : perform a rot+trans fit in the x-y plane</li>
 <li>&#8220;all&#8221;: rot+trans</li>
-<li><tt class="xref docutils literal"><span class="pre">None</span></tt>: no fitting</li>
+<li><tt class="docutils literal"><span class="pre">None</span></tt>: no fitting</li>
 </ul>
 </div></blockquote>
 <p class="last">If <em>fit</em> is not supplied then the constructor-default is used
@@ -1019,14 +1022,14 @@ are passed through.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">Name of the plugin. Should differ for different
 instances. Defaults to the class name.</p>
 </dd>
 <dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">Simulation instance</span></dt>
 <dd><p class="first last">The <tt class="xref py py-class docutils literal"><span class="pre">Simulation</span></tt> instance that owns this plugin instance. Can be
-<tt class="xref docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref py py-meth docutils literal"><span class="pre">register()</span></tt> method has to be called manually
+<tt class="docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref py py-meth docutils literal"><span class="pre">register()</span></tt> method has to be called manually
 with a simulation instance later.</p>
 </dd>
 <dt><em>kwargs</em></dt>
@@ -1059,7 +1062,7 @@ with a simulation instance later.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>selection</em></dt>
 <dd><p class="first last">optional selection for the water instead of &#8220;SOL&#8221;</p>
 </dd>
@@ -1070,8 +1073,8 @@ with a simulation instance later.</p>
 <dd><p class="first last">The <a class="reference internal" href="core.html#gromacs.analysis.Simulation" title="gromacs.analysis.Simulation"><tt class="xref py py-class docutils literal"><span class="pre">gromacs.analysis.Simulation</span></tt></a> instance that owns the plugin.</p>
 </dd>
 <dt><em>force</em></dt>
-<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt> will always regenerate trajectories even if they
-already exist, <tt class="xref docutils literal"><span class="pre">False</span></tt> raises an exception, <tt class="xref docutils literal"><span class="pre">None</span></tt>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt> will always regenerate trajectories even if they
+already exist, <tt class="docutils literal"><span class="pre">False</span></tt> raises an exception, <tt class="docutils literal"><span class="pre">None</span></tt>
 does the sensible thing in most cases (i.e. notify and
 then move on).</p>
 </dd>
@@ -1091,7 +1094,7 @@ values:</p>
 <div><ul class="simple">
 <li>&#8220;xy&#8221; : perform a rot+trans fit in the x-y plane</li>
 <li>&#8220;all&#8221;: rot+trans</li>
-<li><tt class="xref docutils literal"><span class="pre">None</span></tt>: no fitting</li>
+<li><tt class="docutils literal"><span class="pre">None</span></tt>: no fitting</li>
 </ul>
 </div></blockquote>
 <p class="last">If <em>fit</em> is not supplied then the constructore-default is used
@@ -1114,14 +1117,14 @@ are passed through.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">Name of the plugin. Should differ for different
 instances. Defaults to the class name.</p>
 </dd>
 <dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">Simulation instance</span></dt>
 <dd><p class="first last">The <tt class="xref py py-class docutils literal"><span class="pre">Simulation</span></tt> instance that owns this plugin instance. Can be
-<tt class="xref docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref py py-meth docutils literal"><span class="pre">register()</span></tt> method has to be called manually
+<tt class="docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref py py-meth docutils literal"><span class="pre">register()</span></tt> method has to be called manually
 with a simulation instance later.</p>
 </dd>
 <dt><em>kwargs</em></dt>
@@ -1155,7 +1158,7 @@ plugin architecture.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">plugin name (used to access it)</p>
 </dd>
@@ -1174,14 +1177,14 @@ are passed through.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>name</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first last">Name of the plugin. Should differ for different
 instances. Defaults to the class name.</p>
 </dd>
 <dt><em>simulation</em> <span class="classifier-delimiter">:</span> <span class="classifier">Simulation instance</span></dt>
 <dd><p class="first last">The <tt class="xref py py-class docutils literal"><span class="pre">Simulation</span></tt> instance that owns this plugin instance. Can be
-<tt class="xref docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref py py-meth docutils literal"><span class="pre">register()</span></tt> method has to be called manually
+<tt class="docutils literal"><span class="pre">None</span></tt> but then the <tt class="xref py py-meth docutils literal"><span class="pre">register()</span></tt> method has to be called manually
 with a simulation instance later.</p>
 </dd>
 <dt><em>kwargs</em></dt>
@@ -1208,7 +1211,7 @@ is to add their name to <a class="reference internal" href="#gromacs.analysis.pl
 further comments and how the auto loading of plugins is done.</p>
 <dl class="data">
 <dt id="gromacs.analysis.plugins.__plugins__">
-<tt class="descclassname">gromacs.analysis.plugins.</tt><tt class="descname">__plugins__</tt><a class="headerlink" href="#gromacs.analysis.plugins.__plugins__" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.analysis.plugins.</tt><tt class="descname">__plugins__</tt><em class="property"> = ['CysAccessibility', 'Distances', 'MinDistances', 'Dihedrals', 'COM', 'RMSF', 'RMSD', 'Energy', 'HelixBundle', 'Trajectories', 'FitCompact', 'StripWater', 'ProteinOnly', 'Ls']</em><a class="headerlink" href="#gromacs.analysis.plugins.__plugins__" title="Permalink to this definition">¶</a></dt>
 <dd><p>All available plugin names are listed here. Because this is used to
 automatically set up imports a module file <em>must</em> be named like the
 plugin class it contains but in all lower case. For example, the
@@ -1218,7 +1221,7 @@ file <tt class="docutils literal"><span class="pre">plugins/distances.py</span><
 
 <dl class="data">
 <dt id="gromacs.analysis.plugins.__plugin_classes__">
-<tt class="descclassname">gromacs.analysis.plugins.</tt><tt class="descname">__plugin_classes__</tt><a class="headerlink" href="#gromacs.analysis.plugins.__plugin_classes__" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.analysis.plugins.</tt><tt class="descname">__plugin_classes__</tt><em class="property"> = {'Distances': &lt;class 'gromacs.analysis.plugins.distances.Distances'&gt;, 'FitCompact': &lt;class 'gromacs.analysis.plugins.fitcompact.FitCompact'&gt;, 'RMSF': &lt;class 'gromacs.analysis.plugins.rmsf.RMSF'&gt;, 'RMSD': &lt;class 'gromacs.analysis.plugins.rmsd.RMSD'&gt;, 'StripWater': &lt;class 'gromacs.analysis.plugins.stripwater.StripWater'&gt;, 'MinDistances': &lt;class 'gromacs.analysis.plugins.mindistances.MinDistances'&gt;, 'Energy': &lt;class 'gromacs.analysis.plugins.energy.Energy'&gt;, 'Trajectories': &lt;class 'gromacs.analysis.plugins.trajectories.Trajectories'&gt;, 'CysAccessibility': &lt;class 'gromacs.analysis.plugins.cysaccessibility.CysAccessibility'&gt;, 'ProteinOnly': &lt;class 'gromacs.analysis.plugins.proteinonly.ProteinOnly'&gt;, 'HelixBundle': &lt;class 'gromacs.analysis.plugins.helixbundle.HelixBundle'&gt;, 'Ls': &lt;class 'gromacs.analysis.plugins.ls.Ls'&gt;, 'COM': &lt;class 'gromacs.analysis.plugins.com.COM'&gt;, 'Dihedrals': &lt;class 'gromacs.analysis.plugins.dihedrals.Dihedrals'&gt;}</em><a class="headerlink" href="#gromacs.analysis.plugins.__plugin_classes__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gives access to all available plugin classes (or use the module __dict__)</p>
 </dd></dl>
 
@@ -1276,7 +1279,7 @@ distances below the cutoff).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Todo :</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Todo :</th><td class="field-body"><ul class="first last simple">
 <li>Save analysis to pickle or data files.</li>
 <li>Export data as simple data files for plotting in other programs.</li>
 </ul>
@@ -1296,7 +1299,7 @@ instead :-).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>datasource</em></dt>
 <dd><p class="first last">a filename (plain, gzip, bzip2) or file object</p>
 </dd>
@@ -1324,7 +1327,7 @@ histogram only contains a single bin (and then get more data)!</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>nbins</em> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
 <dd><p class="first last">number of bins</p>
 </dd>
@@ -1396,7 +1399,7 @@ tuple</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>stream</em></dt>
 <dd><p class="first last">open stream (file or pipe or really any iterator
 providing the data from <tt class="docutils literal"><span class="pre">g_dist</span></tt>); the <em>stream</em> is not
@@ -1450,7 +1453,7 @@ the config file.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>config</em> <span class="classifier-delimiter">:</span> <span class="classifier">filename</span></dt>
 <dd><p class="first last">input file for GridMAT-MD (see docs)</p>
 </dd>
@@ -1465,32 +1468,32 @@ such a list</p>
 </table>
 <dl class="attribute">
 <dt id="gromacs.analysis.plugins.gridmatmd.GridMatMD.GridMatMD">
-<tt class="descname">GridMatMD</tt><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatMD.GridMatMD" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">GridMatMD</tt><em class="property"> = None</em><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatMD.GridMatMD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Instance of <a class="reference internal" href="../gromacs/core/tools.html#gromacs.tools.GridMAT_MD" title="gromacs.tools.GridMAT_MD"><tt class="xref py py-class docutils literal"><span class="pre">gromacs.tools.GridMAT_MD</span></tt></a> which always
 uses <em>config</em> for input.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="gromacs.analysis.plugins.gridmatmd.GridMatMD.averages">
-<tt class="descname">averages</tt><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatMD.averages" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">averages</tt><em class="property"> = None</em><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatMD.averages" title="Permalink to this definition">¶</a></dt>
 <dd><p>Final result: averaged thickness profiles, indexed by &#8220;top&#8221;, &#8220;bottom&#8221;, &#8220;average&#8221;</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="gromacs.analysis.plugins.gridmatmd.GridMatMD.dx">
-<tt class="descname">dx</tt><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatMD.dx" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">dx</tt><em class="property"> = None</em><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatMD.dx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bin width in <em>x</em>.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="gromacs.analysis.plugins.gridmatmd.GridMatMD.dy">
-<tt class="descname">dy</tt><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatMD.dy" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">dy</tt><em class="property"> = None</em><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatMD.dy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bin width in <em>y</em>.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="gromacs.analysis.plugins.gridmatmd.GridMatMD.filenames">
-<tt class="descname">filenames</tt><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatMD.filenames" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">filenames</tt><em class="property"> = None</em><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatMD.filenames" title="Permalink to this definition">¶</a></dt>
 <dd><p>list of filenames (gro or pdb files)</p>
 </dd></dl>
 
@@ -1502,15 +1505,40 @@ uses <em>config</em> for input.</p>
 
 <dl class="attribute">
 <dt id="gromacs.analysis.plugins.gridmatmd.GridMatMD.nx">
-<tt class="descname">nx</tt><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatMD.nx" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">nx</tt><em class="property"> = None</em><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatMD.nx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of bins in the <em>x</em> direction.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="gromacs.analysis.plugins.gridmatmd.GridMatMD.ny">
-<tt class="descname">ny</tt><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatMD.ny" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">ny</tt><em class="property"> = None</em><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatMD.ny" title="Permalink to this definition">¶</a></dt>
 <dd><p>Numberof bins in the <em>y</em> direction.</p>
 </dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.analysis.plugins.gridmatmd.GridMatMD.pAVG">
+<tt class="descname">pAVG</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x1074466d0&gt;</em><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatMD.pAVG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.analysis.plugins.gridmatmd.GridMatMD.pBOT">
+<tt class="descname">pBOT</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x106758160&gt;</em><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatMD.pBOT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.analysis.plugins.gridmatmd.GridMatMD.pNX">
+<tt class="descname">pNX</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x107397020&gt;</em><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatMD.pNX" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.analysis.plugins.gridmatmd.GridMatMD.pNY">
+<tt class="descname">pNY</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x1073d2e20&gt;</em><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatMD.pNY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.analysis.plugins.gridmatmd.GridMatMD.pTOP">
+<tt class="descname">pTOP</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x10739ff90&gt;</em><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatMD.pTOP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="gromacs.analysis.plugins.gridmatmd.GridMatMD.run">
@@ -1526,9 +1554,9 @@ uses <em>config</em> for input.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><em>frame</em> is a filename (gro or pdb)</td>
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><em>frame</em> is a filename (gro or pdb)</td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body">a dict of <tt class="xref py py-class docutils literal"><span class="pre">GridMapData</span></tt> objects; the keys
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body">a dict of <tt class="xref py py-class docutils literal"><span class="pre">GridMapData</span></tt> objects; the keys
 are &#8220;top&#8221;, &#8220;bottom&#8221;, &#8220;average&#8221;</td>
 </tr>
 </tbody>
@@ -1543,7 +1571,7 @@ are &#8220;top&#8221;, &#8220;bottom&#8221;, &#8220;average&#8221;</td>
 
 <dl class="attribute">
 <dt id="gromacs.analysis.plugins.gridmatmd.GridMatMD.thickness">
-<tt class="descname">thickness</tt><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatMD.thickness" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">thickness</tt><em class="property"> = None</em><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatMD.thickness" title="Permalink to this definition">¶</a></dt>
 <dd><p>Thickness results (dict of <a class="reference internal" href="#gromacs.analysis.plugins.gridmatmd.GridMatData" title="gromacs.analysis.plugins.gridmatmd.GridMatData"><tt class="xref py py-class docutils literal"><span class="pre">GridMatData</span></tt></a> instances);
 used to store the results from the last processed frame.</p>
 </dd></dl>
@@ -1567,7 +1595,7 @@ not provided.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">2D grid as written by GridMAT-MD</p>
 </dd>
@@ -1582,6 +1610,11 @@ not provided.</p>
 </tr>
 </tbody>
 </table>
+<dl class="attribute">
+<dt id="gromacs.analysis.plugins.gridmatmd.GridMatData.DATANAME">
+<tt class="descname">DATANAME</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x10736c310&gt;</em><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatData.DATANAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="gromacs.analysis.plugins.gridmatmd.GridMatData.imshow">
 <tt class="descname">imshow</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.analysis.plugins.gridmatmd.GridMatData.imshow" title="Permalink to this definition">¶</a></dt>
@@ -1609,7 +1642,7 @@ defined. Each operation returns a new <a class="reference internal" href="#groma
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>data</em></dt>
 <dd><p class="first last">array data, e.g. a list of array</p>
 </dd>
@@ -1708,7 +1741,7 @@ defined. Each operation returns a new <a class="reference internal" href="#groma
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -1737,14 +1770,14 @@ defined. Each operation returns a new <a class="reference internal" href="#groma
         <li class="right" >
           <a href="support.html" title="Support modules"
              >previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="../analysis.html" >Analysis</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Feb 27, 2012.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Last updated on Apr 24, 2012.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

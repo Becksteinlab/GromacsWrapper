@@ -28,9 +28,6 @@ running simulations with sensible parameters.
 
 .. _Documentation: 
    http://orbeckst.github.com/GromacsWrapper/index.html
-.. Online source code is not necessarily uptodate; check the git repository
-.. _online source code documentation:
-   http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/epydoc/index.html
 .. _GromacsWrapper git repository:
    http://github.com/orbeckst/GromacsWrapper
 
@@ -129,14 +126,8 @@ Download and Availability
 =========================
 
 The GromacsWrapper home page is
-http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/ .  The
-latest version of the package is being made available via the
-internet-thingy at the direct download URI
-
-  http://sbcb.bioch.ox.ac.uk/oliver/download/Python/ 
-
-You can use this URI if you want to install from the network using
-``easy_install`` as described in :doc:`INSTALL`.
+http://github.com/orbeckst/GromacsWrapper.  The latest release of the
+package is being made available from https://github.com/orbeckst/GromacsWrapper/tags
 
 You can also clone the `GromacsWrapper git repository`_ or fork for
 your own development::

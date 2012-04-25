@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Managing jobs remotely &mdash; GromacsWrapper v0.3.0-dev documentation</title>
+    <title>Managing jobs remotely &mdash; GromacsWrapper 0.3.0 documentation</title>
+    
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.3.0-dev',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.3.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper 0.3.0 documentation" href="../../index.html" />
     <link rel="up" title="Gromacs building blocks" href="../building_blocks.html" />
     <link rel="next" title="gromacs.run – Running simulations" href="simulation.html" />
     <link rel="prev" title="gromacs.qsub – utilities for batch submission systems" href="qsub.html" /> 
@@ -43,7 +46,7 @@
         <li class="right" >
           <a href="qsub.html" title="gromacs.qsub – utilities for batch submission systems"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" accesskey="U">Gromacs building blocks</a> &raquo;</li> 
       </ul>
@@ -100,7 +103,7 @@ walltime = 24.0
 start_cwd = True</pre>
 </div>
 <p>All entries except <em>walltime</em> and <em>start_cwd</em> are required; <em>walltime</em>
-can be omitted or set to <tt class="xref docutils literal"><span class="pre">None</span></tt>.</p>
+can be omitted or set to <tt class="docutils literal"><span class="pre">None</span></tt>.</p>
 <div class="section" id="default-section">
 <h3><em>DEFAULT</em> section<a class="headerlink" href="#default-section" title="Permalink to this headline">¶</a></h3>
 <p><em>name</em></p>
@@ -142,7 +145,7 @@ then the job runs until it is done (provided the queuing system
 policy allows that)</div></blockquote>
 <p><em>start_cwd</em></p>
 <blockquote>
-<div>Set to <tt class="xref docutils literal"><span class="pre">True</span></tt> means that the queuing system requires the queuing
+<div>Set to <tt class="docutils literal"><span class="pre">True</span></tt> means that the queuing system requires the queuing
 system script to <tt class="docutils literal"><span class="pre">cd</span></tt> into the job directory; this seems to be a
 bug in some versions of PBS, which we can work-around in
 <a class="reference internal" href="#gromacs.manager.Manager.qsub" title="gromacs.manager.Manager.qsub"><tt class="xref py py-meth docutils literal"><span class="pre">Manager.qsub()</span></tt></a></div></blockquote>
@@ -183,7 +186,7 @@ order to avoid typing your password all the time.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>name</em></dt>
 <dd><p class="first last">configuration name (corresponds to a store cfg file)</p>
 </dd>
@@ -221,13 +224,13 @@ current directory</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The default is to immediately delete the original files
-(<em>cleanup</em> = <tt class="xref docutils literal"><span class="pre">True</span></tt>).</p>
+(<em>cleanup</em> = <tt class="docutils literal"><span class="pre">True</span></tt>).</p>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>dirname</em></dt>
 <dd><p class="first last">directory to work in</p>
 </dd>
@@ -235,7 +238,7 @@ current directory</p>
 <dd><p class="first last">prefix (deffnm) of the files [md]</p>
 </dd>
 <dt><em>cleanup</em> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
-<dd><p class="first last">if <tt class="xref docutils literal"><span class="pre">True</span></tt>, remove all used files [<tt class="xref docutils literal"><span class="pre">True</span></tt>]</p>
+<dd><p class="first last">if <tt class="docutils literal"><span class="pre">True</span></tt>, remove all used files [<tt class="docutils literal"><span class="pre">True</span></tt>]</p>
 </dd>
 </dl>
 </td>
@@ -252,14 +255,14 @@ current directory</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><ul class="first simple">
 <li><em>dirname</em>: dir to download</li>
 <li><em>checkfile</em>: raise OSError/ENOENT if <em>targetdir/dirname/checkfile</em> was not found</li>
 <li><em>targetdir</em>: put <em>dirname</em> into this directory</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">return code from scp</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">return code from scp</p>
 </td>
 </tr>
 </tbody>
@@ -282,22 +285,22 @@ available (which is saved in <tt class="xref py py-attr docutils literal"><span 
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><ul class="first simple">
 <li><em>dirname</em></li>
 <li><em>logfilename</em> can be a shell glob pattern [md*.log]</li>
 <li><em>silent</em> = True/False; True suppresses log.info messages</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt> is job is done, <tt class="xref docutils literal"><span class="pre">False</span></tt> if still running
-<tt class="xref docutils literal"><span class="pre">None</span></tt> if no log file found to look at</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt> is job is done, <tt class="docutils literal"><span class="pre">False</span></tt> if still running
+<tt class="docutils literal"><span class="pre">None</span></tt> if no log file found to look at</p>
 </td>
 </tr>
 </tbody>
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Also returns <tt class="xref docutils literal"><span class="pre">False</span></tt> if the connection failed.</p>
+<p class="last">Also returns <tt class="docutils literal"><span class="pre">False</span></tt> if the connection failed.</p>
 </div>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
@@ -317,7 +320,7 @@ remote host.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body">local path of <em>checkfile</em></td>
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">local path of <em>checkfile</em></td>
 </tr>
 </tbody>
 </table>
@@ -325,7 +328,7 @@ remote host.</p>
 
 <dl class="attribute">
 <dt id="gromacs.manager.Manager.log_RE">
-<tt class="descname">log_RE</tt><a class="headerlink" href="#gromacs.manager.Manager.log_RE" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">log_RE</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x1076820d0&gt;</em><a class="headerlink" href="#gromacs.manager.Manager.log_RE" title="Permalink to this definition">¶</a></dt>
 <dd><p>Regular expression used by <a class="reference internal" href="#gromacs.manager.Manager.get_status" title="gromacs.manager.Manager.get_status"><tt class="xref py py-meth docutils literal"><span class="pre">Manager.get_status()</span></tt></a> to parse
 the logfile from <strong class="program">mdrun</strong>.</p>
 </dd></dl>
@@ -342,7 +345,7 @@ the logfile from <strong class="program">mdrun</strong>.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
 <dt><em>runtime</em></dt>
 <dd><p class="first last">length of run in ns</p>
 </dd>
@@ -355,7 +358,7 @@ the logfile from <strong class="program">mdrun</strong>.</p>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><em>n</em>  or 1 if walltime is unlimited</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><em>n</em>  or 1 if walltime is unlimited</p>
 </td>
 </tr>
 </tbody>
@@ -370,9 +373,9 @@ the logfile from <strong class="program">mdrun</strong>.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body">dirname to be transferred</td>
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body">dirname to be transferred</td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body">return code from scp</td>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body">return code from scp</td>
 </tr>
 </tbody>
 </table>
@@ -386,9 +389,9 @@ the logfile from <strong class="program">mdrun</strong>.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body">filename and dirname to be transferred to</td>
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body">filename and dirname to be transferred to</td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body">return code from scp</td>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body">return code from scp</td>
 </tr>
 </tbody>
 </table>
@@ -408,7 +411,7 @@ queuing system script in <em>remotedir</em>.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>dirname</em></dt>
 <dd><p class="first last">directory, relative to the current one, under which the
 all job files reside (typically, this is also were the
@@ -453,7 +456,7 @@ configuration of the manager</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><ul class="first last simple">
 <li><em>jobnumber</em>: 1,2 ...</li>
 <li><em>struct</em> is the starting structure (default from POSRES
 run but that is just a guess);</li>
@@ -481,7 +484,7 @@ run but that is just a guess);</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>dirname</em></dt>
 <dd><p class="first last">look for log files under the remote dir corresponding to <em>dirname</em></p>
 </dd>
@@ -518,7 +521,17 @@ run but that is just a guess);</li>
 <dl class="class">
 <dt id="gromacs.manager.ManagerConfigParser">
 <em class="property">class </em><tt class="descclassname">gromacs.manager.</tt><tt class="descname">ManagerConfigParser</tt><big>(</big><em>defaults=None</em>, <em>dict_type=&lt;type 'dict'&gt;</em><big>)</big><a class="headerlink" href="#gromacs.manager.ManagerConfigParser" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
+<dd><dl class="attribute">
+<dt id="gromacs.manager.ManagerConfigParser.OPTCRE">
+<tt class="descname">OPTCRE</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x1004e1a80&gt;</em><a class="headerlink" href="#gromacs.manager.ManagerConfigParser.OPTCRE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.manager.ManagerConfigParser.SECTCRE">
+<tt class="descname">SECTCRE</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x1005cb8a0&gt;</em><a class="headerlink" href="#gromacs.manager.ManagerConfigParser.SECTCRE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="gromacs.manager.ManagerConfigParser.add_section">
 <tt class="descname">add_section</tt><big>(</big><em>section</em><big>)</big><a class="headerlink" href="#gromacs.manager.ManagerConfigParser.add_section" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a new section in the configuration.</p>
@@ -542,7 +555,7 @@ looked up in the same manner as the option.</p>
 <dl class="method">
 <dt id="gromacs.manager.ManagerConfigParser.getfloat">
 <tt class="descname">getfloat</tt><big>(</big><em>section</em>, <em>option</em><big>)</big><a class="headerlink" href="#gromacs.manager.ManagerConfigParser.getfloat" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return as <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">float()</span></tt></a> or <tt class="xref docutils literal"><span class="pre">None</span></tt>.</p>
+<dd><p>Return as <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">float()</span></tt></a> or <tt class="docutils literal"><span class="pre">None</span></tt>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -683,7 +696,7 @@ used.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -712,15 +725,15 @@ used.</p>
         <li class="right" >
           <a href="qsub.html" title="gromacs.qsub – utilities for batch submission systems"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" >Gromacs building blocks</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Feb 27, 2012.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Last updated on Apr 24, 2012.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>numkit.observables — Observables as quantities with errors &mdash; GromacsWrapper v0.3.0-dev documentation</title>
+    <title>numkit.observables — Observables as quantities with errors &mdash; GromacsWrapper 0.3.0 documentation</title>
+    
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.3.0-dev',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.3.0-dev documentation" href="../index.html" />
+    <link rel="top" title="GromacsWrapper 0.3.0 documentation" href="../index.html" />
     <link rel="up" title="numkit — Numerical analysis toolkit" href="../numkit.html" />
     <link rel="next" title="vmd — Remote Tcl commands in VMD" href="../vmd.html" />
     <link rel="prev" title="numkit.integration — Numerical integration of data" href="integration.html" /> 
@@ -43,7 +46,7 @@
         <li class="right" >
           <a href="integration.html" title="numkit.integration — Numerical integration of data"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="../auxiliary.html" >Auxiliary modules</a> &raquo;</li>
           <li><a href="../numkit.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a> &raquo;</li> 
       </ul>
@@ -132,7 +135,7 @@ different error estimates for quantities such as x*x versus x*x&#8217;.</p>
 <tt class="descname">isSame</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#numkit.observables.QuantityWithError.isSame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if <em>other</em> is 100% correlated with <em>self</em>.</p>
 <dl class="docutils">
-<dt><tt class="xref docutils literal"><span class="pre">True</span></tt> if </dt>
+<dt><tt class="docutils literal"><span class="pre">True</span></tt> if </dt>
 <dd><dl class="first last docutils">
 <dt><a href="#id1"><span class="problematic" id="id2">`</span></a>- <em>other</em> is the same observable (instance)</dt>
 <dd><ul class="first last">
@@ -149,7 +152,7 @@ other independent quantities with errors, e.g.</p>
 </dd>
 </dl>
 </dd>
-<dt><tt class="xref docutils literal"><span class="pre">False</span></tt> if </dt>
+<dt><tt class="docutils literal"><span class="pre">False</span></tt> if </dt>
 <dd><ul class="first last simple">
 <li><em>other</em> is a scalar (without an error), or</li>
 <li><em>other</em> was computed from <em>self</em> without involvement of
@@ -161,7 +164,7 @@ any other observables.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Todo :</th><td class="field-body"><p class="first">How should one treat the case when a quantity is used
+<tr class="field-odd field"><th class="field-name">Todo :</th><td class="field-body"><p class="first">How should one treat the case when a quantity is used
 again in an operation, e.g.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">c</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> 
 <span class="n">d</span> <span class="o">=</span> <span class="n">c</span><span class="o">/</span><span class="n">a</span> 
@@ -207,8 +210,8 @@ automatically changes the <a class="reference internal" href="#numkit.observable
 <dd><p>Identity of a <a class="reference internal" href="#numkit.observables.QuantityWithError" title="numkit.observables.QuantityWithError"><tt class="xref py py-class docutils literal"><span class="pre">QuantityWithError</span></tt></a>.</p>
 <blockquote>
 <div>QID(iterable) &#8211;&gt; identity
-QID() &#8211;&gt; <tt class="xref docutils literal"><span class="pre">None</span></tt></div></blockquote>
-<p>The anonymous identity is <tt class="xref docutils literal"><span class="pre">None</span></tt>, anything else is a
+QID() &#8211;&gt; <tt class="docutils literal"><span class="pre">None</span></tt></div></blockquote>
+<p>The anonymous identity is <tt class="docutils literal"><span class="pre">None</span></tt>, anything else is a
 <tt class="xref py py-func docutils literal"><span class="pre">frozenset()</span></tt>.</p>
 <p>The QID can contain arbitray (but unique) identifiers in the
 <em>iterable</em>; however, strings are treated as individual objects and
@@ -241,7 +244,7 @@ a quantity becomes its &#8220;identity&#8221;.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -270,15 +273,15 @@ a quantity becomes its &#8220;identity&#8221;.</p>
         <li class="right" >
           <a href="integration.html" title="numkit.integration — Numerical integration of data"
              >previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="../auxiliary.html" >Auxiliary modules</a> &raquo;</li>
           <li><a href="../numkit.html" ><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Feb 27, 2012.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Last updated on Apr 24, 2012.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

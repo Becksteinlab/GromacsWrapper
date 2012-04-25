@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>numkit.timeseries — Time series manipulation and analysis &mdash; GromacsWrapper v0.3.0-dev documentation</title>
+    <title>numkit.timeseries — Time series manipulation and analysis &mdash; GromacsWrapper 0.3.0 documentation</title>
+    
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.3.0-dev',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.3.0-dev documentation" href="../index.html" />
+    <link rel="top" title="GromacsWrapper 0.3.0 documentation" href="../index.html" />
     <link rel="up" title="numkit — Numerical analysis toolkit" href="../numkit.html" />
     <link rel="next" title="numkit.integration — Numerical integration of data" href="integration.html" />
     <link rel="prev" title="numkit.fitting — Fitting data" href="fitting.html" /> 
@@ -43,9 +46,9 @@
         <li class="right" >
           <a href="fitting.html" title="numkit.fitting — Fitting data"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="../auxiliary.html" >Auxiliary modules</a> &raquo;</li>
-          <li><a href="../numkit.html" accesskey="U"><tt class="docutils literal docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a> &raquo;</li> 
+          <li><a href="../numkit.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -64,9 +67,8 @@ equally) and a value for each time point.</p>
 <dd><p>Warns that results may possibly have low accuracy.</p>
 </dd></dl>
 
-</div>
 <div class="section" id="correlations">
-<h1>Correlations<a class="headerlink" href="#correlations" title="Permalink to this headline">¶</a></h1>
+<h2>Correlations<a class="headerlink" href="#correlations" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="numkit.timeseries.tcorrel">
 <tt class="descclassname">numkit.timeseries.</tt><tt class="descname">tcorrel</tt><big>(</big><em>x</em>, <em>y</em>, <em>nstep=100</em>, <em>debug=False</em><big>)</big><a class="headerlink" href="#numkit.timeseries.tcorrel" title="Permalink to this definition">¶</a></dt>
@@ -94,7 +96,7 @@ Diego 2002</td></tr>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>x</em></dt>
 <dd><p class="first last">1D array of abscissa values (typically time)</p>
 </dd>
@@ -108,7 +110,7 @@ Diego 2002</td></tr>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">dictionary with entries <em>tc</em> (decay constant in units of <em>x</em>),
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">dictionary with entries <em>tc</em> (decay constant in units of <em>x</em>),
 <em>t0</em> (value of the first root along x (y(t0) = 0)), <em>sigma</em> (error estimate
 for the mean of y, &lt;y&gt;, corrected for correlations in the data).</p>
 </td>
@@ -142,23 +144,23 @@ and should probably be truncated at 1/2*len(series)</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>series</em></dt>
 <dd><p class="first last">(time) series, a 1D numpy array of length N</p>
 </dd>
 <dt><em>remove_mean</em></dt>
-<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">False</span></tt>: use series as is;
-<tt class="xref docutils literal"><span class="pre">True</span></tt>: subtract mean(series) from series [<tt class="xref docutils literal"><span class="pre">True</span></tt>]</p>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">False</span></tt>: use series as is;
+<tt class="docutils literal"><span class="pre">True</span></tt>: subtract mean(series) from series [<tt class="docutils literal"><span class="pre">True</span></tt>]</p>
 </dd>
 <dt><em>paddingcorrection</em></dt>
-<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">False</span></tt>: corrected for 0-padding; <tt class="xref docutils literal"><span class="pre">True</span></tt>: return as is it is.
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">False</span></tt>: corrected for 0-padding; <tt class="docutils literal"><span class="pre">True</span></tt>: return as is it is.
 (the latter is appropriate for periodic signals).
 The correction for element 0=&lt;i&lt;N amounts to a factor N/(N-i). Only
-applied for modes != &#8220;valid&#8221;       [<tt class="xref docutils literal"><span class="pre">True</span></tt>]</p>
+applied for modes != &#8220;valid&#8221;       [<tt class="docutils literal"><span class="pre">True</span></tt>]</p>
 </dd>
 <dt><em>normalize</em></dt>
-<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt> divides by acf[0] so that the first element is 1;
-<tt class="xref docutils literal"><span class="pre">False</span></tt> leaves un-normalized [<tt class="xref docutils literal"><span class="pre">False</span></tt>]</p>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt> divides by acf[0] so that the first element is 1;
+<tt class="docutils literal"><span class="pre">False</span></tt> leaves un-normalized [<tt class="docutils literal"><span class="pre">False</span></tt>]</p>
 </dd>
 <dt><em>mode</em></dt>
 <dd><p class="first last">&#8220;full&#8221; | &#8220;same&#8221; | &#8220;valid&#8221;: see <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.fftconvolve.html#scipy.signal.fftconvolve" title="(in SciPy v0.11.dev)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.signal.fftconvolve()</span></tt></a>
@@ -184,7 +186,7 @@ applied for modes != &#8220;valid&#8221;       [<tt class="xref docutils literal
 constant (see <a class="reference internal" href="#numkit.timeseries.tcorrel" title="numkit.timeseries.tcorrel"><tt class="xref py py-func docutils literal"><span class="pre">tcorrel()</span></tt></a>).</p>
 </div>
 <div class="section" id="coarse-graining-time-series">
-<h1>Coarse graining time series<a class="headerlink" href="#coarse-graining-time-series" title="Permalink to this headline">¶</a></h1>
+<h2>Coarse graining time series<a class="headerlink" href="#coarse-graining-time-series" title="Permalink to this headline">¶</a></h2>
 <p>The functions in this section are all based on
 <a class="reference internal" href="#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">regularized_function()</span></tt></a>. They reduce the number of datapoints in
 a time series to <em>maxpoints</em> by histogramming the data into
@@ -219,7 +221,7 @@ in this case the auto correlation function is not well defined.)</p>
 <p>Returns the mean-regularised function <em>F</em> and the centers of the bins.</p>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">regularized_function()</span></tt></a> with <em>func</em> = <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.mean.html#numpy.mean" title="(in NumPy v1.7.dev-3f685a1)"><tt class="xref py py-func docutils literal"><span class="pre">numpy.mean()</span></tt></a></p>
+<p class="last"><a class="reference internal" href="#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">regularized_function()</span></tt></a> with <em>func</em> = <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.mean.html#numpy.mean" title="(in NumPy v1.7.dev-3cb783e)"><tt class="xref py py-func docutils literal"><span class="pre">numpy.mean()</span></tt></a></p>
 </div>
 </dd></dl>
 
@@ -228,7 +230,7 @@ in this case the auto correlation function is not well defined.)</p>
 <tt class="descclassname">numkit.timeseries.</tt><tt class="descname">rms_histogrammed_function</tt><big>(</big><em>t</em>, <em>y</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#numkit.timeseries.rms_histogrammed_function" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute root mean square of data <em>y</em> in bins along <em>t</em>.</p>
 <p>Returns the RMS-regularised function <em>F</em> and the centers of the
-bins. <em>demean</em> = <tt class="xref docutils literal"><span class="pre">True</span></tt> removes the mean first.</p>
+bins. <em>demean</em> = <tt class="docutils literal"><span class="pre">True</span></tt> removes the mean first.</p>
 <p><a class="reference internal" href="#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">regularized_function()</span></tt></a> with <em>func</em> = <tt class="docutils literal"><span class="pre">sqrt(mean(y*y))</span></tt></p>
 </dd></dl>
 
@@ -253,7 +255,7 @@ bins. <em>demean</em> = <tt class="xref docutils literal"><span class="pre">True
 <tt class="descclassname">numkit.timeseries.</tt><tt class="descname">median_histogrammed_function</tt><big>(</big><em>t</em>, <em>y</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#numkit.timeseries.median_histogrammed_function" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute median of data <em>y</em> in bins along <em>t</em>.</p>
 <p>Returns the median-regularised function <em>F</em> and the centers of the bins.</p>
-<p><a class="reference internal" href="#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">regularized_function()</span></tt></a> with <em>func</em> = <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.median.html#numpy.median" title="(in NumPy v1.7.dev-3f685a1)"><tt class="xref py py-func docutils literal"><span class="pre">numpy.median()</span></tt></a></p>
+<p><a class="reference internal" href="#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">regularized_function()</span></tt></a> with <em>func</em> = <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.median.html#numpy.median" title="(in NumPy v1.7.dev-3cb783e)"><tt class="xref py py-func docutils literal"><span class="pre">numpy.median()</span></tt></a></p>
 </dd></dl>
 
 <dl class="function">
@@ -266,14 +268,14 @@ the bins.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>per</em></dt>
 <dd><p class="first last">percentile as a percentage, e.g. 75 is the value that splits
 the data into the lower 75% and upper 25%; 50 is the median
 [50.0]</p>
 </dd>
 <dt><em>demean</em></dt>
-<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt>: remove the mean of the bin data first [<tt class="xref docutils literal"><span class="pre">False</span></tt>]</p>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt>: remove the mean of the bin data first [<tt class="docutils literal"><span class="pre">False</span></tt>]</p>
 </dd>
 </dl>
 </td>
@@ -322,7 +324,7 @@ scalar float.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt>x</dt>
 <dd><p class="first last">abscissa values (for binning)</p>
 </dd>
@@ -341,7 +343,7 @@ scalar float.</p>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
 <dt>F,edges</dt>
 <dd><p class="first last">function and edges (<tt class="docutils literal"><span class="pre">midpoints</span> <span class="pre">=</span> <span class="pre">0.5*(edges[:-1]+edges[1:])</span></tt>)</p>
 </dd>
@@ -356,7 +358,7 @@ scalar float.</p>
 
 </div>
 <div class="section" id="smoothing-time-series">
-<h1>Smoothing time series<a class="headerlink" href="#smoothing-time-series" title="Permalink to this headline">¶</a></h1>
+<h2>Smoothing time series<a class="headerlink" href="#smoothing-time-series" title="Permalink to this headline">¶</a></h2>
 <p>Function <a class="reference internal" href="#numkit.timeseries.smooth" title="numkit.timeseries.smooth"><tt class="xref py py-func docutils literal"><span class="pre">smooth()</span></tt></a> applies a window kernel to a time series and
 smoothes fluctuations. The number of points in the time series stays
 the same.</p>
@@ -372,7 +374,7 @@ in the begining and end part of the output signal.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>x</em></dt>
 <dd><p class="first last">the input signal, 1D array</p>
 </dd>
@@ -383,17 +385,17 @@ an integer (using <a class="reference external" href="http://docs.python.org/lib
 <dt><em>window</em></dt>
 <dd><p class="first last">the type of window from &#8216;flat&#8217;, &#8216;hanning&#8217;, &#8216;hamming&#8217;,
 &#8216;bartlett&#8217;, &#8216;blackman&#8217;; flat window will produce a moving
-average smoothing. If <em>window</em> is a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7.dev-3f685a1)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> then
+average smoothing. If <em>window</em> is a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7.dev-3cb783e)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> then
 this array is directly used as the window (but it still must
 contain an odd number of points) [&#8220;flat&#8221;]</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">the smoothed signal as a 1D array</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">the smoothed signal as a 1D array</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Example :</th><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name">Example :</th><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
@@ -415,7 +417,7 @@ contain an odd number of points) [&#8220;flat&#8221;]</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>resolution</em></dt>
 <dd><p class="first last">length in units of the time in which <em>t</em> us supplied</p>
 </dd>
@@ -426,7 +428,7 @@ mean spacing is used to compute the window length</p>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">odd integer, the size of a window of approximately
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">odd integer, the size of a window of approximately
 <em>resolution</em></p>
 </td>
 </tr>
@@ -439,6 +441,7 @@ mean spacing is used to compute the window length</p>
 </dd></dl>
 
 </div>
+</div>
 
 
           </div>
@@ -448,18 +451,20 @@ mean spacing is used to compute the window length</p>
         <div class="sphinxsidebarwrapper">
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">numkit.timeseries</span></tt> &#8212; Time series manipulation and analysis</a></li>
+<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">numkit.timeseries</span></tt> &#8212; Time series manipulation and analysis</a><ul>
 <li><a class="reference internal" href="#correlations">Correlations</a></li>
 <li><a class="reference internal" href="#coarse-graining-time-series">Coarse graining time series</a></li>
 <li><a class="reference internal" href="#smoothing-time-series">Smoothing time series</a></li>
 </ul>
+</li>
+</ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="fitting.html"
-                        title="previous chapter"><tt class="docutils literal docutils literal"><span class="pre">numkit.fitting</span></tt> &#8212; Fitting data</a></p>
+                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">numkit.fitting</span></tt> &#8212; Fitting data</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="integration.html"
-                        title="next chapter"><tt class="docutils literal"><span class="pre">numkit.integration</span></tt> &#8212; Numerical integration of data</a></p>
+                        title="next chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">numkit.integration</span></tt> &#8212; Numerical integration of data</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/numkit/timeseries.txt"
@@ -468,7 +473,7 @@ mean spacing is used to compute the window length</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -497,15 +502,15 @@ mean spacing is used to compute the window length</p>
         <li class="right" >
           <a href="fitting.html" title="numkit.fitting — Fitting data"
              >previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="../auxiliary.html" >Auxiliary modules</a> &raquo;</li>
-          <li><a href="../numkit.html" ><tt class="docutils literal docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a> &raquo;</li> 
+          <li><a href="../numkit.html" ><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Feb 27, 2012.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Last updated on Apr 24, 2012.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

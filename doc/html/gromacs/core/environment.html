@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.environment – Run time modification of behaviour &mdash; GromacsWrapper v0.3.0-dev documentation</title>
+    <title>gromacs.environment – Run time modification of behaviour &mdash; GromacsWrapper 0.3.0 documentation</title>
+    
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.3.0-dev',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.3.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper 0.3.0 documentation" href="../../index.html" />
     <link rel="up" title="Gromacs core modules" href="../core.html" />
     <link rel="next" title="gromacs.formats – Accessing various files" href="formats.html" />
     <link rel="prev" title="gromacs.config – Configuration for GromacsWrapper" href="config.html" /> 
@@ -43,7 +46,7 @@
         <li class="right" >
           <a href="config.html" title="gromacs.config – Configuration for GromacsWrapper"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" accesskey="U">Gromacs core modules</a> &raquo;</li> 
       </ul>
@@ -82,7 +85,7 @@ the screen (through /dev/stdout and /dev/stderr). When
 running the command, this can be changed with the keywords
 <em>stdout</em> and <em>stderr</em> as described in <a class="reference internal" href="core.html#module-gromacs.core" title="gromacs.core"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.core</span></tt></a>
 and <a class="reference internal" href="core.html#gromacs.core.Command" title="gromacs.core.Command"><tt class="xref py py-class docutils literal"><span class="pre">Command</span></tt></a>.</p>
-<p>If this flag is set to <tt class="xref docutils literal"><span class="pre">True</span></tt> then by default STDOUT and
+<p>If this flag is set to <tt class="docutils literal"><span class="pre">True</span></tt> then by default STDOUT and
 STDERR are captured as if one had set</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">stdout</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="bp">False</span>
 </pre></div>
@@ -165,7 +168,7 @@ instance as an argument.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>name</em></dt>
 <dd><p class="first last">name of the flag, must be a legal python name</p>
 </dd>
@@ -174,7 +177,7 @@ instance as an argument.</p>
 </dd>
 <dt><em>mapping</em></dt>
 <dd><p class="first last">dict that maps allowed input values to canonical values;
-if <tt class="xref docutils literal"><span class="pre">None</span></tt> then no argument checking will be performed and
+if <tt class="docutils literal"><span class="pre">None</span></tt> then no argument checking will be performed and
 all values are directly set.</p>
 </dd>
 <dt><em>doc</em></dt>
@@ -231,7 +234,7 @@ all values are directly set.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -260,15 +263,15 @@ all values are directly set.</p>
         <li class="right" >
           <a href="config.html" title="gromacs.config – Configuration for GromacsWrapper"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" >Gromacs core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Feb 27, 2012.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Last updated on Apr 24, 2012.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

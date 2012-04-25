@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.utilities – Helper functions and classes &mdash; GromacsWrapper v0.3.0-dev documentation</title>
+    <title>gromacs.utilities – Helper functions and classes &mdash; GromacsWrapper 0.3.0 documentation</title>
+    
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.3.0-dev',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,10 +25,10 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.3.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper 0.3.0 documentation" href="../../index.html" />
     <link rel="up" title="Gromacs core modules" href="../core.html" />
     <link rel="next" title="gromacs.tools – Gromacs commands classes" href="tools.html" />
-    <link rel="prev" title="Preprocessor in Python" href="fileformats/preprocessor.html" /> 
+    <link rel="prev" title="&lt;no title&gt;" href="fileformats/converter.html" /> 
   </head>
   <body>
     <div class="related">
@@ -41,9 +44,9 @@
           <a href="tools.html" title="gromacs.tools – Gromacs commands classes"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="fileformats/preprocessor.html" title="Preprocessor in Python"
+          <a href="fileformats/converter.html" title="&lt;no title&gt;"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" accesskey="U">Gromacs core modules</a> &raquo;</li> 
       </ul>
@@ -75,9 +78,9 @@ class is derived from it.</p>
 <p><tt class="docutils literal"><span class="pre">resolve</span></tt> must be one of</p>
 <dl class="docutils">
 <dt>&#8220;ignore&#8221;</dt>
-<dd>always return <tt class="xref docutils literal"><span class="pre">False</span></tt></dd>
+<dd>always return <tt class="docutils literal"><span class="pre">False</span></tt></dd>
 <dt>&#8220;indicate&#8221;</dt>
-<dd>return <tt class="xref docutils literal"><span class="pre">True</span></tt> if it exists</dd>
+<dd>return <tt class="docutils literal"><span class="pre">True</span></tt> if it exists</dd>
 <dt>&#8220;warn&#8221;</dt>
 <dd>indicate and issue a <tt class="xref py py-exc docutils literal"><span class="pre">UserWarning</span></tt></dd>
 <dt>&#8220;exception&#8221;</dt>
@@ -86,18 +89,18 @@ class is derived from it.</p>
 <p>Alternatively, set <em>force</em> for the following behaviour (which
 ignores <em>resolve</em>):</p>
 <dl class="docutils">
-<dt><tt class="xref docutils literal"><span class="pre">True</span></tt></dt>
+<dt><tt class="docutils literal"><span class="pre">True</span></tt></dt>
 <dd>same as <em>resolve</em> = &#8220;ignore&#8221; (will allow overwriting of files)</dd>
-<dt><tt class="xref docutils literal"><span class="pre">False</span></tt></dt>
+<dt><tt class="docutils literal"><span class="pre">False</span></tt></dt>
 <dd>same as <em>resolve</em> = &#8220;exception&#8221; (will prevent overwriting of files)</dd>
-<dt><tt class="xref docutils literal"><span class="pre">None</span></tt></dt>
+<dt><tt class="docutils literal"><span class="pre">None</span></tt></dt>
 <dd>ignored, do whatever <em>resolve</em> says</dd>
 </dl>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="gromacs.utilities.FileUtils.default_extension">
-<tt class="descname">default_extension</tt><a class="headerlink" href="#gromacs.utilities.FileUtils.default_extension" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">default_extension</tt><em class="property"> = None</em><a class="headerlink" href="#gromacs.utilities.FileUtils.default_extension" title="Permalink to this definition">¶</a></dt>
 <dd><p>Default extension for files read/written by this class.</p>
 </dd></dl>
 
@@ -164,7 +167,7 @@ directories:</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>datasource</em></dt>
 <dd><p class="first last">a stream or a filename</p>
 </dd>
@@ -187,7 +190,7 @@ exception will be raised by the handler</p>
 <dt id="gromacs.utilities.realpath">
 <tt class="descclassname">gromacs.utilities.</tt><tt class="descname">realpath</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#gromacs.utilities.realpath" title="Permalink to this definition">¶</a></dt>
 <dd><p>Join all args and return the real path, rooted at /.</p>
-<p>Returns <tt class="xref docutils literal"><span class="pre">None</span></tt> if any of the args is none.</p>
+<p>Returns <tt class="docutils literal"><span class="pre">None</span></tt> if any of the args is none.</p>
 </dd></dl>
 
 <dl class="function">
@@ -196,7 +199,7 @@ exception will be raised by the handler</p>
 <dd><p>Context manager to execute a code block in a directory.</p>
 <ul class="simple">
 <li>The <em>directory</em> is created if it does not exist (unless
-<em>create</em> = <tt class="xref docutils literal"><span class="pre">False</span></tt> is set)</li>
+<em>create</em> = <tt class="docutils literal"><span class="pre">False</span></tt> is set)</li>
 <li>At the end or after an exception code always returns to
 the directory that was the current directory before entering
 the block.</li>
@@ -211,7 +214,7 @@ the block.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">base filename; this file name is checked first</p>
 </dd>
@@ -222,7 +225,7 @@ ext separator (<tt class="xref py py-data docutils literal"><span class="pre">os
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">The first match or <tt class="xref docutils literal"><span class="pre">None</span></tt>.</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">The first match or <tt class="docutils literal"><span class="pre">None</span></tt>.</p>
 </td>
 </tr>
 </tbody>
@@ -240,7 +243,7 @@ strings as lists:</p>
 <dl class="function">
 <dt id="gromacs.utilities.iterable">
 <tt class="descclassname">gromacs.utilities.</tt><tt class="descname">iterable</tt><big>(</big><em>obj</em><big>)</big><a class="headerlink" href="#gromacs.utilities.iterable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns <tt class="xref docutils literal"><span class="pre">True</span></tt> if <em>obj</em> can be iterated over and is <em>not</em> a  string.</p>
+<dd><p>Returns <tt class="docutils literal"><span class="pre">True</span></tt> if <em>obj</em> can be iterated over and is <em>not</em> a  string.</p>
 </dd></dl>
 
 <dl class="function">
@@ -283,7 +286,7 @@ strings as lists:</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><ul class="first last simple">
 <li><em>args</em>: filenames or glob patterns (such as &#8220;pdb/md*.pdb&#8221;)</li>
 <li><em>format</em>: format string including keyword <em>num</em> [&#8220;%(num)04d&#8221;]</li>
 </ul>
@@ -331,7 +334,7 @@ overwrites the subplot instead of activating it.</p>
 <h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
 <dl class="data">
 <dt id="gromacs.utilities.amino_acid_codes">
-<tt class="descclassname">gromacs.utilities.</tt><tt class="descname">amino_acid_codes</tt><a class="headerlink" href="#gromacs.utilities.amino_acid_codes" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.utilities.</tt><tt class="descname">amino_acid_codes</tt><em class="property"> = {'A': 'ALA', 'C': 'CYS', 'E': 'GLU', 'D': 'ASP', 'G': 'GLY', 'F': 'PHE', 'I': 'ILE', 'H': 'HIS', 'K': 'LYS', 'M': 'MET', 'L': 'LEU', 'N': 'ASN', 'Q': 'GLN', 'P': 'PRO', 'S': 'SER', 'R': 'ARG', 'T': 'THR', 'W': 'TRP', 'V': 'VAL', 'Y': 'TYR'}</em><a class="headerlink" href="#gromacs.utilities.amino_acid_codes" title="Permalink to this definition">¶</a></dt>
 <dd><p>translation table for 1-letter codes &#8211;&gt; 3-letter codes
 .. Note: This does not work for HISB and non-default charge state aa!</p>
 </dd></dl>
@@ -356,8 +359,8 @@ overwrites the subplot instead of activating it.</p>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="fileformats/preprocessor.html"
-                        title="previous chapter">Preprocessor in Python</a></p>
+  <p class="topless"><a href="fileformats/converter.html"
+                        title="previous chapter">&lt;no title&gt;</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="tools.html"
                         title="next chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">gromacs.tools</span></tt> &#8211; Gromacs commands classes</a></p>
@@ -369,7 +372,7 @@ overwrites the subplot instead of activating it.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -396,17 +399,17 @@ overwrites the subplot instead of activating it.</p>
           <a href="tools.html" title="gromacs.tools – Gromacs commands classes"
              >next</a> |</li>
         <li class="right" >
-          <a href="fileformats/preprocessor.html" title="Preprocessor in Python"
+          <a href="fileformats/converter.html" title="&lt;no title&gt;"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" >Gromacs core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Feb 27, 2012.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Last updated on Apr 24, 2012.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

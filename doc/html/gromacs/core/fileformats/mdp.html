@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Gromacs parameter MDP file format &mdash; GromacsWrapper v0.3.0-dev documentation</title>
+    <title>Gromacs parameter MDP file format &mdash; GromacsWrapper 0.3.0 documentation</title>
+    
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.3.0-dev',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.3.0-dev documentation" href="../../../index.html" />
+    <link rel="top" title="GromacsWrapper 0.3.0 documentation" href="../../../index.html" />
     <link rel="up" title="gromacs.formats – Accessing various files" href="../formats.html" />
     <link rel="next" title="Gromacs NDX index file format" href="ndx.html" />
-    <link rel="prev" title="Simple xmgrace XVG file format" href="xvg.html" /> 
+    <link rel="prev" title="Gromacs XPM file format" href="xpm.html" /> 
   </head>
   <body>
     <div class="related">
@@ -41,12 +44,12 @@
           <a href="ndx.html" title="Gromacs NDX index file format"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="xvg.html" title="Simple xmgrace XVG file format"
+          <a href="xpm.html" title="Gromacs XPM file format"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="../../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../../core.html" >Gromacs core modules</a> &raquo;</li>
-          <li><a href="../formats.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
+          <li><a href="../formats.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -89,13 +92,13 @@ poor replacement for sed).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">read from mdp file</p>
 </dd>
 <dt><em>autoconvert</em> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
-<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt> converts numerical values to python numerical types;
-<tt class="xref docutils literal"><span class="pre">False</span></tt> keeps everything as strings [<tt class="xref docutils literal"><span class="pre">True</span></tt>]</p>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt> converts numerical values to python numerical types;
+<tt class="docutils literal"><span class="pre">False</span></tt> keeps everything as strings [<tt class="docutils literal"><span class="pre">True</span></tt>]</p>
 </dd>
 <dt><em>kwargs</em></dt>
 <dd><p class="first last">Populate the MDP with key=value pairs. (NO SANITY CHECKS; and also
@@ -107,6 +110,16 @@ as anything that includes a minus &#8216;-&#8216; sign or starts with a number).
 </tr>
 </tbody>
 </table>
+<dl class="attribute">
+<dt id="gromacs.fileformats.mdp.MDP.COMMENT">
+<tt class="descname">COMMENT</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x10664c0d8&gt;</em><a class="headerlink" href="#gromacs.fileformats.mdp.MDP.COMMENT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.fileformats.mdp.MDP.PARAMETER">
+<tt class="descname">PARAMETER</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x105f1e720&gt;</em><a class="headerlink" href="#gromacs.fileformats.mdp.MDP.PARAMETER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="gromacs.fileformats.mdp.MDP.read">
 <tt class="descname">read</tt><big>(</big><em>filename=None</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.mdp.MDP.read" title="Permalink to this definition">¶</a></dt>
@@ -121,14 +134,14 @@ as anything that includes a minus &#8216;-&#8216; sign or starts with a number).
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">output mdp file; default is the filename the mdp
 was read from</p>
 </dd>
 <dt><em>skipempty</em> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
-<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt> removes any parameter lines from output that
-contain empty values [<tt class="xref docutils literal"><span class="pre">False</span></tt>]</p>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt> removes any parameter lines from output that
+contain empty values [<tt class="docutils literal"><span class="pre">False</span></tt>]</p>
 </dd>
 </dl>
 </td>
@@ -153,8 +166,8 @@ contain empty values [<tt class="xref docutils literal"><span class="pre">False<
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="xvg.html"
-                        title="previous chapter">Simple xmgrace XVG file format</a></p>
+  <p class="topless"><a href="xpm.html"
+                        title="previous chapter">Gromacs XPM file format</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="ndx.html"
                         title="next chapter">Gromacs NDX index file format</a></p>
@@ -166,7 +179,7 @@ contain empty values [<tt class="xref docutils literal"><span class="pre">False<
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -193,18 +206,18 @@ contain empty values [<tt class="xref docutils literal"><span class="pre">False<
           <a href="ndx.html" title="Gromacs NDX index file format"
              >next</a> |</li>
         <li class="right" >
-          <a href="xvg.html" title="Simple xmgrace XVG file format"
+          <a href="xpm.html" title="Gromacs XPM file format"
              >previous</a> |</li>
-        <li><a href="../../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="../../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../../core.html" >Gromacs core modules</a> &raquo;</li>
-          <li><a href="../formats.html" ><tt class="docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
+          <li><a href="../formats.html" ><tt class="docutils literal docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Feb 27, 2012.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Last updated on Apr 24, 2012.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.config – Configuration for GromacsWrapper &mdash; GromacsWrapper v0.3.0-dev documentation</title>
+    <title>gromacs.config – Configuration for GromacsWrapper &mdash; GromacsWrapper 0.3.0 documentation</title>
+    
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.3.0-dev',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.3.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper 0.3.0 documentation" href="../../index.html" />
     <link rel="up" title="Gromacs core modules" href="../core.html" />
     <link rel="next" title="gromacs.environment – Run time modification of behaviour" href="environment.html" />
     <link rel="prev" title="gromacs.core – Core functionality" href="core.html" /> 
@@ -43,7 +46,7 @@
         <li class="right" >
           <a href="core.html" title="gromacs.core – Core functionality"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" accesskey="U">Gromacs core modules</a> &raquo;</li> 
       </ul>
@@ -97,14 +100,14 @@ configuration files with the <em>filename</em> argument to
 <p>Important configuration variables are</p>
 <dl class="data">
 <dt id="gromacs.config.configdir">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">configdir</tt><a class="headerlink" href="#gromacs.config.configdir" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">configdir</tt><em class="property"> = '/Users/oliver/.gromacswrapper'</em><a class="headerlink" href="#gromacs.config.configdir" title="Permalink to this definition">¶</a></dt>
 <dd><p>Directory to store user templates and rc files.
 The default value is <tt class="docutils literal"><span class="pre">~/.gromacswrapper</span></tt>.</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="gromacs.config.path">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">path</tt><a class="headerlink" href="#gromacs.config.path" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">path</tt><em class="property"> = ['.', '/Users/oliver/.gromacswrapper/qscripts', '/Users/oliver/.gromacswrapper/templates']</em><a class="headerlink" href="#gromacs.config.path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Search path for user queuing scripts and templates. The internal package-supplied
 templates are always searched last via <a class="reference internal" href="#gromacs.config.get_templates" title="gromacs.config.get_templates"><tt class="xref py py-func docutils literal"><span class="pre">gromacs.config.get_templates()</span></tt></a>.
 Modify <a class="reference internal" href="#gromacs.config.path" title="gromacs.config.path"><tt class="xref py py-data docutils literal"><span class="pre">gromacs.config.path</span></tt></a> directly in order to customize the template
@@ -149,7 +152,7 @@ anytime by calling <a class="reference internal" href="#gromacs.config.get_confi
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body">a dict with all updated global configuration variables</td>
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">a dict with all updated global configuration variables</td>
 </tr>
 </tbody>
 </table>
@@ -163,7 +166,7 @@ anytime by calling <a class="reference internal" href="#gromacs.config.get_confi
 values and the user configuration file values.</p>
 <dl class="data">
 <dt id="gromacs.config.cfg">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">cfg</tt><a class="headerlink" href="#gromacs.config.cfg" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">cfg</tt><em class="property"> = &lt;gromacs.config.GMXConfigParser instance at 0x101fa39e0&gt;</em><a class="headerlink" href="#gromacs.config.cfg" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference internal" href="#gromacs.config.cfg" title="gromacs.config.cfg"><tt class="xref py py-data docutils literal"><span class="pre">cfg</span></tt></a> is the instance of <a class="reference internal" href="#gromacs.config.GMXConfigParser" title="gromacs.config.GMXConfigParser"><tt class="xref py py-class docutils literal"><span class="pre">GMXConfigParser</span></tt></a> that makes all
 global configuration data accessible</p>
 </dd></dl>
@@ -203,7 +206,7 @@ and hence integer log levels will not be recognized.</p>
 <dt id="gromacs.config.GMXConfigParser.getlist">
 <tt class="descname">getlist</tt><big>(</big><em>section</em>, <em>option</em>, <em>separator=None</em>, <em>sort=True</em><big>)</big><a class="headerlink" href="#gromacs.config.GMXConfigParser.getlist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return <em>option</em> as a a list of strings.</p>
-<p>Split on white space or <em>separator</em>. Sort for <em>sort</em> = <tt class="xref docutils literal"><span class="pre">True</span></tt>.</p>
+<p>Split on white space or <em>separator</em>. Sort for <em>sort</em> = <tt class="docutils literal"><span class="pre">True</span></tt>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -220,7 +223,7 @@ reasons); the same variable are also available in the dict
 <a class="reference internal" href="#gromacs.config.configuration" title="gromacs.config.configuration"><tt class="xref py py-data docutils literal"><span class="pre">gromacs.config.configuration</span></tt></a>.</p>
 <dl class="data">
 <dt id="gromacs.config.configuration">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">configuration</tt><a class="headerlink" href="#gromacs.config.configuration" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">configuration</tt><em class="property"> = {'templatesdir': '/Users/oliver/.gromacswrapper/templates', 'loglevel_file': 10, 'logfilename': 'gromacs.log', 'qscriptdir': '/Users/oliver/.gromacswrapper/qscripts', 'loglevel_console': 20, 'configfilename': '/Users/oliver/.gromacswrapper.cfg', 'path': ['.', '/Users/oliver/.gromacswrapper/qscripts', '/Users/oliver/.gromacswrapper/templates'], 'configdir': '/Users/oliver/.gromacswrapper'}</em><a class="headerlink" href="#gromacs.config.configuration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dict containing important configuration variables, populated by
 <a class="reference internal" href="#gromacs.config.get_configuration" title="gromacs.config.get_configuration"><tt class="xref py py-func docutils literal"><span class="pre">get_configuration()</span></tt></a> (mainly a shortcut; use <a class="reference internal" href="#gromacs.config.cfg" title="gromacs.config.cfg"><tt class="xref py py-data docutils literal"><span class="pre">cfg</span></tt></a> in most cases).</p>
 </dd></dl>
@@ -228,13 +231,13 @@ reasons); the same variable are also available in the dict
 <p>Default values are hard-coded in</p>
 <dl class="data">
 <dt id="gromacs.config.CONFIGNAME">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">CONFIGNAME</tt><a class="headerlink" href="#gromacs.config.CONFIGNAME" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">CONFIGNAME</tt><em class="property"> = '/Users/oliver/.gromacswrapper.cfg'</em><a class="headerlink" href="#gromacs.config.CONFIGNAME" title="Permalink to this definition">¶</a></dt>
 <dd><p>name of the global configuration file.</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="gromacs.config.defaults">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">defaults</tt><a class="headerlink" href="#gromacs.config.defaults" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">defaults</tt><em class="property"> = {'templatesdir': '/Users/oliver/.gromacswrapper/templates', 'loglevel_file': 'DEBUG', 'logfilename': 'gromacs.log', 'managerdir': '/Users/oliver/.gromacswrapper/managers', 'qscriptdir': '/Users/oliver/.gromacswrapper/qscripts', 'loglevel_console': 'INFO', 'configdir': '/Users/oliver/.gromacswrapper'}</em><a class="headerlink" href="#gromacs.config.defaults" title="Permalink to this definition">¶</a></dt>
 <dd><p>Holds the default values for important file and directory locations.</p>
 <dl class="docutils">
 <dt><a class="reference internal" href="#gromacs.config.configdir" title="gromacs.config.configdir"><tt class="xref py py-data docutils literal"><span class="pre">configdir</span></tt></a></dt>
@@ -280,11 +283,11 @@ of strings.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><em>t</em> : template file or key (string or list of strings)</td>
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><em>t</em> : template file or key (string or list of strings)</td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body">os.path.realpath(<em>t</em>) (or a list thereof)</td>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body">os.path.realpath(<em>t</em>) (or a list thereof)</td>
 </tr>
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt> if no file can be located.</td>
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt> if no file can be located.</td>
 </tr>
 </tbody>
 </table>
@@ -308,11 +311,11 @@ be one of</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><em>t</em> : template file or key (string or list of strings)</td>
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><em>t</em> : template file or key (string or list of strings)</td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body">list of os.path.realpath(<em>t</em>)</td>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body">list of os.path.realpath(<em>t</em>)</td>
 </tr>
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt> if no file can be located.</td>
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt> if no file can be located.</td>
 </tr>
 </tbody>
 </table>
@@ -326,7 +329,7 @@ be one of</p>
 loglevel <em>INFO</em> (see the python <a class="reference external" href="http://docs.python.org/library/logging.html">logging module</a> for details).</p>
 <dl class="data">
 <dt id="gromacs.config.logfilename">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">logfilename</tt><a class="headerlink" href="#gromacs.config.logfilename" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">logfilename</tt><em class="property"> = 'gromacs.log'</em><a class="headerlink" href="#gromacs.config.logfilename" title="Permalink to this definition">¶</a></dt>
 <dd><p>File name for the log file; all gromacs command and many utility functions (e.g. in
 <a class="reference internal" href="../blocks/cbook.html#module-gromacs.cbook" title="gromacs.cbook"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.cbook</span></tt></a> and <a class="reference internal" href="../blocks/setup.html#module-gromacs.setup" title="gromacs.setup"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.setup</span></tt></a>) append messages there. Warnings and
 errors are also recorded here. The default is <em>gromacs.log</em>.</p>
@@ -334,13 +337,13 @@ errors are also recorded here. The default is <em>gromacs.log</em>.</p>
 
 <dl class="data">
 <dt id="gromacs.config.loglevel_console">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">loglevel_console</tt><a class="headerlink" href="#gromacs.config.loglevel_console" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">loglevel_console</tt><em class="property"> = 20</em><a class="headerlink" href="#gromacs.config.loglevel_console" title="Permalink to this definition">¶</a></dt>
 <dd><p>The default loglevel that is still printed to the console.</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="gromacs.config.loglevel_file">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">loglevel_file</tt><a class="headerlink" href="#gromacs.config.loglevel_file" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">loglevel_file</tt><em class="property"> = 10</em><a class="headerlink" href="#gromacs.config.loglevel_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>The default loglevel that is still written to the <a class="reference internal" href="#gromacs.config.logfilename" title="gromacs.config.logfilename"><tt class="xref py py-data docutils literal"><span class="pre">logfilename</span></tt></a>.</p>
 </dd></dl>
 
@@ -351,14 +354,14 @@ errors are also recorded here. The default is <em>gromacs.log</em>.</p>
 parts of the code which packages and scripts should be wrapped.</p>
 <dl class="data">
 <dt id="gromacs.config.load_tools">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">load_tools</tt><a class="headerlink" href="#gromacs.config.load_tools" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">load_tools</tt><em class="property"> = ['demux.pl', 'do_dssp', 'editconf', 'eneconv', 'g_anadock', 'g_anaeig', 'g_analyze', 'g_angle', 'g_bar', 'g_bond', 'g_bundle', 'g_chi', 'g_cluster', 'g_clustsize', 'g_confrms', 'g_covar', 'g_current', 'g_density', 'g_densmap', 'g_dielectric', 'g_dih', 'g_dipoles', 'g_disre', 'g_dist', 'g_dyndom', 'g_enemat', 'g_energy', 'g_filter', 'g_gyrate', 'g_h2order', 'g_hbond', 'g_helix', 'g_helixorient', 'g_kinetics', 'g_lie', 'g_luck', 'g_mdmat', 'g_membed', 'g_mindist', 'g_morph', 'g_msd', 'g_nmeig', 'g_nmens', 'g_nmtraj', 'g_order', 'g_pme_error', 'g_polystat', 'g_potential', 'g_principal', 'g_protonate', 'g_rama', 'g_rdf', 'g_rms', 'g_rmsdist', 'g_rmsf', 'g_rotacf', 'g_rotmat', 'g_saltbr', 'g_sas', 'g_select', 'g_sgangle', 'g_sham', 'g_sigeps', 'g_sorient', 'g_spatial', 'g_spol', 'g_tcaf', 'g_traj', 'g_tune_pme', 'g_vanhove', 'g_velacc', 'g_wham', 'g_wheel', 'g_x2top', 'genbox', 'genconf', 'genion', 'genrestr', 'gmxcheck', 'gmxdump', 'grompp', 'make_edi', 'make_ndx', 'mdrun', 'mdrun_d', 'mk_angndx', 'pdb2gmx', 'tpbconv', 'trjcat', 'trjconv', 'trjorder', 'xplor2gmx.pl', 'xpm2ps', 'a_gridcalc', 'a_ri3Dc', 'g_count', 'g_flux', 'g_ri3Dc']</em><a class="headerlink" href="#gromacs.config.load_tools" title="Permalink to this definition">¶</a></dt>
 <dd><p>Python list of all tool file names. Filled from values in the tool
 groups in the configuration file.</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="gromacs.config.load_scripts">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">load_scripts</tt><a class="headerlink" href="#gromacs.config.load_scripts" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">load_scripts</tt><em class="property"> = [('/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/external/GridMAT-MD_v1.0.2/GridMAT-MD.pl', 'GridMAT_MD', 'GridMAT-MD: A Grid-based Membrane Analysis Tool for use with Molecular Dynamics.\n\n*This* ``GridMAT-MD`` is a patched version of the original\n``GridMAT-MD.pl`` v1.0.2, written by WJ Allen, JA Lemkul and DR\nBevan. The original version is available from the `GridMAT-MD`_ home\npage,\n   \n.. _`GridMAT-MD`: http://www.bevanlab.biochem.vt.edu/GridMAT-MD/index.html\n\nPlease cite \n\n  W. J. Allen, J. A. Lemkul, and D. R. Bevan. (2009) &quot;GridMAT-MD: A\n  Grid-based Membrane Analysis Tool for Use With Molecular Dynamics.&quot;\n  J. Comput. Chem. 30 (12): 1952-1958.\n\nwhen using this programme.\n\nUsage:\n\n.. class:: GridMAT_MD(config[,structure])\n\n:Arguments:\n   - *config* : See the original documentation for a description for the\n     configuration file.\n   - *structure* : A gro or pdb file that overrides the value for\n     *bilayer* in the configuration file.\n\n')]</em><a class="headerlink" href="#gromacs.config.load_scripts" title="Permalink to this definition">¶</a></dt>
 <dd><p>3rd party bundled analysis scripts and tools; this is a list of triplets of</p>
 <blockquote>
 <div>(<em>script name/path</em>, <em>command name</em>, <em>doc string</em>)</div></blockquote>
@@ -399,21 +402,21 @@ egg we actually have to unwrap these files at this stage but this is
 completely transparent to the user.</p>
 <dl class="data">
 <dt id="gromacs.config.qscriptdir">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">qscriptdir</tt><a class="headerlink" href="#gromacs.config.qscriptdir" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">qscriptdir</tt><em class="property"> = '/Users/oliver/.gromacswrapper/qscripts'</em><a class="headerlink" href="#gromacs.config.qscriptdir" title="Permalink to this definition">¶</a></dt>
 <dd><p>Directory to store user supplied queuing system scripts.
 The default value is <tt class="docutils literal"><span class="pre">~/.gromacswrapper/qscripts</span></tt>.</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="gromacs.config.templatesdir">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">templatesdir</tt><a class="headerlink" href="#gromacs.config.templatesdir" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">templatesdir</tt><em class="property"> = '/Users/oliver/.gromacswrapper/templates'</em><a class="headerlink" href="#gromacs.config.templatesdir" title="Permalink to this definition">¶</a></dt>
 <dd><p>Directory to store user supplied template files such as mdp files.
 The default value is <tt class="docutils literal"><span class="pre">~/.gromacswrapper/templates</span></tt>.</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="gromacs.config.managerdir">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">managerdir</tt><a class="headerlink" href="#gromacs.config.managerdir" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">managerdir</tt><em class="property"> = '/Users/oliver/.gromacswrapper/managers'</em><a class="headerlink" href="#gromacs.config.managerdir" title="Permalink to this definition">¶</a></dt>
 <dd><p>Directory to store configuration files for remote queuing systems
 <tt class="xref py py-class docutils literal"><span class="pre">gromacs.qsub.Manager</span></tt> instances.
 The default value is <tt class="docutils literal"><span class="pre">~/.gromacswrapper/managers</span></tt>.</p>
@@ -421,7 +424,7 @@ The default value is <tt class="docutils literal"><span class="pre">~/.gromacswr
 
 <dl class="data">
 <dt id="gromacs.config.templates">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">templates</tt><a class="headerlink" href="#gromacs.config.templates" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">templates</tt><em class="property"> = {'md_OPLSAA.mdp': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/md_OPLSAA.mdp', 'em.mdp': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/em.mdp', 'darwin.sh': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/darwin.sh', 'hector.pbs': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/hector.pbs', 'neuron.sge': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/neuron.sge', 'deathspud.sge': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/deathspud.sge', 'hpcx.ll': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/hpcx.ll', 'gromacswrapper.cfg': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/gromacswrapper.cfg', 'glial451.pbs': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/glial451.pbs', 'md_G43a1.mdp': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/md_G43a1.mdp', 'local.sh': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/local.sh', 'md_CHARMM27.mdp': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/md_CHARMM27.mdp', 'astrocyte.sge': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/astrocyte.sge', 'jade.pbs': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/jade.pbs'}</em><a class="headerlink" href="#gromacs.config.templates" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>GromacsWrapper</em> comes with a number of templates for run input files
 and queuing system scripts. They are provided as a convenience and
 examples but <strong>WITHOUT ANY GUARANTEE FOR CORRECTNESS OR SUITABILITY FOR
@@ -451,7 +454,7 @@ See <a class="reference internal" href="../blocks/qsub.html#module-gromacs.qsub"
 
 <dl class="data">
 <dt id="gromacs.config.qscript_template">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">qscript_template</tt><a class="headerlink" href="#gromacs.config.qscript_template" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">qscript_template</tt><em class="property"> = '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/local.sh'</em><a class="headerlink" href="#gromacs.config.qscript_template" title="Permalink to this definition">¶</a></dt>
 <dd><p>The default template for SGE/PBS run scripts.</p>
 </dd></dl>
 
@@ -494,7 +497,7 @@ See <a class="reference internal" href="../blocks/qsub.html#module-gromacs.qsub"
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -523,15 +526,15 @@ See <a class="reference internal" href="../blocks/qsub.html#module-gromacs.qsub"
         <li class="right" >
           <a href="core.html" title="gromacs.core – Core functionality"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" >Gromacs core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Feb 27, 2012.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Last updated on Apr 24, 2012.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

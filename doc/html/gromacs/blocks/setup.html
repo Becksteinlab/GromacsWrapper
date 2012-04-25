@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.setup – Setting up a Gromacs MD run &mdash; GromacsWrapper v0.3.0-dev documentation</title>
+    <title>gromacs.setup – Setting up a Gromacs MD run &mdash; GromacsWrapper 0.3.0 documentation</title>
+    
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.3.0-dev',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.3.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper 0.3.0 documentation" href="../../index.html" />
     <link rel="up" title="Gromacs building blocks" href="../building_blocks.html" />
     <link rel="next" title="gromacs.qsub – utilities for batch submission systems" href="qsub.html" />
     <link rel="prev" title="gromacs.cbook – Gromacs Cook Book" href="cbook.html" /> 
@@ -43,7 +46,7 @@
         <li class="right" >
           <a href="cbook.html" title="gromacs.cbook – Gromacs Cook Book"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" accesskey="U">Gromacs building blocks</a> &raquo;</li> 
       </ul>
@@ -142,7 +145,7 @@ the equilibrium MD:</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>struct</em></dt>
 <dd><p class="first last">input structure (<strong>required</strong>)</p>
 </dd>
@@ -182,7 +185,7 @@ to embedd a protein in a membrane then you will require more
 sophisticated approaches.</p>
 <p>However, you <em>can</em> supply a protein already inserted in a
 bilayer. In this case you will probably want to set <em>distance</em> =
-<tt class="xref docutils literal"><span class="pre">None</span></tt> and also enable <em>with_membrane</em> = <tt class="xref docutils literal"><span class="pre">True</span></tt> (using extra
+<tt class="docutils literal"><span class="pre">None</span></tt> and also enable <em>with_membrane</em> = <tt class="docutils literal"><span class="pre">True</span></tt> (using extra
 big vdw radii for typical lipids).</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -194,7 +197,7 @@ box.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>struct</em> <span class="classifier-delimiter">:</span> <span class="classifier">filename</span></dt>
 <dd><p class="first last">pdb or gro input structure</p>
 </dd>
@@ -205,14 +208,14 @@ box.</p>
 <dd><p class="first last">When solvating with water, make the box big enough so that
 at least <em>distance</em> nm water are between the solute <em>struct</em>
 and the box boundary.
-Set <em>boxtype</em>  to <tt class="xref docutils literal"><span class="pre">None</span></tt> in order to use a box size in the input
+Set <em>boxtype</em>  to <tt class="docutils literal"><span class="pre">None</span></tt> in order to use a box size in the input
 file (gro or pdb).</p>
 </dd>
 <dt><em>boxtype</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
 <dd><p class="first">Any of the box types supported by <tt class="xref py py-class docutils literal"><span class="pre">Editconf</span></tt>
 (triclinic, cubic, dodecahedron, octahedron). Set the box dimensions
 either with <em>distance</em> or the <em>box</em> and <em>angle</em> keywords.</p>
-<p class="last">If set to <tt class="xref docutils literal"><span class="pre">None</span></tt> it will ignore <em>distance</em> and use the box
+<p class="last">If set to <tt class="docutils literal"><span class="pre">None</span></tt> it will ignore <em>distance</em> and use the box
 inside the <em>struct</em> file.</p>
 </dd>
 <dt><em>box</em></dt>
@@ -243,8 +246,8 @@ Typically needs to be changed when using non-standard/non-water solvents.
 [&#8220;SOL&#8221;]</p>
 </dd>
 <dt><em>with_membrane</em> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt>: use special <tt class="docutils literal"><span class="pre">vdwradii.dat</span></tt> with 0.1 nm-increased radii on
-lipids. Default is <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt>: use special <tt class="docutils literal"><span class="pre">vdwradii.dat</span></tt> with 0.1 nm-increased radii on
+lipids. Default is <tt class="docutils literal"><span class="pre">False</span></tt>.</p>
 </dd>
 <dt><em>ndx</em> <span class="classifier-delimiter">:</span> <span class="classifier">filename</span></dt>
 <dd><p class="first last">How to name the index file that is produced by this function.</p>
@@ -283,7 +286,7 @@ changed in the mdp file.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>dirname</em></dt>
 <dd><p class="first last">set up under directory dirname [em]</p>
 </dd>
@@ -335,7 +338,7 @@ falls back to <tt class="xref py py-func docutils literal"><span class="pre">mdr
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
 <dt><em>integrators</em></dt>
 <dd><p class="first last">list of integrators (from &#8216;l-bfgs&#8217;, &#8216;cg&#8217;, &#8216;steep&#8217;)
 [[&#8216;bfgs&#8217;, &#8216;steep&#8217;]]</p>
@@ -350,11 +353,11 @@ in the <em>integrators</em> list [[100,1000]]</p>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">dictionary with paths to final structure (&#8216;struct&#8217;) and
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">dictionary with paths to final structure (&#8216;struct&#8217;) and
 other files</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Example :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Example :</th><td class="field-body"><dl class="first docutils">
 <dt>Conduct three minimizations:</dt>
 <dd><ol class="first last arabic simple">
 <li>low memory Broyden-Goldfarb-Fletcher-Shannon (BFGS) for 30 steps</li>
@@ -392,13 +395,13 @@ per-minimizer basis.</p>
 <dd><p>Set up MD with position restraints.</p>
 <p>Additional itp files should be in the same directory as the top file.</p>
 <p>Many of the keyword arguments below already have sensible values. Note that
-setting <em>mainselection</em> = <tt class="xref docutils literal"><span class="pre">None</span></tt> will disable many of the automated
+setting <em>mainselection</em> = <tt class="docutils literal"><span class="pre">None</span></tt> will disable many of the automated
 choices and is often recommended when using your own mdp file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
 <dt><em>dirname</em></dt>
 <dd><p class="first last">set up under directory dirname [MD_POSRES]</p>
 </dd>
@@ -419,7 +422,7 @@ choices and is often recommended when using your own mdp file.</p>
 </dd>
 <dt><em>mainselection</em></dt>
 <dd><p class="first last"><strong class="program">make_ndx</strong> selection to select main group [&#8220;Protein&#8221;]
-(If <tt class="xref docutils literal"><span class="pre">None</span></tt> then no canonical index file is generated and
+(If <tt class="docutils literal"><span class="pre">None</span></tt> then no canonical index file is generated and
 it is the user&#8217;s responsibility to set <em>tc_grps</em>,
 <em>tau_t</em>, and <em>ref_t</em> as keyword arguments, or provide the mdp template
 with all parameter pre-set in <em>mdp</em> and probably also your own <em>ndx</em>
@@ -464,7 +467,7 @@ and top file. For instance one could have</p>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">a dict that can be fed into <a class="reference internal" href="#gromacs.setup.MD" title="gromacs.setup.MD"><tt class="xref py py-func docutils literal"><span class="pre">gromacs.setup.MD()</span></tt></a>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">a dict that can be fed into <a class="reference internal" href="#gromacs.setup.MD" title="gromacs.setup.MD"><tt class="xref py py-func docutils literal"><span class="pre">gromacs.setup.MD()</span></tt></a>
 (but check, just in case, especially if you want to
 change the <tt class="docutils literal"><span class="pre">define</span></tt> parameter in the mdp file)</p>
 </td>
@@ -485,13 +488,13 @@ variables if you require more output.</p>
 <dd><p>Set up equilibrium MD.</p>
 <p>Additional itp files should be in the same directory as the top file.</p>
 <p>Many of the keyword arguments below already have sensible values. Note that
-setting <em>mainselection</em> = <tt class="xref docutils literal"><span class="pre">None</span></tt> will disable many of the automated
+setting <em>mainselection</em> = <tt class="docutils literal"><span class="pre">None</span></tt> will disable many of the automated
 choices and is often recommended when using your own mdp file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
 <dt><em>dirname</em></dt>
 <dd><p class="first last">set up under directory dirname [MD]</p>
 </dd>
@@ -512,7 +515,7 @@ choices and is often recommended when using your own mdp file.</p>
 </dd>
 <dt><em>mainselection</em></dt>
 <dd><p class="first last"><tt class="docutils literal"><span class="pre">make_ndx</span></tt> selection to select main group [&#8220;Protein&#8221;]
-(If <tt class="xref docutils literal"><span class="pre">None</span></tt> then no canonical index file is generated and
+(If <tt class="docutils literal"><span class="pre">None</span></tt> then no canonical index file is generated and
 it is the user&#8217;s responsibility to set <em>tc_grps</em>,
 <em>tau_t</em>, and <em>ref_t</em> as keyword arguments, or provide the mdp template
 with all parameter pre-set in <em>mdp</em> and probably also your own <em>ndx</em>
@@ -548,7 +551,7 @@ file, e.g. <tt class="docutils literal"><span class="pre">nstxtcout=250,</span> 
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">a dict that can be fed into <a class="reference internal" href="#gromacs.setup.MD" title="gromacs.setup.MD"><tt class="xref py py-func docutils literal"><span class="pre">gromacs.setup.MD()</span></tt></a>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">a dict that can be fed into <a class="reference internal" href="#gromacs.setup.MD" title="gromacs.setup.MD"><tt class="xref py py-func docutils literal"><span class="pre">gromacs.setup.MD()</span></tt></a>
 (but check, just in case, especially if you want to
 change the <em>define</em> parameter in the mdp file)</p>
 </td>
@@ -578,11 +581,11 @@ can keep scripts more general.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><em>groups</em> is a list of dictionaries that describe the index groups. See
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><em>groups</em> is a list of dictionaries that describe the index groups. See
 <a class="reference internal" href="cbook.html#gromacs.cbook.parse_ndxlist" title="gromacs.cbook.parse_ndxlist"><tt class="xref py py-func docutils literal"><span class="pre">gromacs.cbook.parse_ndxlist()</span></tt></a> for details.</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>struct</em> <span class="classifier-delimiter">:</span> <span class="classifier">filename</span></dt>
 <dd><p class="first last">structure (tpr, pdb, gro)</p>
 </dd>
@@ -631,7 +634,7 @@ resnames. Add more if necessary.</p>
 <p>Defined constants:</p>
 <dl class="data">
 <dt id="gromacs.setup.CONC_WATER">
-<tt class="descclassname">gromacs.setup.</tt><tt class="descname">CONC_WATER</tt><a class="headerlink" href="#gromacs.setup.CONC_WATER" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.setup.</tt><tt class="descname">CONC_WATER</tt><em class="property"> = 55.344999999999999</em><a class="headerlink" href="#gromacs.setup.CONC_WATER" title="Permalink to this definition">¶</a></dt>
 <dd><p>Concentration of water at standard conditions in mol/L.
 Density at 25 degrees C and 1 atmosphere pressure: rho = 997.0480 g/L.
 Molecular weight: M = 18.015 g/mol.
@@ -640,14 +643,14 @@ c = n/V = m/(V*M) = rho/M  = 55.345 mol/L.</p>
 
 <dl class="data">
 <dt id="gromacs.setup.vdw_lipid_resnames">
-<tt class="descclassname">gromacs.setup.</tt><tt class="descname">vdw_lipid_resnames</tt><a class="headerlink" href="#gromacs.setup.vdw_lipid_resnames" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.setup.</tt><tt class="descname">vdw_lipid_resnames</tt><em class="property"> = ['POPC', 'POPE', 'POPG', 'DOPC', 'DPPC', 'DLPC', 'DMPC', 'DPPG']</em><a class="headerlink" href="#gromacs.setup.vdw_lipid_resnames" title="Permalink to this definition">¶</a></dt>
 <dd><p>Hard-coded lipid residue names for a <tt class="docutils literal"><span class="pre">vdwradii.dat</span></tt> file. Use together with
 <a class="reference internal" href="#gromacs.setup.vdw_lipid_atom_radii" title="gromacs.setup.vdw_lipid_atom_radii"><tt class="xref py py-data docutils literal"><span class="pre">vdw_lipid_atom_radii</span></tt></a> in <a class="reference internal" href="#gromacs.setup.get_lipid_vdwradii" title="gromacs.setup.get_lipid_vdwradii"><tt class="xref py py-func docutils literal"><span class="pre">get_lipid_vdwradii()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="gromacs.setup.vdw_lipid_atom_radii">
-<tt class="descclassname">gromacs.setup.</tt><tt class="descname">vdw_lipid_atom_radii</tt><a class="headerlink" href="#gromacs.setup.vdw_lipid_atom_radii" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.setup.</tt><tt class="descname">vdw_lipid_atom_radii</tt><em class="property"> = {'H': 0.089999999999999997, 'C': 0.25, 'O': 0.155, 'N': 0.16}</em><a class="headerlink" href="#gromacs.setup.vdw_lipid_atom_radii" title="Permalink to this definition">¶</a></dt>
 <dd><p>Increased atom radii for lipid atoms; these are simply the standard values from
 <tt class="docutils literal"><span class="pre">GMXLIB/vdwradii.dat</span></tt> increased by 0.1 nm (C) or 0.05 nm (N, O, H).</p>
 </dd></dl>
@@ -686,7 +689,7 @@ c = n/V = m/(V*M) = rho/M  = 55.345 mol/L.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -715,15 +718,15 @@ c = n/V = m/(V*M) = rho/M  = 55.345 mol/L.</p>
         <li class="right" >
           <a href="cbook.html" title="gromacs.cbook – Gromacs Cook Book"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" >Gromacs building blocks</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Feb 27, 2012.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Last updated on Apr 24, 2012.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

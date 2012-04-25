@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.cbook – Gromacs Cook Book &mdash; GromacsWrapper v0.3.0-dev documentation</title>
+    <title>gromacs.cbook – Gromacs Cook Book &mdash; GromacsWrapper 0.3.0 documentation</title>
+    
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.3.0-dev',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.3.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper 0.3.0 documentation" href="../../index.html" />
     <link rel="up" title="Gromacs building blocks" href="../building_blocks.html" />
     <link rel="next" title="gromacs.setup – Setting up a Gromacs MD run" href="setup.html" />
     <link rel="prev" title="Gromacs building blocks" href="../building_blocks.html" /> 
@@ -43,7 +46,7 @@
         <li class="right" >
           <a href="../building_blocks.html" title="Gromacs building blocks"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" accesskey="U">Gromacs building blocks</a> &raquo;</li> 
       </ul>
@@ -107,7 +110,7 @@ changed with the <em>input</em> = <tt class="docutils literal"><span class="pre"
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>s</em></dt>
 <dd><p class="first">input structure file (tpr file required to make molecule whole);
 if a list or tuple is provided then s[0] is used for pass 1 (should be a tpr)
@@ -143,8 +146,8 @@ for the fitting stage (pass 2) and <em>input1</em> for the centering (pass 1).</
 (centering) and <em>n</em> for pass 2 (fitting).</p>
 </dd>
 <dt><em>xy</em> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
-<dd><p class="first last">If <tt class="xref docutils literal"><span class="pre">True</span></tt> then only do a rot+trans fit in the xy plane
-(good for membrane simulations); default is <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
+<dd><p class="first last">If <tt class="docutils literal"><span class="pre">True</span></tt> then only do a rot+trans fit in the xy plane
+(good for membrane simulations); default is <tt class="docutils literal"><span class="pre">False</span></tt>.</p>
 </dd>
 <dt><em>kwargs</em></dt>
 <dd><p class="first last">All other arguments are passed to <tt class="xref py py-class docutils literal"><span class="pre">Trjconv</span></tt>.</p>
@@ -157,7 +160,7 @@ for the fitting stage (pass 2) and <em>input1</em> for the centering (pass 1).</
 <p>Note that here we first center the protein and create a compact box, using
 <tt class="docutils literal"><span class="pre">-pbc</span> <span class="pre">mol</span> <span class="pre">-ur</span> <span class="pre">compact</span> <span class="pre">-center</span> <span class="pre">-boxcenter</span> <span class="pre">tric</span></tt> and write an intermediate
 xtc. Then in a second pass we perform a rotation+translation fit (or
-restricted to the xy plane if <em>xy</em> = <tt class="xref docutils literal"><span class="pre">True</span></tt> is set) on the intermediate
+restricted to the xy plane if <em>xy</em> = <tt class="docutils literal"><span class="pre">True</span></tt> is set) on the intermediate
 xtc to produce the final trajectory. Doing it in this order has the
 disadvantage that the solvent box is rotating around the protein but the
 opposite order (with center/compact second) produces strange artifacts
@@ -222,7 +225,7 @@ generated files so far but <em>check carefully</em>!</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>prefix</em></dt>
 <dd><p class="first last">deffnm of the trajectories [md]</p>
 </dd>
@@ -290,7 +293,7 @@ manageable.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt>structure</dt>
 <dd><p class="first last">name of a structure file (tpr, pdb, ...)</p>
 </dd>
@@ -302,8 +305,8 @@ manageable.</p>
 </dd>
 <dt>maxframes <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
 <dd><p class="first last">maximum number of frames that are extracted to disk at
-one time; set to <tt class="xref docutils literal"><span class="pre">None</span></tt> to extract the whole trajectory
-at once. [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+one time; set to <tt class="docutils literal"><span class="pre">None</span></tt> to extract the whole trajectory
+at once. [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt>kwargs</dt>
 <dd><p class="first last">All other arguments are passed to
@@ -341,14 +344,14 @@ cannot be changed are <em>sep</em> and the output file name <em>o</em>.</p>
 
 <dl class="attribute">
 <dt id="gromacs.cbook.Frames.framenumber">
-<tt class="descname">framenumber</tt><a class="headerlink" href="#gromacs.cbook.Frames.framenumber" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">framenumber</tt><em class="property"> = None</em><a class="headerlink" href="#gromacs.cbook.Frames.framenumber" title="Permalink to this definition">¶</a></dt>
 <dd><p>Holds the current frame number of the currently extracted
 batch of frames. Increases when iterating.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="gromacs.cbook.Frames.totalframes">
-<tt class="descname">totalframes</tt><a class="headerlink" href="#gromacs.cbook.Frames.totalframes" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">totalframes</tt><em class="property"> = None</em><a class="headerlink" href="#gromacs.cbook.Frames.totalframes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Total number of frames read so far; only important when <em>maxframes</em> &gt; 0 is used.</p>
 </dd></dl>
 
@@ -370,7 +373,7 @@ batch of frames. Increases when iterating.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>s</em></dt>
 <dd><p class="first last">tpr file (or similar); note that this should not contain
 position restraints if it is to be used with a reduced
@@ -380,7 +383,7 @@ system (see <a class="reference internal" href="#gromacs.cbook.Transformer.strip
 <dd><p class="first last">trajectory (xtc, trr, ...)</p>
 </dd>
 <dt><em>n</em></dt>
-<dd><p class="first last">index file (it is typically safe to leave this as <tt class="xref docutils literal"><span class="pre">None</span></tt>; in
+<dd><p class="first last">index file (it is typically safe to leave this as <tt class="docutils literal"><span class="pre">None</span></tt>; in
 cases where a trajectory needs to be centered on non-standard
 groups this should contain those groups)</p>
 </dd>
@@ -388,9 +391,9 @@ groups this should contain those groups)</p>
 <dd><dl class="first last docutils">
 <dt>Set the default behaviour for handling existing files:</dt>
 <dd><ul class="first last simple">
-<li><tt class="xref docutils literal"><span class="pre">True</span></tt>: overwrite existing trajectories</li>
-<li><tt class="xref docutils literal"><span class="pre">False</span></tt>: throw a IOError exception</li>
-<li><tt class="xref docutils literal"><span class="pre">None</span></tt>: skip existing and log a warning [default]</li>
+<li><tt class="docutils literal"><span class="pre">True</span></tt>: overwrite existing trajectories</li>
+<li><tt class="docutils literal"><span class="pre">False</span></tt>: throw a IOError exception</li>
+<li><tt class="docutils literal"><span class="pre">None</span></tt>: skip existing and log a warning [default]</li>
 </ul>
 </dd>
 </dl>
@@ -411,7 +414,7 @@ here but in most cases the defaults should work.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
 <dt><em>s</em></dt>
 <dd><p class="first last">Input structure (typically the default tpr file but can be set to
 some other file with a different conformation for fitting)</p>
@@ -423,20 +426,20 @@ some other file with a different conformation for fitting)</p>
 <dd><p class="first last">Name of the output trajectory.</p>
 </dd>
 <dt><em>xy</em> <span class="classifier-delimiter">:</span> <span class="classifier">Boolean</span></dt>
-<dd><p class="first last">If <tt class="xref docutils literal"><span class="pre">True</span></tt> then only fit in xy-plane (useful for a membrane normal
-to z). The default is <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
+<dd><p class="first last">If <tt class="docutils literal"><span class="pre">True</span></tt> then only fit in xy-plane (useful for a membrane normal
+to z). The default is <tt class="docutils literal"><span class="pre">False</span></tt>.</p>
 </dd>
 <dt><em>force</em></dt>
 <dd><ul class="first last simple">
-<li><tt class="xref docutils literal"><span class="pre">True</span></tt>: overwrite existing trajectories</li>
-<li><tt class="xref docutils literal"><span class="pre">False</span></tt>: throw a IOError exception</li>
-<li><tt class="xref docutils literal"><span class="pre">None</span></tt>: skip existing and log a warning [default]</li>
+<li><tt class="docutils literal"><span class="pre">True</span></tt>: overwrite existing trajectories</li>
+<li><tt class="docutils literal"><span class="pre">False</span></tt>: throw a IOError exception</li>
+<li><tt class="docutils literal"><span class="pre">None</span></tt>: skip existing and log a warning [default]</li>
 </ul>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">dictionary with keys <em>tpr</em>, <em>xtc</em>, which are the names of the
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">dictionary with keys <em>tpr</em>, <em>xtc</em>, which are the names of the
 the new files</p>
 </td>
 </tr>
@@ -455,7 +458,7 @@ here but in most cases the defaults should work.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><blockquote class="first">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><blockquote class="first">
 <div><dl class="docutils">
 <dt><em>s</em></dt>
 <dd><p class="first last">Input structure (typically the default tpr file but can be set to
@@ -473,13 +476,13 @@ If e.g. <em>dt</em> = 100  is one of the <em>kwargs</em> then the default name i
 </div></blockquote>
 <dl class="docutils">
 <dt><em>xy</em> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
-<dd><p class="first last">If <tt class="xref docutils literal"><span class="pre">True</span></tt> then only do a rot+trans fit in the xy plane
-(good for membrane simulations); default is <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
+<dd><p class="first last">If <tt class="docutils literal"><span class="pre">True</span></tt> then only do a rot+trans fit in the xy plane
+(good for membrane simulations); default is <tt class="docutils literal"><span class="pre">False</span></tt>.</p>
 </dd>
 <dt><em>force</em></dt>
-<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt>: overwrite existing trajectories
-<tt class="xref docutils literal"><span class="pre">False</span></tt>: throw a IOError exception
-<tt class="xref docutils literal"><span class="pre">None</span></tt>: skip existing and log a warning [default]</p>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt>: overwrite existing trajectories
+<tt class="docutils literal"><span class="pre">False</span></tt>: throw a IOError exception
+<tt class="docutils literal"><span class="pre">None</span></tt>: skip existing and log a warning [default]</p>
 </dd>
 <dt><em>kwargs</em></dt>
 <dd><p class="first last">kwargs are passed to <a class="reference internal" href="#gromacs.cbook.trj_xyfitted" title="gromacs.cbook.trj_xyfitted"><tt class="xref py py-func docutils literal"><span class="pre">trj_xyfitted()</span></tt></a></p>
@@ -487,7 +490,7 @@ If e.g. <em>dt</em> = 100  is one of the <em>kwargs</em> then the default name i
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">dictionary with keys <em>tpr</em>, <em>xtc</em>, which are the names of the
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">dictionary with keys <em>tpr</em>, <em>xtc</em>, which are the names of the
 the new files</p>
 </td>
 </tr>
@@ -503,7 +506,7 @@ the new files</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
 <dt><em>os</em></dt>
 <dd><p class="first last">Name of the output tpr file; by default use the original but
 insert &#8220;proteinonly&#8221; before suffix.</p>
@@ -516,8 +519,8 @@ insert &#8220;proteinonly&#8221; before suffix.</p>
 <dd><p class="first last">Name of a new index file.</p>
 </dd>
 <dt><em>compact</em></dt>
-<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt>: write a compact and centered trajectory
-<tt class="xref docutils literal"><span class="pre">False</span></tt>: use trajectory as it is [<tt class="xref docutils literal"><span class="pre">False</span></tt>]</p>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt>: write a compact and centered trajectory
+<tt class="docutils literal"><span class="pre">False</span></tt>: use trajectory as it is [<tt class="docutils literal"><span class="pre">False</span></tt>]</p>
 </dd>
 <dt><em>groupname</em></dt>
 <dd><p class="first last">Name of the protein-only group.</p>
@@ -528,9 +531,9 @@ be kept, e.g. [&#8216;resname DRUG&#8217;, &#8216;atom 6789&#8217;].</p>
 </dd>
 <dt><em>force</em> <span class="classifier-delimiter">:</span> <span class="classifier">Boolean</span></dt>
 <dd><ul class="first last simple">
-<li><tt class="xref docutils literal"><span class="pre">True</span></tt>: overwrite existing trajectories</li>
-<li><tt class="xref docutils literal"><span class="pre">False</span></tt>: throw a IOError exception</li>
-<li><tt class="xref docutils literal"><span class="pre">None</span></tt>: skip existing and log a warning [default]</li>
+<li><tt class="docutils literal"><span class="pre">True</span></tt>: overwrite existing trajectories</li>
+<li><tt class="docutils literal"><span class="pre">False</span></tt>: throw a IOError exception</li>
+<li><tt class="docutils literal"><span class="pre">None</span></tt>: skip existing and log a warning [default]</li>
 </ul>
 </dd>
 <dt><em>kwargs</em></dt>
@@ -543,7 +546,7 @@ second group (the output group) <em>groupname</em> is used.</p>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">dictionary with keys <em>tpr</em>, <em>xtc</em>, <em>ndx</em> which are the names of the
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">dictionary with keys <em>tpr</em>, <em>xtc</em>, <em>ndx</em> which are the names of the
 the new files</p>
 </td>
 </tr>
@@ -579,7 +582,7 @@ special cases, e.g. when there is no Protein group defined. Then set
 <li><em>input</em> is passed on to <a class="reference internal" href="#gromacs.cbook.Transformer.fit" title="gromacs.cbook.Transformer.fit"><tt class="xref py py-meth docutils literal"><span class="pre">fit()</span></tt></a> and can contain the
 [center_group, fit_group, output_group]</li>
 <li>By default <em>fit</em> = &#8220;rot+trans&#8221; (and <em>fit</em> is passed to <a class="reference internal" href="#gromacs.cbook.Transformer.fit" title="gromacs.cbook.Transformer.fit"><tt class="xref py py-meth docutils literal"><span class="pre">fit()</span></tt></a>,
-together with the <em>xy</em> = <tt class="xref docutils literal"><span class="pre">False</span></tt> keyword)</li>
+together with the <em>xy</em> = <tt class="docutils literal"><span class="pre">False</span></tt> keyword)</li>
 </ul>
 </dd></dl>
 
@@ -591,7 +594,7 @@ together with the <em>xy</em> = <tt class="xref docutils literal"><span class="p
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
 <dt><em>os</em></dt>
 <dd><p class="first last">Name of the output tpr file; by default use the original but
 insert &#8220;nowater&#8221; before suffix.</p>
@@ -604,8 +607,8 @@ insert &#8220;nowater&#8221; before suffix.</p>
 <dd><p class="first last">Name of a new index file (without water).</p>
 </dd>
 <dt><em>compact</em></dt>
-<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt>: write a compact and centered trajectory
-<tt class="xref docutils literal"><span class="pre">False</span></tt>: use trajectory as it is [<tt class="xref docutils literal"><span class="pre">False</span></tt>]</p>
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt>: write a compact and centered trajectory
+<tt class="docutils literal"><span class="pre">False</span></tt>: use trajectory as it is [<tt class="docutils literal"><span class="pre">False</span></tt>]</p>
 </dd>
 <dt><em>resn</em></dt>
 <dd><p class="first last">Residue name of the water molecules; all these residues are excluded.</p>
@@ -616,9 +619,9 @@ from the system.</p>
 </dd>
 <dt><em>force</em> <span class="classifier-delimiter">:</span> <span class="classifier">Boolean</span></dt>
 <dd><ul class="first last simple">
-<li><tt class="xref docutils literal"><span class="pre">True</span></tt>: overwrite existing trajectories</li>
-<li><tt class="xref docutils literal"><span class="pre">False</span></tt>: throw a IOError exception</li>
-<li><tt class="xref docutils literal"><span class="pre">None</span></tt>: skip existing and log a warning [default]</li>
+<li><tt class="docutils literal"><span class="pre">True</span></tt>: overwrite existing trajectories</li>
+<li><tt class="docutils literal"><span class="pre">False</span></tt>: throw a IOError exception</li>
+<li><tt class="docutils literal"><span class="pre">None</span></tt>: skip existing and log a warning [default]</li>
 </ul>
 </dd>
 <dt><em>kwargs</em></dt>
@@ -631,7 +634,7 @@ second group (the output group) <em>groupname</em> is used.</p>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">dictionary with keys <em>tpr</em>, <em>xtc</em>, <em>ndx</em> which are the names of the
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">dictionary with keys <em>tpr</em>, <em>xtc</em>, <em>ndx</em> which are the names of the
 the new files</p>
 </td>
 </tr>
@@ -671,9 +674,9 @@ grompping a tpr file. The <tt class="docutils literal"><span class="pre">grompp_
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body">The arguments are the ones one would pass to <tt class="xref py py-func docutils literal"><span class="pre">gromacs.grompp()</span></tt>.</td>
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body">The arguments are the ones one would pass to <tt class="xref py py-func docutils literal"><span class="pre">gromacs.grompp()</span></tt>.</td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body">The total charge as reported</td>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body">The total charge as reported</td>
 </tr>
 </tbody>
 </table>
@@ -722,7 +725,7 @@ the output format changes. This version recognizes lines like</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">The function returns a list of dicts (<tt class="docutils literal"><span class="pre">groups</span></tt>) with fields</p>
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">The function returns a list of dicts (<tt class="docutils literal"><span class="pre">groups</span></tt>) with fields</p>
 <dl class="last docutils">
 <dt>name</dt>
 <dd><p class="first last">name of the groups</p>
@@ -755,7 +758,7 @@ files available.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>topol</em></dt>
 <dd><p class="first last">topology file</p>
 </dd>
@@ -765,7 +768,7 @@ files available.</p>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
 <dt><em>processed</em></dt>
 <dd><p class="first last">name of the new topology file; if not set then it is named like
 <em>topol</em> but with <tt class="docutils literal"><span class="pre">pp_</span></tt> prepended</p>
@@ -781,7 +784,7 @@ also be supplied</p>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">full path to the processed topology</p>
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">full path to the processed topology</p>
 </td>
 </tr>
 </tbody>
@@ -800,12 +803,12 @@ returned list in order to make sure that everything worked as expected. At
 the moment it is not possible to automatically append the new values to the
 mdp file because of ambiguities when having to replace dashes in parameter
 names with underscores (see the notes below on dashes/underscores).</p>
-<p>If a parameter is set to the value <tt class="xref docutils literal"><span class="pre">None</span></tt> then it will be ignored.</p>
+<p>If a parameter is set to the value <tt class="docutils literal"><span class="pre">None</span></tt> then it will be ignored.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>mdp</em> <span class="classifier-delimiter">:</span> <span class="classifier">filename</span></dt>
 <dd><p class="first last">filename of input (and output filename of <tt class="docutils literal"><span class="pre">new_mdp=None</span></tt>)</p>
 </dd>
@@ -829,7 +832,7 @@ written as a sequence, joined with spaces, e.g.</p>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">Dict of parameters that have <em>not</em> been substituted.</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">Dict of parameters that have <em>not</em> been substituted.</p>
 </td>
 </tr>
 </tbody>
@@ -886,10 +889,10 @@ single <em>include</em> entry.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>topology</em> <span class="classifier-delimiter">:</span> <span class="classifier">top filename</span></dt>
 <dd><p class="first last">Topology file; the name of the enclosing directory is added
-to the include path (if supplied) [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+to the include path (if supplied) [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt><em>kwargs</em> <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
 <dd><p class="first last">Optional dictionary of mdp keywords; will be modified in place.
@@ -900,7 +903,7 @@ include statement.</p>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><em>kwargs</em> with the <em>include</em> keyword added if it did not
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><em>kwargs</em> with the <em>include</em> keyword added if it did not
 exist previously; if the keyword already existed, nothing
 happens.</p>
 </td>
@@ -923,9 +926,9 @@ all setup functions become methods in a nice class.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body">The arguments are the ones one would pass to <tt class="xref py py-func docutils literal"><span class="pre">gromacs.grompp()</span></tt>.</td>
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body">The arguments are the ones one would pass to <tt class="xref py py-func docutils literal"><span class="pre">gromacs.grompp()</span></tt>.</td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body">The total charge as reported</td>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body">The total charge as reported</td>
 </tr>
 </tbody>
 </table>
@@ -993,11 +996,11 @@ file (or the <strong class="program">make_ndx</strong> default groups) to the ou
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first">If an empty group is detected (which does not always work) then a
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body"><p class="first">If an empty group is detected (which does not always work) then a
 <a class="reference internal" href="../init.html#gromacs.BadParameterWarning" title="gromacs.BadParameterWarning"><tt class="xref py py-exc docutils literal"><span class="pre">gromacs.BadParameterWarning</span></tt></a> is issued.</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Bugs :</th><td class="field-body"><p class="first">If <tt class="docutils literal"><span class="pre">make_ndx</span></tt> crashes with an unexpected error then this is fairly hard to
+<tr class="field-even field"><th class="field-name">Bugs :</th><td class="field-body"><p class="first">If <tt class="docutils literal"><span class="pre">make_ndx</span></tt> crashes with an unexpected error then this is fairly hard to
 diagnose. For instance, in certain cases it segmentation faults when a tpr
 is provided as a <em>struct</em> file and the resulting error messages becomes</p>
 <div class="highlight-python"><pre>GromacsError: [Errno -11] Gromacs tool failed
@@ -1023,7 +1026,7 @@ them into a joint selection.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt>struct <span class="classifier-delimiter">:</span> <span class="classifier">filename</span></dt>
 <dd><p class="first last">Structure file (tpr, pdb, ...)</p>
 </dd>
@@ -1057,7 +1060,7 @@ or <tt class="docutils literal"><span class="pre">&quot;&#64;r</span> <span clas
 </dd>
 <dt>names <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
 <dd><p class="first last">Strings to name the selections; if not supplied or if individuals
-are <tt class="xref docutils literal"><span class="pre">None</span></tt> then a default name is created.</p>
+are <tt class="docutils literal"><span class="pre">None</span></tt> then a default name is created.</p>
 </dd>
 <dt>offset <span class="classifier-delimiter">:</span> <span class="classifier">int, dict</span></dt>
 <dd><p class="first last">This number is added to the resids in the first selection scheme; this
@@ -1083,29 +1086,29 @@ dict then it is used to directly look up the resids.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
 <dt>name_all <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first last">Name of the combined group, <tt class="xref docutils literal"><span class="pre">None</span></tt> generates a name.  [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+<dd><p class="first last">Name of the combined group, <tt class="docutils literal"><span class="pre">None</span></tt> generates a name.  [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt>out_ndx <span class="classifier-delimiter">:</span> <span class="classifier">filename</span></dt>
 <dd><p class="first last">Name of the output file that will contain the individual groups
-and the combined group. If <tt class="xref docutils literal"><span class="pre">None</span></tt> then default from the class
-constructor is used. [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+and the combined group. If <tt class="docutils literal"><span class="pre">None</span></tt> then default from the class
+constructor is used. [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt>operation <span class="classifier-delimiter">:</span> <span class="classifier">character</span></dt>
 <dd><p class="first last">Logical operation that is used to generate the combined group from
 the individual groups: &#8220;|&#8221; (OR) or &#8220;&amp;&#8221; (AND) [&#8220;|&#8221;]</p>
 </dd>
 <dt>defaultgroups <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt>: append everything to the default groups produced by
+<dd><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt>: append everything to the default groups produced by
 <strong class="program">make_ndx</strong> (or rather, the groups provided in the ndx file on
-initialization &#8212; if this was <tt class="xref docutils literal"><span class="pre">None</span></tt> then these are truly default groups);
-<tt class="xref docutils literal"><span class="pre">False</span></tt>: only use the generated groups</p>
+initialization &#8212; if this was <tt class="docutils literal"><span class="pre">None</span></tt> then these are truly default groups);
+<tt class="docutils literal"><span class="pre">False</span></tt>: only use the generated groups</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">(combinedgroup_name,</span> <span class="pre">output_ndx)</span></tt>, a tuple showing the
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">(combinedgroup_name,</span> <span class="pre">output_ndx)</span></tt>, a tuple showing the
 actual group name and the name of the file; useful when all names are autogenerated.</p>
 </td>
 </tr>
@@ -1148,7 +1151,7 @@ Use <tt class="xref py py-class docutils literal"><span class="pre">gromacs.form
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">The function returns a list of dicts (<tt class="docutils literal"><span class="pre">groups</span></tt>) with fields</p>
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">The function returns a list of dicts (<tt class="docutils literal"><span class="pre">groups</span></tt>) with fields</p>
 <dl class="last docutils">
 <dt>name</dt>
 <dd><p class="first last">name of the groups</p>
@@ -1174,13 +1177,13 @@ Use <tt class="xref py py-class docutils literal"><span class="pre">gromacs.form
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><ul class="first simple">
 <li><em>ndx</em>  is a Gromacs index file.</li>
 <li>kwargs are passed to <a class="reference internal" href="#gromacs.cbook.make_ndx_captured" title="gromacs.cbook.make_ndx_captured"><tt class="xref py py-func docutils literal"><span class="pre">make_ndx_captured()</span></tt></a>.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">list of groups as supplied by <a class="reference internal" href="#gromacs.cbook.parse_ndxlist" title="gromacs.cbook.parse_ndxlist"><tt class="xref py py-func docutils literal"><span class="pre">parse_ndxlist()</span></tt></a></p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">list of groups as supplied by <a class="reference internal" href="#gromacs.cbook.parse_ndxlist" title="gromacs.cbook.parse_ndxlist"><tt class="xref py py-func docutils literal"><span class="pre">parse_ndxlist()</span></tt></a></p>
 </td>
 </tr>
 </tbody>
@@ -1206,9 +1209,9 @@ that and can probably used in most cases.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body">keywords are passed on to <tt class="xref py py-func docutils literal"><span class="pre">make_ndx()</span></tt></td>
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body">keywords are passed on to <tt class="xref py py-func docutils literal"><span class="pre">make_ndx()</span></tt></td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body">(<em>returncode</em>, <em>output</em>, <tt class="xref docutils literal"><span class="pre">None</span></tt>)</td>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body">(<em>returncode</em>, <em>output</em>, <tt class="docutils literal"><span class="pre">None</span></tt>)</td>
 </tr>
 </tbody>
 </table>
@@ -1231,12 +1234,12 @@ returned list in order to make sure that everything worked as expected. At
 the moment it is not possible to automatically append the new values to the
 mdp file because of ambiguities when having to replace dashes in parameter
 names with underscores (see the notes below on dashes/underscores).</p>
-<p>If a parameter is set to the value <tt class="xref docutils literal"><span class="pre">None</span></tt> then it will be ignored.</p>
+<p>If a parameter is set to the value <tt class="docutils literal"><span class="pre">None</span></tt> then it will be ignored.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>mdp</em> <span class="classifier-delimiter">:</span> <span class="classifier">filename</span></dt>
 <dd><p class="first last">filename of input (and output filename of <tt class="docutils literal"><span class="pre">new_mdp=None</span></tt>)</p>
 </dd>
@@ -1260,7 +1263,7 @@ written as a sequence, joined with spaces, e.g.</p>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">Dict of parameters that have <em>not</em> been substituted.</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">Dict of parameters that have <em>not</em> been substituted.</p>
 </td>
 </tr>
 </tbody>
@@ -1304,7 +1307,7 @@ file is written to <em>newname</em>.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">input text file</p>
 </dd>
@@ -1312,8 +1315,8 @@ file is written to <em>newname</em>.</p>
 <dd><p class="first last">substitution commands (see below for format)</p>
 </dd>
 <dt><em>newname</em></dt>
-<dd><p class="first last">output filename; if <tt class="xref docutils literal"><span class="pre">None</span></tt> then <em>filename</em> is changed in
-place [<tt class="xref docutils literal"><span class="pre">None</span></tt>]</p>
+<dd><p class="first last">output filename; if <tt class="docutils literal"><span class="pre">None</span></tt> then <em>filename</em> is changed in
+place [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 </dl>
 </td>
@@ -1335,8 +1338,8 @@ expression strings, the last is the substitution value. It mimics
 </div>
 <p>with repeated substitution commands does.</p>
 <p>Special replacement values:
-- <tt class="xref docutils literal"><span class="pre">None</span></tt>: the rule is ignored
-- <tt class="xref docutils literal"><span class="pre">False</span></tt>: the line is deleted (even if other rules match)</p>
+- <tt class="docutils literal"><span class="pre">None</span></tt>: the rule is ignored
+- <tt class="docutils literal"><span class="pre">False</span></tt>: the line is deleted (even if other rules match)</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <ul class="last simple">
@@ -1344,7 +1347,7 @@ expression strings, the last is the substitution value. It mimics
 exactly as shown.</li>
 <li>All substitutions are applied to a line; thus the order of the substitution
 commands may matter when one substitution generates a match for a subsequent rule.</li>
-<li>If replacement is set to <tt class="xref docutils literal"><span class="pre">None</span></tt> then the whole expression is ignored and
+<li>If replacement is set to <tt class="docutils literal"><span class="pre">None</span></tt> then the whole expression is ignored and
 whatever is in the template is used. To unset values you must provided an
 empty string or similar.</li>
 <li>Delete a matching line if replacement=``False``.</li>
@@ -1388,7 +1391,7 @@ empty string or similar.</li>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -1417,15 +1420,15 @@ empty string or similar.</li>
         <li class="right" >
           <a href="../building_blocks.html" title="Gromacs building blocks"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" >Gromacs building blocks</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Feb 27, 2012.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Last updated on Apr 24, 2012.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

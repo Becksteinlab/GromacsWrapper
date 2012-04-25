@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.tools – Gromacs commands classes &mdash; GromacsWrapper v0.3.0-dev documentation</title>
+    <title>gromacs.tools – Gromacs commands classes &mdash; GromacsWrapper 0.3.0 documentation</title>
+    
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.3.0-dev',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.3.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper 0.3.0 documentation" href="../../index.html" />
     <link rel="up" title="Gromacs core modules" href="../core.html" />
     <link rel="next" title="Gromacs building blocks" href="../building_blocks.html" />
     <link rel="prev" title="gromacs.utilities – Helper functions and classes" href="utilities.html" /> 
@@ -43,7 +46,7 @@
         <li class="right" >
           <a href="utilities.html" title="gromacs.utilities – Helper functions and classes"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" accesskey="U">Gromacs core modules</a> &raquo;</li> 
       </ul>
@@ -97,25 +100,25 @@ object is destroyed.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">The method returns the input keyword arguments with the necessary
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">The method returns the input keyword arguments with the necessary
 changes to use the temporary index files.</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><p class="first">Only the listed keywords have meaning for the method:</p>
+<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><p class="first">Only the listed keywords have meaning for the method:</p>
 <dl class="docutils">
 <dt><em>n</em> <span class="classifier-delimiter">:</span> <span class="classifier">filename or list of filenames</span></dt>
 <dd><p class="first last">possibly multiple index files; <em>n</em> is replaced by the name of 
 the temporary index file.</p>
 </dd>
 <dt><em>s</em> <span class="classifier-delimiter">:</span> <span class="classifier">filename</span></dt>
-<dd><p class="first last">structure file (tpr, pdb, ...) or <tt class="xref docutils literal"><span class="pre">None</span></tt>; if a structure file is 
+<dd><p class="first last">structure file (tpr, pdb, ...) or <tt class="docutils literal"><span class="pre">None</span></tt>; if a structure file is 
 supplied then the Gromacs default index groups are automatically added
 to the temporary indexs file.</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Example :</th><td class="field-body"><p class="first">Used in derived classes that replace the standard
+<tr class="field-odd field"><th class="field-name">Example :</th><td class="field-body"><p class="first">Used in derived classes that replace the standard
 <a class="reference internal" href="#gromacs.tools.GromacsCommandMultiIndex.run" title="gromacs.tools.GromacsCommandMultiIndex.run"><tt class="xref py py-meth docutils literal"><span class="pre">run()</span></tt></a> (or <tt class="xref py py-meth docutils literal"><span class="pre">__init__()</span></tt>) methods with something like:</p>
 <div class="last highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fake_multi_ndx</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>            
@@ -185,7 +188,7 @@ works as expected: it is the same as <tt class="docutils literal"><span class="p
 arguments. If an option takes multiple arguments (such as the
 multi-file input <tt class="docutils literal"><span class="pre">-f</span> <span class="pre">file1</span> <span class="pre">file2</span> <span class="pre">...</span></tt>) then the list of files must be
 supplied as a python list.</p>
-<p>If a keyword has the python value <tt class="xref docutils literal"><span class="pre">None</span></tt> then it will <em>not</em> be
+<p>If a keyword has the python value <tt class="docutils literal"><span class="pre">None</span></tt> then it will <em>not</em> be
 added to the Gromacs command line; this allows for flexible
 scripting if it is not known in advance if an input file is
 needed. In this case the default value of the gromacs tool
@@ -223,7 +226,7 @@ to developers.</div></blockquote>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>failure</em></dt>
 <dd><p class="first">determines how a failure of the gromacs command is treated; it
 can be one of the following:</p>
@@ -234,7 +237,7 @@ can be one of the following:</p>
 <dt>&#8216;warn&#8217;</dt>
 <dd><p class="first last">issue a <tt class="xref py py-exc docutils literal"><span class="pre">GromacsFailureWarning</span></tt></p>
 </dd>
-<dt><tt class="xref docutils literal"><span class="pre">None</span></tt></dt>
+<dt><tt class="docutils literal"><span class="pre">None</span></tt></dt>
 <dd><p class="first last">just continue silently</p>
 </dd>
 </dl>
@@ -274,7 +277,7 @@ J. Comput. Chem. 30 (12): 1952-1958.</div></blockquote>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><ul class="first last simple">
 <li><em>config</em> : See the original documentation for a description for the
 configuration file.</li>
 <li><em>structure</em> : A gro or pdb file that overrides the value for
@@ -830,7 +833,7 @@ sequence of positional arguments.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -859,15 +862,15 @@ sequence of positional arguments.</p>
         <li class="right" >
           <a href="utilities.html" title="gromacs.utilities – Helper functions and classes"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" >Gromacs core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Feb 27, 2012.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Last updated on Apr 24, 2012.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

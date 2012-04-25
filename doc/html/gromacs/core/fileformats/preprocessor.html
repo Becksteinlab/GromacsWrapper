@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Preprocessor in Python &mdash; GromacsWrapper v0.3.0-dev documentation</title>
+    <title>Preprocessor in Python &mdash; GromacsWrapper 0.3.0 documentation</title>
+    
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.3.0-dev',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,9 +25,9 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.3.0-dev documentation" href="../../../index.html" />
+    <link rel="top" title="GromacsWrapper 0.3.0 documentation" href="../../../index.html" />
     <link rel="up" title="gromacs.formats – Accessing various files" href="../formats.html" />
-    <link rel="next" title="gromacs.utilities – Helper functions and classes" href="../utilities.html" />
+    <link rel="next" title="&lt;no title&gt;" href="converter.html" />
     <link rel="prev" title="Gromacs topology file (ITP) parser" href="itp.html" /> 
   </head>
   <body>
@@ -38,15 +41,15 @@
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../utilities.html" title="gromacs.utilities – Helper functions and classes"
+          <a href="converter.html" title="&lt;no title&gt;"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="itp.html" title="Gromacs topology file (ITP) parser"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="../../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../../core.html" >Gromacs core modules</a> &raquo;</li>
-          <li><a href="../formats.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
+          <li><a href="../formats.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -61,11 +64,11 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Author:</th><td class="field-body">Evan Plaice, Oliver Beckstein</td>
+<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">Evan Plaice, Oliver Beckstein</td>
 </tr>
-<tr class="field"><th class="field-name">Licence:</th><td class="field-body">MIT</td>
+<tr class="field-even field"><th class="field-name">Licence:</th><td class="field-body">MIT</td>
 </tr>
-<tr class="field"><th class="field-name">Year:</th><td class="field-body">2010, 2011</td>
+<tr class="field-odd field"><th class="field-name">Year:</th><td class="field-body">2010, 2011</td>
 </tr>
 </tbody>
 </table>
@@ -118,7 +121,7 @@ functionality, provided by <a class="reference internal" href="#gromacs.fileform
 <div>Define the variable <em>VAR</em>; note that even <tt class="docutils literal"><span class="pre">#define</span> <span class="pre">VAR</span> <span class="pre">0</span></tt> in the
 input file will have the effect of defining the variable. The
 <a class="reference internal" href="#gromacs.fileformats.preprocessor.Preprocessor" title="gromacs.fileformats.preprocessor.Preprocessor"><tt class="xref py py-class docutils literal"><span class="pre">Preprocessor</span></tt></a> constructor, however, will <em>not define</em> any
-<em>VAR</em> keyword that evaluates to <tt class="xref docutils literal"><span class="pre">False</span></tt>.</div></blockquote>
+<em>VAR</em> keyword that evaluates to <tt class="docutils literal"><span class="pre">False</span></tt>.</div></blockquote>
 <p><tt class="docutils literal"><span class="pre">#undef</span> <span class="pre">VAR</span></tt></p>
 <blockquote>
 <div>Undefines <em>VAR</em>.</div></blockquote>
@@ -149,21 +152,21 @@ names.</div></blockquote>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">input file name</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>output</em></dt>
-<dd><p class="first last">output file name, if <tt class="xref docutils literal"><span class="pre">None</span></tt> then a temporary file will be
+<dd><p class="first last">output file name, if <tt class="docutils literal"><span class="pre">None</span></tt> then a temporary file will be
 created for <a class="reference internal" href="#gromacs.fileformats.preprocessor.Preprocessor.write" title="gromacs.fileformats.preprocessor.Preprocessor.write"><tt class="xref py py-meth docutils literal"><span class="pre">write()</span></tt></a>.</p>
 </dd>
 <dt><em>clean</em></dt>
-<dd><p class="first last">leave at <tt class="xref docutils literal"><span class="pre">True</span></tt> (to remove any preprocessor directives and
-anything excluded through #ifdefs); use <tt class="xref docutils literal"><span class="pre">False</span></tt> for debugging,
+<dd><p class="first last">leave at <tt class="docutils literal"><span class="pre">True</span></tt> (to remove any preprocessor directives and
+anything excluded through #ifdefs); use <tt class="docutils literal"><span class="pre">False</span></tt> for debugging,
 which simply prefixes excluded lines with &#8220;<em>commentchar</em> #&#8221;</p>
 </dd>
 <dt><em>commentchar</em></dt>
@@ -171,7 +174,7 @@ which simply prefixes excluded lines with &#8220;<em>commentchar</em> #&#8221;</
 </dd>
 <dt><em>defines</em></dt>
 <dd><p class="first last">any other keywords <em>VAR</em> are interpreted as <tt class="docutils literal"><span class="pre">#define</span> <span class="pre">VAR</span></tt> statement if
-<em>VAR</em> evaluates to <tt class="xref docutils literal"><span class="pre">True</span></tt>.</p>
+<em>VAR</em> evaluates to <tt class="docutils literal"><span class="pre">True</span></tt>.</p>
 </dd>
 </dl>
 </td>
@@ -216,7 +219,7 @@ the processed input from the last invocation of <a class="reference internal" hr
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><tt class="docutils literal"><span class="pre">(squelch,</span> <span class="pre">metadata)</span></tt></td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><tt class="docutils literal"><span class="pre">(squelch,</span> <span class="pre">metadata)</span></tt></td>
 </tr>
 </tbody>
 </table>
@@ -243,7 +246,7 @@ the processed input from the last invocation of <a class="reference internal" hr
 <p><em>kwargs</em> are variables that are set (<tt class="docutils literal"><span class="pre">#define</span> <span class="pre">VAR</span></tt>) or unset
 (<tt class="docutils literal"><span class="pre">#undef</span> <span class="pre">VAR</span></tt>) at the beginning of the file. They are applied to all
 the defines that were provided to the constructor, and #hence using
-<em>VAR</em> = <tt class="xref docutils literal"><span class="pre">False</span></tt> allows one to undefine some of #these.</p>
+<em>VAR</em> = <tt class="docutils literal"><span class="pre">False</span></tt> allows one to undefine some of #these.</p>
 <p>This method only populates the output buffer and does not write an
 output file; use <a class="reference internal" href="#gromacs.fileformats.preprocessor.Preprocessor.write" title="gromacs.fileformats.preprocessor.Preprocessor.write"><tt class="xref py py-meth docutils literal"><span class="pre">write()</span></tt></a> for that purpose.</p>
 </dd></dl>
@@ -256,7 +259,7 @@ output file; use <a class="reference internal" href="#gromacs.fileformats.prepro
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">SyntaxError</span></tt></td>
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">SyntaxError</span></tt></td>
 </tr>
 </tbody>
 </table>
@@ -278,8 +281,8 @@ output file; use <a class="reference internal" href="#gromacs.fileformats.prepro
 <dt id="gromacs.fileformats.preprocessor.Preprocessor.write">
 <tt class="descname">write</tt><big>(</big><em>filename=None</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.preprocessor.Preprocessor.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>write out file</p>
-<p>If <em>filename</em> is <tt class="xref docutils literal"><span class="pre">None</span></tt> then the constructor default (<em>output</em>) is
-chosen. If <em>filename</em> is <tt class="xref docutils literal"><span class="pre">False</span></tt> or no output filename was set then a
+<p>If <em>filename</em> is <tt class="docutils literal"><span class="pre">None</span></tt> then the constructor default (<em>output</em>) is
+chosen. If <em>filename</em> is <tt class="docutils literal"><span class="pre">False</span></tt> or no output filename was set then a
 temporary file is created (and it is the user&#8217;s responsibility to clean
 up this file).</p>
 <p>Returns the filename of the file written.</p>
@@ -309,8 +312,8 @@ up this file).</p>
   <p class="topless"><a href="itp.html"
                         title="previous chapter">Gromacs topology file (ITP) parser</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="../utilities.html"
-                        title="next chapter"><tt class="docutils literal"><span class="pre">gromacs.utilities</span></tt> &#8211; Helper functions and classes</a></p>
+  <p class="topless"><a href="converter.html"
+                        title="next chapter">&lt;no title&gt;</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../../_sources/gromacs/core/fileformats/preprocessor.txt"
@@ -319,7 +322,7 @@ up this file).</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -343,21 +346,21 @@ up this file).</p>
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../utilities.html" title="gromacs.utilities – Helper functions and classes"
+          <a href="converter.html" title="&lt;no title&gt;"
              >next</a> |</li>
         <li class="right" >
           <a href="itp.html" title="Gromacs topology file (ITP) parser"
              >previous</a> |</li>
-        <li><a href="../../../index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
           <li><a href="../../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../../core.html" >Gromacs core modules</a> &raquo;</li>
-          <li><a href="../formats.html" ><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
+          <li><a href="../formats.html" ><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Feb 27, 2012.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Last updated on Apr 24, 2012.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

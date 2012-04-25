@@ -3,17 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>INSTALL &mdash; GromacsWrapper v0.3.0-dev documentation</title>
+    <title>INSTALL &mdash; GromacsWrapper 0.3.0 documentation</title>
+    
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.3.0-dev',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper v0.3.0-dev documentation" href="index.html" />
+    <link rel="top" title="GromacsWrapper 0.3.0 documentation" href="index.html" />
     <link rel="next" title="Gromacs package" href="gromacs.html" />
     <link rel="prev" title="GromacsWrapper" href="README.html" /> 
   </head>
@@ -42,7 +45,7 @@
         <li class="right" >
           <a href="README.html" title="GromacsWrapper"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li> 
+        <li><a href="index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -69,15 +72,16 @@ these instructions.</p>
 <h2>Quick installation instructions<a class="headerlink" href="#quick-installation-instructions" title="Permalink to this headline">¶</a></h2>
 <p>If you have <tt class="docutils literal"><span class="pre">easy_install</span></tt> on your system you can directly install
 from the interweb:</p>
-<div class="highlight-python"><pre>easy_install -f http://sbcb.bioch.ox.ac.uk/oliver/download/Python GromacsWrapper</pre>
+<div class="highlight-python"><pre>easy_install -f https://github.com/orbeckst/GromacsWrapper/tags GromacsWrapper</pre>
 </div>
 <p>This will automatically download and install the latest version.</p>
 </div>
 <div class="section" id="manual-download">
 <h2>Manual Download<a class="headerlink" href="#manual-download" title="Permalink to this headline">¶</a></h2>
-<p>If your prefer to download manually, get the latest version from</p>
+<p>If your prefer to download manually, get the latest stable release
+from</p>
 <blockquote>
-<div><a class="reference external" href="http://sbcb.bioch.ox.ac.uk/oliver/download/Python">http://sbcb.bioch.ox.ac.uk/oliver/download/Python</a></div></blockquote>
+<div><a class="reference external" href="https://github.com/orbeckst/GromacsWrapper/tags">https://github.com/orbeckst/GromacsWrapper/tags</a></div></blockquote>
 <p>and use any of the following methods (in increasing order of
 complexity):</p>
 <ul>
@@ -101,7 +105,7 @@ that allow you to install into non-standard places.</p>
 </div>
 <div class="section" id="source-code-access">
 <h2>Source code access<a class="headerlink" href="#source-code-access" title="Permalink to this headline">¶</a></h2>
-<p>The tar archive from <a class="reference external" href="http://sbcb.bioch.ox.ac.uk/oliver/download/Python">http://sbcb.bioch.ox.ac.uk/oliver/download/Python</a>
+<p>The tar archive from <a class="reference external" href="https://github.com/orbeckst/GromacsWrapper/tags">https://github.com/orbeckst/GromacsWrapper/tags</a>
 contains a full source code distribution.</p>
 <p>In order to follow code development you can also browse the code
 <strong>git</strong> repository at <a class="reference external" href="http://github.com/orbeckst/GromacsWrapper">http://github.com/orbeckst/GromacsWrapper</a> or
@@ -134,21 +138,21 @@ automatically installed with <tt class="docutils literal"><span class="pre">easy
 <col width="68%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">package</th>
+<tr class="row-odd"><th class="head">package</th>
 <th class="head">version</th>
 <th class="head">source</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>matplotlib</td>
+<tr class="row-even"><td>matplotlib</td>
 <td>&gt;=0.91.3</td>
 <td><a class="reference external" href="http://matplotlib.sourceforge.net/">http://matplotlib.sourceforge.net/</a></td>
 </tr>
-<tr><td>scipy</td>
+<tr class="row-odd"><td>scipy</td>
 <td>&nbsp;</td>
 <td><a class="reference external" href="http://www.scipy.org/">http://www.scipy.org/</a></td>
 </tr>
-<tr><td>RecSQL</td>
+<tr class="row-even"><td>RecSQL</td>
 <td>&gt;=0.3</td>
 <td><a class="reference external" href="http://sbcb.bioch.ox.ac.uk/oliver/software/RecSQL/">http://sbcb.bioch.ox.ac.uk/oliver/software/RecSQL/</a></td>
 </tr>
@@ -167,7 +171,7 @@ install these package.</p>
 requirements for optional modules then you will have to add the
 additional requirement <tt class="docutils literal"><span class="pre">[analysis]</span></tt> to the command line. For a web
 install this would look like</p>
-<div class="highlight-python"><pre>easy_install -f http://sbcb.bioch.ox.ac.uk/oliver/download/Python GromacsWrapper[analysis]</pre>
+<div class="highlight-python"><pre>easy_install -f https://github.com/orbeckst/GromacsWrapper/tags GromacsWrapper[analysis]</pre>
 </div>
 <p>For installation from a downloaded source distribution</p>
 <div class="highlight-python"><pre>easy_install GromacsWrapper-0.1.tar.gz[analysis]</pre>
@@ -291,7 +295,7 @@ installed matplotlib.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -320,13 +324,13 @@ installed matplotlib.</p>
         <li class="right" >
           <a href="README.html" title="GromacsWrapper"
              >previous</a> |</li>
-        <li><a href="index.html">GromacsWrapper v0.3.0-dev documentation</a> &raquo;</li> 
+        <li><a href="index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Feb 27, 2012.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Last updated on Apr 24, 2012.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
 </html>

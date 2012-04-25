@@ -1,0 +1,221 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Gromacs XPM file format &mdash; GromacsWrapper 0.3.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.3.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="GromacsWrapper 0.3.0 documentation" href="../../../index.html" />
+    <link rel="up" title="gromacs.formats – Accessing various files" href="../formats.html" />
+    <link rel="next" title="Gromacs parameter MDP file format" href="mdp.html" />
+    <link rel="prev" title="Simple xmgrace XVG file format" href="xvg.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mdp.html" title="Gromacs parameter MDP file format"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="xvg.html" title="Simple xmgrace XVG file format"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
+          <li><a href="../../../gromacs.html" >Gromacs package</a> &raquo;</li>
+          <li><a href="../../core.html" >Gromacs core modules</a> &raquo;</li>
+          <li><a href="../formats.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="module-gromacs.fileformats.xpm"></span><div class="section" id="gromacs-xpm-file-format">
+<h1>Gromacs XPM file format<a class="headerlink" href="#gromacs-xpm-file-format" title="Permalink to this headline">¶</a></h1>
+<p>Gromacs stores matrix data in the xpm file format. This implementation
+of a Python reader is based on Tsjerk Wassenaar&#8217;s post to gmx-users
+<a class="reference external" href="http://lists.gromacs.org/pipermail/gmx-users/2010-October/054557.html">numerical matrix from xpm file</a> (Mon Oct 4 13:05:26 CEST 2010). This
+version returns a NumPy array and can guess an appropriate dtype for
+the array.</p>
+<div class="section" id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gromacs.fileformats.xpm.XPM">
+<em class="property">class </em><tt class="descclassname">gromacs.fileformats.xpm.</tt><tt class="descname">XPM</tt><big>(</big><em>filename=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.xpm.XPM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class to make a Gromacs XPM matrix available as a NumPy <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7.dev-3cb783e)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a>.</p>
+<p>The data is available as <a class="reference internal" href="#gromacs.fileformats.xpm.XPM.array" title="gromacs.fileformats.xpm.XPM.array"><tt class="xref py py-attr docutils literal"><span class="pre">XPM.array</span></tt></a>.</p>
+<p>Initialize xpm structure.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>filename</em></dt>
+<dd><p class="first last">read from mdp file</p>
+</dd>
+<dt><em>autoconvert</em></dt>
+<dd><p class="first last">try to guess the type of the output array from the
+colour legend [<tt class="docutils literal"><span class="pre">True</span></tt>]</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="gromacs.fileformats.xpm.XPM.COLOUR">
+<tt class="descname">COLOUR</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x10675c230&gt;</em><a class="headerlink" href="#gromacs.fileformats.xpm.XPM.COLOUR" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>compiled regular expression to parse the colors in the xpm file::</dt>
+<dd>static char <em>gromacs_xpm[] = {
+&#8220;14327 9   2 1&#8221;,
+&#8221;   c #FFFFFF &#8221; /</em> &#8220;None&#8221; <em>/,
+&#8220;o  c #FF0000 &#8221; /</em> &#8220;Present&#8221; <a href="#id1"><span class="problematic" id="id2">*</span></a>/,</dd>
+</dl>
+<p>Matches are named &#8220;symbol&#8221;, &#8220;color&#8221; (hex string), and &#8220;value&#8221;. &#8220;value&#8221;
+is typically autoconverted to appropriate values with
+<tt class="xref py py-class docutils literal"><span class="pre">gromacs.fileformats.convert.Autoconverter</span></tt>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gromacs.fileformats.xpm.XPM.array">
+<tt class="descname">array</tt><a class="headerlink" href="#gromacs.fileformats.xpm.XPM.array" title="Permalink to this definition">¶</a></dt>
+<dd><p>XPM matrix as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7.dev-3cb783e)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> (read-only)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.fileformats.xpm.XPM.read">
+<tt class="descname">read</tt><big>(</big><em>filename=None</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.xpm.XPM.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read and parse mdp file <em>filename</em>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="example-analysing-h-bonds">
+<h2>Example: Analysing H-bonds<a class="headerlink" href="#example-analysing-h-bonds" title="Permalink to this headline">¶</a></h2>
+<p>Run <tt class="xref py py-func docutils literal"><span class="pre">gromacs.g_hbond()</span></tt> to produce the existence map (and the log
+file for the atoms involved in the bonds; the ndx file is also
+useful):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">gromacs</span><span class="o">.</span><span class="n">g_hbond</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">TPR</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">XTC</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="s">&quot;hb.log&quot;</span><span class="p">,</span> <span class="n">hbm</span><span class="o">=</span><span class="s">&quot;hb.xpm&quot;</span><span class="p">,</span> <span class="n">hbn</span><span class="o">=</span><span class="s">&quot;hb.ndx&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Load the XPM:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">hb</span> <span class="o">=</span> <span class="n">XPM</span><span class="p">(</span><span class="s">&quot;hb.xpm&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Calculate the fraction of time that each H-bond existed:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">hb_fraction</span> <span class="o">-</span> <span class="n">hb</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Get the descriptions of the bonds (should be ordered in the same way
+as the rows in the xpm file):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">desc</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;hb.log&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;#&#39;</span><span class="p">)]</span>
+</pre></div>
+</div>
+<p>and show the results:</p>
+<div class="highlight-python"><pre>print "</pre>
+</div>
+<p>&#8221;.join([&#8220;%-40s %4.1f%%&#8221; % p for p in zip(desc, 100*hb_fraction)])</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Gromacs XPM file format</a><ul>
+<li><a class="reference internal" href="#classes">Classes</a></li>
+<li><a class="reference internal" href="#example-analysing-h-bonds">Example: Analysing H-bonds</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="xvg.html"
+                        title="previous chapter">Simple xmgrace XVG file format</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="mdp.html"
+                        title="next chapter">Gromacs parameter MDP file format</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../../_sources/gromacs/core/fileformats/xpm.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="mdp.html" title="Gromacs parameter MDP file format"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="xvg.html" title="Simple xmgrace XVG file format"
+             >previous</a> |</li>
+        <li><a href="../../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
+          <li><a href="../../../gromacs.html" >Gromacs package</a> &raquo;</li>
+          <li><a href="../../core.html" >Gromacs core modules</a> &raquo;</li>
+          <li><a href="../formats.html" ><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2009-2011, Oliver Beckstein.
+      Last updated on Apr 24, 2012.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
+</html>
