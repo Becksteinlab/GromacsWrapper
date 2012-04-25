@@ -1,0 +1,19 @@
+==============================
+ CHANGELOG for GromacsWrapper
+==============================
+
+
+2012-04-24     0.3.0
+
+* improved file format handling (ITP (incomplete, but uses a
+  preprocessor), XPM, XVG (can do fairly fancy coarse-grained
+  plotting and error analysis))
+* output can be captured to a capture file (uses the new
+  gromacs.environment framework)
+* fixes for cbook.Transformer
+* removed deprecated edPDB (use MDAnalysis instead)
+* example script fit_strip_trajectory.py
+* scipy is now a package dependency (use in numkit and then XVG)
+
+Earlier releases did not have an explicit change log. See the commit
+history at https://github.com/orbeckst/GromacsWrapper for details.
