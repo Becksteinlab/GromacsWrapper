@@ -6,7 +6,9 @@
 :mod:`gromacs.fileformats.convert` --- converting entries of tables
 ===================================================================
 
-(Used directly from RecSQL, :mod:`recsql.converter`.)
+(Used directly from RecSQL_, :mod:`recsql.converter`.)
+
+.. _RecSQL: http://orbeckst.github.com/RecSQL/
 
 .. autoclass:: Autoconverter
    :members: __init__
@@ -45,20 +47,20 @@ class Autoconverter(object):
       ===========  ===============
       value        python
       ===========  ===============
-        '---'       ``None``
-        ''
+      '``---``'     ``None``
+        ''          ``None``
 
         'True'      ``True``
-        'x'
-        'X'
-        'yes'
-        'Present'
+        'x'         ``True``
+        'X'         ``True``
+        'yes'       ``True``
+        'Present'   ``True``
 
         'False'     ``False``
-        '-'
-        'no'
-        'None'
-        'none'
+        '-'         ``False``
+        'no'        ``False``
+        'None'      ``False``
+        'none'      ``False``
       ===========  ===============
 
     If the *sep* keyword is set to a string instead of ``False`` then
@@ -68,7 +70,7 @@ class Autoconverter(object):
     spaces.
 
     **Example**
-       - With *sep* = ``True``: 'foo bar 22  boing ---' --> ('foo', 'boing', 22, None)
+       - With *sep* = ``True``: 'foo bar 22  boing ``---``' --> ('foo', 'boing', 22, None)
        - With *sep* = ',':       1,2,3,4 --> (1,2,3,4)
 
     """

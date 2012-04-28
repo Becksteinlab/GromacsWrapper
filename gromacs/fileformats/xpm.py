@@ -29,7 +29,7 @@ Run :func:`gromacs.g_hbond` to produce the existence map (and the log
 file for the atoms involved in the bonds; the ndx file is also
 useful)::
 
-  gromacs.g_hbond(s=TPR, f=XTC, g="hb.log", hbm="hb.xpm", hbn="hb.ndx")
+  gromacs.g_hbond(s=TPR, f=XTC, g="hbond.log", hbm="hb.xpm", hbn="hb.ndx")
 
 Load the XPM::
 
@@ -37,16 +37,16 @@ Load the XPM::
 
 Calculate the fraction of time that each H-bond existed::
 
-  hb_fraction - hb.array.mean(axis=0)
+  hb_fraction = hb.array.mean(axis=0)
 
 Get the descriptions of the bonds (should be ordered in the same way
 as the rows in the xpm file)::
 
-  desc = [line.strip() for line in open("hb.log") if not line.startswith('#')]
+  desc = [line.strip() for line in open("hbond.log") if not line.startswith('#')]
 
 and show the results::
 
-  print "\n".join(["%-40s %4.1f%%" % p for p in zip(desc, 100*hb_fraction)])
+  print "\\n".join(["%-40s %4.1f%%" % p for p in zip(desc, 100*hb_fraction)])
 
 """
 
@@ -71,10 +71,12 @@ class XPM(utilities.FileUtils):
     default_extension = "xpm"
     logger = logging.getLogger('gromacs.formats.XPM')
     #: compiled regular expression to parse the colors in the xpm file::
+    #:
     #:   static char *gromacs_xpm[] = {
     #:   "14327 9   2 1",
     #:   "   c #FFFFFF " /* "None" */,
     #:   "o  c #FF0000 " /* "Present" */,
+    #:
     #: Matches are named "symbol", "color" (hex string), and "value". "value"
     #: is typically autoconverted to appropriate values with
     #: :class:`gromacs.fileformats.convert.Autoconverter`.
