@@ -32,7 +32,10 @@ __docformat__ = "restructuredtext en"
 import os.path
 import warnings
 
+import numpy as np
+
 import gromacs
+import gromacs.tools
 from gromacs.utilities import AttributeDict
 from gromacs.analysis.core import Worker, Plugin
 
@@ -70,6 +73,9 @@ class _HBonds(Worker):
                                   'group2': '@'+group2,
                                   }  #  '@' for IndexBuilder raw command escape!!
 
+        # if fit not good then g_hbond returns non-zero return code: just warn
+        self.g_hbond = gromacs.tools.G_hbond(failure="warn")
+
         # self.simulation might have been set by the super class
         # already; just leave this snippet at the end. Do all
         # initialization that requires the simulation class in the
@@ -88,23 +94,39 @@ class _HBonds(Worker):
             'hbm': self.plugindir('hb.xpm'),
             'log': self.plugindir('hbond.log'),
             'num': self.plugindir('hbnum.xvg'),
+            'dist': self.plugindir('hbdist.xvg'),
+            'ang': self.plugindir('hbang.xvg'),
             'hbn': self.plugindir('hbond.ndx'),
+            'ac':  self.plugindir('hbac.xvg'),
+            'life': self.plugindir('hblife.xvg'),
             'existence': self.plugindir('hb_existence.txt'),
             }
         self.parameters.figname = self.figdir('hbonds')  # not used yet
 
-    def create_ndx(self, **kwargs):
-        """Create index file.
+    def create_ndx(self, ndx=None, **kwargs):
+        """Create index file *ndx*.
 
         Uses *group1* and *group2* as selection commands in :func:`gromacs.make_ndx`.
         """
+        if ndx is None:
+            ndx = self.parameters.filenames['ndx']
         g = self.parameters.groups
         names = ['group1', 'group2']
-        I = gromacs.cbook.IndexBuilder(struct=self.simulation.tpr, out_ndx=self.parameters.filenames['ndx'],
+        I = gromacs.cbook.IndexBuilder(struct=self.simulation.tpr, out_ndx=ndx,
                                        selections=[g[name] for name in names],
                                        names=names)
         I.write()
         return names
+
+    def get_temperature_from_tpr(self, default=298.15):
+        """Hack to get the temperature from the tpr file."""
+        temperature = default
+        rc,out,err = gromacs.gmxdump(s=self.simulation.tpr, stdout=False, stderr=False)
+        for line in out.splitlines():
+            if line.strip().startswith('ref_t'):
+                temperature = np.mean(map(float, line[10:].split()))
+                break
+        return temperature
 
     def run(self, force=False, **gmxargs):
         """Run g_hbonds.
@@ -116,21 +138,26 @@ class _HBonds(Worker):
 
         if not self.check_file_exists(F['ndx'], resolve='warning') or force:
             logger.info("Creating the index groups with commands %r", self.parameters.groups)
-            self.create_ndx()
+            self.create_ndx(F['ndx'])
 
         if not self.check_file_exists(F['num'], resolve='warning') or force:
-            logger.info("Analyzing HBonds...")
-            gromacs.g_hbond(s=self.simulation.tpr, f=self.simulation.xtc, n=F['ndx'],
-                            num=F['num'], g=F['log'], hbn=F['hbn'], hbm=F['hbm'],
-                            input=['group1', 'group2'],
-                            **gmxargs)
+            temperature = self.get_temperature_from_tpr()
+            gmxargs.setdefault('temp', temperature)
+            gmxargs.setdefault('smooth', 1)
+            logger.info("Analyzing HBonds (T=%g K from tpr)...", temperature)
+            self.g_hbond(s=self.simulation.tpr, f=self.simulation.xtc, n=F['ndx'],
+                         num=F['num'], g=F['log'], hbn=F['hbn'], hbm=F['hbm'], ac=F['ac'],
+                         dist=F['dist'], ang=F['ang'], life=F['life'],
+                         input=['group1', 'group2'],
+                         **gmxargs)
 
     def analyze(self,**kwargs):
-        """Analyze hydrogen bond existence.
+        """Analyze hydrogen bond output.
 
-        :Keywords:
-          *kw1*
-             description
+        * hydrogen bond existence (existence)
+        * total number of hydrogen bonds (num)
+        * (others can be added easily)
+
         :Returns:  a dictionary of the results and also sets ``self.results``.
         """
         from gromacs.formats import XPM, XVG
@@ -155,7 +182,7 @@ class _HBonds(Worker):
         return results
 
     def plot(self, **kwargs):
-        """Plot all results in one graph, labelled by the result keys.
+        """Plot all results, labelled by the result keys.
 
         :Keywords:
            figure
@@ -166,6 +193,8 @@ class _HBonds(Worker):
                sequence of all formats that should be saved [('png', 'pdf')]
            plotargs
                keyword arguments for pylab.plot()
+
+        TODO: plot individually, not all in one figure
         """
 
         import pylab
@@ -179,11 +208,11 @@ class _HBonds(Worker):
                 warnings.warn("Sorry, plotting of result %(name)r is not implemented" % vars(),
                               category=UserWarning)
         pylab.legend(loc='best')
-        if figure is True:
-            for ext in extensions:
-                self.savefig(ext=ext)
-        elif figure:
-            self.savefig(filename=figure)
+        #if figure is True:
+        #    for ext in extensions:
+        #        self.savefig(ext=ext)
+        #elif figure:
+        #    self.savefig(filename=figure)
 
 
 
