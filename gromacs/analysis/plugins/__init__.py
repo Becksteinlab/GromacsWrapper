@@ -1,5 +1,5 @@
 # GromacsWrapper plugins
-# Copyright (c) 2009-2010 Oliver Beckstein <orbeckst@gmail.com>
+# Copyright (c) 2009-2012 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
 """
@@ -19,7 +19,7 @@ List of plugins
 Right now the number of plugins is limited. Feel free to contribute your own by
 sending it to the `package author`_. You will be acknowledged in the list below.
 
-.. _`package author`: oliver.beckstein@bioch.ox.ac.uk
+.. _`package author`: oliver.beckstein@asu.edu
 
 .. table:: Plugins for analysis.
 
@@ -44,6 +44,9 @@ sending it to the `package author`_. You will be acknowledged in the list below.
    :class:`RMSD`                  [#OB]_  calculate root mean square distance
 
    :class:`Energy`                [#OB]_  terms from the energy file
+
+   :class:`HBonds`                [#OB]_  hydrogen bond analysis, in particular
+                                          hydrogen bond existence
    ==========================  =========  ========================================
 
 
@@ -56,7 +59,7 @@ sending it to the `package author`_. You will be acknowledged in the list below.
 
    :class:`FitCompact  `          [#OB]_  write fitted trajectories
 
-   :class:`StripWater`            [#OB]_  remove solvent (and optionally fit to 
+   :class:`StripWater`            [#OB]_  remove solvent (and optionally fit to
                                           reference)
 
    :class:`ProteinOnly            [#OB]_  remove all atoms except the Protein
@@ -67,7 +70,7 @@ sending it to the `package author`_. You will be acknowledged in the list below.
 
 
 .. rubric:: Footnotes
-.. [#OB] Oliver Beckstein <oliver.beckstein@bioch.ox.ac.uk>
+.. [#OB] Oliver Beckstein <oliver.beckstein@asu.edu>
 
 
 Plugin classes
@@ -90,6 +93,8 @@ Plugin classes
 .. autoclass:: RMSD
    :members:
 .. autoclass:: Energy
+   :members:
+.. autoclass:: HBonds
    :members:
 .. autoclass:: Trajectories
    :members:
@@ -122,7 +127,7 @@ __docformat__ = "restructuredtext en"
 #: *Distances* plugin class is contained in the module *distances* (the
 #: file ``plugins/distances.py``).
 __plugins__ = ['CysAccessibility', 'Distances', 'MinDistances', 'Dihedrals',
-               'COM', 'RMSF', 'RMSD', 'Energy', 'HelixBundle',
+               'COM', 'RMSF', 'RMSD', 'Energy', 'HelixBundle', 'HBonds',
                'Trajectories', 'FitCompact',  'StripWater', 'ProteinOnly', 'Ls',
                ]
 __all__ = []

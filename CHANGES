@@ -5,7 +5,8 @@
 2012-??-??     0.3.1  in development
 
 * added IndexBuilder.write() method to safely write named index groups
-
+* new HBonds hydrogen bonding analysis plugin (uses g_hbond and can
+  return individual hbond existence probabilities)
 
 2012-04-24     0.3.0
 
