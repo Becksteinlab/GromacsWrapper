@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 # Copyright (c) 2012 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
@@ -6,7 +7,31 @@
 Hydrogen bond analysis
 ======================
 
-Analysis of hydrogen bonds using :class:`gromacs.tools.g_hbond`.
+Analysis of hydrogen bonds using :class:`gromacs.tools.G_hbond`.
+
+Example
+-------
+
+Analysis of hydrogen bonds between a ligand (resname 5FH) and the
+protein/water::
+
+  import gromacs.analysis
+  gromacs.start_logging()
+  S = gromacs.analysis.Simulation(tpr="MD/md.tpr", xtc="MD/md.xtc", analysisdir="./analysis", \
+      plugins=[gromacs.analysis.plugins.HBonds(group1='r 5FH', group2='"Protein" | "Water"')])
+  S.set_plugin('HBonds')
+  S.run('HBonds', force=True, smooth=-1)
+  S.analyze()
+
+* Output files will be produced under the analysisdir, ``./analysis/HBonds``,
+  including the file ``hb_existence.txt`` which lists the percentage of the
+  total simulation during which the hydrogen bond was observed.
+
+* The selection of groups is specified via :class:`gromacs.tools.Make_ndx`
+  syntax (in fact, :class:`gromacs.cbook.IndexBuilder` is used but currently
+  the special command syntax of :class:`~gromacs.cbook.IndexBuilder` is not
+  enabled here).
+
 
 Plugin class
 ------------
@@ -52,18 +77,37 @@ class _HBonds(Worker):
     def __init__(self, **kwargs):
         """Set up  HBonds analysis.
 
+        Hydrogen bonds Donor-H...Acceptor are analyzed. Depending on the
+        *N_is_acceptor* flag, nitrogens can be counted as donors *and* acceptors.
+
         :Arguments:
            *group1*
                :func:`gromacs.make_ndx` selection string, e.g. 'r 5FH' ["Protein"]
            *group2*
                :func:`gromacs.make_ndx` selection string, e.g. '"Protein"'
                (note the double quotes) ["Protein"]
+           *dmax*
+               maximum length of an hydrogen bond (donor-acceptor), can be changed
+               with *use_donor_acceptor_distance* [0.35 nm]
+           *amax*
+               maximum deviation of the acceptor-donor-hydrogen angle from
+               linearity (which is 0º) [30º]
+           *use_donor_acceptor_distance*
+               ``True``: *dmax* refers to the donor-acceptor distance;
+               ``False``: *dmax* is the hydrogen-acceptor max distance. [``True``]
+           *N_is_acceptor*
+               Count nitrogens as donors *and* acceptors? [``True``]
 
         """
         # specific arguments: take them before calling the super class that
         # does not know what to do with them
         group1 = kwargs.pop('group1', '"Protein"')
         group2 = kwargs.pop('group2', '"Protein"')
+        gmxargs = {'r': kwargs.pop('dmax', 0.35),
+                   'a': kwargs.pop('amax', 30.0),
+                   'da': kwargs.pop('use_donor_acceptor_distance', True),
+                   'nitacc': kwargs.pop('N_is_acceptor', True),
+                   }
 
         # super class init: do this before doing anything else
         # (also sets up self.parameters and self.results)
@@ -73,8 +117,10 @@ class _HBonds(Worker):
                                   'group2': '@'+group2,
                                   }  #  '@' for IndexBuilder raw command escape!!
 
-        # if fit not good then g_hbond returns non-zero return code: just warn
-        self.g_hbond = gromacs.tools.G_hbond(failure="warn")
+        # if fit not good then g_hbond returns non-zero return code: just warn;
+        # also pre-set the defaults
+        self.g_hbond = gromacs.tools.G_hbond(failure="warn", **gmxargs)
+        self.default_g_hbond_args = gmxargs
 
         # self.simulation might have been set by the super class
         # already; just leave this snippet at the end. Do all
@@ -143,7 +189,7 @@ class _HBonds(Worker):
         if not self.check_file_exists(F['num'], resolve='warning') or force:
             temperature = self.get_temperature_from_tpr()
             gmxargs.setdefault('temp', temperature)
-            gmxargs.setdefault('smooth', 1)
+            gmxargs.setdefault('smooth', -1)
             logger.info("Analyzing HBonds (T=%g K from tpr)...", temperature)
             self.g_hbond(s=self.simulation.tpr, f=self.simulation.xtc, n=F['ndx'],
                          num=F['num'], g=F['log'], hbn=F['hbn'], hbm=F['hbm'], ac=F['ac'],
@@ -225,14 +271,29 @@ class HBonds(Plugin):
 
     Analysis of hydrogen bonds between two groups.
 
-    .. class:: HBonds([group1, group2[, name[, simulation]]])
+    Hydrogen bonds Donor-H...Acceptor are analyzed. Depending on the
+    *N_is_acceptor* flag, nitrogens can be counted as donors *and* acceptors.
+
+
+    .. class:: HBonds([group1, group2[, dmax, amax, ..., name[, simulation]]])
 
     :Arguments:
-        *group1*
-           :func:`gromacs.make_ndx` selection string, e.g. 'r 5FH' ["Protein"]
-        *group2*
-           :func:`gromacs.make_ndx` selection string, e.g. '"Protein"'
-           (note the double quotes) ["Protein"]
+       *group1*
+          :func:`gromacs.make_ndx` selection string, e.g. 'r 5FH' ["Protein"]
+       *group2*
+          :func:`gromacs.make_ndx` selection string, e.g. '"Protein"'
+          (note the double quotes) ["Protein"]
+       *dmax*
+           maximum length of an hydrogen bond (donor-acceptor), can be changed
+           with *use_donor_acceptor_distance* [0.35 nm]
+       *amax*
+           maximum deviation of the acceptor-donor-hydrogen angle from
+           linearity (which is 0º) [30º]
+       *use_donor_acceptor_distance*
+           ``True``: *dmax* refers to the donor-acceptor distance;
+           ``False``: *dmax* is the hydrogen-acceptor max distance. [``True``]
+       *N_is_acceptor*
+           Count nitrogens as donors *and* acceptors? [``True``]
         *name* : string
             plugin name (used to access it)
         *simulation* : instance
