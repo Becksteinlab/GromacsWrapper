@@ -2,6 +2,10 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
+2012-??-??     0.3.1  in development
+
+* added IndexBuilder.write() method to safely write named index groups
+
 
 2012-04-24     0.3.0
 
