@@ -78,7 +78,7 @@ class _FitCompact(Worker):
         """Run when registering; requires simulation."""
 
         super(_FitCompact, self)._register_hook(**kwargs)
-        assert not self.simulation is None        
+        assert not self.simulation is None
 
         xtcdir,xtcname = os.path.split(self.simulation.xtc)
         xtcbasename, xtcext = os.path.splitext(xtcname)
@@ -94,7 +94,7 @@ class _FitCompact(Worker):
             if err.errno == errno.EEXIST:
                 pass
 
-        self.parameters.trjdir = trjdir        
+        self.parameters.trjdir = trjdir
         self.parameters.filenames = {
             'gro': fitcompact_gro,
             'pdb': fitcompact_pdb,
@@ -102,35 +102,35 @@ class _FitCompact(Worker):
             }
 
     # override 'API' methods of base class
-        
+
     def run(self, force=False, **gmxargs):
         """Write new trajectories"""
 
         filename = self.parameters.filenames['gro']
         if not self.check_file_exists(filename, resolve='warning') or force:
             logger.info("Writing fitted GRO file...")
-            gromacs.cbook.trj_fitandcenter(xy=self.parameters.xy, s=self.simulation.tpr, 
-                                           f=self.simulation.xtc, 
+            gromacs.cbook.trj_fitandcenter(xy=self.parameters.xy, s=self.simulation.tpr,
+                                           f=self.simulation.xtc,
                                            o=filename, dump=0)
 
         filename = self.parameters.filenames['pdb']
         if not self.check_file_exists(filename, resolve='warning') or force:
             logger.info("Writing fitted PDB file...")
-            gromacs.cbook.trj_fitandcenter(xy=self.parameters.xy, s=self.simulation.tpr, 
-                                           f=self.simulation.xtc, 
+            gromacs.cbook.trj_fitandcenter(xy=self.parameters.xy, s=self.simulation.tpr,
+                                           f=self.simulation.xtc,
                                            o=filename, dump=0)
 
         filename = self.parameters.filenames['fitcompact']
         if not self.check_file_exists(filename, resolve='warning') or force:
             logger.info("Writing fitted xtc file (all frames)...")
-            gromacs.cbook.trj_fitandcenter(xy=self.parameters.xy, s=self.simulation.tpr, 
-                                           f=self.simulation.xtc, 
+            gromacs.cbook.trj_fitandcenter(xy=self.parameters.xy, s=self.simulation.tpr,
+                                           f=self.simulation.xtc,
                                            o=filename)
 
         logger.info("New trajectories can be found in %r." % self.parameters.trjdir)
 
     def analyze(self,**kwargs):
-        """No postprocessing."""        
+        """No postprocessing."""
         pass
 
 
@@ -145,14 +145,21 @@ class _FitCompact(Worker):
 class FitCompact(Plugin):
     """*FitCompact* plugin.
 
-    Write new trajectories (see :func:`gromacs.cbook.trj_fitandcenter`),
+    Write new trajectories (see :func:`gromacs.cbook.trj_fitandcenter`) where
+    the solvent is centered around the protein in a compact representation and
+    the system is RMSD-fitted to the protein backbone.
 
-    .. class:: FitCompact([xy[,[name[,simulation]]])
+    The output file names are the input names with "_fitcompact" added. For
+    instance, if "./MD/md.xtc" is the input trajectory then the output
+    trajectory will be "./MD/md_fitcompact.xtc". In addition to the trajectory,
+    compact fitted GRO and PDB files will also be produced.
+
+    .. class:: FitCompact([xy[,name[,simulation]]])
 
     The plugin uses the defaults of
-    :func:`gromacs.book.trj_fitancenter`; in particular it fits on the
+    :func:`gromacs.cbook.trj_fitancenter`; in particular it fits on the
     *backbone*, centers on *protein*, and writes *system*.
-    
+
     :Arguments:
         *xy* : bool
             Rot+trans fit in 3D (``False``) or trans+rot in x-y plane (``True``) [``False``]

@@ -57,12 +57,12 @@ sending it to the `package author`_. You will be acknowledged in the list below.
    ==========================  =========  ========================================
    :class:`Trajectories`          [#OB]_  write xy-fitted trajectories
 
-   :class:`FitCompact  `          [#OB]_  write fitted trajectories
+   :class:`FitCompact`            [#OB]_  write fitted trajectories
 
    :class:`StripWater`            [#OB]_  remove solvent (and optionally fit to
                                           reference)
 
-   :class:`ProteinOnly            [#OB]_  remove all atoms except the Protein
+   :class:`ProteinOnly'           [#OB]_  remove all atoms except the Protein
                                           (and optionally fit to reference)
 
    :class:`Ls`                    [#OB]_  simple :program:`ls` (for testing)
