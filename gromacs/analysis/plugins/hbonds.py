@@ -96,7 +96,9 @@ class _HBonds(Worker):
                ``True``: *dmax* refers to the donor-acceptor distance;
                ``False``: *dmax* is the hydrogen-acceptor max distance. [``True``]
            *N_is_acceptor*
-               Count nitrogens as donors *and* acceptors? [``True``]
+               Count nitrogens as donors *and* acceptors (generally only
+               important for certain nitrogens in heterocycles as in histidine)
+               ? [``False``]
 
         """
         # specific arguments: take them before calling the super class that
@@ -106,7 +108,7 @@ class _HBonds(Worker):
         gmxargs = {'r': kwargs.pop('dmax', 0.35),
                    'a': kwargs.pop('amax', 30.0),
                    'da': kwargs.pop('use_donor_acceptor_distance', True),
-                   'nitacc': kwargs.pop('N_is_acceptor', True),
+                   'nitacc': kwargs.pop('N_is_acceptor', False),
                    }
 
         # super class init: do this before doing anything else
@@ -299,6 +301,7 @@ class HBonds(Plugin):
         *simulation* : instance
             The :class:`gromacs.analysis.Simulation` instance that owns the plugin.
 
+    .. versionadded:: 0.3.1
     """
     worker_class = _HBonds
 
