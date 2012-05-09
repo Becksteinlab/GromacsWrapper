@@ -39,15 +39,17 @@ Calculate the fraction of time that each H-bond existed::
 
   hb_fraction = hb.array.mean(axis=0)
 
-Get the descriptions of the bonds (should be ordered in the same way
-as the rows in the xpm file)::
+Get the descriptions of the bonds (ordered in the opposite way as the
+rows in the xpm file)::
 
   desc = [line.strip() for line in open("hbond.log") if not line.startswith('#')]
+  desc.reverse()
 
 and show the results::
 
   print "\\n".join(["%-40s %4.1f%%" % p for p in zip(desc, 100*hb_fraction)])
 
+.. SeeAlso:: :mod:`gromacs.analysis.plugins.hbonds`
 """
 
 from __future__ import with_statement
