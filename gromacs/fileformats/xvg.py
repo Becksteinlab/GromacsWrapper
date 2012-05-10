@@ -96,6 +96,13 @@ Currently, two alternative algorithms to produce "coarse grained"
 
 For simple test data, both approaches give very similar output.
 
+For the special case of periodic data such as angles, one can use the
+circular mean ("circmean") to coarse grain. In this case, jumps across
+the -180º/+180º boundary are added as masked datapoints and no line is
+drawn across the jump in the plot. (Only works with the simple
+:meth:`XVG.plot` method at the moment, errorbars or range plots are
+not implemented yet.)
+
 .. SeeAlso:: :meth:`XVG.decimate`
 
 Examples
@@ -171,11 +178,14 @@ automates this approach and can plot coarsened data selected by the
 
 
 
-Classes
--------
+Classes and functions
+---------------------
 
 .. autoclass:: XVG
    :members:
+
+.. autofunction:: break_array
+
 """
 
 
@@ -590,7 +600,7 @@ class XVG(utilities.FileUtils):
         ma = numpy.ma.MaskedArray(a, mask=numpy.logical_not(numpy.isfinite(a)))
 
         # finally plot (each column separately to catch empty sets)
-        for column, color in izip(columns[1:], colors):
+        for column, color in izip(xrange(1,len(columns)), colors):
             if len(ma[column]) == 0:
                 warnings.warn("No data to plot for column %(column)d" % vars(), category=MissingDataWarning)
             kwargs['color'] = color
@@ -610,11 +620,15 @@ class XVG(utilities.FileUtils):
         arguments:
 
         :Kewords:
+           *maxpoints*
+                number of points (bins) to coarsen over
            *color*
                 single color (used for all plots); sequence of colors
                 (will be repeated as necessary); or a matplotlib
                 colormap (e.g. "jet", see :mod:`matplotlib.cm`). The
                 default is to use the :attr:`XVG.default_color_cycle`.
+           *method*
+                Method to coarsen the data. See :meth:`XVG.decimate`
 
         The *demean* keyword has no effect as it is required to be ``True``.
 
@@ -796,6 +810,12 @@ class XVG(utilities.FileUtils):
           * "mean", uses :meth:`XVG.decimate_mean` to coarse grain by
             averaging the data in bins along the time axis
 
+          * "circmean", uses :meth:`XVG.decimate_circmean` to coarse
+            grain by calculating the circular mean of the data in bins
+            along the time axis. Use additional keywords *low* and
+            *high* to set the limits. Assumes that the data are in
+            degrees.
+
           * "min" and "max* select the extremum in each bin
 
           * "rms", uses :meth:`XVG.decimate_rms` to coarse grain by
@@ -822,6 +842,7 @@ class XVG(utilities.FileUtils):
                    'rms': self.decimate_rms,
                    'percentile': self.decimate_percentile,
                    'error': self.decimate_error,  # undocumented, not working well
+                   'circmean': self.decimate_circmean,
                    }
         if len(a.shape) == 1:
             # add first column as index
@@ -853,6 +874,48 @@ class XVG(utilities.FileUtils):
 
         """
         return self._decimate(numkit.timeseries.mean_histogrammed_function, a, maxpoints, **kwargs)
+
+    def decimate_circmean(self, a, maxpoints, **kwargs):
+        """Return data *a* circmean-decimated on *maxpoints*.
+
+        Histograms each column into *maxpoints* bins and calculates
+        the weighted circular mean in each bin as the decimated data,
+        using
+        :func:`numkit.timeseries.circmean_histogrammed_function`. The
+        coarse grained time in the first column contains the centers
+        of the histogram time.
+
+        If *a* contains <= *maxpoints* then *a* is simply returned;
+        otherwise a new array of the same dimensions but with a
+        reduced number of  *maxpoints* points is returned.
+
+        Keywords *low* and *high* can be used to set the
+        boundaries. By default they are [-pi, +pi].
+
+        This method returns a **masked** array where jumps are flagged
+        by an insertion of a masked point.
+
+        .. Note::
+
+           Assumes that the first column is time and that the data are
+           in **degrees**.
+
+        .. Warning::
+
+           Breaking of arrays only works properly with a two-column
+           array because breaks are only inserted in the x-column
+           (a[0]) where y1 = a[1] has a break.
+
+        """
+        a_rad = numpy.vstack((a[0], numpy.deg2rad(a[1:])))
+        b = self._decimate(numkit.timeseries.circmean_histogrammed_function, a_rad, maxpoints, **kwargs)
+        y_ma, x_ma = break_array(b[1], threshold=numpy.pi, other=b[0])
+        v = [y_ma]
+        for y in b[2:]:
+            v.append(break_array(y, threshold=numpy.pi)[0])
+            if v[-1].shape != v[0].shape:
+                raise ValueError("y dimensions have different breaks: you MUST deal with them separately")
+        return numpy.vstack((x_ma, numpy.rad2deg(v)))
 
     def decimate_min(self, a, maxpoints, **kwargs):
         """Return data *a* min-decimated on *maxpoints*.
@@ -1059,5 +1122,58 @@ class XVG(utilities.FileUtils):
             self.logger.warn(wmsg)
             d['savedata'] = False  # new default
         self.__dict__.update(d)
+
+
+def break_array(a, threshold=numpy.pi, other=None):
+    """Create a array which masks jumps >= threshold.
+
+    Extra points are inserted between two subsequent values whose
+    absolute difference differs by more than threshold (default is
+    pi).
+
+    Other can be a secondary array which is also masked according to
+    *a*.
+
+    Returns (*a_masked*, *other_masked*) (where *other_masked* can be
+    ``None``)
+    """
+    assert len(a.shape) == 1, "Only 1D arrays supported"
+
+    if other is not None:
+        if not a.shape == other.shape:
+            raise ValueError("arrays must be of identical shape")
+
+    # jump occurs after the index in break
+    breaks = numpy.where(numpy.abs(numpy.diff(a)) >= threshold)[0]
+    # insert a blank after
+    breaks += 1
+
+    # is this needed?? -- no, but leave it here as a reminder
+    #f2 = numpy.diff(a, 2)
+    #up = (f2[breaks - 1] >= 0)  # >0: up, <0: down
+    # sort into up and down breaks:
+    #breaks_up = breaks[up]
+    #breaks_down = breaks[~up]
+
+    # new array b including insertions for all the breaks
+    m = len(breaks)
+    b = numpy.empty((len(a) + m))
+    # calculate new indices for breaks in b, taking previous insertions into account
+    b_breaks = breaks + numpy.arange(m)
+    mask =  numpy.zeros_like(b, dtype=numpy.bool)
+    mask[b_breaks] = True
+    b[~mask] = a
+    b[mask] = numpy.NAN
+
+    if other is not None:
+        c = numpy.empty_like(b)
+        c[~mask] = other
+        c[mask] = numpy.NAN
+        ma_c = numpy.ma.array(c, mask=mask)
+    else:
+        ma_c = None
+
+    return numpy.ma.array(b, mask=mask), ma_c
+
 
 

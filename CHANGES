@@ -7,6 +7,7 @@
 * added IndexBuilder.write() method to safely write named index groups
 * new HBonds hydrogen bonding analysis plugin (uses g_hbond and can
   return individual hbond existence probabilities)
+* XVG has initial support to plot periodic data such as dihedral angles
 
 2012-04-24     0.3.0
 

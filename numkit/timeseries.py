@@ -451,6 +451,50 @@ def error_histogrammed_function(t, y, **kwargs):
         return results['sigma']
     return apply_histogrammed_function(get_tcorrel, t, y, **kwargs)
 
+def circmean_histogrammed_function(t, y, **kwargs):
+    """Compute circular mean of data *y* in bins along *t*.
+
+    Returns the circmean-regularised function *F* and the centers of
+    the bins.
+
+    *kwargs* are passed to :func:`scipy.stats.morestats.circmean`, in
+    particular set the lower bound with *low* and the upper one with
+    *high*. The default is [-pi, +pi].
+
+    :func:`regularized_function` with *func* = :func:`scipy.stats.morestats.circmean`
+
+    .. Note:: Data are interpreted as angles in radians.
+    """
+    low = kwargs.pop('low', -numpy.pi)
+    high = kwargs.pop('high', numpy.pi)
+    def _circmean(a, low=low, high=high):
+        if len(a) == 0:
+            return numpy.NAN
+        return scipy.stats.morestats.circmean(a, low=low, high=high)
+    return apply_histogrammed_function(_circmean, t, y, **kwargs)
+
+def circstd_histogrammed_function(t, y, **kwargs):
+    """Compute circular standard deviation of data *y* in bins along *t*.
+
+    Returns the circstd-regularised function *F* and the centers of
+    the bins.
+
+    *kwargs* are passed to :func:`scipy.stats.morestats.circmean`, in
+    particular set the lower bound with *low* and the upper one with
+    *high*. The default is [-pi, +pi].
+
+    :func:`regularized_function` with *func* = :func:`scipy.stats.morestats.circstd`
+
+    .. Note:: Data are interpreted as angles in radians.
+    """
+    low = kwargs.pop('low', -numpy.pi)
+    high = kwargs.pop('high', numpy.pi)
+    def _circstd(a, low=low, high=high):
+        if len(a) == 0:
+            return numpy.NAN
+        return scipy.stats.morestats.circstd(a, low=low, high=high)
+    return apply_histogrammed_function(_circstd, t, y, **kwargs)
+
 def apply_histogrammed_function(func, t, y, **kwargs):
     """Compute *func* of data *y* in bins along *t*.
 
