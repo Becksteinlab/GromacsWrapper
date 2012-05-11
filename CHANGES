@@ -8,6 +8,9 @@
 * new HBonds hydrogen bonding analysis plugin (uses g_hbond and can
   return individual hbond existence probabilities)
 * XVG has initial support to plot periodic data such as dihedral angles
+* ITP reader: ITP.contains_preprocessor_constructs() to check if the
+  itp file uses some of the recognized preprocessing directives
+ 
 
 2012-04-24     0.3.0
 

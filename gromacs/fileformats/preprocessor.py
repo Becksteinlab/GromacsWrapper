@@ -41,7 +41,7 @@ Once the file has been parsed, one can (1) write it out with the
 
  PP.write("parsed.itp")
 
-Or create a :func:`cStringIO.StringIO` object from the in-memory parsed file
+Or (2) create a :func:`cStringIO.StringIO` object from the in-memory parsed file
 with :meth:`Preprocessor.StringIO`::::
 
  s = PP.StringIO()
@@ -88,6 +88,11 @@ The directives understood are:
 
   Content inside the exclude block is omitted from the processed file.
 
+.. Note::
+
+   Expansion of a defined VAR inside the file is *not supported*. VAR are *only used
+   in the context of ``#ifdef``/``#ifndef`` directives.
+
 
 Classes
 -------
@@ -132,10 +137,16 @@ class Preprocessor(object):
               anything excluded through #ifdefs); use ``False`` for debugging,
               which simply prefixes excluded lines with "*commentchar* #"
            *commentchar*
-              how to comment out lines, leave at the default for it files [";"]
+              how to comment out lines, leave at the default for itp files [";"]
+           *strip*
+              remove all empty lines and lines starting with *commentchar*
+              (does not work with *clean* = ``False``) [``False``]
            *defines*
               any other keywords *VAR* are interpreted as ``#define VAR`` statement if
               *VAR* evaluates to ``True``.
+
+        .. versionchanged:: 0.3.1
+           *strip* keyword added
         """
         # public variables
         self.input = filename  # XXX: was a filename
@@ -144,6 +155,10 @@ class Preprocessor(object):
         self.commentchar = kwargs.pop("commentchar", ";")  # for itp files
         self.default_defines = [x for x in kwargs if kwargs[x]]    #   #define x
         self.defines = self.default_defines[:]                     # see parser()
+        self.strip = kwargs.pop('strip', False)
+        if not self.removeMeta and self.strip:
+            import warnings
+            warnings.warn("Preprocessor: clean=False takes precedence over strip=True")
         # private variables
         self.__linenum = 0
         self.__excludeblock = False
@@ -259,8 +274,8 @@ class Preprocessor(object):
 
         *kwargs* are variables that are set (``#define VAR``) or unset
         (``#undef VAR``) at the beginning of the file. They are applied to all
-        the defines that were provided to the constructor, and #hence using
-        *VAR* = ``False`` allows one to undefine some of #these.
+        the defines that were provided to the constructor, and hence using
+        *VAR* = ``False`` allows one to undefine some of these.
 
         This method only populates the output buffer and does not write an
         output file; use :meth:`write` for that purpose.
@@ -284,9 +299,10 @@ class Preprocessor(object):
                 if squelch is True:
                     self.__outputBuffer += self.commentchar + '#' + line
                     continue
-                if squelch is False:
-                    self.__outputBuffer += line
+                if self.strip and (len(line.strip()) == 0 or line.strip().startswith(self.commentchar)):
                     continue
+                # output survived!
+                self.__outputBuffer += line
 
     @property
     def buffer(self):

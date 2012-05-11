@@ -624,7 +624,9 @@ class ITP(utilities.FileUtils):
     :class:`~gromacs.fileformats.preprocessor.Preprocessor` according to
     directves in the file and variables defined in the constructor keyword
     arguments. Thus, the class :class:`ITP` represents one particularly state
-    of the itp file with *any preprocessor constructs excluded*.
+    of the itp file with *any preprocessor constructs excluded*. Only a limited
+    set of directives is understood and a :exc:`SyntaxError` is raised in cases
+    where the preprocessor does not know how to handle the file.
 
     The file is parsed into a hierarchy of sections (and subsections), which
     are accessible in the attribute :attr:`ITP.sections`.
@@ -643,8 +645,18 @@ class ITP(utilities.FileUtils):
     The top-level section is called *"header"* and simply contains all
     comment lines before the first real parsed section.
 
-    .. Warning:: Not all section types are implemented. Only a single
-                 ``[moleculetype]`` is currently supported.
+    .. Warning::
+
+       Not all section types are implemented. There can only be a single type
+       of section at each level of the hierarchy.
+
+       Only a single ``[moleculetype]`` is currently supported.
+
+       Subsequent ``[dihedrals]`` sections are merged but if another section
+       intersperses two ``[dihedral]`` sections then the first one is lost.
+
+       Comments are stripped except at the beginning of the file and at the end
+       of data lines.
 
     .. versionadded:: 0.2.5
     """
@@ -671,6 +683,7 @@ class ITP(utilities.FileUtils):
 
         super(ITP, self).__init__(**kwargs)
 
+        self.commentchar = ';'
         self.sections = odict()
         self.parsers  = {
             'header': Header,
@@ -680,6 +693,50 @@ class ITP(utilities.FileUtils):
         if not filename is None:
             self._init_filename(filename)
             self.read(filename)
+
+    def contains_preprocessor_constructs(self):
+        """Check if file makes use of any preprocessor constructs.
+
+        The test is done by running the file through the
+        :class:`~gromacs.fileformats.preprocessor.Preprocessor` (while
+        stripping all empty and lines starting with a comment character. This
+        is compared to the original file, stripped in the same manner. If the
+        two stripped files differ from each other then the preprocessor altered
+        the file and preprocessor directives must have been involved and this
+        function returns ``True``.
+
+        .. versionadded: 0.3.1
+        """
+        from itertools import izip
+
+        kwargs = self.defines.copy()
+        kwargs['commentchar'] = self.commentchar
+        kwargs['clean'] = True
+        kwargs['strip'] = True
+        ppitp = Preprocessor(self.real_filename, **kwargs)
+        ppitp.parse()
+        pp_lines = ppitp.StringIO().readlines()
+
+        def strip_line(line):
+            s = line.strip()
+            return len(s) == 0 or s.startswith(self.commentchar)
+        raw_lines = [line for line in open(self.real_filename) if not strip_line(line)]
+
+        if len(pp_lines) != len(raw_lines):
+            self.logger.debug("File %r is preprocessed (pp: %d vs raw %d lines (stripped))",
+                              self.real_filename, len(pp_lines), len(raw_lines))
+            return True
+        for linenum, (raw, pp) in enumerate(izip(raw_lines, pp_lines)):
+            if raw != pp:
+                self.logger.debug("File %r is preprocessed. Difference at (stripped) line %d",
+                                  self.real_filename, linenum)
+                self.logger.debug("preprocessed: %s", pp)
+                self.logger.debug("original:     %s", raw)
+                return True
+        self.logger.debug("File %r does not appear to contain recognized preprocessing directives",
+                          self.real_filename)
+        return False
+
 
     def read(self, filename=None, preprocess=True, **defines):
         """Preprocess, read and parse itp file *filename*.
@@ -694,7 +751,7 @@ class ITP(utilities.FileUtils):
 
         if preprocess:
             kwargs = self.defines.copy()
-            kwargs['commentchar'] = ';'
+            kwargs['commentchar'] = self.commentchar
             kwargs['clean'] = True
             ppitp = Preprocessor(self.real_filename, **kwargs)
             ppitp.parse(**defines)
@@ -811,3 +868,5 @@ def flatten(l):
                 yield sub
         else:
             yield el
+
+
