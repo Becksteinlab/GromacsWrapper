@@ -11,8 +11,7 @@ Gromacs topology file (ITP) parser
 Basic reading, manipulating and writing works but can still be a bit
 awkward. See documentation for :class:`ITP`.
 
-.. warning:: The code is still *experimental* and the interface
-             will probably change somewhat until release 0.3.
+.. warning:: The code is still *experimental*.
 
 .. rubric:: Limitations
 
@@ -35,8 +34,67 @@ awkward. See documentation for :class:`ITP`.
   or accessed.
 
 
+Example
+-------
+
+An itp file can be loaded and individual sections accessed (print shows a
+representation of what it would look like written to a file)::
+
+  >>> itp = gromacs.fileformats.ITP("benzylhyd5.itp")
+  >>> print itp.header
+  >>> ...
+  >>> print itp.header.moleculetype
+  [ moleculetype ]
+  ; Name      nrexcl
+  5FH         3
+
+Each section is an object that contains the parsed data in a
+:attr:`~ITPsection.data` attribute::
+
+  >>> print itp.header.moleculetype.data
+  odict.odict([('name', '5FH'), ('nrexcl', 3)])
+  >>> print itp.header.moleculetype.data['name']
+  5FH
+
+The moleculetypes section contains the important subsections that make up the
+topology::
+
+  >>> print itp.header.moleculetype.sections.keys()
+  ['atoms', 'bonds', 'angles', 'dihedrals', 'pairs']
+
+They can be accessed in the same manner. For instance, counting all atom records::
+
+  >>> print len(itp.header.moleculetype.atoms)
+  24
+
+For the atoms, the :attr:`~ITPdata.data` structure is a :class:`numpy.rec.recarray`.
+
+Data can be modified and then finally a new itp file can be written with the
+:meth:`ITP.write` method. ::
+
+  >>> itp.write("modified.itp")
+
+
 User classes
 ------------
+
+The :class:`ITP` class always represents one itp file. It contains a tree of
+parsed subsections that correspond to the subsections in the itp file. The way
+to drill down is to access the attribute :attr:`ITP.sections`, where the
+subsections are stored. :attr:`ITP.sections` acts like a dictionary. Each
+subsection contains again a :attr:`ITPsection.sections` dictionary containing
+its own subsections. To find the ``[ atoms ]`` data::
+
+  itp.sections['header'].sections['moleculetype'].sections['atoms'].data
+
+For convenience, one can also use the keys in the :attr:`~ITP.sections`
+dictionary directly as attributes. In this way finding the ``[ atoms ]`` data
+is even simpler::
+
+  itp.header.moleculetype.atoms.data
+
+For more details on the organization of the data structure see
+:ref:`correspondence-between-classes-and-sections`.
 
 .. autoclass:: ITP
    :members:
@@ -60,6 +118,9 @@ Base classes and utility functions
    :members:
 
 .. autofunction:: flatten
+
+
+.. _correspondence-between-classes-and-sections:
 
 Classes corresponding to ITP sections
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -142,6 +203,8 @@ class ITPsection(object):
       typically overriden.
 
      .. versionadded:: 0.2.5
+     .. versionchanged:: 0.3.1
+        Access to sections by attribute access is possible.
     """
     COMMENT = re.compile("""\s*;\s*(?P<comment>.*)""")       # eat initial ws
     SECTION = re.compile("""^\s*\[\s*(?P<name>\S+)\s*\]""")  # [ name ]
@@ -175,6 +238,16 @@ class ITPsection(object):
             return len(self.data)
         except (TypeError, ValueError):
             return 0
+
+    def __getattribute__(self, name):
+        try:
+            return super(ITPsection, self).__getattribute__(name)
+        except AttributeError:
+            pass
+        try:
+            return self.sections[name]
+        except KeyError:
+            raise AttributeError("%r object has no attribute or section %s" % (self.__class__.__name__, name))
 
     def __str__(self):
         """Print full section as seen in an ITP file"""
@@ -659,6 +732,9 @@ class ITP(utilities.FileUtils):
        of data lines.
 
     .. versionadded:: 0.2.5
+    .. versionchanged:: 0.3.1
+       Access to sections by attribute access is possible.
+
     """
     default_extension = "itp"
     logger = logging.getLogger('gromacs.formats.ITP')
@@ -820,6 +896,16 @@ class ITP(utilities.FileUtils):
         """Write ITP file to *filename*"""
         with open(filename, "w") as itp:
             itp.write(str(self))
+
+    def __getattribute__(self, name):
+        try:
+            return super(ITP, self).__getattribute__(name)
+        except AttributeError:
+            pass
+        try:
+            return self.sections[name]
+        except KeyError:
+            raise AttributeError("%r object has no attribute or section %s" % (self.__class__.__name__, name))
 
     def __str__(self):
         """Printable representation: whole ITP file."""
