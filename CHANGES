@@ -10,6 +10,8 @@
 * XVG has initial support to plot periodic data such as dihedral angles
 * ITP reader: ITP.contains_preprocessor_constructs() to check if the
   itp file uses some of the recognized preprocessing directives
+* set environment variable GROMACSWRAPPER_SUPPRESS_SETUP_CHECK to true
+  in order to avoid be notified of missing config files
  
 
 2012-04-24     0.3.0

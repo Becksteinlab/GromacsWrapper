@@ -55,6 +55,14 @@ Important configuration variables are
 .. autodata:: configdir
 .. autodata:: path
 
+When GromacsWrapper starts up it runs :func:`check_setup`. This
+notifies the user if any config files or directories are missing and
+suggests to run :func:`setup`.  The check if the default set up exists
+can be suppressed by setting the environment variable
+:envvar:`GROMACSWRAPPER_SUPPRESS_SETUP_CHECK` to 'true' ('yes' and '1'
+also work).
+
+
 Users
 ~~~~~
 
@@ -66,6 +74,7 @@ file ``~/.gromacswrapper.cfg`` (which has ini-file syntax as described in
 
 .. autofunction:: setup
 .. autofunction:: get_configuration
+.. autofunction:: check_setup
 
 Developers
 ~~~~~~~~~~
@@ -139,13 +148,13 @@ A typical Gromacs tools section of the config file looks like this::
    # tools contains the file names of all Gromacs tools for which classes are generated.
    # Editing this list has only an effect when the package is reloaded.
    # (Note that this example has a much shorter list than the actual default.)
-   tools = 
+   tools =
          editconf make_ndx grompp genion genbox
          grompp pdb2gmx mdrun
 
    # Additional gromacs tools that should be made available.
-   extra = 
-         g_count     g_flux 
+   extra =
+         g_count     g_flux
          a_gridcalc  a_ri3Dc  g_ri3Dc
 
    # which tool groups to make available as gromacs.NAME
@@ -197,7 +206,7 @@ CONFIGNAME = os.path.expanduser(os.path.join("~",".gromacswrapper.cfg"))
 #:    The default value is ``~/.gromacswrapper/templates``.
 #: :data:`managerdir`
 #:    Directory to store configuration files for different queuing system
-#:    managers as used in :mod:`gromacs.manager`. 
+#:    managers as used in :mod:`gromacs.manager`.
 #:    The default value is ``~/.gromacswrapper/managers``.
 defaults = {
      'configdir': os.path.expanduser(os.path.join("~",".gromacswrapper")),
@@ -255,10 +264,10 @@ config_directories = [configdir, qscriptdir, templatesdir, managerdir]
 
 
 #: Search path for user queuing scripts and templates. The internal package-supplied
-#: templates are always searched last via :func:`gromacs.config.get_templates`. 
-#: Modify :data:`gromacs.config.path` directly in order to customize the template 
+#: templates are always searched last via :func:`gromacs.config.get_templates`.
+#: Modify :data:`gromacs.config.path` directly in order to customize the template
 #: and qscript searching. By default it has the value ``['.', qscriptdir,
-#: templatesdir]``. 
+#: templatesdir]``.
 #: (Note that it is not a good idea to have template files and qscripts with the
 #: same name as they are both searched on the same path.)
 #: :data:`path` is updated whenever cfg is re-read with :func:`get_configuration`.
@@ -270,7 +279,7 @@ path = [os.path.curdir, qscriptdir, templatesdir]
 
 def _generate_template_dict(dirname):
     """Generate a list of included files *and* extract them to a temp space.
-    
+
     Templates have to be extracted from the egg because they are used
     by external code. All template filenames are stored in
     :data:`config.templates`.
@@ -313,7 +322,7 @@ code: find the actual file locations from this variable.
 **Queuing system templates**
 
    The queing system scripts are highly specific and you will need to add your
-   own into :data:`gromacs.config.qscriptdir`. 
+   own into :data:`gromacs.config.qscriptdir`.
    See :mod:`gromacs.qsub` for the format and how these files are processed.
 """
 
@@ -343,7 +352,7 @@ def get_template(t):
     :Arguments: *t* : template file or key (string or list of strings)
     :Returns:   os.path.realpath(*t*) (or a list thereof)
     :Raises:    :exc:`ValueError` if no file can be located.
-       
+
     """
     templates = [_get_template(s) for s in utilities.asiterable(t)]
     if len(templates) == 1:
@@ -365,9 +374,9 @@ def get_templates(t):
     The first match (in this order) is returned for each input argument.
 
     :Arguments: *t* : template file or key (string or list of strings)
-    :Returns:   list of os.path.realpath(*t*) 
+    :Returns:   list of os.path.realpath(*t*)
     :Raises:    :exc:`ValueError` if no file can be located.
-       
+
     """
     return [_get_template(s) for s in utilities.asiterable(t)]
 
@@ -375,7 +384,7 @@ def _get_template(t):
     """Return a single template *t*."""
     if os.path.exists(t):           # 1) Is it an accessible file?
          pass
-    else:                         
+    else:
          _t = t
          _t_found = False
          for d in path:              # 2) search config.path
@@ -427,11 +436,11 @@ class GMXConfigParser(SafeConfigParser):
           SafeConfigParser.__init__(*args, **kwargs)  # old style class ... grmbl
           # defaults
           self.set('DEFAULT', 'configdir', defaults['configdir'])
-          self.set('DEFAULT', 'qscriptdir', 
+          self.set('DEFAULT', 'qscriptdir',
                   os.path.join("%(configdir)s", os.path.basename(defaults['qscriptdir'])))
-          self.set('DEFAULT', 'templatesdir', 
+          self.set('DEFAULT', 'templatesdir',
                   os.path.join("%(configdir)s", os.path.basename(defaults['templatesdir'])))
-          self.set('DEFAULT', 'managerdir', 
+          self.set('DEFAULT', 'managerdir',
                   os.path.join("%(configdir)s", os.path.basename(defaults['managerdir'])))
           self.add_section('Gromacs')
           self.set("Gromacs", "tools", "pdb2gmx editconf grompp genbox genion mdrun trjcat trjconv")
@@ -466,8 +475,8 @@ class GMXConfigParser(SafeConfigParser):
                'qscriptdir': self.getpath('DEFAULT', 'qscriptdir'),
                'templatesdir': self.getpath('DEFAULT', 'templatesdir'),
                }
-          configuration['path'] = [os.path.curdir, 
-                                   configuration['qscriptdir'], 
+          configuration['path'] = [os.path.curdir,
+                                   configuration['qscriptdir'],
                                    configuration['templatesdir']]
           return configuration
 
@@ -524,7 +533,7 @@ def get_configuration(filename=CONFIGNAME):
 cfg = GMXConfigParser()
 globals().update(cfg.configuration)        # update configdir, templatesdir ...
 
-#: Dict containing important configuration variables, populated by 
+#: Dict containing important configuration variables, populated by
 #: :func:`get_configuration` (mainly a shortcut; use :data:`cfg` in most cases).
 configuration = cfg.configuration
 
@@ -533,7 +542,7 @@ def setup(filename=CONFIGNAME):
 
      1) Create the global config file.
      2) Create the directories in which the user can store template and config files.
-    
+
      This function can be run repeatedly without harm.
      """
      # setup() must be separate and NOT run automatically when config
@@ -552,8 +561,24 @@ def setup(filename=CONFIGNAME):
      for d in config_directories:
           utilities.mkdir_p(d)
 
+
 def check_setup():
-     """Check if templates directories are setup and issue a warning and help."""
+     """Check if templates directories are setup and issue a warning and help.
+
+     Returns ``True`` if all files and directories are found and
+     ``False`` otherwise.
+
+     Setting the environment variable
+     :envvar:`GROMACSWRAPPER_SUPPRESS_SETUP_CHECK` to 'true' ('yes'
+     and '1' also work) silence this function and make it always return ``True``.
+
+     .. versionchanged:: 0.3.1
+        Uses :envvar:`GROMACSWRAPPER_SUPPRESS_SETUP_CHECK` to suppress output
+        (useful for scripts run on a server)
+     """
+     if os.environ.get("GROMACSWRAPPER_SUPPRESS_SETUP_CHECK", "false").lower() in ("1", "true", "yes"):
+         return True
+
      is_complete = True
      if not os.path.exists(CONFIGNAME):
           is_complete = False
@@ -573,7 +598,7 @@ def check_setup():
      return is_complete
 
 check_setup()
-               
+
 
 
 # Gromacs tools
@@ -601,7 +626,7 @@ os.chmod(GridMAT_MD, 0755)
 #:
 #:   (*script name/path*, *command name*, *doc string*)
 #:
-#: (See the source code for examples.) 
+#: (See the source code for examples.)
 load_scripts = [
     (GridMAT_MD,
      'GridMAT_MD',
@@ -611,10 +636,10 @@ load_scripts = [
 ``GridMAT-MD.pl`` v1.0.2, written by WJ Allen, JA Lemkul and DR
 Bevan. The original version is available from the `GridMAT-MD`_ home
 page,
-   
+
 .. _`GridMAT-MD`: http://www.bevanlab.biochem.vt.edu/GridMAT-MD/index.html
 
-Please cite 
+Please cite
 
   W. J. Allen, J. A. Lemkul, and D. R. Bevan. (2009) "GridMAT-MD: A
   Grid-based Membrane Analysis Tool for Use With Molecular Dynamics."
