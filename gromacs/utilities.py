@@ -383,6 +383,9 @@ class FileUtils(object):
 
         ``use_my_ext=True`` lets the suffix of a provided filename take
         priority over a default ``ext`` tension.
+
+        .. versionchanged:: 0.3.1
+           An empty string as *ext* = "" will suppress appending an extension.
         """
         if filename is None:
             if not hasattr(self,'_filename'):
@@ -401,7 +404,8 @@ class FileUtils(object):
         if ext is not None:
             if ext.startswith(os.extsep):
                 ext = ext[1:]  # strip a dot to avoid annoying mistakes
-            filename = filename + os.extsep + ext
+            if ext != "":
+                filename = filename + os.extsep + ext
         return filename
 
     def check_file_exists(self, filename, resolve='exception', force=None):
