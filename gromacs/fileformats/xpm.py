@@ -61,8 +61,7 @@ Get the descriptions of the bonds::
 
    It is important that ``reverse=True`` is set so that the rows in
    the xpm matrix are brought in the same order as the H-bond
-   labels. In principle, ``reverse=True`` ought to be the default but
-   for historical reasons it is left at ``False``.
+   labels.
 
 Show the results::
 
@@ -87,7 +86,17 @@ import logging
 class XPM(utilities.FileUtils):
     """Class to make a Gromacs XPM matrix available as a NumPy :class:`numpy.ndarray`.
 
-    The data is available as :attr:`XPM.array`.
+    The data is available in the attribute :attr:`XPM.array`.
+
+    .. Note::
+
+       By default, the rows (2nd dimension) in the :attr:`XPM.array`
+       are re-ordered so that row 0 (i.e. ``array[:,0]`` corresponds
+       to the first residue/hydrogen bond/etc. The original xpm matrix
+       is obtained for *reverse* = ``False``. The :class:`XPM` reader
+       always reorders the :attr:`XPM.yvalues` (obtained from the xpm
+       file) to match the order of the rows.
+
     """
     default_extension = "xpm"
     logger = logging.getLogger('gromacs.formats.XPM')
@@ -130,10 +139,10 @@ class XPM(utilities.FileUtils):
           *reverse*
               reverse rows (2nd dimension): re-orders the rows so that
               the first row corresponds e.g. to the first residue or
-              first H-bonds and not the last) [``False``]
+              first H-bonds and not the last) [``True``]
         """
         self.autoconvert = kwargs.pop("autoconvert", True)
-        self.reverse = kwargs.pop("reverse", False)
+        self.reverse = kwargs.pop("reverse", True)
         self.__array = None
         super(XPM, self).__init__(**kwargs)  # can use kwargs to set dict! (but no sanity checks!)
 
@@ -143,7 +152,11 @@ class XPM(utilities.FileUtils):
 
     @property
     def array(self):
-        """XPM matrix as a :class:`numpy.ndarray` (read-only)"""
+        """XPM matrix as a :class:`numpy.ndarray`.
+
+        The attribute itself cannot be assigned a different array but
+        the contents of the array can be modified.
+        """
         return self.__array
 
     def read(self, filename=None):
@@ -152,6 +165,7 @@ class XPM(utilities.FileUtils):
         self.parse()
 
     def parse(self):
+        """Parse the xpm file and populate :attr:`XPM.array`."""
         with open(self.real_filename) as xpm:
             # Read in lines until we fidn the start of the array
             meta = [xpm.readline()]
@@ -216,13 +230,16 @@ class XPM(utilities.FileUtils):
 
     @staticmethod
     def unquote(s):
+        """Return string *s* with quotes ``"`` removed."""
         return s[1+s.find('"'):s.rfind('"')]
 
     @staticmethod
     def uncomment(s):
+        """Return string *s* with C-style comments ``/*`` ... ``*/`` removed."""
         return s[2+s.find('/*'):s.rfind('*/')]
 
     def col(self, c):
+        """Parse colour specification"""
         m = self.COLOUR.search(c)
         if not m:
             self.logger.fatal("Cannot parse colour specification %r.", c)
