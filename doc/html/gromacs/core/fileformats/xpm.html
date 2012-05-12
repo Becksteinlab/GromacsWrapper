@@ -49,7 +49,7 @@
         <li><a href="../../../index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li>
           <li><a href="../../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../../core.html" >Gromacs core modules</a> &raquo;</li>
-          <li><a href="../formats.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
+          <li><a href="../formats.html" accesskey="U"><tt class="docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -71,7 +71,16 @@ the array.</p>
 <dt id="gromacs.fileformats.xpm.XPM">
 <em class="property">class </em><tt class="descclassname">gromacs.fileformats.xpm.</tt><tt class="descname">XPM</tt><big>(</big><em>filename=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.xpm.XPM" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class to make a Gromacs XPM matrix available as a NumPy <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7.dev-3bbbbd4)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a>.</p>
-<p>The data is available as <a class="reference internal" href="#gromacs.fileformats.xpm.XPM.array" title="gromacs.fileformats.xpm.XPM.array"><tt class="xref py py-attr docutils literal"><span class="pre">XPM.array</span></tt></a>.</p>
+<p>The data is available in the attribute <a class="reference internal" href="#gromacs.fileformats.xpm.XPM.array" title="gromacs.fileformats.xpm.XPM.array"><tt class="xref py py-attr docutils literal"><span class="pre">XPM.array</span></tt></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">By default, the rows (2nd dimension) in the <a class="reference internal" href="#gromacs.fileformats.xpm.XPM.array" title="gromacs.fileformats.xpm.XPM.array"><tt class="xref py py-attr docutils literal"><span class="pre">XPM.array</span></tt></a>
+are re-ordered so that row 0 (i.e. <tt class="docutils literal"><span class="pre">array[:,0]</span></tt> corresponds
+to the first residue/hydrogen bond/etc. The original xpm matrix
+is obtained for <em>reverse</em> = <tt class="docutils literal"><span class="pre">False</span></tt>. The <a class="reference internal" href="#gromacs.fileformats.xpm.XPM" title="gromacs.fileformats.xpm.XPM"><tt class="xref py py-class docutils literal"><span class="pre">XPM</span></tt></a> reader
+always reorders the <a class="reference internal" href="#gromacs.fileformats.xpm.XPM.yvalues" title="gromacs.fileformats.xpm.XPM.yvalues"><tt class="xref py py-attr docutils literal"><span class="pre">XPM.yvalues</span></tt></a> (obtained from the xpm
+file) to match the order of the rows.</p>
+</div>
 <p>Initialize xpm structure.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -88,7 +97,7 @@ colour legend [<tt class="docutils literal"><span class="pre">True</span></tt>]<
 <dt><em>reverse</em></dt>
 <dd><p class="first last">reverse rows (2nd dimension): re-orders the rows so that
 the first row corresponds e.g. to the first residue or
-first H-bonds and not the last) [<tt class="docutils literal"><span class="pre">False</span></tt>]</p>
+first H-bonds and not the last) [<tt class="docutils literal"><span class="pre">True</span></tt>]</p>
 </dd>
 </dl>
 </td>
@@ -105,15 +114,15 @@ first H-bonds and not the last) [<tt class="docutils literal"><span class="pre">
 <dt id="gromacs.fileformats.xpm.XPM.yvalues">
 <tt class="descname">yvalues</tt><a class="headerlink" href="#gromacs.fileformats.xpm.XPM.yvalues" title="Permalink to this definition">¶</a></dt>
 <dd><p>Values of on the y-axis, extracted from the xpm file. These are
-in the same order as the rows in the xpm matrix. If <cite>*reverse* =
-``False`</cite> then this is typically a <em>decending</em> list of numbers
+in the same order as the rows in the xpm matrix. If <em>reverse</em> =
+<tt class="docutils literal"><span class="pre">False</span></tt> then this is typically a <em>descending</em> list of numbers
 (highest to lowest residue number, index number, etc). For
 <em>reverse</em> = <tt class="docutils literal"><span class="pre">True</span></tt> it is resorted accordingly.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="gromacs.fileformats.xpm.XPM.COLOUR">
-<tt class="descname">COLOUR</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x1068a2480&gt;</em><a class="headerlink" href="#gromacs.fileformats.xpm.XPM.COLOUR" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">COLOUR</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x103a164a0&gt;</em><a class="headerlink" href="#gromacs.fileformats.xpm.XPM.COLOUR" title="Permalink to this definition">¶</a></dt>
 <dd><p>compiled regular expression to parse the colors in the xpm file:</p>
 <div class="highlight-python"><pre>static char *gromacs_xpm[] = {
 "14327 9   2 1",
@@ -123,21 +132,46 @@ in the same order as the rows in the xpm matrix. If <cite>*reverse* =
 <p>Matches are named &#8220;symbol&#8221;, &#8220;color&#8221; (hex string), and &#8220;value&#8221;. &#8220;value&#8221;
 is typically autoconverted to appropriate values with
 <a class="reference internal" href="convert.html#gromacs.fileformats.convert.Autoconverter" title="gromacs.fileformats.convert.Autoconverter"><tt class="xref py py-class docutils literal"><span class="pre">gromacs.fileformats.convert.Autoconverter</span></tt></a>.
-The symbol is matched as a <a class="reference internal" href="#printable-ascii-character">printable ASCII character</a> in the range
-0x20 (space) to 0x7E (~).
-.. <span class="target" id="printable-ascii-character">printable ASCII character</span>: <a class="reference external" href="http://www.danshort.com/ASCIImap/indexhex.htm">http://www.danshort.com/ASCIImap/indexhex.htm</a></p>
+The symbol is matched as a <a class="reference external" href="http://www.danshort.com/ASCIImap/indexhex.htm">printable ASCII character</a> in the range
+0x20 (space) to 0x7E (~).</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="gromacs.fileformats.xpm.XPM.array">
 <tt class="descname">array</tt><a class="headerlink" href="#gromacs.fileformats.xpm.XPM.array" title="Permalink to this definition">¶</a></dt>
-<dd><p>XPM matrix as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7.dev-3bbbbd4)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> (read-only)</p>
+<dd><p>XPM matrix as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7.dev-3bbbbd4)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a>.</p>
+<p>The attribute itself cannot be assigned a different array but
+the contents of the array can be modified.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.fileformats.xpm.XPM.col">
+<tt class="descname">col</tt><big>(</big><em>c</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.xpm.XPM.col" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse colour specification</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.fileformats.xpm.XPM.parse">
+<tt class="descname">parse</tt><big>(</big><big>)</big><a class="headerlink" href="#gromacs.fileformats.xpm.XPM.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the xpm file and populate <a class="reference internal" href="#gromacs.fileformats.xpm.XPM.array" title="gromacs.fileformats.xpm.XPM.array"><tt class="xref py py-attr docutils literal"><span class="pre">XPM.array</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gromacs.fileformats.xpm.XPM.read">
 <tt class="descname">read</tt><big>(</big><em>filename=None</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.xpm.XPM.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read and parse mdp file <em>filename</em>.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="gromacs.fileformats.xpm.XPM.uncomment">
+<em class="property">static </em><tt class="descname">uncomment</tt><big>(</big><em>s</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.xpm.XPM.uncomment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return string <em>s</em> with C-style comments <tt class="docutils literal"><span class="pre">/*</span></tt> ... <tt class="docutils literal"><span class="pre">*/</span></tt> removed.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="gromacs.fileformats.xpm.XPM.unquote">
+<em class="property">static </em><tt class="descname">unquote</tt><big>(</big><em>s</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.xpm.XPM.unquote" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return string <em>s</em> with quotes <tt class="docutils literal"><span class="pre">&quot;</span></tt> removed.</p>
 </dd></dl>
 
 </dd></dl>
@@ -167,8 +201,7 @@ useful):</p>
 <p class="first admonition-title">Note</p>
 <p class="last">It is important that <tt class="docutils literal"><span class="pre">reverse=True</span></tt> is set so that the rows in
 the xpm matrix are brought in the same order as the H-bond
-labels. In principle, <tt class="docutils literal"><span class="pre">reverse=True</span></tt> ought to be the default but
-for historical reasons it is left at <tt class="docutils literal"><span class="pre">False</span></tt>.</p>
+labels.</p>
 </div>
 <p>Show the results:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">print</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&quot;</span><span class="si">%-40s</span><span class="s"> </span><span class="si">%4.1f%%</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">desc</span><span class="p">,</span> <span class="mi">100</span><span class="o">*</span><span class="n">hb_fraction</span><span class="p">)])</span>
@@ -242,7 +275,7 @@ for historical reasons it is left at <tt class="docutils literal"><span class="p
         <li><a href="../../../index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li>
           <li><a href="../../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../../core.html" >Gromacs core modules</a> &raquo;</li>
-          <li><a href="../formats.html" ><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
+          <li><a href="../formats.html" ><tt class="docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
