@@ -82,9 +82,12 @@ class XPM(utilities.FileUtils):
     #: Matches are named "symbol", "color" (hex string), and "value". "value"
     #: is typically autoconverted to appropriate values with
     #: :class:`gromacs.fileformats.convert.Autoconverter`.
+    #: The symbol is matched as a `printable ASCII character`_ in the range
+    #: 0x20 (space) to 0x7E (~).
+    #: .. _`printable ASCII character`: http://www.danshort.com/ASCIImap/indexhex.htm
     COLOUR = re.compile("""\
             ^.*"                   # start with quotation mark
-            (?P<symbol>[ a-zA-Z])  # ASCII symbol used in the actual pixmap
+            (?P<symbol>[\x20-\x7E])# printable ASCII symbol used in the actual pixmap: 'space' to '~'
             \s+                    # white-space separated
             c\s+                   # 'c' to prefix colour??
             (?P<color>\#[0-9A-F]+) # colour as hex string (always??)
