@@ -22,6 +22,20 @@ Classes
 .. autoclass:: XPM
    :members:
 
+   .. attribute:: xvalues
+
+      Values of on the x-axis, extracted from the xpm file.
+
+   .. attribute:: yvalues
+
+      Values of on the y-axis, extracted from the xpm file. These are
+      in the same order as the rows in the xpm matrix. If `*reverse* =
+      ``False`` then this is typically a *decending* list of numbers
+      (highest to lowest residue number, index number, etc). For
+      *reverse* = ``True`` it is resorted accordingly.
+
+
+
 Example: Analysing H-bonds
 --------------------------
 
@@ -33,19 +47,24 @@ useful)::
 
 Load the XPM::
 
-  hb = XPM("hb.xpm")
+  hb = XPM("hb.xpm", reverse=True)
 
 Calculate the fraction of time that each H-bond existed::
 
   hb_fraction = hb.array.mean(axis=0)
 
-Get the descriptions of the bonds (ordered in the opposite way as the
-rows in the xpm file)::
+Get the descriptions of the bonds::
 
   desc = [line.strip() for line in open("hbond.log") if not line.startswith('#')]
-  desc.reverse()
 
-and show the results::
+.. Note::
+
+   It is important that ``reverse=True`` is set so that the rows in
+   the xpm matrix are brought in the same order as the H-bond
+   labels. In principle, ``reverse=True`` ought to be the default but
+   for historical reasons it is left at ``False``.
+
+Show the results::
 
   print "\\n".join(["%-40s %4.1f%%" % p for p in zip(desc, 100*hb_fraction)])
 
@@ -107,8 +126,13 @@ class XPM(utilities.FileUtils):
           *autoconvert*
               try to guess the type of the output array from the
               colour legend [``True``]
+          *reverse*
+              reverse rows (2nd dimension): re-orders the rows so that
+              the first row corresponds e.g. to the first residue or
+              first H-bonds and not the last) [``False``]
         """
         self.autoconvert = kwargs.pop("autoconvert", True)
+        self.reverse = kwargs.pop("reverse", False)
         self.__array = None
         super(XPM, self).__init__(**kwargs)  # can use kwargs to set dict! (but no sanity checks!)
 
@@ -161,18 +185,33 @@ class XPM(utilities.FileUtils):
                               nx, ny, nb, nc, nx/nb, ny)
 
             iy = 0
+            xval = []
+            yval = []
+            autoconverter = Autoconverter(mode="singlet")
             for line in xpm:
                 if line.startswith("/*"):
                     # lines '/* x-axis:' ... and '/* y-axis:' contain the
                     # values of x and y coordinates
-                    # TODO: extract them, too
+                    s = self.uncomment(line).strip()
+                    if s.startswith('x-axis:'):
+                        xval.extend([autoconverter.convert(x) for x in s[7:].split()])
+                    elif s.startswith('y-axis:'):
+                        yval.extend([autoconverter.convert(y) for y in s[7:].split()])
                     continue
                 s = self.unquote(line)
                 data[:, iy] = [colors[s[k:k+nb]] for k in xrange(0,nx,nb)]
                 self.logger.debug("read row %d with %d columns: '%s....%s'",
                                   iy, data.shape[0], s[:4], s[-4:])
                 iy += 1  # for next row
-        self.__array = data
+
+        self.xvalues = numpy.array(xval)
+        if self.reverse:
+            self.logger.debug("reversed row order, reverse=%r", self.reverse)
+            self.__array = data[:, ::-1]
+            self.yvalues = numpy.array(yval)
+        else:
+            self.__array = data
+            self.yvalues = numpy.array(yval)[::-1]  # must reverse y-values to match!
 
     @staticmethod
     def unquote(s):
