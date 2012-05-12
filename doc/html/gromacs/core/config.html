@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.config – Configuration for GromacsWrapper &mdash; GromacsWrapper 0.3.0 documentation</title>
+    <title>gromacs.config – Configuration for GromacsWrapper &mdash; GromacsWrapper 0.3.1-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.3.0',
+        VERSION:     '0.3.1-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper 0.3.0 documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper 0.3.1-dev documentation" href="../../index.html" />
     <link rel="up" title="Gromacs core modules" href="../core.html" />
     <link rel="next" title="gromacs.environment – Run time modification of behaviour" href="environment.html" />
     <link rel="prev" title="gromacs.core – Core functionality" href="core.html" /> 
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="core.html" title="gromacs.core – Core functionality"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" accesskey="U">Gromacs core modules</a> &raquo;</li> 
       </ul>
@@ -118,6 +118,12 @@ same name as they are both searched on the same path.)
 <a class="reference internal" href="#gromacs.config.path" title="gromacs.config.path"><tt class="xref py py-data docutils literal"><span class="pre">path</span></tt></a> is updated whenever cfg is re-read with <a class="reference internal" href="#gromacs.config.get_configuration" title="gromacs.config.get_configuration"><tt class="xref py py-func docutils literal"><span class="pre">get_configuration()</span></tt></a>.</p>
 </dd></dl>
 
+<p>When GromacsWrapper starts up it runs <a class="reference internal" href="#gromacs.config.check_setup" title="gromacs.config.check_setup"><tt class="xref py py-func docutils literal"><span class="pre">check_setup()</span></tt></a>. This
+notifies the user if any config files or directories are missing and
+suggests to run <a class="reference internal" href="#gromacs.config.setup" title="gromacs.config.setup"><tt class="xref py py-func docutils literal"><span class="pre">setup()</span></tt></a>.  The check if the default set up exists
+can be suppressed by setting the environment variable
+<span class="target" id="index-0"></span><tt class="xref std std-envvar docutils literal"><span class="pre">GROMACSWRAPPER_SUPPRESS_SETUP_CHECK</span></tt> to &#8216;true&#8217; (&#8216;yes&#8217; and &#8216;1&#8217;
+also work).</p>
 <div class="section" id="users">
 <h3>Users<a class="headerlink" href="#users" title="Permalink to this headline">¶</a></h3>
 <p>Users will likely only need to run <a class="reference internal" href="#gromacs.config.setup" title="gromacs.config.setup"><tt class="xref py py-func docutils literal"><span class="pre">gromacs.config.setup()</span></tt></a> once and
@@ -158,6 +164,20 @@ anytime by calling <a class="reference internal" href="#gromacs.config.get_confi
 </table>
 </dd></dl>
 
+<dl class="function">
+<dt id="gromacs.config.check_setup">
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">check_setup</tt><big>(</big><big>)</big><a class="headerlink" href="#gromacs.config.check_setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if templates directories are setup and issue a warning and help.</p>
+<p>Returns <tt class="docutils literal"><span class="pre">True</span></tt> if all files and directories are found and
+<tt class="docutils literal"><span class="pre">False</span></tt> otherwise.</p>
+<p>Setting the environment variable
+<span class="target" id="index-1"></span><tt class="xref std std-envvar docutils literal"><span class="pre">GROMACSWRAPPER_SUPPRESS_SETUP_CHECK</span></tt> to &#8216;true&#8217; (&#8216;yes&#8217;
+and &#8216;1&#8217; also work) silence this function and make it always return <tt class="docutils literal"><span class="pre">True</span></tt>.</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.3.1: </span>Uses <span class="target" id="index-2"></span><tt class="xref std std-envvar docutils literal"><span class="pre">GROMACSWRAPPER_SUPPRESS_SETUP_CHECK</span></tt> to suppress output
+(useful for scripts run on a server)</p>
+</dd></dl>
+
 </div>
 <div class="section" id="developers">
 <h3>Developers<a class="headerlink" href="#developers" title="Permalink to this headline">¶</a></h3>
@@ -166,7 +186,7 @@ anytime by calling <a class="reference internal" href="#gromacs.config.get_confi
 values and the user configuration file values.</p>
 <dl class="data">
 <dt id="gromacs.config.cfg">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">cfg</tt><em class="property"> = &lt;gromacs.config.GMXConfigParser instance at 0x101fa39e0&gt;</em><a class="headerlink" href="#gromacs.config.cfg" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">cfg</tt><em class="property"> = &lt;gromacs.config.GMXConfigParser instance at 0x101fa5b48&gt;</em><a class="headerlink" href="#gromacs.config.cfg" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference internal" href="#gromacs.config.cfg" title="gromacs.config.cfg"><tt class="xref py py-data docutils literal"><span class="pre">cfg</span></tt></a> is the instance of <a class="reference internal" href="#gromacs.config.GMXConfigParser" title="gromacs.config.GMXConfigParser"><tt class="xref py py-class docutils literal"><span class="pre">GMXConfigParser</span></tt></a> that makes all
 global configuration data accessible</p>
 </dd></dl>
@@ -361,7 +381,7 @@ groups in the configuration file.</p>
 
 <dl class="data">
 <dt id="gromacs.config.load_scripts">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">load_scripts</tt><em class="property"> = [('/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/external/GridMAT-MD_v1.0.2/GridMAT-MD.pl', 'GridMAT_MD', 'GridMAT-MD: A Grid-based Membrane Analysis Tool for use with Molecular Dynamics.\n\n*This* ``GridMAT-MD`` is a patched version of the original\n``GridMAT-MD.pl`` v1.0.2, written by WJ Allen, JA Lemkul and DR\nBevan. The original version is available from the `GridMAT-MD`_ home\npage,\n   \n.. _`GridMAT-MD`: http://www.bevanlab.biochem.vt.edu/GridMAT-MD/index.html\n\nPlease cite \n\n  W. J. Allen, J. A. Lemkul, and D. R. Bevan. (2009) &quot;GridMAT-MD: A\n  Grid-based Membrane Analysis Tool for Use With Molecular Dynamics.&quot;\n  J. Comput. Chem. 30 (12): 1952-1958.\n\nwhen using this programme.\n\nUsage:\n\n.. class:: GridMAT_MD(config[,structure])\n\n:Arguments:\n   - *config* : See the original documentation for a description for the\n     configuration file.\n   - *structure* : A gro or pdb file that overrides the value for\n     *bilayer* in the configuration file.\n\n')]</em><a class="headerlink" href="#gromacs.config.load_scripts" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">load_scripts</tt><em class="property"> = [('/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/external/GridMAT-MD_v1.0.2/GridMAT-MD.pl', 'GridMAT_MD', 'GridMAT-MD: A Grid-based Membrane Analysis Tool for use with Molecular Dynamics.\n\n*This* ``GridMAT-MD`` is a patched version of the original\n``GridMAT-MD.pl`` v1.0.2, written by WJ Allen, JA Lemkul and DR\nBevan. The original version is available from the `GridMAT-MD`_ home\npage,\n\n.. _`GridMAT-MD`: http://www.bevanlab.biochem.vt.edu/GridMAT-MD/index.html\n\nPlease cite\n\n  W. J. Allen, J. A. Lemkul, and D. R. Bevan. (2009) &quot;GridMAT-MD: A\n  Grid-based Membrane Analysis Tool for Use With Molecular Dynamics.&quot;\n  J. Comput. Chem. 30 (12): 1952-1958.\n\nwhen using this programme.\n\nUsage:\n\n.. class:: GridMAT_MD(config[,structure])\n\n:Arguments:\n   - *config* : See the original documentation for a description for the\n     configuration file.\n   - *structure* : A gro or pdb file that overrides the value for\n     *bilayer* in the configuration file.\n\n')]</em><a class="headerlink" href="#gromacs.config.load_scripts" title="Permalink to this definition">¶</a></dt>
 <dd><p>3rd party bundled analysis scripts and tools; this is a list of triplets of</p>
 <blockquote>
 <div>(<em>script name/path</em>, <em>command name</em>, <em>doc string</em>)</div></blockquote>
@@ -381,13 +401,13 @@ release = 4.5.3
 # tools contains the file names of all Gromacs tools for which classes are generated.
 # Editing this list has only an effect when the package is reloaded.
 # (Note that this example has a much shorter list than the actual default.)
-tools = 
+tools =
       editconf make_ndx grompp genion genbox
       grompp pdb2gmx mdrun
 
 # Additional gromacs tools that should be made available.
-extra = 
-      g_count     g_flux 
+extra =
+      g_count     g_flux
       a_gridcalc  a_ri3Dc  g_ri3Dc
 
 # which tool groups to make available as gromacs.NAME
@@ -526,14 +546,14 @@ See <a class="reference internal" href="../blocks/qsub.html#module-gromacs.qsub"
         <li class="right" >
           <a href="core.html" title="gromacs.core – Core functionality"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" >Gromacs core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Apr 24, 2012.
+      Last updated on May 12, 2012.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>

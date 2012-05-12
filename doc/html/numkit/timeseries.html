@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>numkit.timeseries — Time series manipulation and analysis &mdash; GromacsWrapper 0.3.0 documentation</title>
+    <title>numkit.timeseries — Time series manipulation and analysis &mdash; GromacsWrapper 0.3.1-dev documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.3.0',
+        VERSION:     '0.3.1-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper 0.3.0 documentation" href="../index.html" />
+    <link rel="top" title="GromacsWrapper 0.3.1-dev documentation" href="../index.html" />
     <link rel="up" title="numkit — Numerical analysis toolkit" href="../numkit.html" />
     <link rel="next" title="numkit.integration — Numerical integration of data" href="integration.html" />
     <link rel="prev" title="numkit.fitting — Fitting data" href="fitting.html" /> 
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="fitting.html" title="numkit.fitting — Fitting data"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li>
           <li><a href="../auxiliary.html" >Auxiliary modules</a> &raquo;</li>
           <li><a href="../numkit.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a> &raquo;</li> 
       </ul>
@@ -221,7 +221,7 @@ in this case the auto correlation function is not well defined.)</p>
 <p>Returns the mean-regularised function <em>F</em> and the centers of the bins.</p>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">regularized_function()</span></tt></a> with <em>func</em> = <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.mean.html#numpy.mean" title="(in NumPy v1.7.dev-3cb783e)"><tt class="xref py py-func docutils literal"><span class="pre">numpy.mean()</span></tt></a></p>
+<p class="last"><a class="reference internal" href="#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">regularized_function()</span></tt></a> with <em>func</em> = <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.mean.html#numpy.mean" title="(in NumPy v1.7.dev-3bbbbd4)"><tt class="xref py py-func docutils literal"><span class="pre">numpy.mean()</span></tt></a></p>
 </div>
 </dd></dl>
 
@@ -255,7 +255,7 @@ bins. <em>demean</em> = <tt class="docutils literal"><span class="pre">True</spa
 <tt class="descclassname">numkit.timeseries.</tt><tt class="descname">median_histogrammed_function</tt><big>(</big><em>t</em>, <em>y</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#numkit.timeseries.median_histogrammed_function" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute median of data <em>y</em> in bins along <em>t</em>.</p>
 <p>Returns the median-regularised function <em>F</em> and the centers of the bins.</p>
-<p><a class="reference internal" href="#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">regularized_function()</span></tt></a> with <em>func</em> = <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.median.html#numpy.median" title="(in NumPy v1.7.dev-3cb783e)"><tt class="xref py py-func docutils literal"><span class="pre">numpy.median()</span></tt></a></p>
+<p><a class="reference internal" href="#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">regularized_function()</span></tt></a> with <em>func</em> = <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.median.html#numpy.median" title="(in NumPy v1.7.dev-3bbbbd4)"><tt class="xref py py-func docutils literal"><span class="pre">numpy.median()</span></tt></a></p>
 </dd></dl>
 
 <dl class="function">
@@ -385,7 +385,7 @@ an integer (using <a class="reference external" href="http://docs.python.org/lib
 <dt><em>window</em></dt>
 <dd><p class="first last">the type of window from &#8216;flat&#8217;, &#8216;hanning&#8217;, &#8216;hamming&#8217;,
 &#8216;bartlett&#8217;, &#8216;blackman&#8217;; flat window will produce a moving
-average smoothing. If <em>window</em> is a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7.dev-3cb783e)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> then
+average smoothing. If <em>window</em> is a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7.dev-3bbbbd4)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> then
 this array is directly used as the window (but it still must
 contain an odd number of points) [&#8220;flat&#8221;]</p>
 </dd>
@@ -502,14 +502,14 @@ mean spacing is used to compute the window length</p>
         <li class="right" >
           <a href="fitting.html" title="numkit.fitting — Fitting data"
              >previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li>
           <li><a href="../auxiliary.html" >Auxiliary modules</a> &raquo;</li>
           <li><a href="../numkit.html" ><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Apr 24, 2012.
+      Last updated on May 12, 2012.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>

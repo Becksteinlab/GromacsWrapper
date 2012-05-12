@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.fileformats.convert — converting entries of tables &mdash; GromacsWrapper 0.3.0 documentation</title>
+    <title>gromacs.fileformats.convert — converting entries of tables &mdash; GromacsWrapper 0.3.1-dev documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.3.0',
+        VERSION:     '0.3.1-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,10 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper 0.3.0 documentation" href="../../../index.html" /> 
+    <link rel="top" title="GromacsWrapper 0.3.1-dev documentation" href="../../../index.html" />
+    <link rel="up" title="gromacs.formats – Accessing various files" href="../formats.html" />
+    <link rel="next" title="gromacs.utilities – Helper functions and classes" href="../utilities.html" />
+    <link rel="prev" title="Preprocessor in Python" href="preprocessor.html" /> 
   </head>
   <body>
     <div class="related">
@@ -37,7 +40,16 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li> 
+        <li class="right" >
+          <a href="../utilities.html" title="gromacs.utilities – Helper functions and classes"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="preprocessor.html" title="Preprocessor in Python"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../../index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li>
+          <li><a href="../../../gromacs.html" >Gromacs package</a> &raquo;</li>
+          <li><a href="../../core.html" >Gromacs core modules</a> &raquo;</li>
+          <li><a href="../formats.html" accesskey="U"><tt class="docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -48,7 +60,7 @@
             
   <span class="target" id="module-gromacs.fileformats.convert"></span><div class="section" id="gromacs-fileformats-convert-converting-entries-of-tables">
 <h1><a class="reference internal" href="#module-gromacs.fileformats.convert" title="gromacs.fileformats.convert"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.fileformats.convert</span></tt></a> &#8212; converting entries of tables<a class="headerlink" href="#gromacs-fileformats-convert-converting-entries-of-tables" title="Permalink to this headline">¶</a></h1>
-<p>(Used directly from RecSQL, <tt class="xref py py-mod docutils literal"><span class="pre">recsql.converter</span></tt>.)</p>
+<p>(Used directly from <a class="reference external" href="http://orbeckst.github.com/RecSQL/">RecSQL</a>, <tt class="xref py py-mod docutils literal"><span class="pre">recsql.converter</span></tt>.)</p>
 <dl class="class">
 <dt id="gromacs.fileformats.convert.Autoconverter">
 <em class="property">class </em><tt class="descclassname">gromacs.fileformats.convert.</tt><tt class="descname">Autoconverter</tt><big>(</big><em>mode='fancy'</em>, <em>mapping=None</em>, <em>active=True</em>, <em>sep=False</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.convert.Autoconverter" title="Permalink to this definition">¶</a></dt>
@@ -69,41 +81,41 @@ special python value are:</p>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>&#8216;&#8212;&#8217;</td>
+<tr class="row-even"><td>&#8216;<tt class="docutils literal"><span class="pre">---</span></tt>&#8216;</td>
 <td><tt class="docutils literal"><span class="pre">None</span></tt></td>
 </tr>
 <tr class="row-odd"><td>&#8216;&#8217;</td>
-<td>&nbsp;</td>
+<td><tt class="docutils literal"><span class="pre">None</span></tt></td>
 </tr>
 <tr class="row-even"><td>&#8216;True&#8217;</td>
 <td><tt class="docutils literal"><span class="pre">True</span></tt></td>
 </tr>
 <tr class="row-odd"><td>&#8216;x&#8217;</td>
-<td>&nbsp;</td>
+<td><tt class="docutils literal"><span class="pre">True</span></tt></td>
 </tr>
 <tr class="row-even"><td>&#8216;X&#8217;</td>
-<td>&nbsp;</td>
+<td><tt class="docutils literal"><span class="pre">True</span></tt></td>
 </tr>
 <tr class="row-odd"><td>&#8216;yes&#8217;</td>
-<td>&nbsp;</td>
+<td><tt class="docutils literal"><span class="pre">True</span></tt></td>
 </tr>
 <tr class="row-even"><td>&#8216;Present&#8217;</td>
-<td>&nbsp;</td>
+<td><tt class="docutils literal"><span class="pre">True</span></tt></td>
 </tr>
 <tr class="row-odd"><td>&#8216;False&#8217;</td>
 <td><tt class="docutils literal"><span class="pre">False</span></tt></td>
 </tr>
 <tr class="row-even"><td>&#8216;-&#8216;</td>
-<td>&nbsp;</td>
+<td><tt class="docutils literal"><span class="pre">False</span></tt></td>
 </tr>
 <tr class="row-odd"><td>&#8216;no&#8217;</td>
-<td>&nbsp;</td>
+<td><tt class="docutils literal"><span class="pre">False</span></tt></td>
 </tr>
 <tr class="row-even"><td>&#8216;None&#8217;</td>
-<td>&nbsp;</td>
+<td><tt class="docutils literal"><span class="pre">False</span></tt></td>
 </tr>
 <tr class="row-odd"><td>&#8216;none&#8217;</td>
-<td>&nbsp;</td>
+<td><tt class="docutils literal"><span class="pre">False</span></tt></td>
 </tr>
 </tbody>
 </table>
@@ -116,7 +128,7 @@ spaces.</p>
 <dl class="docutils">
 <dt><strong>Example</strong></dt>
 <dd><ul class="first last simple">
-<li>With <em>sep</em> = <tt class="docutils literal"><span class="pre">True</span></tt>: &#8216;foo bar 22  boing &#8212;&#8217; &#8211;&gt; (&#8216;foo&#8217;, &#8216;boing&#8217;, 22, None)</li>
+<li>With <em>sep</em> = <tt class="docutils literal"><span class="pre">True</span></tt>: &#8216;foo bar 22  boing <tt class="docutils literal"><span class="pre">---</span></tt>&#8216; &#8211;&gt; (&#8216;foo&#8217;, &#8216;boing&#8217;, 22, None)</li>
 <li>With <em>sep</em> = &#8216;,&#8217;:       1,2,3,4 &#8211;&gt; (1,2,3,4)</li>
 </ul>
 </dd>
@@ -271,6 +283,12 @@ based on the <em>encoding</em> argument, which is &#8220;utf-8&#8221; by default
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="preprocessor.html"
+                        title="previous chapter">Preprocessor in Python</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../utilities.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">gromacs.utilities</span></tt> &#8211; Helper functions and classes</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../../_sources/gromacs/core/fileformats/convert.txt"
@@ -302,12 +320,21 @@ based on the <em>encoding</em> argument, which is &#8220;utf-8&#8221; by default
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li> 
+        <li class="right" >
+          <a href="../utilities.html" title="gromacs.utilities – Helper functions and classes"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="preprocessor.html" title="Preprocessor in Python"
+             >previous</a> |</li>
+        <li><a href="../../../index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li>
+          <li><a href="../../../gromacs.html" >Gromacs package</a> &raquo;</li>
+          <li><a href="../../core.html" >Gromacs core modules</a> &raquo;</li>
+          <li><a href="../formats.html" ><tt class="docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Apr 24, 2012.
+      Last updated on May 12, 2012.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>

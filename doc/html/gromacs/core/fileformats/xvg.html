@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Simple xmgrace XVG file format &mdash; GromacsWrapper 0.3.0 documentation</title>
+    <title>Simple xmgrace XVG file format &mdash; GromacsWrapper 0.3.1-dev documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.3.0',
+        VERSION:     '0.3.1-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper 0.3.0 documentation" href="../../../index.html" />
+    <link rel="top" title="GromacsWrapper 0.3.1-dev documentation" href="../../../index.html" />
     <link rel="up" title="gromacs.formats – Accessing various files" href="../formats.html" />
     <link rel="next" title="Gromacs XPM file format" href="xpm.html" />
     <link rel="prev" title="gromacs.formats – Accessing various files" href="../formats.html" /> 
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="../formats.html" title="gromacs.formats – Accessing various files"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li>
           <li><a href="../../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../../core.html" >Gromacs core modules</a> &raquo;</li>
           <li><a href="../formats.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
@@ -68,8 +68,8 @@ access to such files and adds a number of methods to access the data
 <em>array</em> keyword or the <a class="reference internal" href="#gromacs.fileformats.xvg.XVG.set" title="gromacs.fileformats.xvg.XVG.set"><tt class="xref py py-meth docutils literal"><span class="pre">XVG.set()</span></tt></a> method one can load data from
 an array instead of a file. The array should be simple &#8220;NXY&#8221; data
 (typically: first column time or position, further columns scalar
-observables). The data should be a NumPy <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7.dev-3cb783e)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> array
-<tt class="docutils literal"><span class="pre">a</span></tt> with <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.shape.html#numpy.ndarray.shape" title="(in NumPy v1.7.dev-3cb783e)"><tt class="xref py py-attr docutils literal"><span class="pre">shape</span></tt></a> <tt class="docutils literal"><span class="pre">(M,</span> <span class="pre">N)</span></tt> where <em>M</em>-1 is the
+observables). The data should be a NumPy <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7.dev-3bbbbd4)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> array
+<tt class="docutils literal"><span class="pre">a</span></tt> with <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.shape.html#numpy.ndarray.shape" title="(in NumPy v1.7.dev-3bbbbd4)"><tt class="xref py py-attr docutils literal"><span class="pre">shape</span></tt></a> <tt class="docutils literal"><span class="pre">(M,</span> <span class="pre">N)</span></tt> where <em>M</em>-1 is the
 number of observables and <em>N</em> the number of observations, e.g.the
 number of time points in a time series. <tt class="docutils literal"><span class="pre">a[0]</span></tt> is the time or
 position and <tt class="docutils literal"><span class="pre">a[1:]</span></tt> the <em>M</em>-1 data columns.</p>
@@ -142,6 +142,12 @@ required. Will give exact times but not the exact number of data
 points.</li>
 </ol>
 <p>For simple test data, both approaches give very similar output.</p>
+<p>For the special case of periodic data such as angles, one can use the
+circular mean (&#8220;circmean&#8221;) to coarse grain. In this case, jumps across
+the -180º/+180º boundary are added as masked datapoints and no line is
+drawn across the jump in the plot. (Only works with the simple
+<a class="reference internal" href="#gromacs.fileformats.xvg.XVG.plot" title="gromacs.fileformats.xvg.XVG.plot"><tt class="xref py py-meth docutils literal"><span class="pre">XVG.plot()</span></tt></a> method at the moment, errorbars or range plots are
+not implemented yet.)</p>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="#gromacs.fileformats.xvg.XVG.decimate" title="gromacs.fileformats.xvg.XVG.decimate"><tt class="xref py py-meth docutils literal"><span class="pre">XVG.decimate()</span></tt></a></p>
@@ -179,7 +185,7 @@ to 1000 points, red line). The errors were also decimated and
 reduced to the errors within the 5% and the 95% percentile. The
 decimation is carried out by histogramming the data in the desired
 number of bins and then the data in each bin is reduced by either
-<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.mean.html#numpy.mean" title="(in NumPy v1.7.dev-3cb783e)"><tt class="xref py py-func docutils literal"><span class="pre">numpy.mean()</span></tt></a> (for the value) or
+<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.mean.html#numpy.mean" title="(in NumPy v1.7.dev-3bbbbd4)"><tt class="xref py py-func docutils literal"><span class="pre">numpy.mean()</span></tt></a> (for the value) or
 <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.scoreatpercentile.html#scipy.stats.scoreatpercentile" title="(in SciPy v0.11.dev)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.stats.scoreatpercentile()</span></tt></a> (for errors).</p>
 </div>
 <p>In principle it is possible to use other functions to decimate the
@@ -213,8 +219,8 @@ band (using keyword <em>percentile</em> = 10).</td></tr>
 </tbody>
 </table>
 </div>
-<div class="section" id="classes">
-<h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="classes-and-functions">
+<h2>Classes and functions<a class="headerlink" href="#classes-and-functions" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="gromacs.fileformats.xvg.XVG">
 <em class="property">class </em><tt class="descclassname">gromacs.fileformats.xvg.</tt><tt class="descname">XVG</tt><big>(</big><em>filename=None</em>, <em>names=None</em>, <em>array=None</em>, <em>permissive=False</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.xvg.XVG" title="Permalink to this definition">¶</a></dt>
@@ -320,6 +326,11 @@ default for <em>maxpoints</em> is 10000.</p>
 <div><ul class="simple">
 <li>&#8220;mean&#8221;, uses <a class="reference internal" href="#gromacs.fileformats.xvg.XVG.decimate_mean" title="gromacs.fileformats.xvg.XVG.decimate_mean"><tt class="xref py py-meth docutils literal"><span class="pre">XVG.decimate_mean()</span></tt></a> to coarse grain by
 averaging the data in bins along the time axis</li>
+<li>&#8220;circmean&#8221;, uses <a class="reference internal" href="#gromacs.fileformats.xvg.XVG.decimate_circmean" title="gromacs.fileformats.xvg.XVG.decimate_circmean"><tt class="xref py py-meth docutils literal"><span class="pre">XVG.decimate_circmean()</span></tt></a> to coarse
+grain by calculating the circular mean of the data in bins
+along the time axis. Use additional keywords <em>low</em> and
+<em>high</em> to set the limits. Assumes that the data are in
+degrees.</li>
 <li>&#8220;min&#8221; and &#8220;max* select the extremum in each bin</li>
 <li>&#8220;rms&#8221;, uses <a class="reference internal" href="#gromacs.fileformats.xvg.XVG.decimate_rms" title="gromacs.fileformats.xvg.XVG.decimate_rms"><tt class="xref py py-meth docutils literal"><span class="pre">XVG.decimate_rms()</span></tt></a> to coarse grain by
 computing the root mean square sum of the data in bins
@@ -343,6 +354,36 @@ and <tt class="docutils literal"><span class="pre">N'</span> <span class="pre">&
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.fileformats.xvg.XVG.decimate_circmean">
+<tt class="descname">decimate_circmean</tt><big>(</big><em>a</em>, <em>maxpoints</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.xvg.XVG.decimate_circmean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return data <em>a</em> circmean-decimated on <em>maxpoints</em>.</p>
+<p>Histograms each column into <em>maxpoints</em> bins and calculates
+the weighted circular mean in each bin as the decimated data,
+using
+<tt class="xref py py-func docutils literal"><span class="pre">numkit.timeseries.circmean_histogrammed_function()</span></tt>. The
+coarse grained time in the first column contains the centers
+of the histogram time.</p>
+<p>If <em>a</em> contains &lt;= <em>maxpoints</em> then <em>a</em> is simply returned;
+otherwise a new array of the same dimensions but with a
+reduced number of  <em>maxpoints</em> points is returned.</p>
+<p>Keywords <em>low</em> and <em>high</em> can be used to set the
+boundaries. By default they are [-pi, +pi].</p>
+<p>This method returns a <strong>masked</strong> array where jumps are flagged
+by an insertion of a masked point.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Assumes that the first column is time and that the data are
+in <strong>degrees</strong>.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Breaking of arrays only works properly with a two-column
+array because breaks are only inserted in the x-column
+(a[0]) where y1 = a[1] has a break.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -677,11 +718,17 @@ arguments:</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Kewords :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>maxpoints</em></dt>
+<dd><p class="first last">number of points (bins) to coarsen over</p>
+</dd>
 <dt><em>color</em></dt>
 <dd><p class="first last">single color (used for all plots); sequence of colors
 (will be repeated as necessary); or a matplotlib
 colormap (e.g. &#8220;jet&#8221;, see <tt class="xref py py-mod docutils literal"><span class="pre">matplotlib.cm</span></tt>). The
 default is to use the <a class="reference internal" href="#gromacs.fileformats.xvg.XVG.default_color_cycle" title="gromacs.fileformats.xvg.XVG.default_color_cycle"><tt class="xref py py-attr docutils literal"><span class="pre">XVG.default_color_cycle</span></tt></a>.</p>
+</dd>
+<dt><em>method</em></dt>
+<dd><p class="first last">Method to coarsen the data. See <a class="reference internal" href="#gromacs.fileformats.xvg.XVG.decimate" title="gromacs.fileformats.xvg.XVG.decimate"><tt class="xref py py-meth docutils literal"><span class="pre">XVG.decimate()</span></tt></a></p>
 </dd>
 </dl>
 </td>
@@ -766,6 +813,19 @@ available</p>
 
 </dd></dl>
 
+<dl class="function">
+<dt id="gromacs.fileformats.xvg.break_array">
+<tt class="descclassname">gromacs.fileformats.xvg.</tt><tt class="descname">break_array</tt><big>(</big><em>a</em>, <em>threshold=3.1415926535897931</em>, <em>other=None</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.xvg.break_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a array which masks jumps &gt;= threshold.</p>
+<p>Extra points are inserted between two subsequent values whose
+absolute difference differs by more than threshold (default is
+pi).</p>
+<p>Other can be a secondary array which is also masked according to
+<em>a</em>.</p>
+<p>Returns (<em>a_masked</em>, <em>other_masked</em>) (where <em>other_masked</em> can be
+<tt class="docutils literal"><span class="pre">None</span></tt>)</p>
+</dd></dl>
+
 </div>
 </div>
 
@@ -785,7 +845,7 @@ available</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#examples">Examples</a></li>
-<li><a class="reference internal" href="#classes">Classes</a></li>
+<li><a class="reference internal" href="#classes-and-functions">Classes and functions</a></li>
 </ul>
 </li>
 </ul>
@@ -833,7 +893,7 @@ available</p>
         <li class="right" >
           <a href="../formats.html" title="gromacs.formats – Accessing various files"
              >previous</a> |</li>
-        <li><a href="../../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li>
           <li><a href="../../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../../core.html" >Gromacs core modules</a> &raquo;</li>
           <li><a href="../formats.html" ><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
@@ -841,7 +901,7 @@ available</p>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Apr 24, 2012.
+      Last updated on May 12, 2012.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>

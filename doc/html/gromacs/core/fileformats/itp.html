@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Gromacs topology file (ITP) parser &mdash; GromacsWrapper 0.3.0 documentation</title>
+    <title>Gromacs topology file (ITP) parser &mdash; GromacsWrapper 0.3.1-dev documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.3.0',
+        VERSION:     '0.3.1-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper 0.3.0 documentation" href="../../../index.html" />
+    <link rel="top" title="GromacsWrapper 0.3.1-dev documentation" href="../../../index.html" />
     <link rel="up" title="gromacs.formats – Accessing various files" href="../formats.html" />
     <link rel="next" title="Preprocessor in Python" href="preprocessor.html" />
     <link rel="prev" title="Gromacs NDX index file format" href="ndx.html" /> 
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="ndx.html" title="Gromacs NDX index file format"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li>
           <li><a href="../../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../../core.html" >Gromacs core modules</a> &raquo;</li>
           <li><a href="../formats.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
@@ -66,8 +66,7 @@
 awkward. See documentation for <a class="reference internal" href="#gromacs.fileformats.itp.ITP" title="gromacs.fileformats.itp.ITP"><tt class="xref py py-class docutils literal"><span class="pre">ITP</span></tt></a>.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last">The code is still <em>experimental</em> and the interface
-will probably change somewhat until release 0.3.</p>
+<p class="last">The code is still <em>experimental</em>.</p>
 </div>
 <p class="rubric">Limitations</p>
 <ul class="simple">
@@ -85,8 +84,64 @@ directives are evaluated <em>and stripped</em> so that <a class="reference inter
 functional itp file. The directives are not stored and cannot be written out
 or accessed.</li>
 </ul>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>An itp file can be loaded and individual sections accessed (print shows a
+representation of what it would look like written to a file):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">itp</span> <span class="o">=</span> <span class="n">gromacs</span><span class="o">.</span><span class="n">fileformats</span><span class="o">.</span><span class="n">ITP</span><span class="p">(</span><span class="s">&quot;benzylhyd5.itp&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">itp</span><span class="o">.</span><span class="n">header</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="o">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">itp</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">moleculetype</span>
+<span class="go">[ moleculetype ]</span>
+<span class="go">; Name      nrexcl</span>
+<span class="go">5FH         3</span>
+</pre></div>
+</div>
+<p>Each section is an object that contains the parsed data in a
+<tt class="xref py py-attr docutils literal"><span class="pre">data</span></tt> attribute:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">itp</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">moleculetype</span><span class="o">.</span><span class="n">data</span>
+<span class="go">odict.odict([(&#39;name&#39;, &#39;5FH&#39;), (&#39;nrexcl&#39;, 3)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">itp</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">moleculetype</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+<span class="go">5FH</span>
+</pre></div>
+</div>
+<p>The moleculetypes section contains the important subsections that make up the
+topology:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">itp</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">moleculetype</span><span class="o">.</span><span class="n">sections</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+<span class="go">[&#39;atoms&#39;, &#39;bonds&#39;, &#39;angles&#39;, &#39;dihedrals&#39;, &#39;pairs&#39;]</span>
+</pre></div>
+</div>
+<p>They can be accessed in the same manner. For instance, counting all atom records:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="nb">len</span><span class="p">(</span><span class="n">itp</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">moleculetype</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
+<span class="go">24</span>
+</pre></div>
+</div>
+<p>For the atoms, the <a class="reference internal" href="#gromacs.fileformats.itp.ITPdata.data" title="gromacs.fileformats.itp.ITPdata.data"><tt class="xref py py-attr docutils literal"><span class="pre">data</span></tt></a> structure is a <tt class="xref py py-class docutils literal"><span class="pre">numpy.rec.recarray</span></tt>.</p>
+<p>Data can be modified and then finally a new itp file can be written with the
+<a class="reference internal" href="#gromacs.fileformats.itp.ITP.write" title="gromacs.fileformats.itp.ITP.write"><tt class="xref py py-meth docutils literal"><span class="pre">ITP.write()</span></tt></a> method.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">itp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;modified.itp&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="user-classes">
 <h2>User classes<a class="headerlink" href="#user-classes" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="#gromacs.fileformats.itp.ITP" title="gromacs.fileformats.itp.ITP"><tt class="xref py py-class docutils literal"><span class="pre">ITP</span></tt></a> class always represents one itp file. It contains a tree of
+parsed subsections that correspond to the subsections in the itp file. The way
+to drill down is to access the attribute <tt class="xref py py-attr docutils literal"><span class="pre">ITP.sections</span></tt>, where the
+subsections are stored. <tt class="xref py py-attr docutils literal"><span class="pre">ITP.sections</span></tt> acts like a dictionary. Each
+subsection contains again a <tt class="xref py py-attr docutils literal"><span class="pre">ITPsection.sections</span></tt> dictionary containing
+its own subsections. To find the <tt class="docutils literal"><span class="pre">[</span> <span class="pre">atoms</span> <span class="pre">]</span></tt> data:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">itp</span><span class="o">.</span><span class="n">sections</span><span class="p">[</span><span class="s">&#39;header&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sections</span><span class="p">[</span><span class="s">&#39;moleculetype&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sections</span><span class="p">[</span><span class="s">&#39;atoms&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+</pre></div>
+</div>
+<p>For convenience, one can also use the keys in the <tt class="xref py py-attr docutils literal"><span class="pre">sections</span></tt>
+dictionary directly as attributes. In this way finding the <tt class="docutils literal"><span class="pre">[</span> <span class="pre">atoms</span> <span class="pre">]</span></tt> data
+is even simpler:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">itp</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">moleculetype</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">data</span>
+</pre></div>
+</div>
+<p>For more details on the organization of the data structure see
+<a class="reference internal" href="#correspondence-between-classes-and-sections"><em>Classes corresponding to ITP sections</em></a>.</p>
 <dl class="class">
 <dt id="gromacs.fileformats.itp.ITP">
 <em class="property">class </em><tt class="descclassname">gromacs.fileformats.itp.</tt><tt class="descname">ITP</tt><big>(</big><em>filename=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.itp.ITP" title="Permalink to this definition">¶</a></dt>
@@ -95,7 +150,9 @@ or accessed.</li>
 <a class="reference internal" href="preprocessor.html#gromacs.fileformats.preprocessor.Preprocessor" title="gromacs.fileformats.preprocessor.Preprocessor"><tt class="xref py py-class docutils literal"><span class="pre">Preprocessor</span></tt></a> according to
 directves in the file and variables defined in the constructor keyword
 arguments. Thus, the class <a class="reference internal" href="#gromacs.fileformats.itp.ITP" title="gromacs.fileformats.itp.ITP"><tt class="xref py py-class docutils literal"><span class="pre">ITP</span></tt></a> represents one particularly state
-of the itp file with <em>any preprocessor constructs excluded</em>.</p>
+of the itp file with <em>any preprocessor constructs excluded</em>. Only a limited
+set of directives is understood and a <tt class="xref py py-exc docutils literal"><span class="pre">SyntaxError</span></tt> is raised in cases
+where the preprocessor does not know how to handle the file.</p>
 <p>The file is parsed into a hierarchy of sections (and subsections), which
 are accessible in the attribute <tt class="xref py py-attr docutils literal"><span class="pre">ITP.sections</span></tt>.</p>
 <p>Data of (sub)sections is stored in <tt class="xref py py-attr docutils literal"><span class="pre">data</span></tt>, e.g. the <tt class="docutils literal"><span class="pre">[atoms]</span></tt>
@@ -112,11 +169,18 @@ section</p>
 comment lines before the first real parsed section.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last">Not all section types are implemented. Only a single
-<tt class="docutils literal"><span class="pre">[moleculetype]</span></tt> is currently supported.</p>
+<p>Not all section types are implemented. There can only be a single type
+of section at each level of the hierarchy.</p>
+<p>Only a single <tt class="docutils literal"><span class="pre">[moleculetype]</span></tt> is currently supported.</p>
+<p>Subsequent <tt class="docutils literal"><span class="pre">[dihedrals]</span></tt> sections are merged but if another section
+intersperses two <tt class="docutils literal"><span class="pre">[dihedral]</span></tt> sections then the first one is lost.</p>
+<p class="last">Comments are stripped except at the beginning of the file and at the end
+of data lines.</p>
 </div>
 <p class="versionadded">
 <span class="versionmodified">New in version 0.2.5.</span></p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.3.1: </span>Access to sections by attribute access is possible.</p>
 <p>Initialize ITP structure.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -142,6 +206,19 @@ stage of the itp file, e.g. <em>POSRES</em> <tt class="docutils literal"><span c
 implementation of preprocessing of the itp file, including
 the (limited) syntax understood by the preprocesser.</p>
 </div>
+<dl class="method">
+<dt id="gromacs.fileformats.itp.ITP.contains_preprocessor_constructs">
+<tt class="descname">contains_preprocessor_constructs</tt><big>(</big><big>)</big><a class="headerlink" href="#gromacs.fileformats.itp.ITP.contains_preprocessor_constructs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if file makes use of any preprocessor constructs.</p>
+<p>The test is done by running the file through the
+<a class="reference internal" href="preprocessor.html#gromacs.fileformats.preprocessor.Preprocessor" title="gromacs.fileformats.preprocessor.Preprocessor"><tt class="xref py py-class docutils literal"><span class="pre">Preprocessor</span></tt></a> (while
+stripping all empty and lines starting with a comment character. This
+is compared to the original file, stripped in the same manner. If the
+two stripped files differ from each other then the preprocessor altered
+the file and preprocessor directives must have been involved and this
+function returns <tt class="docutils literal"><span class="pre">True</span></tt>.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="gromacs.fileformats.itp.ITP.parse">
 <tt class="descname">parse</tt><big>(</big><em>stream</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.itp.ITP.parse" title="Permalink to this definition">¶</a></dt>
@@ -222,20 +299,22 @@ typically overriden.</p>
 <blockquote>
 <div><p class="versionadded">
 <span class="versionmodified">New in version 0.2.5.</span></p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.3.1: </span>Access to sections by attribute access is possible.</p>
 </div></blockquote>
 <dl class="attribute">
 <dt id="gromacs.fileformats.itp.ITPsection.COMMENT">
-<tt class="descname">COMMENT</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x10664c2d0&gt;</em><a class="headerlink" href="#gromacs.fileformats.itp.ITPsection.COMMENT" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">COMMENT</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x103551618&gt;</em><a class="headerlink" href="#gromacs.fileformats.itp.ITPsection.COMMENT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="gromacs.fileformats.itp.ITPsection.DATA">
-<tt class="descname">DATA</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x10664f510&gt;</em><a class="headerlink" href="#gromacs.fileformats.itp.ITPsection.DATA" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">DATA</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x103558510&gt;</em><a class="headerlink" href="#gromacs.fileformats.itp.ITPsection.DATA" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="gromacs.fileformats.itp.ITPsection.SECTION">
-<tt class="descname">SECTION</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x106606990&gt;</em><a class="headerlink" href="#gromacs.fileformats.itp.ITPsection.SECTION" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">SECTION</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x103587a58&gt;</em><a class="headerlink" href="#gromacs.fileformats.itp.ITPsection.SECTION" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -326,7 +405,7 @@ do anything).</p>
 
 </div>
 <div class="section" id="classes-corresponding-to-itp-sections">
-<h3>Classes corresponding to ITP sections<a class="headerlink" href="#classes-corresponding-to-itp-sections" title="Permalink to this headline">¶</a></h3>
+<span id="correspondence-between-classes-and-sections"></span><h3>Classes corresponding to ITP sections<a class="headerlink" href="#classes-corresponding-to-itp-sections" title="Permalink to this headline">¶</a></h3>
 <p>The ITP file is parsed with a simple recursive descending depth-first
 algorithm. Classes contain a dictionary of sub-section parsers.</p>
 <p>The section hierarchy is</p>
@@ -419,7 +498,7 @@ are cut off after 128 characters).</p>
 <dl class="attribute">
 <dt id="gromacs.fileformats.itp.Atoms.dtypes">
 <tt class="descname">dtypes</tt><em class="property"> = [('atomnr', 'i4'), ('atomtype', 'S10'), ('resnr', 'i4'), ('resname', 'S4'), ('atomname', 'S4'), ('chargegrp', 'i4'), ('charge', 'f8'), ('mass', 'f8'), ('atomtypeB', 'S10'), ('chargeB', 'f8'), ('massB', 'f8')]</em><a class="headerlink" href="#gromacs.fileformats.itp.Atoms.dtypes" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.7.dev-3cb783e)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.dtype</span></tt></a> columns for the data</p>
+<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.7.dev-3bbbbd4)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.dtype</span></tt></a> columns for the data</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -451,7 +530,7 @@ are cut off after 128 characters).</p>
 <dl class="attribute">
 <dt id="gromacs.fileformats.itp.Bonds.dtypes">
 <tt class="descname">dtypes</tt><em class="property"> = [('ai', 'i4'), ('aj', 'i4'), ('func', 'i4'), ('b0', 'f8'), ('kb', 'f8')]</em><a class="headerlink" href="#gromacs.fileformats.itp.Bonds.dtypes" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.7.dev-3cb783e)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.dtype</span></tt></a> columns for the data</p>
+<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.7.dev-3bbbbd4)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.dtype</span></tt></a> columns for the data</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -478,7 +557,7 @@ are cut off after 128 characters).</p>
 <dl class="attribute">
 <dt id="gromacs.fileformats.itp.Angles.dtypes">
 <tt class="descname">dtypes</tt><em class="property"> = [('ai', 'i4'), ('aj', 'i4'), ('ak', 'i4'), ('func', 'i4'), ('theta0', 'f8'), ('cth', 'f8')]</em><a class="headerlink" href="#gromacs.fileformats.itp.Angles.dtypes" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.7.dev-3cb783e)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.dtype</span></tt></a> columns for the data</p>
+<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.7.dev-3bbbbd4)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.dtype</span></tt></a> columns for the data</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -513,7 +592,7 @@ section then the last one overwrites the previous one.</p>
 <dl class="attribute">
 <dt id="gromacs.fileformats.itp.Dihedrals.dtypes">
 <tt class="descname">dtypes</tt><em class="property"> = [('ai', 'i4'), ('aj', 'i4'), ('ak', 'i4'), ('al', 'i4'), ('func', 'i4'), ('c0', &lt;type 'object'&gt;), ('c1', &lt;type 'object'&gt;), ('c2', &lt;type 'object'&gt;), ('c3', &lt;type 'object'&gt;), ('c4', &lt;type 'object'&gt;), ('c5', &lt;type 'object'&gt;)]</em><a class="headerlink" href="#gromacs.fileformats.itp.Dihedrals.dtypes" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.7.dev-3cb783e)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.dtype</span></tt></a> columns for the data</p>
+<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.7.dev-3bbbbd4)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.dtype</span></tt></a> columns for the data</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -557,6 +636,7 @@ section then the last one overwrites the previous one.</p>
   <h3><a href="../../../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Gromacs topology file (ITP) parser</a><ul>
+<li><a class="reference internal" href="#example">Example</a></li>
 <li><a class="reference internal" href="#user-classes">User classes</a></li>
 <li><a class="reference internal" href="#developer-reference">Developer reference</a><ul>
 <li><a class="reference internal" href="#base-classes-and-utility-functions">Base classes and utility functions</a></li>
@@ -610,7 +690,7 @@ section then the last one overwrites the previous one.</p>
         <li class="right" >
           <a href="ndx.html" title="Gromacs NDX index file format"
              >previous</a> |</li>
-        <li><a href="../../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li>
           <li><a href="../../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../../core.html" >Gromacs core modules</a> &raquo;</li>
           <li><a href="../formats.html" ><tt class="docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
@@ -618,7 +698,7 @@ section then the last one overwrites the previous one.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Apr 24, 2012.
+      Last updated on May 12, 2012.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>

@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.utilities – Helper functions and classes &mdash; GromacsWrapper 0.3.0 documentation</title>
+    <title>gromacs.utilities – Helper functions and classes &mdash; GromacsWrapper 0.3.1-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.3.0',
+        VERSION:     '0.3.1-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper 0.3.0 documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper 0.3.1-dev documentation" href="../../index.html" />
     <link rel="up" title="Gromacs core modules" href="../core.html" />
     <link rel="next" title="gromacs.tools – Gromacs commands classes" href="tools.html" />
-    <link rel="prev" title="&lt;no title&gt;" href="fileformats/converter.html" /> 
+    <link rel="prev" title="gromacs.fileformats.convert — converting entries of tables" href="fileformats/convert.html" /> 
   </head>
   <body>
     <div class="related">
@@ -44,9 +44,9 @@
           <a href="tools.html" title="gromacs.tools – Gromacs commands classes"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="fileformats/converter.html" title="&lt;no title&gt;"
+          <a href="fileformats/convert.html" title="gromacs.fileformats.convert — converting entries of tables"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" accesskey="U">Gromacs core modules</a> &raquo;</li> 
       </ul>
@@ -122,6 +122,8 @@ appended. Chooses a default if no filename is given.</p>
 <p>If <tt class="docutils literal"><span class="pre">set_default=True</span></tt> then the default filename is also set.</p>
 <p><tt class="docutils literal"><span class="pre">use_my_ext=True</span></tt> lets the suffix of a provided filename take
 priority over a default <tt class="docutils literal"><span class="pre">ext</span></tt> tension.</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.3.1: </span>An empty string as <em>ext</em> = &#8220;&#8221; will suppress appending an extension.</p>
 </dd></dl>
 
 <dl class="method">
@@ -359,8 +361,8 @@ overwrites the subplot instead of activating it.</p>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="fileformats/converter.html"
-                        title="previous chapter">&lt;no title&gt;</a></p>
+  <p class="topless"><a href="fileformats/convert.html"
+                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">gromacs.fileformats.convert</span></tt> &#8212; converting entries of tables</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="tools.html"
                         title="next chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">gromacs.tools</span></tt> &#8211; Gromacs commands classes</a></p>
@@ -399,16 +401,16 @@ overwrites the subplot instead of activating it.</p>
           <a href="tools.html" title="gromacs.tools – Gromacs commands classes"
              >next</a> |</li>
         <li class="right" >
-          <a href="fileformats/converter.html" title="&lt;no title&gt;"
+          <a href="fileformats/convert.html" title="gromacs.fileformats.convert — converting entries of tables"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper 0.3.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" >Gromacs core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on Apr 24, 2012.
+      Last updated on May 12, 2012.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
     </div>
   </body>
