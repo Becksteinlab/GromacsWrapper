@@ -54,9 +54,10 @@ blocks::
          return results['tc']
       return apply_histogrammed_function(get_tcorrel, t, y, bins=maxpoints)
 
-(This particular function is not very robust, for instance it has
-problems when there are only very few data points in each bin because
-in this case the auto correlation function is not well defined.)
+(This particular function (implemented as :func:`tc_histogrammed_function`) is
+not very robust, for instance it has problems when there are only very few data
+points in each bin because in this case the auto correlation function is not
+well defined.)
 
 .. autofunction:: mean_histogrammed_function
 .. autofunction:: rms_histogrammed_function
@@ -64,6 +65,10 @@ in this case the auto correlation function is not well defined.)
 .. autofunction:: max_histogrammed_function
 .. autofunction:: median_histogrammed_function
 .. autofunction:: percentile_histogrammed_function
+.. autofunction:: error_histogrammed_function
+.. autofunction:: circmean_histogrammed_function
+.. autofunction:: circstd_histogrammed_function
+.. autofunction:: tc_histogrammed_function
 .. autofunction:: apply_histogrammed_function
 .. autofunction:: regularized_function
 

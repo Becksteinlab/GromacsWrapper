@@ -6,19 +6,26 @@
 :mod:`gromacs.fileformats.convert` --- converting entries of tables
 ===================================================================
 
-(Used directly from RecSQL_, :mod:`recsql.converter`.)
+The :class:`Autoconverter` class was taken and slightly adapted from
+RecSQL_, :mod:`recsql.converter`. It is mainly used by
+:class:`gromacs.fileformats.xpm.XPM` to automagically generate useful
+NumPy arrays from xpm files. Custom conversions beyond the default
+ones in :class:`Autoconverter` can be provided with the constructor
+keyword *mapping*.
 
 .. _RecSQL: http://orbeckst.github.com/RecSQL/
 
 .. autoclass:: Autoconverter
-   :members: __init__
-.. function:: Autoconverter.convert(x)
+   :members:
 
-              Convert *x* (if in the active state)
-.. attribute:: Autoconverter.active
+   .. function:: convert(x)
 
-               If set  to ``True`` then conversion takes place; ``False``
-               just returns :func:`besttype` applid to the value.
+      Convert *x* (if in the active state)
+
+   .. attribute:: active
+
+      If set to ``True`` then conversion takes place; ``False`` just
+      returns :func:`besttype` applid to the value.
 
 .. autofunction:: besttype
 .. autofunction:: to_unicode
@@ -96,13 +103,16 @@ class Autoconverter(object):
           *mapping*
               any dict-like mapping that supports lookup. If``None`` then the
               hard-coded defaults are used
+
           *active* or *autoconvert*
               initial state of the :attr:`Autoconverter.active` toggle.
               ``False`` deactivates any conversion. [``True``]
-           *sep*
+
+          *sep*
               character to split on (produces lists); use ``True`` or ``None``
               (!) to split on all white space.
-           *encoding*
+
+          *encoding*
               encoding of the input data [utf-8]
 
         """

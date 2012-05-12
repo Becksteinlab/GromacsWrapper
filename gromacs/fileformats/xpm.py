@@ -29,8 +29,8 @@ Classes
    .. attribute:: yvalues
 
       Values of on the y-axis, extracted from the xpm file. These are
-      in the same order as the rows in the xpm matrix. If `*reverse* =
-      ``False`` then this is typically a *decending* list of numbers
+      in the same order as the rows in the xpm matrix. If *reverse* =
+      ``False`` then this is typically a *descending* list of numbers
       (highest to lowest residue number, index number, etc). For
       *reverse* = ``True`` it is resorted accordingly.
 
@@ -103,6 +103,7 @@ class XPM(utilities.FileUtils):
     #: :class:`gromacs.fileformats.convert.Autoconverter`.
     #: The symbol is matched as a `printable ASCII character`_ in the range
     #: 0x20 (space) to 0x7E (~).
+    #:
     #: .. _`printable ASCII character`: http://www.danshort.com/ASCIImap/indexhex.htm
     COLOUR = re.compile("""\
             ^.*"                   # start with quotation mark
