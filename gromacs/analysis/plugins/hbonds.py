@@ -212,12 +212,11 @@ class _HBonds(Worker):
 
         results = AttributeDict()
         results['num'] = XVG(self.parameters.filenames['num'])
-        results['matrix'] = hbm = XPM(self.parameters.filenames['hbm'])
+        results['matrix'] = hbm = XPM(self.parameters.filenames['hbm'], reverse=True)
 
         hb_fraction = hbm.array.mean(axis=0)
         desc = [line.strip() for line in
                 open(self.parameters.filenames['log']) if not line.startswith('#')]
-        desc.reverse()  # the rows in the xpm correspond to H-bonds "from the bottom up"
         results['existence'] = zip(desc, hb_fraction)
 
         with open(self.parameters.filenames['existence'], "w") as out:
