@@ -372,11 +372,16 @@ class ITPdata(ITPsection):
     def data(self):
         """atom data as a :class:`numpy.rec.array`
 
-        The data inside the array can be changed.
+        The data inside the array can be changed but not appended.
         """
         if self.__data is None:
             self.__data = self._create_recarray()
         return self.__data
+    
+    def set_data(self, data):
+        """  data is atom data, stored as :class:`numpy.rec.arry`
+        """
+        self.__data = data
 
     def process(self, line):
         if len(line.strip()) == 0:
@@ -509,7 +514,7 @@ class Moleculetype(ITPsection):
     def section(self):
         # currently without user comments
         return "[ %s ]\n; Name      nrexcl\n" % self.name + \
-            "%(name)-10s  %(nrexcl)d" % self.data  + "\n"
+            "%(name)-10s  %(nrexcl)d" % self.data + "\n"
 
     def __repr__(self):
         return "<ITP::moleculetype %(name)s nrexcl=%(nrexcl)d>" % self.data
@@ -761,7 +766,7 @@ class ITP(utilities.FileUtils):
 
         self.commentchar = ';'
         self.sections = odict()
-        self.parsers  = {
+        self.parsers = {
             'header': Header,
             'dummy': Dummy,
             }
