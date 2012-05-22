@@ -3,18 +3,27 @@
 ==============================
 
 2012-??-??     0.3.1  in development
+orbeckst, jandom
 
 * added IndexBuilder.write() method to safely write named index groups
 * new HBonds hydrogen bonding analysis plugin (uses g_hbond and can
   return individual hbond existence probabilities)
 * XVG has initial support to plot periodic data such as dihedral angles
-* ITP reader: ITP.contains_preprocessor_constructs() to check if the
-  itp file uses some of the recognized preprocessing directives
+* ITP reader: 
+  - ITP.contains_preprocessor_constructs() to check if the
+    itp file uses some of the recognized preprocessing directives
+  - new set_data() method to completely rebuild a topology
 * set environment variable GROMACSWRAPPER_SUPPRESS_SETUP_CHECK to true
   in order to avoid be notified of missing config files
- 
+* example scripts are installed (all example script names start
+  with gw-*)
+  - gw-fit_strip_trajectories.py: remove water and fit to protein
+  - gw-join_parts.py: concatenate xtc, trr, edr, log for simulations
+    done in parts (and with -noappend)
+  - gw-merge_topologies.py: join multiple building block topologies 
 
-2012-04-24     0.3.0
+2012-04-24     0.3.0   
+orbeckst
 
 * improved file format handling (ITP (incomplete, but uses a
   preprocessor), XPM, XVG (can do fairly fancy coarse-grained
