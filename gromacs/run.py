@@ -240,6 +240,29 @@ class MDrunnerMpich2Smpd(MDrunner):
         rc = subprocess.call(cmd)
         return rc
 
+class MDrunnerOpenMPI(MDrunner):
+    """Manage running :program:`mdrun` as mpich2_ multiprocessor job with the SMPD mechanism.
+
+    .. _mpich2: http://www.mcs.anl.gov/research/projects/mpich2/
+    """
+    mdrun = "mdrun"
+    mpiexec = "mpiexec"
+
+    def mpicommand(self, *args, **kwargs):
+        """Return a list of the mpi command portion of the commandline.
+
+        Only allows primitive mpi at the moment:
+           *mpiexec* -n *ncores* *mdrun* *mdrun-args*
+
+        (This is a primitive example for OpenMP. Override it for more
+        complicated cases.)
+        """
+        if self.mpiexec is None:
+            raise NotImplementedError("Override mpiexec to enable the simple OpenMP launcher")
+
+        return [self.mpiexec]
+
+
 
 
 def check_mdrun_success(logfile):
