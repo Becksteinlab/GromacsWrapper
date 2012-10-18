@@ -43,7 +43,7 @@ various implementations of python wrappers
    See the discussion on the gmx-developers mailinglist: check the
    thread  `[gmx-developers] Python interface for Gromacs`_  
 
-grompy_ (Martin Hoefling, Roland Schulz)
+grompy_ (René Pool, Martin Hoefling, Roland Schulz)
    uses ctypes_ to wrap **libgmx**:
 
       "Here's a bunch of code I wrote to wrap libgmx with ctypes and make use  
@@ -66,7 +66,8 @@ grompy_ (Martin Hoefling, Roland Schulz)
      compatible ..."
 
    A working `grompy tar ball`_ (with Roland's enhancements) is cached
-   at gmane.org.
+   at gmane.org and the latest sources are hosted at
+   https://github.com/GromPy
 
 LOOS_ (`Grossfield lab`_ at the University of Rochester)
   The idea behind *LOOS* (*Lightweight Object-Oriented Structure*
