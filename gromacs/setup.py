@@ -121,9 +121,8 @@ __docformat__ = "restructuredtext en"
 
 import os
 import errno
-import re
-import shutil
 import warnings
+import random
 
 import logging
 logger = logging.getLogger('gromacs.setup')
@@ -739,10 +738,15 @@ def _setup_MD(dirname,
               top='top/system.top', ndx=None,
               mainselection='"Protein"',
               qscript=config.qscript_template, qname=None, startdir=None, mdrun_opts="", budget=None, walltime=1/3.,
-              dt=0.002, runtime=1e3, **mdp_kwargs):
+              dt=0.002, runtime=1e3, multi=1, **mdp_kwargs):
     """Generic function to set up a ``mdrun`` MD simulation.
 
     See the user functions for usage.
+    
+    @param qname: name of the queing system, may be None.
+    
+    @param multi: setup multiple concurrent simulations. These are based upon deffnm being set, 
+                  and a set of mdp / tpr are created named [deffnm]0.tpr. [deffnm]1.tpr, ...
     """
 
     if struct is None:
@@ -761,16 +765,23 @@ def _setup_MD(dirname,
 
     nsteps = int(float(runtime)/float(dt))
 
-    mdp = deffnm + '.mdp'
-    tpr = deffnm + '.tpr'
     mainindex = deffnm + '.ndx'
     final_structure = deffnm + '.gro'   # guess... really depends on templates,could also be DEFFNM.pdb
 
     # write the processed topology to the default output
-    mdp_parameters = {'nsteps':nsteps, 'dt':dt, 'pp': 'processed.top'}
+    mdp_parameters = {'nsteps':nsteps, 'dt':dt}
     mdp_parameters.update(mdp_kwargs)
 
     add_mdp_includes(topology, mdp_parameters)
+    
+    # the basic result dictionary
+    # depending on options, various bits might be added to this.
+    result = {'struct': realpath(os.path.join(dirname, final_structure)),      # guess
+             'top': topology,
+             'ndx': index,            # possibly mainindex
+             'mainselection': mainselection,
+             'deffnm': deffnm,        # return deffnm (tpr = deffnm.tpr!)
+             }
 
     with in_dir(dirname):
         if not (mdp_parameters.get('Tcoupl','').lower() == 'no' or mainselection is None):
@@ -844,28 +855,47 @@ def _setup_MD(dirname,
             mdp_parameters['tau_p'] = ""
             mdp_parameters['ref_p'] = ""
             mdp_parameters['compressibility'] = ""
-
-        unprocessed = gromacs.cbook.edit_mdp(mdp_template, new_mdp=mdp, **mdp_parameters)
-        check_mdpargs(unprocessed)
-        gromacs.grompp(f=mdp, p=topology, c=structure, n=index, o=tpr, **unprocessed)
-
-        runscripts = gromacs.qsub.generate_submit_scripts(
-            qscript_template, deffnm=deffnm, jobname=qname, budget=budget,
-            startdir=startdir, mdrun_opts=mdrun_opts, walltime=walltime)
-
+            
+        # do multiple concurrent simulations - ensemble sampling
+        if multi > 1:
+            for i in range(multi):
+                new_mdp = deffnm + str(i) + ".mdp"
+                mdout = deffnm + "out" + str(i) + ".mdp"
+                pp = "processed" + str(i) + ".top"
+                tpr = deffnm + str(i) + ".tpr"
+                # doing ensemble sampling, so give differnt seeds for each one
+                # if we are using 32 bit gromacs, make seeds are are 32 bit even on
+                # 64 bit machine
+                mdp_parameters["andersen_seed"] = random.randint(0,2**31) 
+                mdp_parameters["gen_seed"] = random.randint(0,2**31)
+                mdp_parameters["ld_seed"] = random.randint(0,2**31)
+                unprocessed = gromacs.cbook.edit_mdp(mdp_template, new_mdp=new_mdp, **mdp_parameters)
+                check_mdpargs(unprocessed)
+                gromacs.grompp(f=new_mdp, p=topology, c=structure, n=index, o=tpr, 
+                               po=mdout, pp=pp, **unprocessed)
+            # only add multi to result if we really are doing multiple runs
+            result["multi"] = multi
+        else:
+            new_mdp = deffnm + '.mdp'
+            tpr = deffnm + '.tpr'
+            unprocessed = gromacs.cbook.edit_mdp(mdp_template, new_mdp=new_mdp, **mdp_parameters)
+            check_mdpargs(unprocessed)
+            gromacs.grompp(f=new_mdp, p=topology, c=structure, n=index, o=tpr, 
+                           po="mdout.mdp", pp="processed.top", **unprocessed)
+            
+        # generate scripts for queing system if requested
+        if qname is not None:
+            runscripts = gromacs.qsub.generate_submit_scripts(
+                qscript_template, deffnm=deffnm, jobname=qname, budget=budget,
+                startdir=startdir, mdrun_opts=mdrun_opts, walltime=walltime)
+            result["qscript"] =runscripts
+                    
     logger.info("[%(dirname)s] All files set up for a run time of %(runtime)g ps "
                 "(dt=%(dt)g, nsteps=%(nsteps)g)" % vars())
 
-    kwargs = {'struct': realpath(os.path.join(dirname, final_structure)),      # guess
-              'top': topology,
-              'ndx': index,            # possibly mainindex
-              'qscript': runscripts,
-              'mainselection': mainselection,
-              'deffnm': deffnm,        # return deffnm (tpr = deffnm.tpr!)
-              }
-    kwargs.update(mdp_kwargs)  # return extra mdp args so that one can use them for prod run
-    kwargs.pop('define', None) # but make sure that -DPOSRES does not stay...
-    return kwargs
+    result.update(mdp_kwargs)  # return extra mdp args so that one can use them for prod run
+    result.pop('define', None) # but make sure that -DPOSRES does not stay...
+    return result
 
 
 def MD_restrained(dirname='MD_POSRES', **kwargs):
