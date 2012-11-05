@@ -1,5 +1,5 @@
 ; $Id$
-; Template for MD with OPLS-AA.
+; Template for MD with OPLS-AA and GPU (Gromacs 4.6)
 ;
 ; ==================================================================
 ;      DO NOT USE THIS INPUT FILE WITHOUT CHECKING ALL SETTINGS.
@@ -19,7 +19,7 @@ nstvout                  = 50000
 nstfout                  = 0
 ; Output frequency for energies to log file and energy file
 nstlog                   = 500
-nstenergy                = 250
+nstenergy                = 500
 ; Output frequency and precision for xtc file
 nstxtcout                = 500
 xtc-precision            = 1000
@@ -31,7 +31,7 @@ comm-grps                = SYSTEM
 
 ; NEIGHBORSEARCHING PARAMETERS
 ; nblist update frequency
-nstlist                  = 5
+nstlist                  = 20
 ; ns algorithm (simple or grid)
 ns_type                  = grid
 ; Periodic boundary conditions: xyz, no, xy
@@ -39,6 +39,8 @@ pbc                      = xyz
 periodic_molecules       = no
 ; nblist cut-off        
 rlist                    = 1.0
+; for GPU runs
+cutoff-scheme            = Verlet
 
 ; OPTIONS FOR ELECTROSTATICS AND VDW
 ; Method for doing electrostatics
