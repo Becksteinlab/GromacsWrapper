@@ -44,6 +44,7 @@ periodic_molecules       = no
 ; NOTE: rlist cannot be set to 1.4 because Gromacs only allows 
 ; rlist == rcoulomb with PME.
 rlist                    = 1.2
+rlistlong                = 1.4
 
 ; OPTIONS FOR ELECTROSTATICS AND VDW
 ; Method for doing electrostatics
@@ -58,7 +59,7 @@ epsilon_rf               = 1
 ;   NBOND VATOM VSWI CTONNB 10.0 CTOFNB 12.0 CUTNB 14.0
 vdw-type                 = Switch
 ; cut-off lengths       
-rvdw-switch              = 1.0
+rvdw-switch              = 0.8
 rvdw                     = 1.2
 ; Apply long range dispersion corrections for Energy and Pressure 
 ;   NBOND LRC
