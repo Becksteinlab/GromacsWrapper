@@ -476,11 +476,19 @@ class XVG(utilities.FileUtils):
         with utilities.openany(self.real_filename) as xvg:
             rows = []
             ncol = None
+            # OK to have '&', these are seen in files from g_velacc, as long as they are at the end.
+            foundAmp = False
             for lineno,line in enumerate(xvg):
                 line = line.strip()
                 if line.startswith(('#', '@')) or len(line) == 0:
                     continue
                 if line.startswith('&'):
+                    # OK to have these, provided only comment or more '&' come after. 
+                    foundAmp = True
+                    continue
+                if foundAmp:
+                    # if we got here, that means we found non comment lines after the '&' which is 
+                    # a format we can't handle. 
                     raise NotImplementedError('%s: Multi-data not supported, only simple NXY format.'
                                               % self.real_filename)
                 # parse line as floats
