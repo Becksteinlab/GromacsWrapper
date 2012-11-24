@@ -347,13 +347,15 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
           and the box boundary.
           Set *boxtype*  to ``None`` in order to use a box size in the input
           file (gro or pdb).
-      *boxtype* : string
+      *boxtype* or *bt*: string
           Any of the box types supported by :class:`~gromacs.tools.Editconf`
           (triclinic, cubic, dodecahedron, octahedron). Set the box dimensions
           either with *distance* or the *box* and *angle* keywords.
 
           If set to ``None`` it will ignore *distance* and use the box
           inside the *struct* file.
+
+          *bt* overrides the value of *boxtype*.
       *box*
           List of three box lengths [A,B,C] that are used by :class:`~gromacs.tools.Editconf`
           in combination with *boxtype* (``bt`` in :program:`editconf`) and *angles*.
@@ -397,7 +399,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
     topology = realpath(top)
 
     # arguments for editconf that we honour
-    editconf_keywords = ["box","angles","c","center","aligncenter","align","translate",
+    editconf_keywords = ["box","bt","angles","c","center","aligncenter","align","translate",
                          "rotate","princ"]
     editconf_kwargs = dict((k,kwargs.pop(k,None)) for k in editconf_keywords)
 
@@ -406,6 +408,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
 
     # sanity checks and argument dependencies
     editconf_boxtypes = "triclinic,cubic,dodecahedron,octahedron".split(',') + [None]
+    boxtype = editconf_keywords.pop('bt', boxtype)
     if not boxtype in editconf_boxtypes:
         msg = "Unsupported boxtype %(boxtype)r: Only %(boxtypes)r are possible." % vars()
         logger.error(msg)

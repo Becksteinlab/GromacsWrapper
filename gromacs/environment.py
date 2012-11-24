@@ -15,7 +15,7 @@ pseudo-dictionary :data:`gromacs.environment.flags`.
 The entries appear as 'name'-'value' pairs. Flags check values and illegal ones
 raise a :exc:`ValueError`. Documentation on all flags can be obtained with ::
 
- print gromacs.core.flags.doc()
+ print gromacs.environment.flags.doc()
 
 
 List of GromacsWrapper flags with default values
