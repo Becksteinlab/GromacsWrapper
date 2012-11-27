@@ -103,7 +103,7 @@ can be omitted or set to ``None``.
 *walltime*
 
   maximum allowed run time on the system; job files are written in
-  such a way that Gromacs stops run at 0.99 or walltime. If ommitted
+  such a way that Gromacs stops run at 0.99 or walltime. If omitted
   then the job runs until it is done (provided the queuing system
   policy allows that)
 
@@ -187,13 +187,13 @@ import logging
 logger = logging.getLogger("gromacs.manager")
 
 class ManagerConfigParser(SafeConfigParser):
-    def getpath(self, section, option):
+    def getpath(self, section, option, **kwargs):
         """Return option as an expanded path."""
-        return os.path.expanduser(os.path.expandvars(self.get(section, option)))
-    def getfloat(self, section, option):
+        return os.path.expanduser(os.path.expandvars(self.get(section, option, **kwargs)))
+    def getfloat(self, section, option, **kwargs):
         """Return as :func:`float` or ``None``."""
         try:
-            return float(option)
+            return float(self.get(section, option, **kwargs))
         except ValueError:
             return None
 
