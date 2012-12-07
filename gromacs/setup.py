@@ -399,16 +399,17 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
     topology = realpath(top)
 
     # arguments for editconf that we honour
-    editconf_keywords = ["box","bt","angles","c","center","aligncenter","align","translate",
-                         "rotate","princ"]
+    editconf_keywords = ["box", "bt", "angles", "c", "center", "aligncenter",
+                         "align", "translate", "rotate", "princ"]
     editconf_kwargs = dict((k,kwargs.pop(k,None)) for k in editconf_keywords)
+    editconf_boxtypes = ["triclinic", "cubic", "dodecahedron", "octahedron", None]
 
     # needed for topology scrubbing
     scrubber_kwargs = {'marker': kwargs.pop('marker',None)}
 
     # sanity checks and argument dependencies
-    editconf_boxtypes = "triclinic,cubic,dodecahedron,octahedron".split(',') + [None]
-    boxtype = editconf_keywords.pop('bt', boxtype)
+    bt = editconf_kwargs.pop('bt')
+    boxtype = bt if bt else boxtype   # bt takes precedence over boxtype
     if not boxtype in editconf_boxtypes:
         msg = "Unsupported boxtype %(boxtype)r: Only %(boxtypes)r are possible." % vars()
         logger.error(msg)
@@ -424,7 +425,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
     elif water.lower() == 'tip3p':
         water = 'spc216'
         logger.warning("TIP3P water model selected: using SPC equilibrated box "
-                       "for initial solvation because it is a reasonable strting point "
+                       "for initial solvation because it is a reasonable starting point "
                        "for any 3-point model. EQUILIBRATE THOROUGHLY!")
 
     # By default, grompp should not choke on a few warnings because at
