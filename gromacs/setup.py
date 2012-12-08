@@ -316,7 +316,7 @@ def get_lipid_vdwradii(outdir=os.path.curdir, libdir=None):
 
 def solvate(struct='top/protein.pdb', top='top/system.top',
             distance=0.9, boxtype='dodecahedron',
-            concentration=0, cation='NA+', anion='CL-',
+            concentration=0, cation='NA', anion='CL',
             water='spc', solvent_name='SOL', with_membrane=False,
             ndx = 'main.ndx', mainselection = '"Protein"',
             dirname='solvate',
