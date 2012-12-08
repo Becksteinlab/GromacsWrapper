@@ -604,21 +604,27 @@ def grompp_qtot(*args, **kwargs):
             '  System has non-zero total charge: -4.000001e+00'
 
       using the regular expression
-      :regexp:`System has non-zero total charge: *(?P<qtot>[-+]?\d*\.\d+[eE][-+]\d+)`.
+      :regexp:`System has non-zero total charge: *(?P<qtot>[-+]?\d*\.\d+([eE][-+]\d+)?)`.
 
     """
-    qtot_pattern = re.compile('System has non-zero total charge: *(?P<qtot>[-+]?\d*\.\d+[eE][-+]\d+)')
+    qtot_pattern = re.compile('System has non-zero total charge: *(?P<qtot>[-+]?\d*\.\d+([eE][-+]\d+)?)')
+    # make sure to capture ALL output
     kwargs['stdout'] = False
+    kwargs['stderr'] = False
     rc, output, error = grompp_warnonly(*args, **kwargs)
+    gmxoutput = "\n".join([x for x in [output, error] if x is not None])
     if rc != 0:
         # error occured and we want to see the whole output for debugging
         msg = "grompp_qtot() failed. See warning and screen output for clues."
         logger.error(msg)
-        gmxoutput = "\n".join([x for x in [output, error] if not x is None])
-        print gmxoutput
+        import sys
+        sys.stderr.write("=========== grompp (stdout/stderr) ============\n")
+        sys.stderr.write(gmxoutput)
+        sys.stderr.write("===============================================\n")
+        sys.stderr.flush()
         raise GromacsError(rc, msg)
     qtot = 0
-    for line in output.split('\n'):
+    for line in gmxoutput.split('\n'):
         m = qtot_pattern.search(line)
         if m:
             qtot = float(m.group('qtot'))
