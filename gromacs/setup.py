@@ -868,7 +868,6 @@ def _setup_MD(dirname,
               'deffnm': deffnm,        # return deffnm (tpr = deffnm.tpr!)
               }
     kwargs.update(mdp_kwargs)  # return extra mdp args so that one can use them for prod run
-    kwargs.pop('define', None) # but make sure that -DPOSRES does not stay...
     return kwargs
 
 
@@ -939,7 +938,11 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
 
     .. Note:: The output frequency is drastically reduced for position
               restraint runs by default. Set the corresponding ``nst*``
-              variables if you require more output.
+              variables if you require more output. The `pressure coupling`_ 
+              option *refcoord_scaling* is set to "com" by default (but can
+              be changed via *kwargs*).
+
+    .. _`pressure coupling`: http://manual.gromacs.org/online/mdp_opt.html#pc
     """
 
     logger.info("[%(dirname)s] Setting up MD with position restraints..." % vars())
@@ -953,7 +956,15 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
     kwargs.setdefault('nstlog', '500')      # log file
     kwargs.setdefault('nstenergy', '2500')  # edr energy
     kwargs.setdefault('nstxtcout', '5000')  # xtc pos
-    return _setup_MD(dirname, **kwargs)
+    # try to get correct pressure
+    kwargs.setdefault('refcoord_scaling', 'com')
+
+    new_kwargs =  _setup_MD(dirname, **kwargs)
+
+    # clean up output kwargs
+    new_kwargs.pop('define', None)          # but make sure that -DPOSRES does not stay...
+    new_kwargs.pop('refcoord_scaling', None)
+    return new_kwargs
 
 def MD(dirname='MD', **kwargs):
     """Set up equilibrium MD.
