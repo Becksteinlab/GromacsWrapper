@@ -473,7 +473,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
         logger.info("Solvated system with %s", water)
 
         with open('none.mdp','w') as mdp:
-            mdp.write('; empty mdp file\ninclude = %(include)s\n' % mdp_kwargs)
+            mdp.write('; empty mdp file\ninclude = %(include)s\nrcoulomb = 1\nrvdw = 1\nrlist = 1\n' % mdp_kwargs)
         qtotgmx = gromacs.cbook.grompp_qtot(f='none.mdp', o='topol.tpr', c='solvated.gro',
                                             p=topology, stdout=False, maxwarn=grompp_maxwarn)
         qtot = round(qtotgmx)
