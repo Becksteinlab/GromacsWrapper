@@ -1,11 +1,11 @@
 .. -*- mode: rst -*-
-.. The whole GromacsWrapper package is Copyright (c) 2009-2011 Oliver Beckstein,
+.. The whole GromacsWrapper package is Copyright (c) 2009,2010,2011,2012 Oliver Beckstein,
 .. except where noted otherwise.
 
 
-================
- GromacsWrapper
-================
+========================
+ README: GromacsWrapper
+========================
 
 A primitive wrapper around the Gromacs tools until we have proper
 python bindings. It also provides a small library (cook book) of
@@ -43,13 +43,11 @@ for all modules.
 
 The **vmd** module is made available under the `LGPL v3`_ (see COPYING
 and COPYING.LESSER). **numkit** is provided under the "`Modified BSD
-Licence`_" (as it contains some code from scipy_). **edPDB** is
-published under the `Biopython Licence`_.
+Licence`_" (as it contains some code from scipy_).
 
 .. _GNU Public License v3: http://www.gnu.org/licenses/gpl.html
 .. _LGPL v3: http://www.gnu.org/licenses/lgpl.html
 .. _Modified BSD Licence: http://www.opensource.org/licenses/bsd-license.php
-.. _Biopython Licence: http://www.biopython.org/DIST/LICENSE
 .. _scipy: http://www.scipy.org
 
 
