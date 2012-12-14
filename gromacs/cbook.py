@@ -181,14 +181,17 @@ e.g. ``input = ('backbone', 'Protein', System')``.
 
     # Gromacs 4.x
     trj_xyfitted = tools.Trjconv(fit='rotxy+transxy',
-                                 center=True, boxcenter='rect',  # is boxcenter=rect really needed??
                                  input=('backbone', 'protein','system'),
                                  doc="""
-Writes a trajectory centered and fitted to the protein in the XY-plane only.
+Writes a trajectory fitted to the protein in the XY-plane only.
 
 This is useful for membrane proteins. The system *must* be oriented so
 that the membrane is in the XY plane. The protein backbone is used
 for the least square fit, centering is done for the whole protein.
+
+Note that centering together with fitting does not always work well
+and that one sometimes need two runs of trjconv: one to center and
+one to fit.
 
 .. Note:: Gromacs 4.x only""")
 
@@ -1750,9 +1753,14 @@ class Transformer(utilities.FileUtils):
     def fit(self, xy=False, **kwargs):
         """Write xtc that is fitted to the tpr reference structure.
 
-        See :func:`gromacs.cbook.trj_xyfitted` for details and
-        description of *kwargs*. The most important ones are listed
+        Runs :class:`gromacs.tools.trjconv` with appropriate arguments
+        for fitting. The most important *kwargs* are listed
         here but in most cases the defaults should work.
+
+        Note that the default settings do *not* include centering or
+        periodic boundary treatment as this often does not work well
+        with fitting. It is better to do this as a separate step (see
+        :meth:`center_fit` or :func:`gromacs.cbook.trj_fitandcenter`)
 
         :Keywords:
            *s*
@@ -1771,6 +1779,8 @@ class Transformer(utilities.FileUtils):
             ``True``: overwrite existing trajectories
             ``False``: throw a IOError exception
             ``None``: skip existing and log a warning [default]
+          *fitgroup*
+            index group to fit on ["backbone"]
           *kwargs*
              kwargs are passed to :func:`~gromacs.cbook.trj_xyfitted`
 
@@ -1795,13 +1805,22 @@ class Transformer(utilities.FileUtils):
             infix_default += '_dt%dps' % int(dt)    # dt in ps
 
         kwargs.setdefault('o', self.infix_filename(None, self.xtc, infix_default, 'xtc'))
+        fitgroup = kwargs.pop('fitgroup', 'backbone')
+        kwargs.setdefault('input', [fitgroup, "system"])
+
+        if kwargs.get('center', False):
+            logger.warn("Transformer.fit(): center=%(center)r used: centering should not be combined with fitting.", kwargs)
+            if len(kwargs['inputs']) != 3:
+                logger.error("If you insist on centering you must provide three groups in the 'input' kwarg: (center, fit, output)")
+                raise ValuError("Insufficient index groups for centering,fitting,output")
 
         logger.info("Fitting trajectory %r to with xy=%r...", kwargs['f'], xy)
+        logger.info("Fitting on index group %(fitgroup)r", vars())
         with utilities.in_dir(self.dirname):
             if self.check_file_exists(kwargs['o'], resolve="indicate", force=force):
                 logger.warn("File %r exists; force regenerating it with force=True.", kwargs['o'])
             else:
-                trj_xyfitted(fit=fitmode, **kwargs)
+                gromacs.trjconv(fit=fitmode, **kwargs)
                 logger.info("Fitted trajectory (fitmode=%s): %r.", fitmode, kwargs['o'])
         return {'tpr': self.rp(kwargs['s']), 'xtc': self.rp(kwargs['o'])}
 
