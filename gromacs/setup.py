@@ -79,7 +79,7 @@ submission script; see the source code for details.
 Once the restraint run has completed, use the last frame as input for
 the equilibrium MD::
 
-  MD(struct='MD_POSRES/md.gro', runtime=1e5)
+  MD(struct='MD_POSRES/md.pdb', runtime=1e5)
 
 Run the resulting tpr file on a cluster.
 
@@ -450,7 +450,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
                 logger.exception(msg)
                 raise MissingDataError(msg)
             distance = boxtype = None   # ensures that editconf just converts
-        editconf_kwargs.update({'f': structure, 'o': 'boxed.gro',
+        editconf_kwargs.update({'f': structure, 'o': 'boxed.pdb',
                                 'bt': boxtype, 'd': distance})
         gromacs.editconf(**editconf_kwargs)
 
@@ -459,7 +459,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
             logger.info("Using special vdW radii for lipids %r" % vdw_lipid_resnames)
 
         try:
-            gromacs.genbox(p=topology, cp='boxed.gro', cs=water, o='solvated.gro')
+            gromacs.genbox(p=topology, cp='boxed.pdb', cs=water, o='solvated.pdb')
         except:
             if with_membrane:
                 # remove so that it's not picked up accidentally
@@ -469,7 +469,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
 
         with open('none.mdp','w') as mdp:
             mdp.write('; empty mdp file\ninclude = %(include)s\n' % mdp_kwargs)
-        qtotgmx = gromacs.cbook.grompp_qtot(f='none.mdp', o='topol.tpr', c='solvated.gro',
+        qtotgmx = gromacs.cbook.grompp_qtot(f='none.mdp', o='topol.tpr', c='solvated.pdb',
                                             p=topology, stdout=False, maxwarn=grompp_maxwarn)
         qtot = round(qtotgmx)
         logger.info("[%(dirname)s] After solvation: total charge qtot = %(qtotgmx)r = %(qtot)r" % vars())
@@ -505,19 +505,19 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
             # sanity check:
             assert qtot + n_cation - n_anion < 1e-6
             logger.info("[%(dirname)s] Adding n_cation = %(n_cation)d and n_anion = %(n_anion)d ions..." % vars())
-            gromacs.genion(s='topol.tpr', o='ionized.gro', p=topology,
+            gromacs.genion(s='topol.tpr', o='ionized.pdb', p=topology,
                            pname=cation, nname=anion, np=n_cation, nn=n_anion,
                            input=solvent_name)
         else:
             # fake ionized file ... makes it easier to continue without too much fuzz
             try:
-                os.unlink('ionized.gro')
+                os.unlink('ionized.pdb')
             except OSError, err:
                 if err.errno != errno.ENOENT:
                     raise
-            os.symlink('solvated.gro', 'ionized.gro')
+            os.symlink('solvated.pdb', 'ionized.pdb')
 
-        qtot = gromacs.cbook.grompp_qtot(f='none.mdp', o='ionized.tpr', c='ionized.gro',
+        qtot = gromacs.cbook.grompp_qtot(f='none.mdp', o='ionized.tpr', c='ionized.pdb',
                                          p=topology, stdout=False, maxwarn=grompp_maxwarn)
 
         if abs(qtot) > 1e-4:
@@ -535,7 +535,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
             logger.warn(wmsg)
             warnings.warn(wmsg, category=GromacsFailureWarning)
         try:
-            trj_compact_main(f='ionized.gro', s='ionized.tpr', o='compact.pdb', n=ndx)
+            trj_compact_main(f='ionized.pdb', s='ionized.tpr', o='compact.pdb', n=ndx)
         except GromacsError, err:
             wmsg = "Failed to make compact pdb for visualization... pressing on regardless. "\
                    "The error message was:\n%s\n" % str(err)
@@ -543,7 +543,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
             warnings.warn(wmsg, category=GromacsFailureWarning)
 
     return {'qtot': qtot,
-            'struct': realpath(dirname, 'ionized.gro'),
+            'struct': realpath(dirname, 'ionized.pdb'),
             'ndx': realpath(dirname, ndx),      # not sure why this is propagated-is it used?
             'mainselection': mainselection,
             }
@@ -558,7 +558,7 @@ def check_mdpargs(d):
     return len(d) == 0
 
 def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
-                    struct='solvate/ionized.gro', top='top/system.top',
+                    struct='solvate/ionized.pdb', top='top/system.top',
                     output='em.pdb', deffnm="em",
                     mdrunner=None, **kwargs):
     """Energy minimize the system.
@@ -574,7 +574,7 @@ def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
        *dirname*
           set up under directory dirname [em]
        *struct*
-          input structure (gro, pdb, ...) [solvate/ionized.gro]
+          input structure (gro, pdb, ...) [solvate/ionized.pdb]
        *output*
           output structure (will be put under dirname) [em.pdb]
        *deffnm*
@@ -766,7 +766,7 @@ def _setup_MD(dirname,
     nsteps = int(float(runtime)/float(dt))
 
     mainindex = deffnm + '.ndx'
-    final_structure = deffnm + '.gro'   # guess... really depends on templates,could also be DEFFNM.pdb
+    final_structure = deffnm + '.pdb'   # guess... really depends on templates,could also be DEFFNM.pdb
 
     # write the processed topology to the default output
     mdp_parameters = {'nsteps':nsteps, 'dt':dt}
@@ -1037,7 +1037,7 @@ def MD(dirname='MD', **kwargs):
     """
 
     logger.info("[%(dirname)s] Setting up MD..." % vars())
-    kwargs.setdefault('struct', 'MD_POSRES/md.gro')
+    kwargs.setdefault('struct', 'MD_POSRES/md.pdb')
     kwargs.setdefault('qname', 'MD_GMX')
     return _setup_MD(dirname, **kwargs)
 
