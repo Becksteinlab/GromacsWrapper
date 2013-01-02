@@ -170,7 +170,8 @@ trj_compact_main = gromacs.tools.Trjconv(ur='compact', center=True, boxcenter='t
 #   and also store mainselection
 
 def topology(struct=None, protein='protein',
-             top='system.top',  dirname='top', **pdb2gmx_args):
+             top='system.top',  dirname='top', 
+             posres="posres.itp", **pdb2gmx_args):
     """Build Gromacs topology files from pdb.
 
     :Keywords:
@@ -196,7 +197,8 @@ def topology(struct=None, protein='protein',
     structure = realpath(struct)
 
     new_struct = protein + '.pdb'
-    posres = protein + '_posres.itp'
+    if posres is None:
+        posres = protein + '_posres.itp'
 
     pdb2gmx_args.update({'f': structure, 'o': new_struct, 'p': top, 'i': posres})
 
@@ -204,7 +206,10 @@ def topology(struct=None, protein='protein',
         logger.info("[%(dirname)s] Building topology %(top)r from struct = %(struct)r" % vars())
         # perhaps parse output from pdb2gmx 4.5.x to get the names of the chain itp files?
         gromacs.pdb2gmx(**pdb2gmx_args)
-    return {'top': realpath(dirname, top), 'struct': realpath(dirname, new_struct)}
+    return { \
+            'top': realpath(dirname, top), \
+            'struct': realpath(dirname, new_struct), \
+            'posres' : realpath(dirname, posres) }
 
 def make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None):
     """Make index file with the special groups.
