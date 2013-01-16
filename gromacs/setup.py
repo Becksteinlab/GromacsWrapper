@@ -320,7 +320,7 @@ def get_lipid_vdwradii(outdir=os.path.curdir, libdir=None):
 
 def solvate(struct='top/protein.pdb', top='top/system.top',
             distance=0.9, boxtype='dodecahedron',
-            concentration=0, cation='NA+', anion='CL-',
+            concentration=0, cation='NA', anion='CL',
             water='spc', solvent_name='SOL', with_membrane=False,
             ndx = 'main.ndx', mainselection = '"Protein"',
             dirname='solvate',
@@ -351,13 +351,15 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
           and the box boundary.
           Set *boxtype*  to ``None`` in order to use a box size in the input
           file (gro or pdb).
-      *boxtype* : string
+      *boxtype* or *bt*: string
           Any of the box types supported by :class:`~gromacs.tools.Editconf`
           (triclinic, cubic, dodecahedron, octahedron). Set the box dimensions
           either with *distance* or the *box* and *angle* keywords.
 
           If set to ``None`` it will ignore *distance* and use the box
           inside the *struct* file.
+
+          *bt* overrides the value of *boxtype*.
       *box*
           List of three box lengths [A,B,C] that are used by :class:`~gromacs.tools.Editconf`
           in combination with *boxtype* (``bt`` in :program:`editconf`) and *angles*.
@@ -401,15 +403,17 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
     topology = realpath(top)
 
     # arguments for editconf that we honour
-    editconf_keywords = ["box","angles","c","center","aligncenter","align","translate",
-                         "rotate","princ"]
+    editconf_keywords = ["box", "bt", "angles", "c", "center", "aligncenter",
+                         "align", "translate", "rotate", "princ"]
     editconf_kwargs = dict((k,kwargs.pop(k,None)) for k in editconf_keywords)
+    editconf_boxtypes = ["triclinic", "cubic", "dodecahedron", "octahedron", None]
 
     # needed for topology scrubbing
     scrubber_kwargs = {'marker': kwargs.pop('marker',None)}
 
     # sanity checks and argument dependencies
-    editconf_boxtypes = "triclinic,cubic,dodecahedron,octahedron".split(',') + [None]
+    bt = editconf_kwargs.pop('bt')
+    boxtype = bt if bt else boxtype   # bt takes precedence over boxtype
     if not boxtype in editconf_boxtypes:
         msg = "Unsupported boxtype %(boxtype)r: Only %(boxtypes)r are possible." % vars()
         logger.error(msg)
@@ -425,7 +429,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
     elif water.lower() == 'tip3p':
         water = 'spc216'
         logger.warning("TIP3P water model selected: using SPC equilibrated box "
-                       "for initial solvation because it is a reasonable strting point "
+                       "for initial solvation because it is a reasonable starting point "
                        "for any 3-point model. EQUILIBRATE THOROUGHLY!")
 
     # By default, grompp should not choke on a few warnings because at
@@ -473,9 +477,11 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
         logger.info("Solvated system with %s", water)
 
         with open('none.mdp','w') as mdp:
-            mdp.write('; empty mdp file\ninclude = %(include)s\n' % mdp_kwargs)
-        qtotgmx = gromacs.cbook.grompp_qtot(f='none.mdp', o='topol.tpr', c='solvated.pdb',
+            mdp.write('; empty mdp file\ninclude = %(include)s\nrcoulomb = 1\nrvdw = 1\nrlist = 1\n' % mdp_kwargs)
+
+        qtotgmx = gromacs.cbook.grompp_qtot(f='none.mdp', o='topol.tpr', c='solvated.gro',
                                             p=topology, stdout=False, maxwarn=grompp_maxwarn)
+
         qtot = round(qtotgmx)
         logger.info("[%(dirname)s] After solvation: total charge qtot = %(qtotgmx)r = %(qtot)r" % vars())
 
@@ -898,9 +904,15 @@ def _setup_MD(dirname,
     logger.info("[%(dirname)s] All files set up for a run time of %(runtime)g ps "
                 "(dt=%(dt)g, nsteps=%(nsteps)g)" % vars())
 
-    result.update(mdp_kwargs)  # return extra mdp args so that one can use them for prod run
-    result.pop('define', None) # but make sure that -DPOSRES does not stay...
-    return result
+    kwargs = {'struct': realpath(os.path.join(dirname, final_structure)),      # guess
+              'top': topology,
+              'ndx': index,            # possibly mainindex
+              'qscript': runscripts,
+              'mainselection': mainselection,
+              'deffnm': deffnm,        # return deffnm (tpr = deffnm.tpr!)
+              }
+    kwargs.update(mdp_kwargs)  # return extra mdp args so that one can use them for prod run
+    return kwargs
 
 
 def MD_restrained(dirname='MD_POSRES', **kwargs):
@@ -970,7 +982,11 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
 
     .. Note:: The output frequency is drastically reduced for position
               restraint runs by default. Set the corresponding ``nst*``
-              variables if you require more output.
+              variables if you require more output. The `pressure coupling`_ 
+              option *refcoord_scaling* is set to "com" by default (but can
+              be changed via *kwargs*).
+
+    .. _`pressure coupling`: http://manual.gromacs.org/online/mdp_opt.html#pc
     """
 
     logger.info("[%(dirname)s] Setting up MD with position restraints..." % vars())
@@ -984,7 +1000,15 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
     kwargs.setdefault('nstlog', '500')      # log file
     kwargs.setdefault('nstenergy', '2500')  # edr energy
     kwargs.setdefault('nstxtcout', '5000')  # xtc pos
-    return _setup_MD(dirname, **kwargs)
+    # try to get correct pressure
+    kwargs.setdefault('refcoord_scaling', 'com')
+
+    new_kwargs =  _setup_MD(dirname, **kwargs)
+
+    # clean up output kwargs
+    new_kwargs.pop('define', None)          # but make sure that -DPOSRES does not stay...
+    new_kwargs.pop('refcoord_scaling', None)
+    return new_kwargs
 
 def MD(dirname='MD', **kwargs):
     """Set up equilibrium MD.

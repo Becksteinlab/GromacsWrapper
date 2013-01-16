@@ -10,7 +10,7 @@ from ez_setup import use_setuptools
 use_setuptools()
 from setuptools import setup, find_packages
 
-with open("README") as readme:
+with open("README.rst") as readme:
     long_description = readme.read()
 
 # Dynamically calculate the version based on gromacs.VERSION.

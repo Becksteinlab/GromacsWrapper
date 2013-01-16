@@ -11,17 +11,10 @@ included). Other people have given more thought to the problem and you
 are encouraged to see if their efforts speed up your work more than
 does *GromacsWrapper*.
 
-JGromacs_ (Márton Münz and Philip C Biggin)
-   JGromacs is a Java library designed to facilitate the development
-   of cross-platform analysis applications for Molecular Dynamics (MD)
-   simulations. The package contains parsers for file formats applied
-   by GROMACS. It provides a multilevel object-oriented representation
-   of simulation data to integrate and interconvert sequence,
-   structure and dynamics information. In addititon, a basic analysis
-   toolkit is included in the package. The programmer is also provided
-   with simple tools (e.g. XML-based configuration) to create
-   applications with a user interface resembling the command-line UI
-   of Gromacs applications.
+MDAnalysis_ (N. Michaud-Agrawal, E. J. Dennning, and O. Beckstein)
+  Reads various trajectories (dcd, xtc, trr) and makes coordinates
+  available as numpy_ arrays. It also has a fairly sophisticated
+  selection language, similar to Charmm_ or VMD_.
 
 pymacs_ (Daniel Seeliger)
    pymacs is a python module for dealing with structure files and
@@ -50,7 +43,7 @@ various implementations of python wrappers
    See the discussion on the gmx-developers mailinglist: check the
    thread  `[gmx-developers] Python interface for Gromacs`_  
 
-grompy_ (Martin Hoefling, Roland Schulz)
+grompy_ (René Pool, Martin Hoefling, Roland Schulz)
    uses ctypes_ to wrap **libgmx**:
 
       "Here's a bunch of code I wrote to wrap libgmx with ctypes and make use  
@@ -73,7 +66,8 @@ grompy_ (Martin Hoefling, Roland Schulz)
      compatible ..."
 
    A working `grompy tar ball`_ (with Roland's enhancements) is cached
-   at gmane.org.
+   at gmane.org and the latest sources are hosted at
+   https://github.com/GromPy
 
 LOOS_ (`Grossfield lab`_ at the University of Rochester)
   The idea behind *LOOS* (*Lightweight Object-Oriented Structure*
@@ -88,19 +82,33 @@ LOOS_ (`Grossfield lab`_ at the University of Rochester)
   The `LOOS documentation`_ is well written and comprehensive and the
   code is published under the GPL_.
 
+copernicus_  
+  Copernicus is a Python-based client-server network that allows
+  running of large and complicated MD simulation workflows. It
+  supports Gromacs_ (grompp and mdrun).
+
 VMD_ (`Schulten lab`_ at UIUC)
   VMD is a great analysis tool; the only downside is that (at the
   moment) trajectories have to fit into memory. In some cases this can
   be circumvented by reading a trajectory frame by frame using the
   `bigdcd`_ script (which might also work for Gromacs xtcs).
 
-MDAnalysis_ (N. Michaud-Agrawal, E. J. Dennning, and O. Beckstein)
-  Reads various trajectories (dcd, xtc, trr) and makes coordinates
-  available as numpy_ arrays. It also has a fairly sophisticated
-  selection language, similar to Charmm_ or VMD_.
+JGromacs_ (Márton Münz and Philip C Biggin)
+   JGromacs is a Java library designed to facilitate the development
+   of cross-platform analysis applications for Molecular Dynamics (MD)
+   simulations. The package contains parsers for file formats applied
+   by GROMACS. It provides a multilevel object-oriented representation
+   of simulation data to integrate and interconvert sequence,
+   structure and dynamics information. In addititon, a basic analysis
+   toolkit is included in the package. The programmer is also provided
+   with simple tools (e.g. XML-based configuration) to create
+   applications with a user interface resembling the command-line UI
+   of Gromacs applications.
+
 
 Please let `me`_ know of other efforts so that I can add them here. Thanks.
 
+.. _copernicus: http://git.copernicus-computing.org/
 .. _XTC Library: http://www.gromacs.org/Developer_Zone/Programming_Guide/XTC_Library
 .. _JGromacs: http://sbcb.bioch.ox.ac.uk/jgromacs/
 .. _pymacs: http://wwwuser.gwdg.de/~dseelig/pymacs.html
@@ -120,3 +128,4 @@ Please let `me`_ know of other efforts so that I can add them here. Thanks.
 .. _GPL: http://www.gnu.org/licenses/ 
 .. _numpy: http://numpy.scipy.org
 .. _Charmm: http://www.charmm.org
+.. _Gromacs: http://www.gromacs.org

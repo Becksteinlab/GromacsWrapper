@@ -80,7 +80,7 @@ ref_t                    = 300 300
 Pcoupl                   = parrinello-rahman
 Pcoupltype               = isotropic
 ; Time constant (ps), compressibility (1/bar) and reference P (bar)
-tau_p                    = 0.5
+tau_p                    = 1.0
 compressibility          = 4.5e-5
 ref_p                    = 1.0
 ; Scaling of reference coordinates, No, All or COM

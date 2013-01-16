@@ -35,7 +35,7 @@ Modules
      Contains classes that wrap the gromacs tools. They are automatically
      generated from the list of tools in :data:`gromacs.tools.gmx_tools`.
 
-:mod:`gromacs.fileformats`
+:mod:`gromacs.formats`
      Classes to represent data files in various formats such as
      xmgrace graphs. The classes allow reading and writing and for
      graphs, also plotting of the data.
@@ -112,7 +112,8 @@ Warnings and Exceptions
 -----------------------
 
 A number of package-specific exceptions (:exc:`GromacsError`) and
-warnings (:exc:`Gromacs*Warning`, :exc:`AutoCorrectionWarning`,
+warnings (:exc:`GromacsFailureWarning`, :exc:`GromacsImportWarning`, 
+:exc:`GromacsValueWarning`, :exc:`AutoCorrectionWarning`,
 :exc:`BadParameterWarning`) can be raised.
 
 If you want to stop execution at, for instance, a :exc:`AutoCorrectionWarning` or
@@ -170,11 +171,14 @@ The package version can be queried with the :func:`gromacs.get_version` function
 .. autofunction:: get_version
 .. autofunction:: get_version_tuple
 
+If the package was installed from a development version, the patch
+level will have the string "-dev" affixed to distinguish it from a
+release.
 """
 __docformat__ = "restructuredtext en"
 
 #: Package version; this is the only place where it is set.
-VERSION = 0,3,1
+VERSION = 0,3,2
 #: Set to ``True`` for a release. If set to ``False`` then the patch level
 #: will have the suffix "-dev".
 RELEASE = False
@@ -282,13 +286,13 @@ def start_logging(logfile="gromacs.log"):
     """
     import log
     log.create("gromacs", logfile=logfile)
-    logging.getLogger("gromacs").info("GromacsWrapper STARTED logging to %r", logfile)
+    logging.getLogger("gromacs").info("GromacsWrapper %s STARTED logging to %r", get_version(), logfile)
 
 def stop_logging():
     """Stop logging to logfile and console."""
     import log
     logger = logging.getLogger("gromacs")
-    logger.info("GromacsWrapper STOPPED logging")
+    logger.info("GromacsWrapper %s STOPPED logging", get_version())
     log.clear_handlers(logger)  # this _should_ do the job...
 
 

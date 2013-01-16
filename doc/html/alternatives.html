@@ -8,15 +8,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Alternatives to GromacsWrapper &mdash; GromacsWrapper 0.3.1-dev documentation</title>
+    <title>Alternatives to GromacsWrapper &mdash; GromacsWrapper 0.3.1 documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.3.1-dev',
+        VERSION:     '0.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,8 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper 0.3.1-dev documentation" href="index.html" />
+    <link rel="shortcut icon" href="_static/GromacsWrapper_logo_32x32.ico"/>
+    <link rel="top" title="GromacsWrapper 0.3.1 documentation" href="index.html" />
     <link rel="prev" title="staging.Local — staging class for running local jobs" href="staging/Local.html" /> 
   </head>
   <body>
@@ -41,9 +42,37 @@
         <li class="right" >
           <a href="staging/Local.html" title="staging.Local — staging class for running local jobs"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li> 
+        <li><a href="index.html">GromacsWrapper 0.3.1 documentation</a> &raquo;</li> 
       </ul>
-    </div>  
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/GromacsWrapper_logo_200x200.png" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="staging/Local.html"
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">staging.Local</span></tt> &#8212; staging class for running local jobs</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/alternatives.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
 
     <div class="document">
       <div class="documentwrapper">
@@ -59,17 +88,10 @@ included). Other people have given more thought to the problem and you
 are encouraged to see if their efforts speed up your work more than
 does <em>GromacsWrapper</em>.</p>
 <dl class="docutils">
-<dt><a class="reference external" href="http://sbcb.bioch.ox.ac.uk/jgromacs/">JGromacs</a> (Márton Münz and Philip C Biggin)</dt>
-<dd>JGromacs is a Java library designed to facilitate the development
-of cross-platform analysis applications for Molecular Dynamics (MD)
-simulations. The package contains parsers for file formats applied
-by GROMACS. It provides a multilevel object-oriented representation
-of simulation data to integrate and interconvert sequence,
-structure and dynamics information. In addititon, a basic analysis
-toolkit is included in the package. The programmer is also provided
-with simple tools (e.g. XML-based configuration) to create
-applications with a user interface resembling the command-line UI
-of Gromacs applications.</dd>
+<dt><a class="reference external" href="http://mdanalysis.googlecode.com">MDAnalysis</a> (N. Michaud-Agrawal, E. J. Dennning, and O. Beckstein)</dt>
+<dd>Reads various trajectories (dcd, xtc, trr) and makes coordinates
+available as <a class="reference external" href="http://numpy.scipy.org">numpy</a> arrays. It also has a fairly sophisticated
+selection language, similar to <a class="reference external" href="http://www.charmm.org">Charmm</a> or <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>.</dd>
 <dt><a class="reference external" href="http://wwwuser.gwdg.de/~dseelig/pymacs.html">pymacs</a> (Daniel Seeliger)</dt>
 <dd><p class="first">pymacs is a python module for dealing with structure files and
 trajectory data from the GROMACS molecular dynamics package. It has
@@ -96,7 +118,7 @@ on <a class="reference external" href="http://lists.gromacs.org/pipermail/gmx-de
 <dt>various implementations of python wrappers</dt>
 <dd>See the discussion on the gmx-developers mailinglist: check the
 thread  <a class="reference external" href="http://lists.gromacs.org/pipermail/gmx-developers/2009-March/003179.html">[gmx-developers] Python interface for Gromacs</a></dd>
-<dt><a class="reference external" href="http://lists.gromacs.org/pipermail/gmx-developers/2009-March/003183.html">grompy</a> (Martin Hoefling, Roland Schulz)</dt>
+<dt><a class="reference external" href="http://lists.gromacs.org/pipermail/gmx-developers/2009-March/003183.html">grompy</a> (René Pool, Martin Hoefling, Roland Schulz)</dt>
 <dd><p class="first">uses <a class="reference external" href="http://docs.python.org/library/ctypes.html">ctypes</a> to wrap <strong>libgmx</strong>:</p>
 <blockquote>
 <div><p>&#8220;Here&#8217;s a bunch of code I wrote to wrap libgmx with ctypes and make use
@@ -116,7 +138,8 @@ test.py as an example using it.&#8221;</p>
 information in tpx. I attached the version. It is backward
 compatible ...&#8221;</div></blockquote>
 <p class="last">A working <a class="reference external" href="http://article.gmane.org/gmane.science.biology.gromacs.devel/1185">grompy tar ball</a> (with Roland&#8217;s enhancements) is cached
-at gmane.org.</p>
+at gmane.org and the latest sources are hosted at
+<a class="reference external" href="https://github.com/GromPy">https://github.com/GromPy</a></p>
 </dd>
 <dt><a class="reference external" href="http://loos.sourceforge.net">LOOS</a> (<a class="reference external" href="http://membrane.urmc.rochester.edu/Grossfield_Lab/Welcome.html">Grossfield lab</a> at the University of Rochester)</dt>
 <dd><p class="first">The idea behind <em>LOOS</em> (<em>Lightweight Object-Oriented Structure</em>
@@ -130,46 +153,32 @@ and structures and writing them out.</p>
 <p class="last">The <a class="reference external" href="http://loos.sourceforge.net/Docs/">LOOS documentation</a> is well written and comprehensive and the
 code is published under the <a class="reference external" href="http://www.gnu.org/licenses/">GPL</a>.</p>
 </dd>
+<dt><a class="reference external" href="http://git.copernicus-computing.org/">copernicus</a></dt>
+<dd>Copernicus is a Python-based client-server network that allows
+running of large and complicated MD simulation workflows. It
+supports <a class="reference external" href="http://www.gromacs.org">Gromacs</a> (grompp and mdrun).</dd>
 <dt><a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a> (<a class="reference external" href="http://www.ks.uiuc.edu/">Schulten lab</a> at UIUC)</dt>
 <dd>VMD is a great analysis tool; the only downside is that (at the
 moment) trajectories have to fit into memory. In some cases this can
 be circumvented by reading a trajectory frame by frame using the
 <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/script_library/scripts/bigdcd/">bigdcd</a> script (which might also work for Gromacs xtcs).</dd>
-<dt><a class="reference external" href="http://mdanalysis.googlecode.com">MDAnalysis</a> (N. Michaud-Agrawal, E. J. Dennning, and O. Beckstein)</dt>
-<dd>Reads various trajectories (dcd, xtc, trr) and makes coordinates
-available as <a class="reference external" href="http://numpy.scipy.org">numpy</a> arrays. It also has a fairly sophisticated
-selection language, similar to <a class="reference external" href="http://www.charmm.org">Charmm</a> or <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>.</dd>
+<dt><a class="reference external" href="http://sbcb.bioch.ox.ac.uk/jgromacs/">JGromacs</a> (Márton Münz and Philip C Biggin)</dt>
+<dd>JGromacs is a Java library designed to facilitate the development
+of cross-platform analysis applications for Molecular Dynamics (MD)
+simulations. The package contains parsers for file formats applied
+by GROMACS. It provides a multilevel object-oriented representation
+of simulation data to integrate and interconvert sequence,
+structure and dynamics information. In addititon, a basic analysis
+toolkit is included in the package. The programmer is also provided
+with simple tools (e.g. XML-based configuration) to create
+applications with a user interface resembling the command-line UI
+of Gromacs applications.</dd>
 </dl>
 <p>Please let <a class="reference external" href="http://sbcb.bioch.ox.ac.uk/oliver/">me</a> know of other efforts so that I can add them here. Thanks.</p>
 </div>
 
 
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="staging/Local.html"
-                        title="previous chapter"><tt class="docutils literal"><span class="pre">staging.Local</span></tt> &#8212; staging class for running local jobs</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/alternatives.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -186,13 +195,13 @@ selection language, similar to <a class="reference external" href="http://www.ch
         <li class="right" >
           <a href="staging/Local.html" title="staging.Local — staging class for running local jobs"
              >previous</a> |</li>
-        <li><a href="index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li> 
+        <li><a href="index.html">GromacsWrapper 0.3.1 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on May 12, 2012.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+        &copy; Copyright 2009-2012, Oliver Beckstein, Jan Domański.
+      Last updated on Dec 10, 2012.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

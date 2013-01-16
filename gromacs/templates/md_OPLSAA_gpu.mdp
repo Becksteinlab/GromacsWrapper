@@ -1,7 +1,5 @@
-; Template for MD with CHARMM27
-; (tried to approximate typical CHARMM NBOND options)
-; http://www.charmm.org/documentation/c35b1/nbonds.html
-; http://www.charmm.org/documentation/c35b1/ewald.html
+; $Id$
+; Template for MD with OPLS-AA and GPU (Gromacs 4.6)
 ;
 ; ==================================================================
 ;      DO NOT USE THIS INPUT FILE WITHOUT CHECKING ALL SETTINGS.
@@ -21,7 +19,7 @@ nstvout                  = 50000
 nstfout                  = 0
 ; Output frequency for energies to log file and energy file
 nstlog                   = 500
-nstenergy                = 250
+nstenergy                = 500
 ; Output frequency and precision for xtc file
 nstxtcout                = 500
 xtc-precision            = 1000
@@ -33,48 +31,41 @@ comm-grps                = SYSTEM
 
 ; NEIGHBORSEARCHING PARAMETERS
 ; nblist update frequency
-nstlist                  = 5
+nstlist                  = 20
 ; ns algorithm (simple or grid)
 ns_type                  = grid
 ; Periodic boundary conditions: xyz, no, xy
 pbc                      = xyz
 periodic_molecules       = no
-; nblist cut-off
-; NBOND CUTNB  (see notes on ELEC below)
-; NOTE: rlist cannot be set to 1.4 because Gromacs only allows 
-; rlist == rcoulomb with PME.
-rlist                    = 1.2
-rlistlong                = 1.4
+; nblist cut-off        
+rlist                    = 1.0
+; for GPU runs
+cutoff-scheme            = Verlet
 
 ; OPTIONS FOR ELECTROSTATICS AND VDW
 ; Method for doing electrostatics
-; From the CHARMM docs (ewald.doc):
-;   NBOND EWALD PMEWald KAPPa 0.34 ORDEr 6 CTOFNB 12.0 CUTNB 14.0
 coulombtype              = PME
-rcoulomb                 = 1.2
+rcoulomb-switch          = 0
+rcoulomb                 = 1.0
 ; Relative dielectric constant for the medium and the reaction field
 epsilon_r                = 1
 epsilon_rf               = 1
 ; Method for doing Van der Waals
-;   NBOND VATOM VSWI CTONNB 10.0 CTOFNB 12.0 CUTNB 14.0
-vdw-type                 = Switch
+vdw-type                 = Cut-off
 ; cut-off lengths       
-rvdw-switch              = 0.8
-rvdw                     = 1.2
-; Apply long range dispersion corrections for Energy and Pressure 
-;   NBOND LRC
+rvdw-switch              = 0
+rvdw                     = 1.0
+; Apply long range dispersion corrections for Energy and Pressure
 DispCorr                 = EnerPres
 ; Seperate tables between energy group pairs
 energygrp_table          = 
 ; Spacing for the PME/PPPM FFT grid
-; CHARMM: EWALD recommended spacing: 0.8 A - 1.2 A and 6th Order spline
 fourierspacing           = 0.12
 ; FFT grid size, when a value is 0 fourierspacing will be used
 fourier_nx               = 0
 fourier_ny               = 0
 fourier_nz               = 0
 ; EWALD/PME/PPPM parameters
-; (possibly increase pme_order to 6 to match the CHARMM recommendation)
 pme_order                = 4
 ewald_rtol               = 1e-05
 ewald_geometry           = 3d
@@ -91,7 +82,7 @@ ref_t                    = 300 300
 Pcoupl                   = parrinello-rahman
 Pcoupltype               = isotropic
 ; Time constant (ps), compressibility (1/bar) and reference P (bar)
-tau_p                    = 0.5
+tau_p                    = 1.0
 compressibility          = 4.5e-5
 ref_p                    = 1.0
 ; Scaling of reference coordinates, No, All or COM
@@ -101,15 +92,10 @@ andersen_seed            = 815131
 
 ; GENERATE VELOCITIES FOR STARTUP RUN
 gen_vel                  = yes
-gen_temp                 = 300
-gen_seed                 = 173529
-
-; Langevin dynamics
-bd_fric                  = 0
-ld_seed                  = 1993
+gen-temp                 = 300
+gen_seed                 = 173545
 
 ; OPTIONS FOR BONDS    
-; CHARMM uses SHAKE with tol 1e-6
 constraints              = hbonds
 constraint-algorithm     = Lincs
 lincs-order              = 4

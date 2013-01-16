@@ -57,8 +57,7 @@ Contents
 .. toctree::
    :maxdepth: 2
 
-   README
-   INSTALL
+   installation
    gromacs
    analysis
    auxiliary

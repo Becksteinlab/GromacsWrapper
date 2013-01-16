@@ -1,4 +1,4 @@
-; Template for MD with CHARMM27
+; Template for MD with CHARMM27 and GPU
 ; (tried to approximate typical CHARMM NBOND options)
 ; http://www.charmm.org/documentation/c35b1/nbonds.html
 ; http://www.charmm.org/documentation/c35b1/ewald.html
@@ -6,6 +6,11 @@
 ; ==================================================================
 ;      DO NOT USE THIS INPUT FILE WITHOUT CHECKING ALL SETTINGS.
 ; *YOU* ARE SOLELY RESPONSIBLE FOR CORRECT INPUT TO YOUR SIMULATION.
+;  
+; THE CURRENT GPU CODE (Sept 2012) DOES NOT SUPPORT THE RECOMMENDED
+;    VDW NON-BONDED OPTIONS, WHICH HAVE BEEN REPLACED WITH PLAIN 
+; CUT-OFFS. THIS HAS NOT BEEN CHECKED THOROUGHLY AND MIGHT PRODUCE
+; WRONG RESULTS, ESPECIALLY WHEN USED WITH LIPID BILAYERS.
 ; ==================================================================
 
 include                  = -I. -I.. -I../top
@@ -21,7 +26,7 @@ nstvout                  = 50000
 nstfout                  = 0
 ; Output frequency for energies to log file and energy file
 nstlog                   = 500
-nstenergy                = 250
+nstenergy                = 500
 ; Output frequency and precision for xtc file
 nstxtcout                = 500
 xtc-precision            = 1000
@@ -33,7 +38,7 @@ comm-grps                = SYSTEM
 
 ; NEIGHBORSEARCHING PARAMETERS
 ; nblist update frequency
-nstlist                  = 5
+nstlist                  = 20
 ; ns algorithm (simple or grid)
 ns_type                  = grid
 ; Periodic boundary conditions: xyz, no, xy
@@ -45,6 +50,8 @@ periodic_molecules       = no
 ; rlist == rcoulomb with PME.
 rlist                    = 1.2
 rlistlong                = 1.4
+; Verlet scheme for GPU
+cutoff-scheme            = Verlet
 
 ; OPTIONS FOR ELECTROSTATICS AND VDW
 ; Method for doing electrostatics
@@ -57,10 +64,15 @@ epsilon_r                = 1
 epsilon_rf               = 1
 ; Method for doing Van der Waals
 ;   NBOND VATOM VSWI CTONNB 10.0 CTOFNB 12.0 CUTNB 14.0
-vdw-type                 = Switch
-; cut-off lengths       
-rvdw-switch              = 0.8
+;; recommended options cannot be used because the current 
+;; GPU version of Gromacs only supports cut-off
+vdw-type                 = cut-off
 rvdw                     = 1.2
+; recommended options:
+;;vdw-type                 = Switch
+; cut-off lengths       
+;;rvdw-switch              = 0.8
+;;rvdw                     = 1.2
 ; Apply long range dispersion corrections for Energy and Pressure 
 ;   NBOND LRC
 DispCorr                 = EnerPres
@@ -101,12 +113,8 @@ andersen_seed            = 815131
 
 ; GENERATE VELOCITIES FOR STARTUP RUN
 gen_vel                  = yes
-gen_temp                 = 300
-gen_seed                 = 173529
-
-; Langevin dynamics
-bd_fric                  = 0
-ld_seed                  = 1993
+gen-temp                 = 300
+gen_seed                 = 173545
 
 ; OPTIONS FOR BONDS    
 ; CHARMM uses SHAKE with tol 1e-6
