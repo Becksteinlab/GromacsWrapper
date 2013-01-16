@@ -479,7 +479,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
         with open('none.mdp','w') as mdp:
             mdp.write('; empty mdp file\ninclude = %(include)s\nrcoulomb = 1\nrvdw = 1\nrlist = 1\n' % mdp_kwargs)
 
-        qtotgmx = gromacs.cbook.grompp_qtot(f='none.mdp', o='topol.tpr', c='solvated.gro',
+        qtotgmx = gromacs.cbook.grompp_qtot(f='none.mdp', o='topol.tpr', c='solvated.pdb',
                                             p=topology, stdout=False, maxwarn=grompp_maxwarn)
 
         qtot = round(qtotgmx)
@@ -904,15 +904,9 @@ def _setup_MD(dirname,
     logger.info("[%(dirname)s] All files set up for a run time of %(runtime)g ps "
                 "(dt=%(dt)g, nsteps=%(nsteps)g)" % vars())
 
-    kwargs = {'struct': realpath(os.path.join(dirname, final_structure)),      # guess
-              'top': topology,
-              'ndx': index,            # possibly mainindex
-              'qscript': runscripts,
-              'mainselection': mainselection,
-              'deffnm': deffnm,        # return deffnm (tpr = deffnm.tpr!)
-              }
-    kwargs.update(mdp_kwargs)  # return extra mdp args so that one can use them for prod run
-    return kwargs
+    result.update(mdp_kwargs)  # return extra mdp args so that one can use them for prod run
+    result.pop('define', None) # but make sure that -DPOSRES does not stay...
+    return result
 
 
 def MD_restrained(dirname='MD_POSRES', **kwargs):
