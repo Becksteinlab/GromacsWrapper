@@ -8,15 +8,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Gromacs topology file (ITP) parser &mdash; GromacsWrapper 0.3.1-dev documentation</title>
+    <title>Gromacs topology file (ITP) parser &mdash; GromacsWrapper 0.3.1 documentation</title>
     
-    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.3.1-dev',
+        VERSION:     '0.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,8 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper 0.3.1-dev documentation" href="../../../index.html" />
+    <link rel="shortcut icon" href="../../../_static/GromacsWrapper_logo_32x32.ico"/>
+    <link rel="top" title="GromacsWrapper 0.3.1 documentation" href="../../../index.html" />
     <link rel="up" title="gromacs.formats – Accessing various files" href="../formats.html" />
     <link rel="next" title="Preprocessor in Python" href="preprocessor.html" />
     <link rel="prev" title="Gromacs NDX index file format" href="ndx.html" /> 
@@ -46,12 +47,57 @@
         <li class="right" >
           <a href="ndx.html" title="Gromacs NDX index file format"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">GromacsWrapper 0.3.1 documentation</a> &raquo;</li>
           <li><a href="../../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../../core.html" >Gromacs core modules</a> &raquo;</li>
           <li><a href="../formats.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
       </ul>
-    </div>  
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/GromacsWrapper_logo_200x200.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Gromacs topology file (ITP) parser</a><ul>
+<li><a class="reference internal" href="#example">Example</a></li>
+<li><a class="reference internal" href="#user-classes">User classes</a></li>
+<li><a class="reference internal" href="#developer-reference">Developer reference</a><ul>
+<li><a class="reference internal" href="#base-classes-and-utility-functions">Base classes and utility functions</a></li>
+<li><a class="reference internal" href="#classes-corresponding-to-itp-sections">Classes corresponding to ITP sections</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="ndx.html"
+                        title="previous chapter">Gromacs NDX index file format</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="preprocessor.html"
+                        title="next chapter">Preprocessor in Python</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../../_sources/gromacs/core/fileformats/itp.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
 
     <div class="document">
       <div class="documentwrapper">
@@ -302,21 +348,6 @@ typically overriden.</p>
 <p class="versionchanged">
 <span class="versionmodified">Changed in version 0.3.1: </span>Access to sections by attribute access is possible.</p>
 </div></blockquote>
-<dl class="attribute">
-<dt id="gromacs.fileformats.itp.ITPsection.COMMENT">
-<tt class="descname">COMMENT</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x103551618&gt;</em><a class="headerlink" href="#gromacs.fileformats.itp.ITPsection.COMMENT" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="gromacs.fileformats.itp.ITPsection.DATA">
-<tt class="descname">DATA</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x103558510&gt;</em><a class="headerlink" href="#gromacs.fileformats.itp.ITPsection.DATA" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="gromacs.fileformats.itp.ITPsection.SECTION">
-<tt class="descname">SECTION</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x103587a58&gt;</em><a class="headerlink" href="#gromacs.fileformats.itp.ITPsection.SECTION" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="method">
 <dt id="gromacs.fileformats.itp.ITPsection.walk_sections">
 <tt class="descname">walk_sections</tt><big>(</big><em>func=None</em>, <em>flat=True</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.itp.ITPsection.walk_sections" title="Permalink to this definition">¶</a></dt>
@@ -355,7 +386,7 @@ the itp file.</p>
 <dt id="gromacs.fileformats.itp.ITPdata.data">
 <tt class="descname">data</tt><a class="headerlink" href="#gromacs.fileformats.itp.ITPdata.data" title="Permalink to this definition">¶</a></dt>
 <dd><p>atom data as a <tt class="xref py py-class docutils literal"><span class="pre">numpy.rec.array</span></tt></p>
-<p>The data inside the array can be changed.</p>
+<p>The data inside the array can be changed but not appended.</p>
 </dd></dl>
 
 <dl class="method">
@@ -365,6 +396,12 @@ the itp file.</p>
 <p>Data entries containing <tt class="docutils literal"><span class="pre">None</span></tt> are stripped from the output. In
 accordance with Gromacs ITP parsing rules, data columns can only be
 ommitted from the right.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gromacs.fileformats.itp.ITPdata.set_data">
+<tt class="descname">set_data</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.itp.ITPdata.set_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>data is atom data, stored as <tt class="xref py py-class docutils literal"><span class="pre">numpy.rec.arry</span></tt></p>
 </dd></dl>
 
 </dd></dl>
@@ -498,7 +535,7 @@ are cut off after 128 characters).</p>
 <dl class="attribute">
 <dt id="gromacs.fileformats.itp.Atoms.dtypes">
 <tt class="descname">dtypes</tt><em class="property"> = [('atomnr', 'i4'), ('atomtype', 'S10'), ('resnr', 'i4'), ('resname', 'S4'), ('atomname', 'S4'), ('chargegrp', 'i4'), ('charge', 'f8'), ('mass', 'f8'), ('atomtypeB', 'S10'), ('chargeB', 'f8'), ('massB', 'f8')]</em><a class="headerlink" href="#gromacs.fileformats.itp.Atoms.dtypes" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.7.dev-3bbbbd4)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.dtype</span></tt></a> columns for the data</p>
+<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.dtype</span></tt></a> columns for the data</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -530,7 +567,7 @@ are cut off after 128 characters).</p>
 <dl class="attribute">
 <dt id="gromacs.fileformats.itp.Bonds.dtypes">
 <tt class="descname">dtypes</tt><em class="property"> = [('ai', 'i4'), ('aj', 'i4'), ('func', 'i4'), ('b0', 'f8'), ('kb', 'f8')]</em><a class="headerlink" href="#gromacs.fileformats.itp.Bonds.dtypes" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.7.dev-3bbbbd4)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.dtype</span></tt></a> columns for the data</p>
+<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.dtype</span></tt></a> columns for the data</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -557,7 +594,7 @@ are cut off after 128 characters).</p>
 <dl class="attribute">
 <dt id="gromacs.fileformats.itp.Angles.dtypes">
 <tt class="descname">dtypes</tt><em class="property"> = [('ai', 'i4'), ('aj', 'i4'), ('ak', 'i4'), ('func', 'i4'), ('theta0', 'f8'), ('cth', 'f8')]</em><a class="headerlink" href="#gromacs.fileformats.itp.Angles.dtypes" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.7.dev-3bbbbd4)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.dtype</span></tt></a> columns for the data</p>
+<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.dtype</span></tt></a> columns for the data</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -592,7 +629,7 @@ section then the last one overwrites the previous one.</p>
 <dl class="attribute">
 <dt id="gromacs.fileformats.itp.Dihedrals.dtypes">
 <tt class="descname">dtypes</tt><em class="property"> = [('ai', 'i4'), ('aj', 'i4'), ('ak', 'i4'), ('al', 'i4'), ('func', 'i4'), ('c0', &lt;type 'object'&gt;), ('c1', &lt;type 'object'&gt;), ('c2', &lt;type 'object'&gt;), ('c3', &lt;type 'object'&gt;), ('c4', &lt;type 'object'&gt;), ('c5', &lt;type 'object'&gt;)]</em><a class="headerlink" href="#gromacs.fileformats.itp.Dihedrals.dtypes" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.7.dev-3bbbbd4)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.dtype</span></tt></a> columns for the data</p>
+<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.dtype</span></tt></a> columns for the data</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -631,48 +668,6 @@ section then the last one overwrites the previous one.</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="../../../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Gromacs topology file (ITP) parser</a><ul>
-<li><a class="reference internal" href="#example">Example</a></li>
-<li><a class="reference internal" href="#user-classes">User classes</a></li>
-<li><a class="reference internal" href="#developer-reference">Developer reference</a><ul>
-<li><a class="reference internal" href="#base-classes-and-utility-functions">Base classes and utility functions</a></li>
-<li><a class="reference internal" href="#classes-corresponding-to-itp-sections">Classes corresponding to ITP sections</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="ndx.html"
-                        title="previous chapter">Gromacs NDX index file format</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="preprocessor.html"
-                        title="next chapter">Preprocessor in Python</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../../../_sources/gromacs/core/fileformats/itp.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
       <div class="clearer"></div>
     </div>
     <div class="related">
@@ -690,16 +685,16 @@ section then the last one overwrites the previous one.</p>
         <li class="right" >
           <a href="ndx.html" title="Gromacs NDX index file format"
              >previous</a> |</li>
-        <li><a href="../../../index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">GromacsWrapper 0.3.1 documentation</a> &raquo;</li>
           <li><a href="../../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../../core.html" >Gromacs core modules</a> &raquo;</li>
           <li><a href="../formats.html" ><tt class="docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on May 12, 2012.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+        &copy; Copyright 2009-2012, Oliver Beckstein, Jan Domański.
+      Last updated on Dec 10, 2012.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

@@ -2,7 +2,10 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
-2012-??-??     0.3.1  in development
+????-??-??     0.3.2  in development
+
+
+2012-12-10     0.3.1
 orbeckst, jandom
 
 * added IndexBuilder.write() method to safely write named index groups
@@ -21,6 +24,17 @@ orbeckst, jandom
   - gw-join_parts.py: concatenate xtc, trr, edr, log for simulations
     done in parts (and with -noappend)
   - gw-merge_topologies.py: join multiple building block topologies 
+* updated MDP templates
+  - increase Parrinello-Rahman time constant to 1.0 ps
+  - use refcoord_scaling = "com" for position restraints
+  - use recommended CHARMM NB values
+* fixed: cbook.grompp_qtot() would miss non-zero charge
+* fixed: Manager config parser ignored floats
+* gromacs.setup.solvate()
+  - default ion names are now NA and CL
+  - adapted for Gromacs 4.6
+  - bt takes precedence over boxtype
+
 
 2012-04-24     0.3.0   
 orbeckst

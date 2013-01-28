@@ -8,15 +8,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Managing jobs remotely &mdash; GromacsWrapper 0.3.1-dev documentation</title>
+    <title>Managing jobs remotely &mdash; GromacsWrapper 0.3.1 documentation</title>
     
-    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.3.1-dev',
+        VERSION:     '0.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,8 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper 0.3.1-dev documentation" href="../../index.html" />
+    <link rel="shortcut icon" href="../../_static/GromacsWrapper_logo_32x32.ico"/>
+    <link rel="top" title="GromacsWrapper 0.3.1 documentation" href="../../index.html" />
     <link rel="up" title="Gromacs building blocks" href="../building_blocks.html" />
     <link rel="next" title="gromacs.run – Running simulations" href="simulation.html" />
     <link rel="prev" title="gromacs.qsub – utilities for batch submission systems" href="qsub.html" /> 
@@ -46,11 +47,58 @@
         <li class="right" >
           <a href="qsub.html" title="gromacs.qsub – utilities for batch submission systems"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.1 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" accesskey="U">Gromacs building blocks</a> &raquo;</li> 
       </ul>
-    </div>  
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/GromacsWrapper_logo_200x200.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Managing jobs remotely</a><ul>
+<li><a class="reference internal" href="#configuration-file">Configuration file</a><ul>
+<li><a class="reference internal" href="#default-section"><em>DEFAULT</em> section</a></li>
+<li><a class="reference internal" href="#local-section"><em>local</em> section</a></li>
+<li><a class="reference internal" href="#remote-section"><em>remote</em> section</a></li>
+<li><a class="reference internal" href="#queuing-system-section"><em>queuing_system</em> section</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#queuing-system-manager">Queuing system Manager</a></li>
+<li><a class="reference internal" href="#helper-classes-and-functions">Helper classes and functions</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="qsub.html"
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">gromacs.qsub</span></tt> &#8211; utilities for batch submission systems</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="simulation.html"
+                        title="next chapter"><tt class="docutils literal docutils literal"><span class="pre">gromacs.run</span></tt> &#8211; Running simulations</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/gromacs/blocks/manager.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
 
     <div class="document">
       <div class="documentwrapper">
@@ -140,7 +188,7 @@ identifier)</div></blockquote>
 <p><em>walltime</em></p>
 <blockquote>
 <div>maximum allowed run time on the system; job files are written in
-such a way that Gromacs stops run at 0.99 or walltime. If ommitted
+such a way that Gromacs stops run at 0.99 or walltime. If omitted
 then the job runs until it is done (provided the queuing system
 policy allows that)</div></blockquote>
 <p><em>start_cwd</em></p>
@@ -328,7 +376,7 @@ remote host.</p>
 
 <dl class="attribute">
 <dt id="gromacs.manager.Manager.log_RE">
-<tt class="descname">log_RE</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x108e620c0&gt;</em><a class="headerlink" href="#gromacs.manager.Manager.log_RE" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">log_RE</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x4e50a80&gt;</em><a class="headerlink" href="#gromacs.manager.Manager.log_RE" title="Permalink to this definition">¶</a></dt>
 <dd><p>Regular expression used by <a class="reference internal" href="#gromacs.manager.Manager.get_status" title="gromacs.manager.Manager.get_status"><tt class="xref py py-meth docutils literal"><span class="pre">Manager.get_status()</span></tt></a> to parse
 the logfile from <strong class="program">mdrun</strong>.</p>
 </dd></dl>
@@ -520,18 +568,8 @@ run but that is just a guess);</li>
 
 <dl class="class">
 <dt id="gromacs.manager.ManagerConfigParser">
-<em class="property">class </em><tt class="descclassname">gromacs.manager.</tt><tt class="descname">ManagerConfigParser</tt><big>(</big><em>defaults=None</em>, <em>dict_type=&lt;type 'dict'&gt;</em><big>)</big><a class="headerlink" href="#gromacs.manager.ManagerConfigParser" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="attribute">
-<dt id="gromacs.manager.ManagerConfigParser.OPTCRE">
-<tt class="descname">OPTCRE</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x1004e0a80&gt;</em><a class="headerlink" href="#gromacs.manager.ManagerConfigParser.OPTCRE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="gromacs.manager.ManagerConfigParser.SECTCRE">
-<tt class="descname">SECTCRE</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x1005c99c0&gt;</em><a class="headerlink" href="#gromacs.manager.ManagerConfigParser.SECTCRE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
+<em class="property">class </em><tt class="descclassname">gromacs.manager.</tt><tt class="descname">ManagerConfigParser</tt><big>(</big><em>defaults=None</em>, <em>dict_type=&lt;class 'collections.OrderedDict'&gt;</em>, <em>allow_no_value=False</em><big>)</big><a class="headerlink" href="#gromacs.manager.ManagerConfigParser" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
 <dt id="gromacs.manager.ManagerConfigParser.add_section">
 <tt class="descname">add_section</tt><big>(</big><em>section</em><big>)</big><a class="headerlink" href="#gromacs.manager.ManagerConfigParser.add_section" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a new section in the configuration.</p>
@@ -554,13 +592,13 @@ looked up in the same manner as the option.</p>
 
 <dl class="method">
 <dt id="gromacs.manager.ManagerConfigParser.getfloat">
-<tt class="descname">getfloat</tt><big>(</big><em>section</em>, <em>option</em><big>)</big><a class="headerlink" href="#gromacs.manager.ManagerConfigParser.getfloat" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">getfloat</tt><big>(</big><em>section</em>, <em>option</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.manager.ManagerConfigParser.getfloat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return as <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">float()</span></tt></a> or <tt class="docutils literal"><span class="pre">None</span></tt>.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gromacs.manager.ManagerConfigParser.getpath">
-<tt class="descname">getpath</tt><big>(</big><em>section</em>, <em>option</em><big>)</big><a class="headerlink" href="#gromacs.manager.ManagerConfigParser.getpath" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">getpath</tt><big>(</big><em>section</em>, <em>option</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.manager.ManagerConfigParser.getpath" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return option as an expanded path.</p>
 </dd></dl>
 
@@ -639,7 +677,7 @@ used.</p>
 
 <dl class="method">
 <dt id="gromacs.manager.ManagerConfigParser.set">
-<tt class="descname">set</tt><big>(</big><em>section</em>, <em>option</em>, <em>value</em><big>)</big><a class="headerlink" href="#gromacs.manager.ManagerConfigParser.set" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set</tt><big>(</big><em>section</em>, <em>option</em>, <em>value=None</em><big>)</big><a class="headerlink" href="#gromacs.manager.ManagerConfigParser.set" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set an option.  Extend ConfigParser.set: check for string values.</p>
 </dd></dl>
 
@@ -664,50 +702,6 @@ used.</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="../../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Managing jobs remotely</a><ul>
-<li><a class="reference internal" href="#configuration-file">Configuration file</a><ul>
-<li><a class="reference internal" href="#default-section"><em>DEFAULT</em> section</a></li>
-<li><a class="reference internal" href="#local-section"><em>local</em> section</a></li>
-<li><a class="reference internal" href="#remote-section"><em>remote</em> section</a></li>
-<li><a class="reference internal" href="#queuing-system-section"><em>queuing_system</em> section</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#queuing-system-manager">Queuing system Manager</a></li>
-<li><a class="reference internal" href="#helper-classes-and-functions">Helper classes and functions</a></li>
-</ul>
-</li>
-</ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="qsub.html"
-                        title="previous chapter"><tt class="docutils literal"><span class="pre">gromacs.qsub</span></tt> &#8211; utilities for batch submission systems</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="simulation.html"
-                        title="next chapter"><tt class="docutils literal docutils literal"><span class="pre">gromacs.run</span></tt> &#8211; Running simulations</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../../_sources/gromacs/blocks/manager.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
       <div class="clearer"></div>
     </div>
     <div class="related">
@@ -725,15 +719,15 @@ used.</p>
         <li class="right" >
           <a href="qsub.html" title="gromacs.qsub – utilities for batch submission systems"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.1 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" >Gromacs building blocks</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on May 12, 2012.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+        &copy; Copyright 2009-2012, Oliver Beckstein, Jan Domański.
+      Last updated on Dec 10, 2012.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

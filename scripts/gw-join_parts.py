@@ -41,8 +41,10 @@ if __name__ == "__main__":
                       help="find trajectories in DIR [%default]")
     opts, args = parser.parse_args()
 
-    fulldir = os.path.join(opts.basedir, "full")
-    partsdir = os.path.join(opts.basedir, "parts")
+    fulldir = "full"
+    partsdir = "parts"
+    fulldir_path = os.path.join(opts.basedir, fulldir)
+    partsdir_path = os.path.join(opts.basedir, partsdir)
 
     gromacs.start_logging()
 
@@ -58,12 +60,12 @@ if __name__ == "__main__":
                           resolve_multi="guess")
     except:
         logger.fatal("Something went wrong during joining (see below)")
-        logger.fatal("To recover, manually move the processed parts from %r back to %r", partsdir, opts.basedir)
-        logger.fatal("It is also recommended to delete %(fulldir)r and start from the beginning", vars())
+        logger.fatal("To recover, manually move the processed parts from %r back to %r", partsdir_path, opts.basedir)
+        logger.fatal("It is also recommended to delete %(fulldir_path)r and start from the beginning", vars())
         logger.exception()
         raise
 
-    logger.info("Joined parts for %(prefix)r in %(fulldir)r", vars())
-    logger.info("Manually remove parts in %(partsdir)r", vars())
+    logger.info("Joined parts for %(prefix)r in %(fulldir_path)r", vars())
+    logger.info("Manually remove parts in %(partsdir_path)r", vars())
 
     gromacs.stop_logging()

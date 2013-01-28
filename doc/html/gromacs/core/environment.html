@@ -8,15 +8,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.environment – Run time modification of behaviour &mdash; GromacsWrapper 0.3.1-dev documentation</title>
+    <title>gromacs.environment – Run time modification of behaviour &mdash; GromacsWrapper 0.3.1 documentation</title>
     
-    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.3.1-dev',
+        VERSION:     '0.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,8 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper 0.3.1-dev documentation" href="../../index.html" />
+    <link rel="shortcut icon" href="../../_static/GromacsWrapper_logo_32x32.ico"/>
+    <link rel="top" title="GromacsWrapper 0.3.1 documentation" href="../../index.html" />
     <link rel="up" title="Gromacs core modules" href="../core.html" />
     <link rel="next" title="gromacs.formats – Accessing various files" href="formats.html" />
     <link rel="prev" title="gromacs.config – Configuration for GromacsWrapper" href="config.html" /> 
@@ -46,11 +47,51 @@
         <li class="right" >
           <a href="config.html" title="gromacs.config – Configuration for GromacsWrapper"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.1 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" accesskey="U">Gromacs core modules</a> &raquo;</li> 
       </ul>
-    </div>  
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/GromacsWrapper_logo_200x200.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">gromacs.environment</span></tt> &#8211; Run time modification of behaviour</a><ul>
+<li><a class="reference internal" href="#list-of-gromacswrapper-flags-with-default-values">List of GromacsWrapper flags with default values</a></li>
+<li><a class="reference internal" href="#classes">Classes</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="config.html"
+                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">gromacs.config</span></tt> &#8211; Configuration for GromacsWrapper</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="formats.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/gromacs/core/environment.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
 
     <div class="document">
       <div class="documentwrapper">
@@ -65,7 +106,7 @@ them like environment variables). They are accessible through the
 pseudo-dictionary <a class="reference internal" href="#gromacs.environment.flags" title="gromacs.environment.flags"><tt class="xref py py-data docutils literal"><span class="pre">gromacs.environment.flags</span></tt></a>.</p>
 <p>The entries appear as &#8216;name&#8217;-&#8216;value&#8217; pairs. Flags check values and illegal ones
 raise a <tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt>. Documentation on all flags can be obtained with</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">print</span> <span class="n">gromacs</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">print</span> <span class="n">gromacs</span><span class="o">.</span><span class="n">environment</span><span class="o">.</span><span class="n">flags</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
 </pre></div>
 </div>
 <div class="section" id="list-of-gromacswrapper-flags-with-default-values">
@@ -209,43 +250,6 @@ all values are directly set.</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="../../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">gromacs.environment</span></tt> &#8211; Run time modification of behaviour</a><ul>
-<li><a class="reference internal" href="#list-of-gromacswrapper-flags-with-default-values">List of GromacsWrapper flags with default values</a></li>
-<li><a class="reference internal" href="#classes">Classes</a></li>
-</ul>
-</li>
-</ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="config.html"
-                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">gromacs.config</span></tt> &#8211; Configuration for GromacsWrapper</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="formats.html"
-                        title="next chapter"><tt class="docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../../_sources/gromacs/core/environment.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
       <div class="clearer"></div>
     </div>
     <div class="related">
@@ -263,15 +267,15 @@ all values are directly set.</p>
         <li class="right" >
           <a href="config.html" title="gromacs.config – Configuration for GromacsWrapper"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.1 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" >Gromacs core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on May 12, 2012.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+        &copy; Copyright 2009-2012, Oliver Beckstein, Jan Domański.
+      Last updated on Dec 10, 2012.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

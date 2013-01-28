@@ -8,15 +8,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Gromacs XPM file format &mdash; GromacsWrapper 0.3.1-dev documentation</title>
+    <title>Gromacs XPM file format &mdash; GromacsWrapper 0.3.1 documentation</title>
     
-    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.3.1-dev',
+        VERSION:     '0.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,8 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper 0.3.1-dev documentation" href="../../../index.html" />
+    <link rel="shortcut icon" href="../../../_static/GromacsWrapper_logo_32x32.ico"/>
+    <link rel="top" title="GromacsWrapper 0.3.1 documentation" href="../../../index.html" />
     <link rel="up" title="gromacs.formats – Accessing various files" href="../formats.html" />
     <link rel="next" title="Gromacs parameter MDP file format" href="mdp.html" />
     <link rel="prev" title="Simple xmgrace XVG file format" href="xvg.html" /> 
@@ -46,12 +47,52 @@
         <li class="right" >
           <a href="xvg.html" title="Simple xmgrace XVG file format"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">GromacsWrapper 0.3.1 documentation</a> &raquo;</li>
           <li><a href="../../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../../core.html" >Gromacs core modules</a> &raquo;</li>
-          <li><a href="../formats.html" accesskey="U"><tt class="docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
+          <li><a href="../formats.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
       </ul>
-    </div>  
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/GromacsWrapper_logo_200x200.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Gromacs XPM file format</a><ul>
+<li><a class="reference internal" href="#classes">Classes</a></li>
+<li><a class="reference internal" href="#example-analysing-h-bonds">Example: Analysing H-bonds</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="xvg.html"
+                        title="previous chapter">Simple xmgrace XVG file format</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="mdp.html"
+                        title="next chapter">Gromacs parameter MDP file format</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../../_sources/gromacs/core/fileformats/xpm.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
 
     <div class="document">
       <div class="documentwrapper">
@@ -70,7 +111,7 @@ the array.</p>
 <dl class="class">
 <dt id="gromacs.fileformats.xpm.XPM">
 <em class="property">class </em><tt class="descclassname">gromacs.fileformats.xpm.</tt><tt class="descname">XPM</tt><big>(</big><em>filename=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.fileformats.xpm.XPM" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class to make a Gromacs XPM matrix available as a NumPy <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7.dev-3bbbbd4)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a>.</p>
+<dd><p>Class to make a Gromacs XPM matrix available as a NumPy <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a>.</p>
 <p>The data is available in the attribute <a class="reference internal" href="#gromacs.fileformats.xpm.XPM.array" title="gromacs.fileformats.xpm.XPM.array"><tt class="xref py py-attr docutils literal"><span class="pre">XPM.array</span></tt></a>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -122,7 +163,7 @@ in the same order as the rows in the xpm matrix. If <em>reverse</em> =
 
 <dl class="attribute">
 <dt id="gromacs.fileformats.xpm.XPM.COLOUR">
-<tt class="descname">COLOUR</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x103a164a0&gt;</em><a class="headerlink" href="#gromacs.fileformats.xpm.XPM.COLOUR" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">COLOUR</tt><em class="property"> = &lt;_sre.SRE_Pattern object at 0x38a8ee0&gt;</em><a class="headerlink" href="#gromacs.fileformats.xpm.XPM.COLOUR" title="Permalink to this definition">¶</a></dt>
 <dd><p>compiled regular expression to parse the colors in the xpm file:</p>
 <div class="highlight-python"><pre>static char *gromacs_xpm[] = {
 "14327 9   2 1",
@@ -139,7 +180,7 @@ The symbol is matched as a <a class="reference external" href="http://www.dansho
 <dl class="attribute">
 <dt id="gromacs.fileformats.xpm.XPM.array">
 <tt class="descname">array</tt><a class="headerlink" href="#gromacs.fileformats.xpm.XPM.array" title="Permalink to this definition">¶</a></dt>
-<dd><p>XPM matrix as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7.dev-3bbbbd4)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a>.</p>
+<dd><p>XPM matrix as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.6)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a>.</p>
 <p>The attribute itself cannot be assigned a different array but
 the contents of the array can be modified.</p>
 </dd></dl>
@@ -218,43 +259,6 @@ labels.</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="../../../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Gromacs XPM file format</a><ul>
-<li><a class="reference internal" href="#classes">Classes</a></li>
-<li><a class="reference internal" href="#example-analysing-h-bonds">Example: Analysing H-bonds</a></li>
-</ul>
-</li>
-</ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="xvg.html"
-                        title="previous chapter">Simple xmgrace XVG file format</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="mdp.html"
-                        title="next chapter">Gromacs parameter MDP file format</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../../../_sources/gromacs/core/fileformats/xpm.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
       <div class="clearer"></div>
     </div>
     <div class="related">
@@ -272,16 +276,16 @@ labels.</p>
         <li class="right" >
           <a href="xvg.html" title="Simple xmgrace XVG file format"
              >previous</a> |</li>
-        <li><a href="../../../index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">GromacsWrapper 0.3.1 documentation</a> &raquo;</li>
           <li><a href="../../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../../core.html" >Gromacs core modules</a> &raquo;</li>
-          <li><a href="../formats.html" ><tt class="docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
+          <li><a href="../formats.html" ><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on May 12, 2012.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+        &copy; Copyright 2009-2012, Oliver Beckstein, Jan Domański.
+      Last updated on Dec 10, 2012.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

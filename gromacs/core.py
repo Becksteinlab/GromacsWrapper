@@ -598,12 +598,12 @@ class GromacsCommand(Command):
         # are accurately reflected. Might be a problem when these invocations
         # supply wrong arguments... TODO: maybe check rc for that?
         # use_input=False needed for running commands in cbook that have input pre-defined
-        old_level = logger.getEffectiveLevel()   # temporarily throttle logger to avoid
-        logger.setLevel(9999)                    # reading about the help function invocation or not found
+        # temporarily throttle logger to avoid reading about the help function invocation or not found
+        logging.disable(logging.CRITICAL)
         try:
             rc,header,docs = self.run('h', stdout=PIPE, stderr=PIPE, use_input=False)
         finally:
-            logger.setLevel(old_level)           # ALWAYS restore logging....
+            logging.disable(logging.NOTSET)     # ALWAYS restore logging....
         m = re.match(self.doc_pattern, docs, re.DOTALL)    # keep from DESCRIPTION onwards
         if m is None:
             return "(No Gromacs documentation available)"
