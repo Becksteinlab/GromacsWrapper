@@ -1,9 +1,80 @@
-# numkit --- data fitting 
+# numkit --- data fitting
 # Copyright (c) 2010 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the "Modified BSD Licence" (see COPYING).
 """
 :mod:`numkit.fitting` --- Fitting data
 ======================================
+
+The module contains functions to do least square fits of functions of
+one variable f(x) to data points (x,y).
+
+Example
+-------
+
+For example, to fit a un-normalized Gaussian with :class:`FitGauss` to
+data distributed with mean 5.0 and standard deviation 3.0::
+
+   from numkit.fitting import FitGauss
+   import numpy, numpy.random
+
+   # generate suitably noisy data
+   mu, sigma = 5.0, 3.0
+   Y,edges = numpy.histogram(sigma*numpy.random.randn(10000), bins=100, density=True)
+   X = 0.5*(edges[1:]+edges[:-1]) + mu
+
+   g = FitGauss(X, Y)
+
+   print(g.parameters)
+   # [ 4.98084541  3.00044102  1.00069061]
+   print(numpy.array([mu, sigma, 1]) - g.parameters)
+   # [ 0.01915459 -0.00044102 -0.00069061]
+
+   import matplotlib.pyplot as plt
+   plt.plot(X, Y, 'ko', label="data")
+   plt.plot(X, g.fit(X), 'r-', label="fit")
+
+.. figure:: /numkit/FitGauss.png
+   :scale: 40 %
+   :alt: Gaussian fit with data points
+
+   A Gaussian (red) was fit to the data points (black circles) with
+   the :class:`numkit.fitting.FitGauss` class.
+
+If the initial parameters for the least square optimization do not
+lead to a solution then one can provide customized starting values in
+the *parameters* keyword argument::
+
+   g = FitGauss(X, Y, parameters=[10, 1, 1])
+
+The *parameters* have different meaning for the different fit
+functions; the documentation for each function shows them in the
+context of the fit function.
+
+
+Creating new fit functions
+--------------------------
+
+New fit function classes can be derived from :class:`FitFunc`. The
+documentation and the methods :meth:`FitFunc.f_factory` and
+:meth:`FitFunc.initial_values` must be overriden. For example, the
+class :class:`FitGauss` is implemented as ::
+
+   class FitGauss(FitFunc):
+       '''y = f(x) = p[2] * 1/sqrt(2*pi*p[1]**2) * exp(-(x-p[0])**2/(2*p[1]**2))'''
+       def f_factory(self):
+           def fitfunc(p,x):
+               return p[2] * 1.0/(p[1]*numpy.sqrt(2*numpy.pi)) * numpy.exp(-(x-p[0])**2/(2*p[1]**2))
+           return fitfunc
+       def initial_values(self):
+           return [0.0,1.0,0.0]
+
+The function to be fitted is defined in :func:`fitfunc`. The
+parameters are accessed as ``p[0]``, ``p[1]``, ... For each parameter,
+a suitable initial value must be provided.
+
+
+Functions and classes
+---------------------
 
 .. autofunction:: Pearson_r
 .. autofunction:: linfit
@@ -13,6 +84,7 @@
 .. autoclass:: FitLin
 .. autoclass:: FitExp
 .. autoclass:: FitExp2
+.. autoclass:: FitGauss
 
 """
 
@@ -27,7 +99,7 @@ def Pearson_r(x,y):
        Pearson(x,y) --> correlation coefficient
 
     *x* and *y* are arrays of same length.
-    
+
     Historical note -- Naive implementation of Pearson's r ::
       Ex = scipy.stats.mean(x)
       Ey = scipy.stats.mean(y)
@@ -57,16 +129,16 @@ def linfit(x,y,dy=[]):
     indicates that the model is bad --- Q is the probability that a
     value of chi-square as _poor_ as the calculated statistic chi2
     should occur by chance.)
-  
+
     :Returns: result_dict with components
 
-       intercept, sigma_intercept    
+       intercept, sigma_intercept
            a +/- sigma_a
        slope, sigma_slope
            b +/- sigma_b
        parameter_correlation
            correlation coefficient r_ab between a and b
-       chi_square                    
+       chi_square
            chi^2 test statistic
        Q_fit
            goodness-of-fit probability
@@ -79,7 +151,7 @@ def linfit(x,y,dy=[]):
     m = len(y)
     if n != m:
         raise ValueError("lengths of x and y must match: %s != %s" % (n, m))
-    
+
     try:
         have_dy = (len(dy) > 0)
     except TypeError:
@@ -145,16 +217,16 @@ class FitFunc(object):
 
     After a successful fit, the fitted function can be applied to any data (a
     1D-numpy array) with :meth:`FitFunc.fit`.
-     
+
     """
-    def __init__(self,x,y):
+    def __init__(self,x,y,parameters=None):
         import scipy.optimize
         _x = numpy.asarray(x)
         _y = numpy.asarray(y)
-        p0 = self.initial_values()
+        p0 = self._get_initial_values(parameters)
         fitfunc = self.f_factory()
         def errfunc(p,x,y):
-            return  fitfunc(p,x) - y     # residuals        
+            return  fitfunc(p,x) - y     # residuals
         p,msg = scipy.optimize.leastsq(errfunc,p0[:],args=(_x,_y))
         try:
             p[0]
@@ -173,10 +245,19 @@ class FitFunc(object):
             raise NotImplementedError("base class must be extended for each fit function")
         return fitfunc
 
+    def _get_initial_values(self, parameters=None):
+        p0 = numpy.asarray(self.initial_values())
+        if parameters is not None:
+            try:
+                p0[:] = parameters
+            except ValueError:
+                raise ValueError("Wrong number of custom initital values %r, should be something like %r" % (parameters, p0))
+        return p0
+
     def initial_values(self):
         """List of initital guesses for all parameters p[]"""
         # return [1.0, 2.0, 0.5]
-        raise NotImplementedError("base class must be extended for each fit function")    
+        raise NotImplementedError("base class must be extended for each fit function")
 
     def fit(self,x):
         """Applies the fit to all *x* values"""
@@ -216,127 +297,20 @@ class FitLin(FitFunc):
     def __repr__(self):
         return "<FitLin"+str(self.parameters)+">"
 
+class FitGauss(FitFunc):
+    """y = f(x) = p[2] * 1/sqrt(2*pi*p[1]**2) * exp(-(x-p[0])**2/(2*p[1]**2))
 
-from scipy.integrate.quadrature import tupleset
+    Fits an un-normalized gaussian (height scaled with parameter p[2]).
 
-def simps_error(y, x=None, dx=1, axis=-1, even='avg'):
-    """Error on integral evaluated with `Simpson's rule`_ from errors of points, y.
-
-    Evaluate the integral with :func:`scipy.integrate.simps`. For a
-    given vector *y* of errors on the function values, the error on
-    the integral is calculated via propagation of errors.
-
-    .. Note: If the spacing is not equal then the error propagation is
-             made with the *approximation* of a constant spacing equal
-             to the average *x* spacing. This should be fixed in a future
-             release.
-
-    :Arguments:
-      *y*
-         errors for the tabulated values of the integrand f
-      *x*
-         values of abscissa at which f was tabulated (can be ``None``
-         and then *dx* should be provided)
-      *dx*
-         constant spacing of the abscissa
-      *axis*
-         axis in *y* along which the data lies
-      *even*
-         see :func:`scipy.integrate.simps` ('avg', 'first', 'last')
-
-    .. _Simpson's rule: http://mathworld.wolfram.com/SimpsonsRule.html
+    * p[0] == mean $\mu$
+    * p[1] == standard deviation $\sigma$
+    * p[2] == scale $a$
     """
-    # copied basic structure from scipy.integrate.quadrature.simps
-    y = numpy.asarray(y)
-    nd = len(y.shape)
-    N = y.shape[axis]
-    if not x is None:
-        x = numpy.asarray(x)
-        if len(x.shape) == 1:
-            shapex = numpy.ones(nd)
-            shapex[axis] = x.shape[0]
-            saveshape = x.shape
-            returnshape = 1
-            x=x.reshape(tuple(shapex))
-        elif len(x.shape) != len(y.shape):
-            raise ValueError, "If given, shape of x must be 1-d or the " \
-                  "same as y."
-        if x.shape[axis] != N:
-            raise ValueError, "If given, length of x along axis must be the " \
-                  "same as y."        
-    if N % 2 == 0:
-        val = 0.0      # holds trapezoidal error**2
-        result = 0.0   # holds Simposon error**2
-        slice1 = (slice(None),)*nd
-        slice2 = (slice(None),)*nd
-        if not even in ['avg', 'last', 'first']:
-            raise ValueError, \
-                  "Parameter 'even' must be 'avg', 'last', or 'first'."
-        # Compute using Simpson's rule on first intervals
-        if even in ['avg', 'first']:
-            slice1 = tupleset(slice1, axis, -1)
-            slice2 = tupleset(slice2, axis, -2)
-            if not x is None:
-                last_dx = x[slice1] - x[slice2]
-            val += (0.5*last_dx)**2 * (y[slice1]+y[slice2])**2  # trapz. error
-            result = _simps_error(y,0,N-3,x,dx,axis)
-        # Compute using Simpson's rule on last set of intervals
-        if even in ['avg', 'last']:
-            slice1 = tupleset(slice1, axis, 0)
-            slice2 = tupleset(slice2, axis, 1)
-            if not x is None:
-                first_dx = x[tuple(slice2)] - x[tuple(slice1)]
-            val += (0.5*first_dx)**2 * (y[slice2]+y[slice1])**2 # trapz. error
-            result += _simps_error(y,1,N-2,x,dx,axis)
-        if even == 'avg':
-            val /= 2.0**2     # error propagation on y=(a1+a2)/2 gives
-            result /= 2.0**2  # dy**2 = (da1**2+da2**2)/2**2 
-            # (although not quite correct as errors da1 and da2 are not independent)
-        result = result + val
-    else:
-        result = _simps_error(y,0,N-2,x,dx,axis)
-    if returnshape:
-        x = x.reshape(saveshape)
-    return numpy.sqrt(result)
-
-def _simps_error(y,start,stop,x,dx,axis):
-    """Squared error on Simpson's rule integration.
-
-    .. Note: If the spacing is not equal then the error propagation is
-             made with the *approximation* of a constant spacing equal
-             to the average spacing.
-
-    :Arguments:
-       *y*
-          errors at function values
-       *start*, *stop*
-          first and last index at which a Simpson 3-point interval starts
-       *x*
-          abscissa values (provide if spacing not equal)
-       *dx*
-          constant spacing (is overridden by *dx*)
-       *axis*
-          axis in *y* along which the data lie
-    """
-    nd = len(y.shape)
-    if start is None:
-        start = 0
-    step = 2
-    all = (slice(None),)*nd
-    slice0 = tupleset(all, axis, slice(start, stop, step))
-    slice1 = tupleset(all, axis, slice(start+1, stop+1, step))
-    slice2 = tupleset(all, axis, slice(start+2, stop+2, step))
-
-    # Simpson error propgation for points 0 <= i <= 2M
-    # error**2 = (h/3)**2 + sum_k=1^M dy[2k]**2 + (4*dy[2k-1])**2 + dy[2k-2]**2
-
-    if x is None:  # Even spaced Simpson's rule.        
-        h = dx
-    else:
-        # simplified assumption: all spacings are equal... or at least so
-        # on average
-        h = numpy.mean(x[start+1:stop+2] - x[start:stop+1])
-
-    result = numpy.add.reduce((h/3.0)**2 * ((y[slice0])**2+(4*y[slice1])**2+(y[slice2])**2), axis)
-
-    return result
+    def f_factory(self):
+        def fitfunc(p,x):
+            return p[2] * 1.0/(p[1]*numpy.sqrt(2*numpy.pi)) * numpy.exp(-(x-p[0])**2/(2*p[1]**2))
+        return fitfunc
+    def initial_values(self):
+        return [0.0,1.0,0.0]
+    def __repr__(self):
+        return "<FitGauss"+str(self.parameters)+">"
