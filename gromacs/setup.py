@@ -248,22 +248,54 @@ def make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None):
     logger.info("Building the main index file %(ndx)r..." % vars())
 
     # pass 1: select
-    # empty command '' important to get final list of groups
-    rc,out,nothing = gromacs.make_ndx(f=struct, n=oldndx, o=ndx, stdout=False,
-                                      input=(selection, '', 'q'))
+    # get a list of groups
+    # need the first "" to get make_ndx to spit out the group list.
+    _,out,_ = gromacs.make_ndx(f=struct, n=oldndx, o=ndx, stdout=False,
+                                      input=("", "q"))
     groups = gromacs.cbook.parse_ndxlist(out)
-    last = len(groups) - 1
+    
+    # find the matching groups, 
+    # there is a nasty bug in GROMACS where make_ndx may have multiple
+    # groups, which caused the previous approach to fail big time. 
+    # this is a work around the make_ndx bug.
+    # striping the "" allows compatibility with existing make_ndx selection commands. 
+    selection = selection.strip("\"")
+    
+    selected_groups = [g for g in groups if g['name'].lower() == selection.lower()]
+    
+    if len(selected_groups) > 1:
+        logging.warn("make_ndx created duplicated groups, performing work around")
+        
+    if len(selected_groups) <= 0:
+        msg = "no groups found for selection {}, available groups are {}".format(selection, groups)
+        logging.error(msg)
+        raise ValueError(msg)
+    
+    # Found at least one matching group, we're OK
+        
+    # index of last group    
+    last = len(groups) - 1               
     assert last == groups[-1]['nr']
+    
+    group = selected_groups[0]
 
     # pass 2:
     # 1) last group is __main__
     # 2) __environment__ is everything else (eg SOL, ions, ...)
-    rc,out,nothing = gromacs.make_ndx(f=struct, n=ndx, o=ndx,
+    _,out,_ = gromacs.make_ndx(f=struct, n=ndx, o=ndx,
                                       stdout=False,
-                                      input=('name %d __main__' % last,
-                                             '! "__main__"',  # is now group last+1
-                                             'name %d __environment__' % (last+1),
-                                             '', 'q'))
+                                             # make copy selected group, this now has index last + 1 
+                                      input=("{}".format(group['nr']),
+                                             # rename this to __main__
+                                             "name {} __main__".format(last+1),
+                                             # make a complement to this group, it get index last + 2
+                                             "! \"__main__\"",  
+                                             # rename this to __environment__
+                                             "name {} __environment__".format(last+2),
+                                             # list the groups
+                                             "",
+                                             # quit 
+                                             "q"))
     return gromacs.cbook.parse_ndxlist(out)
 
 
