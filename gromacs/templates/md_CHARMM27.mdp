@@ -101,8 +101,12 @@ andersen_seed            = 815131
 
 ; GENERATE VELOCITIES FOR STARTUP RUN
 gen_vel                  = yes
-gen-temp                 = 300
-gen_seed                 = 173545
+gen_temp                 = 300
+gen_seed                 = 173529
+
+; Langevin dynamics
+bd_fric                  = 0
+ld_seed                  = 1993
 
 ; OPTIONS FOR BONDS    
 ; CHARMM uses SHAKE with tol 1e-6

@@ -18,7 +18,6 @@ import os.path
 import logging
 logger = logging.getLogger("gromacs.app")
 
-
 def MySimulation(identifier, **kwargs):
     basedir = kwargs.pop("basedir", os.path.curdir)
     prefix = kwargs.pop("prefix", "md")
@@ -42,6 +41,20 @@ if __name__ == "__main__":
                       help="filenames are constructed from the default "
                       "prefix as PREFIX.xtc, PREFIX.tpr, etc (equivalent "
                       "to the -deffnm in Gromacs [%default]")
+    parser.add_option("-n", "--ndx", dest="ndx", metavar="FILE",
+                      default=None, 
+                      help="custom index file that contains GROUP to "
+                      "center on [%default]")
+    parser.add_option("-g", "--center-group", dest="group", metavar="GROUP",
+                      default="protein",
+                      help="center trajectory on custom index group GROUP. "
+                      "For special index groups also provide the index file "
+                      "with the --ndx option [%default]")
+    parser.add_option("--force", dest="force", action="store_true",
+                      default=False,
+                      help="always regenerate trajectories, even if they already "
+                      "exist (note that Gromacs will leave behind backup trajectories)")
+                      
     opts, args = parser.parse_args()
 
     gromacs.start_logging()
@@ -52,8 +65,9 @@ if __name__ == "__main__":
 
     for identifier in args:
         logger.info("Processing %(identifier)r...", vars())
-        S = MySimulation(identifier, prefix=opts.prefix, basedir=opts.basedir)
-        S.run('StripWater')
+        S = MySimulation(identifier, ndx=opts.ndx,
+                         prefix=opts.prefix, basedir=opts.basedir)
+        S.run('StripWater', input=[opts.group, "system"], force=opts.force)
         logger.info("Completed %(identifier)r", vars())
 
     gromacs.stop_logging()
