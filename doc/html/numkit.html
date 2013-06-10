@@ -8,15 +8,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>numkit — Numerical analysis toolkit &mdash; GromacsWrapper 0.3.1-dev documentation</title>
+    <title>numkit — Numerical analysis toolkit &mdash; GromacsWrapper 0.3.2-dev documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.3.1-dev',
+        VERSION:     '0.3.2-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,8 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper 0.3.1-dev documentation" href="index.html" />
+    <link rel="shortcut icon" href="_static/GromacsWrapper_logo_32x32.ico"/>
+    <link rel="top" title="GromacsWrapper 0.3.2-dev documentation" href="index.html" />
     <link rel="up" title="Auxiliary modules" href="auxiliary.html" />
     <link rel="next" title="numkit.fitting — Fitting data" href="numkit/fitting.html" />
     <link rel="prev" title="Auxiliary modules" href="auxiliary.html" /> 
@@ -46,52 +47,15 @@
         <li class="right" >
           <a href="auxiliary.html" title="Auxiliary modules"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li>
+        <li><a href="index.html">GromacsWrapper 0.3.2-dev documentation</a> &raquo;</li>
           <li><a href="auxiliary.html" accesskey="U">Auxiliary modules</a> &raquo;</li> 
       </ul>
-    </div>  
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body">
-            
-  <div class="section" id="numkit-numerical-analysis-toolkit">
-<h1><tt class="xref py py-mod docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit<a class="headerlink" href="#numkit-numerical-analysis-toolkit" title="Permalink to this headline">¶</a></h1>
-<p>A collection of functions and classes built on top of NumPy and SciPy
-to aid the numerical analysis of data. It is geared towards the use of
-data coming from molecular simulations, namely time series. It is used
-in <a class="reference internal" href="analysis/core.html#module-gromacs.analysis" title="gromacs.analysis"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.analysis</span></tt></a> and <tt class="xref py py-mod docutils literal"><span class="pre">gromacs.fileformats</span></tt>.</p>
-<p>Please note that these functions are provided &#8220;as is&#8221; and no guarantee
-is given that they are accurate or free from error. Bug reports and
-test cases are very welcome. Please submit them through the Github
-<a class="reference external" href="http://github.com/orbeckst/GromacsWrapper/issues">Issue Tracker</a>.</p>
-<div class="admonition-see-also admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last">Core functionality is based on <a class="reference external" href="http://www.scipy.org/">SciPy</a> (<tt class="xref py py-mod docutils literal"><span class="pre">scipy</span></tt> module).</p>
-</div>
-<p>Contents:</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="numkit/fitting.html"><tt class="docutils literal"><span class="pre">numkit.fitting</span></tt> &#8212; Fitting data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="numkit/timeseries.html"><tt class="docutils literal"><span class="pre">numkit.timeseries</span></tt> &#8212; Time series manipulation and analysis</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="numkit/timeseries.html#correlations">Correlations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="numkit/timeseries.html#coarse-graining-time-series">Coarse graining time series</a></li>
-<li class="toctree-l2"><a class="reference internal" href="numkit/timeseries.html#smoothing-time-series">Smoothing time series</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="numkit/integration.html"><tt class="docutils literal"><span class="pre">numkit.integration</span></tt> &#8212; Numerical integration of data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="numkit/observables.html"><tt class="docutils literal"><span class="pre">numkit.observables</span></tt> &#8212; Observables as quantities with errors</a></li>
-</ul>
-</div>
-</div>
-
-
-          </div>
-        </div>
-      </div>
+    </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/GromacsWrapper_logo_200x200.png" alt="Logo"/>
+            </a></p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="auxiliary.html"
                         title="previous chapter">Auxiliary modules</a></p>
@@ -118,6 +82,51 @@ test cases are very welcome. Please submit them through the Github
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="numkit-numerical-analysis-toolkit">
+<h1><tt class="xref py py-mod docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit<a class="headerlink" href="#numkit-numerical-analysis-toolkit" title="Permalink to this headline">¶</a></h1>
+<p>A collection of functions and classes built on top of NumPy and SciPy
+to aid the numerical analysis of data. It is geared towards the use of
+data coming from molecular simulations, namely time series. It is used
+in <a class="reference internal" href="analysis/core.html#module-gromacs.analysis" title="gromacs.analysis"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.analysis</span></tt></a> and <tt class="xref py py-mod docutils literal"><span class="pre">gromacs.fileformats</span></tt>.</p>
+<p>Please note that these functions are provided &#8220;as is&#8221; and no guarantee
+is given that they are accurate or free from error. Bug reports and
+test cases are very welcome. Please submit them through the Github
+<a class="reference external" href="http://github.com/orbeckst/GromacsWrapper/issues">Issue Tracker</a>.</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">Core functionality is based on <a class="reference external" href="http://www.scipy.org/">SciPy</a> (<tt class="xref py py-mod docutils literal"><span class="pre">scipy</span></tt> module).</p>
+</div>
+<p>Contents:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="numkit/fitting.html"><tt class="docutils literal"><span class="pre">numkit.fitting</span></tt> &#8212; Fitting data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numkit/fitting.html#example">Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numkit/fitting.html#creating-new-fit-functions">Creating new fit functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numkit/fitting.html#functions-and-classes">Functions and classes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numkit/timeseries.html"><tt class="docutils literal"><span class="pre">numkit.timeseries</span></tt> &#8212; Time series manipulation and analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numkit/timeseries.html#correlations">Correlations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numkit/timeseries.html#coarse-graining-time-series">Coarse graining time series</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numkit/timeseries.html#smoothing-time-series">Smoothing time series</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numkit/integration.html"><tt class="docutils literal"><span class="pre">numkit.integration</span></tt> &#8212; Numerical integration of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numkit/observables.html"><tt class="docutils literal"><span class="pre">numkit.observables</span></tt> &#8212; Observables as quantities with errors</a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
       <div class="clearer"></div>
     </div>
     <div class="related">
@@ -135,14 +144,14 @@ test cases are very welcome. Please submit them through the Github
         <li class="right" >
           <a href="auxiliary.html" title="Auxiliary modules"
              >previous</a> |</li>
-        <li><a href="index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li>
+        <li><a href="index.html">GromacsWrapper 0.3.2-dev documentation</a> &raquo;</li>
           <li><a href="auxiliary.html" >Auxiliary modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on May 12, 2012.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+        &copy; Copyright 2009-2012, Oliver Beckstein, Jan Domański.
+      Last updated on Mar 12, 2013.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

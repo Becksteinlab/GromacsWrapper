@@ -19,6 +19,23 @@ that they are accurate or free from error. Bug reports and test cases are very
 welcome. Please submit them through the Github `Issue Tracker`_.
 
 .. _Issue Tracker: http://github.com/orbeckst/GromacsWrapper/issues
+
+The following modules are available and can be imported when needed:
+
+:mod:`numkit.fitting`
+   Simple least square fitting routines.
+
+:mod:`numkit.timeseries`
+   Analysing time series (including correlation functions and coarse
+   graining)
+
+:mod:`numkit.integration`
+   Numerical integration of data (e.g. integration with error bars)
+
+:mod:`numkit.observables`
+   Defines an object :class:`~numkit.observables.QuantityWithError`
+   that automatically performs simple error propagation arithmetic.
+
 """
 
 __all__ = ['fitting', 'timeseries', 'integration', 'observables']

@@ -36,7 +36,7 @@ master_doc = 'index'
 
 # General substitutions.
 project = u'GromacsWrapper'
-copyright = u'2009-2011, Oliver Beckstein'
+copyright = u'2009-2012, Oliver Beckstein, Jan Domański'
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
@@ -83,10 +83,9 @@ pygments_style = 'sphinx'
 # Options for HTML output
 # -----------------------
 
-# The style sheet to use for HTML and HTML Help pages. A file of that name
-# must exist either in Sphinx' static/ path, or in one of the custom paths
-# given in html_static_path.
-html_style = 'default.css'
+# The theme to use for HTML and HTML Help pages.  See the documentation for
+# a list of builtin themes.
+html_theme = 'sphinxdoc'
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -97,12 +96,12 @@ html_style = 'default.css'
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-#html_logo = None
+html_logo = "logos/GromacsWrapper_logo_200x200.png"
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
-#html_favicon = None
+html_favicon = "logos/GromacsWrapper_logo_32x32.ico"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

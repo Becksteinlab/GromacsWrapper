@@ -8,15 +8,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>GromacsWrapper &mdash; GromacsWrapper 0.3.1-dev documentation</title>
+    <title>README: GromacsWrapper &mdash; GromacsWrapper 0.3.2-dev documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.3.1-dev',
+        VERSION:     '0.3.2-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,9 +25,11 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper 0.3.1-dev documentation" href="index.html" />
+    <link rel="shortcut icon" href="_static/GromacsWrapper_logo_32x32.ico"/>
+    <link rel="top" title="GromacsWrapper 0.3.2-dev documentation" href="index.html" />
+    <link rel="up" title="Installation" href="installation.html" />
     <link rel="next" title="INSTALL" href="INSTALL.html" />
-    <link rel="prev" title="GromacsWrapper — a python framework for Gromacs" href="index.html" /> 
+    <link rel="prev" title="Installation" href="installation.html" /> 
   </head>
   <body>
     <div class="related">
@@ -43,19 +45,63 @@
           <a href="INSTALL.html" title="INSTALL"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="GromacsWrapper — a python framework for Gromacs"
+          <a href="installation.html" title="Installation"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li> 
+        <li><a href="index.html">GromacsWrapper 0.3.2-dev documentation</a> &raquo;</li>
+          <li><a href="installation.html" accesskey="U">Installation</a> &raquo;</li> 
       </ul>
-    </div>  
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/GromacsWrapper_logo_200x200.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">README: GromacsWrapper</a><ul>
+<li><a class="reference internal" href="#licence">Licence</a></li>
+<li><a class="reference internal" href="#included-software">Included Software</a></li>
+<li><a class="reference internal" href="#citing">Citing</a></li>
+<li><a class="reference internal" href="#download-and-availability">Download and Availability</a></li>
+<li><a class="reference internal" href="#contact">Contact</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="installation.html"
+                        title="previous chapter">Installation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="INSTALL.html"
+                        title="next chapter">INSTALL</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/README.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="gromacswrapper">
-<h1>GromacsWrapper<a class="headerlink" href="#gromacswrapper" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="readme-gromacswrapper">
+<h1>README: GromacsWrapper<a class="headerlink" href="#readme-gromacswrapper" title="Permalink to this headline">¶</a></h1>
 <p>A primitive wrapper around the Gromacs tools until we have proper
 python bindings. It also provides a small library (cook book) of
 often-used recipes and an optional analysis module with plugins for
@@ -77,8 +123,7 @@ except as noted below. See the file COPYING for the licensing terms
 for all modules.</p>
 <p>The <strong>vmd</strong> module is made available under the <a class="reference external" href="http://www.gnu.org/licenses/lgpl.html">LGPL v3</a> (see COPYING
 and COPYING.LESSER). <strong>numkit</strong> is provided under the &#8220;<a class="reference external" href="http://www.opensource.org/licenses/bsd-license.php">Modified BSD
-Licence</a>&#8221; (as it contains some code from <a class="reference external" href="http://www.scipy.org">scipy</a>). <strong>edPDB</strong> is
-published under the <a class="reference external" href="http://www.biopython.org/DIST/LICENSE">Biopython Licence</a>.</p>
+Licence</a>&#8221; (as it contains some code from <a class="reference external" href="http://www.scipy.org">scipy</a>).</p>
 </div>
 <div class="section" id="included-software">
 <h2>Included Software<a class="headerlink" href="#included-software" title="Permalink to this headline">¶</a></h2>
@@ -94,7 +139,7 @@ original software or files.</p>
 <dt>GridMat-MD</dt>
 <dd><ul class="first last simple">
 <li>Grid-based Membrane Analysis Tool for use with Molecular Dynamics
-<a class="reference internal" href="analysis/plugins.html#allen2009">[Allen2009]</a></li>
+<a class="reference internal" href="#allen2009">[Allen2009]</a></li>
 <li>version: 1.0.2</li>
 <li>license: GPL 3.0</li>
 <li>W. J. Allen, J. A. Lemkul, and D. R. Bevan. (2009) &#8220;GridMAT-MD: A
@@ -130,7 +175,7 @@ grateful if it was acknowledged in text as</p>
 <div>&#8221;... used GromacsWrapper (Oliver Beckstein,
 <a class="reference external" href="http://github.com/orbeckst/GromacsWrapper">http://github.com/orbeckst/GromacsWrapper</a>)&#8221;</div></blockquote>
 <p>or in the Acknowledgements section.</p>
-<p>If you use the <tt class="docutils literal"><span class="pre">gridmatmd</span></tt> plugin also cite <a class="reference internal" href="analysis/plugins.html#allen2009">[Allen2009]</a>.</p>
+<p>If you use the <tt class="docutils literal"><span class="pre">gridmatmd</span></tt> plugin also cite <a class="reference internal" href="#allen2009">[Allen2009]</a>.</p>
 <p>Thank you.</p>
 <p class="rubric">References</p>
 <table class="docutils citation" frame="void" id="allen2009" rules="none">
@@ -165,46 +210,6 @@ e-mail.</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">GromacsWrapper</a><ul>
-<li><a class="reference internal" href="#licence">Licence</a></li>
-<li><a class="reference internal" href="#included-software">Included Software</a></li>
-<li><a class="reference internal" href="#citing">Citing</a></li>
-<li><a class="reference internal" href="#download-and-availability">Download and Availability</a></li>
-<li><a class="reference internal" href="#contact">Contact</a></li>
-</ul>
-</li>
-</ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="index.html"
-                        title="previous chapter">GromacsWrapper &#8212; a python framework for Gromacs</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="INSTALL.html"
-                        title="next chapter">INSTALL</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/README.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
       <div class="clearer"></div>
     </div>
     <div class="related">
@@ -220,15 +225,16 @@ e-mail.</p>
           <a href="INSTALL.html" title="INSTALL"
              >next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="GromacsWrapper — a python framework for Gromacs"
+          <a href="installation.html" title="Installation"
              >previous</a> |</li>
-        <li><a href="index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li> 
+        <li><a href="index.html">GromacsWrapper 0.3.2-dev documentation</a> &raquo;</li>
+          <li><a href="installation.html" >Installation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on May 12, 2012.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+        &copy; Copyright 2009-2012, Oliver Beckstein, Jan Domański.
+      Last updated on Mar 12, 2013.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

@@ -8,15 +8,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.setup – Setting up a Gromacs MD run &mdash; GromacsWrapper 0.3.1-dev documentation</title>
+    <title>gromacs.setup – Setting up a Gromacs MD run &mdash; GromacsWrapper 0.3.2-dev documentation</title>
     
-    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.3.1-dev',
+        VERSION:     '0.3.2-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,8 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper 0.3.1-dev documentation" href="../../index.html" />
+    <link rel="shortcut icon" href="../../_static/GromacsWrapper_logo_32x32.ico"/>
+    <link rel="top" title="GromacsWrapper 0.3.2-dev documentation" href="../../index.html" />
     <link rel="up" title="Gromacs building blocks" href="../building_blocks.html" />
     <link rel="next" title="gromacs.qsub – utilities for batch submission systems" href="qsub.html" />
     <link rel="prev" title="gromacs.cbook – Gromacs Cook Book" href="cbook.html" /> 
@@ -46,11 +47,53 @@
         <li class="right" >
           <a href="cbook.html" title="gromacs.cbook – Gromacs Cook Book"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.2-dev documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" accesskey="U">Gromacs building blocks</a> &raquo;</li> 
       </ul>
-    </div>  
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/GromacsWrapper_logo_200x200.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">gromacs.setup</span></tt> &#8211; Setting up a Gromacs MD run</a><ul>
+<li><a class="reference internal" href="#user-functions">User functions</a></li>
+<li><a class="reference internal" href="#example">Example</a></li>
+<li><a class="reference internal" href="#id1">User functions</a></li>
+<li><a class="reference internal" href="#helper-functions">Helper functions</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="cbook.html"
+                        title="previous chapter"><tt class="docutils literal docutils literal"><span class="pre">gromacs.cbook</span></tt> &#8211; Gromacs Cook Book</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="qsub.html"
+                        title="next chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">gromacs.qsub</span></tt> &#8211; utilities for batch submission systems</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/gromacs/blocks/setup.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
 
     <div class="document">
       <div class="documentwrapper">
@@ -178,7 +221,7 @@ manually.</p>
 
 <dl class="function">
 <dt id="gromacs.setup.solvate">
-<tt class="descclassname">gromacs.setup.</tt><tt class="descname">solvate</tt><big>(</big><em>struct='top/protein.pdb'</em>, <em>top='top/system.top'</em>, <em>distance=0.90000000000000002</em>, <em>boxtype='dodecahedron'</em>, <em>concentration=0</em>, <em>cation='NA+'</em>, <em>anion='CL-'</em>, <em>water='spc'</em>, <em>solvent_name='SOL'</em>, <em>with_membrane=False</em>, <em>ndx='main.ndx'</em>, <em>mainselection='&quot;Protein&quot;'</em>, <em>dirname='solvate'</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.setup.solvate" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.setup.</tt><tt class="descname">solvate</tt><big>(</big><em>struct='top/protein.pdb'</em>, <em>top='top/system.top'</em>, <em>distance=0.90000000000000002</em>, <em>boxtype='dodecahedron'</em>, <em>concentration=0</em>, <em>cation='NA'</em>, <em>anion='CL'</em>, <em>water='spc'</em>, <em>solvent_name='SOL'</em>, <em>with_membrane=False</em>, <em>ndx='main.ndx'</em>, <em>mainselection='&quot;Protein&quot;'</em>, <em>dirname='solvate'</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.setup.solvate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Put protein into box, add water, add counter-ions.</p>
 <p>Currently this really only supports solutes in water. If you need
 to embedd a protein in a membrane then you will require more
@@ -211,12 +254,13 @@ and the box boundary.
 Set <em>boxtype</em>  to <tt class="docutils literal"><span class="pre">None</span></tt> in order to use a box size in the input
 file (gro or pdb).</p>
 </dd>
-<dt><em>boxtype</em> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dt><em>boxtype</em> or <em>bt</em>: string</dt>
 <dd><p class="first">Any of the box types supported by <tt class="xref py py-class docutils literal"><span class="pre">Editconf</span></tt>
 (triclinic, cubic, dodecahedron, octahedron). Set the box dimensions
 either with <em>distance</em> or the <em>box</em> and <em>angle</em> keywords.</p>
-<p class="last">If set to <tt class="docutils literal"><span class="pre">None</span></tt> it will ignore <em>distance</em> and use the box
+<p>If set to <tt class="docutils literal"><span class="pre">None</span></tt> it will ignore <em>distance</em> and use the box
 inside the <em>struct</em> file.</p>
+<p class="last"><em>bt</em> overrides the value of <em>boxtype</em>.</p>
 </dd>
 <dt><em>box</em></dt>
 <dd><p class="first last">List of three box lengths [A,B,C] that are used by <tt class="xref py py-class docutils literal"><span class="pre">Editconf</span></tt>
@@ -478,7 +522,11 @@ change the <tt class="docutils literal"><span class="pre">define</span></tt> par
 <p class="first admonition-title">Note</p>
 <p class="last">The output frequency is drastically reduced for position
 restraint runs by default. Set the corresponding <tt class="docutils literal"><span class="pre">nst*</span></tt>
-variables if you require more output.</p>
+variables if you require more output. The <a class="reference external" href="http://manual.gromacs.org/online/mdp_opt.html#pc">pressure coupling</a>
+option <em>refcoord_scaling</em> is set to &#8220;com&#8221; by default (but can
+be changed via <em>kwargs</em>) and the pressure coupling
+algorithm itself is set to <em>Pcoupl</em> = &#8220;Berendsen&#8221; to
+run a stable simulation.</p>
 </div>
 </dd></dl>
 
@@ -662,45 +710,6 @@ c = n/V = m/(V*M) = rho/M  = 55.345 mol/L.</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="../../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">gromacs.setup</span></tt> &#8211; Setting up a Gromacs MD run</a><ul>
-<li><a class="reference internal" href="#user-functions">User functions</a></li>
-<li><a class="reference internal" href="#example">Example</a></li>
-<li><a class="reference internal" href="#id1">User functions</a></li>
-<li><a class="reference internal" href="#helper-functions">Helper functions</a></li>
-</ul>
-</li>
-</ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="cbook.html"
-                        title="previous chapter"><tt class="docutils literal docutils literal"><span class="pre">gromacs.cbook</span></tt> &#8211; Gromacs Cook Book</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="qsub.html"
-                        title="next chapter"><tt class="docutils literal docutils literal docutils literal"><span class="pre">gromacs.qsub</span></tt> &#8211; utilities for batch submission systems</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../../_sources/gromacs/blocks/setup.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
       <div class="clearer"></div>
     </div>
     <div class="related">
@@ -718,15 +727,15 @@ c = n/V = m/(V*M) = rho/M  = 55.345 mol/L.</p>
         <li class="right" >
           <a href="cbook.html" title="gromacs.cbook – Gromacs Cook Book"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.2-dev documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../building_blocks.html" >Gromacs building blocks</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on May 12, 2012.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+        &copy; Copyright 2009-2012, Oliver Beckstein, Jan Domański.
+      Last updated on Mar 12, 2013.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

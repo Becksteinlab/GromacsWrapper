@@ -1,0 +1,102 @@
+; $Id$
+; Template for MD with OPLS-AA and GPU (Gromacs 4.6)
+;
+; ==================================================================
+;      DO NOT USE THIS INPUT FILE WITHOUT CHECKING ALL SETTINGS.
+; *YOU* ARE SOLELY RESPONSIBLE FOR CORRECT INPUT TO YOUR SIMULATION.
+; ==================================================================
+
+include                  = -I. -I.. -I../top
+define                   =
+
+integrator               = md
+tinit                    = 0.0
+dt                       = 0.002
+nsteps                   = 50000000
+
+nstxout                  = 50000
+nstvout                  = 50000
+nstfout                  = 0
+; Output frequency for energies to log file and energy file
+nstlog                   = 500
+nstenergy                = 500
+; Output frequency and precision for xtc file
+nstxtcout                = 500
+xtc-precision            = 1000
+
+
+comm-mode                = Linear
+nstcomm                  = 1000
+comm-grps                = SYSTEM
+
+; NEIGHBORSEARCHING PARAMETERS
+; nblist update frequency
+nstlist                  = 20
+; ns algorithm (simple or grid)
+ns_type                  = grid
+; Periodic boundary conditions: xyz, no, xy
+pbc                      = xyz
+periodic_molecules       = no
+; nblist cut-off        
+rlist                    = 1.0
+; for GPU runs
+cutoff-scheme            = Verlet
+
+; OPTIONS FOR ELECTROSTATICS AND VDW
+; Method for doing electrostatics
+coulombtype              = PME
+rcoulomb-switch          = 0
+rcoulomb                 = 1.0
+; Relative dielectric constant for the medium and the reaction field
+epsilon_r                = 1
+epsilon_rf               = 1
+; Method for doing Van der Waals
+vdw-type                 = Cut-off
+; cut-off lengths       
+rvdw-switch              = 0
+rvdw                     = 1.0
+; Apply long range dispersion corrections for Energy and Pressure
+DispCorr                 = EnerPres
+; Seperate tables between energy group pairs
+energygrp_table          = 
+; Spacing for the PME/PPPM FFT grid
+fourierspacing           = 0.12
+; FFT grid size, when a value is 0 fourierspacing will be used
+fourier_nx               = 0
+fourier_ny               = 0
+fourier_nz               = 0
+; EWALD/PME/PPPM parameters
+pme_order                = 4
+ewald_rtol               = 1e-05
+ewald_geometry           = 3d
+epsilon_surface          = 0
+optimize_fft             = yes
+
+; OPTIONS FOR WEAK COUPLING ALGORITHMS
+; Temperature coupling
+Tcoupl                   = v-rescale
+tau_t                    = 0.1 0.1
+tc-grps                  = __main__ __environment__
+ref_t                    = 300 300
+; Pressure coupling
+Pcoupl                   = parrinello-rahman
+Pcoupltype               = isotropic
+; Time constant (ps), compressibility (1/bar) and reference P (bar)
+tau_p                    = 1.0
+compressibility          = 4.5e-5
+ref_p                    = 1.0
+; Scaling of reference coordinates, No, All or COM
+refcoord_scaling         = No
+; Random seed for Andersen thermostat
+andersen_seed            = 815131
+
+; GENERATE VELOCITIES FOR STARTUP RUN
+gen_vel                  = yes
+gen-temp                 = 300
+gen_seed                 = 173545
+
+; OPTIONS FOR BONDS    
+constraints              = hbonds
+constraint-algorithm     = Lincs
+lincs-order              = 4
+lincs-iter               = 1

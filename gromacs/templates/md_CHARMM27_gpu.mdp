@@ -1,0 +1,124 @@
+; Template for MD with CHARMM27 and GPU
+; (tried to approximate typical CHARMM NBOND options)
+; http://www.charmm.org/documentation/c35b1/nbonds.html
+; http://www.charmm.org/documentation/c35b1/ewald.html
+;
+; ==================================================================
+;      DO NOT USE THIS INPUT FILE WITHOUT CHECKING ALL SETTINGS.
+; *YOU* ARE SOLELY RESPONSIBLE FOR CORRECT INPUT TO YOUR SIMULATION.
+;  
+; THE CURRENT GPU CODE (Sept 2012) DOES NOT SUPPORT THE RECOMMENDED
+;    VDW NON-BONDED OPTIONS, WHICH HAVE BEEN REPLACED WITH PLAIN 
+; CUT-OFFS. THIS HAS NOT BEEN CHECKED THOROUGHLY AND MIGHT PRODUCE
+; WRONG RESULTS, ESPECIALLY WHEN USED WITH LIPID BILAYERS.
+; ==================================================================
+
+include                  = -I. -I.. -I../top
+define                   =
+
+integrator               = md
+tinit                    = 0.0
+dt                       = 0.002
+nsteps                   = 50000000
+
+nstxout                  = 50000
+nstvout                  = 50000
+nstfout                  = 0
+; Output frequency for energies to log file and energy file
+nstlog                   = 500
+nstenergy                = 500
+; Output frequency and precision for xtc file
+nstxtcout                = 500
+xtc-precision            = 1000
+
+
+comm-mode                = Linear
+nstcomm                  = 1000
+comm-grps                = SYSTEM
+
+; NEIGHBORSEARCHING PARAMETERS
+; nblist update frequency
+nstlist                  = 20
+; ns algorithm (simple or grid)
+ns_type                  = grid
+; Periodic boundary conditions: xyz, no, xy
+pbc                      = xyz
+periodic_molecules       = no
+; nblist cut-off
+; NBOND CUTNB  (see notes on ELEC below)
+; NOTE: rlist cannot be set to 1.4 because Gromacs only allows 
+; rlist == rcoulomb with PME.
+rlist                    = 1.2
+rlistlong                = 1.4
+; Verlet scheme for GPU
+cutoff-scheme            = Verlet
+
+; OPTIONS FOR ELECTROSTATICS AND VDW
+; Method for doing electrostatics
+; From the CHARMM docs (ewald.doc):
+;   NBOND EWALD PMEWald KAPPa 0.34 ORDEr 6 CTOFNB 12.0 CUTNB 14.0
+coulombtype              = PME
+rcoulomb                 = 1.2
+; Relative dielectric constant for the medium and the reaction field
+epsilon_r                = 1
+epsilon_rf               = 1
+; Method for doing Van der Waals
+;   NBOND VATOM VSWI CTONNB 10.0 CTOFNB 12.0 CUTNB 14.0
+;; recommended options cannot be used because the current 
+;; GPU version of Gromacs only supports cut-off
+vdw-type                 = cut-off
+rvdw                     = 1.2
+; recommended options:
+;;vdw-type                 = Switch
+; cut-off lengths       
+;;rvdw-switch              = 0.8
+;;rvdw                     = 1.2
+; Apply long range dispersion corrections for Energy and Pressure 
+;   NBOND LRC
+DispCorr                 = EnerPres
+; Seperate tables between energy group pairs
+energygrp_table          = 
+; Spacing for the PME/PPPM FFT grid
+; CHARMM: EWALD recommended spacing: 0.8 A - 1.2 A and 6th Order spline
+fourierspacing           = 0.12
+; FFT grid size, when a value is 0 fourierspacing will be used
+fourier_nx               = 0
+fourier_ny               = 0
+fourier_nz               = 0
+; EWALD/PME/PPPM parameters
+; (possibly increase pme_order to 6 to match the CHARMM recommendation)
+pme_order                = 4
+ewald_rtol               = 1e-05
+ewald_geometry           = 3d
+epsilon_surface          = 0
+optimize_fft             = yes
+
+; OPTIONS FOR WEAK COUPLING ALGORITHMS
+; Temperature coupling
+Tcoupl                   = v-rescale
+tau_t                    = 0.1 0.1
+tc-grps                  = __main__ __environment__
+ref_t                    = 300 300
+; Pressure coupling
+Pcoupl                   = parrinello-rahman
+Pcoupltype               = isotropic
+; Time constant (ps), compressibility (1/bar) and reference P (bar)
+tau_p                    = 0.5
+compressibility          = 4.5e-5
+ref_p                    = 1.0
+; Scaling of reference coordinates, No, All or COM
+refcoord_scaling         = No
+; Random seed for Andersen thermostat
+andersen_seed            = 815131
+
+; GENERATE VELOCITIES FOR STARTUP RUN
+gen_vel                  = yes
+gen-temp                 = 300
+gen_seed                 = 173545
+
+; OPTIONS FOR BONDS    
+; CHARMM uses SHAKE with tol 1e-6
+constraints              = hbonds
+constraint-algorithm     = Lincs
+lincs-order              = 4
+lincs-iter               = 1

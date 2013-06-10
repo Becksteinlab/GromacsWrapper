@@ -8,15 +8,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>INSTALL &mdash; GromacsWrapper 0.3.1-dev documentation</title>
+    <title>INSTALL &mdash; GromacsWrapper 0.3.2-dev documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.3.1-dev',
+        VERSION:     '0.3.2-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,9 +25,11 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper 0.3.1-dev documentation" href="index.html" />
+    <link rel="shortcut icon" href="_static/GromacsWrapper_logo_32x32.ico"/>
+    <link rel="top" title="GromacsWrapper 0.3.2-dev documentation" href="index.html" />
+    <link rel="up" title="Installation" href="installation.html" />
     <link rel="next" title="Gromacs package" href="gromacs.html" />
-    <link rel="prev" title="GromacsWrapper" href="README.html" /> 
+    <link rel="prev" title="README: GromacsWrapper" href="README.html" /> 
   </head>
   <body>
     <div class="related">
@@ -43,11 +45,68 @@
           <a href="gromacs.html" title="Gromacs package"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="README.html" title="GromacsWrapper"
+          <a href="README.html" title="README: GromacsWrapper"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li> 
+        <li><a href="index.html">GromacsWrapper 0.3.2-dev documentation</a> &raquo;</li>
+          <li><a href="installation.html" accesskey="U">Installation</a> &raquo;</li> 
       </ul>
-    </div>  
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/GromacsWrapper_logo_200x200.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">INSTALL</a><ul>
+<li><a class="reference internal" href="#quick-installation-instructions">Quick installation instructions</a></li>
+<li><a class="reference internal" href="#manual-download">Manual Download</a></li>
+<li><a class="reference internal" href="#source-code-access">Source code access</a></li>
+<li><a class="reference internal" href="#requirements">Requirements</a><ul>
+<li><a class="reference internal" href="#system-requirements">System requirements</a></li>
+<li><a class="reference internal" href="#required-python-modules">Required python modules</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#additional-instructions">Additional instructions</a><ul>
+<li><a class="reference internal" href="#installing-all-packages-and-requirements">Installing <em>all</em> packages and requirements</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
+<li><a class="reference internal" href="#installing-in-non-standard-locations">Installing in non-standard locations</a></li>
+<li><a class="reference internal" href="#easy-install-import-error">easy_install import error</a></li>
+<li><a class="reference internal" href="#could-not-find-matplotlib">Could not find matplotlib</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="README.html"
+                        title="previous chapter">README: GromacsWrapper</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="gromacs.html"
+                        title="next chapter">Gromacs package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/INSTALL.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
 
     <div class="document">
       <div class="documentwrapper">
@@ -129,7 +188,7 @@ versions will likely fail.</p>
 <p>The basic package makes use of <a class="reference external" href="http://numpy.scipy.org">numpy</a> and can use <a class="reference external" href="http://matplotlib.sourceforge.net/">matplotlib</a> (in the
 form of the <tt class="docutils literal"><span class="pre">pylab</span></tt> package). Only <a class="reference external" href="http://numpy.scipy.org">numpy</a> is immediately required (and
 automatically installed with <tt class="docutils literal"><span class="pre">easy_install</span></tt>).</p>
-<p>For the <a class="reference internal" href="analysis/core.html#module-gromacs.analysis" title="gromacs.analysis"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.analysis</span></tt></a> library additional packages are required:</p>
+<p>For the <tt class="xref py py-mod docutils literal"><span class="pre">gromacs.analysis</span></tt> library additional packages are required:</p>
 <blockquote>
 <div><table border="1" class="docutils">
 <colgroup>
@@ -254,59 +313,6 @@ installed matplotlib.</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">INSTALL</a><ul>
-<li><a class="reference internal" href="#quick-installation-instructions">Quick installation instructions</a></li>
-<li><a class="reference internal" href="#manual-download">Manual Download</a></li>
-<li><a class="reference internal" href="#source-code-access">Source code access</a></li>
-<li><a class="reference internal" href="#requirements">Requirements</a><ul>
-<li><a class="reference internal" href="#system-requirements">System requirements</a></li>
-<li><a class="reference internal" href="#required-python-modules">Required python modules</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#additional-instructions">Additional instructions</a><ul>
-<li><a class="reference internal" href="#installing-all-packages-and-requirements">Installing <em>all</em> packages and requirements</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
-<li><a class="reference internal" href="#installing-in-non-standard-locations">Installing in non-standard locations</a></li>
-<li><a class="reference internal" href="#easy-install-import-error">easy_install import error</a></li>
-<li><a class="reference internal" href="#could-not-find-matplotlib">Could not find matplotlib</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="README.html"
-                        title="previous chapter">GromacsWrapper</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="gromacs.html"
-                        title="next chapter">Gromacs package</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/INSTALL.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
       <div class="clearer"></div>
     </div>
     <div class="related">
@@ -322,15 +328,16 @@ installed matplotlib.</p>
           <a href="gromacs.html" title="Gromacs package"
              >next</a> |</li>
         <li class="right" >
-          <a href="README.html" title="GromacsWrapper"
+          <a href="README.html" title="README: GromacsWrapper"
              >previous</a> |</li>
-        <li><a href="index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li> 
+        <li><a href="index.html">GromacsWrapper 0.3.2-dev documentation</a> &raquo;</li>
+          <li><a href="installation.html" >Installation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on May 12, 2012.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+        &copy; Copyright 2009-2012, Oliver Beckstein, Jan Domański.
+      Last updated on Mar 12, 2013.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

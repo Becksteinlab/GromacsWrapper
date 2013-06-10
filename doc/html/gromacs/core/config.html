@@ -8,15 +8,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.config – Configuration for GromacsWrapper &mdash; GromacsWrapper 0.3.1-dev documentation</title>
+    <title>gromacs.config – Configuration for GromacsWrapper &mdash; GromacsWrapper 0.3.2-dev documentation</title>
     
-    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.3.1-dev',
+        VERSION:     '0.3.2-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,8 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="GromacsWrapper 0.3.1-dev documentation" href="../../index.html" />
+    <link rel="shortcut icon" href="../../_static/GromacsWrapper_logo_32x32.ico"/>
+    <link rel="top" title="GromacsWrapper 0.3.2-dev documentation" href="../../index.html" />
     <link rel="up" title="Gromacs core modules" href="../core.html" />
     <link rel="next" title="gromacs.environment – Run time modification of behaviour" href="environment.html" />
     <link rel="prev" title="gromacs.core – Core functionality" href="core.html" /> 
@@ -46,11 +47,58 @@
         <li class="right" >
           <a href="core.html" title="gromacs.core – Core functionality"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.2-dev documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" accesskey="U">Gromacs core modules</a> &raquo;</li> 
       </ul>
-    </div>  
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/GromacsWrapper_logo_200x200.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">gromacs.config</span></tt> &#8211; Configuration for GromacsWrapper</a><ul>
+<li><a class="reference internal" href="#configuration-management">Configuration management</a><ul>
+<li><a class="reference internal" href="#users">Users</a></li>
+<li><a class="reference internal" href="#developers">Developers</a></li>
+<li><a class="reference internal" href="#accessing-configuration-and-template-files">Accessing configuration and template files</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#logging">Logging</a></li>
+<li><a class="reference internal" href="#gromacs-tools-and-scripts">Gromacs tools and scripts</a></li>
+<li><a class="reference internal" href="#location-of-template-files">Location of template files</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="core.html"
+                        title="previous chapter"><tt class="docutils literal docutils literal"><span class="pre">gromacs.core</span></tt> &#8211; Core functionality</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="environment.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">gromacs.environment</span></tt> &#8211; Run time modification of behaviour</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/gromacs/core/config.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
 
     <div class="document">
       <div class="documentwrapper">
@@ -186,7 +234,7 @@ and &#8216;1&#8217; also work) silence this function and make it always return <
 values and the user configuration file values.</p>
 <dl class="data">
 <dt id="gromacs.config.cfg">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">cfg</tt><em class="property"> = &lt;gromacs.config.GMXConfigParser instance at 0x101fa5b48&gt;</em><a class="headerlink" href="#gromacs.config.cfg" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">cfg</tt><em class="property"> = &lt;gromacs.config.GMXConfigParser instance at 0x102b02c68&gt;</em><a class="headerlink" href="#gromacs.config.cfg" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference internal" href="#gromacs.config.cfg" title="gromacs.config.cfg"><tt class="xref py py-data docutils literal"><span class="pre">cfg</span></tt></a> is the instance of <a class="reference internal" href="#gromacs.config.GMXConfigParser" title="gromacs.config.GMXConfigParser"><tt class="xref py py-class docutils literal"><span class="pre">GMXConfigParser</span></tt></a> that makes all
 global configuration data accessible</p>
 </dd></dl>
@@ -265,14 +313,14 @@ reasons); the same variable are also available in the dict
 The default value is <tt class="docutils literal"><span class="pre">~/.gromacswrapper</span></tt>.</dd>
 <dt><a class="reference internal" href="#gromacs.config.qscriptdir" title="gromacs.config.qscriptdir"><tt class="xref py py-data docutils literal"><span class="pre">qscriptdir</span></tt></a></dt>
 <dd>Directory to store user supplied queuing system scripts as
-used by <a class="reference internal" href="../blocks/qsub.html#module-gromacs.qsub" title="gromacs.qsub"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.qsub</span></tt></a>.
+used by <tt class="xref py py-mod docutils literal"><span class="pre">gromacs.qsub</span></tt>.
 The default value is <tt class="docutils literal"><span class="pre">~/.gromacswrapper/qscripts</span></tt>.</dd>
 <dt><a class="reference internal" href="#gromacs.config.templatesdir" title="gromacs.config.templatesdir"><tt class="xref py py-data docutils literal"><span class="pre">templatesdir</span></tt></a></dt>
 <dd>Directory to store user supplied template files such as mdp files.
 The default value is <tt class="docutils literal"><span class="pre">~/.gromacswrapper/templates</span></tt>.</dd>
 <dt><a class="reference internal" href="#gromacs.config.managerdir" title="gromacs.config.managerdir"><tt class="xref py py-data docutils literal"><span class="pre">managerdir</span></tt></a></dt>
 <dd>Directory to store configuration files for different queuing system
-managers as used in <a class="reference internal" href="../blocks/manager.html#module-gromacs.manager" title="gromacs.manager"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.manager</span></tt></a>.
+managers as used in <tt class="xref py py-mod docutils literal"><span class="pre">gromacs.manager</span></tt>.
 The default value is <tt class="docutils literal"><span class="pre">~/.gromacswrapper/managers</span></tt>.</dd>
 </dl>
 </dd></dl>
@@ -351,7 +399,7 @@ loglevel <em>INFO</em> (see the python <a class="reference external" href="http:
 <dt id="gromacs.config.logfilename">
 <tt class="descclassname">gromacs.config.</tt><tt class="descname">logfilename</tt><em class="property"> = 'gromacs.log'</em><a class="headerlink" href="#gromacs.config.logfilename" title="Permalink to this definition">¶</a></dt>
 <dd><p>File name for the log file; all gromacs command and many utility functions (e.g. in
-<a class="reference internal" href="../blocks/cbook.html#module-gromacs.cbook" title="gromacs.cbook"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.cbook</span></tt></a> and <a class="reference internal" href="../blocks/setup.html#module-gromacs.setup" title="gromacs.setup"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.setup</span></tt></a>) append messages there. Warnings and
+<tt class="xref py py-mod docutils literal"><span class="pre">gromacs.cbook</span></tt> and <tt class="xref py py-mod docutils literal"><span class="pre">gromacs.setup</span></tt>) append messages there. Warnings and
 errors are also recorded here. The default is <em>gromacs.log</em>.</p>
 </dd></dl>
 
@@ -444,7 +492,7 @@ The default value is <tt class="docutils literal"><span class="pre">~/.gromacswr
 
 <dl class="data">
 <dt id="gromacs.config.templates">
-<tt class="descclassname">gromacs.config.</tt><tt class="descname">templates</tt><em class="property"> = {'md_OPLSAA.mdp': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/md_OPLSAA.mdp', 'em.mdp': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/em.mdp', 'darwin.sh': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/darwin.sh', 'hector.pbs': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/hector.pbs', 'neuron.sge': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/neuron.sge', 'deathspud.sge': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/deathspud.sge', 'hpcx.ll': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/hpcx.ll', 'gromacswrapper.cfg': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/gromacswrapper.cfg', 'glial451.pbs': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/glial451.pbs', 'md_G43a1.mdp': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/md_G43a1.mdp', 'local.sh': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/local.sh', 'md_CHARMM27.mdp': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/md_CHARMM27.mdp', 'astrocyte.sge': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/astrocyte.sge', 'jade.pbs': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/jade.pbs'}</em><a class="headerlink" href="#gromacs.config.templates" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.config.</tt><tt class="descname">templates</tt><em class="property"> = {'md_OPLSAA.mdp': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/md_OPLSAA.mdp', 'em.mdp': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/em.mdp', 'darwin.sh': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/darwin.sh', 'hector.pbs': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/hector.pbs', 'neuron.sge': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/neuron.sge', 'deathspud.sge': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/deathspud.sge', 'hpcx.ll': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/hpcx.ll', 'md_OPLSAA_gpu.mdp': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/md_OPLSAA_gpu.mdp', 'gromacswrapper.cfg': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/gromacswrapper.cfg', 'glial451.pbs': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/glial451.pbs', 'md_G43a1.mdp': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/md_G43a1.mdp', 'local.sh': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/local.sh', 'md_CHARMM27.mdp': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/md_CHARMM27.mdp', 'astrocyte.sge': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/astrocyte.sge', 'jade.pbs': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/jade.pbs', 'md_CHARMM27_gpu.mdp': '/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/md_CHARMM27_gpu.mdp'}</em><a class="headerlink" href="#gromacs.config.templates" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>GromacsWrapper</em> comes with a number of templates for run input files
 and queuing system scripts. They are provided as a convenience and
 examples but <strong>WITHOUT ANY GUARANTEE FOR CORRECTNESS OR SUITABILITY FOR
@@ -458,9 +506,9 @@ code: find the actual file locations from this variable.</p>
 <div><p>These are supplied as examples and there is <strong>NO GUARANTEE THAT THEY
 PRODUCE SENSIBLE OUTPUT</strong> &#8212; check for yourself!  Note that only
 existing parameter names can be modified with
-<a class="reference internal" href="../blocks/cbook.html#gromacs.cbook.edit_mdp" title="gromacs.cbook.edit_mdp"><tt class="xref py py-func docutils literal"><span class="pre">gromacs.cbook.edit_mdp()</span></tt></a> at the moment; if in doubt add the
+<tt class="xref py py-func docutils literal"><span class="pre">gromacs.cbook.edit_mdp()</span></tt> at the moment; if in doubt add the
 parameter with its gromacs default value (or empty values) and
-modify later with <a class="reference internal" href="../blocks/cbook.html#gromacs.cbook.edit_mdp" title="gromacs.cbook.edit_mdp"><tt class="xref py py-func docutils literal"><span class="pre">edit_mdp()</span></tt></a>.</p>
+modify later with <tt class="xref py py-func docutils literal"><span class="pre">edit_mdp()</span></tt>.</p>
 <p>The safest bet is to use one of the <tt class="docutils literal"><span class="pre">mdout.mdp</span></tt> files produced by
 <tt class="xref py py-func docutils literal"><span class="pre">gromacs.grompp()</span></tt> as a template as this mdp contains all
 parameters that are legal in the current version of Gromacs.</p>
@@ -469,7 +517,7 @@ parameters that are legal in the current version of Gromacs.</p>
 <blockquote>
 <div>The queing system scripts are highly specific and you will need to add your
 own into <a class="reference internal" href="#gromacs.config.qscriptdir" title="gromacs.config.qscriptdir"><tt class="xref py py-data docutils literal"><span class="pre">gromacs.config.qscriptdir</span></tt></a>.
-See <a class="reference internal" href="../blocks/qsub.html#module-gromacs.qsub" title="gromacs.qsub"><tt class="xref py py-mod docutils literal"><span class="pre">gromacs.qsub</span></tt></a> for the format and how these files are processed.</div></blockquote>
+See <tt class="xref py py-mod docutils literal"><span class="pre">gromacs.qsub</span></tt> for the format and how these files are processed.</div></blockquote>
 </dd></dl>
 
 <dl class="data">
@@ -483,50 +531,6 @@ See <a class="reference internal" href="../blocks/qsub.html#module-gromacs.qsub"
 
 
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="../../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">gromacs.config</span></tt> &#8211; Configuration for GromacsWrapper</a><ul>
-<li><a class="reference internal" href="#configuration-management">Configuration management</a><ul>
-<li><a class="reference internal" href="#users">Users</a></li>
-<li><a class="reference internal" href="#developers">Developers</a></li>
-<li><a class="reference internal" href="#accessing-configuration-and-template-files">Accessing configuration and template files</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#logging">Logging</a></li>
-<li><a class="reference internal" href="#gromacs-tools-and-scripts">Gromacs tools and scripts</a></li>
-<li><a class="reference internal" href="#location-of-template-files">Location of template files</a></li>
-</ul>
-</li>
-</ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="core.html"
-                        title="previous chapter"><tt class="docutils literal docutils literal"><span class="pre">gromacs.core</span></tt> &#8211; Core functionality</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="environment.html"
-                        title="next chapter"><tt class="docutils literal"><span class="pre">gromacs.environment</span></tt> &#8211; Run time modification of behaviour</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../../_sources/gromacs/core/config.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -546,15 +550,15 @@ See <a class="reference internal" href="../blocks/qsub.html#module-gromacs.qsub"
         <li class="right" >
           <a href="core.html" title="gromacs.core – Core functionality"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper 0.3.1-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.2-dev documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
           <li><a href="../core.html" >Gromacs core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2009-2011, Oliver Beckstein.
-      Last updated on May 12, 2012.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+        &copy; Copyright 2009-2012, Oliver Beckstein, Jan Domański.
+      Last updated on Mar 12, 2013.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>
