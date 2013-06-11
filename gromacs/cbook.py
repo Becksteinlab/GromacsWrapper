@@ -1652,7 +1652,8 @@ class Transformer(utilities.FileUtils):
 
     """
 
-    def __init__(self, s="topol.tpr", f="traj.xtc", n=None, force=None, dirname=os.path.curdir):
+    def __init__(self, s="topol.tpr", f="traj.xtc", n=None, force=None, 
+                 dirname=os.path.curdir, outdir=None):
         """Set up Transformer with structure and trajectory.
 
         Supply *n* = tpr, *f* = xtc (and *n* = ndx) relative to dirname.
@@ -1673,12 +1674,19 @@ class Transformer(utilities.FileUtils):
                 - ``True``: overwrite existing trajectories
                 - ``False``: throw a IOError exception
                 - ``None``: skip existing and log a warning [default]
+           *dirname*
+              directory in which all operations are performed, relative paths
+              are interpreted relative to *dirname* [.]
+           *outdir*
+              directory under which output files are placed; by default
+              the same directory where the input files live
         """
 
         self.tpr = self.filename(s, ext="tpr", use_my_ext=True)
         self.xtc = self.filename(f, ext="xtc", use_my_ext=True)
         self.ndx = n
         self.dirname = dirname
+        self.outdir = utilities.realpath(outdir) if outdir is not None else None
         self.force = force
         self.nowater = {}     # data for trajectory stripped from water
         self.proteinonly = {} # data for a protein-only trajectory
@@ -1696,6 +1704,16 @@ class Transformer(utilities.FileUtils):
     def __repr__(self):
             return "%s(s=%r, f=%r, n=%r, force=%r)" % (self.__class__.__name__,
                                                        self.tpr, self.xtc, self.ndx, self.force)
+    def outfile(self, p):
+        """Path for an output file.
+
+        If :attr:`outdir` is set then the path is
+        ``outdir/basename(p)`` else just ``p``
+        """
+        if self.outdir is not None:
+            return os.path.join(self.outdir, os.path.basename(p))
+        else:
+            return p
 
     def rp(self, *args):
         """Return canonical path to file under *dirname* with components *args*
@@ -1740,7 +1758,7 @@ class Transformer(utilities.FileUtils):
         kwargs.setdefault('s', self.tpr)
         kwargs.setdefault('n', self.ndx)
         kwargs['f'] = self.xtc
-        kwargs.setdefault('o', self.infix_filename(None, self.xtc, '_centfit', 'xtc'))
+        kwargs.setdefault('o', self.outfile(self.infix_filename(None, self.xtc, '_centfit', 'xtc')))
         force = kwargs.pop('force', self.force)
 
         logger.info("Centering and fitting trajectory %(f)r..." % kwargs)
@@ -1804,7 +1822,7 @@ class Transformer(utilities.FileUtils):
         if dt:
             infix_default += '_dt%dps' % int(dt)    # dt in ps
 
-        kwargs.setdefault('o', self.infix_filename(None, self.xtc, infix_default, 'xtc'))
+        kwargs.setdefault('o', self.outfile(self.infix_filename(None, self.xtc, infix_default, 'xtc')))
         fitgroup = kwargs.pop('fitgroup', 'backbone')
         kwargs.setdefault('input', [fitgroup, "system"])
 
@@ -1870,9 +1888,9 @@ class Transformer(utilities.FileUtils):
         """
         force = kwargs.pop('force', self.force)
 
-        newtpr = self.infix_filename(os, self.tpr, '_nowater')
-        newxtc = self.infix_filename(o, self.xtc, '_nowater')
-        newndx = self.infix_filename(on, self.tpr, '_nowater', 'ndx')
+        newtpr = self.outfile(self.infix_filename(os, self.tpr, '_nowater'))
+        newxtc = self.outfile(self.infix_filename(o, self.xtc, '_nowater'))
+        newndx = self.outfile(self.infix_filename(on, self.tpr, '_nowater', 'ndx'))
 
         nowater_ndx = self._join_dirname(newtpr, "nowater.ndx")    # refers to original tpr
 
@@ -1972,9 +1990,9 @@ class Transformer(utilities.FileUtils):
         """
         force = kwargs.pop('force', self.force)
         suffix = 'proteinonly'
-        newtpr = self.infix_filename(os, self.tpr, '_'+suffix)
-        newxtc = self.infix_filename(o, self.xtc, '_'+suffix)
-        newndx = self.infix_filename(on, self.tpr, '_'+suffix, 'ndx')
+        newtpr = self.outfile(self.infix_filename(os, self.tpr, '_'+suffix))
+        newxtc = self.outfile(self.infix_filename(o, self.xtc, '_'+suffix))
+        newndx = self.outfile(self.infix_filename(on, self.tpr, '_'+suffix, 'ndx'))
 
         selection_ndx = suffix+".ndx"    # refers to original tpr
 

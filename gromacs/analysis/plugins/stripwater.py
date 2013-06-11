@@ -77,6 +77,9 @@ class _StripWater(Worker):
           *resn*
              name of the residues that are stripped (typically it is
              safe to leave this at the default 'SOL')
+          *outdir*
+             place generated files in *outdir* instead of the same directory
+             where the input tpr/xtc lived [``None``]
 
         .. Note::
 
@@ -96,6 +99,7 @@ class _StripWater(Worker):
         parameters['resn'] = kwargs.pop('resn', 'SOL')        # residue name to be stripped
         parameters['dt'] = kwargs.pop('dt', None)
         parameters['force'] = kwargs.pop('force', None)
+        parameters['outdir'] = kwargs.pop('outdir', None)
 
         # super class init: do this before doing anything else
         # (also sets up self.parameters and self.results)
@@ -119,7 +123,7 @@ class _StripWater(Worker):
         assert self.simulation is not None
 
         trjdir = os.path.dirname(self.simulation.tpr)
-        self.transformer = gromacs.cbook.Transformer(dirname=trjdir,
+        self.transformer = gromacs.cbook.Transformer(dirname=trjdir, outdir=self.parameters.outdir,
             s=self.simulation.tpr, f=self.simulation.xtc, n=self.simulation.ndx)
 
     # override 'API' methods of base class
