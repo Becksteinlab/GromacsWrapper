@@ -199,7 +199,7 @@ one to fit.
 
 try:
     _define_canned_commands()
-except OSError, ImportError:
+except (OSError, ImportError, GromacsError):
     warnings.warn("Failed to define a number of commands in gromacs.cbook. Most likely the "
                   "Gromacs installation cannot be found --- source GMXRC!",
                   category=GromacsImportWarning)
