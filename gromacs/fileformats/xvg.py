@@ -718,7 +718,10 @@ class XVG(utilities.FileUtils):
         demean = kwargs.pop('demean', False)
 
         # order: (decimate/smooth o slice o transform)(array)
-        data = numpy.asarray(transform(self.array))[columns]
+        try:
+            data = numpy.asarray(transform(self.array))[columns]
+        except IndexError:
+            raise MissingDataError("columns %r are not suitable to index the transformed array, possibly not eneough data" % columns)
         if data.shape[-1] == 0:
             raise MissingDataError("There is no data to be plotted.")
         a = numpy.zeros((data.shape[0], maxpoints), dtype=numpy.float64)
