@@ -62,7 +62,7 @@ if __name__ == "__main__":
         logger.fatal("Something went wrong during joining (see below)")
         logger.fatal("To recover, manually move the processed parts from %r back to %r", partsdir_path, opts.basedir)
         logger.fatal("It is also recommended to delete %(fulldir_path)r and start from the beginning", vars())
-        logger.exception()
+        logger.exception("See stacktrace for details")
         raise
 
     logger.info("Joined parts for %(prefix)r in %(fulldir_path)r", vars())
