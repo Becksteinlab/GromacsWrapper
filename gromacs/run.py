@@ -47,6 +47,13 @@ class MDrunner(utilities.FileUtils):
     :meth:`posthook` that are called right before and after the
     process is started. If they are overriden appropriately then they
     can be used to set up a mpi environment.
+
+    The :meth:`run` method can take arguments for the
+    :program:`mpiexec` launcher but it can also be used to supersede
+    the arguments for :program:`mdrun`.
+
+    .. Note:: Changing :program:`mdrun` arguments permanently changes the default arguments 
+              for this instance of :class:`MDrunner`. (This is arguably a bug.)
     """
 
     #: path to the :program:`mdrun` executable (or the name if it can be found on :envvar:`PATH`)
@@ -128,7 +135,7 @@ class MDrunner(utilities.FileUtils):
         """Called directly after the process terminated (also if it failed)."""
         return
 
-    def run(self, pre=None, post=None, **mpiargs):
+    def run(self, pre=None, post=None, mdrunargs=None, **mpiargs):
         """Execute the mdrun command (possibly as a MPI command) and run the simulation.
 
         :Keywords:
@@ -136,14 +143,24 @@ class MDrunner(utilities.FileUtils):
              a dictionary containing keyword arguments for the :meth:`prehook`
           *post*
              a dictionary containing keyword arguments for the :meth:`posthook`
+          *mdrunargs*
+             a dictionary with keyword arguments for :program:`mdrun` which supersede
+             **and update** the defaults given to the class constructor
           *mpiargs*
-             keyword arguments that are processed by :meth:`mpicommand`
+             all other keyword arguments that are processed by :meth:`mpicommand`
         """
 
         if pre is None:
             pre = {}
         if post is None:
             post = {}
+        if mdrunargs is not None:
+            try:
+                self.MDRUN.gmxargs.update(mdrunargs)
+            except (ValueError, TypeError):
+                msg = "mdrunargs must be a dict of mdrun options, not {}".format(mdrunargs)
+                logger.error(msg)
+                raise
 
         cmd = self.commandline(**mpiargs)
 

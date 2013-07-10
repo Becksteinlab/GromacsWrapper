@@ -591,9 +591,9 @@ def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
        *includes*
           additional directories to search for itp files
        *mdrunner*
-          :class:`gromacs.run.MDrunner` class; by defauly we
+          :class:`gromacs.run.MDrunner` instance; by default we
           just try :func:`gromacs.mdrun_d` and :func:`gromacs.mdrun` but a
-          MDrunner class gives the user the ability to run mpi jobs
+          MDrunner instance gives the user the ability to run mpi jobs
           etc. [None]
        *kwargs*
           remaining key/value pairs that should be changed in the
@@ -654,10 +654,19 @@ def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
                 warnings.warn(wmsg, category=AutoCorrectionWarning)
                 gromacs.mdrun(**mdrun_args)
         else:
-            # user wants full control and provides simulation.MDrunner **class**
-            # NO CHECKING --- in principle user can supply any callback they like
-            mdrun = mdrunner(**mdrun_args)
-            mdrun.run()
+            if type(mdrunner) is type:
+                # class
+                # user wants full control and provides simulation.MDrunner **class**
+                # NO CHECKING --- in principle user can supply any callback they like
+                mdrun = mdrunner(**mdrun_args)
+                mdrun.run()
+            else:
+                # anything with a run() method that takes mdrun arguments...
+                try:
+                    mdrunner.run(mdrunargs=mdrun_args)
+                except AttributeError:
+                    logger.error("mdrunner: Provide a gromacs.run.MDrunner class or instance or a callback with a run() method")
+                    raise TypeError("mdrunner: Provide a gromacs.run.MDrunner class or instance or a callback with a run() method")
 
         # em.gro --> gives 'Bad box in file em.gro' warning --- why??
         # --> use em.pdb instead.
