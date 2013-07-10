@@ -51,6 +51,7 @@ LoadLeveler_ have similar constructs; e.g. PBS commands start with
    DEFFNM=          md           *deffnm*         default gmx name  `/^ *DEFFNM=/`
    STARTDIR=        .            *startdir*       remote jobdir     `/^ *STARTDIR=/`
    WALL_HOURS=      0.33         *walltime* h     mdrun's -maxh     `/^ *WALL_HOURS=/`
+   NPME=                         *npme*           PME nodes         `/^ *NPME=/`
    MDRUN_OPTS=      ""           *mdrun_opts*     more options      `/^ *MDRUN_OPTS=/`
    ===============  ===========  ================ ================= =====================================
 
@@ -101,8 +102,7 @@ Example queuing system script template for PBS
 
 The following script is a usable PBS_ script for a super computer. It
 contains almost all of the replacement tokens listed in the table
-(indicated by ++++++; these values should be kept in the template as
-they are or they will not be subject to replacement). ::
+(indicated by ++++++). ::
 
    #!/bin/bash
    # File name: ~/.gromacswrapper/qscripts/supercomputer.somewhere.fr_64core.pbs
@@ -175,7 +175,7 @@ argument, for instance::
 
 
 Currently there is no good way to specify the number of processors when
-creating run scripts. You will need to provided scripts with different numbers
+creating run scripts. You will need to provide scripts with different numbers
 of cores hard coded or set them when submitting the scripts with command line
 options to :program:`qsub`.
 
@@ -325,7 +325,7 @@ def detect_queuing_system(scriptfile):
 
 def generate_submit_scripts(templates, prefix=None, deffnm='md', jobname='MD', budget=None,
                             mdrun_opts=None, walltime=1.0, jobarray_string=None, startdir=None,
-                            **kwargs):
+                            npme=None, **kwargs):
     """Write scripts for queuing systems.
 
 
@@ -356,6 +356,8 @@ def generate_submit_scripts(templates, prefix=None, deffnm='md', jobname='MD', b
           String of additional options for :program:`mdrun`.
       *walltime*
           Maximum runtime of the job in hours. [1]
+      *npme*
+          number of PME nodes
       *jobarray_string*
           Multi-line string that is spliced in for job array functionality
           (see :func:`gromacs.qsub.generate_submit_array`; do not use manually)
@@ -385,12 +387,13 @@ def generate_submit_scripts(templates, prefix=None, deffnm='md', jobname='MD', b
         logger.info("Setting up queuing system script %(submitscript)r..." % vars())
         # These substitution rules are documented for the user in the module doc string
         gromacs.cbook.edit_txt(template,
-                               [('^ *DEFFNM=','md', deffnm),
-                                ('^#.*(-N|job_name)', 'GMX_MD', jobname),
-                                ('^#.*(-A|account_no)', 'BUDGET', budget),
-                                ('^#.*(-l walltime|wall_clock_limit)', '00:20:00', walltime),
+                               [('^ *DEFFNM=','(?<==)(.*)', deffnm),
+                                ('^#.*(-N|job_name)', '((?<=-N\s)|(?<=job_name\s))\s*\w+', jobname),
+                                ('^#.*(-A|account_no)', '((?<=-A\s)|(?<=account_no\s))\s*\w+', budget),
+                                ('^#.*(-l walltime|wall_clock_limit)', '(?<==)(\d+:\d+:\d+)', walltime),
                                 ('^ *WALL_HOURS=', '(?<==)(.*)', wall_hours),
                                 ('^ *STARTDIR=', '(?<==)(.*)', startdir),
+                                ('^ *NPME=', '(?<==)(.*)', npme),
                                 ('^ *MDRUN_OPTS=', '(?<==)(.*)', mdrun_opts),
                                 ('^# JOB_ARRAY_PLACEHOLDER', '^.*$', jobarray_string),
                                 ],
