@@ -531,8 +531,15 @@ class Manager(object):
                 elif m.group('exceeded'):
                     status['exceeded'] = True
                 elif m.group('performance'):
-                    performance = dict(zip(['Mnbf/s', 'GFlops', 'ns/day', 'hour/ns'],
-                                           map(float, m.group('performance').split())))
+                    data = m.group('performance').split()
+                    if len(data) == 4:
+                        # Gromacs 4.5.x and earlier(?)
+                        performance = dict(zip(['Mnbf/s', 'GFlops', 'ns/day', 'hour/ns'], map(float, data)))
+                    elif len(data) == 2:
+                        # Gromacs 4.6.x
+                        performance = dict(zip(['ns/day', 'hour/ns'], map(float, data)))
+                    else:
+                        logger.warn("Cannot reliably parse the 'Performance:' line %r in the log file.", m.group('performance'))
         elif rc == 255:
             loginfo("No output file (yet) for job on %(hostname)s." % vars(self))
             if err:
