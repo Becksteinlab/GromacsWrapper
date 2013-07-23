@@ -55,13 +55,15 @@ LoadLeveler_ have similar constructs; e.g. PBS commands start with
    MDRUN_OPTS=      ""           *mdrun_opts*     more options      `/^ *MDRUN_OPTS=/`
    ===============  ===========  ================ ================= =====================================
 
-Lines with place holders should not have any white space at the beginning. The
-regular expression pattern ("regex") is used to find the lines for the
-replacement and the literal default values ("default") are replaced. (Exception:
-any value that follows an equals sign "=" is replaced, regardless of the
-default value in the table.) Not all place holders have to occur in a template;
-for instance, if a queue has no run time limitation then one would probably not
-include *walltime* and *WALL_HOURS* place holders.
+Lines with place holders should not have any white space at the
+beginning. The regular expression pattern ("regex") is used to find
+the lines for the replacement and the literal default values
+("default") are replaced. (Exception: any value that follows an equals
+sign "=" is replaced, regardless of the default value in the table
+*except* for ``MDRUN_OPTS`` where *only "" will be replace*.) Not all
+place holders have to occur in a template; for instance, if a queue
+has no run time limitation then one would probably not include
+*walltime* and *WALL_HOURS* place holders.
 
 The line ``# JOB_ARRAY_PLACEHOLDER`` can be replaced by
 :func:`~gromacs.qsub.generate_submit_array` to produce a "job array"
@@ -394,7 +396,7 @@ def generate_submit_scripts(templates, prefix=None, deffnm='md', jobname='MD', b
                                 ('^ *WALL_HOURS=', '(?<==)(.*)', wall_hours),
                                 ('^ *STARTDIR=', '(?<==)(.*)', startdir),
                                 ('^ *NPME=', '(?<==)(.*)', npme),
-                                ('^ *MDRUN_OPTS=', '(?<==)(.*)', mdrun_opts),
+                                ('^ *MDRUN_OPTS=', '(?<==)("")', mdrun_opts),  # only replace literal ""
                                 ('^# JOB_ARRAY_PLACEHOLDER', '^.*$', jobarray_string),
                                 ],
                                newname=submitscript)
