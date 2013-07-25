@@ -1,8 +1,8 @@
-.. $Id$
+.. -*- mode: rst; encoding: utf-8 -*-
 
-=================
- Gromacs package
-=================
+========================
+ GromacsWrapper package
+========================
 
 The :mod:`gromacs` package makes `Gromacs`_ tools available via
 thin python wrappers. In addition, it provides little building blocks
