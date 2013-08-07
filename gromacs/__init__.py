@@ -181,7 +181,7 @@ __docformat__ = "restructuredtext en"
 VERSION = 0,3,2
 #: Set to ``True`` for a release. If set to ``False`` then the patch level
 #: will have the suffix "-dev".
-RELEASE = False
+RELEASE = True
 if not RELEASE:
     VERSION = VERSION[:2] + (str(VERSION[2]) + '-dev',)
 
