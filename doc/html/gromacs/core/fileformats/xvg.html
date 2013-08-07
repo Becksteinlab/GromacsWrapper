@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Simple xmgrace XVG file format &mdash; GromacsWrapper 0.3.2-dev documentation</title>
+    <title>Simple xmgrace XVG file format &mdash; GromacsWrapper 0.3.2 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.3.2-dev',
+        VERSION:     '0.3.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../../../_static/GromacsWrapper_logo_32x32.ico"/>
-    <link rel="top" title="GromacsWrapper 0.3.2-dev documentation" href="../../../index.html" />
+    <link rel="top" title="GromacsWrapper 0.3.2 documentation" href="../../../index.html" />
     <link rel="up" title="gromacs.formats – Accessing various files" href="../formats.html" />
     <link rel="next" title="Gromacs XPM file format" href="xpm.html" />
     <link rel="prev" title="gromacs.formats – Accessing various files" href="../formats.html" /> 
@@ -47,10 +47,10 @@
         <li class="right" >
           <a href="../formats.html" title="gromacs.formats – Accessing various files"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../index.html">GromacsWrapper 0.3.2-dev documentation</a> &raquo;</li>
-          <li><a href="../../../gromacs.html" >Gromacs package</a> &raquo;</li>
+        <li><a href="../../../index.html">GromacsWrapper 0.3.2 documentation</a> &raquo;</li>
+          <li><a href="../../../gromacs.html" >GromacsWrapper package</a> &raquo;</li>
           <li><a href="../../core.html" >Gromacs core modules</a> &raquo;</li>
-          <li><a href="../formats.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
+          <li><a href="../formats.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -75,7 +75,7 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="../formats.html"
-                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a></p>
+                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="xpm.html"
                         title="next chapter">Gromacs XPM file format</a></p>
@@ -225,7 +225,7 @@ be the estimated error of the mean.)</p>
 </div>
 <p>(see output in Figure <a class="reference internal" href="#figure-xvg-decimated-label"><em>Plot of Raw vs Decimated data</em></a>)</p>
 <div class="figure align-right" id="figure-xvg-decimated-label" style="width: 40%">
-<a class="reference internal image-reference" href="../../../_images/xvg_decimated.png"><img alt="plot of a raw noisy sin(x) graph versus its decimated version" src="../../../_images/xvg_decimated.png" /></a>
+<a class="reference internal image-reference" href="../../../_images/xvg_decimated.png"><img alt="plot of a raw noisy sin(x) graph versus its decimated version" src="../../../_images/xvg_decimated.png" style="width: 382.9px; height: 338.1px;" /></a>
 <p class="caption"><strong>Plot of Raw vs Decimated data.</strong> Example of plotting raw data
 (sine on 50,000 points, gray) versus the decimated graph (reduced
 to 1000 points, red line). The errors were also decimated and
@@ -233,7 +233,7 @@ reduced to the errors within the 5% and the 95% percentile. The
 decimation is carried out by histogramming the data in the desired
 number of bins and then the data in each bin is reduced by either
 <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.mean.html#numpy.mean" title="(in NumPy v1.7)"><tt class="xref py py-func docutils literal"><span class="pre">numpy.mean()</span></tt></a> (for the value) or
-<a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.scoreatpercentile.html#scipy.stats.scoreatpercentile" title="(in SciPy v0.11)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.stats.scoreatpercentile()</span></tt></a> (for errors).</p>
+<a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.scoreatpercentile.html#scipy.stats.scoreatpercentile" title="(in SciPy v0.12)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.stats.scoreatpercentile()</span></tt></a> (for errors).</p>
 </div>
 <p>In principle it is possible to use other functions to decimate the
 data. For <a class="reference internal" href="#gromacs.fileformats.xvg.XVG.plot" title="gromacs.fileformats.xvg.XVG.plot"><tt class="xref py py-meth docutils literal"><span class="pre">XVG.plot()</span></tt></a>, the <em>method</em> keyword can be changed (see
@@ -542,7 +542,7 @@ the data into the lower 75% and upper 25%; 50 is the median [50.0]</dd>
 </dl>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="../../../numkit/timeseries.html#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">numkit.timeseries.regularized_function()</span></tt></a> with <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.scoreatpercentile.html#scipy.stats.scoreatpercentile" title="(in SciPy v0.11)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.stats.scoreatpercentile()</span></tt></a></p>
+<p class="last"><a class="reference internal" href="../../../numkit/timeseries.html#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">numkit.timeseries.regularized_function()</span></tt></a> with <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.scoreatpercentile.html#scipy.stats.scoreatpercentile" title="(in SciPy v0.12)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.stats.scoreatpercentile()</span></tt></a></p>
 </div>
 </dd></dl>
 
@@ -897,15 +897,15 @@ pi).</p>
         <li class="right" >
           <a href="../formats.html" title="gromacs.formats – Accessing various files"
              >previous</a> |</li>
-        <li><a href="../../../index.html">GromacsWrapper 0.3.2-dev documentation</a> &raquo;</li>
-          <li><a href="../../../gromacs.html" >Gromacs package</a> &raquo;</li>
+        <li><a href="../../../index.html">GromacsWrapper 0.3.2 documentation</a> &raquo;</li>
+          <li><a href="../../../gromacs.html" >GromacsWrapper package</a> &raquo;</li>
           <li><a href="../../core.html" >Gromacs core modules</a> &raquo;</li>
-          <li><a href="../formats.html" ><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
+          <li><a href="../formats.html" ><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2012, Oliver Beckstein, Jan Domański.
-      Last updated on Mar 12, 2013.
+      Last updated on Aug 07, 2013.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>

@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.run – Running simulations &mdash; GromacsWrapper 0.3.2-dev documentation</title>
+    <title>gromacs.run – Running simulations &mdash; GromacsWrapper 0.3.2 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.3.2-dev',
+        VERSION:     '0.3.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,10 +26,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../../_static/GromacsWrapper_logo_32x32.ico"/>
-    <link rel="top" title="GromacsWrapper 0.3.2-dev documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper 0.3.2 documentation" href="../../index.html" />
     <link rel="up" title="Gromacs building blocks" href="../building_blocks.html" />
     <link rel="next" title="Analysis" href="../../analysis.html" />
-    <link rel="prev" title="&lt;no title&gt;" href="manager.html" /> 
+    <link rel="prev" title="Managing jobs remotely" href="manager.html" /> 
   </head>
   <body>
     <div class="related">
@@ -45,10 +45,10 @@
           <a href="../../analysis.html" title="Analysis"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="manager.html" title="&lt;no title&gt;"
+          <a href="manager.html" title="Managing jobs remotely"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper 0.3.2-dev documentation</a> &raquo;</li>
-          <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.2 documentation</a> &raquo;</li>
+          <li><a href="../../gromacs.html" >GromacsWrapper package</a> &raquo;</li>
           <li><a href="../building_blocks.html" accesskey="U">Gromacs building blocks</a> &raquo;</li> 
       </ul>
     </div>
@@ -59,7 +59,7 @@
             </a></p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="manager.html"
-                        title="previous chapter">&lt;no title&gt;</a></p>
+                        title="previous chapter">Managing jobs remotely</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="../../analysis.html"
                         title="next chapter">Analysis</a></p>
@@ -107,6 +107,14 @@ similar you need to derive from this class and override</p>
 <a class="reference internal" href="#gromacs.run.MDrunner.posthook" title="gromacs.run.MDrunner.posthook"><tt class="xref py py-meth docutils literal"><span class="pre">posthook()</span></tt></a> that are called right before and after the
 process is started. If they are overriden appropriately then they
 can be used to set up a mpi environment.</p>
+<p>The <a class="reference internal" href="#gromacs.run.MDrunner.run" title="gromacs.run.MDrunner.run"><tt class="xref py py-meth docutils literal"><span class="pre">run()</span></tt></a> method can take arguments for the
+<strong class="program">mpiexec</strong> launcher but it can also be used to supersede
+the arguments for <strong class="program">mdrun</strong>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Changing <strong class="program">mdrun</strong> arguments permanently changes the default arguments 
+for this instance of <a class="reference internal" href="#gromacs.run.MDrunner" title="gromacs.run.MDrunner"><tt class="xref py py-class docutils literal"><span class="pre">MDrunner</span></tt></a>. (This is arguably a bug.)</p>
+</div>
 <p>Set up a simple run with <tt class="docutils literal"><span class="pre">mdrun</span></tt>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -185,7 +193,7 @@ complicated cases.)</p>
 
 <dl class="method">
 <dt id="gromacs.run.MDrunner.run">
-<tt class="descname">run</tt><big>(</big><em>pre=None</em>, <em>post=None</em>, <em>**mpiargs</em><big>)</big><a class="headerlink" href="#gromacs.run.MDrunner.run" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">run</tt><big>(</big><em>pre=None</em>, <em>post=None</em>, <em>mdrunargs=None</em>, <em>**mpiargs</em><big>)</big><a class="headerlink" href="#gromacs.run.MDrunner.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Execute the mdrun command (possibly as a MPI command) and run the simulation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -198,8 +206,12 @@ complicated cases.)</p>
 <dt><em>post</em></dt>
 <dd><p class="first last">a dictionary containing keyword arguments for the <a class="reference internal" href="#gromacs.run.MDrunner.posthook" title="gromacs.run.MDrunner.posthook"><tt class="xref py py-meth docutils literal"><span class="pre">posthook()</span></tt></a></p>
 </dd>
+<dt><em>mdrunargs</em></dt>
+<dd><p class="first last">a dictionary with keyword arguments for <strong class="program">mdrun</strong> which supersede
+<strong>and update</strong> the defaults given to the class constructor</p>
+</dd>
 <dt><em>mpiargs</em></dt>
-<dd><p class="first last">keyword arguments that are processed by <a class="reference internal" href="#gromacs.run.MDrunner.mpicommand" title="gromacs.run.MDrunner.mpicommand"><tt class="xref py py-meth docutils literal"><span class="pre">mpicommand()</span></tt></a></p>
+<dd><p class="first last">all other keyword arguments that are processed by <a class="reference internal" href="#gromacs.run.MDrunner.mpicommand" title="gromacs.run.MDrunner.mpicommand"><tt class="xref py py-meth docutils literal"><span class="pre">mpicommand()</span></tt></a></p>
 </dd>
 </dl>
 </td>
@@ -360,16 +372,16 @@ the file. (The file must be seeakable.)</p>
           <a href="../../analysis.html" title="Analysis"
              >next</a> |</li>
         <li class="right" >
-          <a href="manager.html" title="&lt;no title&gt;"
+          <a href="manager.html" title="Managing jobs remotely"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper 0.3.2-dev documentation</a> &raquo;</li>
-          <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.2 documentation</a> &raquo;</li>
+          <li><a href="../../gromacs.html" >GromacsWrapper package</a> &raquo;</li>
           <li><a href="../building_blocks.html" >Gromacs building blocks</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2012, Oliver Beckstein, Jan Domański.
-      Last updated on Mar 12, 2013.
+      Last updated on Aug 07, 2013.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>

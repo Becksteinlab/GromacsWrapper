@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.qsub – utilities for batch submission systems &mdash; GromacsWrapper 0.3.2-dev documentation</title>
+    <title>gromacs.qsub – utilities for batch submission systems &mdash; GromacsWrapper 0.3.2 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.3.2-dev',
+        VERSION:     '0.3.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../../_static/GromacsWrapper_logo_32x32.ico"/>
-    <link rel="top" title="GromacsWrapper 0.3.2-dev documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper 0.3.2 documentation" href="../../index.html" />
     <link rel="up" title="Gromacs building blocks" href="../building_blocks.html" />
     <link rel="next" title="Managing jobs remotely" href="manager.html" />
     <link rel="prev" title="gromacs.setup – Setting up a Gromacs MD run" href="setup.html" /> 
@@ -47,8 +47,8 @@
         <li class="right" >
           <a href="setup.html" title="gromacs.setup – Setting up a Gromacs MD run"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper 0.3.2-dev documentation</a> &raquo;</li>
-          <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.2 documentation</a> &raquo;</li>
+          <li><a href="../../gromacs.html" >GromacsWrapper package</a> &raquo;</li>
           <li><a href="../building_blocks.html" accesskey="U">Gromacs building blocks</a> &raquo;</li> 
       </ul>
     </div>
@@ -183,7 +183,13 @@ submission system commands. The table shows <a class="reference external" href="
 <td>mdrun&#8217;s -maxh</td>
 <td><cite>/^ *WALL_HOURS=/</cite></td>
 </tr>
-<tr class="row-even"><td>MDRUN_OPTS=</td>
+<tr class="row-even"><td>NPME=</td>
+<td>&nbsp;</td>
+<td><em>npme</em></td>
+<td>PME nodes</td>
+<td><cite>/^ *NPME=/</cite></td>
+</tr>
+<tr class="row-odd"><td>MDRUN_OPTS=</td>
 <td>&#8220;&#8221;</td>
 <td><em>mdrun_opts</em></td>
 <td>more options</td>
@@ -191,13 +197,15 @@ submission system commands. The table shows <a class="reference external" href="
 </tr>
 </tbody>
 </table>
-<p>Lines with place holders should not have any white space at the beginning. The
-regular expression pattern (&#8220;regex&#8221;) is used to find the lines for the
-replacement and the literal default values (&#8220;default&#8221;) are replaced. (Exception:
-any value that follows an equals sign &#8220;=&#8221; is replaced, regardless of the
-default value in the table.) Not all place holders have to occur in a template;
-for instance, if a queue has no run time limitation then one would probably not
-include <em>walltime</em> and <em>WALL_HOURS</em> place holders.</p>
+<p>Lines with place holders should not have any white space at the
+beginning. The regular expression pattern (&#8220;regex&#8221;) is used to find
+the lines for the replacement and the literal default values
+(&#8220;default&#8221;) are replaced. (Exception: any value that follows an equals
+sign &#8220;=&#8221; is replaced, regardless of the default value in the table
+<em>except</em> for <tt class="docutils literal"><span class="pre">MDRUN_OPTS</span></tt> where <em>only &#8220;&#8221; will be replace</em>.) Not all
+place holders have to occur in a template; for instance, if a queue
+has no run time limitation then one would probably not include
+<em>walltime</em> and <em>WALL_HOURS</em> place holders.</p>
 <p>The line <tt class="docutils literal"><span class="pre">#</span> <span class="pre">JOB_ARRAY_PLACEHOLDER</span></tt> can be replaced by
 <a class="reference internal" href="#gromacs.qsub.generate_submit_array" title="gromacs.qsub.generate_submit_array"><tt class="xref py py-func docutils literal"><span class="pre">generate_submit_array()</span></tt></a> to produce a &#8220;job array&#8221;
 (also known as a &#8220;task array&#8221;) script that runs a large number of
@@ -247,8 +255,7 @@ recognized, as shown in the table below.</p>
 <h3>Example queuing system script template for PBS<a class="headerlink" href="#example-queuing-system-script-template-for-pbs" title="Permalink to this headline">¶</a></h3>
 <p>The following script is a usable <a class="reference external" href="http://www.mcs.anl.gov/research/projects/openpbs/">PBS</a> script for a super computer. It
 contains almost all of the replacement tokens listed in the table
-(indicated by ++++++; these values should be kept in the template as
-they are or they will not be subject to replacement).</p>
+(indicated by ++++++).</p>
 <div class="highlight-python"><pre>#!/bin/bash
 # File name: ~/.gromacswrapper/qscripts/supercomputer.somewhere.fr_64core.pbs
 #PBS -N GMX_MD
@@ -316,7 +323,7 @@ argument, for instance:</p>
 </pre></div>
 </div>
 <p>Currently there is no good way to specify the number of processors when
-creating run scripts. You will need to provided scripts with different numbers
+creating run scripts. You will need to provide scripts with different numbers
 of cores hard coded or set them when submitting the scripts with command line
 options to <strong class="program">qsub</strong>.</p>
 </div>
@@ -397,7 +404,7 @@ be <tt class="docutils literal"><span class="pre">bash</span></tt> (and <em>not<
 
 <dl class="function">
 <dt id="gromacs.qsub.generate_submit_scripts">
-<tt class="descclassname">gromacs.qsub.</tt><tt class="descname">generate_submit_scripts</tt><big>(</big><em>templates</em>, <em>prefix=None</em>, <em>deffnm='md'</em>, <em>jobname='MD'</em>, <em>budget=None</em>, <em>mdrun_opts=None</em>, <em>walltime=1.0</em>, <em>jobarray_string=None</em>, <em>startdir=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.qsub.generate_submit_scripts" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.qsub.</tt><tt class="descname">generate_submit_scripts</tt><big>(</big><em>templates</em>, <em>prefix=None</em>, <em>deffnm='md'</em>, <em>jobname='MD'</em>, <em>budget=None</em>, <em>mdrun_opts=None</em>, <em>walltime=1.0</em>, <em>jobarray_string=None</em>, <em>startdir=None</em>, <em>npme=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.qsub.generate_submit_scripts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write scripts for queuing systems.</p>
 <p>This sets up queuing system run scripts with a simple search and replace in
 templates. See <a class="reference internal" href="cbook.html#gromacs.cbook.edit_txt" title="gromacs.cbook.edit_txt"><tt class="xref py py-func docutils literal"><span class="pre">gromacs.cbook.edit_txt()</span></tt></a> for details. Shell scripts
@@ -437,6 +444,9 @@ into this directory at the beginning of execution) [None]</p>
 </dd>
 <dt><em>walltime</em></dt>
 <dd><p class="first last">Maximum runtime of the job in hours. [1]</p>
+</dd>
+<dt><em>npme</em></dt>
+<dd><p class="first last">number of PME nodes</p>
 </dd>
 <dt><em>jobarray_string</em></dt>
 <dd><p class="first last">Multi-line string that is spliced in for job array functionality
@@ -543,14 +553,14 @@ directory.</p>
         <li class="right" >
           <a href="setup.html" title="gromacs.setup – Setting up a Gromacs MD run"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper 0.3.2-dev documentation</a> &raquo;</li>
-          <li><a href="../../gromacs.html" >Gromacs package</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.2 documentation</a> &raquo;</li>
+          <li><a href="../../gromacs.html" >GromacsWrapper package</a> &raquo;</li>
           <li><a href="../building_blocks.html" >Gromacs building blocks</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2012, Oliver Beckstein, Jan Domański.
-      Last updated on Mar 12, 2013.
+      Last updated on Aug 07, 2013.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
