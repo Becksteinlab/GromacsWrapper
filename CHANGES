@@ -2,7 +2,10 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
-????-??-??     0.3.2  in development
+???-??-??      0.3.3    in development
+
+
+2013-08-07     0.3.2  
 orbeckst, andy.somogyi
 
 * fixed setup.make_main_index() by using a workaround for a bug in make_ndx
