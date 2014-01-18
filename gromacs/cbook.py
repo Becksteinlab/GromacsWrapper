@@ -1732,7 +1732,8 @@ class Transformer(utilities.FileUtils):
         """Write compact xtc that is fitted to the tpr reference structure.
 
         See :func:`gromacs.cbook.trj_fitandcenter` for details and
-        description of *kwargs*. The most important ones are listed
+        description of *kwargs* (including *input*, *input1*, *n* and 
+        *n1* for how to supply custom index groups). The most important ones are listed
         here but in most cases the defaults should work.
 
         :Keywords:
@@ -1799,6 +1800,9 @@ class Transformer(utilities.FileUtils):
             ``None``: skip existing and log a warning [default]
           *fitgroup*
             index group to fit on ["backbone"]
+
+            .. Note:: If keyword *input* is supplied then it will override
+                      *fitgroup*; *input* = ``[fitgroup, outgroup]``
           *kwargs*
              kwargs are passed to :func:`~gromacs.cbook.trj_xyfitted`
 
@@ -1842,7 +1846,7 @@ class Transformer(utilities.FileUtils):
                 logger.info("Fitted trajectory (fitmode=%s): %r.", fitmode, kwargs['o'])
         return {'tpr': self.rp(kwargs['s']), 'xtc': self.rp(kwargs['o'])}
 
-    def strip_water(self, os=None, o=None, on=None, compact=False,
+    def strip_water(self, os=None, o=None, on=None, compact=False, 
                     resn="SOL", groupname="notwater", **kwargs):
         """Write xtc and tpr with water (by resname) removed.
 
@@ -1858,6 +1862,13 @@ class Transformer(utilities.FileUtils):
            *compact*
               ``True``: write a compact and centered trajectory
               ``False``: use trajectory as it is [``False``]
+           *centergroup*
+              Index group used for centering ["Protein"]
+
+              .. Note:: If *input* is provided (see below under *kwargs*)
+                        then *centergroup* is ignored and the group for 
+                        centering is taken as the first entry in *input*.
+
            *resn*
               Residue name of the water molecules; all these residues are excluded.
            *groupname*
@@ -1896,12 +1907,20 @@ class Transformer(utilities.FileUtils):
 
         if compact:
             TRJCONV = trj_compact
-            _input = kwargs.get('input', ['Protein'])
+            # input overrides centergroup
+            if kwargs.get('centergroup') is not None and 'input' in kwargs:
+		logger.warn("centergroup = %r will be superceded by input[0] = %r", kwargs['centergroup'], kwargs['input'][0])
+            _input = kwargs.get('input', [kwargs.get('centergroup', 'Protein')])
             kwargs['input'] = [_input[0], groupname]  # [center group, write-out selection]
             del _input
+	    logger.info("Creating a compact trajectory centered on group %r", kwargs['input'][0])
+	    logger.info("Writing %r to the output trajectory", kwargs['input'][1])
         else:
             TRJCONV = gromacs.trjconv
             kwargs['input'] = [groupname]
+            logger.info("Writing %r to the output trajectory (no centering)", kwargs['input'][0])
+        # clean kwargs, only legal arguments for Gromacs tool trjconv should remain
+        kwargs.pop("centergroup", None)
 
         NOTwater = "! r %(resn)s" % vars()  # make_ndx selection ("not water residues")
         with utilities.in_dir(self.dirname):
@@ -1911,12 +1930,17 @@ class Transformer(utilities.FileUtils):
                 B = IndexBuilder(struct=self.tpr, selections=['@'+NOTwater],
                                  ndx=self.ndx, out_ndx=nowater_ndx)
                 B.combine(name_all=groupname, operation="|", defaultgroups=True)
+                logger.debug("Index file for water removal: %r", nowater_ndx)
 
                 logger.info("TPR file without water %(newtpr)r" % vars())
                 gromacs.tpbconv(s=self.tpr, o=newtpr, n=nowater_ndx, input=[groupname])
 
-                logger.info("NDX of the new system %(newndx)r" % vars())
+                logger.info("NDX of the new system %r", newndx)
                 gromacs.make_ndx(f=newtpr, o=newndx, input=['q'], stderr=False, stdout=False)
+		# PROBLEM: If self.ndx contained a custom group required for fitting then we are loosing
+                #          this group here. We could try to merge only this group but it is possible that
+                #          atom indices changed. The only way to solve this is to regenerate the group with
+                #          a selection or only use Gromacs default groups.
 
                 logger.info("Trajectory without water %(newxtc)r" % vars())
                 kwargs['s'] = self.tpr
@@ -2054,14 +2078,22 @@ class Transformer(utilities.FileUtils):
           *strip_input* = ``['Other']``.
 
         - *input* is passed on to :meth:`fit` and can contain the
-          [center_group, fit_group, output_group]
+          ``[center_group, fit_group, output_group]``
+
+        - *fitgroup* is only passed to :meth:`fit` and just contains
+          the group to fit to ("backbone" by default)
+
+	  .. warning:: *fitgroup* can only be a Gromacs default group and not
+                       a custom group (because the indices change after stripping)
 
         - By default *fit* = "rot+trans" (and *fit* is passed to :meth:`fit`,
           together with the *xy* = ``False`` keyword)
+
+        .. Note:: The call signature of :meth:`strip_water` is somewhat different from this one.
         """
         kwargs.setdefault('fit', 'rot+trans')
         kw_fit = {}
-        for k in ('xy', 'fit', 'input'):
+        for k in ('xy', 'fit', 'fitgroup', 'input'):
             if k in kwargs:
                 kw_fit[k] = kwargs.pop(k)
 
