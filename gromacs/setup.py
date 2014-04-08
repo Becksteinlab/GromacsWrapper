@@ -170,7 +170,7 @@ trj_compact_main = gromacs.tools.Trjconv(ur='compact', center=True, boxcenter='t
 #   and also store mainselection
 
 def topology(struct=None, protein='protein',
-             top='system.top',  dirname='top', 
+             top='system.top',  dirname='top',
              posres="posres.itp", **pdb2gmx_args):
     """Build Gromacs topology files from pdb.
 
@@ -254,30 +254,30 @@ def make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None):
     _,out,_ = gromacs.make_ndx(f=struct, n=oldndx, o=ndx, stdout=False,
                                       input=("", "q"))
     groups = gromacs.cbook.parse_ndxlist(out)
-    
-    # find the matching groups, 
+
+    # find the matching groups,
     # there is a nasty bug in GROMACS where make_ndx may have multiple
-    # groups, which caused the previous approach to fail big time. 
+    # groups, which caused the previous approach to fail big time.
     # this is a work around the make_ndx bug.
-    # striping the "" allows compatibility with existing make_ndx selection commands. 
+    # striping the "" allows compatibility with existing make_ndx selection commands.
     selection = selection.strip("\"")
-    
+
     selected_groups = [g for g in groups if g['name'].lower() == selection.lower()]
-    
+
     if len(selected_groups) > 1:
         logging.warn("make_ndx created duplicated groups, performing work around")
-        
+
     if len(selected_groups) <= 0:
         msg = "no groups found for selection {}, available groups are {}".format(selection, groups)
         logging.error(msg)
         raise ValueError(msg)
-    
+
     # Found at least one matching group, we're OK
-        
-    # index of last group    
-    last = len(groups) - 1               
+
+    # index of last group
+    last = len(groups) - 1
     assert last == groups[-1]['nr']
-    
+
     group = selected_groups[0]
 
     # pass 2:
@@ -285,17 +285,17 @@ def make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None):
     # 2) __environment__ is everything else (eg SOL, ions, ...)
     _,out,_ = gromacs.make_ndx(f=struct, n=ndx, o=ndx,
                                       stdout=False,
-                                             # make copy selected group, this now has index last + 1 
+                                             # make copy selected group, this now has index last + 1
                                       input=("{}".format(group['nr']),
                                              # rename this to __main__
                                              "name {} __main__".format(last+1),
                                              # make a complement to this group, it get index last + 2
-                                             "! \"__main__\"",  
+                                             "! \"__main__\"",
                                              # rename this to __environment__
                                              "name {} __environment__".format(last+2),
                                              # list the groups
                                              "",
-                                             # quit 
+                                             # quit
                                              "q"))
     return gromacs.cbook.parse_ndxlist(out)
 
@@ -822,6 +822,7 @@ def _setup_MD(dirname,
 
     add_mdp_includes(topology, mdp_parameters)
 
+    logger.info("[%(dirname)s] input mdp  = %(mdp_template)r", vars())
     with in_dir(dirname):
         if not (mdp_parameters.get('Tcoupl','').lower() == 'no' or mainselection is None):
             logger.info("[%(dirname)s] Automatic adjustment of T-coupling groups" % vars())
@@ -903,6 +904,10 @@ def _setup_MD(dirname,
             qscript_template, deffnm=deffnm, jobname=qname, budget=budget,
             startdir=startdir, mdrun_opts=mdrun_opts, walltime=walltime)
 
+    logger.info("[%(dirname)s] output mdp = %(mdp)r", vars())
+    logger.info("[%(dirname)s] output ndx = %(ndx)r", vars())
+    logger.info("[%(dirname)s] output tpr = %(tpr)r", vars())
+    logger.info("[%(dirname)s] output runscripts = %(runscripts)r", vars())
     logger.info("[%(dirname)s] All files set up for a run time of %(runtime)g ps "
                 "(dt=%(dt)g, nsteps=%(nsteps)g)" % vars())
 
