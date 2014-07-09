@@ -527,6 +527,10 @@ class XVG(utilities.FileUtils):
         finally:
             del rows     # try to clean up as well as possible as it can be massively big
 
+    def to_df(self):
+        import pandas as _pd
+        return _pd.DataFrame(self.array.T, columns=["X",]+self.names, dtype=float)
+
     def set(self, a):
         """Set the *array* data from *a* (i.e. completely replace).
 
