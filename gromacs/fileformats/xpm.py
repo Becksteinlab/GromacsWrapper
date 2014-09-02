@@ -145,10 +145,24 @@ class XPM(utilities.FileUtils):
         self.reverse = kwargs.pop("reverse", True)
         self.__array = None
         super(XPM, self).__init__(**kwargs)  # can use kwargs to set dict! (but no sanity checks!)
-
+        
         if not filename is None:
             self._init_filename(filename)
             self.read(filename)
+
+
+    def to_df(self):
+	import pandas as _pd
+	import numpy as _np
+	
+	# Add Time to the data as column
+	data = _np.vstack((self.xvalues, self.array.T)).T
+	
+	# Column names are resids
+	df = _pd.DataFrame(data, columns=["Time"]+ list(self.yvalues))
+
+	# Converts Time to a numeric type
+	return df.convert_objects(convert_numeric='force')
 
     @property
     def array(self):
@@ -238,6 +252,7 @@ class XPM(utilities.FileUtils):
         """Return string *s* with C-style comments ``/*`` ... ``*/`` removed."""
         return s[2+s.find('/*'):s.rfind('*/')]
 
+
     def col(self, c):
         """Parse colour specification"""
         m = self.COLOUR.search(c)
@@ -248,4 +263,4 @@ class XPM(utilities.FileUtils):
         color = m.group('symbol')
         self.logger.debug("%s: %s %s\n", c.strip(), color, value)
         return color, value
-
+	
