@@ -50,6 +50,12 @@ if __name__ == "__main__":
                       help="center trajectory on custom index group GROUP. "
                       "For special index groups also provide the index file "
                       "with the --ndx option [%default]")
+    parser.add_option("-G", "--fit-group", dest="fitgroup", metavar="GROUP",
+		      default="protein",
+                      help="fit trajectory to index group but note that "
+                      "this group MUST be a Gromacs-generated group such as 'Protein', 'DNA', 'backbone'; it cannot be one "
+                      "from a custom index file (the old index file becomes invalid after "
+                      "stripping of water and there is no way to regenerate a custom group) [%default]")
     parser.add_option("--force", dest="force", action="store_true",
                       default=False,
                       help="always regenerate trajectories, even if they already "
@@ -67,7 +73,7 @@ if __name__ == "__main__":
         logger.info("Processing %(identifier)r...", vars())
         S = MySimulation(identifier, ndx=opts.ndx,
                          prefix=opts.prefix, basedir=opts.basedir)
-        S.run('StripWater', input=[opts.group, "system"], force=opts.force)
+        S.run('StripWater', centergroup=opts.group, fitgroup=opts.fitgroup, force=opts.force)
         logger.info("Completed %(identifier)r", vars())
 
     gromacs.stop_logging()

@@ -478,8 +478,16 @@ class XVG(utilities.FileUtils):
             ncol = None
             for lineno,line in enumerate(xvg):
                 line = line.strip()
-                if line.startswith(('#', '@')) or len(line) == 0:
+                if len(line) == 0:
                     continue
+                if line.startswith("@ legend"):
+					if not "legend" in self.metadata: self.metadata["legend"] = []
+					self.metadata["legend"].append(line.split("legend ")[-1])
+                if line.startswith("@ s"):
+					name = line.split("legend ")[-1].replace('"','').strip()
+					self.names.append(name)
+                if line.startswith(('#', '@')) :
+					continue
                 if line.startswith('&'):
                     raise NotImplementedError('%s: Multi-data not supported, only simple NXY format.'
                                               % self.real_filename)
@@ -518,6 +526,10 @@ class XVG(utilities.FileUtils):
             raise
         finally:
             del rows     # try to clean up as well as possible as it can be massively big
+
+    def to_df(self):
+        import pandas as _pd
+        return _pd.DataFrame(self.array.T, columns=["X",]+self.names, dtype=float)
 
     def set(self, a):
         """Set the *array* data from *a* (i.e. completely replace).

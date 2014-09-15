@@ -62,9 +62,11 @@ class _StripWater(Worker):
              supplied, write multiple trajectories, one for each dt.
           *compact* : bool
              write a compact representation
+          *centergroup*
+             Index group to center on ["Protein"]
           *fit*
              Create an additional trajectory from the stripped one in which
-             the Protein group is rms-fitted to the initial structure. See
+             the *fitgroup* group is rms-fitted to the initial structure. See
              :meth:`gromacs.cbook.Transformer.fit` for details. Useful
              values:
 
@@ -74,6 +76,10 @@ class _StripWater(Worker):
 
              If *fit* is not supplied then the constructor-default is used
              (:attr:`_StripWater.parameters.fit`).
+          *fitgroup*
+             Index group to fit to with the *fit* option; must be changed if
+             molecule is not a protein and automatically recognized. Also
+             consider supplying a custom index file. ["backbone"]
           *resn*
              name of the residues that are stripped (typically it is
              safe to leave this at the default 'SOL')
@@ -95,6 +101,8 @@ class _StripWater(Worker):
         parameters['fit'] = kwargs.pop('fit',None)            # fitting algorithm
         if not parameters['fit'] in _fitvalues:
             raise ValueError("StripWater: *fit* must be one of %(_fitvalues)r, not %(fit)r." % vars())
+	parameters['fitgroup'] = kwargs.pop('fitgroup', "backbone")
+	parameters['centergroup'] = kwargs.pop('centergroup', "Protein")
         parameters['compact'] = kwargs.pop('compact', False)  # compact+centered ?
         parameters['resn'] = kwargs.pop('resn', 'SOL')        # residue name to be stripped
         parameters['dt'] = kwargs.pop('dt', None)
@@ -146,10 +154,12 @@ class _StripWater(Worker):
              only write every dt timestep (in ps); if a list of floats is
              supplied, write multiple trajectories, one for each dt.
           *compact* : bool
-             write a compact representation
+             write a compact and centered representation
+          *centergroup*
+             Index group to center on ["Protein"]
           *fit*
              Create an additional trajectory from the stripped one in which
-             the Protein group is rms-fitted to the initial structure. See
+             the *fitgroup* group is rms-fitted to the initial structure. See
              :meth:`gromacs.cbook.Transformer.fit` for details. Useful
              values:
 
@@ -159,7 +169,12 @@ class _StripWater(Worker):
 
              If *fit* is not supplied then the constructor-default is used
              (:attr:`_StripWater.parameters.fit`).
-          *resn*
+          *fitgroup*
+             Index group to fit to with the *fit* option; must be changed if
+             molecule is not a protein and automatically recognized. Also
+             consider supplying a custom index file. ["backbone" or constructor
+             supplied]
+         *resn*
              name of the residues that are stripped (typically it is
              safe to leave this at the default 'SOL')
 
@@ -172,7 +187,9 @@ class _StripWater(Worker):
         """
         dt = kwargs.pop('dt', self.parameters.dt)
         fit = kwargs.pop('fit', self.parameters.fit)
+        fitgroup = kwargs.pop('fitgroup', self.parameters.fitgroup)
 
+        kwargs.setdefault('centergroup', self.parameters.centergroup)
         kwargs.setdefault('compact', self.parameters.compact)
         kwargs.setdefault('resn', self.parameters.resn)
         kwargs.setdefault('force', self.parameters.force)
@@ -187,7 +204,7 @@ class _StripWater(Worker):
                 xy = False
             transformer_nowater = self.transformer.nowater.values()[0]
             for delta_t in asiterable(dt):
-                transformer_nowater.fit(xy=xy, dt=delta_t, force=kwargs['force'])
+                transformer_nowater.fit(xy=xy, dt=delta_t, fitgroup=fitgroup, force=kwargs['force'])
 
     def analyze(self,**kwargs):
         """No postprocessing."""
@@ -225,14 +242,20 @@ class StripWater(Plugin):
            write a compact representation
         *fit*
            Create an additional trajectory from the stripped one in which
-           the Protein group is rms-fitted to the initial structure. See
+           the *fitgroup* group is rms-fitted to the initial structure. See
            :meth:`gromacs.cbook.Transformer.fit` for details. Useful
            values:
+
              - "xy" : perform a rot+trans fit in the x-y plane
              - "all": rot+trans
              - ``None``: no fitting
+
            If *fit* is not supplied then the constructor-default is used
            (:attr:`_StripWater.parameters.fit`).
+        *fitgroup*
+           Index group to fit to with the *fit* option; must be changed if
+           molecule is not a protein and automatically recognized. Also
+           consider supplying a custom index file. ["backbone"]
         *name* : string
             plugin name (used to access it)
         *simulation* : instance
@@ -241,6 +264,10 @@ class StripWater(Plugin):
     .. Note:: If set, *dt* is only applied to a fit step; the
               no-water trajectory is always generated for all time
               steps of the input.
+
+              The defaults work for typical proteins but for e.g. nucleic
+              acids you will need to supply group names in *input* and 
+              *fitgroup* and possibly also a custom index file.
 
     """
     worker_class = _StripWater
