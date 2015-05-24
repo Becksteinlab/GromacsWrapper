@@ -7,6 +7,8 @@
  README: GromacsWrapper
 ========================
 
+|zenodo|
+
 A primitive wrapper around the Gromacs tools until we have proper
 python bindings. It also provides a small library (cook book) of
 often-used recipes and an optional analysis module with plugins for
@@ -30,8 +32,9 @@ running simulations with sensible parameters.
    http://becksteinlab.github.io/GromacsWrapper/
 .. _GromacsWrapper git repository:
    http://github.com/Becksteinlab/GromacsWrapper
-
-
+.. |zenodo| .. image:: https://zenodo.org/badge/13219/Becksteinlab/GromacsWrapper.svg  
+     :alt: doi:10.5281/zenodo.17901
+     :target: http://dx.doi.org/10.5281/zenodo.17901
 
 Licence
 =======
