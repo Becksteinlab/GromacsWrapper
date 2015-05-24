@@ -2,8 +2,13 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
-???-??-??      0.3.3    in development
+2015-05-22      0.3.3
+orbeckst, jandom
 
+* improvements to the xpm reader
+* improvements to stripwater plugin and transformer
+* additional logging of filenames in setup._MD()
+* new repository URL: https://github.com/Becksteinlab/GromacsWrapper
 
 2013-08-07     0.3.2  
 orbeckst, andy.somogyi

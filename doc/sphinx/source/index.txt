@@ -39,16 +39,15 @@ package :doc:`README` for contact details.
 
 .. _Gromacs: http://www.gromacs.org
 .. _python: http://www.python.org
-.. _Documentation: 
-   http://orbeckst.github.com/GromacsWrapper/index.html
-.. Note that the online source code documentaion is only infrequently
+.. _Documentation: http://becksteinlab.github.io/GromacsWrapper/
+.. Note that the online source code documentation is only infrequently
 .. updated. Please refer to the code on github in GromacsWrapper git repository.
 .. _online source code documentation:
    http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/epydoc/index.html
 .. _GromacsWrapper git repository:
-   http://github.com/orbeckst/GromacsWrapper
+   http://github.com/Becksteinlab/GromacsWrapper
 .. _feedback, bug reports, suggestions:
-   http://github.com/orbeckst/GromacsWrapper/issues
+   http://github.com/Becksteinlab/GromacsWrapper/issues
 
 
 Contents
