@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gromacs.setup – Setting up a Gromacs MD run &mdash; GromacsWrapper 0.3.2 documentation</title>
+    <title>gromacs.setup – Setting up a Gromacs MD run &mdash; GromacsWrapper 0.3.3 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.3.2',
+        VERSION:     '0.3.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../../_static/GromacsWrapper_logo_32x32.ico"/>
-    <link rel="top" title="GromacsWrapper 0.3.2 documentation" href="../../index.html" />
+    <link rel="top" title="GromacsWrapper 0.3.3 documentation" href="../../index.html" />
     <link rel="up" title="Gromacs building blocks" href="../building_blocks.html" />
     <link rel="next" title="gromacs.qsub – utilities for batch submission systems" href="qsub.html" />
     <link rel="prev" title="gromacs.cbook – Gromacs Cook Book" href="cbook.html" /> 
@@ -47,7 +47,7 @@
         <li class="right" >
           <a href="cbook.html" title="gromacs.cbook – Gromacs Cook Book"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper 0.3.2 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.3 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >GromacsWrapper package</a> &raquo;</li>
           <li><a href="../building_blocks.html" accesskey="U">Gromacs building blocks</a> &raquo;</li> 
       </ul>
@@ -320,7 +320,7 @@ changed in the mdp file.</p>
 
 <dl class="function">
 <dt id="gromacs.setup.energy_minimize">
-<tt class="descclassname">gromacs.setup.</tt><tt class="descname">energy_minimize</tt><big>(</big><em>dirname='em'</em>, <em>mdp='/nfs/homes/oliver/Library/python/GromacsWrapper/gromacs/templates/em.mdp'</em>, <em>struct='solvate/ionized.gro'</em>, <em>top='top/system.top'</em>, <em>output='em.pdb'</em>, <em>deffnm='em'</em>, <em>mdrunner=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.setup.energy_minimize" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.setup.</tt><tt class="descname">energy_minimize</tt><big>(</big><em>dirname='em'</em>, <em>mdp='/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/em.mdp'</em>, <em>struct='solvate/ionized.gro'</em>, <em>top='top/system.top'</em>, <em>output='em.pdb'</em>, <em>deffnm='em'</em>, <em>mdrunner=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#gromacs.setup.energy_minimize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Energy minimize the system.</p>
 <p>This sets up the system (creates run input files) and also runs
 <tt class="docutils literal"><span class="pre">mdrun_d</span></tt>. Thus it can take a while.</p>
@@ -674,7 +674,7 @@ resnames. Add more if necessary.</p>
 
 <dl class="function">
 <dt id="gromacs.setup._setup_MD">
-<tt class="descclassname">gromacs.setup.</tt><tt class="descname">_setup_MD</tt><big>(</big><em>dirname</em>, <em>deffnm='md'</em>, <em>mdp='/nfs/homes/oliver/Library/python/GromacsWrapper/gromacs/templates/md_OPLSAA.mdp'</em>, <em>struct=None</em>, <em>top='top/system.top'</em>, <em>ndx=None</em>, <em>mainselection='&quot;Protein&quot;'</em>, <em>qscript='/nfs/homes/oliver/Library/python/GromacsWrapper/gromacs/templates/local.sh'</em>, <em>qname=None</em>, <em>startdir=None</em>, <em>mdrun_opts=''</em>, <em>budget=None</em>, <em>walltime=0.3333333333333333</em>, <em>dt=0.002</em>, <em>runtime=1000.0</em>, <em>**mdp_kwargs</em><big>)</big><a class="headerlink" href="#gromacs.setup._setup_MD" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">gromacs.setup.</tt><tt class="descname">_setup_MD</tt><big>(</big><em>dirname</em>, <em>deffnm='md'</em>, <em>mdp='/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/md_OPLSAA.mdp'</em>, <em>struct=None</em>, <em>top='top/system.top'</em>, <em>ndx=None</em>, <em>mainselection='&quot;Protein&quot;'</em>, <em>qscript='/Volumes/Data/oliver/Biop/Library/python/GromacsWrapper/gromacs/templates/local.sh'</em>, <em>qname=None</em>, <em>startdir=None</em>, <em>mdrun_opts=''</em>, <em>budget=None</em>, <em>walltime=0.3333333333333333</em>, <em>dt=0.002</em>, <em>runtime=1000.0</em>, <em>**mdp_kwargs</em><big>)</big><a class="headerlink" href="#gromacs.setup._setup_MD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generic function to set up a <tt class="docutils literal"><span class="pre">mdrun</span></tt> MD simulation.</p>
 <p>See the user functions for usage.</p>
 </dd></dl>
@@ -727,14 +727,14 @@ c = n/V = m/(V*M) = rho/M  = 55.345 mol/L.</p>
         <li class="right" >
           <a href="cbook.html" title="gromacs.cbook – Gromacs Cook Book"
              >previous</a> |</li>
-        <li><a href="../../index.html">GromacsWrapper 0.3.2 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">GromacsWrapper 0.3.3 documentation</a> &raquo;</li>
           <li><a href="../../gromacs.html" >GromacsWrapper package</a> &raquo;</li>
           <li><a href="../building_blocks.html" >Gromacs building blocks</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2012, Oliver Beckstein, Jan Domański.
-      Last updated on Aug 07, 2013.
+      Last updated on May 23, 2015.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>

@@ -145,24 +145,24 @@ class XPM(utilities.FileUtils):
         self.reverse = kwargs.pop("reverse", True)
         self.__array = None
         super(XPM, self).__init__(**kwargs)  # can use kwargs to set dict! (but no sanity checks!)
-        
+
         if not filename is None:
             self._init_filename(filename)
             self.read(filename)
 
 
     def to_df(self):
-	import pandas as _pd
-	import numpy as _np
-	
-	# Add Time to the data as column
-	data = _np.vstack((self.xvalues, self.array.T)).T
-	
-	# Column names are resids
-	df = _pd.DataFrame(data, columns=["Time"]+ list(self.yvalues))
+        import pandas as _pd
+        import numpy as _np
 
-	# Converts Time to a numeric type
-	return df.convert_objects(convert_numeric='force')
+        # Add Time to the data as column
+        data = _np.vstack((self.xvalues, self.array.T)).T
+
+        # Column names are resids
+        df = _pd.DataFrame(data, columns=["Time"]+ list(self.yvalues))
+
+        # Converts Time to a numeric type
+        return df.convert_objects(convert_numeric='force')
 
     @property
     def array(self):
@@ -181,7 +181,7 @@ class XPM(utilities.FileUtils):
     def parse(self):
         """Parse the xpm file and populate :attr:`XPM.array`."""
         with open(self.real_filename) as xpm:
-            # Read in lines until we fidn the start of the array
+            # Read in lines until we find the start of the array
             meta = [xpm.readline()]
             while not meta[-1].startswith("static char *gromacs_xpm[]"):
                 meta.append(xpm.readline())
@@ -228,6 +228,15 @@ class XPM(utilities.FileUtils):
                         yval.extend([autoconverter.convert(y) for y in s[7:].split()])
                     continue
                 s = self.unquote(line)
+                # Joao M. Damas <jmdamas@itqb.unl.pt> suggests on gmx-users (24 Oct 2014)
+                # that the next line should read:
+                #
+                #  data[:, iy]  =  [colors[j[k:k+nb]] for k in range(0,nx*nb,nb)]
+                #
+                # "if one is using higher -nlevels for the .xpm construction (in g_rms, for example)"
+                # However, without a test case I am not eager to change it right away so in
+                # case some faulty behavior is discovered with the XPM reader then this comment
+                # might be helpful. --- Oliver 2014-10-25
                 data[:, iy] = [colors[s[k:k+nb]] for k in xrange(0,nx,nb)]
                 self.logger.debug("read row %d with %d columns: '%s....%s'",
                                   iy, data.shape[0], s[:4], s[-4:])
@@ -263,4 +272,4 @@ class XPM(utilities.FileUtils):
         color = m.group('symbol')
         self.logger.debug("%s: %s %s\n", c.strip(), color, value)
         return color, value
-	
+

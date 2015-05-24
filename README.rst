@@ -27,7 +27,7 @@ running simulations with sensible parameters.
 
 
 .. _Documentation: 
-   http://Becksteinlab.github.io/GromacsWrapper/
+   http://becksteinlab.github.io/GromacsWrapper/
 .. _GromacsWrapper git repository:
    http://github.com/Becksteinlab/GromacsWrapper
 
@@ -142,4 +142,4 @@ general feedback and inquiries can be sent to `Oliver Beckstein`_ by
 e-mail.
 
 .. _Issue Tracker: http://github.com/Becksteinlab/GromacsWrapper/issues
-.. _Oliver Beckstein: obeckste@asu.edu
+.. _Oliver Beckstein: orbeckst@gmail.com

@@ -1,4 +1,4 @@
-# GromacsWrapper: cbook.py
+# GromacsWrapper: setup.py
 """
 :mod:`gromacs.setup` -- Setting up a Gromacs MD run
 ===================================================
@@ -326,13 +326,13 @@ def get_lipid_vdwradii(outdir=os.path.curdir, libdir=None):
             filename = os.path.join(os.environ['GMXLIB'], 'vdwradii.dat')
         except KeyError:
             try:
-                filename = os.path.join(os.environ['GMXDATA'], 'gromacs', 'top', 'vdwradii.dat')
+                filename = os.path.join(os.environ['GMXDATA'], 'top', 'vdwradii.dat')
             except KeyError:
-                msg = "Cannot find vdwradii.dat. Set GMXLIB or GMXDATA."
+                msg = "Cannot find vdwradii.dat. Set GMXLIB (point to 'top') or GMXDATA ('share/gromacs')."
                 logger.exception(msg)
                 raise OSError(msg, errno.ENOENT)
     if not os.path.exists(filename):
-        msg = "Cannot find %r; something is wrong with the Gromacs installation." % vars()
+        msg = "Cannot find %(filename)r; something is wrong with the Gromacs installation." % vars()
         logger.exception(msg, errno.ENOENT)
         raise OSError(msg)
 
