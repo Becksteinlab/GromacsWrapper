@@ -29,7 +29,7 @@ Quick installation instructions
 If you have ``easy_install`` on your system you can directly install
 from the interweb::
 
-  easy_install -f https://github.com/orbeckst/GromacsWrapper/tags GromacsWrapper
+  easy_install -f https://github.com/Becksteinlab/GromacsWrapper/tags GromacsWrapper
 
 This will automatically download and install the latest version.
 
@@ -39,7 +39,7 @@ Manual Download
 If your prefer to download manually, get the latest stable release
 from
 
-  https://github.com/orbeckst/GromacsWrapper/tags
+  https://github.com/Becksteinlab/GromacsWrapper/tags
 
 and use any of the following methods (in increasing order of
 complexity):
@@ -67,14 +67,14 @@ that allow you to install into non-standard places.
 Source code access
 ==================
 
-The tar archive from https://github.com/orbeckst/GromacsWrapper/tags
+The tar archive from https://github.com/Becksteinlab/GromacsWrapper/tags
 contains a full source code distribution.
 
 In order to follow code development you can also browse the code
-**git** repository at http://github.com/orbeckst/GromacsWrapper or
+**git** repository at http://github.com/Becksteinlab/GromacsWrapper or
 clone the git repository from
 
-   git://github.com/orbeckst/GromacsWrapper.git
+   git://github.com/Becksteinlab/GromacsWrapper.git
  
 
 
@@ -133,7 +133,7 @@ requirements for optional modules then you will have to add the
 additional requirement ``[analysis]`` to the command line. For a web
 install this would look like ::
 
-  easy_install -f https://github.com/orbeckst/GromacsWrapper/tags GromacsWrapper[analysis]
+  easy_install -f https://github.com/Becksteinlab/GromacsWrapper/tags GromacsWrapper[analysis]
 
 For installation from a downloaded source distribution ::
 
