@@ -7,13 +7,14 @@ SPHINXBUILD   = sphinx-build
 PAPER         =
 
 HTMLDIR = ../html
+ZIP    := ../gromacswrapper_docs.zip
 
 # Internal variables.
 PAPEROPT_a4     = -D latex_paper_size=a4
 PAPEROPT_letter = -D latex_paper_size=letter
 ALLSPHINXOPTS   = -d build/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) source
 
-.PHONY: help clean html web pickle htmlhelp latex changes linkcheck
+.PHONY: help clean html web pickle htmlhelp latex changes linkcheck zip
 
 help:
 	@echo "Please use \`make <target>' where <target> is one of"
@@ -23,6 +24,7 @@ help:
 	@echo "  latex     to make LaTeX files, you can set PAPER=a4 or PAPER=letter"
 	@echo "  changes   to make an overview over all changed/added/deprecated items"
 	@echo "  linkcheck to check all external links for integrity"
+	@echo "  zip       zip file for pypi"
 
 clean:
 	-rm -rf build/*
@@ -71,3 +73,6 @@ linkcheck:
 	@echo
 	@echo "Link check complete; look for any errors in the above output " \
 	      "or in build/linkcheck/output.txt."
+
+zip: html
+	cd $(HTMLDIR) && zip -r $(ZIP) .
