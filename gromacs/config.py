@@ -3,8 +3,7 @@
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
 
-"""
-:mod:`gromacs.config` -- Configuration for GromacsWrapper
+""":mod:`gromacs.config` -- Configuration for GromacsWrapper
 ==========================================================
 
 The config module provides configurable options for the whole package;
@@ -159,6 +158,37 @@ A typical Gromacs tools section of the config file looks like this::
 
    # which tool groups to make available as gromacs.NAME
    groups = tools extra
+
+For Gromacs 5.x use a section like the following, where the driver
+command ``gmx`` is added as a prefix::
+
+   [Gromacs]
+   # Release of the Gromacs package to which information in this sections applies.
+   release = 5.0.5
+
+   # tools contains the command names of all Gromacs tools for which classes are generated.
+   # Editing this list has only an effect when the package is reloaded.
+   # (Note that this example has a much shorter list than the actual default.)
+   tools =
+         gmx:editconf gmx:make_ndx gmx:grompp gmx:genion gmx:solvate
+         gmx:insert-molecule gmx:conver-tpr
+         gmx:grompp gmx:pdb2gmx gmx:mdrun
+
+   # which tool groups to make available as gromacs.NAME
+   groups = tools
+
+For example, on the commandline you would run ::
+
+   gmx grompp -f md.mdp -c system.gro -p topol.top -o md.tpr
+
+and within GromacsWrapper this would become ::
+
+   gromacs.grompp(f="md.mdp", c="system.gro", p="topol.top", o="md.tpr")
+
+(The driver command is stripped and only the "command name" is used to
+identify the command. This makes it easier to migrate GromacsWrapper
+scripts from Gromacs 4.x to 5.x.)
+
 
 
 Location of template files
