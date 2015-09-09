@@ -171,7 +171,7 @@ command ``gmx`` is added as a prefix::
    # (Note that this example has a much shorter list than the actual default.)
    tools =
          gmx:editconf gmx:make_ndx gmx:grompp gmx:genion gmx:solvate
-         gmx:insert-molecule gmx:conver-tpr
+         gmx:insert-molecule gmx:convert-tpr
          gmx:grompp gmx:pdb2gmx gmx:mdrun
 
    # which tool groups to make available as gromacs.NAME
@@ -188,6 +188,13 @@ and within GromacsWrapper this would become ::
 (The driver command is stripped and only the "command name" is used to
 identify the command. This makes it easier to migrate GromacsWrapper
 scripts from Gromacs 4.x to 5.x.)
+
+.. Note:: Because of `changes in the Gromacs tool in 5.x`_, 
+          GromacsWrapper scripts might break, even if the tool
+          names are still the same.
+
+.. _`changes in the Gromacs tool in 5.x`: 
+   http://www.gromacs.org/Documentation/How-tos/Tool_Changes_for_5.0
 
 
 
