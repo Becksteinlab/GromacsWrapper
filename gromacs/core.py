@@ -269,11 +269,11 @@ class Command(object):
         except OSError,err:
             logger.error(" ".join(cmd))            # log command line
             if err.errno == errno.ENOENT:
-                errmsg = "Failed to find command %r, maybe its not on PATH or GMXRC must be sourced?" % self.command_name
+                errmsg = "Failed to find Gromacs command %r, maybe its not on PATH or GMXRC must be sourced?" % self.command_name
                 logger.fatal(errmsg)
                 raise OSError(errmsg)
             else:
-                logger.exception("Setting up command %r raised an exception." % self.command_name)
+                logger.exception("Setting up Gromacs command %r raised an exception." % self.command_name)
                 raise
         logger.debug(p.command_string)
         return p
@@ -407,7 +407,7 @@ class GromacsCommand(Command):
     #: Available failure modes.
     failuremodes = ('raise', 'warn', None)
 
-    def __init__(self,*args,**kwargs):
+    def __init__(self, *args, **kwargs):
         """Set up the command with gromacs flags as keyword arguments.
 
         The following  are generic instructions; refer  to the Gromacs
@@ -620,6 +620,23 @@ class GromacsCommand(Command):
                               "Documentation of the gromacs tool", 34*'=',
                               docs])
         return docs
+
+class GromacsGMXCommand(GromacsCommand):
+    """Base class for wrapping a ``gmx <name>`` command.
+
+    Limitations: User must have sourced ``GMXRC`` so that the python script can
+    inherit the environment and find the gromacs programs.
+
+    The class doc string is dynamically replaced by the documentation of the
+    gromacs command when an instance is created.
+    """
+    driver = "gmx"
+    doc_pattern = """.*?(?P<DOCS>SYNOPSIS.*)"""
+
+    def _commandline(self, *args, **kwargs):
+        """Returns the command line (without pipes) as a list."""
+         # transform_args() is a hook (used in GromacsCommand very differently!)
+        return [self.driver, self.command_name] + self.transform_args(*args,**kwargs)
 
 
 

@@ -178,7 +178,7 @@ release.
 __docformat__ = "restructuredtext en"
 
 #: Package version; this is the only place where it is set.
-VERSION = 0,3,3
+VERSION = 0,4,0
 #: Set to ``True`` for a release. If set to ``False`` then the patch level
 #: will have the suffix "-dev".
 RELEASE = True
