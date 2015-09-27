@@ -41,7 +41,7 @@ copyright = u'2009-2012, Oliver Beckstein, Jan Domański'
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
 #
-# Dynamically calculate the version based on mdpow.VERSION.
+# Dynamically calculate the version based on __init__.VERSION.
 packageversion = __import__('gromacs').get_version()
 
 # The short X.Y version.
