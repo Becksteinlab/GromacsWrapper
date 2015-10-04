@@ -181,7 +181,7 @@ __docformat__ = "restructuredtext en"
 VERSION = 0,4,0
 #: Set to ``True`` for a release. If set to ``False`` then the patch level
 #: will have the suffix "-dev".
-RELEASE = True
+RELEASE = False
 if not RELEASE:
     VERSION = VERSION[:2] + (str(VERSION[2]) + '-dev',)
 
@@ -194,7 +194,9 @@ def get_version_tuple():
     return tuple(map(str,VERSION))
 
 # __all__ is extended with all gromacs command instances later
-__all__ = ['config', 'tools', 'cbook']
+__all__ = ['config', 'tools', 'cbook', 'fileformats']
+
+from . import fileformats
 
 # Note: analysis not imported by default (requires additional pre-requisites)
 
