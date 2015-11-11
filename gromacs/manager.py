@@ -165,7 +165,7 @@ The following classes and functions are mainly documented for developers.
 .. _~/.ssh/config: http://linux.die.net/man/5/ssh_config
 
 """
-from __future__ import with_statement
+from __future__ import absolute_import, with_statement
 
 import os
 import errno
@@ -176,11 +176,11 @@ import re
 import glob
 from ConfigParser import SafeConfigParser
 
-from gromacs import MissingDataError
-import gromacs.config
-import gromacs.utilities
-import gromacs.cbook
-import gromacs.setup
+from .exceptions import MissingDataError
+from . import config
+from . import utilities
+from . import cbook
+from . import setup
 
 import warnings
 import logging
@@ -199,7 +199,7 @@ class ManagerConfigParser(SafeConfigParser):
 
 def find_manager_config(name):
     """Find a configuration file for manager *name*."""
-    found = list(gromacs.utilities.find_files(gromacs.config.managerdir, name+".cfg"))
+    found = list(utilities.find_files(config.managerdir, name+".cfg"))
     if len(found) == 0:
         errmsg = "No configuration file found for name %r" % name
         logger.error(errmsg)
@@ -411,7 +411,7 @@ class Manager(object):
            *cleanup* : boolean
               if ``True``, remove all used files [``True``]
         """
-        gromacs.cbook.cat(prefix, dirname=dirname, resolve_multi='guess')
+        cbook.cat(prefix, dirname=dirname, resolve_multi='guess')
         # cleanup/get stuff back
         full_dir = os.path.join(dirname, 'full')  # default of cat
         complete_files = os.path.join(full_dir, '*.*')
@@ -460,7 +460,6 @@ class Manager(object):
         if self.start_cwd:
             # hack for queuing systems that require hard coding of the
             # start directory into the queuing system script (see setup_MD below)
-            from gromacs.cbook import edit_txt
             qscriptpath = qscript
             if not os.path.exists(qscript):
                 # catch the common case that the qscript resides within the job dir
@@ -468,7 +467,7 @@ class Manager(object):
             if not os.path.exists(qscriptpath):
                 logger.error("Failed to find qscript %(qscript)r under %(dirname)r or current dir.", vars())
                 raise OSError(errno.ENOENT, "Missing qscript", qscript)
-            edit_txt(qscriptpath, [('^ *STARTDIR=', '(?<==)(.*)', remotedir),])   # in-place!
+            cbook.edit_txt(qscriptpath, [('^ *STARTDIR=', '(?<==)(.*)', remotedir),])   # in-place!
             rc = self.putfile(qscriptpath, dirname)
             if rc != 0:
                 errmsg = "Failed to scp updated qscript %(qscriptpath)r to remote %(remotedir)r" % vars()
@@ -643,7 +642,7 @@ class Manager(object):
         dirname = 'MD_POSRES'
         struct = self.local_get('em','em.pdb')
         qscript = kwargs.pop('qscript', self.qscript)
-        gromacs.setup.MD_restrained(dirname=dirname, struct=struct, qscript=qscript,
+        setup.MD_restrained(dirname=dirname, struct=struct, qscript=qscript,
                                     qname=self.prefix+'pr', startdir=self.remotepath(dirname),
                                     **kwargs)
         self.put(dirname)
@@ -667,7 +666,7 @@ class Manager(object):
         structure = self.local_get(os.path.dirname(struct), os.path.basename(struct))
         qscript = kwargs.pop('qscript', self.qscript)
 
-        gromacs.setup.MD(dirname=dirname, struct=structure, qscript=qscript,
+        setup.MD(dirname=dirname, struct=structure, qscript=qscript,
                          qname=self.prefix+jobid_s, startdir=self.remotepath(dirname),
                          **kwargs)
         self.put(dirname)

@@ -70,16 +70,17 @@ Show the results::
 .. SeeAlso:: :mod:`gromacs.analysis.plugins.hbonds`
 """
 
-from __future__ import with_statement
+from __future__ import absolute_import, with_statement
+
 import os, errno
 import re
 import warnings
 
 import numpy
 
-from gromacs import ParseError, AutoCorrectionWarning
-import gromacs.utilities as utilities
-from convert import Autoconverter
+from ..exceptions import ParseError, AutoCorrectionWarning
+from .. import utilities
+from .convert import Autoconverter
 
 import logging
 

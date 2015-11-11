@@ -175,23 +175,10 @@ If the package was installed from a development version, the patch
 level will have the string "-dev" affixed to distinguish it from a
 release.
 """
+from __future__ import absolute_import
 __docformat__ = "restructuredtext en"
 
-#: Package version; this is the only place where it is set.
-VERSION = 0,4,0
-#: Set to ``True`` for a release. If set to ``False`` then the patch level
-#: will have the suffix "-dev".
-RELEASE = False
-if not RELEASE:
-    VERSION = VERSION[:2] + (str(VERSION[2]) + '-dev',)
-
-def get_version():
-    """Return current package version as a string."""
-    return ".".join(map(str,VERSION))
-
-def get_version_tuple():
-    """Return current package version as a tuple (*MAJOR*, *MINOR*, *PATCHLEVEL*)."""
-    return tuple(map(str,VERSION))
+from .version import VERSION, RELEASE, get_version, get_version_tuple
 
 # __all__ is extended with all gromacs command instances later
 __all__ = ['config', 'tools', 'cbook', 'fileformats']
@@ -200,59 +187,16 @@ from . import fileformats
 
 # Note: analysis not imported by default (requires additional pre-requisites)
 
-class GromacsError(EnvironmentError):
-    """Error raised when a gromacs tool fails.
-
-    Returns error code in the errno attribute and a string in strerror.
-    # TODO: return status code and possibly error message
-    """
-
-class MissingDataError(Exception):
-    """Error raised when prerequisite data are not available.
-
-    For analysis with :class:`gromacs.analysis.core.Simulation` this typically
-    means that the :meth:`~gromacs.analysis.core.Simulation.analyze` method has
-    to be run first.
-    """
-
-class ParseError(Exception):
-    """Error raised when parsing of a file failed."""
-
-class GromacsFailureWarning(Warning):
-    """Warning about failure of a Gromacs tool."""
-
-class GromacsImportWarning(ImportWarning):
-    """Warns about problems with using a gromacs tool."""
-
-class GromacsValueWarning(Warning):
-    """Warns about problems with the value of an option or variable."""
-
-class AutoCorrectionWarning(Warning):
-    """Warns about cases when the code is choosing new values automatically."""
-
-class BadParameterWarning(Warning):
-    """Warns if some parameters or variables are unlikely to be appropriate or correct."""
-
-class MissingDataWarning(Warning):
-    """Warns when prerequisite data/files are not available."""
-
-class UsageWarning(Warning):
-    """Warns if usage is unexpected/documentation ambiguous."""
-
-class LowAccuracyWarning(Warning):
-    """Warns that results may possibly have low accuracy."""
-
 import warnings
-# These warnings should always be displayed because other parameters
-# can have changed, eg during interactive use.
-for w in (AutoCorrectionWarning, BadParameterWarning, UsageWarning,
-          GromacsFailureWarning, GromacsValueWarning, LowAccuracyWarning):
-    warnings.simplefilter('always', category=w)
-del w
+from .exceptions import (GromacsError, MissingDataError, ParseError,
+                         GromacsFailureWarning, GromacsImportWarning,
+                         GromacsValueWarning, AutoCorrectionWarning,
+                         BadParameterWarning, MissingDataWarning,
+                         UsageWarning, LowAccuracyWarning)
 
 
 # Import configuration before anything else
-import config
+from . import config
 
 
 import logging
@@ -302,7 +246,7 @@ def stop_logging():
 # These serve as the equivalence of running commands in the shell.
 # (Note that each gromacs command is actually run when the instance is
 # created in order to gather the documentation string.)
-import tools
+from . import tools
 
 # Ignore warnings from a few programs that do not produce
 # documentation when run with '-h' (only applies when the default for
@@ -338,7 +282,7 @@ __all__.extend(_have_g_commands)
 # cbook should come after the whole of init as it relies on command
 # instances in the top level name space
 try:
-    import cbook
+    from . import cbook
 except OSError, err:
     warnings.warn("Some Gromacs commands were NOT found when importing gromacs.cbook:\n"+str(err),
                   category=GromacsImportWarning)

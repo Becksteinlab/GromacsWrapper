@@ -83,7 +83,7 @@ Data
 .. autodata:: amino_acid_codes
 
 """
-from __future__ import with_statement
+from __future__ import absolute_import, with_statement
 
 __docformat__ = "restructuredtext en"
 
@@ -101,7 +101,7 @@ import datetime
 import logging
 logger = logging.getLogger('gromacs.utilities')
 
-from gromacs import AutoCorrectionWarning
+from .exceptions import AutoCorrectionWarning
 
 
 def Property(func):

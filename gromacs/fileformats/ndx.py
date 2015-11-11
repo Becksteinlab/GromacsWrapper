@@ -23,7 +23,8 @@ access to the individual groups.
 .. autoclass:: IndexSet
 """
 
-from __future__ import with_statement
+from __future__ import absolute_import, with_statement
+
 import os, errno
 import re
 import warnings
@@ -31,9 +32,12 @@ import operator
 
 import numpy
 
-from gromacs import ParseError, AutoCorrectionWarning
-import gromacs.utilities as utilities
-from gromacs.odict import odict
+from ..exceptions import ParseError, AutoCorrectionWarning
+from .. import utilities
+try:
+    from collections import OrderedDict as odict
+except ImportError:
+    from .odict import odict
 
 import logging
 

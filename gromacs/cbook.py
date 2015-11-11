@@ -125,7 +125,7 @@ file. For specialized cases the two following functions are useful:
 # new class and set arguments explicitly in init (using kwargs['flag'] =
 # default) ... or I can write some meta(??) class to do this nicely
 
-from __future__ import with_statement
+from __future__ import absolute_import, with_statement
 
 __docformat__ = "restructuredtext en"
 
@@ -141,10 +141,10 @@ import logging
 logger = logging.getLogger('gromacs.cbook')
 
 import gromacs
-from gromacs import GromacsError, BadParameterWarning, MissingDataWarning, GromacsValueWarning, GromacsImportWarning
-import tools
-import utilities
-from utilities import asiterable
+from .exceptions import GromacsError, BadParameterWarning, MissingDataWarning, GromacsValueWarning, GromacsImportWarning
+from . import tools
+from . import utilities
+from .utilities import asiterable
 
 def _define_canned_commands():
     """Define functions for the top level name space.

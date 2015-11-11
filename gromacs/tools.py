@@ -56,7 +56,7 @@ Gromacs tools
 .. autoclass:: GridMAT_MD
    :members:
 """
-
+from __future__ import absolute_import
 __docformat__ = "restructuredtext en"
 
 import os.path

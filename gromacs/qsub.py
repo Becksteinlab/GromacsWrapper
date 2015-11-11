@@ -197,14 +197,15 @@ Classes and functions
 .. SeeAlso:: :mod:`gromacs.manager` for classes to manage jobs remotely.
 
 """
+from __future__ import absolute_import, with_statement
 
 import os, errno
 import warnings
 
-import gromacs.config
-import gromacs.cbook
-from gromacs.utilities import asiterable, Timedelta
-from gromacs import AutoCorrectionWarning
+from . import config
+from . import cbook
+from .utilities import asiterable, Timedelta
+from .exceptions import AutoCorrectionWarning
 
 import logging
 logger = logging.getLogger('gromacs.qsub')
@@ -388,24 +389,24 @@ def generate_submit_scripts(templates, prefix=None, deffnm='md', jobname='MD', b
         submitscript = os.path.join(dirname, prefix + os.path.basename(template))
         logger.info("Setting up queuing system script %(submitscript)r..." % vars())
         # These substitution rules are documented for the user in the module doc string
-        gromacs.cbook.edit_txt(template,
-                               [('^ *DEFFNM=','(?<==)(.*)', deffnm),
-                                ('^#.*(-N|job_name)', '((?<=-N\s)|(?<=job_name\s))\s*\w+', jobname),
-                                ('^#.*(-A|account_no)', '((?<=-A\s)|(?<=account_no\s))\s*\w+', budget),
-                                ('^#.*(-l walltime|wall_clock_limit)', '(?<==)(\d+:\d+:\d+)', walltime),
-                                ('^ *WALL_HOURS=', '(?<==)(.*)', wall_hours),
-                                ('^ *STARTDIR=', '(?<==)(.*)', startdir),
-                                ('^ *NPME=', '(?<==)(.*)', npme),
-                                ('^ *MDRUN_OPTS=', '(?<==)("")', mdrun_opts),  # only replace literal ""
-                                ('^# JOB_ARRAY_PLACEHOLDER', '^.*$', jobarray_string),
-                                ],
-                               newname=submitscript)
+        cbook.edit_txt(template,
+                       [('^ *DEFFNM=','(?<==)(.*)', deffnm),
+                        ('^#.*(-N|job_name)', '((?<=-N\s)|(?<=job_name\s))\s*\w+', jobname),
+                        ('^#.*(-A|account_no)', '((?<=-A\s)|(?<=account_no\s))\s*\w+', budget),
+                        ('^#.*(-l walltime|wall_clock_limit)', '(?<==)(\d+:\d+:\d+)', walltime),
+                        ('^ *WALL_HOURS=', '(?<==)(.*)', wall_hours),
+                        ('^ *STARTDIR=', '(?<==)(.*)', startdir),
+                        ('^ *NPME=', '(?<==)(.*)', npme),
+                        ('^ *MDRUN_OPTS=', '(?<==)("")', mdrun_opts),  # only replace literal ""
+                        ('^# JOB_ARRAY_PLACEHOLDER', '^.*$', jobarray_string),
+                    ],
+                       newname=submitscript)
         ext = os.path.splitext(submitscript)[1]
         if ext in ('.sh', '.csh', '.bash'):
             os.chmod(submitscript, 0755)
         return submitscript
 
-    return [write_script(template) for template in gromacs.config.get_templates(templates)]
+    return [write_script(template) for template in config.get_templates(templates)]
 
 
 def generate_submit_array(templates, directories, **kwargs):
@@ -452,5 +453,5 @@ def generate_submit_array(templates, directories, **kwargs):
         return generate_submit_scripts(template, **kwargs)[0]   # returns list of length 1
 
     # must use config.get_templates() because we need to access the file for detecting
-    return [write_script(template) for template in gromacs.config.get_templates(templates)]
+    return [write_script(template) for template in config.get_templates(templates)]
 
