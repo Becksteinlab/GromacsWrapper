@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Simple xmgrace XVG file format &mdash; GromacsWrapper 0.3.3 documentation</title>
+    <title>Simple xmgrace XVG file format &mdash; GromacsWrapper 0.4.0-dev documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.3.3',
+        VERSION:     '0.4.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../../../_static/GromacsWrapper_logo_32x32.ico"/>
-    <link rel="top" title="GromacsWrapper 0.3.3 documentation" href="../../../index.html" />
+    <link rel="top" title="GromacsWrapper 0.4.0-dev documentation" href="../../../index.html" />
     <link rel="up" title="gromacs.formats – Accessing various files" href="../formats.html" />
     <link rel="next" title="Gromacs XPM file format" href="xpm.html" />
     <link rel="prev" title="gromacs.formats – Accessing various files" href="../formats.html" /> 
@@ -47,10 +47,10 @@
         <li class="right" >
           <a href="../formats.html" title="gromacs.formats – Accessing various files"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../index.html">GromacsWrapper 0.3.3 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">GromacsWrapper 0.4.0-dev documentation</a> &raquo;</li>
           <li><a href="../../../gromacs.html" >GromacsWrapper package</a> &raquo;</li>
           <li><a href="../../core.html" >Gromacs core modules</a> &raquo;</li>
-          <li><a href="../formats.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
+          <li><a href="../formats.html" accesskey="U"><tt class="docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -75,7 +75,7 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="../formats.html"
-                        title="previous chapter"><tt class="docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a></p>
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="xpm.html"
                         title="next chapter">Gromacs XPM file format</a></p>
@@ -115,8 +115,8 @@ access to such files and adds a number of methods to access the data
 <em>array</em> keyword or the <a class="reference internal" href="#gromacs.fileformats.xvg.XVG.set" title="gromacs.fileformats.xvg.XVG.set"><tt class="xref py py-meth docutils literal"><span class="pre">XVG.set()</span></tt></a> method one can load data from
 an array instead of a file. The array should be simple &#8220;NXY&#8221; data
 (typically: first column time or position, further columns scalar
-observables). The data should be a NumPy <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> array
-<tt class="docutils literal"><span class="pre">a</span></tt> with <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.shape.html#numpy.ndarray.shape" title="(in NumPy v1.9)"><tt class="xref py py-attr docutils literal"><span class="pre">shape</span></tt></a> <tt class="docutils literal"><span class="pre">(M,</span> <span class="pre">N)</span></tt> where <em>M</em>-1 is the
+observables). The data should be a NumPy <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> array
+<tt class="docutils literal"><span class="pre">a</span></tt> with <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.shape.html#numpy.ndarray.shape" title="(in NumPy v1.10)"><tt class="xref py py-attr docutils literal"><span class="pre">shape</span></tt></a> <tt class="docutils literal"><span class="pre">(M,</span> <span class="pre">N)</span></tt> where <em>M</em>-1 is the
 number of observables and <em>N</em> the number of observations, e.g.the
 number of time points in a time series. <tt class="docutils literal"><span class="pre">a[0]</span></tt> is the time or
 position and <tt class="docutils literal"><span class="pre">a[1:]</span></tt> the <em>M</em>-1 data columns.</p>
@@ -225,15 +225,15 @@ be the estimated error of the mean.)</p>
 </div>
 <p>(see output in Figure <a class="reference internal" href="#figure-xvg-decimated-label"><em>Plot of Raw vs Decimated data</em></a>)</p>
 <div class="figure align-right" id="figure-xvg-decimated-label" style="width: 40%">
-<a class="reference internal image-reference" href="../../../_images/xvg_decimated.png"><img alt="plot of a raw noisy sin(x) graph versus its decimated version" src="../../../_images/xvg_decimated.png" style="width: 382.9px; height: 338.1px;" /></a>
+<a class="reference internal image-reference" href="../../../_images/xvg_decimated.png"><img alt="plot of a raw noisy sin(x) graph versus its decimated version" src="../../../_images/xvg_decimated.png" /></a>
 <p class="caption"><strong>Plot of Raw vs Decimated data.</strong> Example of plotting raw data
 (sine on 50,000 points, gray) versus the decimated graph (reduced
 to 1000 points, red line). The errors were also decimated and
 reduced to the errors within the 5% and the 95% percentile. The
 decimation is carried out by histogramming the data in the desired
 number of bins and then the data in each bin is reduced by either
-<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.mean.html#numpy.mean" title="(in NumPy v1.9)"><tt class="xref py py-func docutils literal"><span class="pre">numpy.mean()</span></tt></a> (for the value) or
-<a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.scoreatpercentile.html#scipy.stats.scoreatpercentile" title="(in SciPy v0.15.1)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.stats.scoreatpercentile()</span></tt></a> (for errors).</p>
+<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.mean.html#numpy.mean" title="(in NumPy v1.10)"><tt class="xref py py-func docutils literal"><span class="pre">numpy.mean()</span></tt></a> (for the value) or
+<a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.scoreatpercentile.html#scipy.stats.scoreatpercentile" title="(in SciPy v0.16.1)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.stats.scoreatpercentile()</span></tt></a> (for errors).</p>
 </div>
 <p>In principle it is possible to use other functions to decimate the
 data. For <a class="reference internal" href="#gromacs.fileformats.xvg.XVG.plot" title="gromacs.fileformats.xvg.XVG.plot"><tt class="xref py py-meth docutils literal"><span class="pre">XVG.plot()</span></tt></a>, the <em>method</em> keyword can be changed (see
@@ -542,7 +542,7 @@ the data into the lower 75% and upper 25%; 50 is the median [50.0]</dd>
 </dl>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="../../../numkit/timeseries.html#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">numkit.timeseries.regularized_function()</span></tt></a> with <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.scoreatpercentile.html#scipy.stats.scoreatpercentile" title="(in SciPy v0.15.1)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.stats.scoreatpercentile()</span></tt></a></p>
+<p class="last"><a class="reference internal" href="../../../numkit/timeseries.html#numkit.timeseries.regularized_function" title="numkit.timeseries.regularized_function"><tt class="xref py py-func docutils literal"><span class="pre">numkit.timeseries.regularized_function()</span></tt></a> with <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.scoreatpercentile.html#scipy.stats.scoreatpercentile" title="(in SciPy v0.16.1)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.stats.scoreatpercentile()</span></tt></a></p>
 </div>
 </dd></dl>
 
@@ -604,7 +604,7 @@ timepoints.</p>
 <dt id="gromacs.fileformats.xvg.XVG.error">
 <tt class="descname">error</tt><a class="headerlink" href="#gromacs.fileformats.xvg.XVG.error" title="Permalink to this definition">¶</a></dt>
 <dd><p>Error on the mean of the data, taking the correlation time into account.</p>
-<p>See <a class="reference internal" href="#frenkelsmit2002">[FrenkelSmit2002]</a> <a class="reference external" href="http://books.google.co.uk/books?id=XmyO2oRUg0cC&amp;pg=PA526">p526</a>:</p>
+<p>See <a class="reference internal" href="../../../numkit/timeseries.html#frenkelsmit2002">[FrenkelSmit2002]</a> <a class="reference external" href="http://books.google.co.uk/books?id=XmyO2oRUg0cC&amp;pg=PA526">p526</a>:</p>
 <blockquote>
 <div>error = sqrt(2*tc*acf[0]/T)</div></blockquote>
 <p>where acf() is the autocorrelation function of the fluctuations around
@@ -897,15 +897,15 @@ pi).</p>
         <li class="right" >
           <a href="../formats.html" title="gromacs.formats – Accessing various files"
              >previous</a> |</li>
-        <li><a href="../../../index.html">GromacsWrapper 0.3.3 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">GromacsWrapper 0.4.0-dev documentation</a> &raquo;</li>
           <li><a href="../../../gromacs.html" >GromacsWrapper package</a> &raquo;</li>
           <li><a href="../../core.html" >Gromacs core modules</a> &raquo;</li>
-          <li><a href="../formats.html" ><tt class="docutils literal docutils literal docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
+          <li><a href="../formats.html" ><tt class="docutils literal"><span class="pre">gromacs.formats</span></tt> &#8211; Accessing various files</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2012, Oliver Beckstein, Jan Domański.
-      Last updated on May 23, 2015.
+      Last updated on Nov 10, 2015.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
