@@ -2,6 +2,13 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
+2015-xx-yy      0.4.0
+orbeckst, richardjgowers
+
+* primitive support for Gromacs 5.x
+* fixed: gromacs.fileformats was not imported properly (PR #21)
+* docs at http://gromacswrapper.readthedocs.org
+
 2015-05-22      0.3.3
 orbeckst, jandom
 
