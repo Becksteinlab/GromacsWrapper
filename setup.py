@@ -3,7 +3,7 @@
 # Released under the GNU Public License 3 (or higher, your choice)
 #
 # See the files INSTALL and README for details or visit
-# http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/
+# https://github.com/Becksteinlab/GromacsWrapper
 from __future__ import with_statement
 
 from ez_setup import use_setuptools
@@ -16,7 +16,7 @@ with open("README.rst") as readme:
 # Dynamically calculate the version based on gromacs.VERSION.
 # (but requires that we can actually import the package BEFORE it is
 # properly installed!)
-version = __import__('gromacs').get_version()
+version = __import__('gromacs.version').get_version()
 
 setup(name="GromacsWrapper",
       version=version,

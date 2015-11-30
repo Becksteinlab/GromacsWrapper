@@ -115,7 +115,7 @@ Defined constants:
 
 """
 
-from __future__ import with_statement
+from __future__ import absolute_import, with_statement
 
 __docformat__ = "restructuredtext en"
 
@@ -130,14 +130,13 @@ logger = logging.getLogger('gromacs.setup')
 
 
 import gromacs
-import gromacs.config as config
-from gromacs import GromacsError, GromacsFailureWarning, GromacsValueWarning, \
-     AutoCorrectionWarning, BadParameterWarning, UsageWarning, MissingDataError
-import gromacs.cbook
-from gromacs.cbook import add_mdp_includes
-import gromacs.qsub
-import gromacs.utilities
-from gromacs.utilities import in_dir, realpath, Timedelta, asiterable, firstof
+from . import config
+from .exceptions import (GromacsError, GromacsFailureWarning, GromacsValueWarning, 
+                         AutoCorrectionWarning, BadParameterWarning, UsageWarning, MissingDataError)
+from . import cbook
+from . import qsub
+from . import utilities
+from .utilities import in_dir, realpath, Timedelta, asiterable, firstof
 
 
 #: Concentration of water at standard conditions in mol/L.
@@ -253,7 +252,7 @@ def make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None):
     # need the first "" to get make_ndx to spit out the group list.
     _,out,_ = gromacs.make_ndx(f=struct, n=oldndx, o=ndx, stdout=False,
                                       input=("", "q"))
-    groups = gromacs.cbook.parse_ndxlist(out)
+    groups = cbook.parse_ndxlist(out)
 
     # find the matching groups,
     # there is a nasty bug in GROMACS where make_ndx may have multiple
@@ -297,7 +296,7 @@ def make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None):
                                              "",
                                              # quit
                                              "q"))
-    return gromacs.cbook.parse_ndxlist(out)
+    return cbook.parse_ndxlist(out)
 
 
 #: Hard-coded lipid residue names for a ``vdwradii.dat`` file. Use together with
@@ -455,7 +454,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
         distance = None    # if box is set then user knows what she is doing...
 
     # handle additional include directories (kwargs are also modified!)
-    mdp_kwargs = add_mdp_includes(topology, kwargs)
+    mdp_kwargs = cbook.add_mdp_includes(topology, kwargs)
 
     if water.lower() in ('spc', 'spce'):
         water = 'spc216'
@@ -472,7 +471,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
 
     # clean topology (if user added the marker; the default marker is
     # ; Gromacs auto-generated entries follow:
-    n_removed = gromacs.cbook.remove_molecules_from_topology(topology, **scrubber_kwargs)
+    n_removed = cbook.remove_molecules_from_topology(topology, **scrubber_kwargs)
 
     with in_dir(dirname):
         logger.info("[%(dirname)s] Solvating with water %(water)r..." % vars())
@@ -505,13 +504,13 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
         except:
             if with_membrane:
                 # remove so that it's not picked up accidentally
-                gromacs.utilities.unlink_f(vdwradii_dat)
+                utilities.unlink_f(vdwradii_dat)
             raise
         logger.info("Solvated system with %s", water)
 
         with open('none.mdp','w') as mdp:
             mdp.write('; empty mdp file\ninclude = %(include)s\nrcoulomb = 1\nrvdw = 1\nrlist = 1\n' % mdp_kwargs)
-        qtotgmx = gromacs.cbook.grompp_qtot(f='none.mdp', o='topol.tpr', c='solvated.gro',
+        qtotgmx = cbook.grompp_qtot(f='none.mdp', o='topol.tpr', c='solvated.gro',
                                             p=topology, stdout=False, maxwarn=grompp_maxwarn)
         qtot = round(qtotgmx)
         logger.info("[%(dirname)s] After solvation: total charge qtot = %(qtotgmx)r = %(qtot)r" % vars())
@@ -526,7 +525,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
             rc,output,junk = gromacs.make_ndx(f='topol.tpr', o='ow.ndx',
                                               input=('keep 0', 'del 0', 'a OW*', 'name 0 OW', '', 'q'),
                                               stdout=False)
-            groups = gromacs.cbook.parse_ndxlist(output)
+            groups = cbook.parse_ndxlist(output)
             gdict = dict([(g['name'], g) for g in groups])   # overkill...
             N_water = gdict['OW']['natoms']                  # ... but dict lookup is nice
             N_ions = int(N_water * concentration/CONC_WATER) # number of monovalents
@@ -559,7 +558,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
                     raise
             os.symlink('solvated.gro', 'ionized.gro')
 
-        qtot = gromacs.cbook.grompp_qtot(f='none.mdp', o='ionized.tpr', c='ionized.gro',
+        qtot = cbook.grompp_qtot(f='none.mdp', o='ionized.tpr', c='ionized.gro',
                                          p=topology, stdout=False, maxwarn=grompp_maxwarn)
 
         if abs(qtot) > 1e-4:
@@ -665,7 +664,7 @@ def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
 
     logger.info("[%(dirname)s] Energy minimization of struct=%(struct)r, top=%(top)r, mdp=%(mdp)r ..." % vars())
 
-    add_mdp_includes(topology, kwargs)
+    cbook.add_mdp_includes(topology, kwargs)
 
     if qtot != 0:
         # At the moment this is purely user-reported and really only here because
@@ -676,7 +675,7 @@ def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
         warnings.warn(wmsg, category=BadParameterWarning)
 
     with in_dir(dirname):
-        unprocessed = gromacs.cbook.edit_mdp(mdp_template, new_mdp=mdp, **kwargs)
+        unprocessed = cbook.edit_mdp(mdp_template, new_mdp=mdp, **kwargs)
         check_mdpargs(unprocessed)
         gromacs.grompp(f=mdp, o=tpr, c=structure, p=topology, **unprocessed)
         mdrun_args = dict(v=True, stepout=10, deffnm=deffnm, c=output)
@@ -820,7 +819,7 @@ def _setup_MD(dirname,
     mdp_parameters = {'nsteps':nsteps, 'dt':dt, 'pp': 'processed.top'}
     mdp_parameters.update(mdp_kwargs)
 
-    add_mdp_includes(topology, mdp_parameters)
+    cbook.add_mdp_includes(topology, mdp_parameters)
 
     logger.info("[%(dirname)s] input mdp  = %(mdp_template)r", vars())
     with in_dir(dirname):
@@ -896,11 +895,11 @@ def _setup_MD(dirname,
             mdp_parameters['ref_p'] = ""
             mdp_parameters['compressibility'] = ""
 
-        unprocessed = gromacs.cbook.edit_mdp(mdp_template, new_mdp=mdp, **mdp_parameters)
+        unprocessed = cbook.edit_mdp(mdp_template, new_mdp=mdp, **mdp_parameters)
         check_mdpargs(unprocessed)
         gromacs.grompp(f=mdp, p=topology, c=structure, n=index, o=tpr, **unprocessed)
 
-        runscripts = gromacs.qsub.generate_submit_scripts(
+        runscripts = qsub.generate_submit_scripts(
             qscript_template, deffnm=deffnm, jobname=qname, budget=budget,
             startdir=startdir, mdrun_opts=mdrun_opts, walltime=walltime)
 

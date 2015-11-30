@@ -213,14 +213,14 @@ completely transparent to the user.
 .. autodata:: qscript_template
 
 """
-from __future__ import with_statement
+from __future__ import absolute_import, with_statement
 
 import os, errno
 from ConfigParser import SafeConfigParser
 
 from pkg_resources import resource_filename, resource_listdir
 
-import utilities
+from . import utilities
 
 # Defaults
 # --------

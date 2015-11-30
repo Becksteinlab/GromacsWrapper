@@ -18,7 +18,7 @@ Helper functions and classes around :class:`gromacs.tools.Mdrun`.
 .. autofunction:: check_mdrun_success
 
 """
-from __future__ import with_statement
+from __future__ import absolute_import, with_statement
 __docformat__ = "restructuredtext en"
 
 import subprocess
@@ -30,8 +30,8 @@ logger = logging.getLogger('gromacs.run')
 
 
 # gromacs modules
-import core
-import utilities
+from . import core
+from . import utilities
 
 class MDrunner(utilities.FileUtils):
     """A class to manage running :program:`mdrun` in various ways.

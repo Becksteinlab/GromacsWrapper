@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>numkit.integration — Numerical integration of data &mdash; GromacsWrapper 0.3.3 documentation</title>
+    <title>numkit.integration — Numerical integration of data &mdash; GromacsWrapper 0.4.0-dev documentation</title>
     
     <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.3.3',
+        VERSION:     '0.4.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="shortcut icon" href="../_static/GromacsWrapper_logo_32x32.ico"/>
-    <link rel="top" title="GromacsWrapper 0.3.3 documentation" href="../index.html" />
+    <link rel="top" title="GromacsWrapper 0.4.0-dev documentation" href="../index.html" />
     <link rel="up" title="numkit — Numerical analysis toolkit" href="../numkit.html" />
     <link rel="next" title="numkit.observables — Observables as quantities with errors" href="observables.html" />
     <link rel="prev" title="numkit.timeseries — Time series manipulation and analysis" href="timeseries.html" /> 
@@ -47,9 +47,9 @@
         <li class="right" >
           <a href="timeseries.html" title="numkit.timeseries — Time series manipulation and analysis"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper 0.3.3 documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper 0.4.0-dev documentation</a> &raquo;</li>
           <li><a href="../auxiliary.html" >Auxiliary modules</a> &raquo;</li>
-          <li><a href="../numkit.html" accesskey="U"><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a> &raquo;</li> 
+          <li><a href="../numkit.html" accesskey="U"><tt class="docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -59,7 +59,7 @@
             </a></p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="timeseries.html"
-                        title="previous chapter"><tt class="docutils literal docutils literal"><span class="pre">numkit.timeseries</span></tt> &#8212; Time series manipulation and analysis</a></p>
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">numkit.timeseries</span></tt> &#8212; Time series manipulation and analysis</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="observables.html"
                         title="next chapter"><tt class="docutils literal"><span class="pre">numkit.observables</span></tt> &#8212; Observables as quantities with errors</a></p>
@@ -93,13 +93,13 @@
 <h1><a class="reference internal" href="#module-numkit.integration" title="numkit.integration"><tt class="xref py py-mod docutils literal"><span class="pre">numkit.integration</span></tt></a> &#8212; Numerical integration of data<a class="headerlink" href="#numkit-integration-numerical-integration-of-data" title="Permalink to this headline">¶</a></h1>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/integrate.html#module-scipy.integrate" title="(in SciPy v0.15.1)"><tt class="xref py py-mod docutils literal"><span class="pre">scipy.integrate</span></tt></a></p>
+<p class="last"><a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/integrate.html#module-scipy.integrate" title="(in SciPy v0.16.1)"><tt class="xref py py-mod docutils literal"><span class="pre">scipy.integrate</span></tt></a></p>
 </div>
 <dl class="function">
 <dt id="numkit.integration.simps_error">
 <tt class="descclassname">numkit.integration.</tt><tt class="descname">simps_error</tt><big>(</big><em>dy</em>, <em>x=None</em>, <em>dx=1</em>, <em>axis=-1</em>, <em>even='avg'</em><big>)</big><a class="headerlink" href="#numkit.integration.simps_error" title="Permalink to this definition">¶</a></dt>
 <dd><p>Error on integral evaluated with <a class="reference external" href="http://mathworld.wolfram.com/SimpsonsRule.html">Simpson&#8217;s rule</a> from errors of points, <em>dy</em>.</p>
-<p>Evaluate the integral with <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.simps.html#scipy.integrate.simps" title="(in SciPy v0.15.1)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.integrate.simps()</span></tt></a>. For a
+<p>Evaluate the integral with <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.simps.html#scipy.integrate.simps" title="(in SciPy v0.16.1)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.integrate.simps()</span></tt></a>. For a
 given vector <em>dy</em> of errors on the function values, the error on
 the integral is calculated via <a class="reference external" href="http://mathworld.wolfram.com/ErrorPropagation.html">propagation of errors</a> from the
 <a class="reference external" href="http://mathworld.wolfram.com/Newton-CotesFormulas.html">Newton-Cotes formula</a> for the 3rd <a class="reference external" href="http://mathworld.wolfram.com/LagrangeInterpolatingPolynomial.html">Lagrange interpolating
@@ -125,7 +125,7 @@ and then <em>dx</em> should be provided)</p>
 <dd><p class="first last">axis in <em>dy</em> along which the data lies</p>
 </dd>
 <dt><em>even</em></dt>
-<dd><p class="first last">see <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.simps.html#scipy.integrate.simps" title="(in SciPy v0.15.1)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.integrate.simps()</span></tt></a> (&#8216;avg&#8217;, &#8216;first&#8217;, &#8216;last&#8217;)</p>
+<dd><p class="first last">see <a class="reference external" href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.simps.html#scipy.integrate.simps" title="(in SciPy v0.16.1)"><tt class="xref py py-func docutils literal"><span class="pre">scipy.integrate.simps()</span></tt></a> (&#8216;avg&#8217;, &#8216;first&#8217;, &#8216;last&#8217;)</p>
 </dd>
 </dl>
 </td>
@@ -157,14 +157,14 @@ and then <em>dx</em> should be provided)</p>
         <li class="right" >
           <a href="timeseries.html" title="numkit.timeseries — Time series manipulation and analysis"
              >previous</a> |</li>
-        <li><a href="../index.html">GromacsWrapper 0.3.3 documentation</a> &raquo;</li>
+        <li><a href="../index.html">GromacsWrapper 0.4.0-dev documentation</a> &raquo;</li>
           <li><a href="../auxiliary.html" >Auxiliary modules</a> &raquo;</li>
-          <li><a href="../numkit.html" ><tt class="docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a> &raquo;</li> 
+          <li><a href="../numkit.html" ><tt class="docutils literal"><span class="pre">numkit</span></tt> &#8212; Numerical analysis toolkit</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2012, Oliver Beckstein, Jan Domański.
-      Last updated on May 23, 2015.
+      Last updated on Nov 10, 2015.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>

@@ -98,6 +98,8 @@ Classes
 .. autoclass:: PopenWithInput
    :members:
 """
+from __future__ import absolute_import, with_statement
+
 __docformat__ = "restructuredtext en"
 
 import sys
@@ -111,8 +113,8 @@ import logging
 logger = logging.getLogger('gromacs.core')
 
 
-from gromacs import GromacsError, GromacsFailureWarning
-import gromacs.environment
+from .exceptions import GromacsError, GromacsFailureWarning
+from . import environment
 
 class Command(object):
     """Wrap simple script or command."""
@@ -177,16 +179,16 @@ class Command(object):
 
         # logic for capturing output (see docs on I/O and the flags)
         capturefile = None
-        if gromacs.environment.flags['capture_output'] is True:
+        if environment.flags['capture_output'] is True:
             # capture into Python vars (see subprocess.Popen.communicate())
             kwargs.setdefault('stderr', PIPE)
             kwargs.setdefault('stdout', PIPE)
-        elif gromacs.environment.flags['capture_output'] == "file":
+        elif environment.flags['capture_output'] == "file":
             if 'stdout' in kwargs and 'stderr' in kwargs:
                 pass
             else:
                 # XXX: not race or thread proof; potentially many commands write to the same file
-                fn = gromacs.environment.flags['capture_output_filename']
+                fn = environment.flags['capture_output_filename']
                 capturefile = file(fn, "w")   # overwrite (clobber) capture file
                 if 'stdout' in kwargs and 'stderr' not in kwargs:
                     # special case of stdout used by code but stderr should be captured to file
