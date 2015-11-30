@@ -4,6 +4,7 @@ GromacsWrapper.egg-info
 .fuse_hidden*
 doc/epydoc/
 doc/sphinx/build/
+doc/html
 build/
 dist
 gromacs.log
