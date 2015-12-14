@@ -1,0 +1,39 @@
+; $Id$
+; Template for energy minimisation of full system with OPLS-AA;
+; by default position restraints are used (POSRES).
+;
+; ==================================================================
+;      DO NOT USE THIS INPUT FILE WITHOUT CHECKING ALL SETTINGS.
+; *YOU* ARE SOLELY RESPONSIBLE FOR CORRECT INPUT TO YOUR SIMULATION.
+; ==================================================================
+;
+; some values from http://code.google.com/p/acpypi/wiki/TutorialAcpypi4GromacsOPLS
+
+cpp            = cpp
+include        = -I. -I.. -I../top  -I. -I.. -I/Volumes/Data/oliver/Biop/Projects/Methods/LigandBook/simulations/aspirin_phospholipase/Reordered/drug2/top
+define         = -DPOSRES -DFLEXSPC
+
+;integrator     = cg
+integrator     = cg
+emtol          = 500
+emstep         = 0.01
+nsteps         = 0 ; 200
+nstcgsteep     = 100
+
+constraints              = none
+nstcomm                  = 1
+vdwtype                  = shift   ; use shift for L-BFGS
+coulombtype              = PME
+optimize_fft             = no
+
+ns_type                  = grid
+rlist                    = 1.0
+rcoulomb                 = 1.0
+rvdw                     = 1.0
+rvdw-switch              = 0.8
+
+Tcoupl                   = no
+Pcoupl                   = no
+gen_vel                  = no
+
+nstxout                  = 0 ; write coords every # step
