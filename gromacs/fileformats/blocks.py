@@ -1,10 +1,15 @@
 
-
-#
-# JD: adopted from 'pytopol' from https://github.com/resal81/PyTopol
-#
+import logging
 
 class System(object):
+    """Top-level class containing molecule topology.    
+
+       Contains all the parameter types (AtomTypes, BondTypes, ... ) 
+       and molecules.
+
+    """
+    logger = logging.getLogger('gromacs.formats.BLOCKS')
+
     def __init__(self):
         self.molecules = tuple([])
 
@@ -25,7 +30,37 @@ class System(object):
 
 
 class Molecule(object):
+    """Class that represents a Molecule
 
+    Contains all the molecule attributes: atoms, bonds, angles dihedrals. 
+    Also contains settle, cmap and exclusion sections, if present. 
+
+    .. Example input::
+
+        ; Include water topology
+        [ moleculetype ]
+        ; molname      nrexcl
+        SOL             2
+
+        [ atoms ]
+        ; id   at type  res nr  residu name     at name         cg nr   charge
+        1       OWT3    1       SOL              OW             1       -0.834
+        2       HWT3    1       SOL             HW1             1        0.417
+        3       HWT3    1       SOL             HW2             1        0.417
+
+
+        [ settles ]
+        ; i       j     funct   length
+        1         1     0.09572 0.15139
+
+        [ exclusions ]
+        1 2 3
+        2 1 3
+        3 1 2
+
+
+
+    """
     def __init__(self):
         self.chains    = []
         self.atoms     = []
@@ -63,19 +98,19 @@ class Molecule(object):
                     self._anumb_to_atom[atom.number] = atom
                 return self._anumb_to_atom[anumb]
             else:
-                print("no atoms in the molecule")
+                self.logger("no atoms in the molecule")
                 return False
 
         else:
             if anumb in self._anumb_to_atom:
                 return self._anumb_to_atom[anumb]
             else:
-                print("no such atom number (%d) in the molecule" % (anumb))
+                self.logger("no such atom number (%d) in the molecule" % (anumb))
                 return False
 
 
     def renumber_atoms(self):
-
+        """Reset the molecule's atoms :attr:`number` to be 1-indexed"""
         if len(self.atoms) != 0:
 
             # reset the mapping
@@ -85,35 +120,35 @@ class Molecule(object):
                 atom.number = i+1   # starting from 1
 
         else:
-            print("the number of atoms is zero - no renumbering")
-
-
-class Chain(object):
-    """
-        name    = str,
-        residues= list,
-        molecule= Molecule
-    """
-
-    def __init__(self):
-        self.residues = []
-
-
-class Residue(object):
-    """
-        name    = str,
-        number  = int,
-        chain   = Chain,
-        chain_name = str,
-        atoms   = list,
-    """
-
-    def __init__(self):
-        self.atoms  = []
-
+            self.logger("the number of atoms is zero - no renumbering")
 
 class Atom(object):
-    """
+    """Class that represents an Atom
+
+    Contains only the simplest atom attributes, that are contained like in
+    section example below. 
+
+    :class:`Molecule` cantains an :attr:`atoms` that's a list-container for 
+    :class:`Atom` instances. 
+
+    .. Example input::
+
+        [ atoms ]
+        ;   nr       type  resnr residue  atom   cgnr     charge       mass  typeB    chargeB      massB
+        ; residue  43 SER rtp SER  q  0.0
+            22        NH1     43    SER      N     22      -0.47     14.007   ; qtot 0.53
+            23          H     43    SER     HN     23       0.31      1.008   ; qtot 0.84
+            24        CT1     43    SER     CA     24       0.07     12.011   ; qtot 0.91
+            25         HB     43    SER     HA     25       0.09      1.008   ; qtot 1
+            26        CT2     43    SER     CB     26       0.05     12.011   ; qtot 1.05
+            27         HA     43    SER    HB1     27       0.09      1.008   ; qtot 1.14
+            28         HA     43    SER    HB2     28       0.09      1.008   ; qtot 1.23
+            29        OH1     43    SER     OG     29      -0.66     15.999   ; qtot 0.57
+            30          H     43    SER    HG1     30       0.43      1.008   ; qtot 1
+            31          C     43    SER      C     31       0.51     12.011   ; qtot 1.51
+            32          O     43    SER      O     32      -0.51     15.999   ; qtot 1
+
+
         name    = str,
         number  = int,
         flag    = str,        # HETATM
@@ -130,7 +165,6 @@ class Atom(object):
         resname = str,
         resnumb = int,
         altloc  = str,         # per atoms
-
     """
 
     def __init__(self):
@@ -138,22 +172,44 @@ class Atom(object):
         self.coords = []        # a list of coordinates (x,y,z) of models
         self.altlocs= []        # a list of (altloc_name, (x,y,z), occup, bfactor)
 
-
-
+        self.name     = None
+        self.atomtype = None
+        self.number   = None
+        self.resname  = None
+        self.resnumb  = None
+        self.charge   = None      
 
     def get_atomtype(self):
         if hasattr(self, 'atomtype'):
             return self.atomtype
         else:
-            print("atom %s doesn't have atomtype" % self)
+            self.logger("atom %s doesn't have atomtype" % self)
             return False
 
 
 class Param(object):
-    def __init__(self):
+    """Class that represents an abstract Parameter.
+
+    This class is the parent to AtomType, BondType and all the other parameter types. 
+
+    The class understands a parameter line and that a :attr:`comment` that may follow. 
+    CMapType is an exception (it's a multi-line parameter). 
+
+    :meth:`convert` provides a rudimentary support for parameter unit conversion between 
+    GROMACS and CHARMM notation: change kJ/mol into kcal/mol and nm into Angstrom. 
+
+    :attr:`disabled` for supressing output when writing-out to a file. 
+    """
+
+    def __init__(self, format):
+        assert format in ('charmm', 'gromacs')
+        self.format = format
+
         self.comment = None
         self.line  = None
         self.disabled = False
+        self.charmm = None
+        self.gromacs = None
 
     def convert(self, reqformat):
         assert reqformat in ('charmm', 'gromacs')
@@ -272,8 +328,7 @@ class Param(object):
 
 class AtomType(Param):
     def __init__(self, format):
-        assert format in ('charmm', 'gromacs')
-        self.format = format
+
         self.atype  = None
         self.atnum  = None
         self.mass   = None
@@ -283,13 +338,10 @@ class AtomType(Param):
         self.charmm = {'param': {'lje':None, 'ljl':None, 'lje14':None, 'ljl14':None} }
         self.gromacs= {'param': {'lje':None, 'ljl':None, 'lje14':None, 'ljl14':None} }
 
-        super(AtomType,self).__init__()
+        super(AtomType,self).__init__(format)
 
 class BondType(Param):
     def __init__(self, format):
-        assert format in ('charmm', 'gromacs')
-        self.format = format
-
 
         self.atom1 = None
         self.atom2 = None
@@ -300,14 +352,11 @@ class BondType(Param):
         self.charmm = {'param': {'kb':None, 'b0':None} }
         self.gromacs= {'param': {'kb':None, 'b0':None}, 'func':None}
 
-        super(BondType,self).__init__()
+        super(BondType,self).__init__(format)
 
 
 class AngleType(Param):
     def __init__(self, format):
-        assert format in ('charmm', 'gromacs')
-        self.format = format
-
 
         self.atom1 = None
         self.atom2 = None
@@ -320,14 +369,11 @@ class AngleType(Param):
         self.charmm = {'param':{'ktetha':None, 'tetha0':None, 'kub':None, 's0':None} }
         self.gromacs= {'param':{'ktetha':None, 'tetha0':None, 'kub':None, 's0':None}, 'func':None}
 
-        super(AngleType,self).__init__()
+        super(AngleType,self).__init__(format)
 
 
 class DihedralType(Param):
     def __init__(self, format):
-        assert format in ('charmm', 'gromacs')
-        self.format = format
-
 
         self.atom1 = None
         self.atom2 = None
@@ -342,12 +388,10 @@ class DihedralType(Param):
         self.charmm = {'param':[]}  # {kchi, n, delta}
         self.gromacs= {'param':[]}
 
-        super(DihedralType,self).__init__()
+        super(DihedralType,self).__init__(format)
 
 class ImproperType(Param):
     def __init__(self, format):
-        assert format in ('charmm', 'gromacs')
-        self.format = format
 
         self.atype1 = None
         self.atype2 = None
@@ -357,13 +401,11 @@ class ImproperType(Param):
         self.charmm = {'param':[]}
         self.gromacs= {'param':[], 'func': None}  # {'kpsi': None, 'psi0':None}
 
-        super(ImproperType,self).__init__()
+        super(ImproperType,self).__init__(format)
 
 
 class CMapType(Param):
     def __init__(self, format):
-        assert format in ('charmm', 'gromacs')
-        self.format = format
 
         self.atom1 = None
         self.atom2 = None
@@ -386,13 +428,11 @@ class CMapType(Param):
         self.charmm = {'param': []}
         self.gromacs= {'param': []}
 
-        super(CMapType,self).__init__()
+        super(CMapType,self).__init__(format)
 
 
 class InteractionType(Param):
     def __init__(self, format):
-        assert format in ('charmm', 'gromacs')
-        self.format = format
 
         self.atom1  = None
         self.atom2  = None
@@ -403,7 +443,7 @@ class InteractionType(Param):
         self.charmm = {'param': {'lje':None, 'ljl':None, 'lje14':None, 'ljl14':None} }
         self.gromacs= {'param': {'lje':None, 'ljl':None, 'lje14':None, 'ljl14':None}, 'func':None }
 
-        super(InteractionType,self).__init__()
+        super(InteractionType,self).__init__(format)
 
 
 class SettleType(Param):
@@ -413,7 +453,7 @@ class SettleType(Param):
         self.dOH  = None
         self.dHH  = None
 
-        super(SettleType,self).__init__()
+        super(SettleType,self).__init__(format)
 
 class ConstraintType(Param):
     def __init__(self, format):
@@ -427,7 +467,7 @@ class ConstraintType(Param):
 
         self.gromacs= {'param': {'b0':None}, 'func':None}
 
-        super(ConstraintType,self).__init__()
+        super(ConstraintType,self).__init__(format)
 
 
 class NonbondedParamType(Param):
@@ -439,7 +479,7 @@ class NonbondedParamType(Param):
 
         self.gromacs= {'param': {'esp':None, 'sig':None}, 'func':None}
 
-        super(NonbondedParamType,self).__init__()
+        super(NonbondedParamType,self).__init__(format)
 
 
 class VirtualSites3Type(Param):
@@ -453,9 +493,16 @@ class VirtualSites3Type(Param):
 
         self.gromacs= {'param': {'a':None, 'b': None}, 'func':None}
 
-        super(VirtualSites3Type,self).__init__()
+        super(VirtualSites3Type,self).__init__(format)
 
-class Exclusion:
+class Exclusion(object):
+    """Class to define non-interacting pairs of atoms, or "exclusions". 
+
+
+    .. Note::
+
+       Does not inherit from :class:`Param` unlike other classes in :mod:`blocks`
+    """    
     def __init__(self):
         self.main_atom  = None
         self.other_atoms = []
