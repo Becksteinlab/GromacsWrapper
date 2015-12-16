@@ -2,7 +2,7 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
-2015-xx-yy      0.4.0
+2015-12-16      0.4.0
 orbeckst, richardjgowers
 
 * primitive support for Gromacs 5.x
