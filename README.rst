@@ -7,7 +7,7 @@
  README: GromacsWrapper
 ========================
 
-|zenodo|
+|zenodo| |docs|
 
 A primitive wrapper around the Gromacs tools until we have proper
 python bindings. It also provides a small library (cook book) of
@@ -31,6 +31,9 @@ running simulations with sensible parameters.
 .. |zenodo| image:: https://zenodo.org/badge/13219/Becksteinlab/GromacsWrapper.svg
    :target: https://zenodo.org/badge/latestdoi/13219/Becksteinlab/GromacsWrapper
    :alt: Latest release on zenodo (with DOI)
+.. |docs| image:: https://readthedocs.org/projects/gromacswrapper/badge/?version=latest
+   :target: http://gromacswrapper.readthedocs.org/en/latest/?badge=latest
+   :alt: Documentation
 
 Licence
 =======
