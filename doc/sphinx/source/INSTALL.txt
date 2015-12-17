@@ -49,16 +49,16 @@ complexity):
 
 - From an egg install file, eg GromacsWrapper-0.1-py2.5.egg::
 
-   pip install GromacsWrapper-0.1-py2.5.egg
+   pip install GromacsWrapper-0.4.0-py2.7.egg
 
-- From a tar ball, eg GromacsWrapper-0.1.tar.gz::
+- From a tar ball, eg GromacsWrapper-0.4.0.tar.gz::
 
-   pip install GromacsWrapper-0.1.tar.gz
+   pip install GromacsWrapper-0.4.0.tar.gz
 
 - From the unpacked source::
 
-   tar -zxvf GromacsWrapper-0.1.tar.gz
-   cd GromacsWrapper-0.1
+   tar -zxvf GromacsWrapper-0.4.0.tar.gz
+   cd GromacsWrapper-0.4.0
    python setup.py install
 
 
@@ -85,10 +85,10 @@ and checkout the ``develop`` branch::
 Requirements
 ============
 
-Python_ and Gromacs_ must be installed. ipython_ is very much
-recommended. These packages might already be available through your local
-package manager such as ``aptitude/apt``, ``yum``, ``yast``, ``fink`` or
-``macports``. 
+Python_ 2.7 and Gromacs_ must be installed. ipython_ is very much
+recommended. These packages might already be available through your
+local package manager such as ``aptitude/apt``, ``yum``, ``yast``,
+``fink`` or ``macports``.
 
 .. _Python: http://www.python.org
 .. _Gromacs: http://www.gromacs.org
@@ -98,8 +98,8 @@ package manager such as ``aptitude/apt``, ``yum``, ``yast``, ``fink`` or
 System requirements
 -------------------
 
-Tested with python 2.7 on Linux and Mac OS X. Earlier python versions
-will likely fail.
+Tested with Python 2.7 on Linux and Mac OS X. Earlier python versions
+are not supported.
 
 
 Required python modules
