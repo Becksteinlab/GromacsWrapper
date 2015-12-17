@@ -108,7 +108,7 @@ def Pearson_r(x,y):
     """
     return numpy.corrcoef(x,y)[1,0]
 
-def linfit(x,y,dy=[]):
+def linfit(x,y,dy=None):
     """Fit a straight line y = a + bx to the data in *x* and *y*.
 
     Errors on y should be provided in dy in order to assess the
@@ -145,6 +145,8 @@ def linfit(x,y,dy=[]):
 
     Based on 'Numerical Recipes in C', Ch 15.2.
     """
+    if dy is None:
+        dy = []
     import scipy.stats
 
     n = len(x)

@@ -396,7 +396,7 @@ class Simulation(object):
         If no *plugin_name* is supplied to :meth:`run`, :meth:`analyze` etc. then
         this will be used.
         """
-        if plugin_name == None:
+        if plugin_name is None:
             self.default_plugin_name = None
         else:
             self.check_plugin_name(plugin_name)
@@ -663,7 +663,7 @@ class Plugin(object):
         :meth:`~Worker.analyze`, and :meth:`~Worker.plot` methods.
         """
 
-        assert simulation != None                      # must know who we belong to
+        assert simulation is not None                      # must know who we belong to
         assert self.__is_registered == False           # only register once (necessary?)
 
         self.simulation = simulation                   # update our own
