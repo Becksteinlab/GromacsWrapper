@@ -840,7 +840,7 @@ def edit_mdp(mdp, new_mdp=None, extend_parameters=None, **substitutions):
         extend_parameters = list(asiterable(extend_parameters))
 
     # None parameters should be ignored (simple way to keep the template defaults)
-    substitutions = dict([(k,v) for k,v in substitutions.items() if not v is None])
+    substitutions = {k: v for k,v in substitutions.items() if not v is None}
 
     params = substitutions.keys()[:]   # list will be reduced for each match
 
@@ -848,13 +848,13 @@ def edit_mdp(mdp, new_mdp=None, extend_parameters=None, **substitutions):
         """Return a RE string that matches the parameter."""
         return p.replace('_', '[-_]')  # must catch either - or _
 
-    patterns = dict([(parameter,
+    patterns = {parameter:
                       re.compile("""\
                        (?P<assignment>\s*%s\s*=\s*)  # parameter == everything before the value
                        (?P<value>[^;]*)              # value (stop before comment=;)
                        (?P<comment>\s*;.*)?          # optional comment
-                       """ % demangled(parameter), re.VERBOSE))
-                     for parameter in substitutions])
+                       """ % demangled(parameter), re.VERBOSE)
+                     for parameter in substitutions}
 
     target = tempfile.TemporaryFile()
     with open(mdp) as src:
@@ -894,7 +894,7 @@ def edit_mdp(mdp, new_mdp=None, extend_parameters=None, **substitutions):
      # return all parameters that have NOT been substituted
     if len(params) > 0:
         logger.warn("Not substituted in %(new_mdp)r: %(params)r" % vars())
-    return dict([(p, substitutions[p]) for p in params])
+    return {p: substitutions[p] for p in params}
 
 def edit_txt(filename, substitutions, newname=None):
     """Primitive text file stream editor.

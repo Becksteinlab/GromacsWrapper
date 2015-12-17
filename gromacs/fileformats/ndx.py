@@ -153,7 +153,7 @@ class NDX(odict, utilities.FileUtils):
     @property
     def sizes(self):
         """Return a dict with group names and number of entries,"""
-        return dict([(name, len(atomnumbers)) for name, atomnumbers in self.items()])
+        return {name: len(atomnumbers) for name, atomnumbers in self.items()}
 
     @property
     def ndxlist(self):
