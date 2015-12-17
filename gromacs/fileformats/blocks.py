@@ -105,7 +105,7 @@ class Molecule(object):
             if anumb in self._anumb_to_atom:
                 return self._anumb_to_atom[anumb]
             else:
-                self.logger("no such atom number (%d) in the molecule" % (anumb))
+                self.logger("no such atom number ({:d}) in the molecule".format(anumb))
                 return False
 
 
@@ -183,7 +183,7 @@ class Atom(object):
         if hasattr(self, 'atomtype'):
             return self.atomtype
         else:
-            self.logger("atom %s doesn't have atomtype" % self)
+            self.logger("atom {} doesn't have atomtype".format(self))
             return False
 
 
@@ -329,6 +329,8 @@ class Param(object):
 class AtomType(Param):
     def __init__(self, format):
 
+        super(AtomType,self).__init__(format)
+
         self.atype  = None
         self.atnum  = None
         self.mass   = None
@@ -338,10 +340,10 @@ class AtomType(Param):
         self.charmm = {'param': {'lje':None, 'ljl':None, 'lje14':None, 'ljl14':None} }
         self.gromacs= {'param': {'lje':None, 'ljl':None, 'lje14':None, 'ljl14':None} }
 
-        super(AtomType,self).__init__(format)
-
 class BondType(Param):
     def __init__(self, format):
+
+        super(BondType,self).__init__(format)
 
         self.atom1 = None
         self.atom2 = None
@@ -352,11 +354,11 @@ class BondType(Param):
         self.charmm = {'param': {'kb':None, 'b0':None} }
         self.gromacs= {'param': {'kb':None, 'b0':None}, 'func':None}
 
-        super(BondType,self).__init__(format)
-
 
 class AngleType(Param):
     def __init__(self, format):
+
+        super(AngleType,self).__init__(format)
 
         self.atom1 = None
         self.atom2 = None
@@ -369,11 +371,10 @@ class AngleType(Param):
         self.charmm = {'param':{'ktetha':None, 'tetha0':None, 'kub':None, 's0':None} }
         self.gromacs= {'param':{'ktetha':None, 'tetha0':None, 'kub':None, 's0':None}, 'func':None}
 
-        super(AngleType,self).__init__(format)
-
-
 class DihedralType(Param):
     def __init__(self, format):
+
+        super(DihedralType,self).__init__(format)
 
         self.atom1 = None
         self.atom2 = None
@@ -388,10 +389,11 @@ class DihedralType(Param):
         self.charmm = {'param':[]}  # {kchi, n, delta}
         self.gromacs= {'param':[]}
 
-        super(DihedralType,self).__init__(format)
 
 class ImproperType(Param):
     def __init__(self, format):
+
+        super(ImproperType,self).__init__(format)
 
         self.atype1 = None
         self.atype2 = None
@@ -401,11 +403,11 @@ class ImproperType(Param):
         self.charmm = {'param':[]}
         self.gromacs= {'param':[], 'func': None}  # {'kpsi': None, 'psi0':None}
 
-        super(ImproperType,self).__init__(format)
-
 
 class CMapType(Param):
     def __init__(self, format):
+
+        super(CMapType,self).__init__(format)
 
         self.atom1 = None
         self.atom2 = None
@@ -428,11 +430,11 @@ class CMapType(Param):
         self.charmm = {'param': []}
         self.gromacs= {'param': []}
 
-        super(CMapType,self).__init__(format)
-
 
 class InteractionType(Param):
     def __init__(self, format):
+
+        super(InteractionType,self).__init__(format)
 
         self.atom1  = None
         self.atom2  = None
@@ -443,21 +445,21 @@ class InteractionType(Param):
         self.charmm = {'param': {'lje':None, 'ljl':None, 'lje14':None, 'ljl14':None} }
         self.gromacs= {'param': {'lje':None, 'ljl':None, 'lje14':None, 'ljl14':None}, 'func':None }
 
-        super(InteractionType,self).__init__(format)
-
 
 class SettleType(Param):
     def __init__(self, format):
         assert format in ('gromacs',)
+        super(SettleType,self).__init__(format)
+
         self.atom = None
         self.dOH  = None
         self.dHH  = None
 
-        super(SettleType,self).__init__(format)
 
 class ConstraintType(Param):
     def __init__(self, format):
         assert format in ('gromacs',)
+        super(ConstraintType,self).__init__(format)
 
         self.atom1 = None
         self.atom2 = None
@@ -467,24 +469,22 @@ class ConstraintType(Param):
 
         self.gromacs= {'param': {'b0':None}, 'func':None}
 
-        super(ConstraintType,self).__init__(format)
-
 
 class NonbondedParamType(Param):
     def __init__(self, format):
         assert format in ('gromacs',)
+        super(NonbondedParamType,self).__init__(format)
 
         self.atype1 = None
         self.atype2 = None
 
         self.gromacs= {'param': {'esp':None, 'sig':None}, 'func':None}
 
-        super(NonbondedParamType,self).__init__(format)
-
 
 class VirtualSites3Type(Param):
     def __init__(self, format):
         assert format in ('gromacs',)
+        super(VirtualSites3Type,self).__init__(format)  
 
         self.atom1 = None
         self.atom2 = None
@@ -493,7 +493,6 @@ class VirtualSites3Type(Param):
 
         self.gromacs= {'param': {'a':None, 'b': None}, 'func':None}
 
-        super(VirtualSites3Type,self).__init__(format)
 
 class Exclusion(object):
     """Class to define non-interacting pairs of atoms, or "exclusions". 
