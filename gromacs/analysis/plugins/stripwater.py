@@ -197,7 +197,7 @@ class _StripWater(Worker):
         newfiles = self.transformer.strip_water(**kwargs)
         self.parameters.filenames.update(newfiles)
 
-        if fit != None:
+        if fit is not None:
             if self.parameters.fit == "xy":
                 xy = True
             else:

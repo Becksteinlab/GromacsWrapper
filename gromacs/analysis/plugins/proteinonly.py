@@ -167,7 +167,7 @@ class _ProteinOnly(Worker):
         newfiles = self.transformer.keep_protein_only(**kwargs)
         self.parameters.filenames.update(newfiles)
 
-        if fit != None:
+        if fit is not None:
             if self.parameters.fit == "xy":
                 xy = True
             else:
