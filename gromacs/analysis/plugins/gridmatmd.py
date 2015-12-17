@@ -161,7 +161,7 @@ class GridMatMD(object):
                     results[name] = [grid2d]
         
         # averages arrays and bins
-        self.averages = dict([(name,numpy.mean(v)) for name,v in results.items()])
+        self.averages = {name: numpy.mean(v) for name,v in results.items()}
 
     def imshow(self, name, **kwargs):
         """Display array *name* with ``pylab.imshow``."""

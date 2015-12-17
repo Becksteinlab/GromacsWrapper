@@ -526,7 +526,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
                                               input=('keep 0', 'del 0', 'a OW*', 'name 0 OW', '', 'q'),
                                               stdout=False)
             groups = cbook.parse_ndxlist(output)
-            gdict = dict([(g['name'], g) for g in groups])   # overkill...
+            gdict = {g['name']: g for g in groups}   # overkill...
             N_water = gdict['OW']['natoms']                  # ... but dict lookup is nice
             N_ions = int(N_water * concentration/CONC_WATER) # number of monovalents
         else:
@@ -830,7 +830,7 @@ def _setup_MD(dirname,
             # takes FULL control and also has to provide the template or index
             groups = make_main_index(structure, selection=mainselection,
                                      oldndx=index, ndx=mainindex)
-            natoms = dict([(g['name'], float(g['natoms'])) for g in groups])
+            natoms = {g['name']: float(g['natoms']) for g in groups}
             tc_group_names = ('__main__', '__environment__')   # defined in make_main_index()
             try:
                 x = natoms['__main__']/natoms['__environment__']
