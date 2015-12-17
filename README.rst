@@ -113,6 +113,19 @@ and feature requests.
 
 .. _Issue Tracker: http://github.com/Becksteinlab/GromacsWrapper/issues
 
+Building Documentation
+======================
+
+Install Sphinx::
+
+   apt-get install python-sphinx
+
+and compile::
+
+   cd package/doc/sphinx
+   make html
+
+
 
 Citing
 ======

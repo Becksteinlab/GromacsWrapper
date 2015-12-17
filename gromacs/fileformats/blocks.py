@@ -1,4 +1,56 @@
 
+"""
+Gromacs TOP - BLOCKS boiled-plate code
+======================================
+
+
+Classes
+-------
+.. autoclass:: System
+    :members:
+
+.. autoclass:: Molecule
+    :members:
+
+.. autoclass:: Atom
+    :members:
+
+.. autoclass:: Param
+    :members:
+
+.. autoclass:: AtomType
+    :members:
+.. autoclass:: BondType
+    :members:
+.. autoclass:: AngleType
+    :members:
+.. autoclass:: DihedralType
+    :members:
+.. autoclass:: ImproperType
+    :members:
+.. autoclass:: CMapType
+    :members:
+.. autoclass:: InteractionType
+    :members:
+.. autoclass:: SettleType
+    :members:
+.. autoclass:: ConstraintType
+    :members:
+.. autoclass:: NonbondedParamType
+    :members:
+.. autoclass:: VirtualSites3Type
+    :members:
+
+.. autoclass:: Exclusion
+    :members:
+
+History
+-------
+
+Sources adapted from code by Reza Salari https://github.com/resal81/PyTopol
+
+"""
+
 import logging
 
 class System(object):
