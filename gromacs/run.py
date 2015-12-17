@@ -158,7 +158,7 @@ class MDrunner(utilities.FileUtils):
             try:
                 self.MDRUN.gmxargs.update(mdrunargs)
             except (ValueError, TypeError):
-                msg = "mdrunargs must be a dict of mdrun options, not {}".format(mdrunargs)
+                msg = "mdrunargs must be a dict of mdrun options, not {0}".format(mdrunargs)
                 logger.error(msg)
                 raise
 

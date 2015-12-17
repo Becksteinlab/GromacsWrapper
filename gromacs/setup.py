@@ -267,7 +267,7 @@ def make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None):
         logging.warn("make_ndx created duplicated groups, performing work around")
 
     if len(selected_groups) <= 0:
-        msg = "no groups found for selection {}, available groups are {}".format(selection, groups)
+        msg = "no groups found for selection {0}, available groups are {1}".format(selection, groups)
         logging.error(msg)
         raise ValueError(msg)
 
@@ -285,13 +285,13 @@ def make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None):
     _,out,_ = gromacs.make_ndx(f=struct, n=ndx, o=ndx,
                                       stdout=False,
                                              # make copy selected group, this now has index last + 1
-                                      input=("{}".format(group['nr']),
+                                      input=("{0}".format(group['nr']),
                                              # rename this to __main__
-                                             "name {} __main__".format(last+1),
+                                             "name {0} __main__".format(last+1),
                                              # make a complement to this group, it get index last + 2
                                              "! \"__main__\"",
                                              # rename this to __environment__
-                                             "name {} __environment__".format(last+2),
+                                             "name {0} __environment__".format(last+2),
                                              # list the groups
                                              "",
                                              # quit
