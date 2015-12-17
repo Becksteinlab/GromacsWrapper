@@ -179,7 +179,8 @@ class TOP(blocks.System):
 
         :Returns: None
         """
-        _find_section = lambda line: line.strip('[').strip(']').strip()
+        def _find_section(line):
+            return  line.strip('[').strip(']').strip()
 
         def _add_info(sys_or_mol, section, container):
             # like (mol, 'atomtypes', mol.atomtypes)
@@ -307,7 +308,7 @@ class TOP(blocks.System):
                     atom.resnumb = resnumb
                     atom.charge  = charge
 
-                    if len(rest) >= 1:
+                    if rest:
                         mass = float(rest[0])
                         atom.mass = mass
 
@@ -929,7 +930,7 @@ class SystemToGroTop(object):
             i += 1
 
 
-    def assemble_topology(self, redefine_atom_types = False):
+    def assemble_topology(self):
         """Call the various member self._make_* functions to convert the topology object into a string"""
         self.logger.debug("starting to assemble topology...")
 
@@ -955,7 +956,7 @@ class SystemToGroTop(object):
         for i,(molname,m) in enumerate(self.system.dict_molname_mol.items()):
 
             itp = self.itptemplate
-            itp = itp.replace('*MOLECULETYPE*',  ''.join( self._make_moleculetype(m, molname))  )
+            itp = itp.replace('*MOLECULETYPE*',  ''.join( self._make_moleculetype(molname))  )
             itp = itp.replace('*ATOMS*',         ''.join( self._make_atoms(m))  )
             itp = itp.replace('*BONDS*',         ''.join( self._make_bonds(m))  )
             itp = itp.replace('*PAIRS*',         ''.join( self._make_pairs(m))  )
@@ -1179,7 +1180,7 @@ class SystemToGroTop(object):
 
         return result
 
-    def _make_moleculetype(self,m, molname):
+    def _make_moleculetype(self,molname):
         return ['; Name \t\t  nrexcl \n %s    3 \n' % molname]
 
     def _make_atoms(self,m):
@@ -1189,7 +1190,8 @@ class SystemToGroTop(object):
             numb = cgnr = atom.number
             atype = atom.get_atomtype()
             
-            assert atype!= False and hasattr(atom, 'charge') #and hasattr(atom, 'mass')
+            assert atype!= False
+            assert hasattr(atom, 'charge') #and hasattr(atom, 'mass')
 
             if hasattr(atom, 'mass'):
                 line = self.formats['atoms'].format(
@@ -1273,7 +1275,7 @@ class SystemToGroTop(object):
         for dih in m.dihedrals:
             fu = 9
             
-            if not len(dih.gromacs['param']):
+            if not dih.gromacs['param']:
                 line = self.formats['dihedrals'].format(
                     dih.atom1.number, dih.atom2.number, dih.atom3.number, dih.atom4.number, fu)
                 result.append(line)
@@ -1295,7 +1297,7 @@ class SystemToGroTop(object):
         for imp in m.impropers:
             fu = 2
 
-            if not len(imp.gromacs['param']):
+            if not imp.gromacs['param']:
                 line = self.formats['impropers'].format(
                     imp.atom1.number, imp.atom2.number, imp.atom3.number, imp.atom4.number, fu)
                 result.append(line)

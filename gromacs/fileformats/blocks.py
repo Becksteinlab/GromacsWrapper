@@ -91,9 +91,9 @@ class Molecule(object):
 
         assert isinstance(anumb, int), "anumb must be integer"
 
-        if len(self._anumb_to_atom) == 0:   # empty dictionary
+        if not self._anumb_to_atom:   # empty dictionary
 
-            if len(self.atoms) != 0:
+            if self.atoms:
                 for atom in self.atoms:
                     self._anumb_to_atom[atom.number] = atom
                 return self._anumb_to_atom[anumb]
@@ -111,7 +111,7 @@ class Molecule(object):
 
     def renumber_atoms(self):
         """Reset the molecule's atoms :attr:`number` to be 1-indexed"""
-        if len(self.atoms) != 0:
+        if self.atoms:
 
             # reset the mapping
             self._anumb_to_atom = {}
