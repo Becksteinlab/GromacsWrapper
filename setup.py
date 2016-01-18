@@ -6,8 +6,6 @@
 # https://github.com/Becksteinlab/GromacsWrapper
 from __future__ import with_statement
 
-from ez_setup import use_setuptools
-use_setuptools()
 from setuptools import setup, find_packages
 
 with open("README.rst") as readme:
