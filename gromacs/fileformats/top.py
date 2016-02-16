@@ -521,7 +521,7 @@ class TOP(blocks.System):
                     dih = blocks.DihedralType('gromacs')
                     imp = blocks.ImproperType('gromacs')
 
-                    if fu in (1,3,4,9):
+                    if fu in (1,3,9):
                         if curr_sec == 'dihedraltypes':
                             dih.atype1 = ai
                             dih.atype2 = aj
@@ -593,7 +593,7 @@ class TOP(blocks.System):
                                 imp.gromacs['param'].append({'kpsi':kpsi, 'psi0': psi0})
                             elif fu == 4:
                                 psi0 , kpsi, n = list(map(float, fields[5:8]))
-                                imp.gromacs['param'].append({'kpsi':kpsi, 'psi0': psi0, 'n':n})
+                                imp.gromacs['param'].append({'kpsi':kpsi, 'psi0': psi0, 'n': int(n)})
                             else:
                                 raise ValueError
 
@@ -614,7 +614,10 @@ class TOP(blocks.System):
                             if fu == 2:
                                 pass
                             elif fu == 4:
-                                pass
+                                # in-line override of dihedral parameters
+                                if len(fields[5:8]) == 3:
+                                    psi0 , kpsi, n = list(map(float, fields[5:8]))
+                                    imp.gromacs['param'].append({'kpsi':kpsi, 'psi0': psi0, 'n': int(n)})
                             else:
                                 raise ValueError
 
@@ -831,9 +834,11 @@ class SystemToGroTop(object):
         'dihedraltypes'  : '{:6s} {:6s} {:6s} {:6s}   {:1d}    {:6.2f}    {:f}    {:1d}\n',
         'dihedrals'      : '{:3d} {:3d} {:3d} {:3d}   {:1d}\n',
         'dihedrals_ext'  : '{:3d} {:3d} {:3d} {:3d}   {:1d}    {:6.2f}    {:f}    {:1d}\n',
-        'impropertypes'  : '{:6s} {:6s} {:6s} {:6s}   {:1d} {:6.2f} {:8.4f} \n',
+        'impropertypes_2'  : '{:6s} {:6s} {:6s} {:6s}   {:1d} {:6.2f} {:8.4f} \n',
+        'impropertypes_4'  : '{:6s} {:6s} {:6s} {:6s}   {:1d} {:6.2f} {:8.4f} {:2d}\n',
         'impropers'      : '{:3d} {:3d} {:3d} {:3d}   {:1d}\n',
-        'impropers_ext'  : '{:3d} {:3d} {:3d} {:3d}   {:1d} {:6.2f} {:8.4f} \n',
+        'impropers_2'  : '{:3d} {:3d} {:3d} {:3d}   {:1d} {:6.2f} {:8.4f} \n',
+        'impropers_4'  : '{:3d} {:3d} {:3d} {:3d}   {:1d} {:6.2f} {:8.4f} {:2d}\n',
     }
 
 
@@ -1128,11 +1133,13 @@ class SystemToGroTop(object):
                 kpsi = ipar['kpsi']
                 psi0 = ipar['psi0']
 
-                if not imp.disabled:
-                    line = self.formats['impropertypes'].format(at1, at2, at3, at4, fu, psi0, kpsi)
-                else: 
-                    line = self.formats['impropertypes'].format(at1, at2, at3, at4, fu, psi0, kpsi)
-                    line = imp.comment + line
+                if fu == 2:
+                    line = self.formats['impropertypes_2'].format(at1, at2, at3, at4, fu, psi0, kpsi)
+                if fu == 4:
+                    n = ipar['n']
+                    line = self.formats['impropertypes_4'].format(at1, at2, at3, at4, fu, psi0, kpsi, n)
+
+                if imp.disabled: line = imp.comment + line
                 result.append(line)
 
         return result
@@ -1207,7 +1214,7 @@ class SystemToGroTop(object):
     def _make_bonds(self,m):
         result = []
         for bond in m.bonds:
-            fu = 1
+            fu = bond.gromacs["func"]
             line = self.formats['bonds'].format(bond.atom1.number, bond.atom2.number, fu)
             result.append(line)
 
@@ -1217,7 +1224,7 @@ class SystemToGroTop(object):
     def _make_angles(self,m):
         result = []
         for ang in m.angles:
-            fu = 5
+            fu = ang.gromacs["func"]
             line = self.formats['angles'].format(ang.atom1.number, ang.atom2.number, ang.atom3.number, fu)
             result.append(line)
 
@@ -1258,7 +1265,7 @@ class SystemToGroTop(object):
     def _make_dihedrals(self,m):
         result = []
         for dih in m.dihedrals:
-            fu = 9
+            fu = dih.gromacs["func"]
             
             if not dih.gromacs['param']:
                 line = self.formats['dihedrals'].format(
@@ -1280,7 +1287,7 @@ class SystemToGroTop(object):
     def _make_impropers(self,m):
         result = []
         for imp in m.impropers:
-            fu = 2
+            fu = imp.gromacs['func']
 
             if not imp.gromacs['param']:
                 line = self.formats['impropers'].format(
@@ -1291,7 +1298,12 @@ class SystemToGroTop(object):
                 kpsi = ipar['kpsi']
                 psi0 = ipar['psi0']
 
-                line = self.formats['impropers_ext'].format(imp.atom1.number, imp.atom2.number, imp.atom3.number, imp.atom4.number, fu, psi0, kpsi)
+                if fu == 2:
+                    line = self.formats['impropers_2'].format(imp.atom1.number, imp.atom2.number, imp.atom3.number, imp.atom4.number, fu, psi0, kpsi)
+                if fu == 4:
+                    n = ipar['n']
+                    line = self.formats['impropers_4'].format(imp.atom1.number, imp.atom2.number, imp.atom3.number, imp.atom4.number, fu, psi0, kpsi, n)
+
                 if imp.comment: line = imp.comment + line
                 result.append(line)
 
