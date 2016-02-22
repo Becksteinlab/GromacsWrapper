@@ -7,6 +7,10 @@ quantifiedcode-bot, orbeckst
 
 * requires Python 2.7
 
+2015-12-18
+jandom
+
+* gromacs pre-processed topology reader
 
 2015-12-16      0.4.0
 orbeckst, richardjgowers

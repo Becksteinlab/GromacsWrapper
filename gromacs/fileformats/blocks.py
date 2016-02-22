@@ -530,7 +530,7 @@ class NonbondedParamType(Param):
         self.atype1 = None
         self.atype2 = None
 
-        self.gromacs= {'param': {'esp':None, 'sig':None}, 'func':None}
+        self.gromacs= {'param': {'eps':None, 'sig':None}, 'func':None}
 
 
 class VirtualSites3Type(Param):

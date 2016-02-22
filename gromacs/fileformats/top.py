@@ -816,7 +816,7 @@ class SystemToGroTop(object):
         'atomtypes'      : '{:<7s} {:3s} {:3d} {:>7.6f}   {:4.3f}   {:3s}     {:14.12f}     {:10.9f}  \n',
         'atoms'          : '{:6d} {:>10s} {:6d} {:6s} {:6s} {:6d} {:f} {:11.4f} \n',
         'atoms_nomass'   : '{:6d} {:>10s} {:6d} {:6s} {:6s} {:6d} {:f}\n',
-        'nonbond_params' : '{:20s}  {:20s}  {:1d}  {:10.5f}  {:10.5f}\n',
+        'nonbond_params' : '{:20s}  {:20s}  {:1d}  {:14.12f}  {:14.12f}\n',
         'bondtypes'      : '{:5s}  {:5s}  {:1d}  {:6.4f}  {:6.1f}\n',
         'bonds'          : '{:3d}  {:3d}   {:1d}\n',
         'settles'        : '{:3d}  {:3d}  {:11.5f} {:11.5f}\n',
@@ -1013,6 +1013,7 @@ class SystemToGroTop(object):
 
             fu = 1  # TODO
             line = self.formats['nonbond_params'].format(at1, at2, fu, sig, eps)
+            if pr.comment : line = line[:-1] + pr.comment + line[-1:]
             result.append(line)
 
         return result
