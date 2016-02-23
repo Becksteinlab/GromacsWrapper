@@ -329,6 +329,7 @@ def enable_gromacs_warnings(categories=None):
 
 
 # define the testing framework
-from .testing.nosetester import NoseTester
+from numpy.testing.nosetester import NoseTester
+
 test = NoseTester().test
 del NoseTester
