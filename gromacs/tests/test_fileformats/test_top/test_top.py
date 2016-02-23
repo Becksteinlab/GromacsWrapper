@@ -7,9 +7,13 @@ from numpy.testing import assert_array_equal, assert_, run_module_suite
 from gromacs.fileformats import TOP
 from gromacs import testing as tm
 
-def test_fileformats():
+def test_top():
 
-    assert_(True == True)
+    path = tm.get_data_path('charmm22st/processed.top')
+
+    top = TOP(path)
+
+    assert_(top.dict_molname_mol.keys() == ['SOL', 'Protein', 'Ion', 'Cal', 'Ces', 'CL', 'K', 'NA', 'ZN'])
 
 
 if __name__ == "__main__":
