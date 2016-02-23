@@ -3,14 +3,10 @@
 ==============================
 
 2016-xx-xx      0.4.1
-quantifiedcode-bot, orbeckst
+quantifiedcode-bot, orbeckst, jandom
 
 * requires Python 2.7
-
-2015-12-18
-jandom
-
-* gromacs pre-processed topology reader
+* new: gromacs pre-processed topology reader
 
 2015-12-16      0.4.0
 orbeckst, richardjgowers
