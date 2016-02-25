@@ -19,7 +19,7 @@ def scale_angles(mol, angles):
 			if((iswitch//2)%2==1): a1="X";
 			if((iswitch//4)%2==1): a2="X";
 			if((iswitch//8)%2==1): a3="X";
-			key = "{}-{}-{}-{}".format(a1, a2, a3, dh.gromacs['func'])
+			key = "{0}-{1}-{2}-{3}".format(a1, a2, a3, dh.gromacs['func'])
 			if (key in angles): 
 				for i, at in enumerate(angles[key]):
 					#new_angles.append(at)
@@ -43,7 +43,7 @@ def scale_dihedrals(mol, dihedrals):
 			if((iswitch//4)%2==1): a2="X";
 			if((iswitch//8)%2==1): a3="X";
 			if((iswitch//16)%2==1): a4="X";
-			key = "{}-{}-{}-{}-{}".format(a1, a2, a3, a4, dh.gromacs['func'])
+			key = "{0}-{1}-{2}-{3}-{4}".format(a1, a2, a3, a4, dh.gromacs['func'])
 			if (key in dihedrals): 
 				for i, dt in enumerate(dihedrals[key]):
 					#new_dihedrals.append(dt)
@@ -68,7 +68,7 @@ def scale_impropers(mol, impropers):
 			if((iswitch/4)%2==1): a2="X";
 			if((iswitch/8)%2==1): a3="X";
 			if((iswitch/16)%2==1): a4="X";
-			key = "{}-{}-{}-{}-{}".format(a1, a2, a3, a4, im.gromacs['func'])
+			key = "{0}-{1}-{2}-{3}-{4}".format(a1, a2, a3, a4, im.gromacs['func'])
 			if (key in impropers): 
 				for i, imt in enumerate(impropers[key]):
 					new_impropers[key] = imt
@@ -104,7 +104,7 @@ top.bondtypes = [bondtypes_dictionary[bt] for bt in bondtypes]
 # 
 angletypes = {}
 for at in top.angletypes:
-	name = "{}-{}-{}-{}".format(at.atype1, at.atype2, at.atype3, at.gromacs['func'])
+	name = "{0}-{1}-{2}-{3}".format(at.atype1, at.atype2, at.atype3, at.gromacs['func'])
 	if not name in angletypes: angletypes[name] = []
 	angletypes[name].append(at)
 
@@ -113,20 +113,20 @@ for at in top.angletypes:
 #
 dihedraltypes = {}
 for dt in top.dihedraltypes:
-	name = "{}-{}-{}-{}-{}".format(dt.atype1, dt.atype2, dt.atype3, dt.atype4, dt.gromacs['func'])
+	name = "{0}-{1}-{2}-{3}-{4}".format(dt.atype1, dt.atype2, dt.atype3, dt.atype4, dt.gromacs['func'])
 	if not name in dihedraltypes: dihedraltypes[name] = []
 	dihedraltypes[name].append(dt)
-print("Build dihedraltypes dictionary with {} entries".format(len(dihedraltypes)))
+print("Build dihedraltypes dictionary with {0} entries".format(len(dihedraltypes)))
 
 #
 # Build improper dictionary
 #
 impropertypes = {}
 for it in top.impropertypes:
-	name = "{}-{}-{}-{}-{}".format(it.atype1, it.atype2, it.atype3, it.atype4, it.gromacs['func'])
+	name = "{0}-{1}-{2}-{3}-{4}".format(it.atype1, it.atype2, it.atype3, it.atype4, it.gromacs['func'])
 	if not name in impropertypes: impropertypes[name] = []
 	impropertypes[name].append(it)
-print("Build impropertypes dictionary with {} entries".format(len(impropertypes)))
+print("Build impropertypes dictionary with {0} entries".format(len(impropertypes)))
 
 top.angletypes = scale_angles(mol, angletypes)
 top.dihedraltypes = scale_dihedrals(mol, dihedraltypes)

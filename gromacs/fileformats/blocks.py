@@ -157,7 +157,7 @@ class Molecule(object):
             if anumb in self._anumb_to_atom:
                 return self._anumb_to_atom[anumb]
             else:
-                self.logger("no such atom number ({:d}) in the molecule".format(anumb))
+                self.logger("no such atom number ({0:d}) in the molecule".format(anumb))
                 return False
 
 
@@ -235,7 +235,7 @@ class Atom(object):
         if hasattr(self, 'atomtype'):
             return self.atomtype
         else:
-            self.logger("atom {} doesn't have atomtype".format(self))
+            self.logger("atom {0} doesn't have atomtype".format(self))
             return False
 
 

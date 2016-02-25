@@ -36,7 +36,7 @@ def scale_dihedrals(mol, dihedrals, scale, banned_lines=[]):
 			if((iswitch//4)%2==1): a2="X";
 			if((iswitch//8)%2==1): a3="X";
 			if((iswitch//16)%2==1): a4="X";
-			key = "{}-{}-{}-{}-{}".format(a1, a2, a3, a4, dh.gromacs['func'])
+			key = "{0}-{1}-{2}-{3}-{4}".format(a1, a2, a3, a4, dh.gromacs['func'])
 			if (key in dihedrals): 
 				for i, dt in enumerate(dihedrals[key]):
 					dhA = copy.deepcopy(dh)
@@ -47,7 +47,7 @@ def scale_dihedrals(mol, dihedrals, scale, banned_lines=[]):
 					dhA.gromacs['param'] = param
 					#if key == "CT3-C-NH1-CT1-9": print i, dt, key
 					if i == 0: 
-						dhA.comment = "; banned lines {} found={}\n".format(" ".join(map(str, banned_lines)), 1 if dt.line in banned_lines else 0)
+						dhA.comment = "; banned lines {0} found={1}\n".format(" ".join(map(str, banned_lines)), 1 if dt.line in banned_lines else 0)
 						dhA.comment += "; parameters for types {}-{}-{}-{}-9 at LINE({})\n".format(dhA.atom1.atomtype, dhA.atom2.atomtype, dhA.atom3.atomtype, dhA.atom4.atomtype, dt.line).replace("_","")
 					name = "{}-{}-{}-{}-9".format(dhA.atom1.atomtype, dhA.atom2.atomtype, dhA.atom3.atomtype, dhA.atom4.atomtype).replace("_","")
 					#if name == "CL-CTL2-CTL2-HAL2-9": print dihedrals[key], key
@@ -82,7 +82,7 @@ def scale_impropers(mol, impropers, scale, banned_lines=[]):
 			if((iswitch/4)%2==1): a2="X";
 			if((iswitch/8)%2==1): a3="X";
 			if((iswitch/16)%2==1): a4="X";
-			key = "{}-{}-{}-{}-{}".format(a1, a2, a3, a4, im.gromacs['func'])
+			key = "{0}-{1}-{2}-{3}-{4}".format(a1, a2, a3, a4, im.gromacs['func'])
 			if (key in impropers): 
 				for i, imt in enumerate(impropers[key]):
 					imA = copy.deepcopy(im)
@@ -91,7 +91,7 @@ def scale_impropers(mol, impropers, scale, banned_lines=[]):
 					if not impropers[key][0].line in banned_lines:
 						for p in param: p['kpsi'] *= scale
 					imA.gromacs['param'] = param
-					if i == 0: imA.comment = "; banned lines {} found={}\n ; parameters for types {}-{}-{}-{}-9 at LINE({})\n".format(" ".join(map(str, banned_lines)), 1 if imt.line in banned_lines else 0 , imt.atype1, imt.atype2, imt.atype3, imt.atype4, imt.line)
+					if i == 0: imA.comment = "; banned lines {0} found={1}\n ; parameters for types {2}-{3}-{4}-{5}-9 at LINE({6})\n".format(" ".join(map(str, banned_lines)), 1 if imt.line in banned_lines else 0 , imt.atype1, imt.atype2, imt.atype3, imt.atype4, imt.line)
 					new_impropers.append(imA)
 				break
 	#assert(len(mol.impropers) == new_impropers)
@@ -115,7 +115,7 @@ for ct in top.cmaptypes:
 		ctA.atype1 += gr; ctA.atype2 += gr; ctA.atype3 += gr; ctA.atype4 += gr;  ctA.atype8 += gr;
 		ctA.gromacs['param'] = [ v*scale for v in ct.gromacs['param'] ]
 		cmaptypes.append(ctA)
-print("cmaptypes was {}, is {}".format(len(top.cmaptypes), len(cmaptypes)))
+print("cmaptypes was {0}, is {1}".format(len(top.cmaptypes), len(cmaptypes)))
 top.cmaptypes = cmaptypes
 
 #
@@ -182,10 +182,10 @@ for dt in top.dihedraltypes:
 	dt.comment = dt.comment.replace("_","")
 
 	#if "X-CTL2-CTL2-X-9" in dt.comment: print dt
-	name = "{}-{}-{}-{}-{}".format(dt.atype1, dt.atype2, dt.atype3, dt.atype4, dt.gromacs['func'])
+	name = "{0}-{1}-{2}-{3}-{4}".format(dt.atype1, dt.atype2, dt.atype3, dt.atype4, dt.gromacs['func'])
 	if not name in dihedraltypes: dihedraltypes[name] = []
 	dihedraltypes[name].append(dt)
-print("Build dihedraltypes dictionary with {} entries".format(len(dihedraltypes)))
+print("Build dihedraltypes dictionary with {0} entries".format(len(dihedraltypes)))
 
 #
 # Build improper dictionary
@@ -194,10 +194,10 @@ impropertypes = {}
 for it in top.impropertypes:
 	it.disabled = True
 	it.comment = "; LINE(%d) " % it.line
-	name = "{}-{}-{}-{}-{}".format(it.atype1, it.atype2, it.atype3, it.atype4, it.gromacs['func'])
+	name = "{0}-{1}-{2}-{3}-{4}".format(it.atype1, it.atype2, it.atype3, it.atype4, it.gromacs['func'])
 	if not name in impropertypes: impropertypes[name] = []
 	impropertypes[name].append(it)
-print("Build impropertypes dictionary with {} entries".format(len(impropertypes)))
+print("Build impropertypes dictionary with {0} entries".format(len(impropertypes)))
 
 if 'Protein_chain_A' in top.dict_molname_mol:
 	mol = top.dict_molname_mol['Protein_chain_A']

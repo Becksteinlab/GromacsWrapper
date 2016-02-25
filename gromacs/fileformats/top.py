@@ -106,7 +106,7 @@ class TOP(blocks.System):
         data.append('\n')
 
         main_items = set(['atomtypes', 'pairtypes', 'bondtypes', 'angletypes', 'dihedraltypes'])
-        other_items = ['{:s} ({:d})'.format(m, len(self.information[m])) for m in list(self.information.keys()) if m not in main_items]
+        other_items = ['{0:s} ({1:d})'.format(m, len(self.information[m])) for m in list(self.information.keys()) if m not in main_items]
         other_items = ' '.join(other_items)
         nattype = len(self.atomtypes)
         nprtype = len(self.pairtypes)
@@ -114,19 +114,19 @@ class TOP(blocks.System):
         nangtype= len(self.angletypes)
         ndihtype= len(self.dihedraltypes)
         nimptype= len(self.impropertypes)
-        data.append('{:>20s}  {:>7s} {:>7s} {:>7s} {:>7s} {:>7s} {:>7s}'.format('Param types:', 'atom', 'pair', 'bond', 'ang', 'dih', 'imp'))
-        msg = '{:20s}  {:7d} {:7d} {:7d} {:7d} {:7d} {:7d}    {:s}'.format('', nattype, nprtype, nbndtype, nangtype, ndihtype, nimptype, other_items)
+        data.append('{0:>20s}  {1:>7s} {2:>7s} {3:>7s} {4:>7s} {5:>7s} {6:>7s}'.format('Param types:', 'atom', 'pair', 'bond', 'ang', 'dih', 'imp'))
+        msg = '{0:20s}  {1:7d} {2:7d} {3:7d} {4:7d} {5:7d} {6:7d}    {7:s}'.format('', nattype, nprtype, nbndtype, nangtype, ndihtype, nimptype, other_items)
         data.append('=' * 69)
         data.append(msg)
         data.append('\n')
 
 
         main_items = set(['atoms', 'pairs', 'bonds', 'angles', 'dihedrals'])
-        data.append('{:>20s}  {:>7s} {:>7s} {:>7s} {:>7s} {:>7s} {:>7s}'.format('Params:', 'atom', 'pair', 'bond', 'ang', 'dih', 'imp'))
+        data.append('{0:>20s}  {1:>7s} {2:>7s} {3:>7s} {4:>7s} {5:>7s} {6:>7s}'.format('Params:', 'atom', 'pair', 'bond', 'ang', 'dih', 'imp'))
         data.append('=' * 69)
         for mname in moltypenames:
             mol = self.dict_molname_mol[mname]
-            other_items = ['{:s} ({:d})'.format(m, len(mol.information[m])) for m in list(mol.information.keys()) if m not in main_items]
+            other_items = ['{0:s} ({1:d})'.format(m, len(mol.information[m])) for m in list(mol.information.keys()) if m not in main_items]
             other_items = ' '.join(other_items)
 
             natoms = len(mol.atoms)
@@ -135,7 +135,7 @@ class TOP(blocks.System):
             nangles= len(mol.angles)
             ndih   = len(mol.dihedrals)
             nimp   = len(mol.impropers)
-            msg = '{:20s}  {:7d} {:7d} {:7d} {:7d} {:7d} {:7d}    {:s}'.format(mol.name, natoms, npairs, nbonds, nangles, ndih, nimp, other_items)
+            msg = '{0:20s}  {1:7d} {2:7d} {3:7d} {4:7d} {5:7d} {6:7d}    {7:s}'.format(mol.name, natoms, npairs, nbonds, nangles, ndih, nimp, other_items)
             data.append(msg)
 
 
@@ -230,7 +230,7 @@ class TOP(blocks.System):
                     '''
 
                     if len(fields) not in (7,8):
-                        self.logger('skipping atomtype line with neither 7 or 8 fields: \n {:s}'.format(line))
+                        self.logger('skipping atomtype line with neither 7 or 8 fields: \n {0:s}'.format(line))
                         continue
 
                     shift = 0 if len(fields) == 7 else 1
@@ -244,7 +244,7 @@ class TOP(blocks.System):
                     particletype = fields[4+shift]
                     assert particletype in ('A', 'S', 'V', 'D')
                     if particletype not in ('A',):
-                        self.logger('warning: non-atom particletype: "{:s}"'.format(line))
+                        self.logger('warning: non-atom particletype: "{0:s}"'.format(line))
 
                     sig = float(fields[5+shift])
                     eps = float(fields[6+shift])
@@ -344,7 +344,7 @@ class TOP(blocks.System):
                             raise ValueError
 
                     else:
-                        raise NotImplementedError('{:s} with functiontype {:d} is not supported'.format(curr_sec,fu))
+                        raise NotImplementedError('{0:s} with functiontype {1:d} is not supported'.format(curr_sec,fu))
 
                 elif curr_sec == 'nonbond_params':
                     '''
@@ -391,7 +391,7 @@ class TOP(blocks.System):
                     assert fu in (1,2,3,4,5,6,7,8,9,10)
 
                     if fu != 1:
-                        raise NotImplementedError('function {:d} is not yet supported'.format(fu))
+                        raise NotImplementedError('function {0:d} is not yet supported'.format(fu))
 
                     bond = blocks.BondType('gromacs')
 
@@ -436,7 +436,7 @@ class TOP(blocks.System):
                     assert fu in (1,2,3,4,5,6,8)  # no 7
 
                     if fu not in (1,5):
-                        raise NotImplementedError('function {:d} is not yet supported'.format(fu))
+                        raise NotImplementedError('function {0:d} is not yet supported'.format(fu))
 
                     ang = blocks.AngleType('gromacs')
                     if fu == 1:
@@ -516,7 +516,7 @@ class TOP(blocks.System):
                     assert fu in (1,2,3,4,5,8,9)
 
                     if fu not in (1,2,3,4,9):
-                        raise NotImplementedError('dihedral function {:d} is not yet supported'.format(fu))
+                        raise NotImplementedError('dihedral function {0:d} is not yet supported'.format(fu))
 
                     dih = blocks.DihedralType('gromacs')
                     imp = blocks.ImproperType('gromacs')
@@ -777,7 +777,7 @@ class TOP(blocks.System):
                         self.molecules.append(self.dict_molname_mol[mname])
 
                 else:
-                    raise NotImplementedError('Unknown section in topology: {}'.format(curr_sec))
+                    raise NotImplementedError('Unknown section in topology: {0}'.format(curr_sec))
         
         # process cmap_lines
         curr_cons = None
@@ -917,7 +917,7 @@ class SystemToGroTop(object):
     @staticmethod
     def _redefine_atomtypes(mol):
         for i, atom in enumerate(mol.atoms): 
-            atom.atomtype = 'at{:03d}'.format(i+1)
+            atom.atomtype = 'at{0:03d}'.format(i+1)
 
     def assemble_topology(self):
         """Call the various member self._make_* functions to convert the topology object into a string"""
@@ -955,8 +955,8 @@ class SystemToGroTop(object):
             if not self.multiple_output:
                 top += itp
             else:
-                outfile = "mol_{}.itp".format(molname)
-                top += '#include "mol_{}.itp" \n'.format( molname )
+                outfile = "mol_{0}.itp".format(molname)
+                top += '#include "mol_{0}.itp" \n'.format( molname )
                 with open(outfile, "w") as f:
                     f.writelines([itp])
 
@@ -971,14 +971,14 @@ class SystemToGroTop(object):
                 molecules[-1][1] += 1
 
         for molname, n in molecules[1:]:
-            top += '{:s}     {:d}\n'.format(molname, n)
+            top += '{0:s}     {1:d}\n'.format(molname, n)
         top += '\n'
 
         with open(self.outfile, 'w') as f:
             f.writelines([top])
 
     def _make_defaults(self,m):
-        return ['{:d}          {:d}           {}          {:g}       {:g} \n'.format(m.defaults['nbfunc'], m.defaults['comb-rule'], m.defaults['gen-pairs'] , m.defaults['fudgeLJ'], m.defaults['fudgeQQ'])]
+        return ['{0:d}          {1:d}           {2}          {3:g}       {4:g} \n'.format(m.defaults['nbfunc'], m.defaults['comb-rule'], m.defaults['gen-pairs'] , m.defaults['fudgeLJ'], m.defaults['fudgeQQ'])]
 
 
     def _make_atomtypes(self,m):
@@ -1081,7 +1081,7 @@ class SystemToGroTop(object):
 
             fu = ang.gromacs['func']
 
-            angletypes = 'angletypes_{:d}'.format(fu)
+            angletypes = 'angletypes_{0:d}'.format(fu)
             line = self.formats[angletypes].format(at1, at2, at3, fu, tetha0, ktetha, s0, kub)
             result.append(line)
 
@@ -1155,13 +1155,13 @@ class SystemToGroTop(object):
             cmap.convert('gromacs')
 
             fu = cmap.gromacs['func']
-            line = '{:s} {:s} {:s} {:s} {:s} {:d} 24 24'.format(at1, at2, at3, at4, at8, fu)
+            line = '{0:s} {1:s} {2:s} {3:s} {4:s} {5:d} 24 24'.format(at1, at2, at3, at4, at8, fu)
             for i,c in enumerate(cmap.gromacs['param']):
                 if i%10 == 0:
                     line += '\\\n'
                 else:
                     line += ' '
-                line += '{:12.8f}'.format(c)
+                line += '{0:12.8f}'.format(c)
 
             line += '\n\n'
             result.append(line)
@@ -1169,7 +1169,7 @@ class SystemToGroTop(object):
         return result
 
     def _make_moleculetype(self,m,molname):
-        return ['; Name \t\t  nrexcl \n {}    3 \n'.format(molname)]
+        return ['; Name \t\t  nrexcl \n {0}    3 \n'.format(molname)]
 
     def _make_atoms(self,m):
         result = []
@@ -1189,7 +1189,7 @@ class SystemToGroTop(object):
                     numb, atype, atom.resnumb, atom.resname, atom.name, cgnr, atom.charge)
             result.append(line)
 
-        result.insert(0,'; {:5d} atoms\n'.format(len(result)))
+        result.insert(0,'; {0:5d} atoms\n'.format(len(result)))
         return result
 
     def _make_pairs(self,m):
@@ -1203,7 +1203,7 @@ class SystemToGroTop(object):
             line = self.formats['pairs'].format(p1, p4, fu)
             result.append(line)
 
-        result.insert(0,'; {:5d} pairs\n'.format(len(result)))
+        result.insert(0,'; {0:5d} pairs\n'.format(len(result)))
         return result
 
 
@@ -1214,7 +1214,7 @@ class SystemToGroTop(object):
             line = self.formats['bonds'].format(bond.atom1.number, bond.atom2.number, fu)
             result.append(line)
 
-        result.insert(0,'; {:5d} bonds\n'.format(len(result)))
+        result.insert(0,'; {0:5d} bonds\n'.format(len(result)))
         return result
 
     def _make_angles(self,m):
@@ -1224,7 +1224,7 @@ class SystemToGroTop(object):
             line = self.formats['angles'].format(ang.atom1.number, ang.atom2.number, ang.atom3.number, fu)
             result.append(line)
 
-        result.insert(0,'; {:5d} angles\n'.format(len(result)))
+        result.insert(0,'; {0:5d} angles\n'.format(len(result)))
         return result
 
     def _make_settles(self,m):
@@ -1233,7 +1233,7 @@ class SystemToGroTop(object):
             line = self.formats['settles'].format(st.atom.number, 1, st.dOH, st.dHH)
             result.append(line)
 
-        result.insert(0,'; {:5d} settles\n'.format(len(result)))
+        result.insert(0,'; {0:5d} settles\n'.format(len(result)))
         return result
 
 
@@ -1244,7 +1244,7 @@ class SystemToGroTop(object):
             line = self.formats['virtual_sites3'].format(vs.atom1, vs.atom2, vs.atom3, vs.atom4, fu, vs.gromacs['param']['a'], vs.gromacs['param']['b'])
             result.append(line)
 
-        result.insert(0,'; {:5d} virtual_sites3\n'.format(len(result)))
+        result.insert(0,'; {0:5d} virtual_sites3\n'.format(len(result)))
         return result
 
 
@@ -1255,7 +1255,7 @@ class SystemToGroTop(object):
             line = self.formats['exclusions'].format(excl.main_atom.number, excl.other_atoms[0].number, excl.other_atoms[1].number)
             result.append(line)
 
-        result.insert(0,'; {:5d} exclusions\n'.format(len(result)))
+        result.insert(0,'; {0:5d} exclusions\n'.format(len(result)))
         return result
 
     def _make_dihedrals(self,m):
@@ -1277,7 +1277,7 @@ class SystemToGroTop(object):
                 if dih.comment: line = dih.comment + line
                 result.append(line)
 
-        result.insert(0,'; {:5d} dihedrals\n'.format(len(result)))
+        result.insert(0,'; {0:5d} dihedrals\n'.format(len(result)))
         return result
 
     def _make_impropers(self,m):
@@ -1303,7 +1303,7 @@ class SystemToGroTop(object):
                 if imp.comment: line = imp.comment + line
                 result.append(line)
 
-        result.insert(0,'; {:5d} impropers\n'.format(len(result)))
+        result.insert(0,'; {0:5d} impropers\n'.format(len(result)))
         return result
 
     def _make_cmaps(self, m):
@@ -1311,12 +1311,12 @@ class SystemToGroTop(object):
 
         for cmap in m.cmaps:
             fu = 1
-            line = '{:5d} {:5d} {:5d} {:5d} {:5d}   {:d}\n'.format(
+            line = '{0:5d} {1:5d} {2:5d} {3:5d} {4:5d}   {5:d}\n'.format(
                 cmap.atom1.number, cmap.atom2.number, cmap.atom3.number, cmap.atom4.number,
                 cmap.atom8.number, fu)
             result.append(line)
 
-        result.insert(0,'; {:5d} cmaps\n'.format(len(result)))
+        result.insert(0,'; {0:5d} cmaps\n'.format(len(result)))
         return result
 
 
