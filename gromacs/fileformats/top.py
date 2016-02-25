@@ -521,7 +521,7 @@ class TOP(blocks.System):
                     dih = blocks.DihedralType('gromacs')
                     imp = blocks.ImproperType('gromacs')
 
-                    if fu in (1,3,4,9):
+                    if fu in (1,3,9):
                         if curr_sec == 'dihedraltypes':
                             dih.atype1 = ai
                             dih.atype2 = aj
@@ -593,7 +593,7 @@ class TOP(blocks.System):
                                 imp.gromacs['param'].append({'kpsi':kpsi, 'psi0': psi0})
                             elif fu == 4:
                                 psi0 , kpsi, n = list(map(float, fields[5:8]))
-                                imp.gromacs['param'].append({'kpsi':kpsi, 'psi0': psi0, 'n':n})
+                                imp.gromacs['param'].append({'kpsi':kpsi, 'psi0': psi0, 'n': int(n)})
                             else:
                                 raise ValueError
 
@@ -614,7 +614,10 @@ class TOP(blocks.System):
                             if fu == 2:
                                 pass
                             elif fu == 4:
-                                pass
+                                # in-line override of dihedral parameters
+                                if len(fields[5:8]) == 3:
+                                    psi0 , kpsi, n = list(map(float, fields[5:8]))
+                                    imp.gromacs['param'].append({'kpsi':kpsi, 'psi0': psi0, 'n': int(n)})
                             else:
                                 raise ValueError
 
@@ -813,27 +816,29 @@ class TOP(blocks.System):
 class SystemToGroTop(object):
     """Converter class - represent TOP objects as GROMACS topology file."""
     formats = {
-        'atomtypes'      : '{:<7s} {:3s} {:3d} {:>7.6f}   {:4.3f}   {:3s}     {:14.12f}     {:10.9f}  \n',
-        'atoms'          : '{:6d} {:>10s} {:6d} {:6s} {:6s} {:6d} {:f} {:11.4f} \n',
-        'atoms_nomass'   : '{:6d} {:>10s} {:6d} {:6s} {:6s} {:6d} {:f}\n',
-        'nonbond_params' : '{:20s}  {:20s}  {:1d}  {:14.12f}  {:14.12f}\n',
-        'bondtypes'      : '{:5s}  {:5s}  {:1d}  {:6.4f}  {:6.1f}\n',
+        'atomtypes'      : '{:<7s} {:3s} {:3d} {:>7g}   {:4g}   {:3s}     {:14g}     {:10g}  \n',
+        'atoms'          : '{:6d} {:>10s} {:6d} {:6s} {:6s} {:6d} {:g} {:11g} \n',
+        'atoms_nomass'   : '{:6d} {:>10s} {:6d} {:6s} {:6s} {:6d} {:g}\n',
+        'nonbond_params' : '{:20s}  {:20s}  {:1d}  {:14g}  {:14g}\n',
+        'bondtypes'      : '{:5s}  {:5s}  {:1d}  {:6g}  {:6g}\n',
         'bonds'          : '{:3d}  {:3d}   {:1d}\n',
-        'settles'        : '{:3d}  {:3d}  {:11.5f} {:11.5f}\n',
-        'virtual_sites3' : '{:3d}  {:3d}  {:3d}  {:3d}   {:1d}  {:12.10f}  {:12.10f}\n',
+        'settles'        : '{:3d}  {:3d}  {:11g} {:11g}\n',
+        'virtual_sites3' : '{:3d}  {:3d}  {:3d}  {:3d}   {:1d}  {:12g}  {:12g}\n',
         'exclusions'     : '{:3d}  {:3d}  {:3d}\n',
-        'pairtypes'      : '{:6s} {:6s}   {:d}    {:14.12f}     {:14.12f}    \n',
+        'pairtypes'      : '{:6s} {:6s}   {:d}    {:14g}     {:14g}    \n',
         'pairs'          : '{:3d} {:3d}   {:1d}\n',
-        'angletypes_1'   : '{:>8s} {:>8s} {:>8s} {:1d}    {:8.4f}    {:10.5f}\n',
-        'angletypes_5'   : '{:>8s} {:>8s} {:>8s} {:1d}    {:8.4f}    {:10.5f}    {:9.5f}    {:11.5f}\n',
-        'constrainttypes': '{:6s} {:6s} {:1d}    {:8.6f}\n',
+        'angletypes_1'   : '{:>8s} {:>8s} {:>8s} {:1d}    {:8g}    {:10g}\n',
+        'angletypes_5'   : '{:>8s} {:>8s} {:>8s} {:1d}    {:8g}    {:10g}    {:9g}    {:11g}\n',
+        'constrainttypes': '{:6s} {:6s} {:1d}    {:8g}\n',
         'angles'         : '{:3d} {:3d} {:3d}   {:1d}\n',
-        'dihedraltypes'  : '{:6s} {:6s} {:6s} {:6s}   {:1d}    {:6.2f}    {:f}    {:1d}\n',
+        'dihedraltypes'  : '{:6s} {:6s} {:6s} {:6s}   {:1d}    {:6g}    {:g}    {:1d}\n',
         'dihedrals'      : '{:3d} {:3d} {:3d} {:3d}   {:1d}\n',
-        'dihedrals_ext'  : '{:3d} {:3d} {:3d} {:3d}   {:1d}    {:6.2f}    {:f}    {:1d}\n',
-        'impropertypes'  : '{:6s} {:6s} {:6s} {:6s}   {:1d} {:6.2f} {:8.4f} \n',
+        'dihedrals_ext'  : '{:3d} {:3d} {:3d} {:3d}   {:1d}    {:6g}    {:g}    {:1d}\n',
+        'impropertypes_2'  : '{:6s} {:6s} {:6s} {:6s}   {:1d} {:6g} {:8g} \n',
+        'impropertypes_4'  : '{:6s} {:6s} {:6s} {:6s}   {:1d} {:6g} {:8g} {:2d}\n',
         'impropers'      : '{:3d} {:3d} {:3d} {:3d}   {:1d}\n',
-        'impropers_ext'  : '{:3d} {:3d} {:3d} {:3d}   {:1d} {:6.2f} {:8.4f} \n',
+        'impropers_2'  : '{:3d} {:3d} {:3d} {:3d}   {:1d} {:6g} {:8g} \n',
+        'impropers_4'  : '{:3d} {:3d} {:3d} {:3d}   {:1d} {:6g} {:8g} {:2d}\n',
     }
 
 
@@ -918,11 +923,7 @@ class SystemToGroTop(object):
         """Call the various member self._make_* functions to convert the topology object into a string"""
         self.logger.debug("starting to assemble topology...")
 
-        top = '[ defaults ] ; \n'
-        top += ';nbfunc    comb-rule    gen-pairs    fudgeLJ    fudgeQQ \n'
-
-        if self.system.forcefield == 'charmm':
-            top += '1          2           yes          1.0       1.0 \n'
+        top = ''
 
         self.logger.debug("making atom/pair/bond/angle/dihedral/improper types")
         top += self.toptemplate
@@ -977,7 +978,7 @@ class SystemToGroTop(object):
             f.writelines([top])
 
     def _make_defaults(self,m):
-        return ['{:d}          {:d}           {}          {:.1f}       {:.1f} \n'.format(m.defaults['nbfunc'], m.defaults['comb-rule'], m.defaults['gen-pairs'] , m.defaults['fudgeLJ'], m.defaults['fudgeQQ'])]
+        return ['{:d}          {:d}           {}          {:g}       {:g} \n'.format(m.defaults['nbfunc'], m.defaults['comb-rule'], m.defaults['gen-pairs'] , m.defaults['fudgeLJ'], m.defaults['fudgeQQ'])]
 
 
     def _make_atomtypes(self,m):
@@ -1128,11 +1129,13 @@ class SystemToGroTop(object):
                 kpsi = ipar['kpsi']
                 psi0 = ipar['psi0']
 
-                if not imp.disabled:
-                    line = self.formats['impropertypes'].format(at1, at2, at3, at4, fu, psi0, kpsi)
-                else: 
-                    line = self.formats['impropertypes'].format(at1, at2, at3, at4, fu, psi0, kpsi)
-                    line = imp.comment + line
+                if fu == 2:
+                    line = self.formats['impropertypes_2'].format(at1, at2, at3, at4, fu, psi0, kpsi)
+                if fu == 4:
+                    n = ipar['n']
+                    line = self.formats['impropertypes_4'].format(at1, at2, at3, at4, fu, psi0, kpsi, n)
+
+                if imp.disabled: line = imp.comment + line
                 result.append(line)
 
         return result
@@ -1207,7 +1210,7 @@ class SystemToGroTop(object):
     def _make_bonds(self,m):
         result = []
         for bond in m.bonds:
-            fu = 1
+            fu = bond.gromacs["func"]
             line = self.formats['bonds'].format(bond.atom1.number, bond.atom2.number, fu)
             result.append(line)
 
@@ -1217,7 +1220,7 @@ class SystemToGroTop(object):
     def _make_angles(self,m):
         result = []
         for ang in m.angles:
-            fu = 5
+            fu = ang.gromacs["func"]
             line = self.formats['angles'].format(ang.atom1.number, ang.atom2.number, ang.atom3.number, fu)
             result.append(line)
 
@@ -1258,7 +1261,7 @@ class SystemToGroTop(object):
     def _make_dihedrals(self,m):
         result = []
         for dih in m.dihedrals:
-            fu = 9
+            fu = dih.gromacs["func"]
             
             if not dih.gromacs['param']:
                 line = self.formats['dihedrals'].format(
@@ -1280,7 +1283,7 @@ class SystemToGroTop(object):
     def _make_impropers(self,m):
         result = []
         for imp in m.impropers:
-            fu = 2
+            fu = imp.gromacs['func']
 
             if not imp.gromacs['param']:
                 line = self.formats['impropers'].format(
@@ -1291,7 +1294,12 @@ class SystemToGroTop(object):
                 kpsi = ipar['kpsi']
                 psi0 = ipar['psi0']
 
-                line = self.formats['impropers_ext'].format(imp.atom1.number, imp.atom2.number, imp.atom3.number, imp.atom4.number, fu, psi0, kpsi)
+                if fu == 2:
+                    line = self.formats['impropers_2'].format(imp.atom1.number, imp.atom2.number, imp.atom3.number, imp.atom4.number, fu, psi0, kpsi)
+                if fu == 4:
+                    n = ipar['n']
+                    line = self.formats['impropers_4'].format(imp.atom1.number, imp.atom2.number, imp.atom3.number, imp.atom4.number, fu, psi0, kpsi, n)
+
                 if imp.comment: line = imp.comment + line
                 result.append(line)
 
