@@ -96,7 +96,7 @@ top.atomtypes = [at for at in top.atomtypes if at.atype in atomtypes]
 # BONDTYPES
 #
 bondtypes = set([ tuple(sorted((b.atom1.atomtype, b.atom2.atomtype))) for b in mol.bonds])
-bondtypes_dictionary = dict([(tuple(sorted((bt.atype1, bt.atype2))), bt) for bt in top.bondtypes])
+bondtypes_dictionary = {tuple(sorted((bt.atype1, bt.atype2))): bt for bt in top.bondtypes}
 top.bondtypes = [bondtypes_dictionary[bt] for bt in bondtypes]
 
 #
