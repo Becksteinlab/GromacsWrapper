@@ -923,11 +923,7 @@ class SystemToGroTop(object):
         """Call the various member self._make_* functions to convert the topology object into a string"""
         self.logger.debug("starting to assemble topology...")
 
-        top = '[ defaults ] ; \n'
-        top += ';nbfunc    comb-rule    gen-pairs    fudgeLJ    fudgeQQ \n'
-
-        if self.system.forcefield == 'charmm':
-            top += '1          2           yes          1.0       1.0 \n'
+        top = ''
 
         self.logger.debug("making atom/pair/bond/angle/dihedral/improper types")
         top += self.toptemplate
@@ -982,7 +978,7 @@ class SystemToGroTop(object):
             f.writelines([top])
 
     def _make_defaults(self,m):
-        return ['{:d}          {:d}           {}          {:.1f}       {:.1f} \n'.format(m.defaults['nbfunc'], m.defaults['comb-rule'], m.defaults['gen-pairs'] , m.defaults['fudgeLJ'], m.defaults['fudgeQQ'])]
+        return ['{:d}          {:d}           {}          {:g}       {:g} \n'.format(m.defaults['nbfunc'], m.defaults['comb-rule'], m.defaults['gen-pairs'] , m.defaults['fudgeLJ'], m.defaults['fudgeQQ'])]
 
 
     def _make_atomtypes(self,m):
