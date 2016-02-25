@@ -14,7 +14,9 @@ parser.add_argument("output")
 parser.add_argument("--banned_lines", default="")
 args = parser.parse_args()
 
-def scale_dihedrals(mol, dihedrals, scale, banned_lines=[]):
+def scale_dihedrals(mol, dihedrals, scale, banned_lines=None):
+	if banned_lines is None:
+		banned_lines = []
 	new_dihedrals = []
 	for dh in mol.dihedrals:
 		atypes = dh.atom1.get_atomtype(), dh.atom2.get_atomtype(), dh.atom3.get_atomtype(), dh.atom4.get_atomtype()
@@ -52,7 +54,9 @@ def scale_dihedrals(mol, dihedrals, scale, banned_lines=[]):
 	#assert(len(mol.dihedrals) == new_dihedrals)
 	return mol
 
-def scale_impropers(mol, impropers, scale, banned_lines=[]):
+def scale_impropers(mol, impropers, scale, banned_lines=None):
+	if banned_lines is None:
+		banned_lines = []
 	new_impropers = []
 	for im in mol.impropers:
 		atypes = im.atom1.get_atomtype(), im.atom2.get_atomtype(), im.atom3.get_atomtype(), im.atom4.get_atomtype()
