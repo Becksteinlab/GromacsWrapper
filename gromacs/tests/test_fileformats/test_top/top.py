@@ -39,10 +39,23 @@ class TopologyTest(object):
 		for attr in attrs1:
 			assert_(getattr(top1, attr) == getattr(top2, attr), attr)
 
-	def test_read_write(self):
+	def test_parameter_types(self):
+		"""Test if all the parameter types are the same across two topologies
 		"""
-			Read a topology, write it out, and read in the output again. 
-			Writing the topology out should make no change to the topology. 
+		pass
+
+	def test_parameters(self):
+		"""Test if per-molecule parameters and parameter type assignments are identical
+		"""
+		pass
+
+	def test_molecule_parameters(self):
+		"""Called by `test_parameters()` for each molecule in the system
+		"""
+
+	def test_read_write(self):
+		"""Read a topology, write it out, and read in the output again.
+		Writing the topology out should make no change to the topology. 
 		"""
 		path = tm.get_data_path(self.processed)
 		filename = '/tmp/processed-%s.top' % os.getpid()
