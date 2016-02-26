@@ -1,4 +1,22 @@
 
+# GromacsWrapper: run.py
+# Copyright (c) 2009 Oliver Beckstein <orbeckst@gmail.com>
+# Released under the GNU Public License 3 (or higher, your choice)
+# See the file COPYING for details.
+
+"""
+:mod:`gromacs.scaling` -- Paratial tempering
+============================================
+
+Helper functions for scaling gromacs topologies. 
+
+.. autofunction:: scale_dihedrals
+.. autofunction:: scale_impropers
+.. autofunction:: partial_tempering
+
+"""
+
+
 from gromacs.fileformats import TOP
 from gromacs.fileformats import blocks
 import numpy as np
