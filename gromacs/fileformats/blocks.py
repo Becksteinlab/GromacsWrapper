@@ -392,6 +392,15 @@ class AtomType(Param):
         self.charmm = {'param': {'lje':None, 'ljl':None, 'lje14':None, 'ljl14':None} }
         self.gromacs= {'param': {'lje':None, 'ljl':None, 'lje14':None, 'ljl14':None} }
 
+    def __eq__(self, other):
+        return \
+            self.atype == other.atype and \
+            self.atnum == other.atnum and \
+            self.mass == other.mass and \
+            self.charge == other.charge and \
+            self.bond_type == other.bond_type and \
+            self.charmm == other.charmm 
+
 class BondType(Param):
     def __init__(self, format):
 
@@ -405,6 +414,13 @@ class BondType(Param):
 
         self.charmm = {'param': {'kb':None, 'b0':None} }
         self.gromacs= {'param': {'kb':None, 'b0':None}, 'func':None}
+
+    def __eq__(self, other):
+        return \
+            self.atype1 == other.atype1 and \
+            self.atype2 == other.atype2 and \
+            self.gromacs == other.gromacs and \
+            self.charmm == other.charmm 
 
 
 class AngleType(Param):
@@ -422,6 +438,14 @@ class AngleType(Param):
 
         self.charmm = {'param':{'ktetha':None, 'tetha0':None, 'kub':None, 's0':None} }
         self.gromacs= {'param':{'ktetha':None, 'tetha0':None, 'kub':None, 's0':None}, 'func':None}
+
+    def __eq__(self, other):
+        return \
+            self.atype1 == other.atype1 and \
+            self.atype2 == other.atype2 and \
+            self.atype3 == other.atype3 and \
+            self.gromacs == other.gromacs and \
+            self.charmm == other.charmm 
 
 class DihedralType(Param):
     def __init__(self, format):
@@ -441,6 +465,14 @@ class DihedralType(Param):
         self.charmm = {'param':[]}  # {kchi, n, delta}
         self.gromacs= {'param':[]}
 
+    def __eq__(self, other):
+        return \
+            self.atype1 == other.atype1 and \
+            self.atype2 == other.atype2 and \
+            self.atype3 == other.atype3 and \
+            self.atype4 == other.atype4 and \
+            self.gromacs == other.gromacs and \
+            self.charmm == other.charmm 
 
 class ImproperType(Param):
     def __init__(self, format):
@@ -455,6 +487,14 @@ class ImproperType(Param):
         self.charmm = {'param':[]}
         self.gromacs= {'param':[], 'func': None}  # {'kpsi': None, 'psi0':None}
 
+    def __eq__(self, other):
+        return \
+            self.atype1 == other.atype1 and \
+            self.atype2 == other.atype2 and \
+            self.atype3 == other.atype3 and \
+            self.atype4 == other.atype4 and \
+            self.gromacs == other.gromacs and \
+            self.charmm == other.charmm 
 
 class CMapType(Param):
     def __init__(self, format):
@@ -482,6 +522,18 @@ class CMapType(Param):
         self.charmm = {'param': []}
         self.gromacs= {'param': []}
 
+    def __eq__(self, other):
+        return \
+            self.atype1 == other.atype1 and \
+            self.atype2 == other.atype2 and \
+            self.atype3 == other.atype3 and \
+            self.atype4 == other.atype4 and \
+            self.atype5 == other.atype5 and \
+            self.atype6 == other.atype6 and \
+            self.atype7 == other.atype7 and \
+            self.atype8 == other.atype8 and \
+            self.gromacs == other.gromacs and \
+            self.charmm == other.charmm 
 
 class InteractionType(Param):
     def __init__(self, format):
@@ -496,6 +548,13 @@ class InteractionType(Param):
 
         self.charmm = {'param': {'lje':None, 'ljl':None, 'lje14':None, 'ljl14':None} }
         self.gromacs= {'param': {'lje':None, 'ljl':None, 'lje14':None, 'ljl14':None}, 'func':None }
+
+    def __eq__(self, other):
+        return \
+            self.atype1 == other.atype1 and \
+            self.atype2 == other.atype2 and \
+            self.gromacs == other.gromacs and \
+            self.charmm == other.charmm 
 
 
 class SettleType(Param):
@@ -521,6 +580,13 @@ class ConstraintType(Param):
 
         self.gromacs= {'param': {'b0':None}, 'func':None}
 
+    def __eq__(self, other):
+        return \
+            self.atype1 == other.atype1 and \
+            self.atype2 == other.atype2 and \
+            self.gromacs == other.gromacs and \
+            self.charmm == other.charmm 
+
 
 class NonbondedParamType(Param):
     def __init__(self, format):
@@ -531,6 +597,13 @@ class NonbondedParamType(Param):
         self.atype2 = None
 
         self.gromacs= {'param': {'eps':None, 'sig':None}, 'func':None}
+
+    def __eq__(self, other):
+        return \
+            self.atype1 == other.atype1 and \
+            self.atype2 == other.atype2 and \
+            self.gromacs == other.gromacs and \
+            self.charmm == other.charmm 
 
 
 class VirtualSites3Type(Param):
