@@ -1,8 +1,6 @@
 
 from gromacs.scaling import partial_tempering
-import numpy as np
-import math
-import copy, argparse
+import argparse
 
 def parse_args():
 	parser = argparse.ArgumentParser()

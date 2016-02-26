@@ -1,6 +1,8 @@
 
 from gromacs.fileformats import TOP
 from gromacs.fileformats import blocks
+import numpy as np
+import math, copy
 
 def scale_dihedrals(mol, dihedrals, scale, banned_lines=None):
 	if banned_lines is None:
@@ -177,57 +179,16 @@ def partial_tempering(args):
 		impropertypes[name].append(it)
 	print("Build impropertypes dictionary with {0} entries".format(len(impropertypes)))
 
-	if 'Protein_chain_A' in top.dict_molname_mol:
-		mol = top.dict_molname_mol['Protein_chain_A']
+	if 'Protein' in top.dict_molname_mol:
+		mol = top.dict_molname_mol['Protein']
 		for at in mol.atoms: at.charge *= math.sqrt(args.scale_protein)
 		mol = scale_dihedrals(mol, dihedraltypes, args.scale_protein, banned_lines)
-		mol = scale_impropers(mol, impropertypes, 1, banned_lines)
-
-	if 'Protein_chain_B' in top.dict_molname_mol:
-	    mol = top.dict_molname_mol['Protein_chain_B']
-	    for at in mol.atoms: at.charge *= math.sqrt(args.scale_protein)
-	    mol = scale_dihedrals(mol, dihedraltypes, args.scale_protein, banned_lines)
-	    mol = scale_impropers(mol, impropertypes, 1, banned_lines)
-
-	if 'POPC' in top.dict_molname_mol:
-		mol = top.dict_molname_mol['POPC']
-		for at in mol.atoms: at.charge *= math.sqrt(args.scale_lipids)
-		mol = scale_dihedrals(mol, dihedraltypes, args.scale_lipids, banned_lines)
 		mol = scale_impropers(mol, impropertypes, 1.0, banned_lines)
 
 	# Remove non-default moleculetypes
 	for k in top.dict_molname_mol.keys():
-		if k in ["Protein_chain_A","Protein_chain_B","POPC", "SOL" ]: continue
+		if k in ["Protein", "SOL", "Ion" ]: continue
 		del top.dict_molname_mol[k]
 
-	#
-	# Scaling the Protein-Lipid interaction by args.scale_protein_lipids
-	#
-
-	if args.scale_protein_lipids:
-		atomtypes = dict((at.atype, at) for at in top.atomtypes)
-		atomtypes_protein = set([a.atomtype for a in top.dict_molname_mol["Protein_chain_A"].atoms])
-		atomtypes_lipid = set([a.atomtype for a in top.dict_molname_mol["POPC"].atoms])
-
-		for ap in atomtypes_protein:
-			for al in atomtypes_lipid:
-
-				nbp = blocks.NonbondedParamType("gromacs")
-				nbp.atype1 = ap
-				nbp.atype2 = al
-				
-				# sigmas
-				sp = atomtypes[ap].gromacs['param']['ljl']
-				sl = atomtypes[al].gromacs['param']['ljl']
-				nbp.gromacs["param"]["sig"] = 0.5 * (sp + sl)
-
-				# epsilons
-				ep = atomtypes[ap].gromacs['param']['lje']
-				el = atomtypes[al].gromacs['param']['lje']
-				nbp.gromacs["param"]["eps"] = args.scale_protein_lipids * np.sqrt(ep * el)
-
-				nbp.comment = " ; scale_protein_lipids {0:.2f} original sigmas: {1:.2f} {2:.2f}, espilons: {3:.2f} {4:.2f} ".format(args.scale_protein_lipids, sp, sl, ep, el)
-				
-				top.nonbond_params.append(nbp)
 
 	top.write(args.output)	

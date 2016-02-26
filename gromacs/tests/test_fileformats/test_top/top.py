@@ -4,9 +4,12 @@ import os
 import numpy as np
 import numpy.matlib
 from numpy.testing import assert_array_equal, assert_, run_module_suite
+from pandas.util.testing import assert_frame_equal
 
-from gromacs.fileformats import TOP
+import gromacs
+from gromacs.fileformats import TOP, XVG
 from gromacs import testing as tm
+from gromacs.scaling import partial_tempering
 
 def helper(attr, attr1, attr2):
 	print(attr)
@@ -14,13 +17,45 @@ def helper(attr, attr1, attr2):
 		if pair[0] == pair[1]: continue
 		print(pair)
 
-class TopologyTest(object):
 
+def grompp(f, c, p, prefix="topol"):
+	s = '/tmp/%s-%s.tpr' % (prefix, os.getpid())
+	po = '/tmp/%s-%s.mdp' % (prefix, os.getpid())
+
+	rc, output, junk = gromacs.grompp(f=f, p=p, c=c, o=s, po=po, stdout=False, stderr=False)
+	#print(rc, output, junk)
+	assert_(rc == 0)
+	return s
+
+def mdrun(s, prefix):
+	o = '/tmp/%s-%s.trr' % (prefix, os.getpid())
+	rc, output, junk = gromacs.mdrun(v=True, s=s, o=o, stdout=False, stderr=False)
+	assert_(rc == 0)
+	return o
+
+def rerun_energy(s, o, prefix):
+	e = '/tmp/%s-%s.edr' % (prefix, os.getpid())
+	rc, output, junk = gromacs.mdrun(v=True, s=s, rerun=o, e=e, stdout=False, stderr=False)
+	assert_(rc == 0)
+
+	xvg = '/tmp/%s-%s.xvg' % (prefix, os.getpid())
+	rc, output, junk = gromacs.g_energy(f=e, o=xvg, input=("Proper-Dih.","Improper-Dih.","CMAP-Dih.","LJ-14","Coulomb-14","LJ-(SR)","Coulomb-(SR)","Coul.-recip.","Potential"), stdout=False, stderr=False)
+	assert_(rc == 0)
+
+	df = XVG(xvg).to_df()
+	return df
+
+class Namespace:
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+
+
+class TopologyTest(object):
+	grompp = 'grompp.mdp'
 	def test_basic(self):
 	    path = tm.get_data_path(self.processed)
 	    top = TOP(path)
 	    assert_(top.dict_molname_mol.keys() == self.molecules)
-
 
 	def test_equal(self):
 		"""
@@ -81,6 +116,48 @@ class TopologyTest(object):
 			attr2 = getattr(top2, attr)
 			assert_(attr1 == attr2, helper(attr, attr1, attr2))
 
+	def test_grompp(self):
+		"""Check if grompp can be run successfully at all 
+		"""
+		f = tm.get_data_path(self.grompp)
+		c = tm.get_data_path(self.conf)
+		p = tm.get_data_path(self.processed)
+		o = '/tmp/topol-%s.tpr' % os.getpid()
+		po = '/tmp/mdout-%s.mdp' % os.getpid()
+
+		rc, output, junk = gromacs.grompp(f=f, p=p, c=c, o=o, po=po, stdout=False, stderr=False)
+		#print(rc, output, junk)
+		assert_(rc == 0)
+
+	def test_mdrun(self):
+		"""Check if grompp can be run successfully at all 
+		"""
+		f = tm.get_data_path(self.grompp)
+		c = tm.get_data_path(self.conf)
+		processed = tm.get_data_path(self.processed)
+		tpr = grompp(f, c, processed, prefix="reference")
+		reference_trr = mdrun(tpr, prefix="reference")		
+		df1 = rerun_energy(tpr, reference_trr, prefix="reference")
+
+		scaled = "scaled.top"
+		args = Namespace(banned_lines='', input=processed, output=scaled, scale_lipids=1.0, scale_protein=1.0)
+		partial_tempering(args)
+		tpr = grompp(f, c, scaled, prefix="scaled")
+		df2 = rerun_energy(tpr, reference_trr, prefix="scaled")
+		assert_frame_equal(df1.sort(axis=1), df2.sort(axis=1), check_names=True)
+
+		scaled = "scaled.top"
+		args = Namespace(banned_lines='', input=processed, output=scaled, scale_lipids=1.0, scale_protein=0.5)
+		partial_tempering(args)
+		tpr = grompp(f, c, scaled, prefix="scaled")
+		df3 = rerun_energy(tpr, reference_trr, prefix="scaled")
+		print(df1, df1.columns)
+		print(df3, df3.columns)
+		unscaled_terms = ['Time (ps)', 'Improper Dih.']
+		scaled_terms = ['Proper Dih.']
+
+		assert_frame_equal(df1[unscaled_terms].sort(axis=1), df3[unscaled_terms].sort(axis=1), check_names=True)
+		assert_frame_equal(df1[scaled_terms].sort(axis=1), 2*df3[scaled_terms].sort(axis=1), check_names=True)
 
 if __name__ == "__main__":
     run_module_suite()

@@ -11,6 +11,7 @@ from top import TopologyTest
 
 class TestCharmm(TopologyTest):
 	processed = 'charmm22st/processed.top'
+	conf = 'charmm22st/conf.gro'
 	molecules = ['SOL', 'Protein', 'Ion', 'Cal', 'Ces', 'CL', 'K', 'NA', 'ZN']
 
 if __name__ == "__main__":
