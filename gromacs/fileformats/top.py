@@ -811,34 +811,32 @@ class TOP(blocks.System):
             else:
                 raise ValueError
 
-
-
 class SystemToGroTop(object):
     """Converter class - represent TOP objects as GROMACS topology file."""
     formats = {
-        'atomtypes'      : '{:<7s} {:3s} {:3d} {:>7g}   {:4g}   {:3s}     {:14g}     {:10g}  \n',
-        'atoms'          : '{:6d} {:>10s} {:6d} {:6s} {:6s} {:6d} {:g} {:11g} \n',
-        'atoms_nomass'   : '{:6d} {:>10s} {:6d} {:6s} {:6s} {:6d} {:g}\n',
-        'nonbond_params' : '{:20s}  {:20s}  {:1d}  {:14g}  {:14g}\n',
-        'bondtypes'      : '{:5s}  {:5s}  {:1d}  {:6g}  {:6g}\n',
+        'atomtypes'      : '{:<7s} {:3s} {:3d} {:>7} {} {:3s} {} {}\n',
+        'atoms'          : '{:6d} {:>10s} {:6d} {:6s} {:6s} {:6d} {} {}\n',
+        'atoms_nomass'   : '{:6d} {:>10s} {:6d} {:6s} {:6s} {:6d} {}\n',
+        'nonbond_params' : '{:20s}  {:20s}  {:1d}  {}  {}\n',
+        'bondtypes'      : '{:5s}  {:5s}  {:1d}  {}  {}\n',
         'bonds'          : '{:3d}  {:3d}   {:1d}\n',
-        'settles'        : '{:3d}  {:3d}  {:11g} {:11g}\n',
-        'virtual_sites3' : '{:3d}  {:3d}  {:3d}  {:3d}   {:1d}  {:12g}  {:12g}\n',
+        'settles'        : '{:3d}  {:3d}  {} {}\n',
+        'virtual_sites3' : '{:3d}  {:3d}  {:3d}  {:3d}   {:1d}  {}  {}\n',
         'exclusions'     : '{:3d}  {:3d}  {:3d}\n',
-        'pairtypes'      : '{:6s} {:6s}   {:d}    {:14g}     {:14g}    \n',
+        'pairtypes'      : '{:6s} {:6s}   {:d}    {:.13g}     {:.13g}\n',
         'pairs'          : '{:3d} {:3d}   {:1d}\n',
-        'angletypes_1'   : '{:>8s} {:>8s} {:>8s} {:1d}    {:8g}    {:10g}\n',
-        'angletypes_5'   : '{:>8s} {:>8s} {:>8s} {:1d}    {:8g}    {:10g}    {:9g}    {:11g}\n',
-        'constrainttypes': '{:6s} {:6s} {:1d}    {:8g}\n',
+        'angletypes_1'   : '{:>8s} {:>8s} {:>8s} {:1d}    {}    {}\n',
+        'angletypes_5'   : '{:>8s} {:>8s} {:>8s} {:1d}    {}    {}    {}    {}\n',
+        'constrainttypes': '{:6s} {:6s} {:1d}    {}\n',
         'angles'         : '{:3d} {:3d} {:3d}   {:1d}\n',
-        'dihedraltypes'  : '{:6s} {:6s} {:6s} {:6s}   {:1d}    {:6g}    {:g}    {:1d}\n',
+        'dihedraltypes'  : '{:6s} {:6s} {:6s} {:6s}   {:1d}    {}    {}    {:1d}\n',
         'dihedrals'      : '{:3d} {:3d} {:3d} {:3d}   {:1d}\n',
-        'dihedrals_ext'  : '{:3d} {:3d} {:3d} {:3d}   {:1d}    {:6g}    {:g}    {:1d}\n',
-        'impropertypes_2'  : '{:6s} {:6s} {:6s} {:6s}   {:1d} {:6g} {:8g} \n',
-        'impropertypes_4'  : '{:6s} {:6s} {:6s} {:6s}   {:1d} {:6g} {:8g} {:2d}\n',
+        'dihedrals_ext'  : '{:3d} {:3d} {:3d} {:3d}   {:1d}    {}    {}    {:1d}\n',
+        'impropertypes_2'  : '{:6s} {:6s} {:6s} {:6s}   {:1d} {} {} \n',
+        'impropertypes_4'  : '{:6s} {:6s} {:6s} {:6s}   {:1d} {} {} {:2d}\n',
         'impropers'      : '{:3d} {:3d} {:3d} {:3d}   {:1d}\n',
-        'impropers_2'  : '{:3d} {:3d} {:3d} {:3d}   {:1d} {:6g} {:8g} \n',
-        'impropers_4'  : '{:3d} {:3d} {:3d} {:3d}   {:1d} {:6g} {:8g} {:2d}\n',
+        'impropers_2'  : '{:3d} {:3d} {:3d} {:3d}   {:1d} {} {} \n',
+        'impropers_4'  : '{:3d} {:3d} {:3d} {:3d}   {:1d} {} {} {:2d}\n',
     }
 
 
@@ -978,7 +976,7 @@ class SystemToGroTop(object):
             f.writelines([top])
 
     def _make_defaults(self,m):
-        return ['{0:d}          {1:d}           {2}          {3:g}       {4:g} \n'.format(m.defaults['nbfunc'], m.defaults['comb-rule'], m.defaults['gen-pairs'] , m.defaults['fudgeLJ'], m.defaults['fudgeQQ'])]
+        return ['{0:d}          {1:d}           {2}          {3}       {4} \n'.format(m.defaults['nbfunc'], m.defaults['comb-rule'], m.defaults['gen-pairs'] , m.defaults['fudgeLJ'], m.defaults['fudgeQQ'])]
 
 
     def _make_atomtypes(self,m):

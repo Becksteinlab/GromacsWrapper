@@ -7,9 +7,9 @@ from numpy.testing import assert_array_equal, assert_, run_module_suite
 from gromacs.fileformats import TOP
 from gromacs import testing as tm
 
-from base import TopologyPrimitive
+from top import TopologyTest
 
-class TestCharmm(TopologyPrimitive):
+class TestCharmm(TopologyTest):
 	processed = 'amber03star/processed.top'
 	molecules = ['Protein', 'SOL', 'IB+', 'CA', 'CL', 'NA', 'MG', 'K', 'RB', 'CS', 'LI', 'ZN']
 

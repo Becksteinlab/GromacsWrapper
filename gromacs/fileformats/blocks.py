@@ -401,6 +401,11 @@ class AtomType(Param):
             self.bond_type == other.bond_type and \
             self.charmm == other.charmm 
 
+    def __repr__(self):
+        return '<%s %s m=%g q=%g (gromacs:%s)>' % (
+            self.__class__.__name__, self.atype, self.mass, self.charge,self.gromacs)
+
+
 class BondType(Param):
     def __init__(self, format):
 
@@ -555,6 +560,10 @@ class InteractionType(Param):
             self.atype2 == other.atype2 and \
             self.gromacs == other.gromacs and \
             self.charmm == other.charmm 
+
+    def __repr__(self):
+        return '<%s %s %s (gromacs:%s)>' % (
+            self.__class__.__name__, self.atype1, self.atype2, self.gromacs)
 
 
 class SettleType(Param):
