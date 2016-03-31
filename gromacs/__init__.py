@@ -326,3 +326,10 @@ def enable_gromacs_warnings(categories=None):
 
     """
     filter_gromacs_warnings('always', categories=categories)
+
+
+# define the testing framework
+from numpy.testing.nosetester import NoseTester
+
+test = NoseTester().test
+del NoseTester
