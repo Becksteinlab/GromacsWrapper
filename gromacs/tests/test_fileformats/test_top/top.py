@@ -51,7 +51,7 @@ def rerun_energy(s, o, prefix):
 	df = XVG(xvg).to_df()
 	return df
 
-class Namespace:
+class Namespace(object):
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
 
@@ -167,3 +167,4 @@ class TopologyTest(object):
 
 if __name__ == "__main__":
     run_module_suite()
+
