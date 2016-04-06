@@ -199,15 +199,6 @@ if 'G_dist' in registry:
 if 'Convert_tpr' in registry:
     registry['Tpbconv'] = registry['Convert_tpr']
 
-# load additional scripts from config
-for rec in config.load_scripts:
-    name, clsname, doc = rec
-    exec_name = os.path.basename(name)
-    registry[clsname] = type(clsname, (Command,), 
-                          {'command_name':name,
-                           '__doc__': "External tool %(exec_name)r\n\n%(doc)s." % vars()})
-
-
 # finally, add everything
 globals().update(registry)        # add classes to module's scope
 __all__ = registry.keys()
