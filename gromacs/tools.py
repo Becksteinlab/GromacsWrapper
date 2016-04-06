@@ -80,16 +80,22 @@ for name in sorted(config.load_tools):
     # hack for 5.x 'gmx toolname': add as gmx:toolname
     if name.startswith('gmx:'):
         name = name[4:]
+        #make alias for backwards compatability
+        old_name = 'g_' + name
         # make names valid python identifiers and use convention that class names are capitalized
-        clsname = name.replace('.','_').replace('-','_').capitalize()  
+        clsname = name.replace('.','_').replace('-','_').capitalize()
+        old_clsname = old_name.replace('.','_').replace('-','_').capitalize()
         cls = type(clsname, (GromacsGMXCommand,), {'command_name':name,
                                                    '__doc__': "Gromacs tool 'gmx %(name)r'." % vars()})
+        registry[clsname] = cls      # registry keeps track of all classes
+        #add alias for old name
+        registry[old_clsname] = cls
     else:
         # make names valid python identifiers and use convention that class names are capitalized
         clsname = name.replace('.','_').replace('-','_').capitalize()  
         cls = type(clsname, (GromacsCommand,), {'command_name':name,
                                                 '__doc__': "Gromacs tool %(name)r." % vars()})
-    registry[clsname] = cls      # registry keeps track of all classes
+        registry[clsname] = cls      # registry keeps track of all classes
     # dynamically build the module doc string
     __doc__ += _generate_sphinx_class_string(clsname)
 
