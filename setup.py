@@ -45,8 +45,8 @@ setup(name="GromacsWrapper",
       package_data={'gromacs': ['templates/*.sge', 'templates/*.pbs',  # template files
                                 'templates/*.ll', 'templates/*.sh',
                                 'templates/*.mdp', 'templates/*.cfg',
-                                'tests/test_fileformats/test_top/data/*/*.top'
-                                'external/GridMAT-MD_v1.0.2/GridMAT-MD.pl'],    # external bundled scripts
+                                'tests/test_fileformats/test_top/data/*/*.top',
+                                ],
                     'vmd': ['*.tcl'],                                  # server start in VMD
                     },
       install_requires = ['numpy>=1.0',
