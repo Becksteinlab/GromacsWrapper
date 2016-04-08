@@ -12,6 +12,8 @@ with initial default values.
 
 By convention, a class has the capitalized name of the corresponding Gromacs
 tool; dots are replaced by underscores to make it a valid python identifier.
+Gromacs 5 tools (e.g, `sasa`) are aliased to their Gromacs 4 tool names (e.g, `g_sas`)
+for backwards compatibility.
 
 The list of Gromacs tools to be loaded is configured in
 :data:`gromacs.config.gmx_tool_groups`.
@@ -74,14 +76,53 @@ registry = {}
 # class g_dist(GromacsCommand):
 #     command_name = 'g_dist'
 
+aliases5to4 = {
+    'grompp': 'grompp',
+    'eneconv': 'eneconv',
+    'sasa': 'g_sas',
+    'convert_tpr': 'tpbconv',
+    'editconf': 'editconf',
+    'pdb2gmx': 'pdb2gmx',
+    'trjcat': 'trjcat',
+    'trjconv': 'trjconv',
+    'trjorder': 'trjorder',
+    'xpm2ps': 'xpm2ps',
+    'mdrun': 'mdrun',
+    'make_ndx': 'make_ndx',
+    'make_edi': 'make_edi',
+    'gmxdump': 'gmxdump',
+    'gmxcheck': 'gmxcheck',
+    'genrestr': 'genrestr',
+    'genion': 'genion',
+    'genconf': 'genconf',
+    'do_dssp': 'do_dssp'    
+}
+
 for name in sorted(config.load_tools):
     # hack for 5.x 'gmx toolname': add as gmx:toolname
     if name.startswith('gmx:'):
         name = name[4:]
+        #make alias for backwards compatibility
+        
+        #the common case of just dropping the 'g_'
+        old_name = 'g_' + name
+
+        #check against uncommon name changes
+        #have to check each one, since it's possible there are suffixes like for double precision        
+        for c5, c4 in aliases5to4.iteritems():
+            if name.startswith(c5):
+                #maintain suffix
+                old_name = c4 + name.split(c5)[1]
+                break
+            
         # make names valid python identifiers and use convention that class names are capitalized
         clsname = name.replace('.','_').replace('-','_').capitalize()
+        old_clsname = old_name.replace('.','_').replace('-','_').capitalize()
         cls = type(clsname, (GromacsGMXCommand,), {'command_name':name,
                                                    '__doc__': "Gromacs tool 'gmx %(name)r'." % vars()})
+        #add alias for old name
+        #No need to see if old_name == name since we'll just clobber the item in registry
+        registry[old_clsname] = cls
     else:
         # make names valid python identifiers and use convention that class names are capitalized
         clsname = name.replace('.','_').replace('-','_').capitalize()
