@@ -86,7 +86,6 @@ aliases5to4 = {
     'trjcat': 'trjcat',
     'trjconv': 'trjconv',
     'trjorder': 'trjorder',
-    'trjorder': 'trjorder',
     'xpm2ps': 'xpm2ps',
     'mdrun': 'mdrun',
     'make_ndx': 'make_ndx',
