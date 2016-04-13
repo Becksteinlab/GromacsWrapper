@@ -6,8 +6,6 @@
 # https://github.com/Becksteinlab/GromacsWrapper
 from __future__ import with_statement
 
-from ez_setup import use_setuptools
-use_setuptools()
 from setuptools import setup, find_packages
 
 with open("README.rst") as readme:
@@ -47,7 +45,8 @@ setup(name="GromacsWrapper",
       package_data={'gromacs': ['templates/*.sge', 'templates/*.pbs',  # template files
                                 'templates/*.ll', 'templates/*.sh',
                                 'templates/*.mdp', 'templates/*.cfg',
-                                'external/GridMAT-MD_v1.0.2/GridMAT-MD.pl'],    # external bundled scripts
+                                'tests/test_fileformats/test_top/data/*/*.top',
+                                ],
                     'vmd': ['*.tcl'],                                  # server start in VMD
                     },
       install_requires = ['numpy>=1.0',

@@ -68,17 +68,6 @@ present in the original software or files.
 
 Included third party content:
 
-GridMat-MD
-  - Grid-based Membrane Analysis Tool for use with Molecular Dynamics
-    [Allen2009]_
-  - version: 1.0.2
-  - license: GPL 3.0  
-  - W. J. Allen, J. A. Lemkul, and D. R. Bevan. (2009) "GridMAT-MD: A
-    Grid-based Membrane Analysis Tool for Use With Molecular
-    Dynamics." J. Comput. Chem. 30 (12): 1952-1958.
-  - http://bevanlab.biochem.vt.edu/GridMAT-MD/
-
-
 ``odict.py``
   - a simple implementation of an ordered dictionary as proposed in :pep:`0372`
   - copyright: (c) 2008 by Armin Ronacher and PEP 273 authors.
@@ -110,18 +99,7 @@ grateful if it was acknowledged in text as
 
 or in the Acknowledgements section.
 
-If you use the ``gridmatmd`` plugin also cite [Allen2009]_.
-
 Thank you.
-
-
-.. rubric:: References
-
-.. [Allen2009]   W. J. Allen, J. A. Lemkul, and D. R. Bevan. (2009)
-                 "GridMAT-MD: A Grid-based Membrane Analysis Tool for
-                 Use With Molecular Dynamics."  J. Comput. Chem. 30,
-                 1952-1958.
-
 
 
 

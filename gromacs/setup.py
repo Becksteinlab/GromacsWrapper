@@ -267,7 +267,7 @@ def make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None):
         logging.warn("make_ndx created duplicated groups, performing work around")
 
     if len(selected_groups) <= 0:
-        msg = "no groups found for selection {}, available groups are {}".format(selection, groups)
+        msg = "no groups found for selection {0}, available groups are {1}".format(selection, groups)
         logging.error(msg)
         raise ValueError(msg)
 
@@ -285,13 +285,13 @@ def make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None):
     _,out,_ = gromacs.make_ndx(f=struct, n=ndx, o=ndx,
                                       stdout=False,
                                              # make copy selected group, this now has index last + 1
-                                      input=("{}".format(group['nr']),
+                                      input=("{0}".format(group['nr']),
                                              # rename this to __main__
-                                             "name {} __main__".format(last+1),
+                                             "name {0} __main__".format(last+1),
                                              # make a complement to this group, it get index last + 2
                                              "! \"__main__\"",
                                              # rename this to __environment__
-                                             "name {} __environment__".format(last+2),
+                                             "name {0} __environment__".format(last+2),
                                              # list the groups
                                              "",
                                              # quit
@@ -526,7 +526,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
                                               input=('keep 0', 'del 0', 'a OW*', 'name 0 OW', '', 'q'),
                                               stdout=False)
             groups = cbook.parse_ndxlist(output)
-            gdict = dict([(g['name'], g) for g in groups])   # overkill...
+            gdict = {g['name']: g for g in groups}   # overkill...
             N_water = gdict['OW']['natoms']                  # ... but dict lookup is nice
             N_ions = int(N_water * concentration/CONC_WATER) # number of monovalents
         else:
@@ -830,7 +830,7 @@ def _setup_MD(dirname,
             # takes FULL control and also has to provide the template or index
             groups = make_main_index(structure, selection=mainselection,
                                      oldndx=index, ndx=mainindex)
-            natoms = dict([(g['name'], float(g['natoms'])) for g in groups])
+            natoms = {g['name']: float(g['natoms']) for g in groups}
             tc_group_names = ('__main__', '__environment__')   # defined in make_main_index()
             try:
                 x = natoms['__main__']/natoms['__environment__']

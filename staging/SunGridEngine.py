@@ -248,9 +248,8 @@ class Job(SGE_job):
         # local directory on node
         self.stagedir = self.stagedir_name(kwargs.setdefault('stagedir',None))
         # normalized filenames (always under stagedir)
-        self.filenames = dict([
-            (k,pathjoin(self.stagedir,path,refdir=self.startdir))
-             for k,path in joindicts(self.input,self.output).items()] )
+        self.filenames = {k: pathjoin(self.stagedir,path,refdir=self.startdir)
+             for k,path in joindicts(self.input,self.output).items()}
         
         self.statusmessage()
 

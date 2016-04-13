@@ -11,6 +11,7 @@ from .xvg import XVG
 from .mdp import MDP
 from .ndx import NDX, uniqueNDX
 from .itp import ITP
+from .top import TOP, SystemToGroTop
 from .xpm import XPM
 
 

@@ -12,6 +12,8 @@ with initial default values.
 
 By convention, a class has the capitalized name of the corresponding Gromacs
 tool; dots are replaced by underscores to make it a valid python identifier.
+Gromacs 5 tools (e.g, `sasa`) are aliased to their Gromacs 4 tool names (e.g, `g_sas`)
+for backwards compatibility.
 
 The list of Gromacs tools to be loaded is configured in
 :data:`gromacs.config.gmx_tool_groups`.
@@ -53,8 +55,6 @@ Gromacs tools
 
 .. autoclass:: Mdrun
    :members:
-.. autoclass:: GridMAT_MD
-   :members:
 """
 from __future__ import absolute_import
 __docformat__ = "restructuredtext en"
@@ -76,17 +76,56 @@ registry = {}
 # class g_dist(GromacsCommand):
 #     command_name = 'g_dist'
 
+aliases5to4 = {
+    'grompp': 'grompp',
+    'eneconv': 'eneconv',
+    'sasa': 'g_sas',
+    'convert_tpr': 'tpbconv',
+    'editconf': 'editconf',
+    'pdb2gmx': 'pdb2gmx',
+    'trjcat': 'trjcat',
+    'trjconv': 'trjconv',
+    'trjorder': 'trjorder',
+    'xpm2ps': 'xpm2ps',
+    'mdrun': 'mdrun',
+    'make_ndx': 'make_ndx',
+    'make_edi': 'make_edi',
+    'gmxdump': 'gmxdump',
+    'gmxcheck': 'gmxcheck',
+    'genrestr': 'genrestr',
+    'genion': 'genion',
+    'genconf': 'genconf',
+    'do_dssp': 'do_dssp'    
+}
+
 for name in sorted(config.load_tools):
     # hack for 5.x 'gmx toolname': add as gmx:toolname
     if name.startswith('gmx:'):
         name = name[4:]
+        #make alias for backwards compatibility
+        
+        #the common case of just dropping the 'g_'
+        old_name = 'g_' + name
+
+        #check against uncommon name changes
+        #have to check each one, since it's possible there are suffixes like for double precision        
+        for c5, c4 in aliases5to4.iteritems():
+            if name.startswith(c5):
+                #maintain suffix
+                old_name = c4 + name.split(c5)[1]
+                break
+            
         # make names valid python identifiers and use convention that class names are capitalized
-        clsname = name.replace('.','_').replace('-','_').capitalize()  
+        clsname = name.replace('.','_').replace('-','_').capitalize()
+        old_clsname = old_name.replace('.','_').replace('-','_').capitalize()
         cls = type(clsname, (GromacsGMXCommand,), {'command_name':name,
                                                    '__doc__': "Gromacs tool 'gmx %(name)r'." % vars()})
+        #add alias for old name
+        #No need to see if old_name == name since we'll just clobber the item in registry
+        registry[old_clsname] = cls
     else:
         # make names valid python identifiers and use convention that class names are capitalized
-        clsname = name.replace('.','_').replace('-','_').capitalize()  
+        clsname = name.replace('.','_').replace('-','_').capitalize()
         cls = type(clsname, (GromacsCommand,), {'command_name':name,
                                                 '__doc__': "Gromacs tool %(name)r." % vars()})
     registry[clsname] = cls      # registry keeps track of all classes
@@ -94,7 +133,7 @@ for name in sorted(config.load_tools):
     __doc__ += _generate_sphinx_class_string(clsname)
 
 # modify/fix classes as necessary
-# Note: 
+# Note:
 # - check if class was defined in first place
 # - replace class
 # - update local context AND registry as done below
@@ -104,17 +143,17 @@ class GromacsCommandMultiIndex(GromacsCommand):
             """Initialize instance.
 
             1) Sets up the combined index file.
-            2) Inititialize :class:`~gromacs.core.GromacsCommand` with the 
+            2) Inititialize :class:`~gromacs.core.GromacsCommand` with the
                new index file.
-            
-            See the documentation for :class:`gromacs.core.GromacsCommand` for details. 
+
+            See the documentation for :class:`gromacs.core.GromacsCommand` for details.
             """
             kwargs = self._fake_multi_ndx(**kwargs)
             super(GromacsCommandMultiIndex, self).__init__(**kwargs)
 
         def run(self,*args,**kwargs):
             """Run the command; make a combined multi-index file if necessary."""
-            kwargs = self._fake_multi_ndx(**kwargs)            
+            kwargs = self._fake_multi_ndx(**kwargs)
             return super(GromacsCommandMultiIndex, self).run(*args, **kwargs)
 
         def _fake_multi_ndx(self, **kwargs):
@@ -131,23 +170,23 @@ class GromacsCommandMultiIndex(GromacsCommand):
               The method returns the input keyword arguments with the necessary
               changes to use the temporary index files.
 
-            :Keywords: 
+            :Keywords:
                Only the listed keywords have meaning for the method:
 
                *n* : filename or list of filenames
-                  possibly multiple index files; *n* is replaced by the name of 
+                  possibly multiple index files; *n* is replaced by the name of
                   the temporary index file.
                *s* : filename
-                  structure file (tpr, pdb, ...) or ``None``; if a structure file is 
+                  structure file (tpr, pdb, ...) or ``None``; if a structure file is
                   supplied then the Gromacs default index groups are automatically added
                   to the temporary indexs file.
 
-            :Example: 
+            :Example:
                Used in derived classes that replace the standard
                :meth:`run` (or :meth:`__init__`) methods with something like::
 
                   def run(self,*args,**kwargs):
-                      kwargs = self._fake_multi_ndx(**kwargs)            
+                      kwargs = self._fake_multi_ndx(**kwargs)
                       return super(G_mindist, self).run(*args, **kwargs)
 
             """
@@ -198,15 +237,6 @@ if 'G_dist' in registry:
 # 5.0.5 compatibility hack
 if 'Convert_tpr' in registry:
     registry['Tpbconv'] = registry['Convert_tpr']
-
-# load additional scripts from config
-for rec in config.load_scripts:
-    name, clsname, doc = rec
-    exec_name = os.path.basename(name)
-    registry[clsname] = type(clsname, (Command,), 
-                          {'command_name':name,
-                           '__doc__': "External tool %(exec_name)r\n\n%(doc)s." % vars()})
-
 
 # finally, add everything
 globals().update(registry)        # add classes to module's scope

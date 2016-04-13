@@ -189,20 +189,16 @@ Classes and functions
 """
 
 
-from __future__ import absolute_import, with_statement
-
+from __future__ import with_statement
 import os, errno
 import re
 import warnings
 
 import numpy
 
-from ..exceptions import ParseError, MissingDataError, MissingDataWarning, AutoCorrectionWarning
-from .. import utilities
-try:
-    from collections import OrderedDict as odict
-except ImportError:
-    from .odict import odict
+from gromacs.exceptions import ParseError, MissingDataError, MissingDataWarning, AutoCorrectionWarning
+import gromacs.utilities as utilities
+from gromacs.odict import odict
 
 import numkit.timeseries
 
@@ -484,10 +480,14 @@ class XVG(utilities.FileUtils):
                 line = line.strip()
                 if len(line) == 0:
                     continue
+		if "label" in line and "xaxis" in line:
+			self.xaxis = line.split('"')[-2]
+		if "label" in line and "yaxis" in line:
+                        self.yaxis = line.split('"')[-2]
                 if line.startswith("@ legend"):
 					if not "legend" in self.metadata: self.metadata["legend"] = []
 					self.metadata["legend"].append(line.split("legend ")[-1])
-                if line.startswith("@ s"):
+                if line.startswith("@ s") and "subtitle" not in line:
 					name = line.split("legend ")[-1].replace('"','').strip()
 					self.names.append(name)
                 if line.startswith(('#', '@')) :
@@ -533,7 +533,7 @@ class XVG(utilities.FileUtils):
 
     def to_df(self):
         import pandas as _pd
-        return _pd.DataFrame(self.array.T, columns=["X",]+self.names, dtype=float)
+        return _pd.DataFrame(self.array.T, columns=[self.xaxis] + (self.names if len(self.names) else [self.yaxis]) , dtype=float)
 
     def set(self, a):
         """Set the *array* data from *a* (i.e. completely replace).

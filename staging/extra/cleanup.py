@@ -19,7 +19,7 @@ def init_pattern(key):
     return sre.compile('^init\(\): %(key)s: *(?P<%(key)s>.*)$' % locals())
 
 INIT_KEYS = ['hostname','stagedir','JOB_ID','JOB_NAME']
-P = dict( [(key,init_pattern(key)) for key in INIT_KEYS])
+P = {key: init_pattern(key) for key in INIT_KEYS}
 Q = {'hostname':sre.compile('^host: *(?P<hostname>.*)$'),
      'stagedir':sre.compile('^\+\+ temp_dir=(?P<stagedir>/scratch/oliver/.*)$'),
      'WDIR':sre.compile('^WDIR: *(?P<WDIR>.*)$'),

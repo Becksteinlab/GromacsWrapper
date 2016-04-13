@@ -2,6 +2,16 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
+2016-xx-xx      0.4.1
+quantifiedcode-bot, orbeckst, jandom, whitead
+
+* requires Python 2.7
+* new: gromacs pre-processed topology reader
+* Added backwards compatibility for scripts written using Gromacs 4.x syntax with Gromacs 5.x.
+  Tool calls prefixed with 'G_' will still work. (PR #46, Issue #26)
+* removed gridmatmd plugin and GridMAT-MD.pl script (#41), fixes
+  installation issues (#40)
+
 2015-12-16      0.4.0
 orbeckst, richardjgowers
 

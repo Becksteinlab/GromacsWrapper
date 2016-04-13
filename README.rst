@@ -116,6 +116,19 @@ and feature requests.
 
 .. _Issue Tracker: http://github.com/Becksteinlab/GromacsWrapper/issues
 
+Building Documentation
+======================
+
+Install Sphinx::
+
+   apt-get install python-sphinx
+
+and compile::
+
+   cd package/doc/sphinx
+   make html
+
+
 
 Citing
 ======
@@ -130,16 +143,6 @@ grateful if it was acknowledged in text as
 
 or in the Acknowledgements section.
 
-If you use the ``gridmatmd`` plugin also cite [Allen2009]_.
-
 Thank you.
-
-
-.. rubric:: References
-
-.. [Allen2009]   W. J. Allen, J. A. Lemkul, and D. R. Bevan. (2009)
-                 "GridMAT-MD: A Grid-based Membrane Analysis Tool for
-                 Use With Molecular Dynamics."  J. Comput. Chem. 30,
-                 1952-1958.
 
 
