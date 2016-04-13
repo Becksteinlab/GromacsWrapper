@@ -1,5 +1,6 @@
-name: gromacs
+name: gw
 dependencies:
-- cuda=7.5=1
-- gromacs=5.1.2=1
+- gromacs=5.1.105=0
 - numpy>=1.9
+- pip:
+  - recsql>=0.7
