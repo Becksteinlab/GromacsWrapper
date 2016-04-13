@@ -1,6 +1,8 @@
 name: gw
+channels:
+- acellera
 dependencies:
-- gromacs=5.1.105=0
+- gromacs>=5.1
 - numpy>=1.9
 - pip:
   - recsql>=0.7
