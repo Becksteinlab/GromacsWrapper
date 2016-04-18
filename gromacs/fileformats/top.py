@@ -37,7 +37,7 @@ This file now containts all the force-field information::
 Scale the LJ epsilon by an arbitrary number, here 0.9 ::
 
   scaling = 0.9
-  for at in top.atomtypes: 
+  for at in top.atomtypes:
     at.gromacs['param']['lje'] *= scaling
 
 Write out the scaled down topology::
@@ -46,8 +46,8 @@ Write out the scaled down topology::
 
 .. Note::
 
-   You can use this to prepare a series of top files for Hamiltonian Replica 
-   Exchange (HREX) simulations. See scripts/gw-partial_tempering.py for an example. 
+   You can use this to prepare a series of top files for Hamiltonian Replica
+   Exchange (HREX) simulations. See scripts/gw-partial_tempering.py for an example.
 
 """
 
@@ -149,13 +149,13 @@ class TOP(blocks.System):
     def _parse(self, fname):
         """Parse a processed.top GROMACS topology file
 
-        The function reads in the file line-by-line, and it's a bunch of 'elif' statements, 
-        writing parameter/atom line to current section/molecule. 
+        The function reads in the file line-by-line, and it's a bunch of 'elif' statements,
+        writing parameter/atom line to current section/molecule.
 
-        ParamTypes are added to self.xyztypes (AtomType goes to self.atomtypes). 
+        ParamTypes are added to self.xyztypes (AtomType goes to self.atomtypes).
         Params are added to current molecule (Atom goes to mol.atoms.append(atom))
 
-        MoleculeTypes and Molecules are odd, and are added to 
+        MoleculeTypes and Molecules are odd, and are added to
             * MoleculeType to :attr:`self.dict_molname_mol[mol.name] = mol`
             * Molecule to :attr:`self.molecules.append(self.dict_molname_mol[mname])`
 
@@ -214,26 +214,28 @@ class TOP(blocks.System):
                     # ; nbfunc        comb-rule       gen-pairs       fudgeLJ fudgeQQ
                     #1               2               yes             0.5     0.8333
                     '''
-
-                    assert len(fields) == 5
-
+                    assert len(fields) in  [2, 5]
                     self.defaults['nbfunc']    = int(fields[0])
                     self.defaults['comb-rule'] = int(fields[1])
-                    self.defaults['gen-pairs'] = fields[2]
-                    self.defaults['fudgeLJ']   = float(fields[3])
-                    self.defaults['fudgeQQ']   = float(fields[4])
+                    if len(fields) == 5:
+
+                       self.defaults['gen-pairs'] = fields[2]
+                       self.defaults['fudgeLJ']   = float(fields[3])
+                       self.defaults['fudgeQQ']   = float(fields[4])
 
                 elif curr_sec == 'atomtypes':
                     '''
                     # ;name               at.num    mass         charge    ptype  sigma   epsilon
                     # ;name   bond_type   at.num    mass         charge    ptype  sigma   epsilon
-                    '''
+                    # ;name                         mass         charge    ptype  c6 	  c12
 
-                    if len(fields) not in (7,8):
+                    '''
+                    if len(fields) not in (6,7,8):
                         self.logger('skipping atomtype line with neither 7 or 8 fields: \n {0:s}'.format(line))
                         continue
 
-                    shift = 0 if len(fields) == 7 else 1
+                    #shift = 0 if len(fields) == 7 else 1
+		    shift = len(fields) - 7
                     at = blocks.AtomType('gromacs')
                     at.atype = fields[0]
                     if shift == 1: at.bond_type = fields[1]
@@ -350,7 +352,7 @@ class TOP(blocks.System):
                     '''
                     ; typei typej  f.type sigma   epsilon
                     ; f.type=1 means LJ (not buckingham)
-                    ; sigma&eps since mixing-rule = 2          
+                    ; sigma&eps since mixing-rule = 2
                     '''
 
                     assert len(fields) == 5
@@ -365,7 +367,7 @@ class TOP(blocks.System):
                     nonbond_param.atype1 = ai
                     nonbond_param.atype2 = aj
                     nonbond_param.gromacs['func'] = fu
-                    nonbond_param.gromacs['param'] = {'eps': eps, 'sig': sig} 
+                    nonbond_param.gromacs['param'] = {'eps': eps, 'sig': sig}
 
                     self.nonbond_params.append(nonbond_param)
                     _add_info(self, curr_sec, self.nonbond_params)
@@ -399,8 +401,8 @@ class TOP(blocks.System):
                         if curr_sec == 'bondtypes':
                             bond.atype1 = ai
                             bond.atype2 = aj
-                            b0, kb = list(map(float, fields[3:5]))
 
+                            b0, kb = list(map(float, fields[3:5]))
                             bond.gromacs = {'param':{'kb':kb, 'b0':b0}, 'func':fu}
 
                             self.bondtypes.append(bond)
@@ -411,6 +413,10 @@ class TOP(blocks.System):
                             bond.atom1 = mol.atoms[ai-1]
                             bond.atom2 = mol.atoms[aj-1]
                             bond.gromacs['func'] = fu
+
+                            if len(fields) > 3:
+                                b0, kb = list(map(float, fields[3:5]))
+                                bond.gromacs = {'param':{'kb':kb, 'b0':b0}, 'func':fu}
 
                             mol.bonds.append(bond)
                             _add_info(mol, curr_sec, mol.bonds)
@@ -435,7 +441,7 @@ class TOP(blocks.System):
                     fu          = int(fields[3])
                     assert fu in (1,2,3,4,5,6,8)  # no 7
 
-                    if fu not in (1,5):
+                    if fu not in (1,2,5):
                         raise NotImplementedError('function {0:d} is not yet supported'.format(fu))
 
                     ang = blocks.AngleType('gromacs')
@@ -463,6 +469,23 @@ class TOP(blocks.System):
 
                         else:
                             raise ValueError
+
+                    elif fu == 2:
+                        if curr_sec == 'angletypes':
+                            raise NotImplementedError()
+
+                        elif curr_sec == 'angles':
+                            ai, aj, ak = list(map(int, [ai, aj, ak]))
+                            ang.atom1 = mol.atoms[ai-1]
+                            ang.atom2 = mol.atoms[aj-1]
+                            ang.atom3 = mol.atoms[ak-1]
+                            ang.gromacs['func'] = fu
+
+                            tetha0, ktetha = list(map(float, fields[4:6]))
+                            ang.gromacs = {'param':{'ktetha':ktetha, 'tetha0':tetha0, 'kub':None, 's0':None}, 'func':fu}
+
+                            mol.angles.append(ang)
+                            _add_info(mol, curr_sec, mol.angles)
 
                     elif fu == 5:
                         if curr_sec == 'angletypes':
@@ -520,7 +543,7 @@ class TOP(blocks.System):
 
                     dih = blocks.DihedralType('gromacs')
                     imp = blocks.ImproperType('gromacs')
-
+                    # proper dihedrals
                     if fu in (1,3,9):
                         if curr_sec == 'dihedraltypes':
                             dih.atype1 = ai
@@ -528,7 +551,7 @@ class TOP(blocks.System):
                             dih.atype3 = ak
                             dih.atype4 = am
 
-                            dih.line = i_line + 1  
+                            dih.line = i_line + 1
 
                             if fu == 1:
                                 delta, kchi, n = list(map(float, fields[5:8]))
@@ -539,7 +562,7 @@ class TOP(blocks.System):
                                 dih.gromacs['param'].append(m)
                             elif fu == 4:
                                 delta, kchi, n = list(map(float, fields[5:8]))
-                                dih.gromacs['param'].append({'kchi':kchi, 'n':int(n), 'delta':delta})                                                                                               
+                                dih.gromacs['param'].append({'kchi':kchi, 'n':int(n), 'delta':delta})
                             elif fu == 9:
                                 delta, kchi, n = list(map(float, fields[5:8]))
                                 dih.gromacs['param'].append({'kchi':kchi, 'n':int(n), 'delta':delta})
@@ -561,11 +584,12 @@ class TOP(blocks.System):
                             dih.line = i_line + 1
 
                             if fu == 1:
-                                pass
+                                delta, kchi, n = list(map(float, fields[5:8]))
+                                dih.gromacs['param'].append({'kchi':kchi, 'n': int(n), 'delta':delta})
                             elif fu == 3:
                                 pass
                             elif fu == 4:
-                                pass                                
+                                pass
                             elif fu == 9:
                                 if len(fields[5:8]) == 3:
                                     delta, kchi, n = list(map(float, fields[5:8]))
@@ -578,7 +602,7 @@ class TOP(blocks.System):
 
                         else:
                             raise ValueError
-
+                    # impropers
                     elif fu in (2,4):
                         if curr_sec == 'dihedraltypes':
                             imp.atype1 = ai
@@ -674,7 +698,7 @@ class TOP(blocks.System):
                 elif curr_sec == "virtual_sites3":
                     '''
                         ; Dummy from            funct   a       b
-                        4   1   2   3   1   0.131937768 0.131937768                    
+                        4   1   2   3   1   0.131937768 0.131937768
                     '''
                     assert len(fields) == 7
                     ai = int(fields[0])
@@ -778,7 +802,7 @@ class TOP(blocks.System):
 
                 else:
                     raise NotImplementedError('Unknown section in topology: {0}'.format(curr_sec))
-        
+
         # process cmap_lines
         curr_cons = None
         for line in cmap_lines:
@@ -786,7 +810,7 @@ class TOP(blocks.System):
             # cmaptype opening line
             if len(line.split()) == 8:
                 cons = blocks.CMapType('gromacs')
-                
+
                 atype1, atype2, atype3, atype4, atype8, func, sizeX, sizeY = line.replace("\\","").split()
                 func, sizeX, sizeY = int(func), int(sizeX), int(sizeY)
                 cons.atype1 = atype1
@@ -814,12 +838,13 @@ class TOP(blocks.System):
 class SystemToGroTop(object):
     """Converter class - represent TOP objects as GROMACS topology file."""
     formats = {
-        'atomtypes'      : '{:<7s} {:3s} {:3d} {:>7} {} {:3s} {} {}\n',
+        'atomtypes'      : '{:<7s} {:3s} {:>7} {} {:3s} {} {}\n',
         'atoms'          : '{:6d} {:>10s} {:6d} {:6s} {:6s} {:6d} {} {}\n',
         'atoms_nomass'   : '{:6d} {:>10s} {:6d} {:6s} {:6s} {:6d} {}\n',
         'nonbond_params' : '{:20s}  {:20s}  {:1d}  {}  {}\n',
         'bondtypes'      : '{:5s}  {:5s}  {:1d}  {}  {}\n',
         'bonds'          : '{:3d}  {:3d}   {:1d}\n',
+        'bonds_ext'      : '{:3d}  {:3d}   {:1d} {} {}\n',
         'settles'        : '{:3d}  {:3d}  {} {}\n',
         'virtual_sites3' : '{:3d}  {:3d}  {:3d}  {:3d}   {:1d}  {}  {}\n',
         'exclusions'     : '{:3d}  {:3d}  {:3d}\n',
@@ -829,6 +854,7 @@ class SystemToGroTop(object):
         'angletypes_5'   : '{:>8s} {:>8s} {:>8s} {:1d}    {}    {}    {}    {}\n',
         'constrainttypes': '{:6s} {:6s} {:1d}    {}\n',
         'angles'         : '{:3d} {:3d} {:3d}   {:1d}\n',
+        'angles_ext'     : '{:3d} {:3d} {:3d}   {:1d} {} {}\n',
         'dihedraltypes'  : '{:6s} {:6s} {:6s} {:6s}   {:1d}    {}    {}    {:1d}\n',
         'dihedrals'      : '{:3d} {:3d} {:3d} {:3d}   {:1d}\n',
         'dihedrals_ext'  : '{:3d} {:3d} {:3d} {:3d}   {:1d}    {}    {}    {:1d}\n',
@@ -841,52 +867,52 @@ class SystemToGroTop(object):
 
 
     toptemplate = """
-            [ defaults ]      
-            *DEFAULTS*    
-            [ atomtypes ]      
-            *ATOMTYPES*    
-            [ nonbond_params ] 
-            *NONBOND_PARAM* 
-            [ pairtypes ]    
-            *PAIRTYPES*    
-            [ bondtypes ]    
-            *BONDTYPES*    
-            [ angletypes ]   
-            *ANGLETYPES*   
-            [ constrainttypes ]   
-            *CONSTRAINTTYPES*   
+            [ defaults ]
+            *DEFAULTS*
+            [ atomtypes ]
+            *ATOMTYPES*
+            [ nonbond_params ]
+            *NONBOND_PARAM*
+            [ pairtypes ]
+            *PAIRTYPES*
+            [ bondtypes ]
+            *BONDTYPES*
+            [ angletypes ]
+            *ANGLETYPES*
+            [ constrainttypes ]
+            *CONSTRAINTTYPES*
             [ dihedraltypes ]
             *DIHEDRALTYPES*
             [ dihedraltypes ]
             *IMPROPERTYPES*
-            [ cmaptypes ]    
+            [ cmaptypes ]
             *CMAPTYPES*
             """
     toptemplate = textwrap.dedent(toptemplate)
 
     itptemplate = """
-            [ moleculetype ] 
-            *MOLECULETYPE* 
-            [ atoms ]        
-            *ATOMS*        
-            [ bonds ]        
-            *BONDS*        
-            [ pairs ]        
-            *PAIRS*        
-            [ settles ]        
-            *SETTLES*        
-            [ virtual_sites3 ]        
-            *VIRTUAL_SITES3*        
-            [ exclusions ]        
-            *EXCLUSIONS*        
-            [ angles ]       
-            *ANGLES*       
-            [ dihedrals ]    
-            *DIHEDRALS*    
-            [ dihedrals ]    
-            *IMPROPERS*    
-            [ cmap ]        
-            *CMAPS*    
+            [ moleculetype ]
+            *MOLECULETYPE*
+            [ atoms ]
+            *ATOMS*
+            [ bonds ]
+            *BONDS*
+            [ pairs ]
+            *PAIRS*
+            [ settles ]
+            *SETTLES*
+            [ virtual_sites3 ]
+            *VIRTUAL_SITES3*
+            [ exclusions ]
+            *EXCLUSIONS*
+            [ angles ]
+            *ANGLES*
+            [ dihedrals ]
+            *DIHEDRALS*
+            [ dihedrals ]
+            *IMPROPERS*
+            [ cmap ]
+            *CMAPS*
             """
     itptemplate = textwrap.dedent(itptemplate)
 
@@ -914,7 +940,7 @@ class SystemToGroTop(object):
 
     @staticmethod
     def _redefine_atomtypes(mol):
-        for i, atom in enumerate(mol.atoms): 
+        for i, atom in enumerate(mol.atoms):
             atom.atomtype = 'at{0:03d}'.format(i+1)
 
     def assemble_topology(self):
@@ -939,7 +965,7 @@ class SystemToGroTop(object):
         for i,(molname,m) in enumerate(self.system.dict_molname_mol.items()):
 
             itp = self.itptemplate
-            itp = itp.replace('*MOLECULETYPE*',  ''.join( self._make_moleculetype(m, molname))  )
+            itp = itp.replace('*MOLECULETYPE*',  ''.join( self._make_moleculetype(m, molname, m.exclusion_numb))  )
             itp = itp.replace('*ATOMS*',         ''.join( self._make_atoms(m))  )
             itp = itp.replace('*BONDS*',         ''.join( self._make_bonds(m))  )
             itp = itp.replace('*PAIRS*',         ''.join( self._make_pairs(m))  )
@@ -963,7 +989,7 @@ class SystemToGroTop(object):
         molecules = [("", 0)]
 
         for m in self.system.molecules:
-            if (molecules[-1][0] != m.name): 
+            if (molecules[-1][0] != m.name):
                 molecules.append([m.name, 0])
             if molecules[-1][0] == m.name:
                 molecules[-1][1] += 1
@@ -976,7 +1002,11 @@ class SystemToGroTop(object):
             f.writelines([top])
 
     def _make_defaults(self,m):
-        return ['{0:d}          {1:d}           {2}          {3}       {4} \n'.format(m.defaults['nbfunc'], m.defaults['comb-rule'], m.defaults['gen-pairs'] , m.defaults['fudgeLJ'], m.defaults['fudgeQQ'])]
+        if m.defaults['gen-pairs'] and m.defaults['fudgeLJ']and m.defaults['fudgeQQ']:
+            line = ['{0:d}          {1:d}           {2}          {3}       {4} \n'.format(m.defaults['nbfunc'], m.defaults['comb-rule'], m.defaults['gen-pairs'] , m.defaults['fudgeLJ'], m.defaults['fudgeQQ'])]
+        else:
+            line = ['{0:d}          {1:d}\n'.format(m.defaults['nbfunc'], m.defaults['comb-rule'], )]
+        return line
 
 
     def _make_atomtypes(self,m):
@@ -994,7 +1024,7 @@ class SystemToGroTop(object):
             prot = get_prot(at.atype)
             ljl  = at.gromacs['param']['ljl']
             lje  = at.gromacs['param']['lje']
-            line = self.formats['atomtypes'].format(at.atype, at.bond_type if at.bond_type else "", prot, at.mass, at.charge, 'A', ljl, lje)
+            line = self.formats['atomtypes'].format(at.atype, at.bond_type if at.bond_type else "", at.mass, at.charge, 'A', ljl, lje)
             if at.comment : line += at.comment
             result.append(line)
 
@@ -1101,7 +1131,7 @@ class SystemToGroTop(object):
                 kchi = dpar['kchi']
                 n    = dpar['n']
                 delta= dpar['delta']
-                
+
                 if not dih.disabled:
                     line = self.formats['dihedraltypes'].format(at1, at2, at3, at4, fu, delta, kchi, n)
                 else:
@@ -1166,8 +1196,8 @@ class SystemToGroTop(object):
 
         return result
 
-    def _make_moleculetype(self,m,molname):
-        return ['; Name \t\t  nrexcl \n {0}    3 \n'.format(molname)]
+    def _make_moleculetype(self,m,molname,nrexcl):
+        return ['; Name \t\t  nrexcl \n {0}    {1} \n'.format(molname,nrexcl)]
 
     def _make_atoms(self,m):
         result = []
@@ -1175,7 +1205,7 @@ class SystemToGroTop(object):
         for atom in m.atoms:
             numb = cgnr = atom.number
             atype = atom.get_atomtype()
-            
+
             assert atype!= False
             assert hasattr(atom, 'charge') #and hasattr(atom, 'mass')
 
@@ -1209,7 +1239,13 @@ class SystemToGroTop(object):
         result = []
         for bond in m.bonds:
             fu = bond.gromacs["func"]
-            line = self.formats['bonds'].format(bond.atom1.number, bond.atom2.number, fu)
+
+            if "kb" in bond.gromacs["param"] and "b0" in bond.gromacs["param"]:
+                kb, b0 = bond.gromacs["param"]["kb"], bond.gromacs["param"]["b0"]
+                line = self.formats['bonds_ext'].format(bond.atom1.number, bond.atom2.number, fu, b0, kb)
+            else:
+                line = self.formats['bonds'].format(bond.atom1.number, bond.atom2.number, fu)
+
             result.append(line)
 
         result.insert(0,'; {0:5d} bonds\n'.format(len(result)))
@@ -1219,7 +1255,11 @@ class SystemToGroTop(object):
         result = []
         for ang in m.angles:
             fu = ang.gromacs["func"]
-            line = self.formats['angles'].format(ang.atom1.number, ang.atom2.number, ang.atom3.number, fu)
+            if "ktetha" in ang.gromacs["param"] and "tetha0" in ang.gromacs["param"]:
+                ktetha, tetha0 = ang.gromacs["param"]["ktetha"] , ang.gromacs["param"]["tetha0"]
+                line = self.formats['angles_ext'].format(ang.atom1.number, ang.atom2.number, ang.atom3.number, fu, tetha0, ktetha)
+            else:
+                line = self.formats['angles'].format(ang.atom1.number, ang.atom2.number, ang.atom3.number, fu)
             result.append(line)
 
         result.insert(0,'; {0:5d} angles\n'.format(len(result)))
@@ -1249,7 +1289,7 @@ class SystemToGroTop(object):
     def _make_exclusions(self,m):
         result = []
         for excl in m.exclusions:
-            
+
             line = self.formats['exclusions'].format(excl.main_atom.number, excl.other_atoms[0].number, excl.other_atoms[1].number)
             result.append(line)
 
@@ -1260,7 +1300,7 @@ class SystemToGroTop(object):
         result = []
         for dih in m.dihedrals:
             fu = dih.gromacs["func"]
-            
+
             if not dih.gromacs['param']:
                 line = self.formats['dihedrals'].format(
                     dih.atom1.number, dih.atom2.number, dih.atom3.number, dih.atom4.number, fu)
@@ -1323,7 +1363,3 @@ if __name__ == '__main__':
     import sys
     grotop = GroTop(sys.argv[1])
     print(grotop)
-
-
-
-
