@@ -242,6 +242,17 @@ def stop_logging():
     log.clear_handlers(logger)  # this _should_ do the job...
 
 
+# Try to load environment variables setted by GMXRC
+gmxrc = config.cfg.get("Gromacs", "GMXRC")
+if gmxrc:
+    try:
+        config.set_gmxrc_environment(gmxrc)
+    except OSError:
+        logger = config.logger
+        logger.warning("Failed to automatically set the Gromacs environment"
+                       "(GMXRC)")
+
+
 # Add gromacs command **instances** to the top level.
 # These serve as the equivalence of running commands in the shell.
 # (Note that each gromacs command is actually run when the instance is

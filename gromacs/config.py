@@ -165,6 +165,11 @@ command ``gmx`` is added as a prefix::
    # Release of the Gromacs package to which information in this sections applies.
    release = 5.0.5
 
+   # GMXRC contains the path for GMXRC file which will be loaded. If not
+   provided is expected that it was sourced as usual before importing this
+   library.
+   GMXRC = /usr/local/gromacs/bin/GMXRC
+
    # tools contains the command names of all Gromacs tools for which classes are generated.
    # Editing this list has only an effect when the package is reloaded.
    # (Note that this example has a much shorter list than the actual default.)
@@ -219,7 +224,7 @@ completely transparent to the user.
 """
 from __future__ import absolute_import, with_statement
 
-import os, errno
+import os, errno, subprocess
 from ConfigParser import SafeConfigParser
 
 from pkg_resources import resource_filename, resource_listdir
@@ -484,6 +489,7 @@ class GMXConfigParser(SafeConfigParser):
           self.set('DEFAULT', 'managerdir',
                   os.path.join("%(configdir)s", os.path.basename(defaults['managerdir'])))
           self.add_section('Gromacs')
+          self.set("Gromacs", "GMXRC", "")
           self.set("Gromacs", "tools", "pdb2gmx editconf grompp genbox genion mdrun trjcat trjconv")
           self.set("Gromacs", "extra", "")
           self.set("Gromacs", "groups", "tools")
@@ -641,9 +647,24 @@ def check_setup():
 check_setup()
 
 
-
 # Gromacs tools
 # -------------
+
+#: Runs GMXRC in a subprocess and put environment variables loaded by it in
+#: this environment.
+def set_gmxrc_environment(gmxrc):
+    envvars = ['GMXPREFIX', 'GMXBIN', 'GMXLDLIB', 'GMXMAN', 'GMXDATA',
+               'GROMACS_DIR', 'LD_LIBRARY_PATH', 'MANPATH', 'PKG_CONFIG_PATH',
+               'GROMACS_DIR', 'PATH']
+    cmdargs = ['bash', '-c', ". {0} && echo {1}".format(gmxrc,
+               ' '.join(['${0}'.format(v) for v in envvars]))]
+    try:
+        out = subprocess.check_output(cmdargs)
+        out = out.strip().split()
+        for key, value in zip(envvars, out):
+            os.environ[key] = value
+    except (subprocess.CalledProcessError, OSError):
+        pass
 
 #: Python list of all tool file names. Filled from values in the tool
 #: groups in the configuration file.
