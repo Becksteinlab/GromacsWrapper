@@ -200,11 +200,11 @@ one to fit.
 try:
     _define_canned_commands()
 except (OSError, ImportError, GromacsError):
-    warnings.warn("Failed to define a number of commands in gromacs.cbook. Most likely the "
-                  "Gromacs installation cannot be found --- source GMXRC!",
-                  category=GromacsImportWarning)
-    logger.error("Failed to define a number of commands in gromacs.cbook. Most likely the "
-                  "Gromacs installation cannot be found --- source GMXRC!")
+    msg = ("Failed to define a number of commands in gromacs.cbook. Most "
+          "likely the Gromacs installation cannot be found --- set GMXRC in "
+           "~/.gromacswrapper.cfg or source GMXRC directly")
+    warnings.warn(msg, category=GromacsImportWarning)
+    logger.error(msg)
 finally:
     del _define_canned_commands
 
