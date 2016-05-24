@@ -100,8 +100,9 @@ aliases5to4 = {
 
 for name in sorted(config.load_tools):
     # hack for 5.x 'gmx toolname': add as gmx:toolname
-    if name.startswith('gmx:'):
-        name = name[4:]
+    if name.find(':') != -1:
+        prefix = name.split(':')[0]
+        name = name.split(':')[1]
         #make alias for backwards compatibility
         
         #the common case of just dropping the 'g_'
@@ -119,7 +120,8 @@ for name in sorted(config.load_tools):
         clsname = name.replace('.','_').replace('-','_').capitalize()
         old_clsname = old_name.replace('.','_').replace('-','_').capitalize()
         cls = type(clsname, (GromacsGMXCommand,), {'command_name':name,
-                                                   '__doc__': "Gromacs tool 'gmx %(name)r'." % vars()})
+                                                   'driver':prefix,
+                                                   '__doc__': "Gromacs tool '%(prefix) %(name)r'." % vars()})
         #add alias for old name
         #No need to see if old_name == name since we'll just clobber the item in registry
         registry[old_clsname] = cls
