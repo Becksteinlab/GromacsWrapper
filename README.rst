@@ -98,7 +98,7 @@ Download and Availability
 
 The GromacsWrapper home page is
 http://github.com/Becksteinlab/GromacsWrapper.  The latest release of the
-package is being made available from https://github.com/Becksteinlab/GromacsWrapper/tags
+package is being made available from https://github.com/Becksteinlab/GromacsWrapper/releases
 
 You can also clone the `GromacsWrapper git repository`_ or fork for
 your own development::
@@ -138,7 +138,7 @@ Citing
 If you find this package useful and use it in published work I'd be
 grateful if it was acknowledged in text as
 
-  "... used GromacsWrapper (Oliver Beckstein,
+  "... used GromacsWrapper (Oliver Beckstein et al,
   http://github.com/Becksteinlab/GromacsWrapper doi: 10.5281/zenodo.17901)"
 
 or in the Acknowledgements section.
