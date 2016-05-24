@@ -68,14 +68,6 @@ present in the original software or files.
 
 Included third party content:
 
-``odict.py``
-  - a simple implementation of an ordered dictionary as proposed in :pep:`0372`
-  - copyright: (c) 2008 by Armin Ronacher and PEP 273 authors.
-  - license: modified BSD license (`compatible with GPL`_)
-  - http://dev.pocoo.org/hg/sandbox/raw-file/tip/odict.py
-
-  .. _compatible with GPL: http://www.fsf.org/licensing/licenses/index_html
-
 ``gromacs.fileformats.preprocess``
   - The preprocessor is based on ``pypreprocessor.py`` from
     `pypreprocessor`_, release 0.4.0.
