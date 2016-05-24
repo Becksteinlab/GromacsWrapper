@@ -392,7 +392,8 @@ class GromacsCommand(Command):
     # TODO: setup the environment from GMXRC (can use env=DICT in Popen/call)
 
     command_name = None
-    doc_pattern = """.*?(?P<DOCS>DESCRIPTION.*)"""
+    driver = ""
+    doc_pattern = """.*?(?P<DOCS>(DESCRIPTION|SYNOPSIS).*)"""
     gmxfatal_pattern = """----+\n                   # ---- decorator line
             \s*Program\s+(?P<program_name>\w+),     #  Program name,
               \s+VERSION\s+(?P<version>[\w.]+)\s*\n #    VERSION 4.0.5
@@ -492,7 +493,7 @@ class GromacsCommand(Command):
         self.failuremode = kwargs.pop('failure','raise')
         self.extra_doc = kwargs.pop('doc',None)
         self.gmxargs = self._combineargs(*args, **kwargs)
-        self.__doc__ = self.gmxdoc
+        self.__doc__ = self.gmxdoc        
 
     def failuremode():
         doc = """mode determines how the GromacsCommand behaves during failure
@@ -584,6 +585,11 @@ class GromacsCommand(Command):
         self.check_failure(result, command_string=p.command_string)
         return result, p
 
+    def _commandline(self, *args, **kwargs):
+        """Returns the command line (without pipes) as a list. Inserts driver if present"""
+        return [self.driver, self.command_name] + self.transform_args(*args,**kwargs)
+
+
     def transform_args(self,*args,**kwargs):
         """Combine arguments and turn them into gromacs tool arguments."""
         newargs = self._combineargs(*args,**kwargs)
@@ -622,25 +628,6 @@ class GromacsCommand(Command):
                               "Documentation of the gromacs tool", 34*'=',
                               docs])
         return docs
-
-class GromacsGMXCommand(GromacsCommand):
-    """Base class for wrapping a ``gmx <name>`` command.
-
-    Limitations: User must have sourced ``GMXRC`` so that the python script can
-    inherit the environment and find the gromacs programs.
-
-    The class doc string is dynamically replaced by the documentation of the
-    gromacs command when an instance is created.
-    """
-    driver = "gmx"
-    doc_pattern = """.*?(?P<DOCS>SYNOPSIS.*)"""
-
-    def _commandline(self, *args, **kwargs):
-        """Returns the command line (without pipes) as a list."""
-         # transform_args() is a hook (used in GromacsCommand very differently!)
-        return [self.driver, self.command_name] + self.transform_args(*args,**kwargs)
-
-
 
 class PopenWithInput(subprocess.Popen):
     """Popen class that knows its input.
