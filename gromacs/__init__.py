@@ -259,7 +259,9 @@ for clsname, cls in tools.registry.items():
     try:
         globals()[name] = cls()                # add instance of command for immediate use
         _have_g_commands.append(name)
-    except:
+    except GromacsError:                       # ignore missing -h for doc extraction
+        pass
+    except OSError:
         _missing_g_commands.append(name)
 warnings.simplefilter("always", GromacsFailureWarning)
 warnings.simplefilter("always", GromacsImportWarning)
