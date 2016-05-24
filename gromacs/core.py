@@ -393,7 +393,7 @@ class GromacsCommand(Command):
 
     command_name = None
     driver = ""
-    doc_pattern = """.*?(?P<DOCS>(DESCRIPTION|SYNOPSIS).*)"""
+    doc_pattern = """.*?(?P<DOCS>DESCRIPTION.*)"""
     gmxfatal_pattern = """----+\n                   # ---- decorator line
             \s*Program\s+(?P<program_name>\w+),     #  Program name,
               \s+VERSION\s+(?P<version>[\w.]+)\s*\n #    VERSION 4.0.5
@@ -600,7 +600,8 @@ class GromacsCommand(Command):
 
         .. Note::
 
-           The header is on STDOUT and is ignored. The docs are read from STDERR.
+           The header is on STDOUT and is ignored. The docs are read from STDERR in GMX 4. 
+           In GMX 5, the opposite is true (Grrr)
         """
         # Uses the class-wide arguments so that 'canned invocations' in cbook
         # are accurately reflected. Might be a problem when these invocations
@@ -614,7 +615,9 @@ class GromacsCommand(Command):
             logging.disable(logging.NOTSET)     # ALWAYS restore logging....
         m = re.match(self.doc_pattern, docs, re.DOTALL)    # keep from DESCRIPTION onwards
         if m is None:
-            return "(No Gromacs documentation available)"
+            m = re.match(self.doc_pattern, header, re.DOTALL)    # Try now with GMX 5 approach            
+            if m is None:
+                return "(No Gromacs documentation available)"
         return m.group('DOCS')
 
     @property
