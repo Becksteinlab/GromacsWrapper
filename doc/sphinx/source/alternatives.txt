@@ -34,6 +34,13 @@ pymacs_ (Daniel Seeliger)
    - Structure building from sequence
    - Handling gromacs index files
 
+gmxscript_ (Pedro Lacerda)
+  **gmxscript** is a framework for Gromacs simulations. Its main goal
+  is make simulation protocols easily reproducible and to define
+  canonical steps to perform and analyze a simulation. The commands
+  are stored in very readable and structured Python file that requires
+  no programming knowledge except syntax.
+
 Gromacs `XTC Library`_
    Version 1.1 of the separate xtc/trr library contains example code
    to access a Gromacs trajectory from python. It appears to be based
@@ -109,6 +116,7 @@ JGromacs_ (Márton Münz and Philip C Biggin)
 Please let `me`_ know of other efforts so that I can add them here. Thanks.
 
 .. _copernicus: http://git.copernicus-computing.org/
+.. _gmxscript: https://github.com/pslacerda/gmx
 .. _XTC Library: http://www.gromacs.org/Developer_Zone/Programming_Guide/XTC_Library
 .. _JGromacs: http://sbcb.bioch.ox.ac.uk/jgromacs/
 .. _pymacs: http://wwwuser.gwdg.de/~dseelig/pymacs.html
