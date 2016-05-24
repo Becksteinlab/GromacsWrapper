@@ -1,0 +1,13 @@
+Gromacs Preprocessed Topology (top) Parser
+===================================
+
+.. versionadded:: 0.4.1
+
+Gromacs can produce *preprocessed topology files* that contain *all* topology information (``grompp -pp processed.top``). The :class:`~gromacs.fileformats.top.TOP` parser can read an write these files.
+
+.. toctree::
+   :maxdepth: 1
+
+    top.txt
+    blocks.txt
+    
