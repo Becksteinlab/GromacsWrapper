@@ -186,7 +186,12 @@ and within GromacsWrapper this would become ::
 
 (The driver command is stripped and only the "command name" is used to
 identify the command. This makes it easier to migrate GromacsWrapper
-scripts from Gromacs 4.x to 5.x.)
+scripts from Gromacs 4.x to 5.x.).
+
+The driver command can be changed per-tool, allowing for mpi
+and non-mpi versions to be used. For example::
+
+tools = gmx_mpi:mdrun gmx:pdb2gmx
 
 .. Note:: Because of `changes in the Gromacs tool in 5.x`_,
           GromacsWrapper scripts might break, even if the tool
