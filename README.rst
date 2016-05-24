@@ -23,7 +23,6 @@ Please be aware that this is **alpha** software that most definitely
 contains bugs. It is *your* responsibility to ensure that you are
 running simulations with sensible parameters.
 
-
 .. _Documentation: 
    http://gromacswrapper.readthedocs.org/en/latest/
 .. _GromacsWrapper git repository:
@@ -135,6 +134,9 @@ Citing
 
 |zenodo|
 
+GromacsWrapper was written by Oliver Beckstein with contributions from
+many other people. Please see the file AUTHORS_ for all the names.
+
 If you find this package useful and use it in published work I'd be
 grateful if it was acknowledged in text as
 
@@ -145,4 +147,6 @@ or in the Acknowledgements section.
 
 Thank you.
 
+.. _AUTHORS:
+   https://raw.githubusercontent.com/Becksteinlab/GromacsWrapper/develop/AUTHORS
 
