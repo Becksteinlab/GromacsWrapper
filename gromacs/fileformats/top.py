@@ -3,6 +3,7 @@
 # Copyright (c) 2010 Tsjerk Wassenaar <tsjerkw@gmail.com>
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
+
 """
 Gromacs TOP file format
 =======================
@@ -47,7 +48,7 @@ Write out the scaled down topology::
 .. Note::
 
    You can use this to prepare a series of top files for Hamiltonian Replica
-   Exchange (HREX) simulations. See scripts/gw-partial_tempering.py for an example.
+   Exchange (HREX) simulations. See ``scripts/gw-partial_tempering.py`` for an example.
 
 """
 
@@ -227,7 +228,7 @@ class TOP(blocks.System):
                     '''
                     # ;name               at.num    mass         charge    ptype  sigma   epsilon
                     # ;name   bond_type   at.num    mass         charge    ptype  sigma   epsilon
-                    # ;name                         mass         charge    ptype  c6 	  c12
+                    # ;name                         mass         charge    ptype  c6      c12
 
                     '''
                     if len(fields) not in (6,7,8):
@@ -235,7 +236,7 @@ class TOP(blocks.System):
                         continue
 
                     #shift = 0 if len(fields) == 7 else 1
-		    shift = len(fields) - 7
+                    shift = len(fields) - 7
                     at = blocks.AtomType('gromacs')
                     at.atype = fields[0]
                     if shift == 1: at.bond_type = fields[1]
