@@ -41,6 +41,8 @@ setup(name="GromacsWrapper",
       scripts = ['scripts/gw-fit_strip_trajectories.py',
                  'scripts/gw-join_parts.py',
                  'scripts/gw-merge_topologies.py',
+                 'scripts/gw-forcefield.py',
+                 'scripts/gw-partial_tempering.py',
                  ],
       package_data={'gromacs': ['templates/*.sge', 'templates/*.pbs',  # template files
                                 'templates/*.ll', 'templates/*.sh',
