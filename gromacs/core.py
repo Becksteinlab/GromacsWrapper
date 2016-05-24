@@ -612,7 +612,10 @@ class GromacsCommand(Command):
         # temporarily throttle logger to avoid reading about the help function invocation or not found
         logging.disable(logging.CRITICAL)
         try:
-            rc,header,docs = self.run('h', stdout=PIPE, stderr=PIPE, use_input=False)
+            rc,header,docs = self.run('h', stdout=PIPE, stderr=PIPE, use_input=False)            
+        except:
+            logging.critical("Invoking command {} failed when determining its doc string. Proceed with caution".format(self.command_name))
+            return "(No Gromacs documentation available)"            
         finally:
             logging.disable(logging.NOTSET)     # ALWAYS restore logging....
         m = re.match(self.doc_pattern, docs, re.DOTALL)    # keep from DESCRIPTION onwards
