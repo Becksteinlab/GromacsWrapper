@@ -11,6 +11,7 @@ quantifiedcode-bot, orbeckst, jandom, whitead
   Tool calls prefixed with 'G_' will still work. (PR #46, Issue #26)
 * removed gridmatmd plugin and GridMAT-MD.pl script (#41), fixes
   installation issues (#40)
+* Allows custom prefixes like gmx_mpi:mdrun and gmx:trjconv (#48)
 
 2015-12-16      0.4.0
 orbeckst, richardjgowers
