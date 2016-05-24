@@ -392,7 +392,7 @@ class GromacsCommand(Command):
     # TODO: setup the environment from GMXRC (can use env=DICT in Popen/call)
 
     command_name = None
-    driver = ""
+    driver = None
     doc_pattern = """.*?(?P<DOCS>DESCRIPTION.*)"""
     gmxfatal_pattern = """----+\n                   # ---- decorator line
             \s*Program\s+(?P<program_name>\w+),     #  Program name,
@@ -587,7 +587,9 @@ class GromacsCommand(Command):
 
     def _commandline(self, *args, **kwargs):
         """Returns the command line (without pipes) as a list. Inserts driver if present"""
-        return [self.driver, self.command_name] + self.transform_args(*args,**kwargs)
+        if(self.driver is not None):
+            return [self.driver, self.command_name] + self.transform_args(*args,**kwargs)
+        return [self.command_name] + self.transform_args(*args,**kwargs)
 
 
     def transform_args(self,*args,**kwargs):
