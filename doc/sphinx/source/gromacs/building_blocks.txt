@@ -11,6 +11,7 @@ as "library" for common tasks.
 
    blocks/cbook
    blocks/setup
+   blocks/scaling
    blocks/qsub
    blocks/manager
    blocks/simulation

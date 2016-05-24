@@ -45,8 +45,8 @@ from __future__ import absolute_import
 
 __docformat__ = "restructuredtext en"
 
-__all__ = ["XVG", "MDP", "NDX", "uniqueNDX", "ITP", "XPM"]
+__all__ = ["XVG", "MDP", "NDX", "uniqueNDX", "ITP", "XPM", "TOP"]
 
-from .fileformats import XVG, MDP, NDX, uniqueNDX, ITP, XPM
+from .fileformats import XVG, MDP, NDX, uniqueNDX, ITP, XPM, TOP
 
 
