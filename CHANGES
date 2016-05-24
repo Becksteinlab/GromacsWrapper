@@ -12,6 +12,8 @@ quantifiedcode-bot, orbeckst, jandom, whitead
 * removed gridmatmd plugin and GridMAT-MD.pl script (#41), fixes
   installation issues (#40)
 * Allows custom prefixes like gmx_mpi:mdrun and gmx:trjconv (#48)
+* Made it so gromacs can be imported and tools loaded even if they can't
+  be executed at improt time. 
 
 2015-12-16      0.4.0
 orbeckst, richardjgowers
