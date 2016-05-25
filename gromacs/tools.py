@@ -99,7 +99,8 @@ aliases5to4 = {
     'genrestr': 'genrestr',
     'genion': 'genion',
     'genconf': 'genconf',
-    'do_dssp': 'do_dssp'    
+    'do_dssp': 'do_dssp',
+    'solvate': 'genbox',
 }
 
 for name in sorted(config.load_tools):
