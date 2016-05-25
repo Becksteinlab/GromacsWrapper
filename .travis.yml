@@ -39,7 +39,7 @@ install:
 
 # run tests
 script: 
-  - py.test --cov gromacs/tests --pep8 gromacs/tests
+  - py.test --cov gromacs/tests
 
 after_success:
   - codecov
