@@ -123,6 +123,8 @@ class Command(object):
     #: cannot be found by searching :envvar:`PATH`.
     command_name = None
 
+    _use_shell = False
+
     def __init__(self,*args,**kwargs):
         """Set up the command class.
 
@@ -267,7 +269,7 @@ class Command(object):
                                                    # (cannot move out of method because filtering of stdin etc)
         try:
             p = PopenWithInput(cmd, stdin=stdin, stderr=stderr, stdout=stdout,
-                               universal_newlines=True, input=input)
+                               universal_newlines=True, input=input, shell=self._use_shell)
         except OSError,err:
             logger.error(" ".join(cmd))            # log command line
             if err.errno == errno.ENOENT:
