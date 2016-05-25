@@ -1,0 +1,15 @@
+[run]
+branch = True
+source = gromacs 
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    def _repr_html_
+    def __str__
+    raise NotImplementedError
+    if __name__ == .__main__.:
+
+omit =
+    gromacs/tests/*
