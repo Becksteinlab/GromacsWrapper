@@ -35,7 +35,7 @@ Modules
      Contains classes that wrap the gromacs tools. They are automatically
      generated from the list of tools in :data:`gromacs.tools.gmx_tools`.
 
-:mod:`gromacs.formats`
+:mod:`gromacs.fileformats`
      Classes to represent data files in various formats such as
      xmgrace graphs. The classes allow reading and writing and for
      graphs, also plotting of the data.
@@ -112,7 +112,7 @@ Warnings and Exceptions
 -----------------------
 
 A number of package-specific exceptions (:exc:`GromacsError`) and
-warnings (:exc:`GromacsFailureWarning`, :exc:`GromacsImportWarning`, 
+warnings (:exc:`GromacsFailureWarning`, :exc:`GromacsImportWarning`,
 :exc:`GromacsValueWarning`, :exc:`AutoCorrectionWarning`,
 :exc:`BadParameterWarning`) can be raised.
 
@@ -259,9 +259,7 @@ for clsname, cls in tools.registry.items():
     try:
         globals()[name] = cls()                # add instance of command for immediate use
         _have_g_commands.append(name)
-    except GromacsError:                       # ignore missing -h for doc extraction
-        pass
-    except OSError:
+    except:
         _missing_g_commands.append(name)
 warnings.simplefilter("always", GromacsFailureWarning)
 warnings.simplefilter("always", GromacsImportWarning)

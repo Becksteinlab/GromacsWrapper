@@ -23,7 +23,6 @@ Please be aware that this is **alpha** software that most definitely
 contains bugs. It is *your* responsibility to ensure that you are
 running simulations with sensible parameters.
 
-
 .. _Documentation: 
    http://gromacswrapper.readthedocs.org/en/latest/
 .. _GromacsWrapper git repository:
@@ -98,7 +97,7 @@ Download and Availability
 
 The GromacsWrapper home page is
 http://github.com/Becksteinlab/GromacsWrapper.  The latest release of the
-package is being made available from https://github.com/Becksteinlab/GromacsWrapper/tags
+package is being made available from https://github.com/Becksteinlab/GromacsWrapper/releases
 
 You can also clone the `GromacsWrapper git repository`_ or fork for
 your own development::
@@ -135,14 +134,19 @@ Citing
 
 |zenodo|
 
+GromacsWrapper was written by Oliver Beckstein with contributions from
+many other people. Please see the file AUTHORS_ for all the names.
+
 If you find this package useful and use it in published work I'd be
 grateful if it was acknowledged in text as
 
-  "... used GromacsWrapper (Oliver Beckstein,
+  "... used GromacsWrapper (Oliver Beckstein et al,
   http://github.com/Becksteinlab/GromacsWrapper doi: 10.5281/zenodo.17901)"
 
 or in the Acknowledgements section.
 
 Thank you.
 
+.. _AUTHORS:
+   https://raw.githubusercontent.com/Becksteinlab/GromacsWrapper/develop/AUTHORS
 

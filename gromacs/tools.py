@@ -63,11 +63,14 @@ import os.path
 import tempfile
 
 from . import config
-from .core import GromacsGMXCommand, GromacsCommand, Command
+from .core import GromacsCommand, Command
 from . import utilities
 
 def _generate_sphinx_class_string(clsname):
     return ".. class:: %(clsname)s\n    :noindex:\n" % vars()
+
+#flag for 5.0 style commands
+b_gmx5 = False
 
 #: This dict holds all generated classes.
 registry = {}
@@ -80,6 +83,7 @@ aliases5to4 = {
     'grompp': 'grompp',
     'eneconv': 'eneconv',
     'sasa': 'g_sas',
+    'distance': 'g_dist',
     'convert_tpr': 'tpbconv',
     'editconf': 'editconf',
     'pdb2gmx': 'pdb2gmx',
@@ -99,9 +103,11 @@ aliases5to4 = {
 }
 
 for name in sorted(config.load_tools):
-    # hack for 5.x 'gmx toolname': add as gmx:toolname
-    if name.startswith('gmx:'):
-        name = name[4:]
+    # compatibility for 5.x 'gmx toolname': add as gmx:toolname
+    if name.find(':') != -1:
+        b_gmx5 = True
+        prefix = name.split(':')[0]
+        name = name.split(':')[1]
         #make alias for backwards compatibility
         
         #the common case of just dropping the 'g_'
@@ -118,8 +124,9 @@ for name in sorted(config.load_tools):
         # make names valid python identifiers and use convention that class names are capitalized
         clsname = name.replace('.','_').replace('-','_').capitalize()
         old_clsname = old_name.replace('.','_').replace('-','_').capitalize()
-        cls = type(clsname, (GromacsGMXCommand,), {'command_name':name,
-                                                   '__doc__': "Gromacs tool 'gmx %(name)r'." % vars()})
+        cls = type(clsname, (GromacsCommand,), {'command_name':name,
+                                                   'driver':prefix,
+                                                   '__doc__': "Gromacs tool '%(prefix) %(name)r'." % vars()})
         #add alias for old name
         #No need to see if old_name == name since we'll just clobber the item in registry
         registry[old_clsname] = cls
@@ -218,18 +225,30 @@ class GromacsCommandMultiIndex(GromacsCommand):
 # patching up...
 
 if 'G_mindist' in registry:
+
     # let G_mindist handle multiple ndx files
     class G_mindist(GromacsCommandMultiIndex):
         """Gromacs tool 'g_mindist' (with patch to handle multiple ndx files)."""
-        command_name = 'g_mindist'
+        command_name = registry['G_mindist'].command_name
+        driver = registry['G_mindist'].driver
+        __doc__ = registry['G_mindist'].__doc__
+
     registry['G_mindist'] = G_mindist
+    if b_gmx5:
+        registry['Mindist'] = G_mindist
 
 if 'G_dist' in registry:
     # let G_dist handle multiple ndx files
     class G_dist(GromacsCommandMultiIndex):
         """Gromacs tool 'g_dist' (with patch to handle multiple ndx files)."""
-        command_name = 'g_dist'
+        command_name = registry['G_dist'].command_name
+        driver = registry['G_dist'].driver
+        __doc__ = registry['G_dist'].__doc__
+
     registry['G_dist'] = G_dist
+    if b_gmx5:
+        registry['Distance'] = G_dist
+
 
 # TODO: generate multi index classes via type(), not copy&paste as above...
 

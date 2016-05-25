@@ -5,7 +5,7 @@
 
 # file formats
 from __future__ import absolute_import
-__all__ = ["XVG", "MDP", "NDX", "uniqueNDX", "ITP", "XPM"]
+__all__ = ["XVG", "MDP", "NDX", "uniqueNDX", "ITP", "XPM", "TOP"]
 
 from .xvg import XVG
 from .mdp import MDP

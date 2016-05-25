@@ -68,14 +68,6 @@ present in the original software or files.
 
 Included third party content:
 
-``odict.py``
-  - a simple implementation of an ordered dictionary as proposed in :pep:`0372`
-  - copyright: (c) 2008 by Armin Ronacher and PEP 273 authors.
-  - license: modified BSD license (`compatible with GPL`_)
-  - http://dev.pocoo.org/hg/sandbox/raw-file/tip/odict.py
-
-  .. _compatible with GPL: http://www.fsf.org/licensing/licenses/index_html
-
 ``gromacs.fileformats.preprocess``
   - The preprocessor is based on ``pypreprocessor.py`` from
     `pypreprocessor`_, release 0.4.0.
@@ -91,15 +83,21 @@ Citing
 
 |zenodo|
 
+GromacsWrapper was written by Oliver Beckstein with contributions from
+many other people. Please see the file AUTHORS_ for all the names.
+
 If you find this package useful and use it in published work I'd be
 grateful if it was acknowledged in text as
 
-  "... used GromacsWrapper (Oliver Beckstein,
+  "... used GromacsWrapper (Oliver Beckstein et al,
   http://github.com/Becksteinlab/GromacsWrapper doi: 10.5281/zenodo.17901)"
 
 or in the Acknowledgements section.
 
 Thank you.
+
+.. _AUTHORS:
+   https://raw.githubusercontent.com/Becksteinlab/GromacsWrapper/develop/AUTHORS
 
 
 
@@ -108,7 +106,7 @@ Download and Availability
 
 The GromacsWrapper home page is
 http://github.com/Becksteinlab/GromacsWrapper.  The latest release of the
-package is being made available from https://github.com/Becksteinlab/GromacsWrapper/tags
+package is being made available from https://github.com/Becksteinlab/GromacsWrapper/releases
 
 You can also clone the `GromacsWrapper git repository`_ or fork for
 your own development::
@@ -121,8 +119,9 @@ Contact
 =======
 
 Please use the `Issue Tracker`_ to report bugs, installation problems,
-and feature requests; general feedback and inquiries can be sent to
-`Oliver Beckstein`_ by e-mail.
+and feature requests (mention ``@orbeckst`` in the issue report);
+general feedback and inquiries can be sent to `Oliver Beckstein`_ by
+e-mail.
 
 .. _Issue Tracker: http://github.com/Becksteinlab/GromacsWrapper/issues
 .. _Oliver Beckstein: orbeckst@gmail.com

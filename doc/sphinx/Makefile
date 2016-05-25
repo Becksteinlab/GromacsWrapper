@@ -3,7 +3,9 @@
 
 # You can set these variables from the command line.
 SPHINXOPTS    =
-SPHINXBUILD   = sphinx-build
+# needed to build in virtualenv
+# http://stackoverflow.com/questions/4122040/how-to-make-sphinx-look-for-modules-in-virtualenv-while-building-html
+SPHINXBUILD = python $(shell which sphinx-build)
 PAPER         =
 
 HTMLDIR = ../html

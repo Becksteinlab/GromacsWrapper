@@ -190,15 +190,18 @@ Classes and functions
 
 
 from __future__ import with_statement
+
 import os, errno
 import re
 import warnings
+from collections import OrderedDict as odict
 
 import numpy
 
-from gromacs.exceptions import ParseError, MissingDataError, MissingDataWarning, AutoCorrectionWarning
+from gromacs.exceptions import (ParseError, MissingDataError,
+                                MissingDataWarning, AutoCorrectionWarning)
 import gromacs.utilities as utilities
-from gromacs.odict import odict
+
 
 import numkit.timeseries
 
@@ -480,18 +483,18 @@ class XVG(utilities.FileUtils):
                 line = line.strip()
                 if len(line) == 0:
                     continue
-		if "label" in line and "xaxis" in line:
-			self.xaxis = line.split('"')[-2]
-		if "label" in line and "yaxis" in line:
+                if "label" in line and "xaxis" in line:
+                        self.xaxis = line.split('"')[-2]
+                if "label" in line and "yaxis" in line:
                         self.yaxis = line.split('"')[-2]
                 if line.startswith("@ legend"):
-					if not "legend" in self.metadata: self.metadata["legend"] = []
-					self.metadata["legend"].append(line.split("legend ")[-1])
+                                        if not "legend" in self.metadata: self.metadata["legend"] = []
+                                        self.metadata["legend"].append(line.split("legend ")[-1])
                 if line.startswith("@ s") and "subtitle" not in line:
-					name = line.split("legend ")[-1].replace('"','').strip()
-					self.names.append(name)
+                                        name = line.split("legend ")[-1].replace('"','').strip()
+                                        self.names.append(name)
                 if line.startswith(('#', '@')) :
-					continue
+                                        continue
                 if line.startswith('&'):
                     raise NotImplementedError('%s: Multi-data not supported, only simple NXY format.'
                                               % self.real_filename)
