@@ -7,7 +7,7 @@
  README: GromacsWrapper
 ========================
 
-|zenodo| |docs|
+|build| |cov| |docs| |zenodo| 
 
 A primitive wrapper around the Gromacs tools until we have proper
 python bindings. It also provides a small library (cook book) of
@@ -23,11 +23,17 @@ Please be aware that this is **alpha** software that most definitely
 contains bugs. It is *your* responsibility to ensure that you are
 running simulations with sensible parameters.
 
-
 .. _Documentation: 
    http://gromacswrapper.readthedocs.org/en/latest/
 .. _GromacsWrapper git repository:
    http://github.com/Becksteinlab/GromacsWrapper
+.. |build| image:: https://travis-ci.org/Becksteinlab/GromacsWrapper.svg?branch=develop
+   :target: https://travis-ci.org/Becksteinlab/GromacsWrapper
+   :alt: Build Status
+.. |cov| image:: https://codecov.io/gh/Becksteinlab/GromacsWrapper/branch/develop/graph/badge.svg
+   :target: https://codecov.io/gh/Becksteinlab/GromacsWrapper?branch=develop
+   :alt: Code Coverage
+   :scale: 100%
 .. |zenodo| image:: https://zenodo.org/badge/13219/Becksteinlab/GromacsWrapper.svg
    :target: https://zenodo.org/badge/latestdoi/13219/Becksteinlab/GromacsWrapper
    :alt: Latest release on zenodo (with DOI)
@@ -98,7 +104,7 @@ Download and Availability
 
 The GromacsWrapper home page is
 http://github.com/Becksteinlab/GromacsWrapper.  The latest release of the
-package is being made available from https://github.com/Becksteinlab/GromacsWrapper/tags
+package is being made available from https://github.com/Becksteinlab/GromacsWrapper/releases
 
 You can also clone the `GromacsWrapper git repository`_ or fork for
 your own development::
@@ -135,14 +141,19 @@ Citing
 
 |zenodo|
 
+GromacsWrapper was written by Oliver Beckstein with contributions from
+many other people. Please see the file AUTHORS_ for all the names.
+
 If you find this package useful and use it in published work I'd be
 grateful if it was acknowledged in text as
 
-  "... used GromacsWrapper (Oliver Beckstein,
+  "... used GromacsWrapper (Oliver Beckstein et al,
   http://github.com/Becksteinlab/GromacsWrapper doi: 10.5281/zenodo.17901)"
 
 or in the Acknowledgements section.
 
 Thank you.
 
+.. _AUTHORS:
+   https://raw.githubusercontent.com/Becksteinlab/GromacsWrapper/develop/AUTHORS
 

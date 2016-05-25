@@ -29,10 +29,7 @@ import numpy
 
 from ..exceptions import ParseError, AutoCorrectionWarning
 from .. import utilities
-try:
-    from collections import OrderedDict as odict
-except ImportError:
-    from .odict import odict
+from collections import OrderedDict as odict
 
 import logging
 

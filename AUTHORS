@@ -1,0 +1,44 @@
+.. -*- mode: rst; coding: utf-8 -*-
+
+Authors of GromacsWrapper
+=========================
+
+GromacsWrapper was originally hacked together by Oliver Beckstein.
+
+Any person contributing to the code of GromacsWrapper (as evidenced by
+commits to the repository) should be listed in this file under the
+year of their first commit. GitHub handle is optional.
+
+
+2009
+----
+
+- Oliver Beckstein (@orbeckst)
+
+2013
+----
+
+- Andy Somogyi
+
+2014
+----
+
+- Elizabeth Denning (@denniej0)
+
+
+2015
+----
+
+- Jan Domanski (@jandom)
+- Richard Gowers (@richardjgowers)
+
+
+2016
+----
+
+- Andrew White (@whitead)
+- David Dotson (@dotsdl)
+
+
+We gratefully acknowledge code fixes contributed by
+@quantifiedcode-bot from Quantified Code https://www.quantifiedcode.com

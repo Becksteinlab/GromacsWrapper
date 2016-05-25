@@ -1,11 +1,15 @@
+# GromacsWrapper: top.py
+# Released under the GNU Public License 3 (or higher, your choice)
+# See the file COPYING for details.
 
 """
-Gromacs TOP - BLOCKS boiled-plate code
+Gromacs TOP - BLOCKS boiler-plate code
 ======================================
 
 
 Classes
 -------
+
 .. autoclass:: System
     :members:
 
@@ -54,9 +58,9 @@ Sources adapted from code by Reza Salari https://github.com/resal81/PyTopol
 import logging
 
 class System(object):
-    """Top-level class containing molecule topology.    
+    """Top-level class containing molecule topology.
 
-       Contains all the parameter types (AtomTypes, BondTypes, ... ) 
+       Contains all the parameter types (AtomTypes, BondTypes, ... )
        and molecules.
 
     """
@@ -84,8 +88,8 @@ class System(object):
 class Molecule(object):
     """Class that represents a Molecule
 
-    Contains all the molecule attributes: atoms, bonds, angles dihedrals. 
-    Also contains settle, cmap and exclusion sections, if present. 
+    Contains all the molecule attributes: atoms, bonds, angles dihedrals.
+    Also contains settle, cmap and exclusion sections, if present.
 
     .. Example input::
 
@@ -178,10 +182,10 @@ class Atom(object):
     """Class that represents an Atom
 
     Contains only the simplest atom attributes, that are contained like in
-    section example below. 
+    section example below.
 
-    :class:`Molecule` cantains an :attr:`atoms` that's a list-container for 
-    :class:`Atom` instances. 
+    :class:`Molecule` cantains an :attr:`atoms` that's a list-container for
+    :class:`Atom` instances.
 
     .. Example input::
 
@@ -229,7 +233,7 @@ class Atom(object):
         self.number   = None
         self.resname  = None
         self.resnumb  = None
-        self.charge   = None      
+        self.charge   = None
 
     def get_atomtype(self):
         if hasattr(self, 'atomtype'):
@@ -242,15 +246,15 @@ class Atom(object):
 class Param(object):
     """Class that represents an abstract Parameter.
 
-    This class is the parent to AtomType, BondType and all the other parameter types. 
+    This class is the parent to AtomType, BondType and all the other parameter types.
 
-    The class understands a parameter line and that a :attr:`comment` that may follow. 
-    CMapType is an exception (it's a multi-line parameter). 
+    The class understands a parameter line and that a :attr:`comment` that may follow.
+    CMapType is an exception (it's a multi-line parameter).
 
-    :meth:`convert` provides a rudimentary support for parameter unit conversion between 
-    GROMACS and CHARMM notation: change kJ/mol into kcal/mol and nm into Angstrom. 
+    :meth:`convert` provides a rudimentary support for parameter unit conversion between
+    GROMACS and CHARMM notation: change kJ/mol into kcal/mol and nm into Angstrom.
 
-    :attr:`disabled` for supressing output when writing-out to a file. 
+    :attr:`disabled` for supressing output when writing-out to a file.
     """
 
     def __init__(self, format):
@@ -399,7 +403,7 @@ class AtomType(Param):
             self.mass == other.mass and \
             self.charge == other.charge and \
             self.bond_type == other.bond_type and \
-            self.charmm == other.charmm 
+            self.charmm == other.charmm
 
     def __repr__(self):
         return '<%s %s m=%g q=%g (gromacs:%s)>' % (
@@ -425,7 +429,7 @@ class BondType(Param):
             self.atype1 == other.atype1 and \
             self.atype2 == other.atype2 and \
             self.gromacs == other.gromacs and \
-            self.charmm == other.charmm 
+            self.charmm == other.charmm
 
 
 class AngleType(Param):
@@ -450,7 +454,7 @@ class AngleType(Param):
             self.atype2 == other.atype2 and \
             self.atype3 == other.atype3 and \
             self.gromacs == other.gromacs and \
-            self.charmm == other.charmm 
+            self.charmm == other.charmm
 
 class DihedralType(Param):
     def __init__(self, format):
@@ -477,7 +481,7 @@ class DihedralType(Param):
             self.atype3 == other.atype3 and \
             self.atype4 == other.atype4 and \
             self.gromacs == other.gromacs and \
-            self.charmm == other.charmm 
+            self.charmm == other.charmm
 
 class ImproperType(Param):
     def __init__(self, format):
@@ -499,7 +503,7 @@ class ImproperType(Param):
             self.atype3 == other.atype3 and \
             self.atype4 == other.atype4 and \
             self.gromacs == other.gromacs and \
-            self.charmm == other.charmm 
+            self.charmm == other.charmm
 
 class CMapType(Param):
     def __init__(self, format):
@@ -538,7 +542,7 @@ class CMapType(Param):
             self.atype7 == other.atype7 and \
             self.atype8 == other.atype8 and \
             self.gromacs == other.gromacs and \
-            self.charmm == other.charmm 
+            self.charmm == other.charmm
 
 class InteractionType(Param):
     def __init__(self, format):
@@ -559,7 +563,7 @@ class InteractionType(Param):
             self.atype1 == other.atype1 and \
             self.atype2 == other.atype2 and \
             self.gromacs == other.gromacs and \
-            self.charmm == other.charmm 
+            self.charmm == other.charmm
 
     def __repr__(self):
         return '<%s %s %s (gromacs:%s)>' % (
@@ -594,7 +598,7 @@ class ConstraintType(Param):
             self.atype1 == other.atype1 and \
             self.atype2 == other.atype2 and \
             self.gromacs == other.gromacs and \
-            self.charmm == other.charmm 
+            self.charmm == other.charmm
 
 
 class NonbondedParamType(Param):
@@ -612,13 +616,13 @@ class NonbondedParamType(Param):
             self.atype1 == other.atype1 and \
             self.atype2 == other.atype2 and \
             self.gromacs == other.gromacs and \
-            self.charmm == other.charmm 
+            self.charmm == other.charmm
 
 
 class VirtualSites3Type(Param):
     def __init__(self, format):
         assert format in ('gromacs',)
-        super(VirtualSites3Type,self).__init__(format)  
+        super(VirtualSites3Type,self).__init__(format)
 
         self.atom1 = None
         self.atom2 = None
@@ -629,13 +633,13 @@ class VirtualSites3Type(Param):
 
 
 class Exclusion(object):
-    """Class to define non-interacting pairs of atoms, or "exclusions". 
+    """Class to define non-interacting pairs of atoms, or "exclusions".
 
 
     .. Note::
 
        Does not inherit from :class:`Param` unlike other classes in :mod:`blocks`
-    """    
+    """
     def __init__(self):
         self.main_atom  = None
         self.other_atoms = []

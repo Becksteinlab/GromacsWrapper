@@ -52,7 +52,7 @@ Each section is an object that contains the parsed data in a
 :attr:`~ITPsection.data` attribute::
 
   >>> print itp.header.moleculetype.data
-  odict.odict([('name', '5FH'), ('nrexcl', 3)])
+  odict([('name', '5FH'), ('nrexcl', 3)])
   >>> print itp.header.moleculetype.data['name']
   5FH
 
@@ -182,10 +182,7 @@ import numpy
 
 from ..exceptions import ParseError, AutoCorrectionWarning
 from .. import utilities
-try:
-    from collections import OrderedDict as odict
-except ImportError:
-    from .odict import odict
+from collections import OrderedDict as odict
 
 from .preprocessor import Preprocessor
 
@@ -381,7 +378,7 @@ class ITPdata(ITPsection):
         if self.__data is None:
             self.__data = self._create_recarray()
         return self.__data
-    
+
     def set_data(self, data):
         """  data is atom data, stored as :class:`numpy.rec.arry`
         """

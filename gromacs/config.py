@@ -129,7 +129,6 @@ Gromacs tools and scripts
 parts of the code which packages and scripts should be wrapped.
 
 .. autodata:: load_tools
-.. autodata:: load_scripts
 
 :data:`load_tools` is populated from lists of executable names in the
 configuration file.
@@ -194,11 +193,11 @@ and non-mpi versions to be used. For example::
 
 tools = gmx_mpi:mdrun gmx:pdb2gmx
 
-.. Note:: Because of `changes in the Gromacs tool in 5.x`_, 
+.. Note:: Because of `changes in the Gromacs tool in 5.x`_,
           GromacsWrapper scripts might break, even if the tool
           names are still the same.
 
-.. _`changes in the Gromacs tool in 5.x`: 
+.. _`changes in the Gromacs tool in 5.x`:
    http://www.gromacs.org/Documentation/How-tos/Tool_Changes_for_5.0
 
 
