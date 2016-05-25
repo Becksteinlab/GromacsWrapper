@@ -7,7 +7,7 @@
  README: GromacsWrapper
 ========================
 
-|zenodo| |docs|
+|build| |cov| |docs| |zenodo| 
 
 A primitive wrapper around the Gromacs tools until we have proper
 python bindings. It also provides a small library (cook book) of
@@ -27,6 +27,13 @@ running simulations with sensible parameters.
    http://gromacswrapper.readthedocs.org/en/latest/
 .. _GromacsWrapper git repository:
    http://github.com/Becksteinlab/GromacsWrapper
+.. |build| image:: https://travis-ci.org/Becksteinlab/GromacsWrapper.svg?branch=develop
+   :target: https://travis-ci.org/Becksteinlab/GromacsWrapper
+   :alt: Build Status
+.. |cov| image:: https://codecov.io/gh/Becksteinlab/GromacsWrapper/branch/develop/graph/badge.svg
+   :target: https://codecov.io/gh/Becksteinlab/GromacsWrapper?branch=develop
+   :alt: Code Coverage
+   :scale: 100%
 .. |zenodo| image:: https://zenodo.org/badge/13219/Becksteinlab/GromacsWrapper.svg
    :target: https://zenodo.org/badge/latestdoi/13219/Becksteinlab/GromacsWrapper
    :alt: Latest release on zenodo (with DOI)
