@@ -1,5 +1,3 @@
-include   ez_setup.py setup.py COPYING COPYING.LESSER INSTALL.rst README.rst CHANGES
-recursive-include doc/html *
+include   py setup.py COPYING COPYING.LESSER README.rst CHANGES
 recursive-include scripts *.py
-graft     gromacs/external/
 graft     gromacs/templates/

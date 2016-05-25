@@ -3,11 +3,9 @@
 # Released under the GNU Public License 3 (or higher, your choice)
 #
 # See the files INSTALL and README for details or visit
-# http://sbcb.bioch.ox.ac.uk/oliver/software/GromacsWrapper/
+# https://github.com/Becksteinlab/GromacsWrapper
 from __future__ import with_statement
 
-from ez_setup import use_setuptools
-use_setuptools()
 from setuptools import setup, find_packages
 
 with open("README.rst") as readme:
@@ -16,7 +14,7 @@ with open("README.rst") as readme:
 # Dynamically calculate the version based on gromacs.VERSION.
 # (but requires that we can actually import the package BEFORE it is
 # properly installed!)
-version = __import__('gromacs').get_version()
+version = __import__('gromacs.version').get_version()
 
 setup(name="GromacsWrapper",
       version=version,
@@ -43,11 +41,14 @@ setup(name="GromacsWrapper",
       scripts = ['scripts/gw-fit_strip_trajectories.py',
                  'scripts/gw-join_parts.py',
                  'scripts/gw-merge_topologies.py',
+                 'scripts/gw-forcefield.py',
+                 'scripts/gw-partial_tempering.py',
                  ],
       package_data={'gromacs': ['templates/*.sge', 'templates/*.pbs',  # template files
                                 'templates/*.ll', 'templates/*.sh',
                                 'templates/*.mdp', 'templates/*.cfg',
-                                'external/GridMAT-MD_v1.0.2/GridMAT-MD.pl'],    # external bundled scripts
+                                'tests/test_fileformats/test_top/data/*/*.top',
+                                ],
                     'vmd': ['*.tcl'],                                  # server start in VMD
                     },
       install_requires = ['numpy>=1.0',

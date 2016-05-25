@@ -7,34 +7,32 @@
  README: GromacsWrapper
 ========================
 
-|zenodo|
+|zenodo| |docs|
 
 A primitive wrapper around the Gromacs tools until we have proper
 python bindings. It also provides a small library (cook book) of
 often-used recipes and an optional analysis module with plugins for
 more complicated analysis tasks.
 
+`Documentation`_ is mostly provided through the python doc strings and
+available at http://gromacswrapper.readthedocs.org for recent releases.
 
-See :doc:`INSTALL` for installation instructions. `Documentation`_ is
-mostly provided through the python doc strings. See `Download and
-Availability`_ for download instructions if the instructions in
-:doc:`INSTALL` are not sufficient.
-
-The source code is also available in the `GromacsWrapper git
-repository`_.
+The source code is available in the `GromacsWrapper git repository`_.
 
 Please be aware that this is **alpha** software that most definitely
 contains bugs. It is *your* responsibility to ensure that you are
 running simulations with sensible parameters.
 
-
 .. _Documentation: 
-   http://becksteinlab.github.io/GromacsWrapper/
+   http://gromacswrapper.readthedocs.org/en/latest/
 .. _GromacsWrapper git repository:
    http://github.com/Becksteinlab/GromacsWrapper
-.. |zenodo| image:: https://zenodo.org/badge/13219/Becksteinlab/GromacsWrapper.svg  
-     :alt: doi:10.5281/zenodo.17901
-     :target: http://dx.doi.org/10.5281/zenodo.17901
+.. |zenodo| image:: https://zenodo.org/badge/13219/Becksteinlab/GromacsWrapper.svg
+   :target: https://zenodo.org/badge/latestdoi/13219/Becksteinlab/GromacsWrapper
+   :alt: Latest release on zenodo (with DOI)
+.. |docs| image:: https://readthedocs.org/projects/gromacswrapper/badge/?version=latest
+   :target: http://gromacswrapper.readthedocs.org/en/latest/?badge=latest
+   :alt: Documentation
 
 Licence
 =======
@@ -53,74 +51,43 @@ Licence`_" (as it contains some code from scipy_).
 .. _Modified BSD Licence: http://www.opensource.org/licenses/bsd-license.php
 .. _scipy: http://www.scipy.org
 
-
-Included Software
-=================
-
 The distribution contains third party software that is copyrighted by
 the authors but distributed under licences compatible with this
 package license. Where permitted and necessary, software/files were
 modified to integrate with GromacsWrapper.
 
-In case of problems please direct error reports to `Oliver Beckstein`_
-in the first instance as these bugs might not have been present in the
-original software or files.
 
-Included third party content:
+Installation
+============
 
-GridMat-MD
-  - Grid-based Membrane Analysis Tool for use with Molecular Dynamics
-    [Allen2009]_
-  - version: 1.0.2
-  - license: GPL 3.0  
-  - W. J. Allen, J. A. Lemkul, and D. R. Bevan. (2009) "GridMAT-MD: A
-    Grid-based Membrane Analysis Tool for Use With Molecular
-    Dynamics." J. Comput. Chem. 30 (12): 1952-1958.
-  - http://bevanlab.biochem.vt.edu/GridMAT-MD/
+Releases
+--------
 
+The `latest version of GromacsWrapper from PyPi`_ and can be installed
+with ::
 
-``odict.py``
-  - a simple implementation of an ordered dictionary as proposed in :pep:`0372`
-  - copyright: (c) 2008 by Armin Ronacher and PEP 273 authors.
-  - license: modified BSD license (`compatible with GPL`_)
-  - http://dev.pocoo.org/hg/sandbox/raw-file/tip/odict.py
+  pip install GromacsWrapper
 
-  .. _compatible with GPL: http://www.fsf.org/licensing/licenses/index_html
+.. _`latest version of GromacsWrapper from PyPi`:
+   https://pypi.python.org/pypi/GromacsWrapper
 
-``gromacs.fileformats.preprocess``
-  - The preprocessor is based on ``pypreprocessor.py`` from
-    `pypreprocessor`_, release 0.4.0.
-  - copyright: (c) 2010 Evan Plaice
-  - license: MIT (`compatible with GPL`_)
-  - http://code.google.com/p/pypreprocessor/
+Development version
+-------------------
 
-  .. _pypreprocessor: http://code.google.com/p/pypreprocessor/
+The *develop* branch in the GitHub source repository generally
+contains useful code but nevertheless, things can break in weird and
+wonderful ways. Please report issues through the `Issue Tracker`_ and
+mention that you used the *develop branch*.
 
+To use the *development code base*:  checkout the ``develop`` branch::
 
-Citing
-======
+   git clone https://github.com/Becksteinlab/GromacsWrapper.git
+   cd GromacsWrapper
+   git checkout -b develop origin/develop
 
-|zenodo|
+and install ::
 
-If you find this package useful and use it in published work I'd be
-grateful if it was acknowledged in text as
-
-  "... used GromacsWrapper (Oliver Beckstein,
-  http://github.com/Becksteinlab/GromacsWrapper doi: 10.5281/zenodo.17901)"
-
-or in the Acknowledgements section.
-
-If you use the ``gridmatmd`` plugin also cite [Allen2009]_.
-
-Thank you.
-
-
-.. rubric:: References
-
-.. [Allen2009]   W. J. Allen, J. A. Lemkul, and D. R. Bevan. (2009)
-                 "GridMAT-MD: A Grid-based Membrane Analysis Tool for
-                 Use With Molecular Dynamics."  J. Comput. Chem. 30,
-                 1952-1958.
+   python setup.py install
 
 
 
@@ -130,7 +97,7 @@ Download and Availability
 
 The GromacsWrapper home page is
 http://github.com/Becksteinlab/GromacsWrapper.  The latest release of the
-package is being made available from https://github.com/Becksteinlab/GromacsWrapper/tags
+package is being made available from https://github.com/Becksteinlab/GromacsWrapper/releases
 
 You can also clone the `GromacsWrapper git repository`_ or fork for
 your own development::
@@ -138,13 +105,48 @@ your own development::
   git clone git://github.com/Becksteinlab/GromacsWrapper.git
 
 
+Reporting Bugs and Contributing to GromacsWrapper
+=================================================
 
-Contact
-=======
+Please use the `Issue Tracker`_ to report bugs, installation problems,
+and feature requests.
 
-Please use the `Issue Tracker`_ to report bugs and feature requests;
-general feedback and inquiries can be sent to `Oliver Beckstein`_ by
-e-mail.
+**Pull requests** for bug fixes and enhancements are very welcome.
 
 .. _Issue Tracker: http://github.com/Becksteinlab/GromacsWrapper/issues
-.. _Oliver Beckstein: orbeckst@gmail.com
+
+Building Documentation
+======================
+
+Install Sphinx::
+
+   apt-get install python-sphinx
+
+and compile::
+
+   cd package/doc/sphinx
+   make html
+
+
+
+Citing
+======
+
+|zenodo|
+
+GromacsWrapper was written by Oliver Beckstein with contributions from
+many other people. Please see the file AUTHORS_ for all the names.
+
+If you find this package useful and use it in published work I'd be
+grateful if it was acknowledged in text as
+
+  "... used GromacsWrapper (Oliver Beckstein et al,
+  http://github.com/Becksteinlab/GromacsWrapper doi: 10.5281/zenodo.17901)"
+
+or in the Acknowledgements section.
+
+Thank you.
+
+.. _AUTHORS:
+   https://raw.githubusercontent.com/Becksteinlab/GromacsWrapper/develop/AUTHORS
+

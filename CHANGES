@@ -2,6 +2,26 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
+2016-xx-xx      0.4.1
+quantifiedcode-bot, orbeckst, jandom, whitead
+
+* requires Python 2.7
+* new: gromacs pre-processed topology reader
+* Added backwards compatibility for scripts written using Gromacs 4.x syntax with Gromacs 5.x.
+  Tool calls prefixed with 'G_' will still work. (PR #46, Issue #26)
+* removed gridmatmd plugin and GridMAT-MD.pl script (#41), fixes
+  installation issues (#40)
+* Allows custom prefixes like gmx_mpi:mdrun and gmx:trjconv (#48)
+* Made it so GromacsWrapper can be imported and tools loaded even if they can't
+  be executed at import time. 
+
+2015-12-16      0.4.0
+orbeckst, richardjgowers
+
+* primitive support for Gromacs 5.x
+* fixed: gromacs.fileformats was not imported properly (PR #21)
+* docs at http://gromacswrapper.readthedocs.org
+
 2015-05-22      0.3.3
 orbeckst, jandom
 

@@ -100,9 +100,8 @@ class _CysAccessibility(Worker):
         # filename of the index file that we generate for the cysteines
         self.parameters.ndx = self.plugindir('cys.ndx')
         # output filenames for g_dist, indexed by Cys resid
-        self.parameters.filenames = dict(\
-            [(resid, self.plugindir('Cys%d_OW_dist.txt.bz2' % resid))
-             for resid in self.parameters.cysteines])
+        self.parameters.filenames = {resid: self.plugindir('Cys%d_OW_dist.txt.bz2' % resid)
+             for resid in self.parameters.cysteines}
         # default filename for the combined plot
         self.parameters.figname = self.figdir('mindist_S_OW')
 

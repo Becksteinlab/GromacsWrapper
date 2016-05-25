@@ -1,1 +1,118 @@
-../../../INSTALL.rst
+.. -*- mode: rst -*-
+
+=========
+ INSTALL
+=========
+
+This document should help you to install the **GromacsWrapper**
+package. The installation uses `setuptools`_ ; if this is not
+available on your system you can either let the installer download it
+automatically from the internet (so just go to `Quick installation
+instructions`_) or install it using your package manager, eg::
+
+  aptitude install python-setuptools
+
+or similar.
+
+Please raise and issue in the `Issue Tracker`_ if problems occur or if
+you have suggestions on how to improve the package or these
+instructions.
+
+.. _Issue Tracker: https://github.com/Becksteinlab/GromacsWrapper/issues
+.. _setuptools: https://pypi.python.org/pypi/setuptools
+
+
+Quick installation instructions
+===============================
+
+The latest release can be directly installed
+from the internet::
+
+  pip install GromacsWrapper
+
+This will automatically download and install the `latest version of
+GromacsWrapper from PyPi`_.
+
+.. _`latest version of GromacsWrapper from PyPi`:
+   https://pypi.python.org/pypi/GromacsWrapper
+
+Manual Download
+===============
+
+If your prefer to download manually, get the latest stable release
+from https://github.com/Becksteinlab/GromacsWrapper/releases and
+either ::
+
+  pip install GromacsWrapper-0.4.0.tar.gz
+
+or install from the unpacked source::
+
+  tar -zxvf GromacsWrapper-0.4.0.tar.gz
+  cd GromacsWrapper-0.4.0
+  python setup.py install
+
+
+
+Source code access
+==================
+
+The tar archive from https://github.com/Becksteinlab/GromacsWrapper/releases
+contains a full source code distribution.
+
+In order to follow code development you can also browse the code
+**git** repository at http://github.com/Becksteinlab/GromacsWrapper or
+clone the git repository from
+
+   git://github.com/Becksteinlab/GromacsWrapper.git
+ 
+and checkout the ``develop`` branch::
+
+   git clone https://github.com/Becksteinlab/GromacsWrapper.git
+   cd GromacsWrapper
+   git checkout -b develop origin/develop
+
+
+Requirements
+============
+
+Python_ 2.7 and Gromacs_ must be installed. ipython_ is very much
+recommended. These packages might already be available through your
+local package manager such as ``aptitude/apt``, ``yum``, ``yast``,
+``fink`` or ``macports``.
+
+.. _Python: http://www.python.org
+.. _Gromacs: http://www.gromacs.org
+.. _ipython: http://ipython.scipy.org
+
+
+System requirements
+-------------------
+
+Tested with Python 2.7 on Linux and Mac OS X. Earlier python versions
+are not supported.
+
+
+Required python modules
+-----------------------
+
+The basic package makes use of numpy_ and can use matplotlib_ . Only
+numpy_ is immediately required (and automatically installed).
+
+.. _numpy: http://numpy.scipy.org
+.. _matplotlib: http://matplotlib.sourceforge.net/
+
+For the :mod:`gromacs.analysis` library additional packages are required:
+
+  =============  ==========  ==================================================
+  package        version     source
+  =============  ==========  ==================================================
+  matplotlib     >=0.91.3    http://matplotlib.sourceforge.net/
+  scipy                      http://www.scipy.org/
+  RecSQL         >=0.3       https://github.com/orbeckst/RecSQL
+  =============  ==========  ==================================================
+
+It is generally easier to install ``scipy`` and ``matplotlib`` through
+your distribution manager. ``recsql`` can be easily installed with
+``pip`` (if it is not automatically installed).
+
+

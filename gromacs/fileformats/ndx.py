@@ -23,7 +23,8 @@ access to the individual groups.
 .. autoclass:: IndexSet
 """
 
-from __future__ import with_statement
+from __future__ import absolute_import, with_statement
+
 import os, errno
 import re
 import warnings
@@ -31,9 +32,9 @@ import operator
 
 import numpy
 
-from gromacs import ParseError, AutoCorrectionWarning
-import gromacs.utilities as utilities
-from gromacs.odict import odict
+from ..exceptions import ParseError, AutoCorrectionWarning
+from .. import utilities
+from collections import OrderedDict as odict
 
 import logging
 
@@ -149,7 +150,7 @@ class NDX(odict, utilities.FileUtils):
     @property
     def sizes(self):
         """Return a dict with group names and number of entries,"""
-        return dict([(name, len(atomnumbers)) for name, atomnumbers in self.items()])
+        return {name: len(atomnumbers) for name, atomnumbers in self.items()}
 
     @property
     def ndxlist(self):

@@ -1,0 +1,17 @@
+Gromacs Preprocessed Topology (top) Parser
+==========================================
+
+.. versionadded:: 0.5.0
+
+Gromacs can produce *preprocessed topology files* that contain *all* topology information (generated using ``grompp -pp processed.top``). 
+Reading the regular topol.top *is not supported*, for now, since the ``#include`` statements are not handled.  
+The :class:`~gromacs.fileformats.top.TOP` parser can read an write processed.top files.
+The :class:`~gromacs.fileformats.top.TOP` also provides an interface to modify the force-field terms and parameters in a programmatic way. 
+Example applications involve system preparation for Hamiltonian-replica exchange (REST2 with lambda scaling), and automated force-field parametrization.  
+
+.. toctree::
+   :maxdepth: 1
+
+   top.txt
+   blocks.txt
+

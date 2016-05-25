@@ -27,5 +27,6 @@ can be safely imported at any time.
    fileformats/mdp
    fileformats/ndx
    fileformats/itp
+   fileformats/top_parser
    fileformats/preprocessor
    fileformats/convert

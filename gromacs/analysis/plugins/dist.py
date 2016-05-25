@@ -209,7 +209,7 @@ class Mindist(object):
         kwargs['midpoints'] = True
         histogram_args = ('nbins','lo','hi','midpoints','normed')
         histargs = kwargs.copy()
-        histargs = dict([(k, kwargs.pop(k)) for k in histargs if k in histogram_args])
+        histargs = {k: kwargs.pop(k) for k in histargs if k in histogram_args}
         h,m = self.histogram(**histargs)
 
         pylab.plot(m, h, **kwargs)

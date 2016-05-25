@@ -108,9 +108,8 @@ PACKAGES=$SERVERDIR/download/Python
 DOCS=$SERVERDIR/software/$PACKAGE
 
 case "$PYVERSION" in
-   2.5|2.5.*)  PYTHON=python2.5;;
-   2.6|2.6.*)  PYTHON=python2.6;;
-   2.[0-4])    die "pyversion $PYVERSION not supported";;
+   2.7|2.7.*)  PYTHON=python2.7;;
+   2.[0-6])    die "pyversion $PYVERSION not supported";;
    *)          PYTHON=python;;
 esac
 

@@ -1,1 +1,0 @@
-.. automodule:: gromacs.fileformats.mdp

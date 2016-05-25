@@ -1,0 +1,9 @@
+name: gw
+channels:
+- acellera
+dependencies:
+- gromacs>=5.1
+- numpy>=1.9
+- scipy
+- pip:
+  - recsql>=0.7

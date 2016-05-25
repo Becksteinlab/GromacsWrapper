@@ -129,7 +129,6 @@ Gromacs tools and scripts
 parts of the code which packages and scripts should be wrapped.
 
 .. autodata:: load_tools
-.. autodata:: load_scripts
 
 :data:`load_tools` is populated from lists of executable names in the
 configuration file.
@@ -187,13 +186,18 @@ and within GromacsWrapper this would become ::
 
 (The driver command is stripped and only the "command name" is used to
 identify the command. This makes it easier to migrate GromacsWrapper
-scripts from Gromacs 4.x to 5.x.)
+scripts from Gromacs 4.x to 5.x.).
 
-.. Note:: Because of `changes in the Gromacs tool in 5.x`_, 
+The driver command can be changed per-tool, allowing for mpi
+and non-mpi versions to be used. For example::
+
+tools = gmx_mpi:mdrun gmx:pdb2gmx
+
+.. Note:: Because of `changes in the Gromacs tool in 5.x`_,
           GromacsWrapper scripts might break, even if the tool
           names are still the same.
 
-.. _`changes in the Gromacs tool in 5.x`: 
+.. _`changes in the Gromacs tool in 5.x`:
    http://www.gromacs.org/Documentation/How-tos/Tool_Changes_for_5.0
 
 
@@ -213,14 +217,14 @@ completely transparent to the user.
 .. autodata:: qscript_template
 
 """
-from __future__ import with_statement
+from __future__ import absolute_import, with_statement
 
 import os, errno
 from ConfigParser import SafeConfigParser
 
 from pkg_resources import resource_filename, resource_listdir
 
-import utilities
+from . import utilities
 
 # Defaults
 # --------
@@ -647,54 +651,3 @@ load_tools = []
 for g in cfg.getlist('Gromacs', 'groups', sort=False):
      load_tools.extend(cfg.getlist('Gromacs', g))
 del g
-
-
-# Adding additional 3rd party scripts
-# -----------------------------------
-
-# HACK-Alert: we're temporarily "installing" scripts from the egg  ... this is a hack:
-# Must extract because it is part of a zipped python egg;
-# see http://peak.telecommunity.com/DevCenter/PythonEggs#accessing-package-resources
-GridMAT_MD = resource_filename(__name__,'external/GridMAT-MD_v1.0.2/GridMAT-MD.pl')
-os.chmod(GridMAT_MD, 0755)
-
-
-#: 3rd party bundled analysis scripts and tools; this is a list of triplets of
-#:
-#:   (*script name/path*, *command name*, *doc string*)
-#:
-#: (See the source code for examples.)
-load_scripts = [
-    (GridMAT_MD,
-     'GridMAT_MD',
-     """GridMAT-MD: A Grid-based Membrane Analysis Tool for use with Molecular Dynamics.
-
-*This* ``GridMAT-MD`` is a patched version of the original
-``GridMAT-MD.pl`` v1.0.2, written by WJ Allen, JA Lemkul and DR
-Bevan. The original version is available from the `GridMAT-MD`_ home
-page,
-
-.. _`GridMAT-MD`: http://www.bevanlab.biochem.vt.edu/GridMAT-MD/index.html
-
-Please cite
-
-  W. J. Allen, J. A. Lemkul, and D. R. Bevan. (2009) "GridMAT-MD: A
-  Grid-based Membrane Analysis Tool for Use With Molecular Dynamics."
-  J. Comput. Chem. 30 (12): 1952-1958.
-
-when using this programme.
-
-Usage:
-
-.. class:: GridMAT_MD(config[,structure])
-
-:Arguments:
-   - *config* : See the original documentation for a description for the
-     configuration file.
-   - *structure* : A gro or pdb file that overrides the value for
-     *bilayer* in the configuration file.
-
-"""),
-    ]
-
-

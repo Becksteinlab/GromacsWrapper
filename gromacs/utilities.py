@@ -83,7 +83,7 @@ Data
 .. autodata:: amino_acid_codes
 
 """
-from __future__ import with_statement
+from __future__ import absolute_import, with_statement
 
 __docformat__ = "restructuredtext en"
 
@@ -101,7 +101,7 @@ import datetime
 import logging
 logger = logging.getLogger('gromacs.utilities')
 
-from gromacs import AutoCorrectionWarning
+from .exceptions import AutoCorrectionWarning
 
 
 def Property(func):
@@ -240,7 +240,7 @@ amino_acid_codes = {'A':'ALA', 'C':'CYS', 'D':'ASP', 'E':'GLU',
                     'K':'LYS', 'L':'LEU', 'M':'MET', 'N':'ASN',
                     'P':'PRO', 'Q':'GLN', 'R':'ARG', 'S':'SER',
                     'T':'THR', 'V':'VAL', 'W':'TRP', 'Y':'TYR'}
-inverse_aa_codes = dict([(three, one) for one,three in amino_acid_codes.items()])
+inverse_aa_codes = {three: one for one,three in amino_acid_codes.items()}
 
 def convert_aa_code(x):
     """Converts between 3-letter and 1-letter amino acid codes."""

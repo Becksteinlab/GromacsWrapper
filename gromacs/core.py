@@ -98,6 +98,8 @@ Classes
 .. autoclass:: PopenWithInput
    :members:
 """
+from __future__ import absolute_import, with_statement
+
 __docformat__ = "restructuredtext en"
 
 import sys
@@ -111,8 +113,8 @@ import logging
 logger = logging.getLogger('gromacs.core')
 
 
-from gromacs import GromacsError, GromacsFailureWarning
-import gromacs.environment
+from .exceptions import GromacsError, GromacsFailureWarning
+from . import environment
 
 class Command(object):
     """Wrap simple script or command."""
@@ -177,16 +179,16 @@ class Command(object):
 
         # logic for capturing output (see docs on I/O and the flags)
         capturefile = None
-        if gromacs.environment.flags['capture_output'] is True:
+        if environment.flags['capture_output'] is True:
             # capture into Python vars (see subprocess.Popen.communicate())
             kwargs.setdefault('stderr', PIPE)
             kwargs.setdefault('stdout', PIPE)
-        elif gromacs.environment.flags['capture_output'] == "file":
+        elif environment.flags['capture_output'] == "file":
             if 'stdout' in kwargs and 'stderr' in kwargs:
                 pass
             else:
                 # XXX: not race or thread proof; potentially many commands write to the same file
-                fn = gromacs.environment.flags['capture_output_filename']
+                fn = environment.flags['capture_output_filename']
                 capturefile = file(fn, "w")   # overwrite (clobber) capture file
                 if 'stdout' in kwargs and 'stderr' not in kwargs:
                     # special case of stdout used by code but stderr should be captured to file
@@ -390,6 +392,7 @@ class GromacsCommand(Command):
     # TODO: setup the environment from GMXRC (can use env=DICT in Popen/call)
 
     command_name = None
+    driver = None
     doc_pattern = """.*?(?P<DOCS>DESCRIPTION.*)"""
     gmxfatal_pattern = """----+\n                   # ---- decorator line
             \s*Program\s+(?P<program_name>\w+),     #  Program name,
@@ -490,7 +493,7 @@ class GromacsCommand(Command):
         self.failuremode = kwargs.pop('failure','raise')
         self.extra_doc = kwargs.pop('doc',None)
         self.gmxargs = self._combineargs(*args, **kwargs)
-        self.__doc__ = self.gmxdoc
+        self.__doc__ = self.gmxdoc        
 
     def failuremode():
         doc = """mode determines how the GromacsCommand behaves during failure
@@ -545,7 +548,7 @@ class GromacsCommand(Command):
 
     def _combineargs(self,*args,**kwargs):
         """Add switches as 'options' with value True to the options dict."""
-        d = dict([(arg, True) for arg in args])   # switches are kwargs with value True
+        d = {arg: True for arg in args}   # switches are kwargs with value True
         d.update(kwargs)
         return d
 
@@ -582,6 +585,13 @@ class GromacsCommand(Command):
         self.check_failure(result, command_string=p.command_string)
         return result, p
 
+    def _commandline(self, *args, **kwargs):
+        """Returns the command line (without pipes) as a list. Inserts driver if present"""
+        if(self.driver is not None):
+            return [self.driver, self.command_name] + self.transform_args(*args,**kwargs)
+        return [self.command_name] + self.transform_args(*args,**kwargs)
+
+
     def transform_args(self,*args,**kwargs):
         """Combine arguments and turn them into gromacs tool arguments."""
         newargs = self._combineargs(*args,**kwargs)
@@ -592,7 +602,8 @@ class GromacsCommand(Command):
 
         .. Note::
 
-           The header is on STDOUT and is ignored. The docs are read from STDERR.
+           The header is on STDOUT and is ignored. The docs are read from STDERR in GMX 4. 
+           In GMX 5, the opposite is true (Grrr)
         """
         # Uses the class-wide arguments so that 'canned invocations' in cbook
         # are accurately reflected. Might be a problem when these invocations
@@ -601,12 +612,17 @@ class GromacsCommand(Command):
         # temporarily throttle logger to avoid reading about the help function invocation or not found
         logging.disable(logging.CRITICAL)
         try:
-            rc,header,docs = self.run('h', stdout=PIPE, stderr=PIPE, use_input=False)
+            rc,header,docs = self.run('h', stdout=PIPE, stderr=PIPE, use_input=False)            
+        except:
+            logging.critical("Invoking command {} failed when determining its doc string. Proceed with caution".format(self.command_name))
+            return "(No Gromacs documentation available)"            
         finally:
             logging.disable(logging.NOTSET)     # ALWAYS restore logging....
         m = re.match(self.doc_pattern, docs, re.DOTALL)    # keep from DESCRIPTION onwards
         if m is None:
-            return "(No Gromacs documentation available)"
+            m = re.match(self.doc_pattern, header, re.DOTALL)    # Try now with GMX 5 approach            
+            if m is None:
+                return "(No Gromacs documentation available)"
         return m.group('DOCS')
 
     @property
@@ -620,25 +636,6 @@ class GromacsCommand(Command):
                               "Documentation of the gromacs tool", 34*'=',
                               docs])
         return docs
-
-class GromacsGMXCommand(GromacsCommand):
-    """Base class for wrapping a ``gmx <name>`` command.
-
-    Limitations: User must have sourced ``GMXRC`` so that the python script can
-    inherit the environment and find the gromacs programs.
-
-    The class doc string is dynamically replaced by the documentation of the
-    gromacs command when an instance is created.
-    """
-    driver = "gmx"
-    doc_pattern = """.*?(?P<DOCS>SYNOPSIS.*)"""
-
-    def _commandline(self, *args, **kwargs):
-        """Returns the command line (without pipes) as a list."""
-         # transform_args() is a hook (used in GromacsCommand very differently!)
-        return [self.driver, self.command_name] + self.transform_args(*args,**kwargs)
-
-
 
 class PopenWithInput(subprocess.Popen):
     """Popen class that knows its input.
