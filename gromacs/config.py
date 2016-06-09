@@ -125,13 +125,46 @@ loglevel *INFO* (see the python `logging module`_ for details).
 Gromacs tools and scripts
 -------------------------
 
-``load_*`` variables are lists that contain instructions to other
-parts of the code which packages and scripts should be wrapped.
+Fundamentally, GromacsWrapper makes existing Gromacs tools
+(executables) available as functions. In order for this to work, these
+executables must be found in the environment of the Python process
+that runs GromacsWrapper, and the user must list all the tools that
+are to be made available.
 
-.. autodata:: load_tools
+Setting up the environment
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-:data:`load_tools` is populated from lists of executable names in the
-configuration file.
+The standard way to set up the Gromacs environment is to source ``GMXRC`` in
+the shell before running the Python process. ``GMXRC`` adjusts a number of
+environment variables (such as :envvar:`PATH` and :envvar:`LD_LIBRARY_PATH`)
+but also sets Gromacs-specific environment variables such as :envvar:`GMXBIN`,
+:envvar:`GMXDATA`, and many others::
+
+   source /usr/local/bin/GMXRC
+
+(where the path to ``GMXRC`` is often set differently to disntinguish different
+installed versions of Gromacs).
+
+Alternatively, GromacsWrapper can itself source a ``GMXRC`` file and set the
+environment with the :func:`set_gmxrc_environment` function. The path to a
+``GMXRC`` file can be set in the config file in the ``[Gromacs]`` section as
+
+  [Gromacs]
+
+  GMXRC = /usr/local/bin/GMXRC
+
+When GromacsWrapper starts up, it tries to set the environment using the
+``GMXRC`` defined in the config file. If this is left empty or is not in the
+file, nothing is being done.
+
+.. autofunction:: set_gmxrc_environment
+
+
+List of tools
+~~~~~~~~~~~~~
+
+The list of Gromacs tools is specified in the config file in the ``[Gromacs]``
+section with the ``tools`` variable.
 
 The tool groups are strings that contain white-space separated file
 names of Gromacs tools. These lists determine which tools are made
@@ -204,6 +237,15 @@ tools = gmx_mpi:mdrun gmx:pdb2gmx
 
 .. _`changes in the Gromacs tool in 5.x`:
    http://www.gromacs.org/Documentation/How-tos/Tool_Changes_for_5.0
+
+Developers should know that the lists of tools are stored in ``load_*``
+variables. These are lists that contain instructions to other parts of the code
+as to which executables should be wrapped.
+
+.. autodata:: load_tools
+
+:data:`load_tools` is populated from lists of executable names in the
+configuration file.
 
 
 
@@ -650,14 +692,28 @@ check_setup()
 # Gromacs tools
 # -------------
 
-#: Runs GMXRC in a subprocess and put environment variables loaded by it in
-#: this environment.
 def set_gmxrc_environment(gmxrc):
+    """Set the environment from ``GMXRC`` provided in *gmxrc*.
+
+    Runs ``GMXRC`` in a subprocess and puts environment variables loaded by it
+    into this Python environment.
+
+    If *gmxrc* evaluates to ``False`` then nothing is done. If errors occur
+    then only a warning will be logged. Thus, it should be safe to just call
+    this function.
+
+    """
+
     envvars = ['GMXPREFIX', 'GMXBIN', 'GMXLDLIB', 'GMXMAN', 'GMXDATA',
                'GROMACS_DIR', 'LD_LIBRARY_PATH', 'MANPATH', 'PKG_CONFIG_PATH',
-               'GROMACS_DIR', 'PATH']
+               'PATH']
     cmdargs = ['bash', '-c', ". {0} && echo {1}".format(gmxrc,
                ' '.join(['${0}'.format(v) for v in envvars]))]
+
+    if not gmxrc:
+        logger.debug("set_gmxrc_environment(): no GMXRC, nothing done.")
+        return
+
     try:
         out = subprocess.check_output(cmdargs)
         out = out.strip().split()
@@ -665,7 +721,8 @@ def set_gmxrc_environment(gmxrc):
             os.environ[key] = value
             logger.debug("set_gmxrc_environment(): %s = %r", key, value)
     except (subprocess.CalledProcessError, OSError):
-        pass
+        logger.warning("Failed to automatically set the Gromacs environment"
+                       "from GMXRC=%r", gmxrc)
 
 #: Python list of all tool file names. Filled from values in the tool
 #: groups in the configuration file.
