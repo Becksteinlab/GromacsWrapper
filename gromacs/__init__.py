@@ -230,13 +230,13 @@ def start_logging(logfile="gromacs.log"):
     The default logfile is named ``gromacs.log`` and messages are
     logged with the tag *gromacs*.
     """
-    import log
+    from . import log
     log.create("gromacs", logfile=logfile)
     logging.getLogger("gromacs").info("GromacsWrapper %s STARTED logging to %r", get_version(), logfile)
 
 def stop_logging():
     """Stop logging to logfile and console."""
-    import log
+    from . import log
     logger = logging.getLogger("gromacs")
     logger.info("GromacsWrapper %s STOPPED logging", get_version())
     log.clear_handlers(logger)  # this _should_ do the job...
