@@ -242,7 +242,7 @@ def stop_logging():
     log.clear_handlers(logger)  # this _should_ do the job...
 
 
-# Try to load environment variables setted by GMXRC
+# Try to load environment variables set by GMXRC
 gmxrc = config.cfg.get("Gromacs", "GMXRC")
 if gmxrc:
     try:
