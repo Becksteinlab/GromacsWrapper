@@ -663,6 +663,7 @@ def set_gmxrc_environment(gmxrc):
         out = out.strip().split()
         for key, value in zip(envvars, out):
             os.environ[key] = value
+            logger.debug("set_gmxrc_environment(): %s = %r", key, value)
     except (subprocess.CalledProcessError, OSError):
         pass
 

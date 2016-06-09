@@ -2,6 +2,13 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
+2016-xx-xx      0.6.0
+pslacerda, orbeckst
+
+* new Gromacs GMXRC parameter in cfg file: if present and set to a
+  file then GromacsWrapper sources GMXRC and sets the environment
+  automatically before setting up the Gromacs commands (#55)
+
 2016-06-29      0.5.1
 whitead, dotsdl, orbeckst
 
@@ -15,7 +22,6 @@ whitead, dotsdl, orbeckst
   the shell
 * added template for Gromacs 4.6.x gromacswrapper.cfg
 * improved testing
-
 
 2016-05-23      0.5.0
 quantifiedcode-bot, orbeckst, jandom, whitead
