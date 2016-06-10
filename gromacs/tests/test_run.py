@@ -5,11 +5,13 @@
 
 from __future__ import division, absolute_import, print_function
 
+from unittest import TestCase
+
 from .datafiles import datafile
 
 import gromacs.run
 
-class Test_check_mdrun_success(object):
+class Test_check_mdrun_success(TestCase):
     @staticmethod
     def test_no_logfile():
         assert(gromacs.run.check_mdrun_success("bogus_file.log") is None)
