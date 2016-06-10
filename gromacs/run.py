@@ -16,11 +16,13 @@ Helper functions and classes around :class:`gromacs.tools.Mdrun`.
 .. autoclass:: MDrunnerMpich2Smpd
 
 .. autofunction:: check_mdrun_success
+.. autofunction:: get_double_or_single_prec_mdrun
 
 """
 from __future__ import absolute_import, with_statement
 __docformat__ = "restructuredtext en"
 
+import warnings
 import subprocess
 import os.path
 
@@ -30,6 +32,8 @@ logger = logging.getLogger('gromacs.run')
 
 
 # gromacs modules
+import gromacs
+from . exceptions import GromacsError, AutoCorrectionWarning
 from . import core
 from . import utilities
 
@@ -52,7 +56,7 @@ class MDrunner(utilities.FileUtils):
     :program:`mpiexec` launcher but it can also be used to supersede
     the arguments for :program:`mdrun`.
 
-    .. Note:: Changing :program:`mdrun` arguments permanently changes the default arguments 
+    .. Note:: Changing :program:`mdrun` arguments permanently changes the default arguments
               for this instance of :class:`MDrunner`. (This is arguably a bug.)
     """
 
@@ -289,3 +293,24 @@ def check_mdrun_success(logfile):
 
     return status
 
+
+def get_double_or_single_prec_mdrun():
+    """Return double precision ``mdrun`` or fall back to single precision.
+
+    This convenience function tries :func:`gromacs.mdrun_d` first and
+    if it cannot run it, falls back to :func:`gromacs.mdrun` (without
+    further checking).
+
+    .. versionadded:: 0.5.1
+    """
+    try:
+        gromacs.mdrun_d(h=True, stdout=False, stderr=False)
+        logger.debug("using double precision gromacs.mdrun_d")
+        return gromacs.mdrun_d
+    except (AttributeError, GromacsError, OSError):
+        # fall back to mdrun if no double precision binary
+        wmsg = "No 'mdrun_d' binary found so trying 'mdrun' instead.\n"\
+            "(Note that energy minimization runs better with mdrun_d.)"
+        logger.warn(wmsg)
+        warnings.warn(wmsg, category=AutoCorrectionWarning)
+        return gromacs.mdrun
