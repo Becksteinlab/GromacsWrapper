@@ -48,6 +48,7 @@ setup(name="GromacsWrapper",
                                 'templates/*.ll', 'templates/*.sh',
                                 'templates/*.mdp', 'templates/*.cfg',
                                 'tests/test_fileformats/test_top/data/*/*.top',
+                                'tests/data/*.log',
                                 ],
                     'vmd': ['*.tcl'],                                  # server start in VMD
                     },

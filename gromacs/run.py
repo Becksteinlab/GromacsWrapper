@@ -285,7 +285,7 @@ def check_mdrun_success(logfile):
     try:
         log.seek(-1024L, 2)
         for line in log:
-            if line.startswith("Finished mdrun on node"):
+            if line.startswith("Finished mdrun on"):
                 status = True
                 break
     finally:

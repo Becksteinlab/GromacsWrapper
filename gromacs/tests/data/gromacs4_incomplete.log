@@ -1,0 +1,50 @@
+Log file opened on Thu Sep 29 00:53:29 2011
+Host: darthtater  pid: 3732  nodeid: 0  nnodes:  1
+The Gromacs distribution was built Thu Feb  3 19:30:17 EST 2011 by
+oliver@darthtater (Linux 2.6.32-26-server x86_64)
+
+
+
+                         :-)  G  R  O  M  A  C  S  (-:
+
+                     Gnomes, ROck Monsters And Chili Sauce
+
+                            :-)  VERSION 4.5.3  (-:
+
+        Written by Emile Apol, Rossen Apostolov, Herman J.C. Berendsen,
+      Aldert van Buuren, Pär Bjelkmar, Rudi van Drunen, Anton Feenstra,
+        Gerrit Groenhof, Peter Kasson, Per Larsson, Pieter Meulenhoff,
+           Teemu Murtola, Szilard Pall, Sander Pronk, Roland Schulz,
+                Michael Shirts, Alfons Sijbers, Peter Tieleman,
+
+               Berk Hess, David van der Spoel, and Erik Lindahl.
+
+       Copyright (c) 1991-2000, University of Groningen, The Netherlands.
+            Copyright (c) 2001-2010, The GROMACS development team at
+        Uppsala University & The Royal Institute of Technology, Sweden.
+            check out http://www.gromacs.org for more information.
+
+         This program is free software; you can redistribute it and/or
+          modify it under the terms of the GNU General Public License
+         as published by the Free Software Foundation; either version 2
+             of the License, or (at your option) any later version.
+
+                     :-)  /opt/gromacs/4.5.3/bin/mdrun  (-:
+
+...
+...
+           Step           Time         Lambda
+         496500      993.00000        0.00000
+
+   Energies (kJ/mol)
+           Bond          Angle    Proper Dih. Ryckaert-Bell.  Improper Dih.
+    1.38474e+04    2.86561e+04    6.49033e+02    5.43846e+03    4.60948e+02
+          LJ-14     Coulomb-14        LJ (SR)  Disper. corr.   Coulomb (SR)
+    2.61135e+04    7.07810e+04    2.70751e+04   -5.98341e+03   -5.19664e+05
+   Coul. recip. Position Rest.      Potential    Kinetic En.   Total Energy
+   -2.58172e+05    2.00871e+03   -6.08790e+05    1.18498e+05   -4.90291e+05
+    Temperature Pres. DC (bar) Pressure (bar)   Constr. rmsd
+    2.99865e+02   -3.86086e+02   -1.34296e+02    3.21304e-06
+
+DD  load balancing is limited by minimum cell size in dimension X
+DD  step 496999  vol min/aver 0.822! load 
