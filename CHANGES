@@ -3,7 +3,7 @@
 ==============================
 
 2016-xx-xx      0.5.1
-whitead, dotsdl, orbeckst
+whitead, dotsdl, orbeckst, pslacerda
 
 * fixed: check_mdrun_success() works now for Gromacs 4 and Gromacs 5
   (issue #64)
@@ -14,7 +14,12 @@ whitead, dotsdl, orbeckst
 * added keyword argument use_shell=True to Command() to make Popen use
   the shell
 * added template for Gromacs 4.6.x gromacswrapper.cfg
-
+* commands can request that the underlying subprocess.Popen uses a
+  shell (shell=True)
+* additional alias "gmx solvate" <--> "genbox"
+* new Gromacs GMXRC parameter in cfg file: if present and set to a
+  file then GromacsWrapper sources GMXRC and sets the environment
+  automatically before setting up the Gromacs commands (#55)
 
 2016-05-23      0.5.0
 quantifiedcode-bot, orbeckst, jandom, whitead
