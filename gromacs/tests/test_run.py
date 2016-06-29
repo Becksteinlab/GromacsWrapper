@@ -32,5 +32,17 @@ class Test_check_mdrun_success(TestCase):
     def test_incomplete_Gromacs5():
         assert(gromacs.run.check_mdrun_success(datafile('gromacs5_incomplete.log')) is False)
 
+# The following tests need an existing Gromacs environment. They should run
+# with either Gromacs 4 or Gromacs 5
+
+def test_MDRunner():
+    try:
+        mdrun = gromacs.run.MDrunner()
+    except OSError:
+        raise RuntimeError("This test requires a Gromacs environment.")
+
+    rc = mdrun.run(mdrunargs={'version': True})
+    assert(rc == 0)
+
 
 

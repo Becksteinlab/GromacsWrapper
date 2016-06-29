@@ -106,35 +106,37 @@ aliases5to4 = {
 for name in sorted(config.load_tools):
     # compatibility for 5.x 'gmx toolname': add as gmx:toolname
     if name.find(':') != -1:
+        # Gromacs 5
         b_gmx5 = True
         prefix = name.split(':')[0]
         name = name.split(':')[1]
         #make alias for backwards compatibility
-        
+
         #the common case of just dropping the 'g_'
         old_name = 'g_' + name
 
         #check against uncommon name changes
-        #have to check each one, since it's possible there are suffixes like for double precision        
+        #have to check each one, since it's possible there are suffixes like for double precision
         for c5, c4 in aliases5to4.iteritems():
             if name.startswith(c5):
                 #maintain suffix
                 old_name = c4 + name.split(c5)[1]
                 break
-            
+
         # make names valid python identifiers and use convention that class names are capitalized
         clsname = name.replace('.','_').replace('-','_').capitalize()
         old_clsname = old_name.replace('.','_').replace('-','_').capitalize()
-        cls = type(clsname, (GromacsCommand,), {'command_name':name,
-                                                   'driver':prefix,
-                                                   '__doc__': "Gromacs tool '%(prefix) %(name)r'." % vars()})
+        cls = type(clsname, (GromacsCommand,), {'command_name': name,
+                                                'driver' :prefix,
+                                                '__doc__': "Gromacs tool '%(prefix) %(name)r'." % vars()})
         #add alias for old name
         #No need to see if old_name == name since we'll just clobber the item in registry
         registry[old_clsname] = cls
     else:
+        # Gromacs 4:
         # make names valid python identifiers and use convention that class names are capitalized
         clsname = name.replace('.','_').replace('-','_').capitalize()
-        cls = type(clsname, (GromacsCommand,), {'command_name':name,
+        cls = type(clsname, (GromacsCommand,), {'command_name': name,
                                                 '__doc__': "Gromacs tool %(name)r." % vars()})
     registry[clsname] = cls      # registry keeps track of all classes
     # dynamically build the module doc string
