@@ -270,7 +270,7 @@ class Command(object):
         try:
             p = PopenWithInput(cmd, stdin=stdin, stderr=stderr, stdout=stdout,
                                universal_newlines=True, input=input, shell=use_shell)
-        except OSError,err:
+        except OSError as err:
             logger.error(" ".join(cmd))            # log command line
             if err.errno == errno.ENOENT:
                 errmsg = "Failed to find Gromacs command %r, maybe its not on PATH or GMXRC must be sourced?" % self.command_name
@@ -495,7 +495,7 @@ class GromacsCommand(Command):
         self.failuremode = kwargs.pop('failure','raise')
         self.extra_doc = kwargs.pop('doc',None)
         self.gmxargs = self._combineargs(*args, **kwargs)
-        self.__doc__ = self.gmxdoc        
+        self.__doc__ = self.gmxdoc
 
     def failuremode():
         doc = """mode determines how the GromacsCommand behaves during failure
@@ -604,7 +604,7 @@ class GromacsCommand(Command):
 
         .. Note::
 
-           The header is on STDOUT and is ignored. The docs are read from STDERR in GMX 4. 
+           The header is on STDOUT and is ignored. The docs are read from STDERR in GMX 4.
            In GMX 5, the opposite is true (Grrr)
         """
         # Uses the class-wide arguments so that 'canned invocations' in cbook
@@ -614,15 +614,15 @@ class GromacsCommand(Command):
         # temporarily throttle logger to avoid reading about the help function invocation or not found
         logging.disable(logging.CRITICAL)
         try:
-            rc,header,docs = self.run('h', stdout=PIPE, stderr=PIPE, use_input=False)            
+            rc,header,docs = self.run('h', stdout=PIPE, stderr=PIPE, use_input=False)
         except:
             logging.critical("Invoking command {} failed when determining its doc string. Proceed with caution".format(self.command_name))
-            return "(No Gromacs documentation available)"            
+            return "(No Gromacs documentation available)"
         finally:
             logging.disable(logging.NOTSET)     # ALWAYS restore logging....
         m = re.match(self.doc_pattern, docs, re.DOTALL)    # keep from DESCRIPTION onwards
         if m is None:
-            m = re.match(self.doc_pattern, header, re.DOTALL)    # Try now with GMX 5 approach            
+            m = re.match(self.doc_pattern, header, re.DOTALL)    # Try now with GMX 5 approach
             if m is None:
                 return "(No Gromacs documentation available)"
         return m.group('DOCS')
@@ -677,11 +677,13 @@ class PopenWithInput(subprocess.Popen):
             input_string = ""
         self.command_string = input_string + " ".join(self.command)
         super(PopenWithInput,self).__init__(*args,**kwargs)
+
     def communicate(self, use_input=True):
         """Run the command, using the input that was set up on __init__ (for *use_input* = ``True``)"""
         if use_input:
             return super(PopenWithInput,self).communicate(self.input)
         else:
             return super(PopenWithInput,self).communicate()
+
     def __str__(self):
         return "<Popen on %r>" % self.command_string
