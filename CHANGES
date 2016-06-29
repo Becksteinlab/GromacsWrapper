@@ -7,6 +7,7 @@ whitead, dotsdl, orbeckst
 
 * fixed: check_mdrun_success() works now for Gromacs 4 and Gromacs 5
   (issue #64)
+* fixed: MDRunner working for Gromacs 4 and Gromacs 5 (issue #64)  
 * fixed setup.energy_minimize() not falling back to single precision
   mdrun (issue #63)
 * fixed: added missing alias "gmx solvate" <--> "genbox" (issue #62)
