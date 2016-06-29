@@ -1,0 +1,35 @@
+Log file opened on Thu Jun  9 17:47:50 2016
+Host: yngvi  pid: 44116  rank ID: 0  number of ranks:  1
+                   :-) GROMACS - gmx mdrun, VERSION 5.1.2 (-:
+
+                            GROMACS is written by:
+     Emile Apol      Rossen Apostolov  Herman J.C. Berendsen    Par Bjelkmar
+ Aldert van Buuren   Rudi van Drunen     Anton Feenstra   Sebastian Fritsch
+  Gerrit Groenhof   Christoph Junghans   Anca Hamuraru    Vincent Hindriksen
+ Dimitrios Karkoulis    Peter Kasson        Jiri Kraus      Carsten Kutzner
+    Per Larsson      Justin A. Lemkul   Magnus Lundborg   Pieter Meulenhoff
+   Erik Marklund      Teemu Murtola       Szilard Pall       Sander Pronk
+   Roland Schulz     Alexey Shvetsov     Michael Shirts     Alfons Sijbers
+   Peter Tieleman    Teemu Virolainen  Christian Wennberg    Maarten Wolf
+                           and the project leaders:
+        Mark Abraham, Berk Hess, Erik Lindahl, and David van der Spoel
+
+Copyright (c) 1991-2000, University of Groningen, The Netherlands.
+Copyright (c) 2001-2015, The GROMACS development team at
+Uppsala University, Stockholm University and
+the Royal Institute of Technology, Sweden.
+check out http://www.gromacs.org for more information.
+
+GROMACS is free software; you can redistribute it and/or modify it
+under the terms of the GNU Lesser General Public License
+
+...
+...
+-----------------------------------------------------------------------------
+
+               Core t (s)   Wall t (s)        (%)
+       Time:     1281.705      320.426      400.0
+                 (ns/day)    (hour/ns)
+Performance:        2.697        8.899
+Finished mdrun on rank 0 Thu Jun  9 17:53:11 2016
+

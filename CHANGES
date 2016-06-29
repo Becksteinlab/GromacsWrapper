@@ -2,7 +2,22 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
-2016-xx-xx      0.4.1
+2016-06-29      0.5.1
+whitead, dotsdl, orbeckst
+
+* fixed: check_mdrun_success() works now for Gromacs 4 and Gromacs 5
+  (issue #64)
+* fixed: MDRunner working for Gromacs 4 and Gromacs 5 (issue #64)  
+* fixed setup.energy_minimize() not falling back to single precision
+  mdrun (issue #63)
+* fixed: added missing alias "gmx solvate" <--> "genbox" (issue #62)
+* added keyword argument use_shell=True to Command() to make Popen use
+  the shell
+* added template for Gromacs 4.6.x gromacswrapper.cfg
+* improved testing
+
+
+2016-05-23      0.5.0
 quantifiedcode-bot, orbeckst, jandom, whitead
 
 * requires Python 2.7

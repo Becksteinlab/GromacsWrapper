@@ -11,18 +11,32 @@ Helper functions and classes around :class:`gromacs.tools.Mdrun`.
 
 .. autoclass:: MDrunner
    :members:
+
+.. autoclass:: MDrunnerDoublePrecision
+
+
+Example implementations
+-----------------------
+
 .. autoclass:: MDrunnerOpenMP
-.. autoclass:: MDrunnerOpenMP64
 .. autoclass:: MDrunnerMpich2Smpd
 
+
+Helper functions
+----------------
+
 .. autofunction:: check_mdrun_success
+.. autofunction:: get_double_or_single_prec_mdrun
+.. autofunction:: find_gromacs_command
 
 """
 from __future__ import absolute_import, with_statement
 __docformat__ = "restructuredtext en"
 
+import warnings
 import subprocess
 import os.path
+import errno
 
 # logging
 import logging
@@ -30,34 +44,80 @@ logger = logging.getLogger('gromacs.run')
 
 
 # gromacs modules
+import gromacs
+from . exceptions import GromacsError, AutoCorrectionWarning
 from . import core
 from . import utilities
+
+def find_gromacs_command(commands):
+    """Return *driver* and *name* of the first command that can be found on :envvar:`PATH`"""
+
+    # We could try executing 'name' or 'driver name' but to keep things lean we
+    # just check if the executables can be found and then hope for the best.
+
+    for command in utilities.asiterable(commands):
+        if command.find(':') != -1:
+            driver = command.split(':')[0]
+            name = command.split(':')[1]
+            if utilities.which(driver):
+                break
+        else:
+            driver = None
+            name = command
+            if utilities.which(name):
+                break
+    else:
+        raise OSError(errno.ENOENT, "No Gromacs executable found in", ", ".join(commands))
+
+    return driver, name
+
 
 class MDrunner(utilities.FileUtils):
     """A class to manage running :program:`mdrun` in various ways.
 
-    In order to do complicated multiprocessor runs with mpiexec or
-    similar you need to derive from this class and override
+    In order to do complicated multiprocessor runs with mpiexec or similar you
+    need to derive from this class and override
 
     - :attr:`MDrunner.mdrun` with the path to the ``mdrun`` executable
     - :attr:`MDrunner.mpiexec` with the path to the MPI launcher
     - :meth:`MDrunner.mpicommand` with a function that returns the mpi command as a list
 
     In addition there are two methods named :meth:`prehook` and
-    :meth:`posthook` that are called right before and after the
-    process is started. If they are overriden appropriately then they
-    can be used to set up a mpi environment.
+    :meth:`posthook` that are called right before and after the process is
+    started. If they are overriden appropriately then they can be used to set
+    up a mpi environment.
 
-    The :meth:`run` method can take arguments for the
-    :program:`mpiexec` launcher but it can also be used to supersede
-    the arguments for :program:`mdrun`.
+    The :meth:`run` method can take arguments for the :program:`mpiexec`
+    launcher but it can also be used to supersede the arguments for
+    :program:`mdrun`.
 
-    .. Note:: Changing :program:`mdrun` arguments permanently changes the default arguments 
-              for this instance of :class:`MDrunner`. (This is arguably a bug.)
+    The actual **mdrun** command is set in the class-level attribute
+    :attr:`mdrun`. This can be a single string or a sequence (tuple) of
+    strings. On instantiation, the first entry in :attr:`mdrun` that can be
+    found on the :envvar:`PATH` is chosen (with
+    :func:`find_gromacs_command`). The entries can follow the config file
+    syntax and denote a *driver* command (for Gromacs 5.x) that is separated
+    from the command name itself by a colon. For example, ``gmx:mdrun`` from
+    Gromacs 5.x but just ``mdrun`` for Gromacs 4.6.x. Similarly, alternative
+    executables (such as double precision) need to be specified here
+    (e.g. ``("mdrun_d", "gmx_d:mdrun")``).
+
+    .. Note:: Changing :program:`mdrun` arguments permanently changes the
+              default arguments for this instance of :class:`MDrunner`. (This
+              is arguably a bug.)
+
+    .. versionchanged:: 0.5.1
+       Added detection of bare Gromacs commands (Gromacs 4.6.x) or commands run through
+       :program:`gmx` (Gromacs 5.x).
+
     """
 
-    #: path to the :program:`mdrun` executable (or the name if it can be found on :envvar:`PATH`)
-    mdrun = "mdrun"
+    #: Path to the :program:`mdrun` executable (or the name if it can be found on :envvar:`PATH`);
+    #: this can be a tuple and then the program names are tried in sequence. You can use
+    #: the syntax from the config file ``gmx:mdrun`` to designate a driver command.
+    #:
+    #: .. versionadded:: 0.5.1
+    mdrun = ("mdrun", "gmx:mdrun")
     #: path to the MPI launcher (e.g. :program:`mpiexec`)
     mpiexec = None
 
@@ -76,11 +136,14 @@ class MDrunner(utilities.FileUtils):
         """
         # run MD in this directory (input files must be relative to this dir!)
         self.dirname = dirname
+        self.driver, self.name = find_gromacs_command(self.mdrun)
 
         # use a GromacsCommand class for handling arguments
         cls = type('MDRUN', (core.GromacsCommand,),
-                   {'command_name': self.mdrun,
-                    '__doc__': "MDRUN command %r" % self.mdrun})
+                   {'command_name': self.name,
+                    'driver': self.driver,
+                    '__doc__': "MDRUN command {0} {1}".format(self.driver, self.name)
+                   })
 
         kwargs['failure'] = 'raise'    # failure mode of class
         self.MDRUN = cls(**kwargs)  # might fail for mpi binaries? .. -h?
@@ -215,24 +278,15 @@ class MDrunner(utilities.FileUtils):
         return check_mdrun_success(self.logname)
 
 class MDrunnerDoublePrecision(MDrunner):
-    """Manage running :program:`mdrun_d`.
-    """
-    mdrun = "mdrun_d"
+    """Manage running :program:`mdrun_d`."""
+    mdrun = ("mdrun_d", "gmx_d:mdrun")
 
 class MDrunnerOpenMP(MDrunner):
     """Manage running :program:`mdrun` as an OpenMP_ multiprocessor job.
 
     .. _OpenMP: http://openmp.org/wp/
     """
-    mdrun = "mdrun_openmp"
-    mpiexec = "mpiexec"
-
-class MDrunnerOpenMP64(MDrunner):
-    """Manage running :program:`mdrun` as an OpenMP_ multiprocessor job (64-bit executable).
-
-    .. _OpenMP: http://openmp.org/wp/
-    """
-    mdrun = "mdrun_openmp64"
+    mdrun = ("mdrun_openmp", "gmx_openmp:mdrun")
     mpiexec = "mpiexec"
 
 class MDrunnerMpich2Smpd(MDrunner):
@@ -281,7 +335,7 @@ def check_mdrun_success(logfile):
     try:
         log.seek(-1024L, 2)
         for line in log:
-            if line.startswith("Finished mdrun on node"):
+            if line.startswith("Finished mdrun on"):
                 status = True
                 break
     finally:
@@ -289,3 +343,24 @@ def check_mdrun_success(logfile):
 
     return status
 
+
+def get_double_or_single_prec_mdrun():
+    """Return double precision ``mdrun`` or fall back to single precision.
+
+    This convenience function tries :func:`gromacs.mdrun_d` first and
+    if it cannot run it, falls back to :func:`gromacs.mdrun` (without
+    further checking).
+
+    .. versionadded:: 0.5.1
+    """
+    try:
+        gromacs.mdrun_d(h=True, stdout=False, stderr=False)
+        logger.debug("using double precision gromacs.mdrun_d")
+        return gromacs.mdrun_d
+    except (AttributeError, GromacsError, OSError):
+        # fall back to mdrun if no double precision binary
+        wmsg = "No 'mdrun_d' binary found so trying 'mdrun' instead.\n"\
+            "(Note that energy minimization runs better with mdrun_d.)"
+        logger.warn(wmsg)
+        warnings.warn(wmsg, category=AutoCorrectionWarning)
+        return gromacs.mdrun

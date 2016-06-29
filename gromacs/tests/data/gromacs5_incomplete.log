@@ -1,0 +1,41 @@
+Log file opened on Thu Jun  9 17:47:50 2016
+Host: yngvi  pid: 44116  rank ID: 0  number of ranks:  1
+                   :-) GROMACS - gmx mdrun, VERSION 5.1.2 (-:
+
+                            GROMACS is written by:
+     Emile Apol      Rossen Apostolov  Herman J.C. Berendsen    Par Bjelkmar
+ Aldert van Buuren   Rudi van Drunen     Anton Feenstra   Sebastian Fritsch
+  Gerrit Groenhof   Christoph Junghans   Anca Hamuraru    Vincent Hindriksen
+ Dimitrios Karkoulis    Peter Kasson        Jiri Kraus      Carsten Kutzner
+    Per Larsson      Justin A. Lemkul   Magnus Lundborg   Pieter Meulenhoff
+   Erik Marklund      Teemu Murtola       Szilard Pall       Sander Pronk
+   Roland Schulz     Alexey Shvetsov     Michael Shirts     Alfons Sijbers
+   Peter Tieleman    Teemu Virolainen  Christian Wennberg    Maarten Wolf
+                           and the project leaders:
+        Mark Abraham, Berk Hess, Erik Lindahl, and David van der Spoel
+
+Copyright (c) 1991-2000, University of Groningen, The Netherlands.
+Copyright (c) 2001-2015, The GROMACS development team at
+Uppsala University, Stockholm University and
+the Royal Institute of Technology, Sweden.
+check out http://www.gromacs.org for more information.
+
+GROMACS is free software; you can redistribute it and/or modify it
+under the terms of the GNU Lesser General Public License
+
+...
+...
+           Step           Time         Lambda
+           4000        8.00000        0.00000
+
+   Energies (kJ/mol)
+           Bond          Angle    Proper Dih.  Improper Dih.          LJ-14
+    5.20609e+03    1.43017e+04    1.72013e+04    8.31040e+02    6.54191e+03
+     Coulomb-14        LJ (SR)  Disper. corr.   Coulomb (SR)   Coul. recip.
+    7.32011e+04    1.84741e+05   -1.17947e+04   -1.48625e+06    8.03731e+03
+ Position Rest.      Potential    Kinetic En.   Total Energy    Temperature
+    1.85653e+03   -1.18613e+06    2.22611e+05   -9.63516e+05    3.00111e+02
+ Pres. DC (bar) Pressure (bar)   Constr. rmsd
+   -2.22167e+02    2.56386e+01    4.13250e-06
+
+DD  step 4499  vol min/aver 0.932  load imb.: force  3.8%

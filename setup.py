@@ -47,7 +47,10 @@ setup(name="GromacsWrapper",
       package_data={'gromacs': ['templates/*.sge', 'templates/*.pbs',  # template files
                                 'templates/*.ll', 'templates/*.sh',
                                 'templates/*.mdp', 'templates/*.cfg',
-                                'tests/test_fileformats/test_top/data/*/*.top',
+                                'tests/data/fileformats/top/*.mdp',    # test data
+                                'tests/data/fileformats/top/*/*.top',
+                                'tests/data/fileformats/top/*/*.gro',
+                                'tests/data/*.log',
                                 ],
                     'vmd': ['*.tcl'],                                  # server start in VMD
                     },
@@ -57,9 +60,11 @@ setup(name="GromacsWrapper",
       extras_require = {
                 'analysis': ['matplotlib>=0.91.3',
                              'RecSQL>=0.7',
+                             'pandas',
                              ],
                 'numkit': ['scipy'],
                 },
+      tests_require = ['numpy', 'pandas'],
       zip_safe = True,
 )
 
