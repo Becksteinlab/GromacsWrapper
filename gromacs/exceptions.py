@@ -47,6 +47,9 @@ class UsageWarning(Warning):
 class LowAccuracyWarning(Warning):
     """Warns that results may possibly have low accuracy."""
 
+class GromacsToolLoadingError(Exception):
+    """Couldn't find Gromacs commands."""
+
 import warnings
 # These warnings should always be displayed because other parameters
 # can have changed, eg during interactive use.

@@ -18,15 +18,6 @@ for backwards compatibility.
 The list of Gromacs tools to be loaded is configured in
 :data:`gromacs.config.gmx_tool_groups`.
 
-It is also possible to extend the basic commands and patch in additional
-functionality. For example, the :class:`GromacsCommandMultiIndex` class makes a
-command accept multiple index files and concatenates them on the fly; the
-behaviour mimics Gromacs' "multi-file" input that has not yet been enabled for
-all tools.
-
-.. autoclass:: GromacsCommandMultiIndex
-   :members: run, _fake_multi_ndx, __del__
-
 Example
 -------
 
@@ -59,27 +50,13 @@ Gromacs tools
 from __future__ import absolute_import
 __docformat__ = "restructuredtext en"
 
-import os.path
-import tempfile
+import os.path, tempfile, subprocess, atexit, warnings
 
-from . import config
-from .core import GromacsCommand, Command
-from . import utilities
+from . import config, utilities, exceptions
+from .core import GromacsCommand
 
-def _generate_sphinx_class_string(clsname):
-    return ".. class:: %(clsname)s\n    :noindex:\n" % vars()
 
-#flag for 5.0 style commands
-b_gmx5 = False
-
-#: This dict holds all generated classes.
-registry = {}
-
-# Auto-generate classes such as:
-# class g_dist(GromacsCommand):
-#     command_name = 'g_dist'
-
-aliases5to4 = {
+ALIASES5TO4 = {
     'grompp': 'grompp',
     'eneconv': 'eneconv',
     'sasa': 'g_sas',
@@ -94,8 +71,8 @@ aliases5to4 = {
     'mdrun': 'mdrun',
     'make_ndx': 'make_ndx',
     'make_edi': 'make_edi',
-    'gmxdump': 'gmxdump',
-    'gmxcheck': 'gmxcheck',
+    'dump': 'gmxdump',
+    'check': 'gmxcheck',
     'genrestr': 'genrestr',
     'genion': 'genion',
     'genconf': 'genconf',
@@ -103,166 +80,94 @@ aliases5to4 = {
     'solvate': 'genbox',
 }
 
-for name in sorted(config.load_tools):
-    # compatibility for 5.x 'gmx toolname': add as gmx:toolname
-    if name.find(':') != -1:
-        b_gmx5 = True
-        prefix = name.split(':')[0]
-        name = name.split(':')[1]
-        #make alias for backwards compatibility
-        
-        #the common case of just dropping the 'g_'
-        old_name = 'g_' + name
+TOOLS_V4 = ("do_dssp", "editconf", "eneconv", "g_anadock", "g_anaeig",
+            "g_analyze", "g_angle", "g_bar", "g_bond", "g_bundle", "g_chi",
+            "g_cluster", "g_clustsize", "g_confrms", "g_covar", "g_current",
+            "g_density", "g_densmap", "g_densorder", "g_dielectric",
+            "g_dipoles", "g_disre", "g_dist", "g_dos", "g_dyecoupl", "g_dyndom",
+            "genbox", "genconf", "g_enemat", "g_energy", "genion", "genrestr",
+            "g_filter", "g_gyrate", "g_h2order", "g_hbond", "g_helix",
+            "g_helixorient", "g_hydorder", "g_kinetics", "g_lie", "g_luck",
+            "g_mdmat", "g_membed", "g_mindist", "g_morph", "g_msd",
+            "gmxcheck", "gmxdump", "g_nmeig", "g_nmens", "g_nmtraj", "g_options",
+            "g_order", "g_pme_error", "g_polystat", "g_potential",
+            "g_principal", "g_protonate", "g_rama", "g_rdf", "g_rms",
+            "g_rmsdist", "g_rmsf", "grompp", "g_rotacf", "g_rotmat",
+            "g_saltbr", "g_sans", "g_sas", "g_select", "g_sgangle", "g_sham",
+            "g_sigeps", "g_sorient", "g_spatial", "g_spol", "g_tcaf",
+            "g_traj", "g_tune_pme", "g_vanhove", "g_velacc", "g_wham",
+            "g_wheel", "g_x2top", "g_xrama", "make_edi", "make_ndx", "mdrun",
+            "mk_angndx", "ngmx", "pdb2gmx", "tpbconv", "trjcat", "trjconv",
+            "trjorder", "xpm2p")
 
-        #check against uncommon name changes
-        #have to check each one, since it's possible there are suffixes like for double precision        
-        for c5, c4 in aliases5to4.iteritems():
+
+def append_suffix(name):
+    suffix = config.cfg.get('Gromacs', 'suffix')
+    if suffix:
+        name += '_' + suffix
+    return name
+
+
+def load_v5_tools():
+    driver = append_suffix('gmx')
+    try:
+        out = subprocess.check_output([driver, '-quiet', 'help', 'commands'])
+    except subprocess.CalledProcessError:
+        raise exceptions.GromacsToolLoadingError("Failed to load v5 tools")
+
+    registry = {}
+    for line in str(out).encode('ascii').splitlines()[5:-1]:
+        if line[4] != ' ':
+            name = line[4:line.index(' ', 4)]
+            fancy = name.replace('-', '_').capitalize()
+            registry[fancy] = type(fancy, (GromacsCommand,),
+                                   {'command_name':name, 'driver': driver})
+    return registry
+
+
+def load_v4_tools():
+    tools = [append_suffix(t) for t in TOOLS_V4]
+    registry = {}
+    for tool in tools:
+        fancy = tool.capitalize()
+        registry[fancy] = type(fancy, (GromacsCommand,), {'command_name':tool})
+
+    try:
+        null = open(os.devnull, 'w')
+        subprocess.check_call(['g_luck'], stdout=null, stderr=null)
+    except subprocess.CalledProcessError:
+        raise exceptions.GromacsToolLoadingError("Failed to load v4 tools")
+    return registry
+
+
+
+version = config.cfg.get('Gromacs', 'release')
+major_release = version.split('.')[0]
+
+if major_release == '5':
+    registry = load_v5_tools()
+
+    # Aliases to run unmodified GromacsWrapper scripts on a machine without
+    # Gromacs 4.x
+    for name in registry.copy():
+        for c4, c5 in ALIASES5TO4.items():
+            #have to check each one, since it's possible there are suffixes like
+            # for double precision
             if name.startswith(c5):
-                #maintain suffix
-                old_name = c4 + name.split(c5)[1]
+                # mantain suffix
+                registry[c4 + name.split(c5)] = registry[name]
                 break
-            
-        # make names valid python identifiers and use convention that class names are capitalized
-        clsname = name.replace('.','_').replace('-','_').capitalize()
-        old_clsname = old_name.replace('.','_').replace('-','_').capitalize()
-        cls = type(clsname, (GromacsCommand,), {'command_name':name,
-                                                   'driver':prefix,
-                                                   '__doc__': "Gromacs tool '%(prefix) %(name)r'." % vars()})
-        #add alias for old name
-        #No need to see if old_name == name since we'll just clobber the item in registry
-        registry[old_clsname] = cls
-    else:
-        # make names valid python identifiers and use convention that class names are capitalized
-        clsname = name.replace('.','_').replace('-','_').capitalize()
-        cls = type(clsname, (GromacsCommand,), {'command_name':name,
-                                                '__doc__': "Gromacs tool %(name)r." % vars()})
-    registry[clsname] = cls      # registry keeps track of all classes
-    # dynamically build the module doc string
-    __doc__ += _generate_sphinx_class_string(clsname)
+        else:
+            #the common case of just adding the 'g_'
+            registry['G_%s' % name.lower()] = registry[name]
 
-# modify/fix classes as necessary
-# Note:
-# - check if class was defined in first place
-# - replace class
-# - update local context AND registry as done below
-
-class GromacsCommandMultiIndex(GromacsCommand):
-        def __init__(self, **kwargs):
-            """Initialize instance.
-
-            1) Sets up the combined index file.
-            2) Inititialize :class:`~gromacs.core.GromacsCommand` with the
-               new index file.
-
-            See the documentation for :class:`gromacs.core.GromacsCommand` for details.
-            """
-            kwargs = self._fake_multi_ndx(**kwargs)
-            super(GromacsCommandMultiIndex, self).__init__(**kwargs)
-
-        def run(self,*args,**kwargs):
-            """Run the command; make a combined multi-index file if necessary."""
-            kwargs = self._fake_multi_ndx(**kwargs)
-            return super(GromacsCommandMultiIndex, self).run(*args, **kwargs)
-
-        def _fake_multi_ndx(self, **kwargs):
-            """Combine multiple index file into a single one and return appropriate kwargs.
-
-            Calling the method combines multiple index files into a a single
-            temporary one so that Gromacs tools that do not (yet) support multi
-            file input for index files can be used transparently as if they did.
-
-            If a temporary index file is required then it is deleted once the
-            object is destroyed.
-
-            :Returns:
-              The method returns the input keyword arguments with the necessary
-              changes to use the temporary index files.
-
-            :Keywords:
-               Only the listed keywords have meaning for the method:
-
-               *n* : filename or list of filenames
-                  possibly multiple index files; *n* is replaced by the name of
-                  the temporary index file.
-               *s* : filename
-                  structure file (tpr, pdb, ...) or ``None``; if a structure file is
-                  supplied then the Gromacs default index groups are automatically added
-                  to the temporary indexs file.
-
-            :Example:
-               Used in derived classes that replace the standard
-               :meth:`run` (or :meth:`__init__`) methods with something like::
-
-                  def run(self,*args,**kwargs):
-                      kwargs = self._fake_multi_ndx(**kwargs)
-                      return super(G_mindist, self).run(*args, **kwargs)
-
-            """
-            ndx = kwargs.get('n')
-            if not (ndx is None or type(ndx) is str):
-                if len(ndx) > 1:
-                    # g_mindist cannot deal with multiple ndx files (at least 4.0.5)
-                    # so we combine them in a temporary file; it is unlinked in __del__.
-                    # self.multi_ndx stores file name for __del__
-                    fd, self.multi_ndx = tempfile.mkstemp(suffix='.ndx', prefix='multi_')
-                    make_ndx = Make_ndx(f=kwargs.get('s'), n=ndx)
-                    rc,out,err = make_ndx(o=self.multi_ndx, input=['q'],  # concatenate all index files
-                                          stdout=False, stderr=False)
-                    self.orig_ndx = ndx
-                    kwargs['n'] = self.multi_ndx
-            return kwargs
-
-        def __del__(self):
-            """Clean up temporary multi-index files if they were used."""
-            # XXX: does not seem to work when closing the interpreter?!
-            try:
-                # self.multi_ndx <-- _fake_multi_index()
-                utilities.unlink_gmx(self.multi_ndx)
-            except (AttributeError, OSError):
-                pass
-            # XXX: type error --- can't use super in __del__?
-            #super(GromacsCommandMultiIndex, self).__del__()
-
-# patching up...
-
-if 'G_mindist' in registry:
-
-    # let G_mindist handle multiple ndx files
-    class G_mindist(GromacsCommandMultiIndex):
-        """Gromacs tool 'g_mindist' (with patch to handle multiple ndx files)."""
-        command_name = registry['G_mindist'].command_name
-        driver = registry['G_mindist'].driver
-        __doc__ = registry['G_mindist'].__doc__
-
-    registry['G_mindist'] = G_mindist
-    if b_gmx5:
-        registry['Mindist'] = G_mindist
-
-if 'G_dist' in registry:
-    # let G_dist handle multiple ndx files
-    class G_dist(GromacsCommandMultiIndex):
-        """Gromacs tool 'g_dist' (with patch to handle multiple ndx files)."""
-        command_name = registry['G_dist'].command_name
-        driver = registry['G_dist'].driver
-        __doc__ = registry['G_dist'].__doc__
-
-    registry['G_dist'] = G_dist
-    if b_gmx5:
-        registry['Distance'] = G_dist
+elif major_release == '4':
+    registry = load_v4_tools()
+else:
+    raise exceptions.GromacsToolLoadingError("Unknow Gromacs version %s" %
+                                           version)
 
 
-# TODO: generate multi index classes via type(), not copy&paste as above...
-
-
-# 5.0.5 compatibility hack
-if 'Convert_tpr' in registry:
-    registry['Tpbconv'] = registry['Convert_tpr']
-
-# finally, add everything
-globals().update(registry)        # add classes to module's scope
+# finally add command classes to module's scope
+globals().update(registry)
 __all__ = registry.keys()
-
-#  and clean up the module scope
-cls = clsname = name = rec = doc = None  # make sure they exist, because the next line
-del rec, name, cls, clsname, doc  # would throw NameError if no tool was configured
-
