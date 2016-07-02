@@ -690,30 +690,22 @@ def check_setup():
 check_setup()
 
 
-# Gromacs tools
-# -------------
-
 def set_gmxrc_environment(gmxrc):
-    """Set the environment from ``GMXRC`` provided in *gmxrc*.
+    """Set the environment from ``GMXRC``.
 
-    Runs ``GMXRC`` in a subprocess and puts environment variables loaded by it
+    Runs ``gmxrc`` in a subprocess and puts environment variables loaded by it
     into this Python environment.
 
-    If *gmxrc* evaluates to ``False`` then nothing is done. If errors occur
-    then only a warning will be logged. Thus, it should be safe to just call
-    this function.
-
+    :param gmxrc: GMXRC file path
     """
-
     envvars = ['GMXPREFIX', 'GMXBIN', 'GMXLDLIB', 'GMXMAN', 'GMXDATA',
                'GROMACS_DIR', 'LD_LIBRARY_PATH', 'MANPATH', 'PKG_CONFIG_PATH',
                'PATH']
     cmdargs = ['bash', '-c', ". {0} && echo {1}".format(gmxrc,
                ' '.join(['${0}'.format(v) for v in envvars]))]
 
-    if not gmxrc:
-        logger.debug("set_gmxrc_environment(): no GMXRC, nothing done.")
-        return
+    if not os.path.isfile(gmxrc):
+        raise ValueError("'%s' must be a file")
 
     try:
         out = subprocess.check_output(cmdargs)
@@ -722,12 +714,4 @@ def set_gmxrc_environment(gmxrc):
             os.environ[key] = value
             logger.debug("set_gmxrc_environment(): %s = %r", key, value)
     except (subprocess.CalledProcessError, OSError):
-        logger.warning("Failed to automatically set the Gromacs environment"
-                       "from GMXRC=%r", gmxrc)
-
-#: Python list of all tool file names. Filled from values in the tool
-#: groups in the configuration file.
-load_tools = []
-for g in cfg.getlist('Gromacs', 'groups', sort=False):
-     load_tools.extend(cfg.getlist('Gromacs', g))
-del g
+        logger.error("Failed to set the environment from GMXRC=%r", gmxrc)

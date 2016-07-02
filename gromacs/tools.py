@@ -102,7 +102,20 @@ TOOLS_V4 = ("do_dssp", "editconf", "eneconv", "g_anadock", "g_anaeig",
             "trjorder", "xpm2p")
 
 
+version = config.cfg.get('Gromacs', 'release')
+major_release = version.split('.')[0]
+
+
+def tool_factory(clsname, name, driver):
+    """ GromacsCommand derived class factory. """
+    return type(clsname, (GromacsCommand,), {
+        'command_name':name,
+        'driver': driver
+    })
+
+
 def append_suffix(name):
+    """ Append (or not) the optional command suffix. """
     suffix = config.cfg.get('Gromacs', 'suffix')
     if suffix:
         name += '_' + suffix
@@ -110,9 +123,8 @@ def append_suffix(name):
 
 
 def load_v5_tools():
-    """ Load Gromacs 5.x tools and returns a dict of tool names mapped to
-    GromacsCommand classes
-    :return: dict of GromacsCommand classes
+    """ Load Gromacs 5.x tools.
+    :return: dict mapping tool names to GromacsCommand classes
     """
     driver = append_suffix('gmx')
     try:
@@ -125,32 +137,45 @@ def load_v5_tools():
         if line[4] != ' ':
             name = line[4:line.index(' ', 4)]
             fancy = name.replace('-', '_').capitalize()
-            tools[fancy] = type(fancy, (GromacsCommand,),
-                                   {'command_name':name, 'driver': driver})
+            tools[fancy] = tool_factory(fancy, name, driver)
     return tools
 
 
 def load_v4_tools():
-    """ Load Gromacs 4.x tools and returns a dict of tool names mapped to
-    GromacsCommand classes
-    :return: dict of GromacsCommand classes
+    """ Load Gromacs 4.x tools.
+    :return: dict mapping tool names to GromacsCommand classes
     """
-    tools = [append_suffix(t) for t in TOOLS_V4]
-    registry = {}
-    for tool in tools:
+    names = config.cfg.get("Gromacs", "tools")
+    if not names:
+        names = [append_suffix(t) for t in TOOLS_V4]
+    else:
+        names = names.split()
+
+    tools = {}
+    for tool in names:
         fancy = tool.capitalize()
-        registry[fancy] = type(fancy, (GromacsCommand,), {'command_name':tool})
+        tools[fancy] = tool_factory(fancy, tool, None)
 
     try:
         null = open(os.devnull, 'w')
         subprocess.check_call(['g_luck'], stdout=null, stderr=null)
     except subprocess.CalledProcessError:
         raise exceptions.GromacsToolLoadingError("Failed to load v4 tools")
-    return registry
+    return tools
 
 
-version = config.cfg.get('Gromacs', 'release')
-major_release = version.split('.')[0]
+def load_extra_tools():
+    """ Load extra tools.
+    :return: dict mapping tool names to GromacsCommand classes
+    """
+    names = config.cfg.get("Gromacs", "extra").split()
+    driver = append_suffix('gmx') if major_release == '5' else None
+    tools = {}
+    for name in names:
+        fancy = name.capitalize().replace('-', '_')
+        tools[name] = tool_factory(fancy, name, driver)
+    return tools
+
 
 if major_release == '5':
     registry = load_v5_tools()
@@ -159,6 +184,7 @@ elif major_release == '4':
 else:
     raise exceptions.GromacsToolLoadingError("Unknow Gromacs version %s" %
                                            version)
+registry.update(load_extra_tools())
 
 
 # Append class doc for each command
@@ -211,7 +237,6 @@ def merge_ndx(*args):
 
 class GromacsCommandMultiIndex(GromacsCommand):
         def __init__(self, **kwargs):
-            warnings.warn("use merge_ndx() instead", DeprecationWarning)
             kwargs = self._fake_multi_ndx(**kwargs)
             super(GromacsCommandMultiIndex, self).__init__(**kwargs)
 

@@ -243,7 +243,9 @@ def stop_logging():
 
 
 # Try to load environment variables set by GMXRC
-config.set_gmxrc_environment(config.cfg.getpath("Gromacs", "GMXRC"))
+gmxrc = config.cfg.getpath("Gromacs", "GMXRC")
+if gmxrc:
+    config.set_gmxrc_environment(gmxrc)
 
 
 # Add gromacs command **instances** to the top level.
