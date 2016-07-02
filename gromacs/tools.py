@@ -80,6 +80,7 @@ ALIASES5TO4 = {
     'solvate': 'genbox',
 }
 
+
 TOOLS_V4 = ("do_dssp", "editconf", "eneconv", "g_anadock", "g_anaeig",
             "g_analyze", "g_angle", "g_bar", "g_bond", "g_bundle", "g_chi",
             "g_cluster", "g_clustsize", "g_confrms", "g_covar", "g_current",
@@ -109,23 +110,31 @@ def append_suffix(name):
 
 
 def load_v5_tools():
+    """ Load Gromacs 5.x tools and returns a dict of tool names mapped to
+    GromacsCommand classes
+    :return: dict of GromacsCommand classes
+    """
     driver = append_suffix('gmx')
     try:
         out = subprocess.check_output([driver, '-quiet', 'help', 'commands'])
     except subprocess.CalledProcessError:
         raise exceptions.GromacsToolLoadingError("Failed to load v5 tools")
 
-    registry = {}
+    tools = {}
     for line in str(out).encode('ascii').splitlines()[5:-1]:
         if line[4] != ' ':
             name = line[4:line.index(' ', 4)]
             fancy = name.replace('-', '_').capitalize()
-            registry[fancy] = type(fancy, (GromacsCommand,),
+            tools[fancy] = type(fancy, (GromacsCommand,),
                                    {'command_name':name, 'driver': driver})
-    return registry
+    return tools
 
 
 def load_v4_tools():
+    """ Load Gromacs 4.x tools and returns a dict of tool names mapped to
+    GromacsCommand classes
+    :return: dict of GromacsCommand classes
+    """
     tools = [append_suffix(t) for t in TOOLS_V4]
     registry = {}
     for tool in tools:
@@ -140,32 +149,100 @@ def load_v4_tools():
     return registry
 
 
-
 version = config.cfg.get('Gromacs', 'release')
 major_release = version.split('.')[0]
 
 if major_release == '5':
     registry = load_v5_tools()
-
-    # Aliases to run unmodified GromacsWrapper scripts on a machine without
-    # Gromacs 4.x
-    for name in registry.copy():
-        for c4, c5 in ALIASES5TO4.items():
-            #have to check each one, since it's possible there are suffixes like
-            # for double precision
-            if name.startswith(c5):
-                # mantain suffix
-                registry[c4 + name.split(c5)] = registry[name]
-                break
-        else:
-            #the common case of just adding the 'g_'
-            registry['G_%s' % name.lower()] = registry[name]
-
 elif major_release == '4':
     registry = load_v4_tools()
 else:
     raise exceptions.GromacsToolLoadingError("Unknow Gromacs version %s" %
                                            version)
+
+
+# Append class doc for each command
+for cmd in registry.itervalues():
+    __doc__ += ".. class:: %s\n    :noindex:\n" % cmd.__name__
+
+
+# Aliases command names to run unmodified GromacsWrapper scripts on a machine
+# without Gromacs 4.x
+for name in registry.copy():
+    for c4, c5 in ALIASES5TO4.iteritems():
+        # have to check each one, since it's possible there are suffixes
+        # like for double precision
+        if name.startswith(c5):
+            # mantain suffix
+            registry[c4 + name.split(c5)] = registry[name]
+            break
+    else:
+        # the common case of just adding the 'g_'
+        registry['G_%s' % name.lower()] = registry[name]
+
+
+def merge_ndx(*args):
+    """ Takes one or more index files and optionally one structure file and
+    returns a path for a new merged index file.
+
+    :param args: index files and zero or one structure file
+    :return: path for the new merged index file
+    """
+    ndxs = []
+    struct = None
+    for fname in args:
+        if fname.endswith('.ndx'):
+            ndxs.append(fname)
+        else:
+            assert struct is None, "only one structure file supported"
+            struct = fname
+
+    fd, multi_ndx = tempfile.mkstemp(suffix='.ndx', prefix='multi_')
+
+    def unlink_multindx(fname):
+        os.unlink(fname)
+    atexit.register(unlink_multindx, multi_ndx)
+
+    if struct:
+        make_ndx = registry['Make_ndx'](f=struct, n=ndxs, o=multi_ndx)
+    else:
+        make_ndx = registry['Make_ndx'](n=ndxs, o=multi_ndx)
+
+    _, _, _ = make_ndx(input=['q'], stdout=False, stderr=False)
+    return multi_ndx
+
+
+class GromacsCommandMultiIndex(GromacsCommand):
+        def __init__(self, **kwargs):
+            warnings.warn("use merge_ndx() instead", DeprecationWarning)
+            kwargs = self._fake_multi_ndx(**kwargs)
+            super(GromacsCommandMultiIndex, self).__init__(**kwargs)
+
+        def run(self,*args,**kwargs):
+            kwargs = self._fake_multi_ndx(**kwargs)
+            return super(GromacsCommandMultiIndex, self).run(*args, **kwargs)
+
+        def _fake_multi_ndx(self, **kwargs):
+            ndx = kwargs.get('n')
+            if not (ndx is None or type(ndx) is str):
+                if len(ndx) > 1:
+                    kwargs['n'] = merge_ndx(ndx, kwargs.get('s'))
+            return kwargs
+
+
+for name4, name5 in [('G_mindist', 'Mindist'), ('G_dist', 'Distance')]:
+    klass = type(name4, (GromacsCommandMultiIndex,),  {
+        'command_name': registry[name5].command_name,
+        'driver': registry[name5].driver,
+        '__doc__': registry[name5].__doc__
+    })
+    registry[name4] = klass
+    registry[name5] = klass
+
+
+# 5.0.5 compatibility hack
+if 'Convert_tpr' in registry:
+    registry['Tpbconv'] = registry['Convert_tpr']
 
 
 # finally add command classes to module's scope
