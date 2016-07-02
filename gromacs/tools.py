@@ -52,7 +52,7 @@ __docformat__ = "restructuredtext en"
 
 import os.path, tempfile, subprocess, atexit, warnings
 
-from . import config, utilities, exceptions
+from . import config, exceptions
 from .core import GromacsCommand
 
 
@@ -198,10 +198,7 @@ def merge_ndx(*args):
             struct = fname
 
     fd, multi_ndx = tempfile.mkstemp(suffix='.ndx', prefix='multi_')
-
-    def unlink_multindx(fname):
-        os.unlink(fname)
-    atexit.register(unlink_multindx, multi_ndx)
+    atexit.register(os.unlink, multi_ndx)
 
     if struct:
         make_ndx = registry['Make_ndx'](f=struct, n=ndxs, o=multi_ndx)
