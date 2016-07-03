@@ -524,15 +524,16 @@ class GMXConfigParser(SafeConfigParser):
           SafeConfigParser.__init__(*args, **kwargs)  # old style class ... grmbl
           # defaults
           self.set('DEFAULT', 'configdir', defaults['configdir'])
-          self.set('DEFAULT', 'qscriptdir',
-                  os.path.join("%(configdir)s", os.path.basename(defaults['qscriptdir'])))
-          self.set('DEFAULT', 'templatesdir',
-                  os.path.join("%(configdir)s", os.path.basename(defaults['templatesdir'])))
-          self.set('DEFAULT', 'managerdir',
-                  os.path.join("%(configdir)s", os.path.basename(defaults['managerdir'])))
+          self.set('DEFAULT', 'qscriptdir', os.path.join("%(configdir)s",
+                                    os.path.basename(defaults['qscriptdir'])))
+          self.set('DEFAULT', 'templatesdir', os.path.join("%(configdir)s",
+                                    os.path.basename(defaults['templatesdir'])))
+          self.set('DEFAULT', 'managerdir', os.path.join("%(configdir)s",
+                                    os.path.basename(defaults['managerdir'])))
           self.add_section('Gromacs')
           self.set("Gromacs", "GMXRC", "")
-          self.set("Gromacs", "tools", "")
+          self.set("Gromacs", "tools", "pdb2gmx editconf grompp genbox genion"
+                                       "mdrun trjcat trjconv")
           self.set("Gromacs", "extra", "")
           self.set("Gromacs", "suffix", "")
           self.set("Gromacs", "groups", "tools")
@@ -690,22 +691,30 @@ def check_setup():
 check_setup()
 
 
-def set_gmxrc_environment(gmxrc):
-    """Set the environment from ``GMXRC``.
+# Gromacs tools
+# -------------
 
-    Runs ``gmxrc`` in a subprocess and puts environment variables loaded by it
+def set_gmxrc_environment(gmxrc):
+    """Set the environment from ``GMXRC`` provided in *gmxrc*.
+
+    Runs ``GMXRC`` in a subprocess and puts environment variables loaded by it
     into this Python environment.
 
-    :param gmxrc: GMXRC file path
+    If *gmxrc* evaluates to ``False`` then nothing is done. If errors occur
+    then only a warning will be logged. Thus, it should be safe to just call
+    this function.
+
     """
+
     envvars = ['GMXPREFIX', 'GMXBIN', 'GMXLDLIB', 'GMXMAN', 'GMXDATA',
                'GROMACS_DIR', 'LD_LIBRARY_PATH', 'MANPATH', 'PKG_CONFIG_PATH',
                'PATH']
     cmdargs = ['bash', '-c', ". {0} && echo {1}".format(gmxrc,
                ' '.join(['${0}'.format(v) for v in envvars]))]
 
-    if not os.path.isfile(gmxrc):
-        raise ValueError("'%s' must be a file")
+    if not gmxrc:
+        logger.debug("set_gmxrc_environment(): no GMXRC, nothing done.")
+        return
 
     try:
         out = subprocess.check_output(cmdargs)
@@ -714,4 +723,12 @@ def set_gmxrc_environment(gmxrc):
             os.environ[key] = value
             logger.debug("set_gmxrc_environment(): %s = %r", key, value)
     except (subprocess.CalledProcessError, OSError):
-        logger.error("Failed to set the environment from GMXRC=%r", gmxrc)
+        logger.warning("Failed to automatically set the Gromacs environment"
+                       "from GMXRC=%r", gmxrc)
+
+#: Python list of all tool file names. Filled from values in the tool
+#: groups in the configuration file.
+load_tools = []
+for g in cfg.getlist('Gromacs', 'groups', sort=False):
+     load_tools.extend(cfg.getlist('Gromacs', g))
+del g
