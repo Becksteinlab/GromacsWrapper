@@ -533,7 +533,6 @@ class GMXConfigParser(SafeConfigParser):
           self.set("Gromacs", "GMXRC", "")
           self.set("Gromacs", "tools", "pdb2gmx editconf grompp genbox genion mdrun trjcat trjconv")
           self.set("Gromacs", "extra", "")
-          self.set("Gromacs", "suffix", "")
           self.set("Gromacs", "groups", "tools")
           self.add_section('Logging')
           self.set('Logging', 'logfilename', defaults['logfilename'])
@@ -725,9 +724,18 @@ def set_gmxrc_environment(gmxrc):
         logger.warning("Failed to automatically set the Gromacs environment"
                        "from GMXRC=%r", gmxrc)
 
-#: Python list of all tool file names. Filled from values in the tool
-#: groups in the configuration file.
-load_tools = []
-for g in cfg.getlist('Gromacs', 'groups', sort=False):
-     load_tools.extend(cfg.getlist('Gromacs', g))
-del g
+
+def get_tools():
+    """ Get tool names from all configured groups.
+
+    :return: list of tool names
+
+    """
+    load_tools = []
+    for g in cfg.getlist('Gromacs', 'groups', sort=False):
+         load_tools.extend(cfg.getlist('Gromacs', g, sort=False))
+    return load_tools
+
+
+RELEASE = cfg.get('Gromacs', 'release')
+MAJOR_RELEASE = RELEASE.split('.')[0]

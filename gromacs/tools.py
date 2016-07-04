@@ -90,54 +90,21 @@ ALIASES5TO4 = {
 }
 
 
-TOOLS_V4 = ("do_dssp", "editconf", "eneconv", "g_anadock", "g_anaeig",
-            "g_analyze", "g_angle", "g_bar", "g_bond", "g_bundle", "g_chi",
-            "g_cluster", "g_clustsize", "g_confrms", "g_covar", "g_current",
-            "g_density", "g_densmap", "g_densorder", "g_dielectric",
-            "g_dipoles", "g_disre", "g_dist", "g_dos", "g_dyecoupl", "g_dyndom",
-            "genbox", "genconf", "g_enemat", "g_energy", "genion", "genrestr",
-            "g_filter", "g_gyrate", "g_h2order", "g_hbond", "g_helix",
-            "g_helixorient", "g_hydorder", "g_kinetics", "g_lie", "g_luck",
-            "g_mdmat", "g_membed", "g_mindist", "g_morph", "g_msd",
-            "gmxcheck", "gmxdump", "g_nmeig", "g_nmens", "g_nmtraj", "g_options",
-            "g_order", "g_pme_error", "g_polystat", "g_potential",
-            "g_principal", "g_protonate", "g_rama", "g_rdf", "g_rms",
-            "g_rmsdist", "g_rmsf", "grompp", "g_rotacf", "g_rotmat",
-            "g_saltbr", "g_sans", "g_sas", "g_select", "g_sgangle", "g_sham",
-            "g_sigeps", "g_sorient", "g_spatial", "g_spol", "g_tcaf",
-            "g_traj", "g_tune_pme", "g_vanhove", "g_velacc", "g_wham",
-            "g_wheel", "g_x2top", "g_xrama", "make_edi", "make_ndx", "mdrun",
-            "mk_angndx", "ngmx", "pdb2gmx", "tpbconv", "trjcat", "trjconv",
-            "trjorder", "xpm2p")
-
-
-version = config.cfg.get('Gromacs', 'release')
-major_release = version.split('.')[0]
-
-
-def tool_factory(clsname, name, driver):
-    """ GromacsCommand derived class factory. """
+def tool_factory(clsname, name):
+    """ GromacsCommand derived type factory. """
     return type(clsname, (GromacsCommand,), {
-        'command_name':name,
-        'driver': driver
+        'command_name': name,
+        'driver': 'gmx' if config.MAJOR_RELEASE == '5' else None
     })
-
-
-def append_suffix(name):
-    """ Append (or not) the optional command suffix. """
-    suffix = config.cfg.get('Gromacs', 'suffix')
-    if suffix:
-        name += '_' + suffix
-    return name
 
 
 def load_v5_tools():
     """ Load Gromacs 5.x tools.
+
     :return: dict mapping tool names to GromacsCommand classes
     """
-    driver = append_suffix('gmx')
     try:
-        out = subprocess.check_output([driver, '-quiet', 'help', 'commands'])
+        out = subprocess.check_output(['gmx', '-quiet', 'help', 'commands'])
     except subprocess.CalledProcessError:
         raise exceptions.GromacsToolLoadingError("Failed to load v5 tools")
 
@@ -146,25 +113,19 @@ def load_v5_tools():
         if line[4] != ' ':
             name = line[4:line.index(' ', 4)]
             fancy = name.replace('-', '_').capitalize()
-            tools[fancy] = tool_factory(fancy, name, driver)
+            tools[fancy] = tool_factory(fancy, name)
     return tools
 
 
 def load_v4_tools():
     """ Load Gromacs 4.x tools.
+
     :return: dict mapping tool names to GromacsCommand classes
     """
-    names = config.cfg.get("Gromacs", "tools")
-    if not names:
-        names = [append_suffix(t) for t in TOOLS_V4]
-    else:
-        names = names.split()
-
     tools = {}
-    for tool in names:
-        fancy = tool.capitalize()
-        tools[fancy] = tool_factory(fancy, tool, None)
-
+    for name in config.get_tools():
+        fancy = name.capitalize().replace('-', '_')
+        tools[fancy] = tool_factory(fancy, name)
     try:
         null = open(os.devnull, 'w')
         subprocess.check_call(['g_luck'], stdout=null, stderr=null)
@@ -175,24 +136,24 @@ def load_v4_tools():
 
 def load_extra_tools():
     """ Load extra tools.
+
     :return: dict mapping tool names to GromacsCommand classes
     """
     names = config.cfg.get("Gromacs", "extra").split()
-    driver = append_suffix('gmx') if major_release == '5' else None
     tools = {}
     for name in names:
         fancy = name.capitalize().replace('-', '_')
-        tools[name] = tool_factory(fancy, name, driver)
+        tools[name] = tool_factory(fancy, name)
     return tools
 
 
-if major_release == '5':
+if config.MAJOR_RELEASE == '5':
     registry = load_v5_tools()
-elif major_release == '4':
+elif config.MAJOR_RELEASE == '4':
     registry = load_v4_tools()
 else:
     raise exceptions.GromacsToolLoadingError("Unknow Gromacs version %s" %
-                                           version)
+                                           config.RELEASE)
 registry.update(load_extra_tools())
 
 
