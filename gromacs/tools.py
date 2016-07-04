@@ -254,13 +254,14 @@ class GromacsCommandMultiIndex(GromacsCommand):
 
 
 for name4, name5 in [('G_mindist', 'Mindist'), ('G_dist', 'Distance')]:
-    klass = type(name4, (GromacsCommandMultiIndex,),  {
-        'command_name': registry[name5].command_name,
-        'driver': registry[name5].driver,
-        '__doc__': registry[name5].__doc__
-    })
-    registry[name4] = klass
-    registry[name5] = klass
+    if name5 in registry:
+        klass = type(name4, (GromacsCommandMultiIndex,),  {
+            'command_name': registry[name5].command_name,
+            'driver': registry[name5].driver,
+            '__doc__': registry[name5].__doc__
+        })
+        registry[name4] = klass
+        registry[name5] = klass
 
 
 # 5.0.5 compatibility hack
