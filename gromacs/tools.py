@@ -12,25 +12,33 @@ with initial default values.
 
 By convention, a class has the capitalized name of the corresponding Gromacs
 tool; dots are replaced by underscores to make it a valid python identifier.
-Gromacs 5 tools (e.g, `sasa`) are aliased to their Gromacs 4 tool names
-(e.g, `g_sas`) for backwards compatibility.
+Gromacs 5 tools (e.g, `sasa`) are aliased to their Gromacs 4 tool names (e.g, `g_sas`)
+for backwards compatibility.
 
 The list of Gromacs tools to be loaded is configured in
 :data:`gromacs.config.gmx_tool_groups`.
 
+It is also possible to extend the basic commands and patch in additional
+functionality. For example, the :class:`GromacsCommandMultiIndex` class makes a
+command accept multiple index files and concatenates them on the fly; the
+behaviour mimics Gromacs' "multi-file" input that has not yet been enabled for
+all tools.
+
+.. autoclass:: GromacsCommandMultiIndex
+   :members: run, _fake_multi_ndx, __del__
+
 Example
 -------
 
-In this example we create two instances of the :class:`gromacs.tools.Trjconv`
-command (which runs the Gromacs ``trjconv`` command)::
+In this example we create two instances of the :class:`gromacs.tools.Trjconv` command (which
+runs the Gromacs ``trjconv`` command)::
 
   import gromacs.tools as tools
 
   trjconv = tools.Trjconv()
   trjconv_compact = tools.Trjconv(ur='compact', center=True, boxcenter='tric', pbc='mol',
                                   input=('protein','system'),
-                                  doc="Returns a compact representation of the"
-                                      "system centered on the protein")
+                                  doc="Returns a compact representation of the system centered on the protein")
 
 The first one, ``trjconv``, behaves as the standard commandline tool but the
 second one, ``trjconv_compact``, will by default create a compact
@@ -72,8 +80,8 @@ ALIASES5TO4 = {
     'mdrun': 'mdrun',
     'make_ndx': 'make_ndx',
     'make_edi': 'make_edi',
-    'dump': 'gmxdump',
-    'check': 'gmxcheck',
+    'gmxdump': 'gmxdump',
+    'gmxcheck': 'gmxcheck',
     'genrestr': 'genrestr',
     'genion': 'genion',
     'genconf': 'genconf',

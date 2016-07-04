@@ -523,17 +523,15 @@ class GMXConfigParser(SafeConfigParser):
           args = tuple([self] + list(args))
           SafeConfigParser.__init__(*args, **kwargs)  # old style class ... grmbl
           # defaults
-          self.set('DEFAULT', 'configdir', defaults['configdir'])
-          self.set('DEFAULT', 'qscriptdir', os.path.join("%(configdir)s",
-                                    os.path.basename(defaults['qscriptdir'])))
-          self.set('DEFAULT', 'templatesdir', os.path.join("%(configdir)s",
-                                    os.path.basename(defaults['templatesdir'])))
-          self.set('DEFAULT', 'managerdir', os.path.join("%(configdir)s",
-                                    os.path.basename(defaults['managerdir'])))
+          self.set('DEFAULT', 'qscriptdir',
+                  os.path.join("%(configdir)s", os.path.basename(defaults['qscriptdir'])))
+          self.set('DEFAULT', 'templatesdir',
+                  os.path.join("%(configdir)s", os.path.basename(defaults['templatesdir'])))
+          self.set('DEFAULT', 'managerdir',
+                  os.path.join("%(configdir)s", os.path.basename(defaults['managerdir'])))
           self.add_section('Gromacs')
           self.set("Gromacs", "GMXRC", "")
-          self.set("Gromacs", "tools", "pdb2gmx editconf grompp genbox genion"
-                                       "mdrun trjcat trjconv")
+          self.set("Gromacs", "tools", "pdb2gmx editconf grompp genbox genion mdrun trjcat trjconv")
           self.set("Gromacs", "extra", "")
           self.set("Gromacs", "suffix", "")
           self.set("Gromacs", "groups", "tools")
@@ -689,6 +687,7 @@ def check_setup():
      return is_complete
 
 check_setup()
+
 
 
 # Gromacs tools
