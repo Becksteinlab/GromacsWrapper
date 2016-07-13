@@ -573,16 +573,6 @@ class GMXConfigParser(SafeConfigParser):
           """Return option as an expanded path."""
           return os.path.expanduser(os.path.expandvars(self.get(section, option)))
 
-     def getlist(self, section, option, separator=None, sort=True):
-          """Return *option* as a a list of strings.
-
-          Split on white space or *separator*. Sort for *sort* = ``True``.
-          """
-          l = self.get(section, option).split(separator)
-          if sort:
-               l.sort()
-          return l
-
      def getLogLevel(self, section, option):
           """Return the textual representation of logging level 'option' or the number.
 
