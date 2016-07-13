@@ -68,12 +68,12 @@ from . import config, exceptions
 from .core import GromacsCommand
 
 
-V4TOOLS = ("demux.pl", "g_cluster", "g_dyndom", "g_mdmat", "g_principal",
-           "g_select", "g_wham", "mdrun", "do_dssp", "g_clustsize", "g_enemat",
-           "g_membed", "g_protonate", "g_sgangle", "g_wheel", "mdrun_d",
-           "editconf", "g_confrms", "g_energy", "g_mindist", "g_rama", "g_sham",
-           "g_x2top", "mk_angndx", "eneconv", "g_covar", "g_filter", "g_morph",
-           "g_rdf", "g_sigeps", "genbox", "pdb2gmx", "g_anadock", "g_current",
+V4TOOLS = ("g_cluster", "g_dyndom", "g_mdmat", "g_principal", "g_select",
+           "g_wham", "mdrun", "do_dssp", "g_clustsize", "g_enemat", "g_membed",
+           "g_protonate", "g_sgangle", "g_wheel", "mdrun_d", "editconf",
+           "g_confrms", "g_energy", "g_mindist", "g_rama", "g_sham", "g_x2top",
+           "mk_angndx", "eneconv", "g_covar", "g_filter", "g_morph", "g_rdf",
+           "g_sigeps", "genbox", "pdb2gmx", "g_anadock", "g_current",
            "g_gyrate", "g_msd", "g_sorient", "genconf", "g_anaeig", "g_density",
            "g_h2order", "g_nmeig", "g_rms", "g_spatial", "genion", "tpbconv",
            "g_analyze", "g_densmap", "g_hbond", "g_nmens", "g_rmsdist",
@@ -81,18 +81,32 @@ V4TOOLS = ("demux.pl", "g_cluster", "g_dyndom", "g_mdmat", "g_principal",
            "g_nmtraj", "g_rmsf", "g_tcaf", "gmxcheck", "trjconv", "g_bar",
            "g_dih", "g_helixorient", "g_order", "g_rotacf", "g_traj", "gmxdump",
            "trjorder", "g_bond", "g_dipoles", "g_kinetics", "g_pme_error",
-           "g_rotmat", "g_tune_pme", "grompp", "xplor2gmx.pl", "g_bundle",
-           "g_disre", "g_lie", "g_polystat", "g_saltbr", "g_vanhove",
-           "make_edi", "xpm2ps", "g_chi", "g_dist", "g_luck", "g_potential",
-           "g_sas", "g_velacc", "make_ndx")
+           "g_rotmat", "g_tune_pme", "grompp", "g_bundle", "g_disre", "g_lie",
+           "g_polystat", "g_saltbr", "g_vanhove", "make_edi", "xpm2ps", "g_chi",
+           "g_dist", "g_luck", "g_potential", "g_sas", "g_velacc", "make_ndx")
 
 
 ALIASES5TO4 = {
-    'convert_tpr': 'tpbconv',
-    'check': 'gmxcheck',
-    'distance': 'g_dist',
-    'dump': 'gmxdump',
+    'grompp': 'grompp',
+    'eneconv': 'eneconv',
     'sasa': 'g_sas',
+    'distance': 'g_dist',
+    'convert_tpr': 'tpbconv',
+    'editconf': 'editconf',
+    'pdb2gmx': 'pdb2gmx',
+    'trjcat': 'trjcat',
+    'trjconv': 'trjconv',
+    'trjorder': 'trjorder',
+    'xpm2ps': 'xpm2ps',
+    'mdrun': 'mdrun',
+    'make_ndx': 'make_ndx',
+    'make_edi': 'make_edi',
+    'dump': 'gmxdump',
+    'check': 'gmxcheck',
+    'genrestr': 'genrestr',
+    'genion': 'genion',
+    'genconf': 'genconf',
+    'do_dssp': 'do_dssp',
     'solvate': 'genbox',
 }
 
@@ -125,29 +139,64 @@ def tool_factory(clsname, name, driver, doc=None):
     return type(clsname, (GromacsCommand,), clsdict)
 
 
+def find_executables(path):
+    execs = []
+    for exe in os.listdir(path):
+        fullexe = os.path.join(path, exe)
+        if (os.access(fullexe, os.X_OK) and not os.path.isdir(fullexe) and
+             exe not in ['GMXRC', 'GMXRC.bash', 'GMXRC.csh', 'GMXRC.zsh',
+                         'demux.pl', 'xplor2gmx.pl']):
+            execs.append(exe)
+    return execs
+
+
 def load_v5_tools():
-    """ Load Gromacs 5.x tools automatically inferred from running ``gmx help``.
+    """ Load Gromacs 5.x tools automatically using some heuristic.
+
+    Tries to load tools (1) automatically from ``GMXBIN`` and (2) fails back to
+    configured tool groups if there are too many in the path and (3) then to a
+    list from running the command ``gmx help``.
 
     :return: dict mapping tool names to GromacsCommand classes
     """
-    try:
-        out = subprocess.check_output(['gmx', '-quiet', 'help', 'commands'])
-    except subprocess.CalledProcessError:
-        raise exceptions.GromacsToolLoadingError("Failed to load v5 tools")
+    drivers = []
+    if 'GMXBIN' in os.environ:
+        drivers = find_executables(os.environ['GMXBIN'])
+
+    # directory contains more binaries than there are gromacs drivers?
+    # (including single, double precision and mpi altogether)
+    if len(drivers) > 4:
+        drivers = config.get_tool_names()
+
+    if len(drivers) == 0:
+        drivers = ['gmx', 'gmx_d', 'gmx_mpi', 'gmx_mpi_d']
 
     tools = {}
-    for line in str(out).encode('ascii').splitlines()[5:-1]:
-        if line[4] != ' ':
-            name = line[4:line.index(' ', 4)]
-            fancy = name.replace('-', '_').capitalize()
-            tools[fancy] = tool_factory(fancy, name, 'gmx')
+    for driver in drivers:
+        try:
+            out = subprocess.check_output([driver, '-quiet', 'help',
+                                           'commands'])
+            for line in str(out).encode('ascii').splitlines()[5:-1]:
+                if line[4] != ' ':
+
+                    name = line[4:line.index(' ', 4)]
+                    fancy = name.replace('-', '_').capitalize()
+                    suffix = driver.partition('_')[2]
+                    if suffix:
+                        fancy = '%s_%s' % (fancy, suffix)
+                    tools[fancy] = tool_factory(fancy, name, driver)
+        except (subprocess.CalledProcessError, OSError):
+            pass
+
+    if len(tools) == 0:
+        raise exceptions.GromacsToolLoadingError("Failed to load v5 tools")
     return tools
 
 
 def load_v4_tools():
-    """ Load Gromacs 4.x tools.
+    """ Load Gromacs 4.x tools automatically using some heuristic.
 
-    Tries to load tools (1) automatically from ``GMXBIN`` and (2) fails over to
+    Tries to load tools (1) automatically from ``GMXBIN`` and (2) fails back to
     configured tool groups if there are too many in the path and (3) then to a
     prefilled list if none was configured.
 
@@ -155,12 +204,11 @@ def load_v4_tools():
     """
     names = []
     if 'GMXBIN' in os.environ:
-        for bin in os.listdir(os.environ['GMXBIN']):
-            if os.access(bin, os.X_OK) and not os.path.isdir(bin):
-                names.append(bin)
+        names = find_executables(os.environ['GMXBIN'])
 
     # directory contains more binaries than there are gromacs tools?
-    if len(names) > len(V4TOOLS):
+    # (including double single, double precision and mpi altogether)
+    if len(names) > len(V4TOOLS)*4:
         names = config.get_tool_names()
 
     if len(names) == 0:
@@ -168,12 +216,15 @@ def load_v4_tools():
 
     tools = {}
     for name in names:
+        try:
+            null = open(os.devnull, 'w')
+            subprocess.check_call([name], stdout=null, stderr=null)
+        except subprocess.CalledProcessError:
+            pass
         fancy = name.capitalize().replace('.', '_')
         tools[fancy] = tool_factory(fancy, name, None)
-    try:
-        null = open(os.devnull, 'w')
-        subprocess.check_call(['grompp'], stdout=null, stderr=null)
-    except subprocess.CalledProcessError:
+
+    if len(tools) == 0:
         raise exceptions.GromacsToolLoadingError("Failed to load v4 tools")
     return tools
 
@@ -225,8 +276,15 @@ if config.MAJOR_RELEASE == '5':
 elif config.MAJOR_RELEASE == '4':
     registry = load_v4_tools()
 else:
-    raise exceptions.GromacsToolLoadingError("Unknow Gromacs version %s" %
-                                           config.RELEASE)
+    try:
+        registry = load_v5_tools()
+    except exceptions.GromacsToolLoadingError:
+        try:
+            registry = load_v4_tools()
+        except exceptions.GromacsToolLoadingError:
+            raise exceptions.GromacsToolLoadingError(
+                "Unknow Gromacs version %s" % config.RELEASE)
+
 registry.update(load_extra_tools())
 
 
@@ -248,7 +306,6 @@ for name in registry.copy():
     else:
         # the common case of just adding the 'g_'
         registry['G_%s' % name.lower()] = registry[name]
-
 
 for name4, name5 in [('G_mindist', 'Mindist'), ('G_dist', 'Distance')]:
     if name4 in registry:
