@@ -725,7 +725,7 @@ def set_gmxrc_environment(gmxrc):
                        "from GMXRC=%r", gmxrc)
 
 
-def get_tools():
+def get_tool_names():
     """ Get tool names from all configured groups.
 
     :return: list of tool names

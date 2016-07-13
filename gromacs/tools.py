@@ -68,29 +68,50 @@ from . import config, exceptions
 from .core import GromacsCommand
 
 
+V4TOOLS = ("demux.pl", "g_cluster", "g_dyndom", "g_mdmat", "g_principal",
+           "g_select", "g_wham", "mdrun", "do_dssp", "g_clustsize", "g_enemat",
+           "g_membed", "g_protonate", "g_sgangle", "g_wheel", "mdrun_d",
+           "editconf", "g_confrms", "g_energy", "g_mindist", "g_rama", "g_sham",
+           "g_x2top", "mk_angndx", "eneconv", "g_covar", "g_filter", "g_morph",
+           "g_rdf", "g_sigeps", "genbox", "pdb2gmx", "g_anadock", "g_current",
+           "g_gyrate", "g_msd", "g_sorient", "genconf", "g_anaeig", "g_density",
+           "g_h2order", "g_nmeig", "g_rms", "g_spatial", "genion", "tpbconv",
+           "g_analyze", "g_densmap", "g_hbond", "g_nmens", "g_rmsdist",
+           "g_spol", "genrestr", "trjcat", "g_angle", "g_dielectric", "g_helix",
+           "g_nmtraj", "g_rmsf", "g_tcaf", "gmxcheck", "trjconv", "g_bar",
+           "g_dih", "g_helixorient", "g_order", "g_rotacf", "g_traj", "gmxdump",
+           "trjorder", "g_bond", "g_dipoles", "g_kinetics", "g_pme_error",
+           "g_rotmat", "g_tune_pme", "grompp", "xplor2gmx.pl", "g_bundle",
+           "g_disre", "g_lie", "g_polystat", "g_saltbr", "g_vanhove",
+           "make_edi", "xpm2ps", "g_chi", "g_dist", "g_luck", "g_potential",
+           "g_sas", "g_velacc", "make_ndx")
+
+
 ALIASES5TO4 = {
-    'grompp': 'grompp',
-    'eneconv': 'eneconv',
-    'sasa': 'g_sas',
-    'distance': 'g_dist',
     'convert_tpr': 'tpbconv',
-    'editconf': 'editconf',
-    'pdb2gmx': 'pdb2gmx',
-    'trjcat': 'trjcat',
-    'trjconv': 'trjconv',
-    'trjorder': 'trjorder',
-    'xpm2ps': 'xpm2ps',
-    'mdrun': 'mdrun',
-    'make_ndx': 'make_ndx',
-    'make_edi': 'make_edi',
-    'gmxdump': 'gmxdump',
-    'gmxcheck': 'gmxcheck',
-    'genrestr': 'genrestr',
-    'genion': 'genion',
-    'genconf': 'genconf',
-    'do_dssp': 'do_dssp',
+    'check': 'gmxcheck',
+    'distance': 'g_dist',
+    'dump': 'gmxdump',
+    'sasa': 'g_sas',
     'solvate': 'genbox',
 }
+
+
+class GromacsCommandMultiIndex(GromacsCommand):
+        def __init__(self, **kwargs):
+            kwargs = self._fake_multi_ndx(**kwargs)
+            super(GromacsCommandMultiIndex, self).__init__(**kwargs)
+
+        def run(self,*args,**kwargs):
+            kwargs = self._fake_multi_ndx(**kwargs)
+            return super(GromacsCommandMultiIndex, self).run(*args, **kwargs)
+
+        def _fake_multi_ndx(self, **kwargs):
+            ndx = kwargs.get('n')
+            if not (ndx is None or type(ndx) is str):
+                if len(ndx) > 1:
+                    kwargs['n'] = merge_ndx(ndx, kwargs.get('s'))
+            return kwargs
 
 
 def tool_factory(clsname, name, driver, doc=None):
@@ -126,11 +147,28 @@ def load_v5_tools():
 def load_v4_tools():
     """ Load Gromacs 4.x tools.
 
+    Tries to load tools (1) automatically from ``GMXBIN`` and (2) fails over to
+    configured tool groups if there are too many in the path and (3) then to a
+    prefilled list if none was configured.
+
     :return: dict mapping tool names to GromacsCommand classes
     """
+    names = []
+    if 'GMXBIN' in os.environ:
+        for bin in os.listdir(os.environ['GMXBIN']):
+            if os.access(bin, os.X_OK) and not os.path.isdir(bin):
+                names.append(bin)
+
+    # directory contains more binaries than there are gromacs tools?
+    if len(names) > len(V4TOOLS):
+        names = config.get_tool_names()
+
+    if len(names) == 0:
+        names = V4TOOLS[:]
+
     tools = {}
-    for name in config.get_tools():
-        fancy = name.capitalize().replace('-', '_')
+    for name in names:
+        fancy = name.capitalize().replace('.', '_')
         tools[fancy] = tool_factory(fancy, name, None)
     try:
         null = open(os.devnull, 'w')
@@ -152,6 +190,34 @@ def load_extra_tools():
         driver = 'gmx' if config.MAJOR_RELEASE == '5' else None
         tools[name] = tool_factory(fancy, name, driver)
     return tools
+
+
+def merge_ndx(*args):
+    """ Takes one or more index files and optionally one structure file and
+    returns a path for a new merged index file.
+
+    :param args: index files and zero or one structure file
+    :return: path for the new merged index file
+    """
+    ndxs = []
+    struct = None
+    for fname in args:
+        if fname.endswith('.ndx'):
+            ndxs.append(fname)
+        else:
+            assert struct is None, "only one structure file supported"
+            struct = fname
+
+    fd, multi_ndx = tempfile.mkstemp(suffix='.ndx', prefix='multi_')
+    atexit.register(os.unlink, multi_ndx)
+
+    if struct:
+        make_ndx = registry['Make_ndx'](f=struct, n=ndxs, o=multi_ndx)
+    else:
+        make_ndx = registry['Make_ndx'](n=ndxs, o=multi_ndx)
+
+    _, _, _ = make_ndx(input=['q'], stdout=False, stderr=False)
+    return multi_ndx
 
 
 if config.MAJOR_RELEASE == '5':
@@ -184,60 +250,16 @@ for name in registry.copy():
         registry['G_%s' % name.lower()] = registry[name]
 
 
-def merge_ndx(*args):
-    """ Takes one or more index files and optionally one structure file and
-    returns a path for a new merged index file.
-
-    :param args: index files and zero or one structure file
-    :return: path for the new merged index file
-    """
-    ndxs = []
-    struct = None
-    for fname in args:
-        if fname.endswith('.ndx'):
-            ndxs.append(fname)
-        else:
-            assert struct is None, "only one structure file supported"
-            struct = fname
-
-    fd, multi_ndx = tempfile.mkstemp(suffix='.ndx', prefix='multi_')
-    atexit.register(os.unlink, multi_ndx)
-
-    if struct:
-        make_ndx = registry['Make_ndx'](f=struct, n=ndxs, o=multi_ndx)
-    else:
-        make_ndx = registry['Make_ndx'](n=ndxs, o=multi_ndx)
-
-    _, _, _ = make_ndx(input=['q'], stdout=False, stderr=False)
-    return multi_ndx
-
-
-class GromacsCommandMultiIndex(GromacsCommand):
-        def __init__(self, **kwargs):
-            kwargs = self._fake_multi_ndx(**kwargs)
-            super(GromacsCommandMultiIndex, self).__init__(**kwargs)
-
-        def run(self,*args,**kwargs):
-            kwargs = self._fake_multi_ndx(**kwargs)
-            return super(GromacsCommandMultiIndex, self).run(*args, **kwargs)
-
-        def _fake_multi_ndx(self, **kwargs):
-            ndx = kwargs.get('n')
-            if not (ndx is None or type(ndx) is str):
-                if len(ndx) > 1:
-                    kwargs['n'] = merge_ndx(ndx, kwargs.get('s'))
-            return kwargs
-
-
 for name4, name5 in [('G_mindist', 'Mindist'), ('G_dist', 'Distance')]:
-    if name5 in registry:
+    if name4 in registry:
         klass = type(name4, (GromacsCommandMultiIndex,),  {
             'command_name': registry[name5].command_name,
             'driver': registry[name5].driver,
             '__doc__': registry[name5].__doc__
         })
         registry[name4] = klass
-        registry[name5] = klass
+        if config.MAJOR_RELEASE == '5':
+            registry[name5] = klass
 
 
 # 5.0.5 compatibility hack
