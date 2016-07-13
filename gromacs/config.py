@@ -266,7 +266,7 @@ completely transparent to the user.
 """
 from __future__ import absolute_import, with_statement
 
-import os, errno, subprocess
+import os, subprocess
 from ConfigParser import SafeConfigParser
 
 from pkg_resources import resource_filename, resource_listdir
@@ -729,7 +729,6 @@ def get_tools():
     """ Get tool names from all configured groups.
 
     :return: list of tool names
-
     """
     load_tools = []
     for g in cfg.getlist('Gromacs', 'groups', sort=False):
@@ -737,5 +736,9 @@ def get_tools():
     return load_tools
 
 
-RELEASE = cfg.get('Gromacs', 'release')
-MAJOR_RELEASE = RELEASE.split('.')[0]
+RELEASE = None
+MAJOR_RELEASE = None
+
+if cfg.get('Gromacs', 'release'):
+    RELEASE = cfg.get('Gromacs', 'release')
+    MAJOR_RELEASE = RELEASE.split('.')[0]

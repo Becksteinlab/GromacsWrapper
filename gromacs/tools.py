@@ -59,7 +59,10 @@ Gromacs tools
 from __future__ import absolute_import
 __docformat__ = "restructuredtext en"
 
-import os.path, tempfile, subprocess, atexit, warnings
+import os.path
+import tempfile
+import subprocess
+import atexit
 
 from . import config, exceptions
 from .core import GromacsCommand
@@ -90,16 +93,19 @@ ALIASES5TO4 = {
 }
 
 
-def tool_factory(clsname, name):
+def tool_factory(clsname, name, driver, doc=None):
     """ GromacsCommand derived type factory. """
-    return type(clsname, (GromacsCommand,), {
+    clsdict = {
         'command_name': name,
-        'driver': 'gmx' if config.MAJOR_RELEASE == '5' else None
-    })
+        'driver': driver
+    }
+    if doc:
+        clsdict['__doc__'] = doc
+    return type(clsname, (GromacsCommand,), clsdict)
 
 
 def load_v5_tools():
-    """ Load Gromacs 5.x tools.
+    """ Load Gromacs 5.x tools automatically inferred from running ``gmx help``.
 
     :return: dict mapping tool names to GromacsCommand classes
     """
@@ -113,7 +119,7 @@ def load_v5_tools():
         if line[4] != ' ':
             name = line[4:line.index(' ', 4)]
             fancy = name.replace('-', '_').capitalize()
-            tools[fancy] = tool_factory(fancy, name)
+            tools[fancy] = tool_factory(fancy, name, 'gmx')
     return tools
 
 
@@ -125,10 +131,10 @@ def load_v4_tools():
     tools = {}
     for name in config.get_tools():
         fancy = name.capitalize().replace('-', '_')
-        tools[fancy] = tool_factory(fancy, name)
+        tools[fancy] = tool_factory(fancy, name, None)
     try:
         null = open(os.devnull, 'w')
-        subprocess.check_call(['g_luck'], stdout=null, stderr=null)
+        subprocess.check_call(['grompp'], stdout=null, stderr=null)
     except subprocess.CalledProcessError:
         raise exceptions.GromacsToolLoadingError("Failed to load v4 tools")
     return tools
@@ -143,7 +149,8 @@ def load_extra_tools():
     tools = {}
     for name in names:
         fancy = name.capitalize().replace('-', '_')
-        tools[name] = tool_factory(fancy, name)
+        driver = 'gmx' if config.MAJOR_RELEASE == '5' else None
+        tools[name] = tool_factory(fancy, name, driver)
     return tools
 
 
