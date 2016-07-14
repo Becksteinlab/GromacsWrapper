@@ -11,12 +11,13 @@ instance of a gromacs command (:class:`gromacs.core.GromacsCommand`)
 with initial default values.
 
 By convention, a class has the capitalized name of the corresponding Gromacs
-tool; dots are replaced by underscores to make it a valid python identifier.
-Gromacs 5 tools (e.g, `sasa`) are aliased to their Gromacs 4 tool names (e.g, `g_sas`)
-for backwards compatibility.
+tool; dots and dashes are replaced by underscores to make it a valid python
+identifier. Gromacs 5 tools (e.g, `sasa`) are aliased to their Gromacs 4 tool
+names (e.g, `g_sas`) for backwards compatibility.
 
-The list of Gromacs tools to be loaded is configured in
-:data:`gromacs.config.gmx_tool_groups`.
+The list of Gromacs tools to be loaded is configured with the ``tools`` and
+``groups`` options of the ``~/.gromacswrapper.cfg`` file. If these options
+are not provided guesses are made.
 
 It is also possible to extend the basic commands and patch in additional
 functionality. For example, the :class:`GromacsCommandMultiIndex` class makes a
@@ -25,13 +26,12 @@ behaviour mimics Gromacs' "multi-file" input that has not yet been enabled for
 all tools.
 
 .. autoclass:: GromacsCommandMultiIndex
-   :members: run, _fake_multi_ndx, __del__
 
 Example
 -------
 
-In this example we create two instances of the :class:`gromacs.tools.Trjconv` command (which
-runs the Gromacs ``trjconv`` command)::
+In this example we create two instances of the :class:`gromacs.tools.Trjconv`
+command (which runs the Gromacs ``trjconv`` command)::
 
   import gromacs.tools as tools
 
@@ -153,22 +153,19 @@ def find_executables(path):
 def load_v5_tools():
     """ Load Gromacs 5.x tools automatically using some heuristic.
 
-    Tries to load tools (1) automatically from ``GMXBIN`` and (2) fails back to
-    configured tool groups if there are too many in the path and (3) then to a
-    list from running the command ``gmx help``.
+    Tries to load tools (1) using the driver from configured groups (2) and
+    fails back to automatic detection from ``GMXBIN`` (3) then to rough guesses.
+
+    In all cases the command ``gmx help`` is ran to get all tools available.
 
     :return: dict mapping tool names to GromacsCommand classes
     """
-    drivers = []
-    if 'GMXBIN' in os.environ:
+    drivers = config.get_tool_names()
+
+    if len(drivers) == 0 and 'GMXBIN' in os.environ:
         drivers = find_executables(os.environ['GMXBIN'])
 
-    # directory contains more binaries than there are gromacs drivers?
-    # (including single, double precision and mpi altogether)
-    if len(drivers) > 4:
-        drivers = config.get_tool_names()
-
-    if len(drivers) == 0:
+    if len(drivers) == 0 or len(drivers) > 4:
         drivers = ['gmx', 'gmx_d', 'gmx_mpi', 'gmx_mpi_d']
 
     tools = {}
@@ -196,22 +193,17 @@ def load_v5_tools():
 def load_v4_tools():
     """ Load Gromacs 4.x tools automatically using some heuristic.
 
-    Tries to load tools (1) automatically from ``GMXBIN`` and (2) fails back to
-    configured tool groups if there are too many in the path and (3) then to a
-    prefilled list if none was configured.
+    Tries to load tools (1) in configured tool groups (2) and fails back  to
+    automatic detection from ``GMXBIN`` (3) then to a prefilled list.
 
     :return: dict mapping tool names to GromacsCommand classes
     """
-    names = []
-    if 'GMXBIN' in os.environ:
+    names = config.get_tool_names()
+
+    if len(names) == 0 and 'GMXBIN' in os.environ:
         names = find_executables(os.environ['GMXBIN'])
 
-    # directory contains more binaries than there are gromacs tools?
-    # (including double single, double precision and mpi altogether)
-    if len(names) > len(V4TOOLS)*4:
-        names = config.get_tool_names()
-
-    if len(names) == 0:
+    if len(names) == 0 or len(names) > len(V4TOOLS) * 4:
         names = V4TOOLS[:]
 
     tools = {}
@@ -282,15 +274,10 @@ else:
         try:
             registry = load_v4_tools()
         except exceptions.GromacsToolLoadingError:
-            raise exceptions.GromacsToolLoadingError(
-                "Unknow Gromacs version %s" % config.RELEASE)
+
+            raise exceptions.GromacsToolLoadingError("Unable to load any tool")
 
 registry.update(load_extra_tools())
-
-
-# Append class doc for each command
-for cmd in registry.itervalues():
-    __doc__ += ".. class:: %s\n    :noindex:\n" % cmd.__name__
 
 
 # Aliases command names to run unmodified GromacsWrapper scripts on a machine
@@ -323,7 +310,12 @@ for name4, name5 in [('G_mindist', 'Mindist'), ('G_dist', 'Distance')]:
 if 'Convert_tpr' in registry:
     registry['Tpbconv'] = registry['Convert_tpr']
 
+# Append class doc for each command
+for cmd in registry.itervalues():
+    __doc__ += ".. class:: %s\n    :noindex:\n" % cmd.__name__
+
 
 # finally add command classes to module's scope
 globals().update(registry)
-__all__ = registry.keys()
+__all__ = ['GromacsCommandMultiIndex', 'merge_ndx']
+__all__ = __all__ + registry.keys()
