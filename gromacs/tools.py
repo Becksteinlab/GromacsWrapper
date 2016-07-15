@@ -122,9 +122,11 @@ class GromacsCommandMultiIndex(GromacsCommand):
 
         def _fake_multi_ndx(self, **kwargs):
             ndx = kwargs.get('n')
-            if not (ndx is None or type(ndx) is str):
+            if not (ndx is None or type(ndx) is basestring):
                 if len(ndx) > 1:
-                    kwargs['n'] = merge_ndx(ndx, kwargs.get('s'))
+                    if 's' in kwargs:
+                        ndx.append(kwargs.get('s'))
+                    kwargs['n'] = merge_ndx(*ndx)
             return kwargs
 
 
@@ -274,7 +276,6 @@ else:
         try:
             registry = load_v4_tools()
         except exceptions.GromacsToolLoadingError:
-
             raise exceptions.GromacsToolLoadingError("Unable to load any tool")
 
 registry.update(load_extra_tools())
