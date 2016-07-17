@@ -495,7 +495,7 @@ class GromacsCommand(Command):
         self.failuremode = kwargs.pop('failure','raise')
         self.extra_doc = kwargs.pop('doc',None)
         self.gmxargs = self._combineargs(*args, **kwargs)
-        self.__doc__ = self.gmxdoc
+        self._doc_cache = None
 
     def failuremode():
         doc = """mode determines how the GromacsCommand behaves during failure
@@ -600,18 +600,11 @@ class GromacsCommand(Command):
         return self._build_arg_list(**newargs)
 
     def _get_gmx_docs(self):
-        """Extract standard gromacs doc by running the program and chopping the header.
+        """Extract standard gromacs doc
 
-        .. Note::
-
-           The header is on STDOUT and is ignored. The docs are read from STDERR in GMX 4.
-           In GMX 5, the opposite is true (Grrr)
+        Extract by running the program and chopping the header to keep from
+        'DESCRIPTION' onwards.
         """
-        # Uses the class-wide arguments so that 'canned invocations' in cbook
-        # are accurately reflected. Might be a problem when these invocations
-        # supply wrong arguments... TODO: maybe check rc for that?
-        # use_input=False needed for running commands in cbook that have input pre-defined
-        # temporarily throttle logger to avoid reading about the help function invocation or not found
         logging.disable(logging.CRITICAL)
         try:
             rc,header,docs = self.run('h', stdout=PIPE, stderr=PIPE, use_input=False)
@@ -619,25 +612,25 @@ class GromacsCommand(Command):
             logging.critical("Invoking command {} failed when determining its doc string. Proceed with caution".format(self.command_name))
             return "(No Gromacs documentation available)"
         finally:
-            logging.disable(logging.NOTSET)     # ALWAYS restore logging....
-        m = re.match(self.doc_pattern, docs, re.DOTALL)    # keep from DESCRIPTION onwards
+            # ALWAYS restore logging...
+            logging.disable(logging.NOTSET)
+
+        # The header is on STDOUT and is ignored. The docs are read from STDERR in GMX 4.
+        m = re.match(self.doc_pattern, docs, re.DOTALL)
+
         if m is None:
-            m = re.match(self.doc_pattern, header, re.DOTALL)    # Try now with GMX 5 approach
+            # In GMX 5, the opposite is true (Grrr)
+            m = re.match(self.doc_pattern, header, re.DOTALL)
             if m is None:
                 return "(No Gromacs documentation available)"
         return m.group('DOCS')
 
     @property
-    def gmxdoc(self):
-        """Usage for the underlying Gromacs tool (cached)."""
-        if not (hasattr(self, '__doc_cache') and self.__doc_cache):
-            self.__doc_cache = self._get_gmx_docs()
-        docs = self.__doc_cache
-        if self.extra_doc:
-            docs = '\n'.join([self.extra_doc,'',
-                              "Documentation of the gromacs tool", 34*'=',
-                              docs])
-        return docs
+    def __doc__(self):
+        if self._doc_cache is None:
+            self._doc_cache = self._get_gmx_docs()
+        return self._doc_cache
+
 
 class PopenWithInput(subprocess.Popen):
     """Popen class that knows its input.
