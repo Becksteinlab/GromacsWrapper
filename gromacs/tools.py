@@ -96,7 +96,7 @@ V4TOOLS = ("g_cluster", "g_dyndom", "g_mdmat", "g_principal", "g_select",
 
 
 NAMES5TO4 = {
-    # unchanged names
+    # same name in both versions
     'grompp': 'grompp',
     'eneconv': 'eneconv',
     'editconf': 'editconf',
@@ -350,7 +350,7 @@ for name4, name5 in [('G_mindist', 'Mindist'), ('G_dist', 'Distance')]:
             '__doc__': registry[name5].__doc__
         })
         registry[name4] = klass
-        if config.MAJOR_RELEASE == '5':
+        if name5 in registry == '5':
             registry[name5] = klass
 
 
