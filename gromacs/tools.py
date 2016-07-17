@@ -1,70 +1,79 @@
 # Copyright (c) 2009 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
-
 """
 :mod:`gromacs.tools` -- Gromacs commands classes
 ================================================
 
-A Gromacs command class acts as a factory function that produces an
-instance of a gromacs command (:class:`gromacs.core.GromacsCommand`)
-with initial default values.
+A Gromacs command class produces an instance of a Gromacs tool command (
+:class:`gromacs.core.GromacsCommand`), any argument or keyword argument
+supplied will be used as default values for when the command is run.
 
-By convention, a class has the capitalized name of the corresponding Gromacs
-tool; dots and dashes are replaced by underscores to make it a valid python
-identifier. Gromacs 5 tools (e.g, `sasa`) are aliased to their Gromacs 4 tool
-names (e.g, `g_sas`) for backwards compatibility.
+Classes has the same name of the corresponding Gromacs tool with the first
+letter capitalized and dot and dashes replaced by underscores to make it a
+valid python identifier. Gromacs 5 tools are also aliased to their Gromacs 4
+tool names (e.g, `sasa` to `g_sas`) for backwards compatibility.
 
-The list of Gromacs tools to be loaded is configured with the ``tools`` and
-``groups`` options of the ``~/.gromacswrapper.cfg`` file. If these options
-are not provided guesses are made.
+The list of tools to be loaded is configured with the ``tools`` and ``groups``
+options of the ``~/.gromacswrapper.cfg`` file. Guesses are made if these
+options are not provided.
 
-It is also possible to extend the basic commands and patch in additional
-functionality. For example, the :class:`GromacsCommandMultiIndex` class makes a
-command accept multiple index files and concatenates them on the fly; the
-behaviour mimics Gromacs' "multi-file" input that has not yet been enabled for
-all tools.
+In the following example we create two instances of the
+:class:`gromacs.tools.Trjconv` command (which runs the Gromacs ``trjconv``
+command)::
 
-.. autoclass:: GromacsCommandMultiIndex
+  from gromacs.tools import Trjconv
 
-Example
--------
-
-In this example we create two instances of the :class:`gromacs.tools.Trjconv`
-command (which runs the Gromacs ``trjconv`` command)::
-
-  import gromacs.tools as tools
-
-  trjconv = tools.Trjconv()
-  trjconv_compact = tools.Trjconv(ur='compact', center=True, boxcenter='tric', pbc='mol',
+  trjconv = Trjconv()
+  trjconv_compact = Trjconv(ur='compact', center=True, boxcenter='tric', pbc='mol',
                                   input=('protein','system'),
-                                  doc="Returns a compact representation of the system centered on the protein")
+                                  doc="Returns a compact representation of the"
+                                      " system centered on the protein")
 
 The first one, ``trjconv``, behaves as the standard commandline tool but the
 second one, ``trjconv_compact``, will by default create a compact
 representation of the input data by taking into account the shape of the unit
 cell. Of course, the same effect can be obtained by providing the corresponding
 arguments to ``trjconv`` but by naming the more specific command differently
-one can easily build up a library of small tools that will solve a specifi,
+one can easily build up a library of small tools that will solve a specific,
 repeatedly encountered problem reliably. This is particularly helpful when doing
 interactive work.
 
+Multi index
+-----------
+
+It is possible to extend the tool commands and patch in additional
+functionality. For example, the :class:`GromacsCommandMultiIndex` class makes a
+command accept multiple index files and concatenates them on the fly; the
+behaviour mimics Gromacs' "multi-file" input that has not yet been enabled for
+all tools.
+
+.. autoclass:: GromacsCommandMultiIndex
+.. autofunction:: merge_ndx
+
+Helpers
+-------
+
+.. autofunction:: tool_factory
+.. autofunction:: load_v4_tools
+.. autofunction:: load_v5_tools
+.. autofunction:: load_extra_tools
+.. autofunction:: find_executables
+.. autofunction:: make_valid_identifier
+.. autoexception:: GromacsToolLoadingError
+
 Gromacs tools
 -------------
-.. The docs for the tool classes are auto generated.
 
-.. autoclass:: Mdrun
-   :members:
 """
 from __future__ import absolute_import
-__docformat__ = "restructuredtext en"
 
 import os.path
 import tempfile
 import subprocess
 import atexit
 
-from . import config, exceptions
+from . import config
 from .core import GromacsCommand
 
 
@@ -86,12 +95,10 @@ V4TOOLS = ("g_cluster", "g_dyndom", "g_mdmat", "g_principal", "g_select",
            "g_dist", "g_luck", "g_potential", "g_sas", "g_velacc", "make_ndx")
 
 
-ALIASES5TO4 = {
+NAMES5TO4 = {
+    # unchanged names
     'grompp': 'grompp',
     'eneconv': 'eneconv',
-    'sasa': 'g_sas',
-    'distance': 'g_dist',
-    'convert_tpr': 'tpbconv',
     'editconf': 'editconf',
     'pdb2gmx': 'pdb2gmx',
     'trjcat': 'trjcat',
@@ -101,37 +108,55 @@ ALIASES5TO4 = {
     'mdrun': 'mdrun',
     'make_ndx': 'make_ndx',
     'make_edi': 'make_edi',
-    'dump': 'gmxdump',
-    'check': 'gmxcheck',
     'genrestr': 'genrestr',
     'genion': 'genion',
     'genconf': 'genconf',
     'do_dssp': 'do_dssp',
+
+    # changed names
+    'convert_tpr': 'tpbconv',
+    'dump': 'gmxdump',
+    'check': 'gmxcheck',
     'solvate': 'genbox',
+    'distance': 'g_dist',
+    'sasa': 'g_sas',
+    'gangle': 'g_sgangle',
 }
 
 
+class GromacsToolLoadingError(Exception):
+    """Raised when could not find any Gromacs command."""
+
+
 class GromacsCommandMultiIndex(GromacsCommand):
-        def __init__(self, **kwargs):
-            kwargs = self._fake_multi_ndx(**kwargs)
-            super(GromacsCommandMultiIndex, self).__init__(**kwargs)
+    """ Command class that accept multiple index files.
 
-        def run(self,*args,**kwargs):
-            kwargs = self._fake_multi_ndx(**kwargs)
-            return super(GromacsCommandMultiIndex, self).run(*args, **kwargs)
+    It works combining multiple index files into a single temporary one so
+    that tools that do not (yet) support multi index files as input can be
+    used as if they did.
 
-        def _fake_multi_ndx(self, **kwargs):
-            ndx = kwargs.get('n')
-            if not (ndx is None or type(ndx) is basestring):
-                if len(ndx) > 1:
-                    if 's' in kwargs:
-                        ndx.append(kwargs.get('s'))
-                    kwargs['n'] = merge_ndx(*ndx)
-            return kwargs
+    It creates a new file only if multiple index files are supplied.
+    """
+    def __init__(self, **kwargs):
+        kwargs = self._fake_multi_ndx(**kwargs)
+        super(GromacsCommandMultiIndex, self).__init__(**kwargs)
+
+    def run(self,*args,**kwargs):
+        kwargs = self._fake_multi_ndx(**kwargs)
+        return super(GromacsCommandMultiIndex, self).run(*args, **kwargs)
+
+    def _fake_multi_ndx(self, **kwargs):
+        ndx = kwargs.get('n')
+        if not (ndx is None or type(ndx) is basestring):
+            if len(ndx) > 1:
+                if 's' in kwargs:
+                    ndx.append(kwargs.get('s'))
+                kwargs['n'] = merge_ndx(*ndx)
+        return kwargs
 
 
 def tool_factory(clsname, name, driver, doc=None):
-    """ GromacsCommand derived type factory. """
+    """ Factory for GromacsCommand derived types. """
     clsdict = {
         'command_name': name,
         'driver': driver
@@ -141,7 +166,24 @@ def tool_factory(clsname, name, driver, doc=None):
     return type(clsname, (GromacsCommand,), clsdict)
 
 
+def make_valid_identifier(name):
+    """ Turns tool names into valid identifiers.
+
+    :param name: tool name
+    :return: valid identifier
+    """
+    return name.replace('-', '_').capitalize()
+
+
 def find_executables(path):
+    """ Find executables in a path.
+
+    Searches executables in a directory excluding some know commands
+    unusable with GromacsWrapper.
+
+    :param path: dirname to search for
+    :return: list of executables
+    """
     execs = []
     for exe in os.listdir(path):
         fullexe = os.path.join(path, exe)
@@ -179,7 +221,7 @@ def load_v5_tools():
                 if line[4] != ' ':
 
                     name = line[4:line.index(' ', 4)]
-                    fancy = name.replace('-', '_').capitalize()
+                    fancy = make_valid_identifier(name)
                     suffix = driver.partition('_')[2]
                     if suffix:
                         fancy = '%s_%s' % (fancy, suffix)
@@ -188,7 +230,7 @@ def load_v5_tools():
             pass
 
     if len(tools) == 0:
-        raise exceptions.GromacsToolLoadingError("Failed to load v5 tools")
+        raise GromacsToolLoadingError("Failed to load v5 tools")
     return tools
 
 
@@ -215,11 +257,11 @@ def load_v4_tools():
             subprocess.check_call([name], stdout=null, stderr=null)
         except subprocess.CalledProcessError:
             pass
-        fancy = name.capitalize().replace('.', '_')
+        fancy = make_valid_identifier(name)
         tools[fancy] = tool_factory(fancy, name, None)
 
     if len(tools) == 0:
-        raise exceptions.GromacsToolLoadingError("Failed to load v4 tools")
+        raise GromacsToolLoadingError("Failed to load v4 tools")
     return tools
 
 
@@ -231,7 +273,7 @@ def load_extra_tools():
     names = config.cfg.get("Gromacs", "extra").split()
     tools = {}
     for name in names:
-        fancy = name.capitalize().replace('-', '_')
+        fancy = make_valid_identifier(name)
         driver = 'gmx' if config.MAJOR_RELEASE == '5' else None
         tools[name] = tool_factory(fancy, name, driver)
     return tools
@@ -272,28 +314,33 @@ elif config.MAJOR_RELEASE == '4':
 else:
     try:
         registry = load_v5_tools()
-    except exceptions.GromacsToolLoadingError:
+    except GromacsToolLoadingError:
         try:
             registry = load_v4_tools()
-        except exceptions.GromacsToolLoadingError:
-            raise exceptions.GromacsToolLoadingError("Unable to load any tool")
+        except GromacsToolLoadingError:
+            raise GromacsToolLoadingError("Unable to load any tool")
 
 registry.update(load_extra_tools())
 
 
 # Aliases command names to run unmodified GromacsWrapper scripts on a machine
-# without Gromacs 4.x
-for name in registry.copy():
-    for c4, c5 in ALIASES5TO4.iteritems():
+# with only 5.x
+for fancy, cmd in registry.items():
+    for c5, c4 in NAMES5TO4.iteritems():
         # have to check each one, since it's possible there are suffixes
         # like for double precision
+        name = cmd.command_name
         if name.startswith(c5):
-            # mantain suffix
-            registry[c4 + name.split(c5)] = registry[name]
-            break
+            if c4 == c5:
+                break
+            else:
+                # mantain suffix
+                name = c4 + fancy.lower().split(c5)[1]
+                registry[make_valid_identifier(name)] = registry[fancy]
+                break
     else:
         # the common case of just adding the 'g_'
-        registry['G_%s' % name.lower()] = registry[name]
+        registry['G_%s' % fancy.lower()] = registry[fancy]
 
 for name4, name5 in [('G_mindist', 'Mindist'), ('G_dist', 'Distance')]:
     if name4 in registry:
@@ -312,8 +359,8 @@ if 'Convert_tpr' in registry:
     registry['Tpbconv'] = registry['Convert_tpr']
 
 # Append class doc for each command
-for cmd in registry.itervalues():
-    __doc__ += ".. class:: %s\n    :noindex:\n" % cmd.__name__
+for name in registry.iterkeys():
+    __doc__ += ".. class:: %s\n    :noindex:\n" % name
 
 
 # finally add command classes to module's scope
