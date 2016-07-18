@@ -391,6 +391,7 @@ class GromacsCommand(Command):
     The class doc string is dynamically replaced by the documentation of the
     gromacs command when an instance is created.
     """
+
     # TODO: setup the environment from GMXRC (can use env=DICT in Popen/call)
 
     command_name = None
@@ -624,12 +625,6 @@ class GromacsCommand(Command):
             if m is None:
                 return "(No Gromacs documentation available)"
         return m.group('DOCS')
-
-    @property
-    def __doc__(self):
-        if self._doc_cache is None:
-            self._doc_cache = self._get_gmx_docs()
-        return self._doc_cache
 
 
 class PopenWithInput(subprocess.Popen):
