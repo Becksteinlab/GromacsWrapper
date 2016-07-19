@@ -572,16 +572,6 @@ class GMXConfigParser(SafeConfigParser):
           """Return option as an expanded path."""
           return os.path.expanduser(os.path.expandvars(self.get(section, option)))
 
-     def getlist(self, section, option, separator=None, sort=True):
-          """Return *option* as a a list of strings.
-
-          Split on white space or *separator*. Sort for *sort* = ``True``.
-          """
-          l = self.get(section, option).split(separator)
-          if sort:
-               l.sort()
-          return l
-
      def getLogLevel(self, section, option):
           """Return the textual representation of logging level 'option' or the number.
 
@@ -668,29 +658,28 @@ def check_setup():
          return True
 
      is_complete = True
+     show_solution = False
+
      if not os.path.exists(CONFIGNAME):
           is_complete = False
-          print "NOTE: The global configuration file %(CONFIGNAME)r is missing." % globals()
-          print "      You can create a basic configuration file from within python:"
-          print "      >>> import gromacs"
-          print "      >>> gromacs.config.setup()"
+          show_solution = True
+          print("NOTE: The global configuration file %r is missing." % CONFIGNAME)
 
      missing = [d for d in config_directories if not os.path.exists(d)]
      if len(missing) > 0:
           is_complete = False
-          print "NOTE: Some configuration directories are not set up yet"
-          print "      %r" % missing
-          print "      You can create them with the command from within Python"
-          print "      >>> import gromacs"
-          print "      >>> gromacs.config.setup()"
+          show_solution = True
+          print("NOTE: Some configuration directories are not set up yet: ")
+          print("\t%s" % '\n\t'.join(missing))
+
+     if show_solution:
+          print("NOTE: You can create the configuration file and directories with:")
+          print("\t>>> import gromacs")
+          print("\t>>> gromacs.config.setup()")
      return is_complete
 
 check_setup()
 
-
-
-# Gromacs tools
-# -------------
 
 def set_gmxrc_environment(gmxrc):
     """Set the environment from ``GMXRC`` provided in *gmxrc*.
@@ -701,9 +690,7 @@ def set_gmxrc_environment(gmxrc):
     If *gmxrc* evaluates to ``False`` then nothing is done. If errors occur
     then only a warning will be logged. Thus, it should be safe to just call
     this function.
-
     """
-
     envvars = ['GMXPREFIX', 'GMXBIN', 'GMXLDLIB', 'GMXMAN', 'GMXDATA',
                'GROMACS_DIR', 'LD_LIBRARY_PATH', 'MANPATH', 'PKG_CONFIG_PATH',
                'PATH']
