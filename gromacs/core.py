@@ -383,13 +383,16 @@ class Command(object):
 
 
 class GromacsCommand(Command):
-    """Base class for wrapping a g_* command.
+    """Base class for wrapping a Gromacs tool.
 
     Limitations: User must have sourced ``GMXRC`` so that the python script can
     inherit the environment and find the gromacs programs.
 
     The class doc string is dynamically replaced by the documentation of the
-    gromacs command when an instance is created.
+    gromacs command the first time the doc string is requested. If the tool is
+    not available at the time (i.e., cannot be found on :env:`PATH`) then the
+    generic doc string is shown and an :exc:`OSError` exception is only raised
+    when the user is actually trying to the execute the command.
     """
 
     # TODO: setup the environment from GMXRC (can use env=DICT in Popen/call)
