@@ -128,7 +128,7 @@ for name in sorted(config.get_tool_names()):
         old_clsname = old_name.replace('.','_').replace('-','_').capitalize()
         cls = type(clsname, (GromacsCommand,), {'command_name': name,
                                                 'driver' :prefix,
-                                                '__doc__': "Gromacs tool '%(prefix) %(name)r'." % vars()})
+                                                '__doc__': property(GromacsCommand._get_gmx_docs)})
         #add alias for old name
         #No need to see if old_name == name since we'll just clobber the item in registry
         registry[old_clsname] = cls
@@ -137,7 +137,7 @@ for name in sorted(config.get_tool_names()):
         # make names valid python identifiers and use convention that class names are capitalized
         clsname = name.replace('.','_').replace('-','_').capitalize()
         cls = type(clsname, (GromacsCommand,), {'command_name': name,
-                                                '__doc__': "Gromacs tool %(name)r." % vars()})
+                                                '__doc__': property(GromacsCommand._get_gmx_docs)})
     registry[clsname] = cls      # registry keeps track of all classes
     # dynamically build the module doc string
     __doc__ += _generate_sphinx_class_string(clsname)
