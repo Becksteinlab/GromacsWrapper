@@ -497,7 +497,6 @@ class GromacsCommand(Command):
         """
         self.__failuremode = None
         self.failuremode = kwargs.pop('failure','raise')
-        self.extra_doc = kwargs.pop('doc',None)
         self.gmxargs = self._combineargs(*args, **kwargs)
         self._doc_cache = None
 
