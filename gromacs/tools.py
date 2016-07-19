@@ -103,7 +103,7 @@ aliases5to4 = {
     'solvate': 'genbox',
 }
 
-for name in sorted(config.load_tools):
+for name in sorted(config.get_tool_names()):
     # compatibility for 5.x 'gmx toolname': add as gmx:toolname
     if name.find(':') != -1:
         # Gromacs 5

@@ -573,16 +573,6 @@ class GMXConfigParser(SafeConfigParser):
           """Return option as an expanded path."""
           return os.path.expanduser(os.path.expandvars(self.get(section, option)))
 
-     def getlist(self, section, option, separator=None, sort=True):
-          """Return *option* as a a list of strings.
-
-          Split on white space or *separator*. Sort for *sort* = ``True``.
-          """
-          l = self.get(section, option).split(separator)
-          if sort:
-               l.sort()
-          return l
-
      def getLogLevel(self, section, option):
           """Return the textual representation of logging level 'option' or the number.
 
@@ -692,9 +682,6 @@ def check_setup():
 check_setup()
 
 
-# Gromacs tools
-# -------------
-
 def set_gmxrc_environment(gmxrc):
     """Set the environment from ``GMXRC`` provided in *gmxrc*.
 
@@ -704,9 +691,7 @@ def set_gmxrc_environment(gmxrc):
     If *gmxrc* evaluates to ``False`` then nothing is done. If errors occur
     then only a warning will be logged. Thus, it should be safe to just call
     this function.
-
     """
-
     envvars = ['GMXPREFIX', 'GMXBIN', 'GMXLDLIB', 'GMXMAN', 'GMXDATA',
                'GROMACS_DIR', 'LD_LIBRARY_PATH', 'MANPATH', 'PKG_CONFIG_PATH',
                'PATH']
@@ -727,9 +712,13 @@ def set_gmxrc_environment(gmxrc):
         logger.warning("Failed to automatically set the Gromacs environment"
                        "from GMXRC=%r", gmxrc)
 
-#: Python list of all tool file names. Filled from values in the tool
-#: groups in the configuration file.
-load_tools = []
-for g in cfg.getlist('Gromacs', 'groups', sort=False):
-     load_tools.extend(cfg.getlist('Gromacs', g))
-del g
+
+def get_tool_names():
+    """ Get tool names from all configured groups.
+
+    :return: list of tool names
+    """
+    names = []
+    for group in cfg.get('Gromacs', 'groups').split():
+        names.extend(cfg.get('Gromacs', group).split())
+    return names
