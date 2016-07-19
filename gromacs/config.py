@@ -730,10 +730,18 @@ def get_tool_names():
 
     :return: list of tool names
     """
-    load_tools = []
-    for g in cfg.getlist('Gromacs', 'groups', sort=False):
-         load_tools.extend(cfg.getlist('Gromacs', g, sort=False))
-    return load_tools
+    names = []
+    for group in cfg.get('Gromacs', 'groups').split():
+        names.extend(cfg.get('Gromacs', group).split())
+    return names
+
+
+def get_extra_tool_names():
+    """ Get tool names from all configured groups.
+
+    :return: list of tool names
+    """
+    return cfg.get('Gromacs', 'extra').split()
 
 
 RELEASE = None

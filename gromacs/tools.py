@@ -121,6 +121,9 @@ NAMES5TO4 = {
     'distance': 'g_dist',
     'sasa': 'g_sas',
     'gangle': 'g_sgangle',
+
+    # 5.0.5 compatibility hack
+    'tpbconv': 'convert_tpr'
 }
 
 
@@ -155,15 +158,13 @@ class GromacsCommandMultiIndex(GromacsCommand):
         return kwargs
 
 
-def tool_factory(clsname, name, driver, doc=None):
+def tool_factory(clsname, name, driver, base=GromacsCommand):
     """ Factory for GromacsCommand derived types. """
     clsdict = {
         'command_name': name,
         'driver': driver
     }
-    if doc:
-        clsdict['__doc__'] = doc
-    return type(clsname, (GromacsCommand,), clsdict)
+    return type(clsname, (base,), clsdict)
 
 
 def make_valid_identifier(name):
@@ -240,6 +241,8 @@ def load_v4_tools():
     Tries to load tools (1) in configured tool groups (2) and fails back  to
     automatic detection from ``GMXBIN`` (3) then to a prefilled list.
 
+    Also load any extra tool configured in ``~/.gromacswrapper.cfg``
+
     :return: dict mapping tool names to GromacsCommand classes
     """
     names = config.get_tool_names()
@@ -250,32 +253,15 @@ def load_v4_tools():
     if len(names) == 0 or len(names) > len(V4TOOLS) * 4:
         names = V4TOOLS[:]
 
+    names.extend(config.get_extra_tool_names())
+
     tools = {}
     for name in names:
-        try:
-            null = open(os.devnull, 'w')
-            subprocess.check_call([name], stdout=null, stderr=null)
-        except subprocess.CalledProcessError:
-            pass
         fancy = make_valid_identifier(name)
         tools[fancy] = tool_factory(fancy, name, None)
 
     if len(tools) == 0:
         raise GromacsToolLoadingError("Failed to load v4 tools")
-    return tools
-
-
-def load_extra_tools():
-    """ Load extra tools.
-
-    :return: dict mapping tool names to GromacsCommand classes
-    """
-    names = config.cfg.get("Gromacs", "extra").split()
-    tools = {}
-    for name in names:
-        fancy = make_valid_identifier(name)
-        driver = 'gmx' if config.MAJOR_RELEASE == '5' else None
-        tools[name] = tool_factory(fancy, name, driver)
     return tools
 
 
@@ -292,7 +278,8 @@ def merge_ndx(*args):
         if fname.endswith('.ndx'):
             ndxs.append(fname)
         else:
-            assert struct is None, "only one structure file supported"
+            if struct is not None:
+                raise ValueError("only one structure file supported")
             struct = fname
 
     fd, multi_ndx = tempfile.mkstemp(suffix='.ndx', prefix='multi_')
@@ -307,6 +294,7 @@ def merge_ndx(*args):
     return multi_ndx
 
 
+# Load tools
 if config.MAJOR_RELEASE == '5':
     registry = load_v5_tools()
 elif config.MAJOR_RELEASE == '4':
@@ -319,8 +307,6 @@ else:
             registry = load_v4_tools()
         except GromacsToolLoadingError:
             raise GromacsToolLoadingError("Unable to load any tool")
-
-registry.update(load_extra_tools())
 
 
 # Aliases command names to run unmodified GromacsWrapper scripts on a machine
@@ -342,28 +328,23 @@ for fancy, cmd in registry.items():
         # the common case of just adding the 'g_'
         registry['G_%s' % fancy.lower()] = registry[fancy]
 
+
+# Patching up commands that may be useful to accept multiple index files
 for name4, name5 in [('G_mindist', 'Mindist'), ('G_dist', 'Distance')]:
     if name4 in registry:
-        klass = type(name4, (GromacsCommandMultiIndex,),  {
-            'command_name': registry[name5].command_name,
-            'driver': registry[name5].driver,
-            '__doc__': registry[name5].__doc__
-        })
-        registry[name4] = klass
-        if name5 in registry == '5':
-            registry[name5] = klass
+        cmd = registry[name4]
+        registry[name4] = tool_factory(name4, cmd.command_name, cmd.driver,
+                                       GromacsCommandMultiIndex)
+        if name5 in registry:
+            registry[name5] = registry[name4]
 
-
-# 5.0.5 compatibility hack
-if 'Convert_tpr' in registry:
-    registry['Tpbconv'] = registry['Convert_tpr']
 
 # Append class doc for each command
 for name in registry.iterkeys():
     __doc__ += ".. class:: %s\n    :noindex:\n" % name
 
 
-# finally add command classes to module's scope
+# Finally add command classes to module's scope
 globals().update(registry)
 __all__ = ['GromacsCommandMultiIndex', 'merge_ndx']
-__all__ = __all__ + registry.keys()
+__all__.extend(registry.keys())
