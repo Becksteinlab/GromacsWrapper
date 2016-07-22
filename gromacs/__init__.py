@@ -74,7 +74,6 @@ Getting help
 
 In python::
 
-   help(gromacs.g_dist)
    gromacs.g_dist.help()
    gromacs.g_dist.help(long=True)
 
