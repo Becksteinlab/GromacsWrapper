@@ -24,11 +24,9 @@ command)::
 
   from gromacs.tools import Trjconv
 
-  trjconv = Trjconv()
-  trjconv_compact = Trjconv(ur='compact', center=True, boxcenter='tric', pbc='mol',
-                                  input=('protein','system'),
-                                  doc="Returns a compact representation of the"
-                                      " system centered on the protein")
+  trjconv = tools.Trjconv()
+  trjconv_compact = tools.Trjconv(ur='compact', center=True, boxcenter='tric', pbc='mol',
+                                  input=('protein','system'))
 
 The first one, ``trjconv``, behaves as the standard commandline tool but the
 second one, ``trjconv_compact``, will by default create a compact
