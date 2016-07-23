@@ -7,21 +7,20 @@
 ==========================================================
 
 The config module provides configurable options for the whole package;
-It mostly serves to define which gromacs tools and other scripts are
-exposed in the :mod:`gromacs` package and where template files are
-located. The user can configure *GromacsWrapper* by
+It serves to define how to handle log files, set where template files are
+located and which gromacs tools are exposed in the :mod:`gromacs` package.
+The user can configure *GromacsWrapper* by
 
-1. editing the global configuration file ``~/.gromacswrapper.cfg``
+1. editing the optional global configuration file ``~/.gromacswrapper.cfg``
 
-2. placing template files into directories under ``~/.gromacswrapper``
+2. placing template files into directories under ``~/.gromacswrapper/``
    (:data:`gromacs.config.configdir`) which can be processed instead
    of the files that come with *GromacsWrapper*
 
 In order to **set up a basic configuration file and the directories**
-a user should execute :func:`gromacs.config.setup` at least once. It
-will prepare the user configurable area in their home directory and it
-will generate a default global configuration file
-``~/.gromacswrapper.cfg`` (the name is defined in
+a user can execute :func:`gromacs.config.setup`. It will prepare the user
+configurable area in their home directory and it will generate a default
+global configuration file ``~/.gromacswrapper.cfg`` (the name is defined in
 :data:`CONFIGNAME`)::
 
   import gromacs
@@ -163,36 +162,34 @@ file, nothing is being done.
 List of tools
 ~~~~~~~~~~~~~
 
-The list of Gromacs tools is specified in the config file in the ``[Gromacs]``
-section with the ``tools`` variable.
+The list of Gromacs tools can be specified in the config file in the
+``[Gromacs]`` section with the ``tools`` variable.
 
-The tool groups are strings that contain white-space separated file
-names of Gromacs tools. These lists determine which tools are made
-available as classes in :mod:`gromacs.tools`.
+The tool groups are a list of names that determines which tools are made
+available as classes in :mod:`gromacs.tools`. If not provided
+GromacsWrapper will first try to load Gromacs 5.x then Gromacs 4.x
+tools.
 
-A typical Gromacs tools section of the config file looks like this::
+If you choose to provide a list, the Gromacs tools section of the config
+file can be like this::
 
    [Gromacs]
    # Release of the Gromacs package to which information in this sections applies.
    release = 4.5.3
 
-   # tools contains the file names of all Gromacs tools for which classes are generated.
-   # Editing this list has only an effect when the package is reloaded.
+   # tools contains the file names of all Gromacs tools for which classes are
+   # generated. Editing this list has only an effect when the package is
+   # reloaded.
    # (Note that this example has a much shorter list than the actual default.)
    tools =
          editconf make_ndx grompp genion genbox
-         grompp pdb2gmx mdrun
+         grompp pdb2gmx mdrun mdrun_d
 
-   # Additional gromacs tools that should be made available.
-   extra =
-         g_count     g_flux
-         a_gridcalc  a_ri3Dc  g_ri3Dc
-
-   # which tool groups to make available as gromacs.NAME
+   # which tool groups to make available
    groups = tools extra
 
-For Gromacs 5.x use a section like the following, where the driver
-command ``gmx`` is added as a prefix::
+For Gromacs 5.x use a section like the following, where driver commands
+are supplied::
 
    [Gromacs]
    # Release of the Gromacs package to which information in this sections applies.
@@ -206,13 +203,8 @@ command ``gmx`` is added as a prefix::
    # tools contains the command names of all Gromacs tools for which classes are generated.
    # Editing this list has only an effect when the package is reloaded.
    # (Note that this example has a much shorter list than the actual default.)
-   tools =
-         gmx:editconf gmx:make_ndx gmx:grompp gmx:genion gmx:solvate
-         gmx:insert-molecule gmx:convert-tpr
-         gmx:grompp gmx:pdb2gmx gmx:mdrun
+   tools = gmx gmx_d
 
-   # which tool groups to make available as gromacs.NAME
-   groups = tools
 
 For example, on the commandline you would run ::
 
@@ -222,14 +214,6 @@ and within GromacsWrapper this would become ::
 
    gromacs.grompp(f="md.mdp", c="system.gro", p="topol.top", o="md.tpr")
 
-(The driver command is stripped and only the "command name" is used to
-identify the command. This makes it easier to migrate GromacsWrapper
-scripts from Gromacs 4.x to 5.x.).
-
-The driver command can be changed per-tool, allowing for mpi
-and non-mpi versions to be used. For example::
-
-tools = gmx_mpi:mdrun gmx:pdb2gmx
 
 .. Note:: Because of `changes in the Gromacs tool in 5.x`_,
           GromacsWrapper scripts might break, even if the tool
@@ -237,15 +221,6 @@ tools = gmx_mpi:mdrun gmx:pdb2gmx
 
 .. _`changes in the Gromacs tool in 5.x`:
    http://www.gromacs.org/Documentation/How-tos/Tool_Changes_for_5.0
-
-Developers should know that the lists of tools are stored in ``load_*``
-variables. These are lists that contain instructions to other parts of the code
-as to which executables should be wrapped.
-
-.. autodata:: load_tools
-
-:data:`load_tools` is populated from lists of executable names in the
-configuration file.
 
 
 
