@@ -618,42 +618,28 @@ def setup(filename=CONFIGNAME):
 def check_setup():
      """Check if templates directories are setup and issue a warning and help.
 
-     Returns ``True`` if all files and directories are found and
-     ``False`` otherwise.
+    Set the environment variable  :envvar:`GROMACSWRAPPER_SUPPRESS_SETUP_CHECK`
+    skip the check and make it always return ``True``
 
-     Setting the environment variable
-     :envvar:`GROMACSWRAPPER_SUPPRESS_SETUP_CHECK` to 'true' ('yes'
-     and '1' also work) silence this function and make it always return ``True``.
+    :return ``True`` if directories were found and ``False`` otherwise
 
      .. versionchanged:: 0.3.1
-        Uses :envvar:`GROMACSWRAPPER_SUPPRESS_SETUP_CHECK` to suppress output
+        Uses :envvar:`GROMACSWRAPPER_SUPPRESS_SETUP_CHECK` to suppress check
         (useful for scripts run on a server)
      """
-     if os.environ.get("GROMACSWRAPPER_SUPPRESS_SETUP_CHECK", "false").lower() in ("1", "true", "yes"):
+
+     if "GROMACSWRAPPER_SUPPRESS_SETUP_CHECK" in os.environ:
          return True
-
-     is_complete = True
-     show_solution = False
-
-     if not os.path.exists(CONFIGNAME):
-          is_complete = False
-          show_solution = True
-          print("NOTE: The global configuration file %r is missing." % CONFIGNAME)
 
      missing = [d for d in config_directories if not os.path.exists(d)]
      if len(missing) > 0:
-          is_complete = False
-          show_solution = True
-          print("NOTE: Some configuration directories are not set up yet: ")
-          print("\t%s" % '\n\t'.join(missing))
-
-     if show_solution:
-          print("NOTE: You can create the configuration file and directories with:")
-          print("\t>>> import gromacs")
-          print("\t>>> gromacs.config.setup()")
-     return is_complete
-
-check_setup()
+         print("NOTE: Some configuration directories are not set up yet: ")
+         print("\t%s" % '\n\t'.join(missing))
+         print("NOTE: You can create the configuration file and directories with:")
+         print("\t>>> import gromacs")
+         print("\t>>> gromacs.config.setup()")
+         return False
+     return True
 
 
 def set_gmxrc_environment(gmxrc):
@@ -712,3 +698,5 @@ MAJOR_RELEASE = None
 if cfg.get('Gromacs', 'release'):
     RELEASE = cfg.get('Gromacs', 'release')
     MAJOR_RELEASE = RELEASE.split('.')[0]
+
+check_setup()
