@@ -19,8 +19,8 @@ may look like the following document::
 The Gromacs software suite needs some environment variables that are set up
 sourcing the ``GMXRC`` file. You may source it yourself or set an option like
 the above one. If this option isn't provided, **GromacsWrapper** will guess
-that Gromacs was globally installed like if it was installed by the Ubuntu's
-``apt-get`` program.
+that Gromacs was globally installed like if it was installed by the ``apt-get``
+program.
 
 As there isn't yet any way to know which Gromacs version to use,
 **GromacsWrapper** will first try to use Gromacs 5 if available, then to use
@@ -36,7 +36,6 @@ For now **GromacsWrapper** will guess which tools are available to put it into
 up to 4 commands usually named::
 
   [Gromacs]
-  GMXRC = /usr/local/gromacs/bin/GMXRC
   tools = gmx gmx_d gmx_mpi gmx_mpi_d
 
 This option will instruct which commands to load. For Gromacs 4 you'll need to
@@ -59,8 +58,12 @@ specify more tools::
 	g_bundle   g_disre       g_lie          g_polystat   g_saltbr     g_vanhove   make_edi  xpm2ps
 	g_chi      g_dist        g_luck         g_potential  g_sas        g_velacc    make_ndx
 
-Other options are where some directories were located and logging
-configuration::
+
+More options
+------------
+
+Other options are to set where template for job submission systems and.mdp
+files are located::
 
   [DEFAULT]
   # Directory to store user templates and rc files.
@@ -74,6 +77,9 @@ configuration::
 
   # Directory to store manager configuration files
   managerdir = %(configdir)s/managers
+
+
+And there are yet options for how to handle logging::
 
   [Logging]
   # name of the logfile that is written to the current directory
@@ -90,3 +96,11 @@ configuration::
 
   # file messages written to logfilename
   loglevel_file = DEBUG
+
+If needed you may set up basic configuration files and directories using
+:func:`gromacs.config.setup`:
+
+.. code-block:: python
+
+  import gromacs
+  gromacs.config.setup()

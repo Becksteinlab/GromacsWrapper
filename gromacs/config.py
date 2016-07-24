@@ -9,22 +9,9 @@
 The config module provides configurable options for the whole package;
 It serves to define how to handle log files, set where template files are
 located and which gromacs tools are exposed in the :mod:`gromacs` package.
-The user can configure *GromacsWrapper* by
 
-1. editing the optional global configuration file ``~/.gromacswrapper.cfg``
-
-2. placing template files into directories under ``~/.gromacswrapper/``
-   (:data:`gromacs.config.configdir`) which can be processed instead
-   of the files that come with *GromacsWrapper*
-
-In order to **set up a basic configuration file and the directories**
-a user can execute :func:`gromacs.config.setup`. It will prepare the user
-configurable area in their home directory and it will generate a default
-global configuration file ``~/.gromacswrapper.cfg`` (the name is defined in
-:data:`CONFIGNAME`)::
-
-  import gromacs
-  gromacs.config.setup()
+In order to set up a basic configuration file and the directories
+a user can execute :func:`gromacs.config.setup`.
 
 If the configuration file is edited then one can force a rereading of
 the new config file with :func:`gromacs.config.get_configuration`::
@@ -241,50 +228,36 @@ completely transparent to the user.
 """
 from __future__ import absolute_import, with_statement
 
-import os, subprocess
-from ConfigParser import SafeConfigParser
+import os
+import logging
+import subprocess
 
+from ConfigParser import SafeConfigParser
 from pkg_resources import resource_filename, resource_listdir
 
 from . import utilities
 
-# Defaults
-# --------
-# hard-coded package defaults
 
-#: name of the global configuration file.
+# Default name of the global configuration file.
 CONFIGNAME = os.path.expanduser(os.path.join("~",".gromacswrapper.cfg"))
 
-#: Holds the default values for important file and directory locations.
-#:
-#: :data:`configdir`
-#:    Directory to store user templates and configurations.
-#:    The default value is ``~/.gromacswrapper``.
-#: :data:`qscriptdir`
-#:    Directory to store user supplied queuing system scripts as
-#:    used by :mod:`gromacs.qsub`.
-#:    The default value is ``~/.gromacswrapper/qscripts``.
-#: :data:`templatesdir`
-#:    Directory to store user supplied template files such as mdp files.
-#:    The default value is ``~/.gromacswrapper/templates``.
-#: :data:`managerdir`
-#:    Directory to store configuration files for different queuing system
-#:    managers as used in :mod:`gromacs.manager`.
-#:    The default value is ``~/.gromacswrapper/managers``.
+# More default values
+configdir = os.path.expanduser(os.path.join("~",".gromacswrapper"))
 defaults = {
-     'configdir': os.path.expanduser(os.path.join("~",".gromacswrapper")),
-     'logfilename': "gromacs.log",
-     'loglevel_console': 'INFO',
-     'loglevel_file': 'DEBUG',
+    'configdir':    configdir,
+    'qscriptdir':   os.path.join(configdir, 'qscripts'),
+    'templatesdir': os.path.join(configdir, 'templates'),
+    'managerdir':   os.path.join(configdir, 'managers'),
+
+    'logfilename': "gromacs.log",
+    'loglevel_console': 'INFO',
+    'loglevel_file': 'DEBUG',
 }
-defaults['qscriptdir'] = os.path.join(defaults['configdir'], 'qscripts')
-defaults['templatesdir'] = os.path.join(defaults['configdir'], 'templates')
-defaults['managerdir'] = os.path.join(defaults['configdir'], 'managers')
 
 
 # Logging
 # -------
-import logging
+
 logger = logging.getLogger("gromacs.config")
 
 #: File name for the log file; all gromacs command and many utility functions (e.g. in
@@ -301,9 +274,6 @@ loglevel_file = logging.getLevelName(defaults['loglevel_file'])
 
 # User-accessible configuration
 # -----------------------------
-
-# (written in a clumsy manner because of legacy code and because of
-# the way I currently generate the documentation)
 
 #: Directory to store user templates and rc files.
 #: The default value is ``~/.gromacswrapper``.
@@ -347,7 +317,7 @@ def _generate_template_dict(dirname):
     by external code. All template filenames are stored in
     :data:`config.templates`.
     """
-    return dict((resource_basename(fn), resource_filename(__name__, dirname+'/'+fn))
+    return dict((resource_basename(fn), resource_filename(__name__, dirname + '/' + fn))
                 for fn in resource_listdir(__name__, dirname)
                 if not fn.endswith('~'))
 
