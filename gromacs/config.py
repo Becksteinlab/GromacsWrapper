@@ -238,7 +238,7 @@ from pkg_resources import resource_filename, resource_listdir
 from . import utilities
 
 
-# Default name of the global configuration file.
+#: Default name of the global configuration file.
 CONFIGNAME = os.path.expanduser(os.path.join("~",".gromacswrapper.cfg"))
 
 # More default values
@@ -317,7 +317,7 @@ def _generate_template_dict(dirname):
     by external code. All template filenames are stored in
     :data:`config.templates`.
     """
-    return dict((resource_basename(fn), resource_filename(__name__, dirname + '/' + fn))
+    return dict((resource_basename(fn), resource_filename(__name__, dirname +'/'+fn))
                 for fn in resource_listdir(__name__, dirname)
                 if not fn.endswith('~'))
 

@@ -10,6 +10,13 @@ and options to tell exactly which commands to load into this package. Any
 configuration is optional and all options has sane defaults. Further
 documentation can be found at :mod:`gromacs.config`.
 
+.. versionchanged:: 0.6.0
+   The format of the ``tools`` variable in the ``[Gromacs]`` section of the
+   config file was changed for Gromacs 5 commands.
+
+Basic options
+-------------
+
 Place an INI file named ``~/.gromacswrapper.cfg`` in your home directory, it
 may look like the following document::
 
@@ -24,12 +31,12 @@ program.
 
 As there isn't yet any way to know which Gromacs version to use,
 **GromacsWrapper** will first try to use Gromacs 5 if available, then to use
-Gromacs 4. If you have both versions and want's to use version 4 or just wants
+Gromacs 4. If you have both versions and want to use version 4 or just want
 to document it, you may specify the which release version will be used::
 
   [Gromacs]
   GMXRC = /usr/local/gromacs/bin/GMXRC
-  release = 4.7
+  release = 4.6.7
 
 For now **GromacsWrapper** will guess which tools are available to put it into
 :mod:`gromacs.tools`, but you can always configure it manually. Gromacs 5 has
@@ -37,6 +44,7 @@ up to 4 commands usually named::
 
   [Gromacs]
   tools = gmx gmx_d gmx_mpi gmx_mpi_d
+
 
 This option will instruct which commands to load. For Gromacs 4 you'll need to
 specify more tools::
@@ -57,6 +65,15 @@ specify more tools::
 	g_bond     g_dipoles     g_kinetics     g_pme_error  g_rotmat     g_tune_pme  grompp
 	g_bundle   g_disre       g_lie          g_polystat   g_saltbr     g_vanhove   make_edi  xpm2ps
 	g_chi      g_dist        g_luck         g_potential  g_sas        g_velacc    make_ndx
+
+
+Commands will be available directly from the :mod:`gromacs`:
+
+.. code-block:: python
+
+    import gromacs
+    gromacs.mdrun_d # either v5 `gmx_d mdrun` or v4 `mdrun_d`
+    gromacs.mdrun   # either v5 `gmx mdrun`   or v4 `mdrun`
 
 
 More options
