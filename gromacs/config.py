@@ -230,6 +230,7 @@ from __future__ import absolute_import, with_statement
 
 import os
 import logging
+import re
 import subprocess
 
 from ConfigParser import SafeConfigParser
@@ -683,5 +684,16 @@ MAJOR_RELEASE = None
 if cfg.get('Gromacs', 'release'):
     RELEASE = cfg.get('Gromacs', 'release')
     MAJOR_RELEASE = RELEASE.split('.')[0]
+
+
+for name in get_tool_names():
+    match = re.match(r'(gmx[^:]*):.*', name)
+    if match:
+        driver = match.group(1)
+        raise ValueError("'%s' isn't a valid tool name anymore."
+                         " Replace it by '%s'.\n"
+                         "See http://gromacswrapper.readthedocs.io/en/latest/"
+                         "configuration.html"% (name, match.group(1)))
+
 
 check_setup()
