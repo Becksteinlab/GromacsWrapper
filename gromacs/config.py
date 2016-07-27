@@ -691,9 +691,9 @@ for name in get_tool_names():
     if match:
         driver = match.group(1)
         raise ValueError("'%s' isn't a valid tool name anymore."
-                         " Replace it by '%s'.\n"
-                         "See http://gromacswrapper.readthedocs.io/en/latest/"
-                         "configuration.html"% (name, match.group(1)))
+                         " Replace it by '%s'.\n            See "
+                         "http://gromacswrapper.readthedocs.io/en/latest/"
+                         "configuration.html" % (name, match.group(1)))
 
 
 check_setup()
