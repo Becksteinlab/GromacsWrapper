@@ -24,11 +24,9 @@ command)::
 
   from gromacs.tools import Trjconv
 
-  trjconv = Trjconv()
-  trjconv_compact = Trjconv(ur='compact', center=True, boxcenter='tric', pbc='mol',
-                                  input=('protein','system'),
-                                  doc="Returns a compact representation of the"
-                                      " system centered on the protein")
+  trjconv = tools.Trjconv()
+  trjconv_compact = tools.Trjconv(ur='compact', center=True, boxcenter='tric', pbc='mol',
+                                  input=('protein','system'))
 
 The first one, ``trjconv``, behaves as the standard commandline tool but the
 second one, ``trjconv_compact``, will by default create a compact
@@ -120,15 +118,12 @@ NAMES5TO4 = {
     'solvate': 'genbox',
     'distance': 'g_dist',
     'sasa': 'g_sas',
-    'gangle': 'g_sgangle',
-
-    # 5.0.5 compatibility hack
-    'tpbconv': 'convert_tpr'
+    'gangle': 'g_sgangle'
 }
 
 
 class GromacsToolLoadingError(Exception):
-    """Raised when could not find any Gromacs command."""
+    """Raised when no Gromacs tool could be found."""
 
 
 class GromacsCommandMultiIndex(GromacsCommand):
@@ -163,7 +158,7 @@ def tool_factory(clsname, name, driver, base=GromacsCommand):
     clsdict = {
         'command_name': name,
         'driver': driver,
-        '__doc__': property(base._get_gmx_docs)
+        '__doc__': property(base._get_documentation)
     }
     return type(clsname, (base,), clsdict)
 
@@ -200,7 +195,7 @@ def load_v5_tools():
     """ Load Gromacs 5.x tools automatically using some heuristic.
 
     Tries to load tools (1) using the driver from configured groups (2) and
-    fails back to automatic detection from ``GMXBIN`` (3) then to rough guesses.
+    falls back to automatic detection from ``GMXBIN`` (3) then to rough guesses.
 
     In all cases the command ``gmx help`` is ran to get all tools available.
 
@@ -284,6 +279,7 @@ def merge_ndx(*args):
             struct = fname
 
     fd, multi_ndx = tempfile.mkstemp(suffix='.ndx', prefix='multi_')
+    os.close(fd)
     atexit.register(os.unlink, multi_ndx)
 
     if struct:
