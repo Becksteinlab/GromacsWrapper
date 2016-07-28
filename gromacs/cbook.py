@@ -157,11 +157,8 @@ def _define_canned_commands():
     .. Note:: Any function defined here **must be listed in ``global``**!
     """
     global trj_compact, rmsd_backbone, trj_fitted, trj_xyfitted
-
     trj_compact = tools.Trjconv(ur='compact', center=True, boxcenter='tric', pbc='mol',
-                                input=('protein','system'),
-                                doc="""
-Writes a compact representation of the system centered on the protein""")
+                                input=('protein','system'))
 
     rmsd_backbone = tools.G_rms(what='rmsd', fit='rot+trans',
                                 input=('Backbone','Backbone'),

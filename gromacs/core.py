@@ -102,586 +102,176 @@ from __future__ import absolute_import, with_statement
 
 __docformat__ = "restructuredtext en"
 
-import sys
+
+import itertools
+import logging
 import re
 import subprocess
-from subprocess import STDOUT, PIPE
-import warnings
-import errno
 
-import logging
-logger = logging.getLogger('gromacs.core')
+from subprocess import PIPE
+from .exceptions import GromacsError
 
 
-from .exceptions import GromacsError, GromacsFailureWarning
-from . import environment
+DEFAULT_OUTPUT = None
+DEFAULT_ERROR_OUTPUT = None
+
+RAISE = 1
+WARN = 2
+IGNORE = 3
+
+FAILURE_MODE = RAISE
+
+
+def set_default_output(out):
+    global DEFAULT_OUTPUT
+    DEFAULT_OUTPUT = out
+
+
+def set_default_error_output(out):
+    global DEFAULT_ERROR_OUTPUT
+    DEFAULT_ERROR_OUTPUT = out
+
+
+def set_failure_mode(mode):
+    global FAILURE_MODE
+    FAILURE_MODE = mode
+
+
+logger = logging.getLogger(__name__)
+
 
 class Command(object):
-    """Wrap simple script or command."""
-    #: Derive a class from command; typically one only has to set *command_name*
-    #: to the name of the script or executable. The full path is required if it
-    #: cannot be found by searching :envvar:`PATH`.
-    command_name = None
 
-    def __init__(self,*args,**kwargs):
-        """Set up the command class.
-
-        The arguments can always be provided as standard positional
-        arguments such as
-
-          ``"-c", "config.conf", "-o", "output.dat", "--repeats=3", "-v", "input.dat"``
-
-        In addition one can also use keyword arguments such as
-
-          ``c="config.conf", o="output.dat", repeats=3, v=True``
-
-        These are automatically transformed appropriately according to
-        simple rules:
-
-        * Any single-character keywords are assumed to be POSIX-style
-          options and will be prefixed with a single dash and the value
-          separated by a space.
-
-        * Any other keyword is assumed to be a GNU-style long option
-          and thus will be prefixed with two dashes and the value will
-          be joined directly with an equals sign and no space.
-
-        If this does not work (as for instance for the options of the
-        UNIX ``find`` command) then provide options and values in the
-        sequence of positional arguments.
-        """
-
+    def __init__(self, *args, **kwargs):
         self.args = args
         self.kwargs = kwargs
+        self.last_command = None
+        self.last_output = None
+        self.last_error = None
+        self.last_returncode = None
 
-    def run(self,*args,**kwargs):
-        """Run the command; args/kwargs are added or replace the ones given to the constructor."""
-        _args, _kwargs = self._combine_arglist(args, kwargs)
-        results, p = self._run_command(*_args, **_kwargs)
-        return results
+    def run(self, *args, **kwargs):
+        stdin, input = self._get_stdin(kwargs.pop('input', None))
+        stdout = kwargs.pop('stdout', DEFAULT_OUTPUT)
+        stderr = kwargs.pop('stderr', DEFAULT_ERROR_OUTPUT)
+        cmd = self.last_command = self.make_command_line(args, kwargs)
 
-    def _combine_arglist(self, args, kwargs):
-        """Combine the default values and the supplied values."""
-        _args = self.args + args
-        _kwargs = self.kwargs.copy()
-        _kwargs.update(kwargs)
-        return _args, _kwargs
+        proc = subprocess.Popen(cmd, stdin=stdin, stdout=stdout, stderr=stderr)
+        output, err = proc.communicate(input=input)
 
-    def _run_command(self,*args,**kwargs):
-        """Execute the command; see the docs for __call__.
+        self.last_output = output
+        self.last_error = err
+        self.last_returncode = proc.returncode
 
-        :Returns: a tuple of the *results* tuple ``(rc, stdout, stderr)`` and
-                  the :class:`Popen` instance.
-        """
-        # hack to run command WITHOUT input (-h...) even though user defined
-        # input (should have named it "ignore_input" with opposite values...)
-        use_input = kwargs.pop('use_input', True)
+        return proc.returncode, output, err
 
-        # logic for capturing output (see docs on I/O and the flags)
-        capturefile = None
-        if environment.flags['capture_output'] is True:
-            # capture into Python vars (see subprocess.Popen.communicate())
-            kwargs.setdefault('stderr', PIPE)
-            kwargs.setdefault('stdout', PIPE)
-        elif environment.flags['capture_output'] == "file":
-            if 'stdout' in kwargs and 'stderr' in kwargs:
+    def __call__(self, *args, **kwargs):
+        self.run(*args, **kwargs)
+
+    def make_command_line(self, args, kwargs):
+        cmd = []
+
+        for arg in self.args + args:
+            cmd.extend(self.expand_param(arg))
+        for opt, value in self.kwargs.items():
+            cmd.extend(['-%s' % opt] + self.expand_param(value))
+        for opt, value in kwargs.items():
+            cmd.extend(['-%s' % opt] + self.expand_param(value))
+
+        return cmd
+
+    def check_failure(self):
+        if self.last_returncode != 0:
+            output = [self.last_output, self.last_error]
+            output = '\n'.join([x for x in output if x is not None])
+
+            last_cmd = ' '.join(self.last_command)
+            message = '%s --> %d' % (last_cmd, self.last_returncode)
+
+            if FAILURE_MODE == IGNORE:
                 pass
+            if FAILURE_MODE == WARN:
+                logger.warn(message)
             else:
-                # XXX: not race or thread proof; potentially many commands write to the same file
-                fn = environment.flags['capture_output_filename']
-                capturefile = file(fn, "w")   # overwrite (clobber) capture file
-                if 'stdout' in kwargs and 'stderr' not in kwargs:
-                    # special case of stdout used by code but stderr should be captured to file
-                    kwargs.setdefault('stderr', capturefile)
-                else:
-                    # merge stderr with stdout and write stdout to file
-                    # (stderr comes *before* stdout in capture file, could split...)
-                    kwargs.setdefault('stderr', STDOUT)
-                    kwargs.setdefault('stdout', capturefile)
+                raise GromacsError(message)
 
-        try:
-            p = self.Popen(*args, **kwargs)
-            out, err = p.communicate(use_input=use_input) # special Popen knows input!
-        except:
-            if capturefile is not None:
-                logger.error("Use captured command output in %r for diagnosis.", capturefile)
-            raise
-        finally:
-            if capturefile is not None:
-                capturefile.close()
-        rc = p.returncode
-        return (rc, out, err), p
 
-    def _commandline(self, *args, **kwargs):
-        """Returns the command line (without pipes) as a list."""
-         # transform_args() is a hook (used in GromacsCommand very differently!)
-        return [self.command_name] + self.transform_args(*args,**kwargs)
+    @classmethod
+    def expand_param(cls, param):
+        if type(param) is bool:
+            return [str(param).lower()]
+        elif type(param) in [list, tuple]:
+            params = [cls.expand_param(p) for p in param]
+            return itertools.chain.from_iterable(params)
+        else:
+            return [str(param)]
 
-    def commandline(self, *args, **kwargs):
-        """Returns the commandline that run() uses (without pipes)."""
-        # this mirrors the setup in run()
-        _args, _kwargs = self._combine_arglist(args, kwargs)
-        return self._commandline(*_args, **_kwargs)
-
-    def Popen(self, *args,**kwargs):
-        """Returns a special Popen instance (:class:`PopenWithInput`).
-
-        The instance has its input pre-set so that calls to
-        :meth:`~PopenWithInput.communicate` will not need to supply
-        input. This is necessary if one wants to chain the output from
-        one command to an input from another.
-
-        :TODO:
-          Write example.
-        """
-        stderr = kwargs.pop('stderr', None)     # default: print to stderr (if STDOUT then merge)
-        if stderr is False:                     # False: capture it
-            stderr = PIPE
-        elif stderr is True:
-            stderr = None                       # use stderr
-
-        stdout = kwargs.pop('stdout', None)     # either set to PIPE for capturing output
-        if stdout is False:                     # ... or to False
-            stdout = PIPE
-        elif stdout is True:
-            stdout = None                       # for consistency, make True write to screen
-
-        stdin = kwargs.pop('stdin', None)
-        input = kwargs.pop('input', None)
-
-        use_shell = kwargs.pop('use_shell', False)
+    @classmethod
+    def _get_stdin(cls, input):
         if input:
-            stdin = PIPE
             if isinstance(input, basestring):
-                # make sure that input is a simple string with \n line endings
-                if not input.endswith('\n'):
-                    input += '\n'
-            else:
-                try:
-                    # make sure that input is a simple string with \n line endings
-                    # XXX: this is probably not unicode safe because of the suse of str()
-                    input = '\n'.join(map(str, input)) + '\n'
-                except TypeError:
-                    # so maybe we are a file or something ... and hope for the best
-                    pass
-
-        cmd = self._commandline(*args, **kwargs)   # lots of magic happening here
-                                                   # (cannot move out of method because filtering of stdin etc)
-        try:
-            p = PopenWithInput(cmd, stdin=stdin, stderr=stderr, stdout=stdout,
-                               universal_newlines=True, input=input, shell=use_shell)
-        except OSError as err:
-            logger.error(" ".join(cmd))            # log command line
-            if err.errno == errno.ENOENT:
-                errmsg = "Failed to find Gromacs command %r, maybe its not on PATH or GMXRC must be sourced?" % self.command_name
-                logger.fatal(errmsg)
-                raise OSError(errmsg)
-            else:
-                logger.exception("Setting up Gromacs command %r raised an exception." % self.command_name)
-                raise
-        logger.debug(p.command_string)
-        return p
-
-    def transform_args(self, *args, **kwargs):
-        """Transform arguments and return them as a list suitable for Popen."""
-        options = []
-        for option,value in kwargs.items():
-            if not option.startswith('-'):
-                # heuristic for turning key=val pairs into options
-                # (fails for commands such as 'find' -- then just use args)
-                if len(option) == 1:
-                    option = '-' + option         # POSIX style
-                else:
-                    option = '--' + option        # GNU option
-            if value is True:
-                options.append(option)
-                continue
-            elif value is False:
-                raise ValueError('A False value is ambiguous for option %r' % option)
-
-            if option[:2] == '--':
-                options.append(option + '=' + str(value))    # GNU option
-            else:
-                options.extend((option, str(value)))         # POSIX style
-        return options + list(args)
-
-    def help(self,long=False):
-        """Print help; same as using ``?`` in ``ipython``. long=True also gives call signature."""
-        print "\ncommand: %s\n\n" % self.command_name
-        print self.__doc__
-        if long:
-            print "\ncall method: command():\n"
-            print self.__call__.__doc__
-
-    def __call__(self,*args,**kwargs):
-        """Run command with the given arguments::
-
-           rc,stdout,stderr = command(*args, input=None, **kwargs)
-
-        All positional parameters *args* and all gromacs *kwargs* are passed on
-        to the Gromacs command. input and output keywords allow communication
-        with the process via the python subprocess module.
-
-        :Arguments:
-          *input* : string, sequence
-             to be fed to the process' standard input;
-             elements of a sequence are concatenated with
-             newlines, including a trailing one    [``None``]
-          *stdin*
-             ``None`` or automatically set to ``PIPE`` if input given [``None``]
-          *stdout*
-             how to handle the program's stdout stream [``None``]
-
-             filehandle
-                    anything that behaves like a file object
-             ``None`` or ``True``
-                    to see  output on screen
-             ``False`` or ``PIPE``
-                     returns the output as a string in  the stdout parameter
-
-          *stderr*
-             how to handle the stderr stream [``None``]
-
-             ``STDOUT``
-                     merges standard error with the standard out stream
-             ``False`` or ``PIPE``
-                     returns the output as a string in the stderr return parameter
-             ``None`` or ``True``
-                     keeps it on stderr (and presumably on screen)
-
-        Depending on the value of the GromacsWrapper flag
-        :data:`gromacs.environment.flags```['capture_output']`` the above
-        default behaviour can be different.
-
-        All other kwargs are passed on to the Gromacs tool.
-
-        :Returns:
-
-           The shell return code rc of the command is always returned. Depending
-           on the value of output, various strings are filled with output from the
-           command.
-
-        :Notes:
-
-           In order to chain different commands via pipes one must use the special
-           :class:`PopenWithInput` object (see :meth:`GromacsCommand.Popen` method) instead of the simple
-           call described here and first construct the pipeline explicitly and then
-           call the :meth:`PopenWithInput.communicate` method.
-
-           ``STDOUT`` and ``PIPE`` are objects provided by the :mod:`subprocess` module. Any
-           python stream can be provided and manipulated. This allows for chaining
-           of commands. Use ::
-
-              from subprocess import PIPE, STDOUT
-
-           when requiring these special streams (and the special boolean
-           switches ``True``/``False`` cannot do what you need.)
-
-           (TODO: example for chaining commands)
-        """
-        return self.run(*args,**kwargs)
+                return PIPE, input
+            try:
+                return PIPE, '\n'.join(input)
+            except TypeError:
+                raise ValueError("input must be a string, None or an iterable")
+        else:
+            return None, None
 
 
 class GromacsCommand(Command):
-    """Base class for wrapping a Gromacs tool.
-
-    Limitations: User must have sourced ``GMXRC`` so that the python script can
-    inherit the environment and find the gromacs programs.
-
-    The class doc string is dynamically replaced by the documentation of the
-    gromacs command the first time the doc string is requested. If the tool is
-    not available at the time (i.e., cannot be found on :env:`PATH`) then the
-    generic doc string is shown and an :exc:`OSError` exception is only raised
-    when the user is actually trying to the execute the command.
-    """
-
-    # TODO: setup the environment from GMXRC (can use env=DICT in Popen/call)
 
     command_name = None
     driver = None
-    doc_pattern = """.*?(?P<DOCS>DESCRIPTION.*)"""
-    gmxfatal_pattern = """----+\n                   # ---- decorator line
+
+    documentation_re = r".*?(?P<DOCS>DESCRIPTION.*)"
+    failure_re = r"""----+\n                        # ---- decorator line
             \s*Program\s+(?P<program_name>\w+),     #  Program name,
               \s+VERSION\s+(?P<version>[\w.]+)\s*\n #    VERSION 4.0.5
             (?P<message>.*?)\n                      # full message, multiple lines
             \s*                                     # empty line (?)
             ----+\n                                 # ---- decorator line
             """
-    # matches gmx_fatal() output
-    # -------------------------------------------------------
-    # Program <program_name>, VERSION <version>
-    # ... <message>
-    # -------------------------------------------------------
-
-    #: Available failure modes.
-    failuremodes = ('raise', 'warn', None)
 
     def __init__(self, *args, **kwargs):
-        """Set up the command with gromacs flags as keyword arguments.
-
-        The following  are generic instructions; refer  to the Gromacs
-        command  usage information  that should  have  appeared before
-        this generic documentation.
-
-        As an example, a generic Gromacs command could use the following flags::
-
-          cmd = GromacsCommand('v', f=['md1.xtc','md2.xtc'], o='processed.xtc', t=200, ...)
-
-        which would correspond to running the command in the shell as ::
-
-          GromacsCommand -v -f md1.xtc md2.xtc -o processed.xtc -t 200
-
-        **Gromacs command line arguments**
-
-           Gromacs boolean switches (such as ``-v``) are given as python
-           positional arguments (``'v'``) or as keyword argument (``v=True``);
-           note the quotes in the first case. Negating a boolean switch can be
-           done with ``'nov'``, ``nov=True`` or ``v=False`` (and even ``nov=False``
-           works as expected: it is the same as ``v=True``).
-
-           Any Gromacs options that take parameters are handled as keyword
-           arguments. If an option takes multiple arguments (such as the
-           multi-file input ``-f file1 file2 ...``) then the list of files must be
-           supplied as a python list.
-
-           If a keyword has the python value ``None`` then it will *not* be
-           added to the Gromacs command line; this allows for flexible
-           scripting if it is not known in advance if an input file is
-           needed. In this case the default value of the gromacs tool
-           is used.
-
-           Keywords must be legal python keywords or the interpreter raises a
-           :exc:`SyntaxError` but of course Gromacs commandline arguments are
-           not required to be legal python. In this case "quote" the option
-           with an underscore (``_``) and the underscore will be silently
-           stripped. For instance, ``-or`` translates to the illegal keyword
-           ``or`` so it must be underscore-quoted::
-
-              cmd(...., _or='mindistres.xvg')
-
-        **Command execution**
-
-           The command is executed with the :meth:`~GromacsCommand.run` method or by
-           calling it as a function. The two next lines are equivalent::
-
-             cmd(...)
-             cmd.run(...)
-
-           When the command is run one can override options that were given at
-           initialization or one can add additional ones. The same rules for
-           supplying Gromacs flags apply as described above.
-
-        **Non-Gromacs keyword arguments**
-
-           The other keyword arguments (listed below) are not passed on to the
-           Gromacs tool but determine how the command class behaves. *They are
-           only useful when instantiating a class*, i.e. they determine how
-           this tool behaves during all future invocations although it can be
-           changed by setting :attr:`failuremode`. This is mostly of interest
-           to developers.
-
-        :Keywords:
-           *failure*
-              determines how a failure of the gromacs command is treated; it
-              can be one of the following:
-
-              'raise'
-                   raises GromacsError if command fails
-              'warn'
-                   issue a :exc:`GromacsFailureWarning`
-              ``None``
-                   just continue silently
-
-           *doc* : string
-              additional documentation []
-        """
-        self.__failuremode = None
-        self.failuremode = kwargs.pop('failure','raise')
-        self.extra_doc = kwargs.pop('doc',None)
-        self.gmxargs = self._combineargs(*args, **kwargs)
+        if self.driver:
+            args = [self.driver, self.command_name] + list(args)
+        else:
+            args = [self.command_name] + list(args)
+        super(GromacsCommand, self).__init__(*args, **kwargs)
         self._doc_cache = None
 
-    def failuremode():
-        doc = """mode determines how the GromacsCommand behaves during failure
+    def check_failure(self):
+        if self.last_returncode != 0:
+            output = [self.last_output, self.last_error]
+            output = '\n'.join([x for x in output if x is not None])
 
-        It can be one of the following:
+            last_cmd = ' '.join(self.last_command)
+            message = '%s --> %d' % (last_cmd, self.last_returncode)
 
-              'raise'
-                   raises GromacsError if command fails
-              'warn'
-                   issue a :exc:`GromacsFailureWarning`
-              ``None``
-                   just continue silently
-
-        """
-        def fget(self):
-            return self.__failuremode
-        def fset(self, mode):
-            if not mode in self.failuremodes:
-                raise ValueError('failuremode must be one of %r' % (self.failuremodes,))
-            self.__failuremode = mode
-        return locals()
-    failuremode = property(**failuremode())
-
-    def _combine_arglist(self, args, kwargs):
-        """Combine the default values and the supplied values."""
-        gmxargs = self.gmxargs.copy()
-        gmxargs.update(self._combineargs(*args,**kwargs))
-        return (), gmxargs    # Gromacs tools don't have positional args --> args = ()
-
-    def check_failure(self, result, msg='Gromacs tool failed', command_string=None):
-        rc, out, err = result
-        if not command_string is None:
-            msg += '\nCommand invocation: ' + str(command_string)
-        had_success = (rc == 0)
-        if not had_success:
-            gmxoutput = "\n".join([x for x in [out, err] if not x is None])
-            m = re.search(self.gmxfatal_pattern, gmxoutput, re.VERBOSE | re.DOTALL)
+            m = re.search(self.failure_re, output, re.VERBOSE | re.DOTALL)
             if m:
-                formatted_message = ['GMX_FATAL  '+line for line in m.group('message').split('\n')]
-                msg = "\n".join(\
-                    [msg, "Gromacs command %(program_name)r fatal error message:" % m.groupdict()] +
-                    formatted_message)
-            if self.failuremode == 'raise':
-                raise GromacsError(rc, msg)
-            elif self.failuremode == 'warn':
-                warnings.warn(msg + '\nError code: %r\n' % rc, category=GromacsFailureWarning)
-            elif self.failuremode is None:
+                message = '%s\n%s' % (message, m.group('message'))
+
+            if FAILURE_MODE == IGNORE:
                 pass
+            if FAILURE_MODE == WARN:
+                logger.warn(message)
             else:
-                raise ValueError('unknown failure mode %r' % self.failuremode)
-        return had_success
+                raise GromacsError(message)
+        return self.last_returncode != 0
 
-    def _combineargs(self,*args,**kwargs):
-        """Add switches as 'options' with value True to the options dict."""
-        d = {arg: True for arg in args}   # switches are kwargs with value True
-        d.update(kwargs)
-        return d
+    def run(self, *args, **kwargs):
+        result = super(GromacsCommand, self).run(*args, **kwargs)
+        self.check_failure()
+        return result
 
-    def _build_arg_list(self,**kwargs):
-        """Build list of arguments from the dict; keys must be valid  gromacs flags."""
-        arglist = []
-        for flag,value in kwargs.items():
-            # XXX: check flag against allowed values
-            flag = str(flag)
-            if flag.startswith('_'):
-                flag = flag[1:]                 # python-illegal keywords are '_'-quoted
-            if not flag.startswith('-'):
-                flag = '-' + flag               # now flag is guaranteed to start with '-'
-            if value is True:
-                arglist.append(flag)            # simple command line flag
-            elif value is False:
-                if flag.startswith('-no'):
-                    # negate a negated flag ('noX=False' --> X=True --> -X ... but who uses that?)
-                    arglist.append('-'+flag[3:])
-                else:
-                    arglist.append('-no'+flag[1:])  # gromacs switches booleans by prefixing 'no'
-            elif value is None:
-                pass                            # ignore flag = None
-            else:
-                try:
-                    arglist.extend([flag] + value) # option with value list
-                except TypeError:
-                    arglist.extend([flag, value])  # option with single value
-        return map(str, arglist)  # all arguments MUST be strings
-
-    def _run_command(self,*args,**kwargs):
-        """Execute the gromacs command; see the docs for __call__."""
-        result, p = super(GromacsCommand, self)._run_command(*args, **kwargs)
-        self.check_failure(result, command_string=p.command_string)
-        return result, p
-
-    def _commandline(self, *args, **kwargs):
-        """Returns the command line (without pipes) as a list. Inserts driver if present"""
-        if(self.driver is not None):
-            return [self.driver, self.command_name] + self.transform_args(*args,**kwargs)
-        return [self.command_name] + self.transform_args(*args,**kwargs)
-
-
-    def transform_args(self,*args,**kwargs):
-        """Combine arguments and turn them into gromacs tool arguments."""
-        newargs = self._combineargs(*args,**kwargs)
-        return self._build_arg_list(**newargs)
-
-    def _get_gmx_docs(self):
-        """Extract standard gromacs doc
-
-        Extract by running the program and chopping the header to keep from
-        'DESCRIPTION' onwards.
-        """
+    def _get_documentation(self):
         if self._doc_cache is not None:
             return self._doc_cache
-
-        try:
-            logging.disable(logging.CRITICAL)
-            rc,header,docs = self.run('h', stdout=PIPE, stderr=PIPE, use_input=False)
-        except:
-            logging.critical("Invoking command {} failed when determining its doc string. Proceed with caution".format(self.command_name))
-            self._doc_cache = "(No Gromacs documentation available)"
-            return self._doc_cache
-        finally:
-            # ALWAYS restore logging...
-            logging.disable(logging.NOTSET)
-
-        # The header is on STDOUT and is ignored. The docs are read from STDERR in GMX 4.
-        m = re.match(self.doc_pattern, docs, re.DOTALL)
-
-        if m is None:
-            # In GMX 5, the opposite is true (Grrr)
-            m = re.match(self.doc_pattern, header, re.DOTALL)
-            if m is None:
-                self._doc_cache = "(No Gromacs documentation available)"
-                return self._doc_cache
-
+        rc, out, err = self.run(h=True, stdout=PIPE, stderr=PIPE)
+        m = re.match(self.documentation_re, out, re.DOTALL)
+        if not m:
+            m = re.match(self.documentation_re, err, re.DOTALL)
         self._doc_cache = m.group('DOCS')
         return self._doc_cache
-
-
-class PopenWithInput(subprocess.Popen):
-    """Popen class that knows its input.
-
-    1. Set up the instance, including all the input it shoould receive.
-    2. Call :meth:`PopenWithInput.communicate` later.
-
-    .. Note:: Some versions of python have a bug in the subprocess module
-              ( `issue 5179`_ ) which does not clean up open file
-              descriptors. Eventually code (such as this one) fails with the
-              error:
-
-                  *OSError: [Errno 24] Too many open files*
-
-              A weak workaround is to increase the available number of open
-              file descriptors with ``ulimit -n 2048`` and run analysis in
-              different scripts.
-
-    .. _issue 5179: http://bugs.python.org/issue5179
-    """
-
-    def __init__(self,*args,**kwargs):
-        """Initialize with the standard :class:`subprocess.Popen` arguments.
-
-        :Keywords:
-           *input*
-               string that is piped into the command
-
-        """
-        kwargs.setdefault('close_fds', True)   # fixes 'Too many open fds' with 2.6
-        self.input = kwargs.pop('input',None)
-        self.command = args[0]
-        try:
-            input_string = 'printf "' + \
-                self.input.replace('\n','\\n') + '" | '  # display newlines
-        except (TypeError, AttributeError):
-            input_string = ""
-        self.command_string = input_string + " ".join(self.command)
-        super(PopenWithInput,self).__init__(*args,**kwargs)
-
-    def communicate(self, use_input=True):
-        """Run the command, using the input that was set up on __init__ (for *use_input* = ``True``)"""
-        if use_input:
-            return super(PopenWithInput,self).communicate(self.input)
-        else:
-            return super(PopenWithInput,self).communicate()
-
-    def __str__(self):
-        return "<Popen on %r>" % self.command_string
