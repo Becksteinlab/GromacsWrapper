@@ -50,13 +50,6 @@ install:
   # source gromacs
   - source $($HOME/get_gmx $GMX_VERSION)
 
-  # test gromacs output before merging pull request
-  - if [[ "$GMX_VERSION" == "4.6.7" ]]; then 
-        mdrun -h;
-    else
-        gmx mdrun -h;
-    fi
-
 # run tests
 script: 
   - py.test --cov gromacs
