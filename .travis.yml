@@ -10,6 +10,10 @@ branches:
         - master
         - develop
 
+env:
+    - GMX_VERSION=4.6.7
+    - GMX_VERSION=5.1.2
+
 # install python dependencies
 install:
   # We do this conditionally because it saves us some downloading if the
@@ -28,14 +32,23 @@ install:
   - conda info -a
 
   # Replace dep1 dep2 ... with your dependencies
-  - conda env create -f environment.yml
+  - conda create --yes -q -n gw python=$TRAVIS_PYTHON_VERSION numpy scipy pandas
   - source activate gw
+
+  # install becksteinlab Gromacs build
+  - conda install -c becksteinlab gromacs-$GMX_VERSION
+
+  # install other dependencies through pip
+  - pip install recsql>=0.7
 
   # install test tools
   - pip install codecov
   - pip install pytest-cov
   - pip install pytest-pep8
   - pip install -e .
+
+  # source gromacs
+  - source $($HOME/get_gmx $GMX_VERSION)
 
 # run tests
 script: 
