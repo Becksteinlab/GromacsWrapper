@@ -491,8 +491,9 @@ class GMXConfigParser(SafeConfigParser):
           self.set('DEFAULT', 'managerdir',
                   os.path.join("%(configdir)s", os.path.basename(defaults['managerdir'])))
           self.add_section('Gromacs')
+          self.set("Gromacs", "release", "")
           self.set("Gromacs", "GMXRC", "")
-          self.set("Gromacs", "tools", "pdb2gmx editconf grompp genbox genion mdrun trjcat trjconv")
+          self.set("Gromacs", "tools", "")
           self.set("Gromacs", "extra", "")
           self.set("Gromacs", "groups", "tools")
           self.add_section('Logging')
@@ -684,7 +685,6 @@ MAJOR_RELEASE = None
 if cfg.get('Gromacs', 'release'):
     RELEASE = cfg.get('Gromacs', 'release')
     MAJOR_RELEASE = RELEASE.split('.')[0]
-
 
 for name in get_tool_names():
     match = re.match(r'(gmx[^:]*):.*', name)

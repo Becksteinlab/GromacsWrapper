@@ -70,10 +70,12 @@ import os.path
 import tempfile
 import subprocess
 import atexit
+import logging
 
 from . import config
 from .core import GromacsCommand
 
+logger = logging.getLogger("gromacs.tools")
 
 V4TOOLS = ("g_cluster", "g_dyndom", "g_mdmat", "g_principal", "g_select",
            "g_wham", "mdrun", "do_dssp", "g_clustsize", "g_enemat", "g_membed",
@@ -201,6 +203,8 @@ def load_v5_tools():
 
     :return: dict mapping tool names to GromacsCommand classes
     """
+    logger.debug("Loading v5 tools...")
+
     drivers = config.get_tool_names()
 
     if len(drivers) == 0 and 'GMXBIN' in os.environ:
@@ -226,8 +230,11 @@ def load_v5_tools():
         except (subprocess.CalledProcessError, OSError):
             pass
 
-    if len(tools) == 0:
-        raise GromacsToolLoadingError("Failed to load v5 tools")
+    if not tools:
+        errmsg = "Failed to load v5 tools"
+        logger.debug(errmsg)
+        raise GromacsToolLoadingError(errmsg)
+    logger.debug("Loaded {0} v5 tools successfully!".format(len(tools)))
     return tools
 
 
@@ -241,6 +248,8 @@ def load_v4_tools():
 
     :return: dict mapping tool names to GromacsCommand classes
     """
+    logger.debug("Loading v4 tools...")
+
     names = config.get_tool_names()
 
     if len(names) == 0 and 'GMXBIN' in os.environ:
@@ -256,8 +265,11 @@ def load_v4_tools():
         fancy = make_valid_identifier(name)
         tools[fancy] = tool_factory(fancy, name, None)
 
-    if len(tools) == 0:
-        raise GromacsToolLoadingError("Failed to load v4 tools")
+    if not tools:
+        errmsg = "Failed to load v4 tools"
+        logger.debug(errmsg)
+        raise GromacsToolLoadingError(errmsg)
+    logger.debug("Loaded {0} v4 tools successfully!".format(len(tools)))
     return tools
 
 
