@@ -57,6 +57,7 @@ Contents
    :maxdepth: 2
 
    installation
+   configuration
    gromacs
    analysis
    auxiliary

@@ -7,25 +7,11 @@
 ==========================================================
 
 The config module provides configurable options for the whole package;
-It mostly serves to define which gromacs tools and other scripts are
-exposed in the :mod:`gromacs` package and where template files are
-located. The user can configure *GromacsWrapper* by
+It serves to define how to handle log files, set where template files are
+located and which gromacs tools are exposed in the :mod:`gromacs` package.
 
-1. editing the global configuration file ``~/.gromacswrapper.cfg``
-
-2. placing template files into directories under ``~/.gromacswrapper``
-   (:data:`gromacs.config.configdir`) which can be processed instead
-   of the files that come with *GromacsWrapper*
-
-In order to **set up a basic configuration file and the directories**
-a user should execute :func:`gromacs.config.setup` at least once. It
-will prepare the user configurable area in their home directory and it
-will generate a default global configuration file
-``~/.gromacswrapper.cfg`` (the name is defined in
-:data:`CONFIGNAME`)::
-
-  import gromacs
-  gromacs.config.setup()
+In order to set up a basic configuration file and the directories
+a user can execute :func:`gromacs.config.setup`.
 
 If the configuration file is edited then one can force a rereading of
 the new config file with :func:`gromacs.config.get_configuration`::
@@ -163,36 +149,34 @@ file, nothing is being done.
 List of tools
 ~~~~~~~~~~~~~
 
-The list of Gromacs tools is specified in the config file in the ``[Gromacs]``
-section with the ``tools`` variable.
+The list of Gromacs tools can be specified in the config file in the
+``[Gromacs]`` section with the ``tools`` variable.
 
-The tool groups are strings that contain white-space separated file
-names of Gromacs tools. These lists determine which tools are made
-available as classes in :mod:`gromacs.tools`.
+The tool groups are a list of names that determines which tools are made
+available as classes in :mod:`gromacs.tools`. If not provided
+GromacsWrapper will first try to load Gromacs 5.x then Gromacs 4.x
+tools.
 
-A typical Gromacs tools section of the config file looks like this::
+If you choose to provide a list, the Gromacs tools section of the config
+file can be like this::
 
    [Gromacs]
    # Release of the Gromacs package to which information in this sections applies.
    release = 4.5.3
 
-   # tools contains the file names of all Gromacs tools for which classes are generated.
-   # Editing this list has only an effect when the package is reloaded.
+   # tools contains the file names of all Gromacs tools for which classes are
+   # generated. Editing this list has only an effect when the package is
+   # reloaded.
    # (Note that this example has a much shorter list than the actual default.)
    tools =
          editconf make_ndx grompp genion genbox
-         grompp pdb2gmx mdrun
+         grompp pdb2gmx mdrun mdrun_d
 
-   # Additional gromacs tools that should be made available.
-   extra =
-         g_count     g_flux
-         a_gridcalc  a_ri3Dc  g_ri3Dc
-
-   # which tool groups to make available as gromacs.NAME
+   # which tool groups to make available
    groups = tools extra
 
-For Gromacs 5.x use a section like the following, where the driver
-command ``gmx`` is added as a prefix::
+For Gromacs 5.x use a section like the following, where driver commands
+are supplied::
 
    [Gromacs]
    # Release of the Gromacs package to which information in this sections applies.
@@ -206,13 +190,8 @@ command ``gmx`` is added as a prefix::
    # tools contains the command names of all Gromacs tools for which classes are generated.
    # Editing this list has only an effect when the package is reloaded.
    # (Note that this example has a much shorter list than the actual default.)
-   tools =
-         gmx:editconf gmx:make_ndx gmx:grompp gmx:genion gmx:solvate
-         gmx:insert-molecule gmx:convert-tpr
-         gmx:grompp gmx:pdb2gmx gmx:mdrun
+   tools = gmx gmx_d
 
-   # which tool groups to make available as gromacs.NAME
-   groups = tools
 
 For example, on the commandline you would run ::
 
@@ -222,14 +201,6 @@ and within GromacsWrapper this would become ::
 
    gromacs.grompp(f="md.mdp", c="system.gro", p="topol.top", o="md.tpr")
 
-(The driver command is stripped and only the "command name" is used to
-identify the command. This makes it easier to migrate GromacsWrapper
-scripts from Gromacs 4.x to 5.x.).
-
-The driver command can be changed per-tool, allowing for mpi
-and non-mpi versions to be used. For example::
-
-tools = gmx_mpi:mdrun gmx:pdb2gmx
 
 .. Note:: Because of `changes in the Gromacs tool in 5.x`_,
           GromacsWrapper scripts might break, even if the tool
@@ -237,15 +208,6 @@ tools = gmx_mpi:mdrun gmx:pdb2gmx
 
 .. _`changes in the Gromacs tool in 5.x`:
    http://www.gromacs.org/Documentation/How-tos/Tool_Changes_for_5.0
-
-Developers should know that the lists of tools are stored in ``load_*``
-variables. These are lists that contain instructions to other parts of the code
-as to which executables should be wrapped.
-
-.. autodata:: load_tools
-
-:data:`load_tools` is populated from lists of executable names in the
-configuration file.
 
 
 
@@ -266,21 +228,20 @@ completely transparent to the user.
 """
 from __future__ import absolute_import, with_statement
 
-import os, errno, subprocess
-from ConfigParser import SafeConfigParser
+import os
+import logging
+import re
+import subprocess
 
+from ConfigParser import SafeConfigParser
 from pkg_resources import resource_filename, resource_listdir
 
 from . import utilities
 
-# Defaults
-# --------
-# hard-coded package defaults
 
-#: name of the global configuration file.
+#: Default name of the global configuration file.
 CONFIGNAME = os.path.expanduser(os.path.join("~",".gromacswrapper.cfg"))
 
-#: Holds the default values for important file and directory locations.
 #:
 #: :data:`configdir`
 #:    Directory to store user templates and configurations.
@@ -296,20 +257,23 @@ CONFIGNAME = os.path.expanduser(os.path.join("~",".gromacswrapper.cfg"))
 #:    Directory to store configuration files for different queuing system
 #:    managers as used in :mod:`gromacs.manager`.
 #:    The default value is ``~/.gromacswrapper/managers``.
+
+configdir = os.path.expanduser(os.path.join("~",".gromacswrapper"))
 defaults = {
-     'configdir': os.path.expanduser(os.path.join("~",".gromacswrapper")),
-     'logfilename': "gromacs.log",
-     'loglevel_console': 'INFO',
-     'loglevel_file': 'DEBUG',
+    'configdir':    configdir,
+    'qscriptdir':   os.path.join(configdir, 'qscripts'),
+    'templatesdir': os.path.join(configdir, 'templates'),
+    'managerdir':   os.path.join(configdir, 'managers'),
+
+    'logfilename': "gromacs.log",
+    'loglevel_console': 'INFO',
+    'loglevel_file': 'DEBUG',
 }
-defaults['qscriptdir'] = os.path.join(defaults['configdir'], 'qscripts')
-defaults['templatesdir'] = os.path.join(defaults['configdir'], 'templates')
-defaults['managerdir'] = os.path.join(defaults['configdir'], 'managers')
 
 
 # Logging
 # -------
-import logging
+
 logger = logging.getLogger("gromacs.config")
 
 #: File name for the log file; all gromacs command and many utility functions (e.g. in
@@ -326,9 +290,6 @@ loglevel_file = logging.getLevelName(defaults['loglevel_file'])
 
 # User-accessible configuration
 # -----------------------------
-
-# (written in a clumsy manner because of legacy code and because of
-# the way I currently generate the documentation)
 
 #: Directory to store user templates and rc files.
 #: The default value is ``~/.gromacswrapper``.
@@ -372,7 +333,7 @@ def _generate_template_dict(dirname):
     by external code. All template filenames are stored in
     :data:`config.templates`.
     """
-    return dict((resource_basename(fn), resource_filename(__name__, dirname+'/'+fn))
+    return dict((resource_basename(fn), resource_filename(__name__, dirname +'/'+fn))
                 for fn in resource_listdir(__name__, dirname)
                 if not fn.endswith('~'))
 
@@ -523,7 +484,6 @@ class GMXConfigParser(SafeConfigParser):
           args = tuple([self] + list(args))
           SafeConfigParser.__init__(*args, **kwargs)  # old style class ... grmbl
           # defaults
-          self.set('DEFAULT', 'configdir', defaults['configdir'])
           self.set('DEFAULT', 'qscriptdir',
                   os.path.join("%(configdir)s", os.path.basename(defaults['qscriptdir'])))
           self.set('DEFAULT', 'templatesdir',
@@ -531,8 +491,9 @@ class GMXConfigParser(SafeConfigParser):
           self.set('DEFAULT', 'managerdir',
                   os.path.join("%(configdir)s", os.path.basename(defaults['managerdir'])))
           self.add_section('Gromacs')
+          self.set("Gromacs", "release", "")
           self.set("Gromacs", "GMXRC", "")
-          self.set("Gromacs", "tools", "pdb2gmx editconf grompp genbox genion mdrun trjcat trjconv")
+          self.set("Gromacs", "tools", "")
           self.set("Gromacs", "extra", "")
           self.set("Gromacs", "groups", "tools")
           self.add_section('Logging')
@@ -644,42 +605,28 @@ def setup(filename=CONFIGNAME):
 def check_setup():
      """Check if templates directories are setup and issue a warning and help.
 
-     Returns ``True`` if all files and directories are found and
-     ``False`` otherwise.
+    Set the environment variable  :envvar:`GROMACSWRAPPER_SUPPRESS_SETUP_CHECK`
+    skip the check and make it always return ``True``
 
-     Setting the environment variable
-     :envvar:`GROMACSWRAPPER_SUPPRESS_SETUP_CHECK` to 'true' ('yes'
-     and '1' also work) silence this function and make it always return ``True``.
+    :return ``True`` if directories were found and ``False`` otherwise
 
      .. versionchanged:: 0.3.1
-        Uses :envvar:`GROMACSWRAPPER_SUPPRESS_SETUP_CHECK` to suppress output
+        Uses :envvar:`GROMACSWRAPPER_SUPPRESS_SETUP_CHECK` to suppress check
         (useful for scripts run on a server)
      """
-     if os.environ.get("GROMACSWRAPPER_SUPPRESS_SETUP_CHECK", "false").lower() in ("1", "true", "yes"):
+
+     if "GROMACSWRAPPER_SUPPRESS_SETUP_CHECK" in os.environ:
          return True
-
-     is_complete = True
-     show_solution = False
-
-     if not os.path.exists(CONFIGNAME):
-          is_complete = False
-          show_solution = True
-          print("NOTE: The global configuration file %r is missing." % CONFIGNAME)
 
      missing = [d for d in config_directories if not os.path.exists(d)]
      if len(missing) > 0:
-          is_complete = False
-          show_solution = True
-          print("NOTE: Some configuration directories are not set up yet: ")
-          print("\t%s" % '\n\t'.join(missing))
-
-     if show_solution:
-          print("NOTE: You can create the configuration file and directories with:")
-          print("\t>>> import gromacs")
-          print("\t>>> gromacs.config.setup()")
-     return is_complete
-
-check_setup()
+         print("NOTE: Some configuration directories are not set up yet: ")
+         print("\t%s" % '\n\t'.join(missing))
+         print("NOTE: You can create the configuration file and directories with:")
+         print("\t>>> import gromacs")
+         print("\t>>> gromacs.config.setup()")
+         return False
+     return True
 
 
 def set_gmxrc_environment(gmxrc):
@@ -692,11 +639,15 @@ def set_gmxrc_environment(gmxrc):
     then only a warning will be logged. Thus, it should be safe to just call
     this function.
     """
-    envvars = ['GMXPREFIX', 'GMXBIN', 'GMXLDLIB', 'GMXMAN', 'GMXDATA',
-               'GROMACS_DIR', 'LD_LIBRARY_PATH', 'MANPATH', 'PKG_CONFIG_PATH',
-               'PATH']
+    # only v5: 'GMXPREFIX', 'GROMACS_DIR'
+    envvars = ['GMXBIN', 'GMXLDLIB', 'GMXMAN', 'GMXDATA',
+               'LD_LIBRARY_PATH', 'MANPATH', 'PKG_CONFIG_PATH',
+               'PATH',
+               'GMXPREFIX', 'GROMACS_DIR']
+    # in order to keep empty values, add ___ sentinels around result
+    # (will be removed later)
     cmdargs = ['bash', '-c', ". {0} && echo {1}".format(gmxrc,
-               ' '.join(['${0}'.format(v) for v in envvars]))]
+               ' '.join(['___${{{0}}}___'.format(v) for v in envvars]))]
 
     if not gmxrc:
         logger.debug("set_gmxrc_environment(): no GMXRC, nothing done.")
@@ -706,6 +657,7 @@ def set_gmxrc_environment(gmxrc):
         out = subprocess.check_output(cmdargs)
         out = out.strip().split()
         for key, value in zip(envvars, out):
+            value = value.replace('___', '')  # remove sentinels
             os.environ[key] = value
             logger.debug("set_gmxrc_environment(): %s = %r", key, value)
     except (subprocess.CalledProcessError, OSError):
@@ -722,3 +674,31 @@ def get_tool_names():
     for group in cfg.get('Gromacs', 'groups').split():
         names.extend(cfg.get('Gromacs', group).split())
     return names
+
+
+def get_extra_tool_names():
+    """ Get tool names from all configured groups.
+
+    :return: list of tool names
+    """
+    return cfg.get('Gromacs', 'extra').split()
+
+
+RELEASE = None
+MAJOR_RELEASE = None
+
+if cfg.get('Gromacs', 'release'):
+    RELEASE = cfg.get('Gromacs', 'release')
+    MAJOR_RELEASE = RELEASE.split('.')[0]
+
+for name in get_tool_names():
+    match = re.match(r'(gmx[^:]*):.*', name)
+    if match:
+        driver = match.group(1)
+        raise ValueError("'%s' isn't a valid tool name anymore."
+                         " Replace it by '%s'.\n            See "
+                         "http://gromacswrapper.readthedocs.io/en/latest/"
+                         "configuration.html" % (name, match.group(1)))
+
+
+check_setup()

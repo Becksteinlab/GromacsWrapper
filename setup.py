@@ -5,8 +5,9 @@
 # See the files INSTALL and README for details or visit
 # https://github.com/Becksteinlab/GromacsWrapper
 from __future__ import with_statement
-
 from setuptools import setup, find_packages
+
+import imp, os
 
 with open("README.rst") as readme:
     long_description = readme.read()
@@ -14,7 +15,8 @@ with open("README.rst") as readme:
 # Dynamically calculate the version based on gromacs.VERSION.
 # (but requires that we can actually import the package BEFORE it is
 # properly installed!)
-version = __import__('gromacs.version').get_version()
+version_file = os.path.join(os.path.dirname(__file__), 'gromacs', 'version.py')
+version = imp.load_source('gromacs.version', version_file).get_version()
 
 setup(name="GromacsWrapper",
       version=version,

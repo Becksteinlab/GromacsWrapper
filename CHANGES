@@ -10,6 +10,8 @@ pslacerda, orbeckst
   automatically before setting up the Gromacs commands (#55)
 * doc strings for Gromacs tools are loaded lazily, which speeds up
   the initial import of the library to almost instantaneously (PR #76)
+* guess which tools to load automatically if no tools option is provided (#68)
+* new documentation page on how to set up a cfg file
 
 2016-06-29      0.5.1
 whitead, dotsdl, orbeckst

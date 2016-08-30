@@ -6,6 +6,8 @@ doc/epydoc/
 doc/sphinx/build/
 doc/html
 build/
+.idea/
+virtualenv/
 dist
 gromacs.log
 doc/sphinx/*.log

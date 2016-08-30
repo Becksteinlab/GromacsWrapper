@@ -3,8 +3,7 @@
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
 
-"""
-:mod:`gromacs` -- GromacsWrapper Package Overview
+""":mod:`gromacs` -- GromacsWrapper Package Overview
 =================================================
 
 **GromacsWrapper** (package :mod:`gromacs`) is a thin shell around the `Gromacs`_
@@ -160,6 +159,11 @@ It is also possible to capture output from Gromacs commands in a file
 instead of displaying it on screen, as described under
 :ref:`input-output-label`.
 
+Normally, one starts logging with the :func:`start_logging` function but in
+order to obtain logging messages (typically at level *debug*) right from the
+start one may set the environment variable :envvar:`GW_START_LOGGING` to any
+value that evaluates to ``True`` (e.g., "True" or "1").
+
 .. _logging: http://docs.python.org/library/logging.html
 
 Version
@@ -173,9 +177,12 @@ The package version can be queried with the :func:`gromacs.get_version` function
 If the package was installed from a development version, the patch
 level will have the string "-dev" affixed to distinguish it from a
 release.
+
 """
 from __future__ import absolute_import
 __docformat__ = "restructuredtext en"
+
+import os
 
 from .version import VERSION, RELEASE, get_version, get_version_tuple
 
@@ -240,6 +247,9 @@ def stop_logging():
     logger.info("GromacsWrapper %s STOPPED logging", get_version())
     log.clear_handlers(logger)  # this _should_ do the job...
 
+# for testing (maybe enable with envar GW_START_LOGGING)
+if os.environ.get('GW_START_LOGGING', False):
+    start_logging()
 
 # Try to load environment variables set by GMXRC
 config.set_gmxrc_environment(config.cfg.getpath("Gromacs", "GMXRC"))
