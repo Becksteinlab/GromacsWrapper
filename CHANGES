@@ -2,7 +2,10 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
-2016-xx-xx      0.6.0
+2016-xx-xx      0.6.1
+
+
+2016-09-09      0.6.0
 pslacerda, orbeckst
 
 * new Gromacs GMXRC parameter in cfg file: if present and set to a
