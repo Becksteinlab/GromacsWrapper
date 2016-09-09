@@ -94,12 +94,10 @@ class MDrunner(utilities.FileUtils):
     :attr:`mdrun`. This can be a single string or a sequence (tuple) of
     strings. On instantiation, the first entry in :attr:`mdrun` that can be
     found on the :envvar:`PATH` is chosen (with
-    :func:`find_gromacs_command`). The entries can follow the config file
-    syntax and denote a *driver* command (for Gromacs 5.x) that is separated
-    from the command name itself by a colon. For example, ``gmx:mdrun`` from
+    :func:`find_gromacs_command`). For example, ``gmx mdrun`` from
     Gromacs 5.x but just ``mdrun`` for Gromacs 4.6.x. Similarly, alternative
     executables (such as double precision) need to be specified here
-    (e.g. ``("mdrun_d", "gmx_d:mdrun")``).
+    (e.g. ``("mdrun_d", "gmx_d mdrun")``).
 
     .. Note:: Changing :program:`mdrun` arguments permanently changes the
               default arguments for this instance of :class:`MDrunner`. (This
@@ -109,14 +107,16 @@ class MDrunner(utilities.FileUtils):
        Added detection of bare Gromacs commands (Gromacs 4.6.x) or commands run through
        :program:`gmx` (Gromacs 5.x).
 
+    .. versionchanged:: 0.6.0
+       Changed syntax for Gromacs 5.x commands.
     """
 
     #: Path to the :program:`mdrun` executable (or the name if it can be found on :envvar:`PATH`);
-    #: this can be a tuple and then the program names are tried in sequence. You can use
-    #: the syntax from the config file ``gmx:mdrun`` to designate a driver command.
+    #: this can be a tuple and then the program names are tried in sequence. For Gromacs 5
+    #: prefix with the driver command, e.g., ``gmx mdrun``.
     #:
     #: .. versionadded:: 0.5.1
-    mdrun = ("mdrun", "gmx:mdrun")
+    mdrun = ("mdrun", "gmx mdrun")
     #: path to the MPI launcher (e.g. :program:`mpiexec`)
     mpiexec = None
 
@@ -278,14 +278,14 @@ class MDrunner(utilities.FileUtils):
 
 class MDrunnerDoublePrecision(MDrunner):
     """Manage running :program:`mdrun_d`."""
-    mdrun = ("mdrun_d", "gmx_d:mdrun")
+    mdrun = ("mdrun_d", "gmx_d mdrun")
 
 class MDrunnerOpenMP(MDrunner):
     """Manage running :program:`mdrun` as an OpenMP_ multiprocessor job.
 
     .. _OpenMP: http://openmp.org/wp/
     """
-    mdrun = ("mdrun_openmp", "gmx_openmp:mdrun")
+    mdrun = ("mdrun_openmp", "gmx_openmp mdrun")
     mpiexec = "mpiexec"
 
 class MDrunnerMpich2Smpd(MDrunner):
