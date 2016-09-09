@@ -256,7 +256,7 @@ def load_v4_tools():
         names = find_executables(os.environ['GMXBIN'])
 
     if len(names) == 0 or len(names) > len(V4TOOLS) * 4:
-        names = V4TOOLS[:]
+        names = list(V4TOOLS)
 
     names.extend(config.get_extra_tool_names())
 
