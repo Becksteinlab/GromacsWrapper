@@ -5,6 +5,7 @@
 
 from __future__ import division, absolute_import, print_function
 
+import pytest
 from unittest import TestCase
 
 from .datafiles import datafile
@@ -44,5 +45,20 @@ def test_MDRunner():
     rc = mdrun.run(mdrunargs={'version': True})
     assert(rc == 0)
 
+class Test_find_gromacs_command(TestCase):
+    # Gromacs 4 or Gromacs 5 (in this order)
+    commands = ["grompp", "gmx grompp"]
 
+    def test_find(self):
+        driver, name = gromacs.run.find_gromacs_command(self.commands)
+        assert (driver in (None, "gmx"),
+               "find_gromacs_command() did not identify a driver")
+        assert (name == self.commands[0],
+               "find_gromacs_command() did not find a command")
+
+
+    @staticmethod
+    def test_raises_ValueError():
+        with pytest.raises(OSError):
+            driver, name = gromacs.run.find_gromacs_command(["./not_a_command"])
 

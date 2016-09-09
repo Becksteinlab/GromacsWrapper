@@ -55,17 +55,16 @@ def find_gromacs_command(commands):
     # We could try executing 'name' or 'driver name' but to keep things lean we
     # just check if the executables can be found and then hope for the best.
 
-    for command in utilities.asiterable(commands):
-        if command.find(':') != -1:
-            driver = command.split(':')[0]
-            name = command.split(':')[1]
-            if utilities.which(driver):
-                break
-        else:
-            driver = None
-            name = command
-            if utilities.which(name):
-                break
+    commands = utilities.asiterable(commands)
+    for command in commands:
+        try:
+            driver, name = command.split()
+        except ValueError:
+            driver, name = None, command
+
+        executable = driver if driver else name
+        if utilities.which(executable):
+            break
     else:
         raise OSError(errno.ENOENT, "No Gromacs executable found in", ", ".join(commands))
 
