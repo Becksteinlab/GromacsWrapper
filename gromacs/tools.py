@@ -95,6 +95,8 @@ V4TOOLS = ("g_cluster", "g_dyndom", "g_mdmat", "g_principal", "g_select",
            "g_dist", "g_luck", "g_potential", "g_sas", "g_velacc", "make_ndx")
 
 
+#: dict of names in Gromacs 5 that correspond to an equivalent tool in
+#: in Gromacs 4. The names are literal Gromacs names.
 NAMES5TO4 = {
     # same name in both versions
     'grompp': 'grompp',
@@ -114,7 +116,7 @@ NAMES5TO4 = {
     'do_dssp': 'do_dssp',
 
     # changed names
-    'convert_tpr': 'tpbconv',
+    'convert-tpr': 'tpbconv',
     'dump': 'gmxdump',
     'check': 'gmxcheck',
     'solvate': 'genbox',
@@ -328,14 +330,16 @@ else:
 for fancy, cmd in registry.items():
     for c5, c4 in NAMES5TO4.iteritems():
         # have to check each one, since it's possible there are suffixes
-        # like for double precision
+        # like for double precision; cmd.command_name is Gromacs name
+        # (e.g. 'convert-tpr') so we need to be careful in the processing below.
         name = cmd.command_name
         if name.startswith(c5):
             if c4 == c5:
                 break
             else:
-                # mantain suffix
-                name = c4 + fancy.lower().split(c5)[1]
+                # maintain suffix (note: need to split with fancy because Gromacs
+                # names (c5) may contain '-' etc)
+                name = c4 + fancy.split(make_valid_identifier(c5))[1]
                 registry[make_valid_identifier(name)] = registry[fancy]
                 break
     else:
