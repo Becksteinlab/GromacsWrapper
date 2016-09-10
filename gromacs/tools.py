@@ -220,7 +220,6 @@ def load_v5_tools():
                                            'commands'])
             for line in str(out).encode('ascii').splitlines()[5:-1]:
                 if line[4] != ' ':
-
                     name = line[4:line.index(' ', 4)]
                     fancy = make_valid_identifier(name)
                     suffix = driver.partition('_')[2]
@@ -305,18 +304,24 @@ def merge_ndx(*args):
 
 # Load tools
 if config.MAJOR_RELEASE == '5':
+    logger.debug("Trying to load configured Gromacs major release {}".format(
+        config.MAJOR_RELEASE))
     registry = load_v5_tools()
 elif config.MAJOR_RELEASE == '4':
+    logger.debug("Trying to load configured Gromacs major release {}".format(
+        config.MAJOR_RELEASE))
     registry = load_v4_tools()
 else:
+    logger.debug("No major release configured: trying 5 -> 4")
     try:
         registry = load_v5_tools()
     except GromacsToolLoadingError:
         try:
             registry = load_v4_tools()
         except GromacsToolLoadingError:
-            raise GromacsToolLoadingError("Unable to load any tool")
-
+            errmsg = "Autoloading was unable to load any Gromacs tool"
+            logger.critical(errmsg)
+            raise GromacsToolLoadingError(errmsg)
 
 # Aliases command names to run unmodified GromacsWrapper scripts on a machine
 # with only 5.x
