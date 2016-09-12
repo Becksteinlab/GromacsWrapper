@@ -774,6 +774,36 @@ def get_volume(f):
 # Editing textual input files
 # ---------------------------
 
+def read_mdp(mdp):
+    def mangle(p):
+        """Return a RE string that matches the parameter."""
+        return p.replace('-', '_')  # must catch either - or _
+
+    pattern = re.compile("""\
+                       \s*(?P<assignment>[\w]+)\s*=\s*  # parameter == everything before the value
+                       (?P<value>[^;]*)              # value (stop before comment=;)
+                       (?P<comment>\s*;.*)?          # optional comment
+                       """, re.VERBOSE)
+    result = dict()
+    with open(mdp) as src:
+        logger.info("reading mdp = %r" % (mdp))
+        for line in src:
+            new_line = line.strip()  # \n must be stripped to ensure that new line is built without break
+            m = pattern.match(new_line)
+            if m:
+                # I am too stupid to replace a specific region in the string so I rebuild it
+                # (matching a line and then replacing value requires TWO re calls)
+                    #print 'line:' + new_line
+                    #print m.groupdict()
+                if m.group('comment') is None:
+                    comment = ''
+                else:
+                    comment = " "+m.group('comment')
+                assignment = m.group('assignment')
+                value = m.group('value')
+                result[assignment] = value
+    return result
+
 def edit_mdp(mdp, new_mdp=None, extend_parameters=None, **substitutions):
     """Change values in a Gromacs mdp file.
 
