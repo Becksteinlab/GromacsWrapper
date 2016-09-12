@@ -775,6 +775,19 @@ def get_volume(f):
 # ---------------------------
 
 def read_mdp(mdp):
+"""Reads a Gromacs mdp file
+
+    Reads the MDP file given. Uses a regex (see source).
+
+    :Arguments:
+        *mdp* : filename
+
+    :Returns:
+        Dict of parameters/values read from mdp file
+
+    .. SeeAlso:: You can use these to edit an mdp file with :func:`gromacs.cbook.edit_mdp`
+
+"""
     def mangle(p):
         """Return a RE string that matches the parameter."""
         return p.replace('-', '_')  # must catch either - or _
@@ -791,10 +804,6 @@ def read_mdp(mdp):
             new_line = line.strip()  # \n must be stripped to ensure that new line is built without break
             m = pattern.match(new_line)
             if m:
-                # I am too stupid to replace a specific region in the string so I rebuild it
-                # (matching a line and then replacing value requires TWO re calls)
-                    #print 'line:' + new_line
-                    #print m.groupdict()
                 if m.group('comment') is None:
                     comment = ''
                 else:

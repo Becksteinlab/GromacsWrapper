@@ -3,7 +3,7 @@
 ==============================
 
 2016-xx-xx      0.6.0
-pslacerda, orbeckst
+pslacerda, orbeckst, whitead
 
 * new Gromacs GMXRC parameter in cfg file: if present and set to a
   file then GromacsWrapper sources GMXRC and sets the environment
@@ -12,6 +12,7 @@ pslacerda, orbeckst
   the initial import of the library to almost instantaneously (PR #76)
 * guess which tools to load automatically if no tools option is provided (#68)
 * new documentation page on how to set up a cfg file
+* Can now read MDP files into a dictionary. Useful for joining MDPs. 
 
 2016-06-29      0.5.1
 whitead, dotsdl, orbeckst
