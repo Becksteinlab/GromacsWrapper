@@ -10,6 +10,8 @@ import numpy as np
 from numpy.testing import assert_array_equal, assert_
 from pandas.util.testing import assert_frame_equal
 
+import pytest
+
 import gromacs
 from gromacs.fileformats import TOP, XVG
 from gromacs.scaling import partial_tempering
@@ -54,7 +56,7 @@ class Namespace(object):
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
 
-
+@pytest.mark.skip(reason="Not currently maintained. See #61.")
 class TopologyTest(object):
         grompp = 'fileformats/top/grompp.mdp'
         def test_basic(self):

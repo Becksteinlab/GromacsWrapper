@@ -52,7 +52,7 @@ install:
 
 # run tests
 script: 
-  - py.test --cov gromacs
+  - py.test --cov gromacs gromacs/tests
 
 after_success:
   - codecov

@@ -291,12 +291,12 @@ __all__.extend(_have_g_commands)
 
 
 # cbook should come after the whole of init as it relies on command
-# instances in the top level name space
-try:
-    from . import cbook
-except OSError, err:
-    warnings.warn("Some Gromacs commands were NOT found when importing gromacs.cbook:\n"+str(err),
-                  category=GromacsImportWarning)
+# instances in the top level name space -- do we really need cbook at top level? [orbeckst]
+# try:
+#     from . import cbook
+# except OSError as err:
+#     warnings.warn("Some Gromacs commands were NOT found when importing gromacs.cbook:\n"+str(err),
+#                   category=GromacsImportWarning)
 
 # convenience functions for warnings
 
