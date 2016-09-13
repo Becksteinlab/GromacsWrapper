@@ -61,3 +61,9 @@ class Test_find_gromacs_command(TestCase):
         with pytest.raises(OSError):
             driver, name = gromacs.run.find_gromacs_command(["./not_a_command"])
 
+
+def test_get_double_or_single_prec_mdrun():
+    # tests only ship with single prec mdrun
+    mdrun = gromacs.run.get_double_or_single_prec_mdrun()
+    assert mdrun.command_name in ("mdrun", "mdrun_d"), \
+        "gromacs.run.get_double_or_single_prec_mdrun() could not find any mdrun"
