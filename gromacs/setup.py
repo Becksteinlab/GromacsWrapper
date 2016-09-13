@@ -160,11 +160,9 @@ rlist        1.4 ?      1.0
 """
 
 
-
 trj_compact_main = gromacs.tools.Trjconv(ur='compact', center=True, boxcenter='tric', pbc='mol',
-                                         input=('__main__','system'),
-                                         doc="Returns a compact representation of the system centered on the __main__ group")
-
+                                         input=('__main__', 'system'))
+# trj_compact_main.__doc__ += "Returns a compact representation of the system centered on the __main__ group"
 
 # TODO:
 # - should be part of a class so that we can store the topology etc !!!
