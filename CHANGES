@@ -5,7 +5,9 @@
 2016-xx-xx      0.6.1
 orbeckst
 
+* alias tpbconv <-> convert_tpr was not properly set with Gromacs 5
 * fixed cbook.grompp_qtot() (#89)
+* fixed setup.trj_compact_main() (like #89, spurious -doc argument passed)
 * additional tests
 
 2016-09-09      0.6.0
