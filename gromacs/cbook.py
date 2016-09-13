@@ -582,8 +582,8 @@ class Frames(object):
 # grompp that does not raise an exception; setting up runs the command to get the docs so
 # we only want to do this once at the module level and not inside a function that can be called
 # repeatedly
-grompp_warnonly = tools.Grompp(failure="warn",
-                               doc="grompp wrapper that only warns on failure but does not raise :exc:`GromacsError`")
+grompp_warnonly = tools.Grompp(failure="warn")
+# grompp_warnonly.__doc__ += "\n\ngrompp wrapper that only warns on failure but does not raise :exc:`GromacsError`"
 
 def grompp_qtot(*args, **kwargs):
     """Run ``gromacs.grompp`` and return the total charge of the  system.

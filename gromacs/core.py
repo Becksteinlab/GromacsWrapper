@@ -123,7 +123,7 @@ class Command(object):
     #: cannot be found by searching :envvar:`PATH`.
     command_name = None
 
-    def __init__(self,*args,**kwargs):
+    def __init__(self, *args, **kwargs):
         """Set up the command class.
 
         The arguments can always be provided as standard positional
@@ -154,7 +154,7 @@ class Command(object):
         self.args = args
         self.kwargs = kwargs
 
-    def run(self,*args,**kwargs):
+    def run(self, *args, **kwargs):
         """Run the command; args/kwargs are added or replace the ones given to the constructor."""
         _args, _kwargs = self._combine_arglist(args, kwargs)
         results, p = self._run_command(*_args, **_kwargs)
@@ -167,7 +167,7 @@ class Command(object):
         _kwargs.update(kwargs)
         return _args, _kwargs
 
-    def _run_command(self,*args,**kwargs):
+    def _run_command(self, *args, **kwargs):
         """Execute the command; see the docs for __call__.
 
         :Returns: a tuple of the *results* tuple ``(rc, stdout, stderr)`` and
@@ -215,7 +215,7 @@ class Command(object):
     def _commandline(self, *args, **kwargs):
         """Returns the command line (without pipes) as a list."""
          # transform_args() is a hook (used in GromacsCommand very differently!)
-        return [self.command_name] + self.transform_args(*args,**kwargs)
+        return [self.command_name] + self.transform_args(*args, **kwargs)
 
     def commandline(self, *args, **kwargs):
         """Returns the commandline that run() uses (without pipes)."""
@@ -223,7 +223,7 @@ class Command(object):
         _args, _kwargs = self._combine_arglist(args, kwargs)
         return self._commandline(*_args, **_kwargs)
 
-    def Popen(self, *args,**kwargs):
+    def Popen(self, *args, **kwargs):
         """Returns a special Popen instance (:class:`PopenWithInput`).
 
         The instance has its input pre-set so that calls to
@@ -379,7 +379,7 @@ class Command(object):
 
            (TODO: example for chaining commands)
         """
-        return self.run(*args,**kwargs)
+        return self.run(*args, **kwargs)
 
 
 class GromacsCommand(Command):
@@ -525,7 +525,7 @@ class GromacsCommand(Command):
     def _combine_arglist(self, args, kwargs):
         """Combine the default values and the supplied values."""
         gmxargs = self.gmxargs.copy()
-        gmxargs.update(self._combineargs(*args,**kwargs))
+        gmxargs.update(self._combineargs(*args, **kwargs))
         return (), gmxargs    # Gromacs tools don't have positional args --> args = ()
 
     def check_failure(self, result, msg='Gromacs tool failed', command_string=None):
@@ -551,16 +551,16 @@ class GromacsCommand(Command):
                 raise ValueError('unknown failure mode %r' % self.failuremode)
         return had_success
 
-    def _combineargs(self,*args,**kwargs):
+    def _combineargs(self, *args, **kwargs):
         """Add switches as 'options' with value True to the options dict."""
         d = {arg: True for arg in args}   # switches are kwargs with value True
         d.update(kwargs)
         return d
 
-    def _build_arg_list(self,**kwargs):
+    def _build_arg_list(self, **kwargs):
         """Build list of arguments from the dict; keys must be valid  gromacs flags."""
         arglist = []
-        for flag,value in kwargs.items():
+        for flag, value in kwargs.items():
             # XXX: check flag against allowed values
             flag = str(flag)
             if flag.startswith('_'):
@@ -572,9 +572,9 @@ class GromacsCommand(Command):
             elif value is False:
                 if flag.startswith('-no'):
                     # negate a negated flag ('noX=False' --> X=True --> -X ... but who uses that?)
-                    arglist.append('-'+flag[3:])
+                    arglist.append('-' + flag[3:])
                 else:
-                    arglist.append('-no'+flag[1:])  # gromacs switches booleans by prefixing 'no'
+                    arglist.append('-no' + flag[1:])  # gromacs switches booleans by prefixing 'no'
             elif value is None:
                 pass                            # ignore flag = None
             else:
@@ -593,13 +593,13 @@ class GromacsCommand(Command):
     def _commandline(self, *args, **kwargs):
         """Returns the command line (without pipes) as a list. Inserts driver if present"""
         if(self.driver is not None):
-            return [self.driver, self.command_name] + self.transform_args(*args,**kwargs)
-        return [self.command_name] + self.transform_args(*args,**kwargs)
+            return [self.driver, self.command_name] + self.transform_args(*args, **kwargs)
+        return [self.command_name] + self.transform_args(*args, **kwargs)
 
 
     def transform_args(self,*args,**kwargs):
         """Combine arguments and turn them into gromacs tool arguments."""
-        newargs = self._combineargs(*args,**kwargs)
+        newargs = self._combineargs(*args, **kwargs)
         return self._build_arg_list(**newargs)
 
     def _get_gmx_docs(self):
@@ -613,7 +613,7 @@ class GromacsCommand(Command):
 
         try:
             logging.disable(logging.CRITICAL)
-            rc,header,docs = self.run('h', stdout=PIPE, stderr=PIPE, use_input=False)
+            rc, header, docs = self.run('h', stdout=PIPE, stderr=PIPE, use_input=False)
         except:
             logging.critical("Invoking command {} failed when determining its doc string. Proceed with caution".format(self.command_name))
             self._doc_cache = "(No Gromacs documentation available)"
@@ -656,7 +656,7 @@ class PopenWithInput(subprocess.Popen):
     .. _issue 5179: http://bugs.python.org/issue5179
     """
 
-    def __init__(self,*args,**kwargs):
+    def __init__(self, *args, **kwargs):
         """Initialize with the standard :class:`subprocess.Popen` arguments.
 
         :Keywords:
@@ -665,7 +665,7 @@ class PopenWithInput(subprocess.Popen):
 
         """
         kwargs.setdefault('close_fds', True)   # fixes 'Too many open fds' with 2.6
-        self.input = kwargs.pop('input',None)
+        self.input = kwargs.pop('input', None)
         self.command = args[0]
         try:
             input_string = 'printf "' + \
@@ -673,14 +673,14 @@ class PopenWithInput(subprocess.Popen):
         except (TypeError, AttributeError):
             input_string = ""
         self.command_string = input_string + " ".join(self.command)
-        super(PopenWithInput,self).__init__(*args,**kwargs)
+        super(PopenWithInput,self).__init__(*args, **kwargs)
 
     def communicate(self, use_input=True):
         """Run the command, using the input that was set up on __init__ (for *use_input* = ``True``)"""
         if use_input:
-            return super(PopenWithInput,self).communicate(self.input)
+            return super(PopenWithInput, self).communicate(self.input)
         else:
-            return super(PopenWithInput,self).communicate()
+            return super(PopenWithInput, self).communicate()
 
     def __str__(self):
         return "<Popen on %r>" % self.command_string

@@ -3,7 +3,10 @@
 ==============================
 
 2016-xx-xx      0.6.1
+orbeckst
 
+* fixed cbook.grompp_qtot() (#89)
+* additional tests
 
 2016-09-09      0.6.0
 pslacerda, orbeckst
