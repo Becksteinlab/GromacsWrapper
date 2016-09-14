@@ -105,25 +105,18 @@ logger = logging.getLogger('gromacs.utilities')
 from .exceptions import AutoCorrectionWarning
 
 
-def Property(func):
-    """Simple decorator wrapper to make full fledged properties.
-    See eg http://adam.gomaa.us/blog/2008/aug/11/the-python-property-builtin/
-    """
-    return property(**func())
-
-
 class AttributeDict(dict):
     """A dictionary with pythonic access to keys as attributes --- useful for interactive work."""
-    def __getattribute__(self,x):
+    def __getattribute__(self, x):
         try:
             return super(AttributeDict,self).__getattribute__(x)
         except AttributeError:
             return self[x]
-    def __setattr__(self,name,value):
+    def __setattr__(self, name, value):
         try:
-            super(AttributeDict,self).__setitem__(name, value)
+            super(AttributeDict, self).__setitem__(name, value)
         except KeyError:
-            super(AttributeDict,self).__setattr__(name, value)
+            super(AttributeDict, self).__setattr__(name, value)
 
     def __getstate__(self):
         return self
@@ -186,7 +179,10 @@ def anyopen(datasource, mode='r', **kwargs):
     if mode.startswith('r'):
         if hasattr(datasource,'next') or hasattr(datasource,'readline'):
             stream = datasource
-            filename = '(%s)' % stream.name  # maybe that does not always work?
+            try:
+                filename = '({})'.format(stream.name)  # maybe that does not always work?
+            except AttributeError:
+                filename = str(type(stream))
         else:
             stream = None
             filename = datasource
@@ -200,7 +196,10 @@ def anyopen(datasource, mode='r', **kwargs):
     elif mode.startswith('w'):
         if hasattr(datasource, 'write'):
             stream = datasource
-            filename = '(%s)' % stream.name  # maybe that does not always work?
+            try:
+                filename = '({})'.format(stream.name)  # maybe that does not always work?
+            except AttributeError:
+                filename = str(type(stream))
         else:
             stream = None
             filename = datasource
