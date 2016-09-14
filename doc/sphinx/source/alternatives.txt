@@ -113,7 +113,9 @@ JGromacs_ (Márton Münz and Philip C Biggin)
    of Gromacs applications.
 
 
-Please let `me`_ know of other efforts so that I can add them here. Thanks.
+Please open an issue in the `issue tracker`_ to let us know of other efforts so that
+they can be added here. Thanks.
+
 
 .. _copernicus: http://git.copernicus-computing.org/
 .. _gmxscript: https://github.com/pslacerda/gmx
@@ -137,3 +139,5 @@ Please let `me`_ know of other efforts so that I can add them here. Thanks.
 .. _numpy: http://numpy.scipy.org
 .. _Charmm: http://www.charmm.org
 .. _Gromacs: http://www.gromacs.org
+.. _issue tracker: https://github.com/Becksteinlab/GromacsWrapper/issues
+
