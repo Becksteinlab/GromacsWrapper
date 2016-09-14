@@ -1,0 +1,45 @@
+Log file opened on Thu Sep 29 00:53:29 2011
+Host: darthtater  pid: 3732  nodeid: 0  nnodes:  1
+The Gromacs distribution was built Thu Feb  3 19:30:17 EST 2011 by
+oliver@darthtater (Linux 2.6.32-26-server x86_64)
+
+
+
+                         :-)  G  R  O  M  A  C  S  (-:
+
+                     Gnomes, ROck Monsters And Chili Sauce
+
+                            :-)  VERSION 4.5.3  (-:
+
+        Written by Emile Apol, Rossen Apostolov, Herman J.C. Berendsen,
+      Aldert van Buuren, Pär Bjelkmar, Rudi van Drunen, Anton Feenstra,
+        Gerrit Groenhof, Peter Kasson, Per Larsson, Pieter Meulenhoff,
+           Teemu Murtola, Szilard Pall, Sander Pronk, Roland Schulz,
+                Michael Shirts, Alfons Sijbers, Peter Tieleman,
+
+               Berk Hess, David van der Spoel, and Erik Lindahl.
+
+       Copyright (c) 1991-2000, University of Groningen, The Netherlands.
+            Copyright (c) 2001-2010, The GROMACS development team at
+        Uppsala University & The Royal Institute of Technology, Sweden.
+            check out http://www.gromacs.org for more information.
+
+         This program is free software; you can redistribute it and/or
+          modify it under the terms of the GNU General Public License
+         as published by the Free Software Foundation; either version 2
+             of the License, or (at your option) any later version.
+
+                     :-)  /opt/gromacs/4.5.3/bin/mdrun  (-:
+
+...
+...
+-----------------------------------------------------------------------
+
+        Parallel run - timing based on wallclock.
+
+               NODE (s)   Real (s)      (%)
+       Time:  14786.454  14786.454    100.0
+                       4h06:26
+               (Mnbf/s)   (GFlops)   (ns/day)  (hour/ns)
+Performance:    296.836     19.124      5.843      4.107
+Finished mdrun on node 0 Thu Sep 29 04:59:56 2011

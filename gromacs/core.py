@@ -248,6 +248,8 @@ class Command(object):
 
         stdin = kwargs.pop('stdin', None)
         input = kwargs.pop('input', None)
+
+        use_shell = kwargs.pop('use_shell', False)
         if input:
             stdin = PIPE
             if isinstance(input, basestring):
@@ -267,8 +269,8 @@ class Command(object):
                                                    # (cannot move out of method because filtering of stdin etc)
         try:
             p = PopenWithInput(cmd, stdin=stdin, stderr=stderr, stdout=stdout,
-                               universal_newlines=True, input=input)
-        except OSError,err:
+                               universal_newlines=True, input=input, shell=use_shell)
+        except OSError as err:
             logger.error(" ".join(cmd))            # log command line
             if err.errno == errno.ENOENT:
                 errmsg = "Failed to find Gromacs command %r, maybe its not on PATH or GMXRC must be sourced?" % self.command_name
@@ -381,14 +383,18 @@ class Command(object):
 
 
 class GromacsCommand(Command):
-    """Base class for wrapping a g_* command.
+    """Base class for wrapping a Gromacs tool.
 
     Limitations: User must have sourced ``GMXRC`` so that the python script can
     inherit the environment and find the gromacs programs.
 
     The class doc string is dynamically replaced by the documentation of the
-    gromacs command when an instance is created.
+    gromacs command the first time the doc string is requested. If the tool is
+    not available at the time (i.e., cannot be found on :env:`PATH`) then the
+    generic doc string is shown and an :exc:`OSError` exception is only raised
+    when the user is actually trying to the execute the command.
     """
+
     # TODO: setup the environment from GMXRC (can use env=DICT in Popen/call)
 
     command_name = None
@@ -491,9 +497,8 @@ class GromacsCommand(Command):
         """
         self.__failuremode = None
         self.failuremode = kwargs.pop('failure','raise')
-        self.extra_doc = kwargs.pop('doc',None)
         self.gmxargs = self._combineargs(*args, **kwargs)
-        self.__doc__ = self.gmxdoc        
+        self._doc_cache = None
 
     def failuremode():
         doc = """mode determines how the GromacsCommand behaves during failure
@@ -598,44 +603,38 @@ class GromacsCommand(Command):
         return self._build_arg_list(**newargs)
 
     def _get_gmx_docs(self):
-        """Extract standard gromacs doc by running the program and chopping the header.
+        """Extract standard gromacs doc
 
-        .. Note::
-
-           The header is on STDOUT and is ignored. The docs are read from STDERR in GMX 4. 
-           In GMX 5, the opposite is true (Grrr)
+        Extract by running the program and chopping the header to keep from
+        'DESCRIPTION' onwards.
         """
-        # Uses the class-wide arguments so that 'canned invocations' in cbook
-        # are accurately reflected. Might be a problem when these invocations
-        # supply wrong arguments... TODO: maybe check rc for that?
-        # use_input=False needed for running commands in cbook that have input pre-defined
-        # temporarily throttle logger to avoid reading about the help function invocation or not found
-        logging.disable(logging.CRITICAL)
+        if self._doc_cache is not None:
+            return self._doc_cache
+
         try:
-            rc,header,docs = self.run('h', stdout=PIPE, stderr=PIPE, use_input=False)            
+            logging.disable(logging.CRITICAL)
+            rc,header,docs = self.run('h', stdout=PIPE, stderr=PIPE, use_input=False)
         except:
             logging.critical("Invoking command {} failed when determining its doc string. Proceed with caution".format(self.command_name))
-            return "(No Gromacs documentation available)"            
+            self._doc_cache = "(No Gromacs documentation available)"
+            return self._doc_cache
         finally:
-            logging.disable(logging.NOTSET)     # ALWAYS restore logging....
-        m = re.match(self.doc_pattern, docs, re.DOTALL)    # keep from DESCRIPTION onwards
-        if m is None:
-            m = re.match(self.doc_pattern, header, re.DOTALL)    # Try now with GMX 5 approach            
-            if m is None:
-                return "(No Gromacs documentation available)"
-        return m.group('DOCS')
+            # ALWAYS restore logging...
+            logging.disable(logging.NOTSET)
 
-    @property
-    def gmxdoc(self):
-        """Usage for the underlying Gromacs tool (cached)."""
-        if not (hasattr(self, '__doc_cache') and self.__doc_cache):
-            self.__doc_cache = self._get_gmx_docs()
-        docs = self.__doc_cache
-        if self.extra_doc:
-            docs = '\n'.join([self.extra_doc,'',
-                              "Documentation of the gromacs tool", 34*'=',
-                              docs])
-        return docs
+        # The header is on STDOUT and is ignored. The docs are read from STDERR in GMX 4.
+        m = re.match(self.doc_pattern, docs, re.DOTALL)
+
+        if m is None:
+            # In GMX 5, the opposite is true (Grrr)
+            m = re.match(self.doc_pattern, header, re.DOTALL)
+            if m is None:
+                self._doc_cache = "(No Gromacs documentation available)"
+                return self._doc_cache
+
+        self._doc_cache = m.group('DOCS')
+        return self._doc_cache
+
 
 class PopenWithInput(subprocess.Popen):
     """Popen class that knows its input.
@@ -675,11 +674,13 @@ class PopenWithInput(subprocess.Popen):
             input_string = ""
         self.command_string = input_string + " ".join(self.command)
         super(PopenWithInput,self).__init__(*args,**kwargs)
+
     def communicate(self, use_input=True):
         """Run the command, using the input that was set up on __init__ (for *use_input* = ``True``)"""
         if use_input:
             return super(PopenWithInput,self).communicate(self.input)
         else:
             return super(PopenWithInput,self).communicate()
+
     def __str__(self):
         return "<Popen on %r>" % self.command_string

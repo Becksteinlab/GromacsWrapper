@@ -199,12 +199,12 @@ one to fit.
 
 try:
     _define_canned_commands()
-except (OSError, ImportError, GromacsError):
-    warnings.warn("Failed to define a number of commands in gromacs.cbook. Most likely the "
-                  "Gromacs installation cannot be found --- source GMXRC!",
-                  category=GromacsImportWarning)
-    logger.error("Failed to define a number of commands in gromacs.cbook. Most likely the "
-                  "Gromacs installation cannot be found --- source GMXRC!")
+except (OSError, ImportError, AttributeError, GromacsError):
+    msg = ("Failed to define a number of commands in gromacs.cbook. Most "
+          "likely the Gromacs installation cannot be found --- set GMXRC in "
+           "~/.gromacswrapper.cfg or source GMXRC directly")
+    warnings.warn(msg, category=GromacsImportWarning)
+    logger.error(msg)
 finally:
     del _define_canned_commands
 
@@ -1652,7 +1652,7 @@ class Transformer(utilities.FileUtils):
 
     """
 
-    def __init__(self, s="topol.tpr", f="traj.xtc", n=None, force=None, 
+    def __init__(self, s="topol.tpr", f="traj.xtc", n=None, force=None,
                  dirname=os.path.curdir, outdir=None):
         """Set up Transformer with structure and trajectory.
 
@@ -1732,7 +1732,7 @@ class Transformer(utilities.FileUtils):
         """Write compact xtc that is fitted to the tpr reference structure.
 
         See :func:`gromacs.cbook.trj_fitandcenter` for details and
-        description of *kwargs* (including *input*, *input1*, *n* and 
+        description of *kwargs* (including *input*, *input1*, *n* and
         *n1* for how to supply custom index groups). The most important ones are listed
         here but in most cases the defaults should work.
 
@@ -1846,7 +1846,7 @@ class Transformer(utilities.FileUtils):
                 logger.info("Fitted trajectory (fitmode=%s): %r.", fitmode, kwargs['o'])
         return {'tpr': self.rp(kwargs['s']), 'xtc': self.rp(kwargs['o'])}
 
-    def strip_water(self, os=None, o=None, on=None, compact=False, 
+    def strip_water(self, os=None, o=None, on=None, compact=False,
                     resn="SOL", groupname="notwater", **kwargs):
         """Write xtc and tpr with water (by resname) removed.
 
@@ -1866,7 +1866,7 @@ class Transformer(utilities.FileUtils):
               Index group used for centering ["Protein"]
 
               .. Note:: If *input* is provided (see below under *kwargs*)
-                        then *centergroup* is ignored and the group for 
+                        then *centergroup* is ignored and the group for
                         centering is taken as the first entry in *input*.
 
            *resn*
@@ -1909,12 +1909,12 @@ class Transformer(utilities.FileUtils):
             TRJCONV = trj_compact
             # input overrides centergroup
             if kwargs.get('centergroup') is not None and 'input' in kwargs:
-		logger.warn("centergroup = %r will be superceded by input[0] = %r", kwargs['centergroup'], kwargs['input'][0])
+                logger.warn("centergroup = %r will be superceded by input[0] = %r", kwargs['centergroup'], kwargs['input'][0])
             _input = kwargs.get('input', [kwargs.get('centergroup', 'Protein')])
             kwargs['input'] = [_input[0], groupname]  # [center group, write-out selection]
             del _input
-	    logger.info("Creating a compact trajectory centered on group %r", kwargs['input'][0])
-	    logger.info("Writing %r to the output trajectory", kwargs['input'][1])
+            logger.info("Creating a compact trajectory centered on group %r", kwargs['input'][0])
+            logger.info("Writing %r to the output trajectory", kwargs['input'][1])
         else:
             TRJCONV = gromacs.trjconv
             kwargs['input'] = [groupname]
@@ -1937,7 +1937,7 @@ class Transformer(utilities.FileUtils):
 
                 logger.info("NDX of the new system %r", newndx)
                 gromacs.make_ndx(f=newtpr, o=newndx, input=['q'], stderr=False, stdout=False)
-		# PROBLEM: If self.ndx contained a custom group required for fitting then we are loosing
+                # PROBLEM: If self.ndx contained a custom group required for fitting then we are loosing
                 #          this group here. We could try to merge only this group but it is possible that
                 #          atom indices changed. The only way to solve this is to regenerate the group with
                 #          a selection or only use Gromacs default groups.
@@ -2083,7 +2083,7 @@ class Transformer(utilities.FileUtils):
         - *fitgroup* is only passed to :meth:`fit` and just contains
           the group to fit to ("backbone" by default)
 
-	  .. warning:: *fitgroup* can only be a Gromacs default group and not
+          .. warning:: *fitgroup* can only be a Gromacs default group and not
                        a custom group (because the indices change after stripping)
 
         - By default *fit* = "rot+trans" (and *fit* is passed to :meth:`fit`,

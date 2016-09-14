@@ -131,8 +131,10 @@ logger = logging.getLogger('gromacs.setup')
 
 import gromacs
 from . import config
-from .exceptions import (GromacsError, GromacsFailureWarning, GromacsValueWarning, 
-                         AutoCorrectionWarning, BadParameterWarning, UsageWarning, MissingDataError)
+from .exceptions import (GromacsError, GromacsFailureWarning, GromacsValueWarning,
+                         AutoCorrectionWarning, BadParameterWarning, UsageWarning,
+                         MissingDataError)
+from . import run
 from . import cbook
 from . import qsub
 from . import utilities
@@ -680,15 +682,8 @@ def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
         gromacs.grompp(f=mdp, o=tpr, c=structure, p=topology, **unprocessed)
         mdrun_args = dict(v=True, stepout=10, deffnm=deffnm, c=output)
         if mdrunner is None:
-            try:
-                gromacs.mdrun_d(**mdrun_args)
-            except (AttributeError, OSError):
-                # fall back to mdrun if no double precision binary
-                wmsg = "No 'mdrun_d' binary found so trying 'mdrun' instead.\n"\
-                    "(Note that energy minimization runs better with mdrun_d.)"
-                logger.warn(wmsg)
-                warnings.warn(wmsg, category=AutoCorrectionWarning)
-                gromacs.mdrun(**mdrun_args)
+            mdrun = run.get_double_or_single_prec_mdrun()
+            mdrun(**mdrun_args)
         else:
             if type(mdrunner) is type:
                 # class

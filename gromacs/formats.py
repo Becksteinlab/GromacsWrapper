@@ -3,8 +3,7 @@
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
 
-"""
-:mod:`gromacs.formats` -- Accessing various files
+""":mod:`gromacs.formats` -- Accessing various files
 =================================================
 
 This module contains classes that represent data files on
@@ -23,6 +22,11 @@ The module defines some classes that are used in other modules; they
 do *not* make use of :mod:`gromacs.tools` or :mod:`gromacs.cbook` and
 can be safely imported at any time.
 
+.. SeeAlso::
+
+   This module gives access to a selection of classes from
+   :mod:`gromacs.fileformats`.
+
 
 Classes
 -------
@@ -38,6 +42,8 @@ Classes
 .. autoclass:: ITP
    :members:
 .. autoclass:: XPM
+   :members:
+.. autoclass:: TOP
    :members:
 
 """
