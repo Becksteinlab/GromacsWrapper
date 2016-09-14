@@ -493,10 +493,15 @@ class GromacsCommand(Command):
                    just continue silently
 
            *doc* : string
-              additional documentation []
+              additional documentation (*ignored*) []
+
+        .. versionchanged:: 0.6.0
+           The *doc* keyword is now ignored (because it was not worth the effort to
+           make it work with the lazy-loading of docs).
         """
+        doc = kwargs.pop('doc', None)  # ignored
         self.__failuremode = None
-        self.failuremode = kwargs.pop('failure','raise')
+        self.failuremode = kwargs.pop('failure', 'raise')
         self.gmxargs = self._combineargs(*args, **kwargs)
         self._doc_cache = None
 
