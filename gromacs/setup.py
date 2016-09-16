@@ -336,7 +336,7 @@ def get_lipid_vdwradii(outdir=os.path.curdir, libdir=None):
         raise OSError(msg)
 
     # make sure to catch 3 and 4 letter resnames
-    patterns = vdw_lipid_resnames + list(set([x[:3] for x in vdw_lipid_resnames]))
+    patterns = vdw_lipid_resnames + list({x[:3] for x in vdw_lipid_resnames})
     # TODO: should do a tempfile...
     with open(vdwradii_dat, 'w') as outfile:
         # write lipid stuff before general
