@@ -23,5 +23,5 @@ def test_devsuffix(devsuffix="-dev"):
     release = gromacs.version.get_version_tuple()
     # XOR http://stackoverflow.com/questions/432842/how-do-you-get-the-logical-xor-of-two-variables-in-python
     assert gromacs.version.RELEASE is not release[-1].endswith(devsuffix), \
-        "{} should not be present if RELEASE == False: RELEASE = {}, release = {}".format(
+        "{0} should not be present if RELEASE == False: RELEASE = {1}, release = {2}".format(
             devsuffix, gromacs.version.RELEASE, release)

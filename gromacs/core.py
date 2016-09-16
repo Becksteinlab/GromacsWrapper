@@ -620,7 +620,7 @@ class GromacsCommand(Command):
             logging.disable(logging.CRITICAL)
             rc, header, docs = self.run('h', stdout=PIPE, stderr=PIPE, use_input=False)
         except:
-            logging.critical("Invoking command {} failed when determining its doc string. Proceed with caution".format(self.command_name))
+            logging.critical("Invoking command {0} failed when determining its doc string. Proceed with caution".format(self.command_name))
             self._doc_cache = "(No Gromacs documentation available)"
             return self._doc_cache
         finally:

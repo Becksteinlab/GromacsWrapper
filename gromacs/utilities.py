@@ -180,7 +180,7 @@ def anyopen(datasource, mode='r', **kwargs):
         if hasattr(datasource,'next') or hasattr(datasource,'readline'):
             stream = datasource
             try:
-                filename = '({})'.format(stream.name)  # maybe that does not always work?
+                filename = '({0})'.format(stream.name)  # maybe that does not always work?
             except AttributeError:
                 filename = str(type(stream))
         else:
@@ -197,7 +197,7 @@ def anyopen(datasource, mode='r', **kwargs):
         if hasattr(datasource, 'write'):
             stream = datasource
             try:
-                filename = '({})'.format(stream.name)  # maybe that does not always work?
+                filename = '({0})'.format(stream.name)  # maybe that does not always work?
             except AttributeError:
                 filename = str(type(stream))
         else:
