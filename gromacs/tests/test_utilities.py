@@ -50,12 +50,12 @@ class TestAttributeDict(object):
         try:
             pickle.dump(self.d, string_buffer, pickle.HIGHEST_PROTOCOL)
         except Exception as err:
-            raise AssertionError("serializing failed: {}".format(str(err)))
+            raise AssertionError("serializing failed: {0}".format(str(err)))
         string_buffer.seek(0)
         try:
             d = pickle.load(string_buffer)
         except Exception as err:
-            raise AssertionError("de-serializing failed: {}".format(str(err)))
+            raise AssertionError("de-serializing failed: {0}".format(str(err)))
         assert set(d.keys()) == set(self.d.keys())
         assert set(d.values()) == set(self.d.values())
 

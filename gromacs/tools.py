@@ -306,11 +306,11 @@ def merge_ndx(*args):
 
 # Load tools
 if config.MAJOR_RELEASE == '5':
-    logger.debug("Trying to load configured Gromacs major release {}".format(
+    logger.debug("Trying to load configured Gromacs major release {0}".format(
         config.MAJOR_RELEASE))
     registry = load_v5_tools()
 elif config.MAJOR_RELEASE == '4':
-    logger.debug("Trying to load configured Gromacs major release {}".format(
+    logger.debug("Trying to load configured Gromacs major release {0}".format(
         config.MAJOR_RELEASE))
     registry = load_v4_tools()
 else:
