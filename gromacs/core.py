@@ -252,14 +252,13 @@ class Command(object):
         use_shell = kwargs.pop('use_shell', False)
         if input:
             stdin = PIPE
-            if isinstance(input, basestring):
+            if isinstance(input, basestring) and not input.endswith('\n'):
                 # make sure that input is a simple string with \n line endings
-                if not input.endswith('\n'):
-                    input += '\n'
+                input += '\n'
             else:
                 try:
                     # make sure that input is a simple string with \n line endings
-                    # XXX: this is probably not unicode safe because of the suse of str()
+                    # XXX: this is probably not unicode safe because of the use of str()
                     input = '\n'.join(map(str, input)) + '\n'
                 except TypeError:
                     # so maybe we are a file or something ... and hope for the best

@@ -1362,9 +1362,8 @@ class IndexBuilder(object):
         if not operation in ('|', '&', False):
             raise ValueError("Illegal operation {0!r}, only '|' (OR) and '&' (AND) or False allowed.".format(
                              operation))
-        if name_all is None:
-            if operation:
-                name_all = self.name_all or operation.join(self.indexfiles)
+        if name_all is None and operation:
+            name_all = self.name_all or operation.join(self.indexfiles)
         if out_ndx is None:
             out_ndx = self.output
 

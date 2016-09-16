@@ -1160,9 +1160,8 @@ def break_array(a, threshold=numpy.pi, other=None):
     """
     assert len(a.shape) == 1, "Only 1D arrays supported"
 
-    if other is not None:
-        if not a.shape == other.shape:
-            raise ValueError("arrays must be of identical shape")
+    if other is not None and a.shape != other.shape:
+        raise ValueError("arrays must be of identical shape")
 
     # jump occurs after the index in break
     breaks = numpy.where(numpy.abs(numpy.diff(a)) >= threshold)[0]

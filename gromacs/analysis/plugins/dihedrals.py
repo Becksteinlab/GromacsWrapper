@@ -69,9 +69,8 @@ class _Dihedrals(Worker):
                 raise ValueError("Each dihedral index group must contain exactly four atomnumbers, "
                                  "but this is not the case for %r." % dih)
         labels = kwargs.pop('labels', None)
-        if labels is not None:
-            if len(labels) != len(dihedralgroups):
-                raise ValueError("Provide one label in labels for each dihedral in dihedrals.")
+        if labels is not None and len(labels) != len(dihedralgroups):
+            raise ValueError("Provide one label in labels for each dihedral in dihedrals.")
 
         # super class init: do this before doing anything else
         # (also sets up self.parameters and self.results)

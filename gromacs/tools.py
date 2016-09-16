@@ -149,11 +149,10 @@ class GromacsCommandMultiIndex(GromacsCommand):
 
     def _fake_multi_ndx(self, **kwargs):
         ndx = kwargs.get('n')
-        if not (ndx is None or type(ndx) is basestring):
-            if len(ndx) > 1:
-                if 's' in kwargs:
-                    ndx.append(kwargs.get('s'))
-                kwargs['n'] = merge_ndx(*ndx)
+        if not (ndx is None or type(ndx) is basestring) and \
+           len(ndx) > 1 and 's' in kwargs:
+            ndx.append(kwargs.get('s'))
+            kwargs['n'] = merge_ndx(*ndx)
         return kwargs
 
 

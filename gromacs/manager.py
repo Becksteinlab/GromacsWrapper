@@ -365,11 +365,11 @@ class Manager(object):
         self.logger.info("Copying {0!r} from {1!r}".format(dirname, self.uri))
         rc = call(["scp", "-r", self.remoteuri(dirname), targetdir])
         #rc = call(["rsync", "-e","ssh","-avP", os.path.join(self.uri,dirname), targetdir])
-        if checkfile is not None:
-            if not os.path.exists(os.path.join(targetdir, dirname, checkfile)):
-                self.logger.error("Failed to get %r from %s", checkfile, self.hostname)
-                raise OSError(errno.ENOENT, checkfile,
-                              "Failed to download file from {hostname!r}".format(**vars(self)))
+        if checkfile is not None and \
+           not os.path.exists(os.path.join(targetdir, dirname, checkfile)):
+            self.logger.error("Failed to get %r from %s", checkfile, self.hostname)
+            raise OSError(errno.ENOENT, checkfile,
+                          "Failed to download file from {hostname!r}".format(**vars(self)))
         return rc
 
     def local_get(self, dirname, checkfile, cattrajectories=True, cleanup=False):
