@@ -431,7 +431,7 @@ class XVG(utilities.FileUtils):
 
     def _correlprop(self, key, **kwargs):
         kwargs = self.set_correlparameters(**kwargs)
-        if not self.__cache.get('tcorrel',None) or kwargs.pop('force', False):
+        if not self.__cache.get('tcorrel', None) or kwargs.pop('force', False):
             self.__cache['tcorrel'] = self._tcorrel(**kwargs)
         return numpy.array(self.__cache['tcorrel'].get(key).tolist())
 

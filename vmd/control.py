@@ -4,7 +4,7 @@
 # Released under the GNU Lesser Public License, version 3 or later.
 #
 # using asynchat/asyncore to talk to a VMD server process
-# (see http://www.python.org/doc/current/lib/module-asyncore.html & 
+# (see http://www.python.org/doc/current/lib/module-asyncore.html &
 # http://squirl.nightmare.com/medusa/async_sockets.html)
 __docformat__ = "restructuredtext en"
 
@@ -23,12 +23,12 @@ services = { 'vmd' : 5555 }
 RESPONSE_TERMINATOR = '__END_OF_VMD_RESPONSE__\r\n'  # see remote_ctl.tcl
 
 
-class server:
+class server(object):
     """The VMD server process."""
     def __init__(self,vmdbinary='vmd',
                  server_tcl=REMOTE_TCL,
                  force=False,maxdelay=10,dispdev='text'):
-        
+
         """Start VMD in text mode and launch the remote server.
 
         :Arguments:
@@ -42,7 +42,7 @@ class server:
                        don't launch new server if one is already active
                  ``True``
                        always start new vmd process
-           maxdelay         
+           maxdelay
                  maximum time to wait for the server to come up in seconds
            dispdev
                  VMD display device; default is 'text' which runs VMD without
@@ -59,7 +59,7 @@ class server:
         except KeyError:
             raise ValueError("VMD display device '"+str(dispdev)+"' is not recognized. "+
                              "Choose one of "+str(devices.keys())+".")
-        
+
         # tcl file is stored in the same directory as this module file
         self.server_tcl = server_tcl
         self.vmdbinary = vmdbinary
@@ -76,22 +76,22 @@ class server:
                ``True``
                      always start new vmd process
            maxdelay
-               maximum number of seconds to wait for VMD to start 
+               maximum number of seconds to wait for VMD to start
         """
         import time
-        
+
         if force or not self.ping():
            args = self.startcmd.split(" ")
-           pid = os.spawnvp(os.P_NOWAIT,args[0],args) 
+           pid = os.spawnvp(os.P_NOWAIT,args[0],args)
         # now wait until the server is up (check every 2 seconds)
-        t = interval = 2        
+        t = interval = 2
         time.sleep(interval)
         while not self.ping() and t < maxdelay:
             time.sleep(interval)
             t += interval
         if not self.ping():
             raise RuntimeError('Failed to bring up the VMD server.')
-        
+
     def stop(self):
         """Shutdown VMD."""
         command('quit')
@@ -104,7 +104,7 @@ class server:
         Ignore the message 'error: uncaptured python exception' if the server is down.
         """
         token = 'ALIVE (ping from pid {0:d})'.format(pid)
-        c = command('set __pingtest__ {{{0!s}}}'.format(token))  
+        c = command('set __pingtest__ {{{0!s}}}'.format(token))
         x, = c.results()
         return x == token
 
@@ -156,7 +156,7 @@ class client(asynchat.async_chat):
 
     def handle_connect(self):
         pass
-    
+
     def collect_incoming_data(self,data):
         """buffer incoming data"""
         self.ibuffer += data
@@ -169,7 +169,7 @@ class client(asynchat.async_chat):
     def cmd(self,*tcl):
         """Submits the commands to be executed in VMD::
 
-           c.cmd(tcl, tcl, ...)    
+           c.cmd(tcl, tcl, ...)
 
         Commands (*with embedded newlines!*) scheduled for sending and execution
         in ``VMD``. All strings will be executed sequentially.
@@ -181,7 +181,7 @@ class client(asynchat.async_chat):
 
     def response(self):
         return self.ibuffer
-        
+
 
 class command(client):
     """Send one or more tcl commands to VMD and return response::
@@ -207,7 +207,7 @@ class command(client):
         self._resp = []
         commands = [c.strip()+'\n' for c in commands]
         s = " ".join(commands)             # one string to join them all...
-        s = re.sub('\n$','',s)             # get rid of last newline        
+        s = re.sub('\n$','',s)             # get rid of last newline
         self._cmds = string.split(s,'\n')  # ...so that we get only nice command bits
         for c in self._cmds:
             # print "DEBUG: sending command [%s]" % c
@@ -241,7 +241,7 @@ class interactive(client):
 
     :Parameters:
        host
-           currently remote_ctl.tcl only allows 'localhost'    
+           currently remote_ctl.tcl only allows 'localhost'
 
     Commands interpreted by the remote server and not by tcl in vmd:
 
@@ -255,7 +255,7 @@ class interactive(client):
     EXIT              exit the interactive session
     ================  ====================================================
     """
-    
+
     def __init__(self, host,port=services['vmd']):
         client.__init__(self,host)
         self.stack_count = 0         # number of command responses to expect
@@ -275,7 +275,7 @@ class interactive(client):
         if self.stack_count == 0:
             # enter command processing if no more output
             self.cmd()
-        
+
     def cmd(self,*commands):
         if len(commands) == 0:
             c = self.getinput()
@@ -292,7 +292,7 @@ class interactive(client):
                 self.stack_count += 1
                 self.push(c+"\n")
 
-        
+
     def getinput(self):
         print 'python->vmd> ',
         return sys.stdin.readline()
@@ -305,6 +305,6 @@ if __name__ == '__main__':
     print """\
 >>> [c = interactive('localhost')]
     done; then execute loop() to enter interactive mode:
->>> asyncore.loop()"""    
+>>> asyncore.loop()"""
     c = interactive('localhost')
 

@@ -242,7 +242,7 @@ class _COM(Worker):
         # quick labels -- relies on the proper ordering
         labels = [str(n)+" "+dim for n in self.parameters.group_names
                   for dim in 'xyz']
-        if kwargs.get('columns', None) is not None:
+        if kwargs.get('columns') is not None:
             # select labels according to columns; only makes sense
             # if plotting against the time (col 0)
             if kwargs['columns'][0] == 0:

@@ -148,10 +148,10 @@ class MDrunner(utilities.FileUtils):
         self.MDRUN = cls(**kwargs)  # might fail for mpi binaries? .. -h?
 
         # analyze command line to deduce logfile name
-        logname = kwargs.get('g', None)    # explicit
+        logname = kwargs.get('g')          # explicit
         if logname in (True, None):        # implicit
             logname = 'md'             # mdrun default
-            deffnm = kwargs.get('deffnm', None)
+            deffnm = kwargs.get('deffnm')
             if deffnm is not None:
                 logname = deffnm
         self.logname = os.path.realpath(

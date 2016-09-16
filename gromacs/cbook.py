@@ -1821,7 +1821,7 @@ class Transformer(utilities.FileUtils):
             fitmode = kwargs.pop('fit', 'rot+trans')  # user can use 'progressive', too
             infix_default = '_fit'
 
-        dt = kwargs.get('dt', None)
+        dt = kwargs.get('dt')
         if dt:
             infix_default += '_dt{0:d}ps'.format(int(dt))    # dt in ps
 

@@ -31,20 +31,19 @@ def scan_log(logfile,P):
     }
     Vars = {}
     StatusVars = {}
-    log = open(logfile,"r")
-    print "== {logfile!s} ==".format(**locals())
-    for line in log:
-        l = line.strip()
-        for key,pattern in P.items():
-            m = pattern.match(l)
-            if m:
-                Vars[key] = m.group(key)
-                break
-        for key,pattern in STATUS.items():
-            m = pattern.search(l)
-            if m:
-                StatusVars[key] = m.group(key)
-    log.close()
+    with open(logfile,"r") as log:
+        print "== {logfile!s} ==".format(**locals())
+        for line in log:
+            l = line.strip()
+            for key,pattern in P.items():
+                m = pattern.match(l)
+                if m:
+                    Vars[key] = m.group(key)
+                    break
+            for key,pattern in STATUS.items():
+                m = pattern.search(l)
+                if m:
+                    StatusVars[key] = m.group(key)
     return Vars, StatusVars
 
 def cleanup(logfile):
@@ -92,6 +91,6 @@ if __name__ == '__main__':
         logfile = sys.argv[1]
     except IndexError:
         raise ValueError("No input file.\n"+usage)
-    
+
     for logfile in sys.argv[1:]:
         cleanup(logfile)
