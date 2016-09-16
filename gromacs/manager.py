@@ -365,7 +365,7 @@ class Manager(object):
         self.logger.info("Copying %r from %r" % (dirname, self.uri))
         rc = call(["scp", "-r", self.remoteuri(dirname), targetdir])
         #rc = call(["rsync", "-e","ssh","-avP", os.path.join(self.uri,dirname), targetdir])
-        if not checkfile is None:
+        if checkfile is not None:
             if not os.path.exists(os.path.join(targetdir, dirname, checkfile)):
                 self.logger.error("Failed to get %r from %s", checkfile, self.hostname)
                 raise OSError(errno.ENOENT, checkfile,

@@ -128,14 +128,14 @@ class _HBonds(Worker):
         # already; just leave this snippet at the end. Do all
         # initialization that requires the simulation class in the
         # _register_hook() method.
-        if not self.simulation is None:
+        if self.simulation is not None:
             self._register_hook()
 
     def _register_hook(self, **kwargs):
         """Run when registering; requires simulation."""
 
         super(_HBonds, self)._register_hook(**kwargs)
-        assert not self.simulation is None
+        assert self.simulation is not None
 
         self.parameters.filenames = {
             'ndx': self.plugindir('hb_groups.ndx'),          # filename of the index file

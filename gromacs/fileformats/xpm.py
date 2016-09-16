@@ -147,7 +147,7 @@ class XPM(utilities.FileUtils):
         self.__array = None
         super(XPM, self).__init__(**kwargs)  # can use kwargs to set dict! (but no sanity checks!)
 
-        if not filename is None:
+        if filename is not None:
             self._init_filename(filename)
             self.read(filename)
 

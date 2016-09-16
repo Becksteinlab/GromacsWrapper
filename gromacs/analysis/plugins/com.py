@@ -71,19 +71,19 @@ class _COM(Worker):
         offset = kwargs.pop('offset', 0)
 
         super(_COM, self).__init__(**kwargs)
-        
+
         self.parameters.group_names = group_names
         self.parameters.offset = offset
         self.ndx = ndx
 
-        if not self.simulation is None:
+        if self.simulation is not None:
             self._register_hook()
 
     def _register_hook(self, **kwargs):
         """Run when registering; requires simulation."""
 
         super(_COM, self)._register_hook(**kwargs)
-        assert not self.simulation is None
+        assert self.simulation is not None
 
         if self.ndx is None:
             self.ndx = self.simulation.ndx
@@ -96,7 +96,7 @@ class _COM(Worker):
         self.parameters.fignames = {
             'com': self.figdir('com'),
             }
-            
+
     def run(self, force=None, **gmxargs):
         """Analyze trajectory and write COM file.
 
@@ -104,7 +104,7 @@ class _COM(Worker):
 
         :Arguments:
           - *force*: ``True`` does analysis and overwrites existing files
-          - *gmxargs*: additional keyword arguments for :func:`gromacs.g_bundle` 
+          - *gmxargs*: additional keyword arguments for :func:`gromacs.g_bundle`
         """
         gmxargs['com'] = True
         gmxargs['mol'] = False
@@ -138,7 +138,7 @@ class _COM(Worker):
         - Compute drift of COM, i.e. length of the vector between
           initial and final position. Initial and final position are
           computed as averages over *nframesavg* frames ("drift").
-      
+
         RMSD, median, and drift are columns in an xvg file. The rows correspond
         to the groups in :attr:`gromacs.analysis.plugins.com.Worker.results.group_names`.
 
@@ -151,13 +151,13 @@ class _COM(Worker):
               group name whose com is taken as the reference and subtracted from
               all other coms for the distance calculations. If supplied,
               additional result 'com_relative_*refgroup*' is created.
-        
+
         :Returns:  a dictionary of the results and also sets
-                  :attr:`gromacs.analysis.plugins.com.Worker.results`. 
-        """        
+                  :attr:`gromacs.analysis.plugins.com.Worker.results`.
+        """
         from gromacs.formats import XVG
 
-        logger.info("Preparing COM graphs as XVG objects.")        
+        logger.info("Preparing COM graphs as XVG objects.")
         self.results = AttributeDict( (k, XVG(fn)) for k,fn in self.parameters.filenames.items() )
 
         # compute RMSD of COM and shift of COM (drift) between avg pos
@@ -167,7 +167,7 @@ class _COM(Worker):
         xcom = self.results['com'].array
 
         refgroup = kwargs.pop('refgroup', None)
-        if not refgroup is None:
+        if refgroup is not None:
             if not refgroup in self.parameters.group_names:
                 errmsg = "refgroup=%s must be one of %r" % (refgroup, self.parameters.group_names)
                 logger.error(errmsg)
@@ -177,7 +177,7 @@ class _COM(Worker):
             xcom[1:] -= numpy.vstack(ngroups * [reference_com])  # can't use broadcast
             logger.debug("distances computed with refgroup %r", refgroup)
 
-            self.store_xvg('com_relative_%s' % refgroup, xcom, 
+            self.store_xvg('com_relative_%s' % refgroup, xcom,
                            names=['time']+self.parameters.group_names)
 
 
@@ -215,14 +215,14 @@ class _COM(Worker):
            observables
               select one or more of the stored results. Can be a list
               or a string (a key into the results dict). ``None``
-              plots everything [``None``]           
+              plots everything [``None``]
            figure
                - ``True``: save figures in the given formats
                - "name.ext": save figure under this filename (``ext`` -> format)
                - ``False``: only show on screen [``False``]
            formats : sequence
                sequence of all formats that should be saved [('png', 'pdf')]
-           plotargs    
+           plotargs
                keyword arguments for pylab.plot()
         """
 
@@ -242,7 +242,7 @@ class _COM(Worker):
         # quick labels -- relies on the proper ordering
         labels = [str(n)+" "+dim for n in self.parameters.group_names
                   for dim in 'xyz']
-        if not kwargs.get('columns', None) is None:
+        if kwargs.get('columns', None) is not None:
             # select labels according to columns; only makes sense
             # if plotting against the time (col 0)
             if kwargs['columns'][0] == 0:
@@ -257,7 +257,7 @@ class _COM(Worker):
         elif figure:
             self.savefig(filename=figure)
 
-    
+
 
 
 # Public classes that register the worker classes
@@ -265,9 +265,9 @@ class _COM(Worker):
 
 class COM(Plugin):
     """*COM* plugin.
- 
+
     Calculate the centre of mass (COM) of various index groups.
-     
+
     .. class:: COM(group_names, [ndx[, offset [, name[, simulation]]]])
 
     """

@@ -314,7 +314,7 @@ def get_lipid_vdwradii(outdir=os.path.curdir, libdir=None):
     """
     vdwradii_dat = os.path.join(outdir, "vdwradii.dat")
 
-    if not libdir is None:
+    if libdir is not None:
         filename = os.path.join(libdir, 'vdwradii.dat')  # canonical name
         if not os.path.exists(filename):
             msg = 'No VDW database file found in %(filename)r.' % vars()

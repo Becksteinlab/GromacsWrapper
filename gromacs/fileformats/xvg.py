@@ -511,7 +511,7 @@ class XVG(utilities.FileUtils):
                                       self.real_filename, lineno+1, line)
                     raise
                 # check for same number of columns as in previous step
-                if not ncol is None and len(row) != ncol:
+                if ncol is not None and len(row) != ncol:
                     if self.permissive:
                         self.logger.warn("%s: SKIPPING line %d with wrong number of columns: %r",
                                          self.real_filename, lineno+1, line)

@@ -266,7 +266,7 @@ class QueuingSystem(object):
 
     def has_arrays(self):
         """True if known how to do job arrays."""
-        return not self.array_variable is None
+        return self.array_variable is not None
 
     def array_flag(self, directories):
         """Return string to embed the array launching option in the script."""
@@ -376,7 +376,7 @@ def generate_submit_scripts(templates, prefix=None, deffnm='md', jobname='MD', b
         warnings.warn(wmsg, category=AutoCorrectionWarning)
     if prefix is None:
         prefix = ""
-    if not mdrun_opts is None:
+    if mdrun_opts is not None:
         mdrun_opts = '"'+str(mdrun_opts)+'"'  # TODO: could test if quotes already present
 
     dirname = kwargs.pop('dirname', os.path.curdir)

@@ -535,11 +535,11 @@ class GromacsCommand(Command):
 
     def check_failure(self, result, msg='Gromacs tool failed', command_string=None):
         rc, out, err = result
-        if not command_string is None:
+        if command_string is not None:
             msg += '\nCommand invocation: ' + str(command_string)
         had_success = (rc == 0)
         if not had_success:
-            gmxoutput = "\n".join([x for x in [out, err] if not x is None])
+            gmxoutput = "\n".join([x for x in [out, err] if x is not None])
             m = re.search(self.gmxfatal_pattern, gmxoutput, re.VERBOSE | re.DOTALL)
             if m:
                 formatted_message = ['GMX_FATAL  '+line for line in m.group('message').split('\n')]

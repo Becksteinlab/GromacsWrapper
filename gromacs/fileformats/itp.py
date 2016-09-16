@@ -772,7 +772,7 @@ class ITP(utilities.FileUtils):
             'dummy': Dummy,
             }
 
-        if not filename is None:
+        if filename is not None:
             self._init_filename(filename)
             self.read(filename)
 

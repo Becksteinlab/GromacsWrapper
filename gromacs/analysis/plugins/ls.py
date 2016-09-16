@@ -68,18 +68,18 @@ class _Ls(Worker):
         # already; just leave this snippet at the end. Do all
         # initialization that requires the simulation class in the
         # _register_hook() method.
-        if not self.simulation is None:
+        if self.simulation is not None:
             self._register_hook()
 
     def _register_hook(self, **kwargs):
         """Run when registering; requires simulation."""
 
         super(_Ls, self)._register_hook(**kwargs)
-        assert not self.simulation is None
+        assert self.simulation is not None
 
 
     # override 'API' methods of base class
-        
+
     def run(self, *args, **kwargs):
         """List the contents of the simulation directory.
         """
@@ -94,7 +94,7 @@ class _Ls(Worker):
         cmd = lscmd + [adir]
         with rulify("Analysis dir %(adir)s" % vars()):
             rc = call(cmd)   # just print to screen
-        
+
     def analyze(self,**kwargs):
         pass
 
@@ -122,12 +122,12 @@ def rulify(header, ncol=79):
 
 class Ls(Plugin):
     """*ls* plugin.
-    
+
     This simply lists the files on disk. It is useful for testing the
     plugin architecture.
 
     .. class:: Ls([name[, simulation]])
-    
+
     :Arguments:
         *name* : string
             plugin name (used to access it)

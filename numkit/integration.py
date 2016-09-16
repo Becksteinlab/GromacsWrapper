@@ -52,7 +52,7 @@ def simps_error(dy, x=None, dx=1, axis=-1, even='avg'):
     nd = len(dy.shape)
     N = dy.shape[axis]
 
-    if not x is None:
+    if x is not None:
         x = numpy.asarray(x)
         if len(x.shape) == 1:
             shapex = numpy.ones(nd)
@@ -85,7 +85,7 @@ def simps_error(dy, x=None, dx=1, axis=-1, even='avg'):
             slice0 = tupleset(slice1, axis, -3)
             slice1 = tupleset(slice1, axis, -2)
             slice2 = tupleset(slice2, axis, -1)
-            if not x is None:
+            if x is not None:
                 last_dx =   x[slice2] - x[slice1]
                 penult_dx = x[slice1] - x[slice0]
                 avglast_dx = 0.5*(penult_dx + last_dx)
@@ -97,7 +97,7 @@ def simps_error(dy, x=None, dx=1, axis=-1, even='avg'):
             slice1 = tupleset(slice1, axis, 0)
             slice2 = tupleset(slice2, axis, 1)
             slice3 = tupleset(slice1, axis, 2)
-            if not x is None:
+            if x is not None:
                 first_dx = x[slice2] - x[slice1]
                 second_dx = x[slice3] - x[slice2]
                 avgfirst_dx = 0.5*(second_dx + first_dx)
@@ -152,7 +152,7 @@ def _simps_error2(dy,start,stop,x,dx,axis):
     all = (slice(None),)*nd
     # check that stop is appropriate !!!
     slice2k  = tupleset(all, axis, slice(start, stop, step))     # does NOT include last point stop+1
-    slice2k1 = tupleset(all, axis, slice(start+1, stop+1, step)) 
+    slice2k1 = tupleset(all, axis, slice(start+1, stop+1, step))
     slice0   = tupleset(all, axis, slice(start, start+1))          # first point
     sliceN   = tupleset(all, axis, slice(stop+1, stop+2))          # last point
 
@@ -244,7 +244,7 @@ def _naive_simps_error2(dy,start,stop,x,dx,axis):
     Df1 = dy[slice0]   # 2k
     Df2 = dy[slice1]   # 2k-1
     Df3 = dy[slice2]   # 2k-2
-    
+
     if x is None:  # Even spaced Simpson's rule.
         # Simpson error propgation for points 0 <= i <= 2M
         # error**2 = (h/3)**2 * sum_k=1^M dy[2k]**2 + (4*dy[2k-1])**2 + dy[2k-2]**2
@@ -255,11 +255,11 @@ def _naive_simps_error2(dy,start,stop,x,dx,axis):
         # This is too naive: adds the squared errors for every individual Simpson-triplet but that misses
         # the correlations in errors from the overlapping endpoints.
 
-        # for spacing h1 and h2 (evaluated in Sage from the integral of the Lagrange interpolating 
+        # for spacing h1 and h2 (evaluated in Sage from the integral of the Lagrange interpolating
         # polynomials and propagation of errors)
         # Z = h1**2 * h2 + h1 * h2**2
-        # error**2 = 1/(6*Z)**2 * ((2*h1**3*h2 + 3*h1**2*h2**2 - h2**4)**2*Df_1**2 
-        #               + (h1**4 - 3*h1**2*h2**2 - 2*h1*h2**3)**2*Df_3**2 
+        # error**2 = 1/(6*Z)**2 * ((2*h1**3*h2 + 3*h1**2*h2**2 - h2**4)**2*Df_1**2
+        #               + (h1**4 - 3*h1**2*h2**2 - 2*h1*h2**3)**2*Df_3**2
         #               + (h1**4 + 4*h1**3*h2 + 6*h1**2*h2**2 + 4*h1*h2**3 + h2**4)**2*Df_2**2)
         h1 = x[slice1] - x[slice0]  # check this!
         h2 = x[slice2] - x[slice1]
@@ -272,8 +272,8 @@ def _naive_simps_error2(dy,start,stop,x,dx,axis):
         #print 'Df1 ', Df1
         #print 'Df2 ', Df2
         #print 'Df2 ', Df2
-        
-        result = numpy.add.reduce(1/(6*Z)**2 * 
+
+        result = numpy.add.reduce(1/(6*Z)**2 *
                                   (((2*h1**3*h2 + 3*h1**2*h2**2 - h2**4) * Df1)**2 \
                                        + ((h1**4 + 4*h1**3*h2 + 6*h1**2*h2**2 + 4*h1*h2**3 + h2**4) * Df2)**2 \
                                        + ((h1**4 - 3*h1**2*h2**2 - 2*h1*h2**3) * Df3)**2))

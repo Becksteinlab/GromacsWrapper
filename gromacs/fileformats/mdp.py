@@ -82,7 +82,7 @@ class MDP(odict, utilities.FileUtils):
 
         self.autoconvert = autoconvert
 
-        if not filename is None:
+        if filename is not None:
             self._init_filename(filename)
             self.read(filename)
 

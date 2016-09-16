@@ -88,14 +88,14 @@ class _CysAccessibility(Worker):
         self.parameters.cysteines.sort()                 # sorted because make_ndx returns sorted order
         self.parameters.cutoff = cys_cutoff
 
-        if not self.simulation is None:
+        if self.simulation is not None:
             self._register_hook()
 
     def _register_hook(self, **kwargs):
         """Run when registering; requires simulation."""
 
         super(_CysAccessibility, self)._register_hook(**kwargs)
-        assert not self.simulation is None
+        assert self.simulation is not None
 
         # filename of the index file that we generate for the cysteines
         self.parameters.ndx = self.plugindir('cys.ndx')
@@ -107,7 +107,7 @@ class _CysAccessibility(Worker):
 
 
     # override 'API' methods of base class
-        
+
     def run(self, cutoff=None, force=False, **gmxargs):
         """Run ``g_dist -dist cutoff`` for each cysteine and save output for further analysis.
 
@@ -138,13 +138,13 @@ class _CysAccessibility(Worker):
             sys.stdout.flush()
             with open(filename, 'w') as datafile:
                 p = gromacs.g_dist.Popen(
-                    s=self.simulation.tpr, f=self.simulation.xtc, n=ndx, dist=cutoff, input=commands, 
+                    s=self.simulation.tpr, f=self.simulation.xtc, n=ndx, dist=cutoff, input=commands,
                     stderr=None, stdout=subprocess.PIPE, **gmxargs)
                 compressor = subprocess.Popen(['bzip2', '-c'], stdin=p.stdout, stdout=datafile)
                 p.communicate()
 
     def analyze(self,**kwargs):
-        """Mindist analysis for all cysteines. Returns results for interactive analysis."""        
+        """Mindist analysis for all cysteines. Returns results for interactive analysis."""
 
         results = AttributeDict()
         for resid in self.parameters.cysteines:
@@ -163,7 +163,7 @@ class _CysAccessibility(Worker):
                - ``False``: only show on screen
            formats : sequence
                sequence of all formats that should be saved [('png', 'pdf')]
-           plotargs    
+           plotargs
                keyword arguments for pylab.plot()
         """
 
@@ -180,11 +180,11 @@ class _CysAccessibility(Worker):
         elif figure:
             self.savefig(filename=figure)
 
-    
+
     # specific methods
 
     def make_index_cys(self):
-        """Make index file for all cysteines and water oxygens. 
+        """Make index file for all cysteines and water oxygens.
 
         **NO SANITY CHECKS**: The SH atoms are simply labelled consecutively
         with the resids from the cysteines parameter.
@@ -195,7 +195,7 @@ class _CysAccessibility(Worker):
         for groupid, resid in enumerate(self.parameters.cysteines):
             commands.append('name %(groupid)d Cys%(resid)d'  % vars())           # name CYS-S groups canonically
         commands.extend(commands_2)
-        return gromacs.make_ndx(f=self.simulation.tpr, o=self.parameters.ndx, 
+        return gromacs.make_ndx(f=self.simulation.tpr, o=self.parameters.ndx,
                                 input=commands, stdout=None)
 
     def _mindist(self,resid):
@@ -209,7 +209,7 @@ class _CysAccessibility(Worker):
 
 class CysAccessibility(Plugin):
     """*CysAccessibility* plugin.
-    
+
     For each frame of a trajectory, the shortest distance of all water oxygens
     to all cysteine sulphur atoms is computed. For computational efficiency,
     only distances smaller than a cutoff are taken into account. A histogram of
@@ -218,7 +218,7 @@ class CysAccessibility(Plugin):
     group with crosslinking agents.
 
     .. class:: CysAccessibility(cysteines, [cys_cutoff[, name[, simulation]]])
-    
+
     :Arguments:
         name : string
             plugin name (used to access it)

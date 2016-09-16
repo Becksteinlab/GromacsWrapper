@@ -59,7 +59,7 @@ class _Dihedrals(Worker):
            *labels*
              optional list of labels for the dihedrals. Must have as many entries as
              *dihedrals*.
-        
+
         """
         # specific arguments: take them before calling the super class that
         # does not know what to do with them
@@ -69,7 +69,7 @@ class _Dihedrals(Worker):
                 raise ValueError("Each dihedral index group must contain exactly four atomnumbers, "
                                  "but this is not the case for %r." % dih)
         labels = kwargs.pop('labels', None)
-        if not labels is None:
+        if labels is not None:
             if len(labels) != len(dihedralgroups):
                 raise ValueError("Provide one label in labels for each dihedral in dihedrals.")
 
@@ -85,24 +85,24 @@ class _Dihedrals(Worker):
         # already; just leave this snippet at the end. Do all
         # initialization that requires the simulation class in the
         # _register_hook() method.
-        if not self.simulation is None:
+        if self.simulation is not None:
             self._register_hook()
 
     def _register_hook(self, **kwargs):
         """Run when registering; requires simulation."""
 
         super(_Dihedrals, self)._register_hook(**kwargs)
-        assert not self.simulation is None
+        assert self.simulation is not None
 
         def P(*args):
             return self.plugindir(*args)
 
         self.parameters.ndx = P('dih.ndx')
         self.parameters.filenames = {
-            'comb_distribution': P('dih_combdist.xvg'), # combined distribution from ALL dih!            
+            'comb_distribution': P('dih_combdist.xvg'), # combined distribution from ALL dih!
             'timeseries': P('dih_timeseries.xvg'),      # with -all, ie (phi, avg, dh1, dh2, ...)
             'transitions': P('dih_trans.xvg'),          # only works for multiplicity 3
-            'transition_histogram': P('dih_transhisto.xvg'), 
+            'transition_histogram': P('dih_transhisto.xvg'),
             'acf': P('dih_acf.xvg'),
             'distributions' : P('dih_distributions.xvg'), # from analyze()
             'PMF': P('dih_pmf.xvg'),                      # from analyze()
@@ -120,10 +120,10 @@ class _Dihedrals(Worker):
         ndx = NDX()
         ndx['dihedrals'] = numpy.concatenate(self.parameters.dihedrals)
         ndx.write(filename=self.parameters.ndx, ncol=4)
-        
+
 
     # override 'API' methods of base class
-        
+
     def run(self, force=False, **gmxargs):
         """Collect dihedral data from trajectory with ``g_angle`` and save to data files.
 
@@ -160,16 +160,16 @@ class _Dihedrals(Worker):
         :Keywords:
           *bins*
              bins for histograms (passed to numpy.histogram(new=True))
-        
+
         :Returns: a dictionary of the results and also sets
                   :attr:`_Dihedrals.results`.
-        """        
+        """
 
         bins = kwargs.pop('bins', 361)
 
         results = AttributeDict()
 
-        # get graphs that were produced by g_angle 
+        # get graphs that were produced by g_angle
         for name, f in self.parameters.filenames.items():
             try:
                 results[name] = XVG(f)
@@ -197,7 +197,7 @@ class _Dihedrals(Worker):
         xvg.write(self.parameters.filenames['distributions'])
         results['distributions'] = xvg
         del xvg
-        
+
         # compute PMF (from individual distributions)
         W = -numpy.log(P)                      # W(phi)/kT = -ln P
         W -= W.min(axis=1)[:, numpy.newaxis]   # minimum at 0 kT
@@ -206,7 +206,7 @@ class _Dihedrals(Worker):
         xvg.set(pmf)
         xvg.write(self.parameters.filenames['PMF'])
         results['PMF'] = xvg
-        
+
         self.results = results
         return results
 
@@ -222,7 +222,7 @@ class _Dihedrals(Worker):
                sequence of all formats that should be saved [('png', 'pdf')]
            with_legend : bool
                add legend from *labels* to graphs
-           plotargs    
+           plotargs
                keyword arguments for pylab.plot()
         """
 
@@ -284,12 +284,12 @@ class _Dihedrals(Worker):
 
 class Dihedrals(Plugin):
     """*Dihedrals* plugin.
-    
+
     .. class:: Dihedrals(dihedrals[, labels[,name[, simulation]]])
-    
+
     :Keywords:
-        *dihedrals*        
-            list of tuples; each tuple contains atom indices that define the dihedral.            
+        *dihedrals*
+            list of tuples; each tuple contains atom indices that define the dihedral.
         *labels*
             optional list of labels for the dihedrals. Must have as many entries as
             *dihedrals*.

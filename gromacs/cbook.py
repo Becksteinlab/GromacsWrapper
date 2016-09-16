@@ -516,7 +516,7 @@ class Frames(object):
         self.structure = structure  # tpr or equivalent
         self.trj = trj              # xtc, trr, ...
         self.maxframes = maxframes
-        if not self.maxframes is None:
+        if self.maxframes is not None:
             raise NotImplementedError('sorry, maxframes feature not implemented yet')
 
         self.framedir = tempfile.mkdtemp(prefix="Frames_", suffix='_'+format)
@@ -573,7 +573,7 @@ class Frames(object):
         self.framedir = None
 
     def __del__(self):
-        if not self.framedir is None:
+        if self.framedir is not None:
             self.cleanup()
 
 # Working with topologies
@@ -840,7 +840,7 @@ def edit_mdp(mdp, new_mdp=None, extend_parameters=None, **substitutions):
         extend_parameters = list(asiterable(extend_parameters))
 
     # None parameters should be ignored (simple way to keep the template defaults)
-    substitutions = {k: v for k,v in substitutions.items() if not v is None}
+    substitutions = {k: v for k,v in substitutions.items() if v is not None}
 
     params = substitutions.keys()[:]   # list will be reduced for each match
 
@@ -953,7 +953,7 @@ def edit_txt(filename, substitutions, newname=None):
     _substitutions = [{'lRE': re.compile(str(lRE)),
                        'sRE': re.compile(str(sRE)),
                        'repl': repl}
-                      for lRE,sRE,repl in substitutions if not repl is None]
+                      for lRE,sRE,repl in substitutions if repl is not None]
 
     target = tempfile.TemporaryFile()
     with open(filename) as src:
@@ -1623,11 +1623,11 @@ class IndexBuilder(object):
 
     def _is_empty_group(self, make_ndx_output):
         m = re.search('Group is empty', make_ndx_output)
-        return not (m is None)
+        return m is not None
 
     def _has_syntax_error(self, make_ndx_output):
         m = re.search('Syntax error:', make_ndx_output)
-        return not (m is None)
+        return m is not None
 
     def __del__(self):
         try:
