@@ -152,7 +152,7 @@ def linfit(x,y,dy=None):
     n = len(x)
     m = len(y)
     if n != m:
-        raise ValueError("lengths of x and y must match: %s != %s" % (n, m))
+        raise ValueError("lengths of x and y must match: {0!s} != {1!s}".format(n, m))
 
     try:
         have_dy = (len(dy) > 0)
@@ -253,7 +253,7 @@ class FitFunc(object):
             try:
                 p0[:] = parameters
             except ValueError:
-                raise ValueError("Wrong number of custom initital values %r, should be something like %r" % (parameters, p0))
+                raise ValueError("Wrong number of custom initital values {0!r}, should be something like {1!r}".format(parameters, p0))
         return p0
 
     def initial_values(self):

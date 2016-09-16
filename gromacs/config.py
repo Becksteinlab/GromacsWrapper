@@ -457,7 +457,7 @@ def _get_template(t):
               else:
                    _t_found = True
          if not _t_found:            # 5) nothing else to try...
-              raise ValueError("Failed to locate the template file %(t)r." % vars())
+              raise ValueError("Failed to locate the template file {t!r}.".format(**vars()))
     return os.path.realpath(t)
 
 
@@ -621,7 +621,7 @@ def check_setup():
      missing = [d for d in config_directories if not os.path.exists(d)]
      if len(missing) > 0:
          print("NOTE: Some configuration directories are not set up yet: ")
-         print("\t%s" % '\n\t'.join(missing))
+         print("\t{0!s}".format('\n\t'.join(missing)))
          print("NOTE: You can create the configuration file and directories with:")
          print("\t>>> import gromacs")
          print("\t>>> gromacs.config.setup()")

@@ -273,11 +273,11 @@ class Command(object):
         except OSError as err:
             logger.error(" ".join(cmd))            # log command line
             if err.errno == errno.ENOENT:
-                errmsg = "Failed to find Gromacs command %r, maybe its not on PATH or GMXRC must be sourced?" % self.command_name
+                errmsg = "Failed to find Gromacs command {0!r}, maybe its not on PATH or GMXRC must be sourced?".format(self.command_name)
                 logger.fatal(errmsg)
                 raise OSError(errmsg)
             else:
-                logger.exception("Setting up Gromacs command %r raised an exception." % self.command_name)
+                logger.exception("Setting up Gromacs command {0!r} raised an exception.".format(self.command_name))
                 raise
         logger.debug(p.command_string)
         return p
@@ -297,7 +297,7 @@ class Command(object):
                 options.append(option)
                 continue
             elif value is False:
-                raise ValueError('A False value is ambiguous for option %r' % option)
+                raise ValueError('A False value is ambiguous for option {0!r}'.format(option))
 
             if option[:2] == '--':
                 options.append(option + '=' + str(value))    # GNU option
@@ -307,7 +307,7 @@ class Command(object):
 
     def help(self,long=False):
         """Print help; same as using ``?`` in ``ipython``. long=True also gives call signature."""
-        print "\ncommand: %s\n\n" % self.command_name
+        print "\ncommand: {0!s}\n\n".format(self.command_name)
         print self.__doc__
         if long:
             print "\ncall method: command():\n"
@@ -522,7 +522,7 @@ class GromacsCommand(Command):
             return self.__failuremode
         def fset(self, mode):
             if not mode in self.failuremodes:
-                raise ValueError('failuremode must be one of %r' % (self.failuremodes,))
+                raise ValueError('failuremode must be one of {0!r}'.format(self.failuremodes))
             self.__failuremode = mode
         return locals()
     failuremode = property(**failuremode())
@@ -544,16 +544,16 @@ class GromacsCommand(Command):
             if m:
                 formatted_message = ['GMX_FATAL  '+line for line in m.group('message').split('\n')]
                 msg = "\n".join(\
-                    [msg, "Gromacs command %(program_name)r fatal error message:" % m.groupdict()] +
+                    [msg, "Gromacs command {program_name!r} fatal error message:".format(**m.groupdict())] +
                     formatted_message)
             if self.failuremode == 'raise':
                 raise GromacsError(rc, msg)
             elif self.failuremode == 'warn':
-                warnings.warn(msg + '\nError code: %r\n' % rc, category=GromacsFailureWarning)
+                warnings.warn(msg + '\nError code: {0!r}\n'.format(rc), category=GromacsFailureWarning)
             elif self.failuremode is None:
                 pass
             else:
-                raise ValueError('unknown failure mode %r' % self.failuremode)
+                raise ValueError('unknown failure mode {0!r}'.format(self.failuremode))
         return had_success
 
     def _combineargs(self, *args, **kwargs):
@@ -688,4 +688,4 @@ class PopenWithInput(subprocess.Popen):
             return super(PopenWithInput, self).communicate()
 
     def __str__(self):
-        return "<Popen on %r>" % self.command_string
+        return "<Popen on {0!r}>".format(self.command_string)

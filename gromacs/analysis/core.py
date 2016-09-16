@@ -211,7 +211,7 @@ class Simulation(object):
                 return sim.__getattribute__(attr)
             except AttributeError:
                 if required:
-                    errmsg = "Required attribute %r not found in kwargs or sim" % attr
+                    errmsg = "Required attribute {0!r} not found in kwargs or sim".format(attr)
                     if strict:
                         logger.fatal(errmsg)
                         raise TypeError(errmsg)
@@ -360,7 +360,7 @@ class Simulation(object):
                    raise :exc:`IOError` if it does not exist [default]
 
         """
-        msg = "Missing required file %(filetype)r, got %(path)r." % vars()
+        msg = "Missing required file {filetype!r}, got {path!r}.".format(**vars())
         def _warn(x):
             logger.warn(msg)
             warnings.warn(msg)
@@ -384,7 +384,7 @@ class Simulation(object):
     def check_plugin_name(self,plugin_name):
         """Raises a exc:`ValueError` if *plugin_name* is not registered."""
         if not (plugin_name is None or self.has_plugin(plugin_name)):
-            raise ValueError('plugin_name (%r) must be None or one of\n%r\n' % (plugin_name, self.plugins.keys()))
+            raise ValueError('plugin_name ({0!r}) must be None or one of\n{1!r}\n'.format(plugin_name, self.plugins.keys()))
 
     def has_plugin(self,plugin_name):
         """Returns True if *plugin_name* is registered."""
@@ -461,7 +461,7 @@ class Simulation(object):
         return results
 
     def __str__(self):
-        return 'Simulation(tpr=%(tpr)r, xtc=%(xtc)r, edr=%(edr)r, ndx=%(ndx)r, analysisdir=%(analysis_dir)r)' % vars(self)
+        return 'Simulation(tpr={tpr!r}, xtc={xtc!r}, edr={edr!r}, ndx={ndx!r}, analysisdir={analysis_dir!r})'.format(**vars(self))
     def __repr__(self):
         return str(self)
 
@@ -553,7 +553,7 @@ class Worker(FileUtils):
             filename = self.parameters.figname
         _filename = self.filename(filename, ext=ext, use_my_ext=True)
         pylab.savefig(_filename)
-        logger.info("Saved figure as %(_filename)r." % vars())
+        logger.info("Saved figure as {_filename!r}.".format(**vars()))
 
     def store_xvg(self, name, a, **kwargs):
         """Store array *a* as :class:`~gromacs.formats.XVG` in result *name*.
@@ -578,7 +578,7 @@ class Worker(FileUtils):
 
     def __repr__(self):
         """Represent the worker with the plugin name."""
-        return "<%s (name %s) Worker>" % (self.plugin.__class__.__name__, self.plugin_name)
+        return "<{0!s} (name {1!s}) Worker>".format(self.plugin.__class__.__name__, self.plugin_name)
 
 # plugins:
 # registers a worker class in Simulation.plugins and adds a pointer to Simulation to worker
@@ -635,7 +635,7 @@ class Plugin(object):
         identifier as it is used as a dict key.
         """
 
-        logger.info("Initializing plugin %r" % self.plugin_name)
+        logger.info("Initializing plugin {0!r}".format(self.plugin_name))
 
         assert issubclass(self.worker_class, Worker)   # must be a Worker
 

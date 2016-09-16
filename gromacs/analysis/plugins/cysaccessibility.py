@@ -100,7 +100,7 @@ class _CysAccessibility(Worker):
         # filename of the index file that we generate for the cysteines
         self.parameters.ndx = self.plugindir('cys.ndx')
         # output filenames for g_dist, indexed by Cys resid
-        self.parameters.filenames = {resid: self.plugindir('Cys%d_OW_dist.txt.bz2' % resid)
+        self.parameters.filenames = {resid: self.plugindir('Cys{0:d}_OW_dist.txt.bz2'.format(resid))
              for resid in self.parameters.cysteines}
         # default filename for the combined plot
         self.parameters.figname = self.figdir('mindist_S_OW')
@@ -125,16 +125,16 @@ class _CysAccessibility(Worker):
 
         ndx = self.parameters.ndx     # could move this into _register_hook?
         if not os.path.isfile(ndx):
-            warnings.warn("Cysteine index file %r missing: running 'make_index_cys'." % ndx)
+            warnings.warn("Cysteine index file {0!r} missing: running 'make_index_cys'.".format(ndx))
             self.make_index_cys()
 
         for resid in self.parameters.cysteines:
-            groupname = 'Cys%(resid)d' % vars()
+            groupname = 'Cys{resid:d}'.format(**vars())
             commands = [groupname, 'OW']
             filename = self.parameters.filenames[resid]
             if not force and self.check_file_exists(filename, resolve='warning'):
                 continue
-            print "run_g_dist: %(groupname)s --> %(filename)r" % vars()
+            print "run_g_dist: {groupname!s} --> {filename!r}".format(**vars())
             sys.stdout.flush()
             with open(filename, 'w') as datafile:
                 p = gromacs.g_dist.Popen(
@@ -148,7 +148,7 @@ class _CysAccessibility(Worker):
 
         results = AttributeDict()
         for resid in self.parameters.cysteines:
-            groupname = 'Cys%(resid)d' % vars()    # identifier should be a valid python variable name
+            groupname = 'Cys{resid:d}'.format(**vars())    # identifier should be a valid python variable name
             results[groupname] = self._mindist(resid)
         self.results = results
         return results
@@ -193,7 +193,7 @@ class _CysAccessibility(Worker):
         commands_2 = ['t OW', 'q']                                               # water oxygens
         commands = commands_1[:]
         for groupid, resid in enumerate(self.parameters.cysteines):
-            commands.append('name %(groupid)d Cys%(resid)d'  % vars())           # name CYS-S groups canonically
+            commands.append('name {groupid:d} Cys{resid:d}'.format(**vars()))           # name CYS-S groups canonically
         commands.extend(commands_2)
         return gromacs.make_ndx(f=self.simulation.tpr, o=self.parameters.ndx, 
                                 input=commands, stdout=None)

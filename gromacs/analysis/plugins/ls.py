@@ -92,7 +92,7 @@ class _Ls(Worker):
 
         adir = self.simulation.analysis_dir
         cmd = lscmd + [adir]
-        with rulify("Analysis dir %(adir)s" % vars()):
+        with rulify("Analysis dir {adir!s}".format(**vars())):
             rc = call(cmd)   # just print to screen
         
     def analyze(self,**kwargs):

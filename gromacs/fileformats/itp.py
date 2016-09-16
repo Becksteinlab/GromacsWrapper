@@ -232,7 +232,7 @@ class ITPsection(object):
 
     def section(self):
         # incomplete, override!
-        return "[ %s ]" % self.name
+        return "[ {0!s} ]".format(self.name)
 
     def __len__(self):
         try:
@@ -248,14 +248,14 @@ class ITPsection(object):
         try:
             return self.sections[name]
         except KeyError:
-            raise AttributeError("%r object has no attribute or section %s" % (self.__class__.__name__, name))
+            raise AttributeError("{0!r} object has no attribute or section {1!s}".format(self.__class__.__name__, name))
 
     def __str__(self):
         """Print full section as seen in an ITP file"""
         return self.section()
 
     def __repr__(self):
-        return "<ITP::%s (%d entries)>" % (self.__class__.__name__, len(self))
+        return "<ITP::{0!s} ({1:d} entries)>".format(self.__class__.__name__, len(self))
 
     def parse(self, stream):
         current_section = self.name
@@ -422,7 +422,7 @@ class ITPdata(ITPsection):
         accordance with Gromacs ITP parsing rules, data columns can only be
         ommitted from the right.
         """
-        lines = ["[ %s ]" % self.name]          # start with section header
+        lines = ["[ {0!s} ]".format(self.name)]          # start with section header
         lines.append(self.column_comment)       # add fixed column descriptors
 
         for rec in self._clean_records():
@@ -491,15 +491,15 @@ class Moleculetype(ITPsection):
             return     # skip empty lines
         m = self.COMMENT.match(line)
         if m:
-            self.comments.append("%(comment)s" % m.groupdict())
+            self.comments.append("{comment!s}".format(**m.groupdict()))
             return
         fields = line.split()
         try:
             self.data['name'] = fields[0]
             self.data['nrexcl'] = int(fields[1])
         except Exception, err:
-            msg = "Failed to parse [moleculetype] section: line: %r\n" % line
-            msg += "Exception: %r" % err
+            msg = "Failed to parse [moleculetype] section: line: {0!r}\n".format(line)
+            msg += "Exception: {0!r}".format(err)
             self.logger.error(msg)
             raise
 
@@ -514,11 +514,11 @@ class Moleculetype(ITPsection):
 
     def section(self):
         # currently without user comments
-        return "[ %s ]\n; Name      nrexcl\n" % self.name + \
-            "%(name)-10s  %(nrexcl)d" % self.data + "\n"
+        return "[ {0!s} ]\n; Name      nrexcl\n".format(self.name) + \
+            "{name:<10!s}  {nrexcl:d}".format(**self.data) + "\n"
 
     def __repr__(self):
-        return "<ITP::moleculetype %(name)s nrexcl=%(nrexcl)d>" % self.data
+        return "<ITP::moleculetype {name!s} nrexcl={nrexcl:d}>".format(**self.data)
 
 class Atomtypes(ITPdata):
     """ITP ``[atomtypes]`` section.
@@ -911,7 +911,7 @@ class ITP(utilities.FileUtils):
         try:
             return self.sections[name]
         except KeyError:
-            raise AttributeError("%r object has no attribute or section %s" % (self.__class__.__name__, name))
+            raise AttributeError("{0!r} object has no attribute or section {1!s}".format(self.__class__.__name__, name))
 
     def __str__(self):
         """Printable representation: whole ITP file."""

@@ -292,10 +292,10 @@ class QueuingSystem(object):
             'declare -a jobdirs']
         for i,dirname in enumerate(asiterable(directories)):
             idx = i+1   # job array indices are 1-based
-            lines.append('jobdirs[%(idx)d]=%(dirname)r' % vars())
+            lines.append('jobdirs[{idx:d}]={dirname!r}'.format(**vars()))
         lines.extend([
                 '# Switch to the current tasks directory:',
-                'wdir="${jobdirs[${%(array_variable)s}]}"' % vars(self),
+                'wdir="${{jobdirs[${{{array_variable!s}}}]}}"'.format(**vars(self)),
                 'cd "$wdir" || { echo "ERROR: failed to enter $wdir."; exit 1; }',
                 hrule,
                 ''
@@ -371,7 +371,7 @@ def generate_submit_scripts(templates, prefix=None, deffnm='md', jobname='MD', b
     """
     if not jobname[0].isalpha():
         jobname = 'MD_'+jobname
-        wmsg = "To make the jobname legal it must start with a letter: changed to %r" % jobname
+        wmsg = "To make the jobname legal it must start with a letter: changed to {0!r}".format(jobname)
         logger.warn(wmsg)
         warnings.warn(wmsg, category=AutoCorrectionWarning)
     if prefix is None:
@@ -387,7 +387,7 @@ def generate_submit_scripts(templates, prefix=None, deffnm='md', jobname='MD', b
 
     def write_script(template):
         submitscript = os.path.join(dirname, prefix + os.path.basename(template))
-        logger.info("Setting up queuing system script %(submitscript)r..." % vars())
+        logger.info("Setting up queuing system script {submitscript!r}...".format(**vars()))
         # These substitution rules are documented for the user in the module doc string
         cbook.edit_txt(template,
                        [('^ *DEFFNM=','(?<==)(.*)', deffnm),

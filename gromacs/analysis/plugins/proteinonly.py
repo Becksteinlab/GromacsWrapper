@@ -86,7 +86,7 @@ class _ProteinOnly(Worker):
         parameters = {}
         parameters['fit'] = kwargs.pop('fit',None)            # fitting algorithm
         if not parameters['fit'] in _fitvalues:
-            raise ValueError("ProteinOnly: *fit* must be one of %(_fitvalues)r, not %(fit)r." % vars())
+            raise ValueError("ProteinOnly: *fit* must be one of {_fitvalues!r}, not {fit!r}.".format(**vars()))
         parameters['compact'] = kwargs.pop('compact', False)  # compact+centered ?
         parameters['dt'] = kwargs.pop('dt', None)
         parameters['force'] = kwargs.pop('force', None)

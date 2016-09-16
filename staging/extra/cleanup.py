@@ -16,7 +16,7 @@ def init_pattern(key):
       m = P[key].match(string)
       m.group(key)
     """
-    return sre.compile('^init\(\): %(key)s: *(?P<%(key)s>.*)$' % locals())
+    return sre.compile('^init\(\): {key!s}: *(?P<{key!s}>.*)$'.format(**locals()))
 
 INIT_KEYS = ['hostname','stagedir','JOB_ID','JOB_NAME']
 P = {key: init_pattern(key) for key in INIT_KEYS}
@@ -32,7 +32,7 @@ def scan_log(logfile,P):
     Vars = {}
     StatusVars = {}
     log = open(logfile,"r")
-    print "== %(logfile)s ==" % locals()
+    print "== {logfile!s} ==".format(**locals())
     for line in log:
         l = line.strip()
         for key,pattern in P.items():
@@ -57,8 +57,8 @@ def cleanup(logfile):
     if len(Vars) == 0 and len(Status) == 0:
         raise ValueError('No proper tags in '+logfile)
     # all data in Var (I hope)
-    print "Recognized variables: %r" % Vars
-    print "Status:               %r" % Status
+    print "Recognized variables: {0!r}".format(Vars)
+    print "Status:               {0!r}".format(Status)
 
     try:
         # fixing older scripts which had host: instead of hostname:
@@ -68,9 +68,9 @@ def cleanup(logfile):
         if 'stagedir' not in Vars:
             Vars['stagedir'] = Vars['WDIR']
 
-        cmd = "ssh %(hostname)s rm -vr %(stagedir)s" % Vars
+        cmd = "ssh {hostname!s} rm -vr {stagedir!s}".format(**Vars)
     except KeyError,errmsg:
-        print "Variable not found (%s)" % errmsg
+        print "Variable not found ({0!s})".format(errmsg)
         if 'abort' in Status:
             print "Job was aborted, no cleaning up necessary except log file"
             print ">>> rm "+logfile
@@ -86,7 +86,7 @@ def cleanup(logfile):
     os.unlink(logfile)
 
 if __name__ == '__main__':
-    usage = "usage: %s log.oXXXXX ...\n" % sys.argv[0] + '\n' + __doc__
+    usage = "usage: {0!s} log.oXXXXX ...\n".format(sys.argv[0]) + '\n' + __doc__
 
     try:
         logfile = sys.argv[1]

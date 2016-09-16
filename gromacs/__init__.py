@@ -317,7 +317,7 @@ def filter_gromacs_warnings(action, categories=None):
         except KeyError:
             w = c
         if not issubclass(w, Warning):
-            raise TypeError("%r is neither a Warning nor the name of a Gromacs warning." % c)
+            raise TypeError("{0!r} is neither a Warning nor the name of a Gromacs warning.".format(c))
         warnings.simplefilter(action, category=w)
 
 def disable_gromacs_warnings(categories=None):

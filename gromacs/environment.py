@@ -154,7 +154,7 @@ class Flag(object):
         """Use this for property(**flag.prop())"""
         return {'fget':self.get, 'fset':self.set, 'doc':self.__doc__}
     def __repr__(self):
-        return """Flag('%(name)s',%(value)r)""" % self.__dict__
+        return """Flag('{name!s}',{value!r})""".format(**self.__dict__)
 
 
 class _Flag(Flag):

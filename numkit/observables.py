@@ -87,7 +87,7 @@ class QID(frozenset):
     def union(self, x):        
         return super(QID, self).union(asiterable(x))  # hack...
     def __repr__(self):
-        return "QID(%r)" % list(self)
+        return "QID({0!r})".format(list(self))
 
 class QuantityWithError(object):
     """Number with error and basic error propagation arithmetic.
@@ -224,7 +224,7 @@ class QuantityWithError(object):
         return self.value, self.error
 
     def __repr__(self):
-        return "%g (%g)" % self.astuple()
+        return "{0:g} ({1:g})".format(*self.astuple())
 
     # NOTE: all the special casing should really be done with the covariance
     # formulae. Also, check that a+a+a etc produces sensible output...

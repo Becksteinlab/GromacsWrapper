@@ -226,7 +226,7 @@ def load_v5_tools():
                     fancy = make_valid_identifier(name)
                     suffix = driver.partition('_')[2]
                     if suffix:
-                        fancy = '%s_%s' % (fancy, suffix)
+                        fancy = '{0!s}_{1!s}'.format(fancy, suffix)
                     tools[fancy] = tool_factory(fancy, name, driver)
         except (subprocess.CalledProcessError, OSError):
             pass
@@ -344,7 +344,7 @@ for fancy, cmd in registry.items():
                 break
     else:
         # the common case of just adding the 'g_'
-        registry['G_%s' % fancy.lower()] = registry[fancy]
+        registry['G_{0!s}'.format(fancy.lower())] = registry[fancy]
 
 
 # Patching up commands that may be useful to accept multiple index files
@@ -359,7 +359,7 @@ for name4, name5 in [('G_mindist', 'Mindist'), ('G_dist', 'Distance')]:
 
 # Append class doc for each command
 for name in registry.iterkeys():
-    __doc__ += ".. class:: %s\n    :noindex:\n" % name
+    __doc__ += ".. class:: {0!s}\n    :noindex:\n".format(name)
 
 
 # Finally add command classes to module's scope

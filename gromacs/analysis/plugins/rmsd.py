@@ -122,7 +122,7 @@ class _RMSD(Worker):
             try:
                 result.plot(**kwargs)      # This requires result classes with a plot() method!!
             except AttributeError:
-                warnings.warn("Sorry, plotting of result %(name)r is not implemented" % vars(),
+                warnings.warn("Sorry, plotting of result {name!r} is not implemented".format(**vars()),
                               category=UserWarning)                
         pylab.legend(loc='best')
         if figure is True:

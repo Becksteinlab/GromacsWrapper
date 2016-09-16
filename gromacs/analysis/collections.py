@@ -106,7 +106,7 @@ class Collection(list):
             runall.__name__ = attr
             return runall
         elif any(iscallable):
-            raise TypeError("Attribute %r is callable only for some objects" % attr)
+            raise TypeError("Attribute {0!r} is callable only for some objects".format(attr))
 
         return Collection([o.__getattribute__(attr) for o in self])
 
@@ -114,4 +114,4 @@ class Collection(list):
         return Collection(super(Collection, self).__add__(x))
 
     def __repr__(self):
-        return self.__class__.__name__+"(%s)" % super(Collection, self).__repr__()
+        return self.__class__.__name__+"({0!s})".format(super(Collection, self).__repr__())
