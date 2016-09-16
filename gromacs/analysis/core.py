@@ -205,7 +205,7 @@ class Simulation(object):
         def getpop(attr, required=False, strict=strict):
             """Return attribute from from kwargs or sim or None"""
             val = kwargs.pop(attr, None)  # must pop from kwargs to clean it
-            if not val is None:
+            if val is not None:
                 return val
             try:
                 return sim.__getattribute__(attr)
@@ -490,7 +490,7 @@ class Worker(FileUtils):
 
         self.plugin = kwargs.pop('plugin', None)
         """:class:`Plugin` instance that owns this Worker."""
-        assert not self.plugin is None                   # must be supplied, non-opt kw arg
+        assert self.plugin is not None                   # must be supplied, non-opt kw arg
         self.plugin_name = self.plugin.plugin_name
         """Name of the plugin that this Worker belongs to."""
 
@@ -519,7 +519,7 @@ class Worker(FileUtils):
         # XXX: should we
         # XXX: 'try: super(Worker, self)._register_hook(**kwargs) except AttributeError: pass'
         # XXX: just in case?
-        if not simulation is None:
+        if simulation is not None:
             self.simulation = simulation
 
     def topdir(self, *args):
@@ -650,7 +650,7 @@ class Plugin(object):
         #: until a successful call to :meth:`~Plugin.register`.
         self.simulation = simulation
 
-        if not simulation is None:                     # can delay registration
+        if simulation is not None:                     # can delay registration
             self.register(simulation)
 
         super(Plugin, self).__init__()      # maybe pointless because all kwargs go to Worker

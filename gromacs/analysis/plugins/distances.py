@@ -98,7 +98,7 @@ class _Distances(Worker):
         self.parameters.ndx = ndx
         self.parameters.cutoff = cutoff
 
-        if not self.simulation is None:
+        if self.simulation is not None:
             self._register_hook()
 
     def _register_hook(self, **kwargs):
@@ -109,7 +109,7 @@ class _Distances(Worker):
         """
 
         super(_Distances, self)._register_hook(**kwargs)
-        assert not self.simulation is None
+        assert self.simulation is not None
 
         # output filenames for g_dist
         self.parameters.filenames = {
@@ -121,7 +121,7 @@ class _Distances(Worker):
 
 
     # override 'API' methods of base class
-    
+
     def run(self,**kwargs):
         """Run ``g_dist `` to compute distances between A and B groups.
 
@@ -134,7 +134,7 @@ class _Distances(Worker):
         If the primary output file already exists then no data are generated
         and the method returns immediately unless one sets *force* = ``True``.
         """
-        force = kwargs.pop('force',False)        
+        force = kwargs.pop('force',False)
         if not force and \
            self.check_file_exists(self.parameters.filenames['distance'], resolve='warn'):
             return
@@ -148,7 +148,7 @@ class _Distances(Worker):
                        **kwargs)
 
     def analyze(self,**kwargs):
-        """Make data files available as numpy arrays."""        
+        """Make data files available as numpy arrays."""
         results = AttributeDict()
         for name, f in self.parameters.filenames.items():
             results[name] = XVG(f)
@@ -179,7 +179,7 @@ class _Distances(Worker):
 
                     callback(name=name, axis=ax)
            kwargs
-              All other keyword arguments are directly passed to 
+              All other keyword arguments are directly passed to
               meth:`gromacs.formats.XVG.plot`.
         """
         import pylab
@@ -210,9 +210,9 @@ class _Distances(Worker):
             #pylab.title(r'Distances: %s' % name)
             pylab.xlabel(self.xlabels[name])
             pylab.ylabel(self.ylabels[name])
-            
+
             # hack: callbacks for customization
-            if not callbacks is None:
+            if callbacks is not None:
                 try:
                     callbacks[name](name=name, axis=ax)
                 except KeyError:
@@ -226,7 +226,7 @@ class _Distances(Worker):
             self.savefig(filename=figure)
 
 
-                           
+
 
 # Public classes that register the worker classes
 #------------------------------------------------
@@ -238,7 +238,7 @@ class Distances(Plugin):
     calculated for each time step and written to files.
 
     .. class:: Distances(groups, ndx, [cutoff, [, name[, simulation]]])
-    
+
     :Arguments:
         name : string
             plugin name (used to access it)
@@ -253,16 +253,16 @@ class Distances(Plugin):
             A contact is recorded if the distance is <cutoff [0.6 nm]
 
     Example:
-    
+
     Generate index files with the groups of interest, for instance
     with :class:`gromacs.cbook.IndexBuilder`::
 
       from gromacs.cbook import IndexBuilder
-      A_grp, A_ndx = IndexBuilder(tpr, ['@a 62549 & r NA'], names=['Na1_ion'], offset=-9, 
+      A_grp, A_ndx = IndexBuilder(tpr, ['@a 62549 & r NA'], names=['Na1_ion'], offset=-9,
                                   out_ndx='Na1.ndx', name_all="Na1").combine()
-      B = IndexBuilder(tpr, ['S312:OG','T313:OG1','A38:O','I41:O','A309:O'], offset=-9, 
+      B = IndexBuilder(tpr, ['S312:OG','T313:OG1','A38:O','I41:O','A309:O'], offset=-9,
                             out_ndx='Na1_site.ndx', name_all="Na1_site")
-      B_grp, B_ndx = B.combine()                            
+      B_grp, B_ndx = B.combine()
       all_ndx_files = [A_ndx, B_ndx]
 
     To calculate the distance between "Na1" and the "Na1_site", create an instance with
@@ -270,7 +270,7 @@ class Distances(Plugin):
 
       dist_Na1_site = Distances(name='Dsite', groups=['Na1', 'Na1_site'], ndx=all_ndx_files)
       S.add_plugin(dist_Na1_site)
-    
+
 
     """
     worker_class = _Distances

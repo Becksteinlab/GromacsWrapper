@@ -126,19 +126,19 @@ class _HelixBundle(Worker):
                              "helices *na*. See g_bundle docs for details.")
 
         super(_HelixBundle, self).__init__(**kwargs)
-        
+
         self.parameters.na = na
         self.parameters.offset = offset
         self.parameters.with_kinks = with_kinks
 
-        if not self.simulation is None:
+        if self.simulation is not None:
             self._register_hook()
 
     def _register_hook(self, **kwargs):
         """Run when registering; requires simulation."""
 
         super(_HelixBundle, self)._register_hook(**kwargs)
-        assert not self.simulation is None
+        assert self.simulation is not None
 
         self.helixndx = self.plugindir('helices.ndx')     # special index for g_bundle
 
@@ -163,7 +163,7 @@ class _HelixBundle(Worker):
             'tilt': self.figdir('tilt'),
             'kink': self.figdir('kink'),
             }
-            
+
     def make_index(self, force=None):
         """Build g_bundle index file from a record array.
 
@@ -177,8 +177,8 @@ class _HelixBundle(Worker):
         - must contain columns name, top, bottom, kink
         - a row corresponds to one helis
         - name contains the name of the helix e.g. 'TM5'
-        - a entry is a *string* of residues which is split on white space; 
-          entries in the same column must have the same number of residues 
+        - a entry is a *string* of residues which is split on white space;
+          entries in the same column must have the same number of residues
           (limitation of g_bundle)
 
         """
@@ -229,7 +229,7 @@ class _HelixBundle(Worker):
 
         :Arguments:
           - *force*: ``True`` does analysis and overwrites existing files
-          - *gmxargs*: additional keyword arguments for :func:`gromacs.g_bundle` 
+          - *gmxargs*: additional keyword arguments for :func:`gromacs.g_bundle`
 
         .. Note:: The plugin default is *z* = ``True``, i.e. the tilt is computed
                   relative to the box z-axis.
@@ -246,14 +246,14 @@ class _HelixBundle(Worker):
         f = self.parameters.filenames
         if self.parameters.with_kinks:
             gromacs.g_bundle(s=self.simulation.tpr, f=self.simulation.xtc, n=self.helixndx,
-                             ol=f['length'], od=f['distance'], oz=f['z'], 
+                             ol=f['length'], od=f['distance'], oz=f['z'],
                              ot=f['tilt'], otr=f['tilt_radial'], otl=f['tilt_lateral'],
                              ok=f['kink'], okr=f['kink_radial'], okl=f['kink_lateral'],
                              input=['top','bottom', 'kink'],
                              **gmxargs)
         else:
             gromacs.g_bundle(s=self.simulation.tpr, f=self.simulation.xtc, n=self.helixndx,
-                             ol=f['length'], od=f['distance'], oz=f['z'], 
+                             ol=f['length'], od=f['distance'], oz=f['z'],
                              ot=f['tilt'], otr=f['tilt_radial'], otl=f['tilt_lateral'],
                              input=['top','bottom'],
                              **gmxargs)
@@ -263,10 +263,10 @@ class _HelixBundle(Worker):
         """Collect output xvg files as :class:`gromacs.formats.XVG` objects.
 
         :Returns:  a dictionary of the results and also sets ``self.results``.
-        """        
+        """
         from gromacs.formats import XVG
 
-        logger.info("Preparing HelixBundle graphs as XVG objects.")        
+        logger.info("Preparing HelixBundle graphs as XVG objects.")
         results = AttributeDict( (k, XVG(fn)) for k,fn in self.parameters.filenames.items() )
         self.results = results
         return results
@@ -281,7 +281,7 @@ class _HelixBundle(Worker):
                - ``False``: only show on screen
            formats : sequence
                sequence of all formats that should be saved [('png', 'pdf')]
-           plotargs    
+           plotargs
                keyword arguments for pylab.plot()
         """
 
@@ -294,7 +294,7 @@ class _HelixBundle(Worker):
                 result.plot(**kwargs)      # This requires result classes with a plot() method!!
             except AttributeError:
                 warnings.warn("Sorry, plotting of result {name!r} is not implemented".format(**vars()),
-                              category=UserWarning)                
+                              category=UserWarning)
         pylab.legend(loc='best')
         if figure is True:
             for ext in extensions:
@@ -302,7 +302,7 @@ class _HelixBundle(Worker):
         elif figure:
             self.savefig(filename=figure)
 
-    
+
 
 
 # Public classes that register the worker classes
@@ -314,7 +314,7 @@ class HelixBundle(Plugin):
     :func:`gromacs.g_bundle` helix analysis
 
     .. class:: HelixBundle([helixtable, offset, with_kinks, [name[, simulation]]])
-    
+
     :Arguments:
        *helixtable*
            reST table with columns "name", "top", "bottom",

@@ -130,7 +130,7 @@ def autoconvert(s):
     1. A non-string object is returned as it is
     2. Try conversion to int, float, str.
     """
-    if not type(s) is str:
+    if type(s) is not str:
         return s
     for converter in int, float, str:   # try them in increasing order of lenience
         try:
@@ -189,7 +189,7 @@ def anyopen(datasource, mode='r', **kwargs):
             for ext in ('bz2', 'gz', ''):   # file == '' should be last
                 openfunc = handlers[ext]
                 stream = _get_stream(datasource, openfunc, mode=mode, **kwargs)
-                if not stream is None:
+                if stream is not None:
                     break
             if stream is None:
                 raise IOError("Cannot open {filename!r} in mode={mode!r}.".format(**vars()))

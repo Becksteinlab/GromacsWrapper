@@ -152,7 +152,7 @@ class MDrunner(utilities.FileUtils):
         if logname in (True, None):        # implicit
             logname = 'md'             # mdrun default
             deffnm = kwargs.get('deffnm', None)
-            if not deffnm is None:
+            if deffnm is not None:
                 logname = deffnm
         self.logname = os.path.realpath(
             os.path.join(self.dirname, self.filename(logname, ext='log')))

@@ -92,7 +92,7 @@ class NDX(odict, utilities.FileUtils):
     def __init__(self, filename=None, **kwargs):
         super(NDX, self).__init__(**kwargs)  # can use kwargs to set dict! (but no sanity checks!)
 
-        if not filename is None:
+        if filename is not None:
             self._init_filename(filename)
             self.read(filename)
 
@@ -112,7 +112,7 @@ class NDX(odict, utilities.FileUtils):
                     current_section = m.group('name')
                     data[current_section] = []  # can fail if name not legal python key
                     continue
-                if not current_section is None:
+                if current_section is not None:
                     data[current_section].extend(map(int, line.split()))
 
         super(NDX,self).update(odict([(name, self._transform(atomnumbers))

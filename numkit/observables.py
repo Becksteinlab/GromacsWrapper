@@ -71,7 +71,7 @@ class QID(frozenset):
 
     The QID can contain arbitray (but unique) identifiers in the
     *iterable*; however, strings are treated as individual objects and
-    *not* as iterables. 
+    *not* as iterables.
 
     The error arithmetic encapsulated by the operator-overloading of
     :class:`QuantityWithError` builds new QIDs by accumulating QIDs of
@@ -84,7 +84,7 @@ class QID(frozenset):
         else:
             self = super(QID,cls).__new__(cls, asiterable(iterable))
         return self
-    def union(self, x):        
+    def union(self, x):
         return super(QID, self).union(asiterable(x))  # hack...
     def __repr__(self):
         return "QID({0!r})".format(list(self))
@@ -114,7 +114,7 @@ class QuantityWithError(object):
     #       within a single python session; for persistence one has to do something
     #       else, e.g. add the data and hash.
 
-    # TODO: Use full formulae with covariance whenever two quantities are 
+    # TODO: Use full formulae with covariance whenever two quantities are
     #       used that have a covariance defined; will allow to ditch the
     #       special casing of 'if other is self'.
     # TODO: Use variances throughout instead of errors.
@@ -126,7 +126,7 @@ class QuantityWithError(object):
         val,err,otherqid = self._astuple(value)  # use data of other instances
         if not error is None:
             pass            # kwargs take precedence over any other error
-        elif err != 0:      
+        elif err != 0:
             error = err     # get from other instance
         else:
             error = 0       # default for a quantity WITHOUT error
@@ -136,7 +136,7 @@ class QuantityWithError(object):
         # Identity of a quantity: qid
         # - quantities without error have empty qid
         # - new quantities with error start with a unique id
-        # - quantities that came from arithmetic between QWEs accumulate all 
+        # - quantities that came from arithmetic between QWEs accumulate all
         #   unique qids ("identity is their history")
         # - qid is implemented as a frozenset
 
@@ -144,7 +144,7 @@ class QuantityWithError(object):
         qid = qid or otherqid  # kwargs qid takes precedence; otherqid is likely None
         if qid is None and error != 0:  # generate qid for quantities WITH error
             qid = id(self)              # unique new id
-        _qid.update([q for q in asiterable(qid) if not q is None]) 
+        _qid.update([q for q in asiterable(qid) if q is not None])
         self.qid = QID(_qid)       # freeze so that we can use it as a key
         del _qid
 
@@ -164,7 +164,7 @@ class QuantityWithError(object):
     def isSame(self, other):
         """Check if *other* is 100% correlated with *self*.
 
-        ``True`` if 
+        ``True`` if
           `- *other* is the same observable (instance)
            - *other* was derived from *self* without using any
              other independent quantities with errors, e.g. ::
@@ -173,15 +173,15 @@ class QuantityWithError(object):
                 >>> a.isSame(b)
                 True
 
-        ``False`` if 
-            - *other* is a scalar (without an error), or 
+        ``False`` if
+            - *other* is a scalar (without an error), or
             - *other* was computed from *self* without involvement of
               any other observables.
 
         :TODO: How should one treat the case when a quantity is used
                again in an operation, e.g.  ::
-                 c = a + b 
-                 d = c/a 
+                 c = a + b
+                 d = c/a
                How to compute the error on d? What should the result
                for ``c.isSame(a)`` be?
         """
@@ -217,7 +217,7 @@ class QuantityWithError(object):
             val = other
             err = 0
             qid = QID()  # empty for quantities without error
-        return val, err, qid 
+        return val, err, qid
 
     def astuple(self):
         """Return tuple (value,error)."""
@@ -332,17 +332,17 @@ class QuantityWithError(object):
             error = self._dist(dy*f*x/y, dx*f*numpy.log(y))
             qid = [self.qid, yqid]
         return QuantityWithError(f, error, qid=qid)
-        
+
     def __abs__(self):
         return QuantityWithError(self.value.__abs__(), self.error, qid=self.qid)
-    
+
     def __cmp__(self, other):
         """x.__cmp__(other) <==> cmp(x.value,other.value)"""
         # TODO: make comparison error-aware, i.e. "==" for a given confidence interval
         val,err,qid = self._astuple(other)
         result = cmp(self.value, val)
         return result
-                                      
+
     def __coerce__(self, other):
         return self, self.asQuantityWithError(other)
 
@@ -361,10 +361,10 @@ def iterable(obj):
         return False    # avoid iterating over characters of a string
 
     if hasattr(obj, 'next'):
-        return True    # any iterator will do 
-    try: 
+        return True    # any iterator will do
+    try:
         len(obj)       # anything else that might work
-    except TypeError: 
+    except TypeError:
         return False
     return True
 
