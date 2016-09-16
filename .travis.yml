@@ -51,7 +51,8 @@ install:
   - source $($HOME/get_gmx $GMX_VERSION)
 
 # run tests
-script: 
+script:
+  - py.test --cov numkit numkit/tests
   - py.test --cov gromacs gromacs/tests
 
 after_success:
