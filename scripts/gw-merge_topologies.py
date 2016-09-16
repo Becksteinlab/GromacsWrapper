@@ -92,7 +92,7 @@ def merge_topologies(topol_list, topolout, blocks, name="MOL", dirty=True):
   #
   for i, molecule in enumerate(molecules):
     if dirty:
-      add_comment(molecule, blocks, " [from %s]" % topol_list[i])
+      add_comment(molecule, blocks, " [from {0!s}]".format(topol_list[i]))
 
     # Adjust everything to the first molecule (i == 0), shift the atoms of the next molecules by this amount
     if not i: 

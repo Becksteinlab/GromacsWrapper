@@ -169,7 +169,7 @@ class _COM(Worker):
         refgroup = kwargs.pop('refgroup', None)
         if refgroup is not None:
             if not refgroup in self.parameters.group_names:
-                errmsg = "refgroup=%s must be one of %r" % (refgroup, self.parameters.group_names)
+                errmsg = "refgroup={0!s} must be one of {1!r}".format(refgroup, self.parameters.group_names)
                 logger.error(errmsg)
                 raise ValueError(errmsg)
             nreference = 1 + 3 * self.parameters.group_names.index(refgroup) # 1-based !!
@@ -177,7 +177,7 @@ class _COM(Worker):
             xcom[1:] -= numpy.vstack(ngroups * [reference_com])  # can't use broadcast
             logger.debug("distances computed with refgroup %r", refgroup)
 
-            self.store_xvg('com_relative_%s' % refgroup, xcom,
+            self.store_xvg('com_relative_{0!s}'.format(refgroup), xcom,
                            names=['time']+self.parameters.group_names)
 
 
@@ -236,7 +236,7 @@ class _COM(Worker):
             try:
                 result.plot(**kwargs)      # This requires result classes with a plot() method!!
             except AttributeError:
-                warnings.warn("Sorry, plotting of result %(name)r is not implemented" % vars(),
+                warnings.warn("Sorry, plotting of result {name!r} is not implemented".format(**vars()),
                               category=UserWarning)
 
         # quick labels -- relies on the proper ordering

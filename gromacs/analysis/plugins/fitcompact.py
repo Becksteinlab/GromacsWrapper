@@ -127,7 +127,7 @@ class _FitCompact(Worker):
                                            f=self.simulation.xtc,
                                            o=filename)
 
-        logger.info("New trajectories can be found in %r." % self.parameters.trjdir)
+        logger.info("New trajectories can be found in {0!r}.".format(self.parameters.trjdir))
 
     def analyze(self,**kwargs):
         """No postprocessing."""

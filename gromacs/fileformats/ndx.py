@@ -123,7 +123,7 @@ class NDX(odict, utilities.FileUtils):
         with open(self.filename(filename, ext='ndx'), 'w') as ndx:
             for name in self:
                 atomnumbers = self._getarray(name)  # allows overriding
-                ndx.write('[ %s ]\n' % name)
+                ndx.write('[ {0!s} ]\n'.format(name))
                 for k in xrange(0, len(atomnumbers), ncol):
                     line = atomnumbers[k:k+ncol].astype(int)   # nice formatting in ncol-blocks
                     n = len(line)

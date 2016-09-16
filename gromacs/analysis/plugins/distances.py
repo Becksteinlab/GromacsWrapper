@@ -206,7 +206,7 @@ class _Distances(Worker):
                 data = self.results[name].plot(**kwargs)   # results are XVG objects with plot method
             except KeyError:
                 ax.close()
-                raise KeyError('name = %r not known, choose one of %r' % (name, self.results.keys()))
+                raise KeyError('name = {0!r} not known, choose one of {1!r}'.format(name, self.results.keys()))
             #pylab.title(r'Distances: %s' % name)
             pylab.xlabel(self.xlabels[name])
             pylab.ylabel(self.ylabels[name])

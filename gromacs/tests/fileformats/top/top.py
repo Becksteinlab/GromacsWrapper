@@ -26,8 +26,8 @@ def helper(attr, attr1, attr2):
 
 
 def grompp(f, c, p, prefix="topol"):
-        s = '/tmp/%s-%s.tpr' % (prefix, os.getpid())
-        po = '/tmp/%s-%s.mdp' % (prefix, os.getpid())
+        s = '/tmp/{0!s}-{1!s}.tpr'.format(prefix, os.getpid())
+        po = '/tmp/{0!s}-{1!s}.mdp'.format(prefix, os.getpid())
 
         rc, output, junk = gromacs.grompp(f=f, p=p, c=c, o=s, po=po, stdout=False, stderr=False)
         #print(rc, output, junk)
@@ -35,17 +35,17 @@ def grompp(f, c, p, prefix="topol"):
         return s
 
 def mdrun(s, prefix):
-        o = '/tmp/%s-%s.trr' % (prefix, os.getpid())
+        o = '/tmp/{0!s}-{1!s}.trr'.format(prefix, os.getpid())
         rc, output, junk = gromacs.mdrun(v=True, s=s, o=o, stdout=False, stderr=False)
         assert_(rc == 0)
         return o
 
 def rerun_energy(s, o, prefix):
-        e = '/tmp/%s-%s.edr' % (prefix, os.getpid())
+        e = '/tmp/{0!s}-{1!s}.edr'.format(prefix, os.getpid())
         rc, output, junk = gromacs.mdrun(v=True, s=s, rerun=o, e=e, stdout=False, stderr=False)
         assert_(rc == 0)
 
-        xvg = '/tmp/%s-%s.xvg' % (prefix, os.getpid())
+        xvg = '/tmp/{0!s}-{1!s}.xvg'.format(prefix, os.getpid())
         rc, output, junk = gromacs.g_energy(f=e, o=xvg, input=("Proper-Dih.","Improper-Dih.","CMAP-Dih.","LJ-14","Coulomb-14","LJ-(SR)","Coulomb-(SR)","Coul.-recip.","Potential"), stdout=False, stderr=False)
         assert_(rc == 0)
 
@@ -100,7 +100,7 @@ class TopologyTest(object):
                 Writing the topology out should make no change to the topology.
                 """
                 path = datafile(self.processed)
-                filename = '/tmp/processed-%s.top' % os.getpid()
+                filename = '/tmp/processed-{0!s}.top'.format(os.getpid())
 
                 top1 = TOP(path)
                 top1.write(filename)
@@ -129,8 +129,8 @@ class TopologyTest(object):
                 f = datafile(self.grompp)
                 c = datafile(self.conf)
                 p = datafile(self.processed)
-                o = '/tmp/topol-%s.tpr' % os.getpid()
-                po = '/tmp/mdout-%s.mdp' % os.getpid()
+                o = '/tmp/topol-{0!s}.tpr'.format(os.getpid())
+                po = '/tmp/mdout-{0!s}.mdp'.format(os.getpid())
 
                 rc, output, junk = gromacs.grompp(f=f, p=p, c=c, o=o, po=po, stdout=False, stderr=False)
                 #print(rc, output, junk)

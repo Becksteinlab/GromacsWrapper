@@ -63,7 +63,7 @@ class server:
         # tcl file is stored in the same directory as this module file
         self.server_tcl = server_tcl
         self.vmdbinary = vmdbinary
-        self.startcmd = '%s -dispdev %s -e %s' % (self.vmdbinary, self.dispdev, self.server_tcl)
+        self.startcmd = '{0!s} -dispdev {1!s} -e {2!s}'.format(self.vmdbinary, self.dispdev, self.server_tcl)
         self.start(force=force)
 
     def start(self,force=False,maxdelay=10):
@@ -103,8 +103,8 @@ class server:
 
         Ignore the message 'error: uncaptured python exception' if the server is down.
         """
-        token = 'ALIVE (ping from pid %d)' % pid
-        c = command('set __pingtest__ {%s}' % token)  
+        token = 'ALIVE (ping from pid {0:d})'.format(pid)
+        c = command('set __pingtest__ {{{0!s}}}'.format(token))  
         x, = c.results()
         return x == token
 

@@ -137,8 +137,7 @@ class _Dihedrals(Worker):
         angle_type = gmxargs.setdefault('type','dihedral')
         allowed_types = ("dihedral", "improper", "ryckaert-bellemans")
         if angle_type not in allowed_types:
-            raise ValueError("The *type* can not be %r, only be one of\n\t%r\n" %
-                             (angle_type, allowed_types))
+            raise ValueError("The *type* can not be {0!r}, only be one of\n\t{1!r}\n".format(angle_type, allowed_types))
         gmxargs['all'] = True   # required because we analyze the time series file
         gmxargs.setdefault('periodic', True)
         F = self.parameters.filenames

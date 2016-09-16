@@ -201,7 +201,7 @@ def find_manager_config(name):
     """Find a configuration file for manager *name*."""
     found = list(utilities.find_files(config.managerdir, name+".cfg"))
     if len(found) == 0:
-        errmsg = "No configuration file found for name %r" % name
+        errmsg = "No configuration file found for name {0!r}".format(name)
         logger.error(errmsg)
         raise MissingDataError(errmsg)
     elif len(found) > 1:
@@ -276,7 +276,7 @@ class Manager(object):
               identifier for job names [MD]
         """
         self.name = name
-        self.logger = logging.getLogger('gromacs.manager.%(name)s' % vars())
+        self.logger = logging.getLogger('gromacs.manager.{name!s}'.format(**vars()))
 
         try:
             cfg = get_manager_config(find_manager_config(name))
@@ -316,9 +316,9 @@ class Manager(object):
         # test connection and make directory where we run things on the remote host
         rc = call(['ssh', self.hostname, 'mkdir' , '-p', self.wdir])
         if rc == 0:
-            self.logger.info("All good: can access %(uri)s" % vars(self))
+            self.logger.info("All good: can access {uri!s}".format(**vars(self)))
         else:
-            self.logger.error("Problem with ssh and path %(uri)s" % vars(self))
+            self.logger.error("Problem with ssh and path {uri!s}".format(**vars(self)))
 
         super(Manager, self).__init__(**kwargs)
 
@@ -339,7 +339,7 @@ class Manager(object):
         :Arguments: dirname to be transferred
         :Returns: return code from scp
         """
-        self.logger.info("Copying %r to %r" % (dirname, self.uri))
+        self.logger.info("Copying {0!r} to {1!r}".format(dirname, self.uri))
         return call(["scp", "-r", dirname, self.uri])
 
     def putfile(self, filename, dirname):
@@ -349,7 +349,7 @@ class Manager(object):
         :Returns: return code from scp
         """
         destdir = self.remoteuri(dirname)
-        self.logger.info("Copying %(filename)r to %(destdir)r" % vars())
+        self.logger.info("Copying {filename!r} to {destdir!r}".format(**vars()))
         return call(["scp", filename,  destdir])
 
     def get(self, dirname, checkfile=None, targetdir=os.path.curdir):
@@ -362,14 +362,14 @@ class Manager(object):
 
         :Returns: return code from scp
         """
-        self.logger.info("Copying %r from %r" % (dirname, self.uri))
+        self.logger.info("Copying {0!r} from {1!r}".format(dirname, self.uri))
         rc = call(["scp", "-r", self.remoteuri(dirname), targetdir])
         #rc = call(["rsync", "-e","ssh","-avP", os.path.join(self.uri,dirname), targetdir])
         if checkfile is not None:
             if not os.path.exists(os.path.join(targetdir, dirname, checkfile)):
                 self.logger.error("Failed to get %r from %s", checkfile, self.hostname)
                 raise OSError(errno.ENOENT, checkfile,
-                              "Failed to download file from %(hostname)r" % vars(self))
+                              "Failed to download file from {hostname!r}".format(**vars(self)))
         return rc
 
     def local_get(self, dirname, checkfile, cattrajectories=True, cleanup=False):
@@ -392,7 +392,7 @@ class Manager(object):
             if not os.path.exists(checkpath):
                 self.logger.error("Failed to get %r from %s", checkfile, self.hostname)
                 raise OSError(errno.ENOENT, checkfile,
-                              "Failed to download file from %(hostname)r" % vars(self))
+                              "Failed to download file from {hostname!r}".format(**vars(self)))
         return checkpath
 
     def cat(self, dirname, prefix='md', cleanup=True):
@@ -470,12 +470,12 @@ class Manager(object):
             cbook.edit_txt(qscriptpath, [('^ *STARTDIR=', '(?<==)(.*)', remotedir),])   # in-place!
             rc = self.putfile(qscriptpath, dirname)
             if rc != 0:
-                errmsg = "Failed to scp updated qscript %(qscriptpath)r to remote %(remotedir)r" % vars()
+                errmsg = "Failed to scp updated qscript {qscriptpath!r} to remote {remotedir!r}".format(**vars())
                 logger.error(errmsg)
                 raise IOError(rc, errmsg)
             logger.debug("Using qscript %(qscriptpath)r with hard-coded remote cd %(remotedir)r", vars())
 
-        rc = call(['ssh', self.hostname, 'cd %s && qsub %s' % (remotedir, qscript)])
+        rc = call(['ssh', self.hostname, 'cd {0!s} && qsub {1!s}'.format(remotedir, qscript)])
         if rc == 0:
             self.logger.info("Submitted job %r on %s.", qscript, self.hostname )
         else:
@@ -540,7 +540,7 @@ class Manager(object):
                     else:
                         logger.warn("Cannot reliably parse the 'Performance:' line %r in the log file.", m.group('performance'))
         elif rc == 255:
-            loginfo("No output file (yet) for job on %(hostname)s." % vars(self))
+            loginfo("No output file (yet) for job on {hostname!s}.".format(**vars(self)))
             if err:
                 self.logger.error("remote: %r", err)
         else:
@@ -548,14 +548,14 @@ class Manager(object):
 
         isDone = False
         if status['exceeded']:
-            loginfo("Job on %(hostname)s is RUNNING but waiting for next part to run." % vars(self))
+            loginfo("Job on {hostname!s} is RUNNING but waiting for next part to run.".format(**vars(self)))
         elif status['completed']:  # and not exceeded
             isDone = True
-            loginfo("Job on %(hostname)s is DONE." % vars(self))
+            loginfo("Job on {hostname!s} is DONE.".format(**vars(self)))
         elif not status['started']:
-            loginfo("Job on %(hostname)s is WAITING in the queue." % vars(self))
+            loginfo("Job on {hostname!s} is WAITING in the queue.".format(**vars(self)))
         else:
-            loginfo("Job on %(hostname)s is still RUNNING." % vars(self))
+            loginfo("Job on {hostname!s} is still RUNNING.".format(**vars(self)))
             if err:
                 self.logger.error("remote: %r", err)
             lines = out.split('\n').__iter__()
@@ -624,7 +624,7 @@ class Manager(object):
         kwargs.setdefault('silent', True)
         totseconds = 0
         while not self.job_done(dirname, **kwargs):
-            sys.stderr.write("%4d min   ... %s still running\r" % (totseconds/60, dirname))
+            sys.stderr.write("{0:4d} min   ... {1!s} still running\r".format(totseconds/60, dirname))
             time.sleep(delta_seconds)
             totseconds += delta_seconds
         sys.stderr.write('\n')
@@ -646,7 +646,7 @@ class Manager(object):
                                     qname=self.prefix+'pr', startdir=self.remotepath(dirname),
                                     **kwargs)
         self.put(dirname)
-        self.logger.info("Run %s on %s in %s/%s" % (dirname, self.hostname, self.uri, dirname))
+        self.logger.info("Run {0!s} on {1!s} in {2!s}/{3!s}".format(dirname, self.hostname, self.uri, dirname))
         self.logger.info(">> qsub('%s')", dirname)
         return dirname
 
@@ -661,7 +661,7 @@ class Manager(object):
         """
         kwargs.setdefault('runtime', 1e4)
 
-        jobid_s = '%(jobnumber)03d' % vars()
+        jobid_s = '{jobnumber:03d}'.format(**vars())
         dirname = 'MD_'+jobid_s
         structure = self.local_get(os.path.dirname(struct), os.path.basename(struct))
         qscript = kwargs.pop('qscript', self.qscript)
@@ -670,8 +670,8 @@ class Manager(object):
                          qname=self.prefix+jobid_s, startdir=self.remotepath(dirname),
                          **kwargs)
         self.put(dirname)
-        self.logger.info("Run %s on %s in %s/%s" % (dirname, self.hostname, self.uri, dirname))
-        self.logger.info("Or use %s.qsub(%r)" % (self.__class__.__name__, dirname))
+        self.logger.info("Run {0!s} on {1!s} in {2!s}/{3!s}".format(dirname, self.hostname, self.uri, dirname))
+        self.logger.info("Or use {0!s}.qsub({1!r})".format(self.__class__.__name__, dirname))
 
         return dirname
 

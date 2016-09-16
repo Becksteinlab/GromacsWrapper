@@ -103,7 +103,7 @@ class Mindist(object):
         if cutoff is None:
             cutoff_filter = ""
         else:
-            cutoff_filter = "WHERE distance <= %d" % float(cutoff)
+            cutoff_filter = "WHERE distance <= {0:d}".format(float(cutoff))
         self.distances = all_distances.selection(
             "SELECT frame, MIN(distance) AS distance FROM __self__ "+cutoff_filter+" GROUP BY frame",
             name="mindistances", cache=False)
@@ -147,8 +147,8 @@ class Mindist(object):
         FUNC = 'distribution'
         if not normed:
             FUNC = 'histogram'
-        SQL = """SELECT %(FUNC)s(distance,%(nbins)d,%(lo)f,%(hi)f) AS "h [Object]"
-                 FROM __self__""" % vars()
+        SQL = """SELECT {FUNC!s}(distance,{nbins:d},{lo:f},{hi:f}) AS "h [Object]"
+                 FROM __self__""".format(**vars())
         (((h,e),),) = D.sql(SQL, asrecarray=False)
         # should probably cache this...
         if normed:

@@ -237,9 +237,9 @@ class MDrunner(utilities.FileUtils):
            finally:
                self.posthook(**post)
         if rc == 0:
-            logger.info("MDrun completed ok, returncode = %d" % rc)
+            logger.info("MDrun completed ok, returncode = {0:d}".format(rc))
         else:
-            logger.critical("Failure in MDrun, returncode = %d" % rc)
+            logger.critical("Failure in MDrun, returncode = {0:d}".format(rc))
         return rc
 
     def run_check(self, **kwargs):

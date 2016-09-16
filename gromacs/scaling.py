@@ -190,7 +190,7 @@ def partial_tempering(args):
         dihedraltypes = {}
         for dt in top.dihedraltypes:
                 dt.disabled = True
-                dt.comment = "; type=%s-%s-%s-%s-9\n; LINE(%d) " % (dt.atype1, dt.atype2, dt.atype3, dt.atype4, dt.line)
+                dt.comment = "; type={0!s}-{1!s}-{2!s}-{3!s}-9\n; LINE({4:d}) ".format(dt.atype1, dt.atype2, dt.atype3, dt.atype4, dt.line)
                 dt.comment = dt.comment.replace("_","")
 
                 #if "X-CTL2-CTL2-X-9" in dt.comment: print dt
@@ -205,7 +205,7 @@ def partial_tempering(args):
         impropertypes = {}
         for it in top.impropertypes:
                 it.disabled = True
-                it.comment = "; LINE(%d) " % it.line
+                it.comment = "; LINE({0:d}) ".format(it.line)
                 name = "{0}-{1}-{2}-{3}-{4}".format(it.atype1, it.atype2, it.atype3, it.atype4, it.gromacs['func'])
                 if not name in impropertypes: impropertypes[name] = []
                 impropertypes[name].append(it)
