@@ -55,7 +55,6 @@ Helpers
 .. autofunction:: tool_factory
 .. autofunction:: load_v4_tools
 .. autofunction:: load_v5_tools
-.. autofunction:: load_extra_tools
 .. autofunction:: find_executables
 .. autofunction:: make_valid_identifier
 .. autoexception:: GromacsToolLoadingError

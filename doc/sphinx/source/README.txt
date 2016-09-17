@@ -72,10 +72,10 @@ Included third party content:
   - The preprocessor is based on ``pypreprocessor.py`` from
     `pypreprocessor`_, release 0.4.0.
   - copyright: (c) 2010 Evan Plaice
-  - license: MIT (`compatible with GPL`_)
-  - http://code.google.com/p/pypreprocessor/
+  - license: MIT
+  - https://github.com/evanplaice/pypreprocessor
 
-  .. _pypreprocessor: http://code.google.com/p/pypreprocessor/
+  .. _pypreprocessor: https://github.com/evanplaice/pypreprocessor
 
 
 Citing
@@ -119,9 +119,6 @@ Contact
 =======
 
 Please use the `Issue Tracker`_ to report bugs, installation problems,
-and feature requests (mention ``@orbeckst`` in the issue report);
-general feedback and inquiries can be sent to `Oliver Beckstein`_ by
-e-mail.
+and feature requests (mention ``@orbeckst`` in the issue report).
 
 .. _Issue Tracker: http://github.com/Becksteinlab/GromacsWrapper/issues
-.. _Oliver Beckstein: orbeckst@gmail.com
