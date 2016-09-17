@@ -5,7 +5,7 @@
 
 
 #: Package version; this is the only place where it is set.
-VERSION = 0,6,0
+VERSION = 0,6,1
 #: Set to ``True`` for a release. If set to ``False`` then the patch level
 #: will have the suffix "-dev".
 RELEASE = True
@@ -14,8 +14,8 @@ if not RELEASE:
 
 def get_version():
     """Return current package version as a string."""
-    return ".".join(map(str,VERSION))
+    return ".".join(map(str, VERSION))
 
 def get_version_tuple():
     """Return current package version as a tuple (*MAJOR*, *MINOR*, *PATCHLEVEL*)."""
-    return tuple(map(str,VERSION))
+    return tuple(map(str, VERSION))

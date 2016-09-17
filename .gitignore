@@ -7,6 +7,7 @@ doc/sphinx/build/
 doc/html
 build/
 .idea/
+.cache/
 virtualenv/
 dist
 gromacs.log

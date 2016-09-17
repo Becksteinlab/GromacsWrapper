@@ -2,8 +2,18 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
+2016-09-16      0.6.1
+orbeckst, quantifiedcode-bot
+
+* alias tpbconv <-> convert_tpr was not properly set with Gromacs 5
+* fixed cbook.grompp_qtot() (#89)
+* fixed setup.trj_compact_main() (like #89, spurious -doc argument passed)
+* additional tests; reactivated tests for top reader but marked many as
+  expected failure, i.e. the top reader is considered broken (#61)
+* code clean up (quantified code recommendations)
+
 2016-09-09      0.6.0
-pslacerda, orbeckst
+pslacerda, orbeckst, ianmkenney
 
 * new Gromacs GMXRC parameter in cfg file: if present and set to a
   file then GromacsWrapper sources GMXRC and sets the environment

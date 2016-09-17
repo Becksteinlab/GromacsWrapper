@@ -13,18 +13,18 @@
 
 import numkit.integration
 import numpy
-from numpy.testing import *
+from numpy.testing import assert_equal, assert_almost_equal
 
-class Test_simps_error(TestCase):
+class Test_simps_error(object):
     # special case with constant spacing and constant error (=1.0) so
     # that one can easily calculate the correct errors
-    def setUp(self):
+    def setup(self):
         self.even_x = numpy.linspace(0,10,10)           # const spacing
         self.even_dx = numpy.diff(self.even_x)[0]
         self.even_dy = 1.0 * numpy.ones(10, dtype=float) # const error
         self.odd_x = numpy.linspace(0,10,11)             # const spacing
         self.odd_dx = numpy.diff(self.odd_x)[0]
-        self.odd_dy = 1.0 * numpy.ones(11, dtype=float) # const error        
+        self.odd_dy = 1.0 * numpy.ones(11, dtype=float) # const error
 
     def err_analytic_odd(self):
         # error for all dy and dx equal, using only Simpson's rule:
@@ -42,7 +42,7 @@ class Test_simps_error(TestCase):
         N = self.even_dy.shape[0]
         h = self.even_dx
         #err_analytic**2 = (h/6.0)**2 * dy**2 * (2*3**2 + 12 + (8**2+4**2)*0.5*(N-2) - (4**2-2**2) + 2**2)
-        return numpy.sqrt((h/6.0)**2 * dy**2 * (40.*N - 58.))        
+        return numpy.sqrt((h/6.0)**2 * dy**2 * (40.*N - 58.))
 
     def test_odd_const_dx(self):
         err_dx = numkit.integration.simps_error(self.odd_dy, dx=self.odd_dx)
@@ -62,19 +62,19 @@ class Test_simps_error(TestCase):
     def test_even_first(self):
         err_analytic = self.err_analytic_even()
         err = numkit.integration.simps_error(self.even_dy, dx=self.even_dx, even="first")
-        assert_almost_equal(err, err_analytic, 
+        assert_almost_equal(err, err_analytic,
                             err_msg="Even # points, first: Simps+Trapezoid stat. error: const dx and const dy")
 
     def test_even_last(self):
         err_analytic = self.err_analytic_even()
         err = numkit.integration.simps_error(self.even_dy, dx=self.even_dx, even="last")
-        assert_almost_equal(err, err_analytic, 
+        assert_almost_equal(err, err_analytic,
                             err_msg="Even # points, last: Trapezoid+Simps stat. error: const dx and const dy")
 
     def test_even_avg(self):
         err_analytic = self.err_analytic_even()
         err = numkit.integration.simps_error(self.even_dy, dx=self.even_dx, even="avg")
-        assert_almost_equal(err, err_analytic, 
+        assert_almost_equal(err, err_analytic,
                             err_msg="Even # points, avg: Simps+Trapezoid stat. error: const dx and const dy")
 
     def Xtest_h1h2(self):

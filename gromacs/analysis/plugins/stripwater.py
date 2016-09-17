@@ -100,7 +100,7 @@ class _StripWater(Worker):
         parameters = {}
         parameters['fit'] = kwargs.pop('fit',None)            # fitting algorithm
         if not parameters['fit'] in _fitvalues:
-            raise ValueError("StripWater: *fit* must be one of %(_fitvalues)r, not %(fit)r." % vars())
+            raise ValueError("StripWater: *fit* must be one of {_fitvalues!r}, not {fit!r}.".format(**vars()))
 	parameters['fitgroup'] = kwargs.pop('fitgroup', "backbone")
 	parameters['centergroup'] = kwargs.pop('centergroup', "Protein")
         parameters['compact'] = kwargs.pop('compact', False)  # compact+centered ?

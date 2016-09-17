@@ -316,11 +316,11 @@ def trj_fitandcenter(xy=False, **kwargs):
 
     fd, tmptrj = tempfile.mkstemp(suffix=suffix, prefix='pbc_compact_')
 
-    logger.info("Input structure for PBC:  %(compact_structure)r" % vars())
-    logger.info("Input structure for fit:  %(fit_structure)r" % vars())
-    logger.info("Input trajectory:  %(intrj)r" % vars())
-    logger.info("Output trajectory: %(outtrj)r"% vars())
-    logger.debug("Writing temporary trajectory %(tmptrj)r (will be auto-cleaned)." % vars())
+    logger.info("Input structure for PBC:  {compact_structure!r}".format(**vars()))
+    logger.info("Input structure for fit:  {fit_structure!r}".format(**vars()))
+    logger.info("Input trajectory:  {intrj!r}".format(**vars()))
+    logger.info("Output trajectory: {outtrj!r}".format(**vars()))
+    logger.debug("Writing temporary trajectory {tmptrj!r} (will be auto-cleaned).".format(**vars()))
     sys.stdout.flush()
     try:
         gromacs.trjconv(s=compact_structure, f=intrj, o=tmptrj, n=ndxcompact,
@@ -402,7 +402,7 @@ def cat(prefix="md", dirname=os.path.curdir, partsdir="parts", fulldir="full",
         nonempty_files = []
         for f in filenames:
             if os.stat(f).st_size == 0:
-                logger.warn("File %(f)r is empty, skipping" % vars())
+                logger.warn("File {f!r} is empty, skipping".format(**vars()))
                 continue
             if os.path.islink(f):
                 # TODO: re-write the symlink to point to the original file
@@ -516,7 +516,7 @@ class Frames(object):
         self.structure = structure  # tpr or equivalent
         self.trj = trj              # xtc, trr, ...
         self.maxframes = maxframes
-        if not self.maxframes is None:
+        if self.maxframes is not None:
             raise NotImplementedError('sorry, maxframes feature not implemented yet')
 
         self.framedir = tempfile.mkdtemp(prefix="Frames_", suffix='_'+format)
@@ -573,7 +573,7 @@ class Frames(object):
         self.framedir = None
 
     def __del__(self):
-        if not self.framedir is None:
+        if self.framedir is not None:
             self.cleanup()
 
 # Working with topologies
@@ -582,8 +582,8 @@ class Frames(object):
 # grompp that does not raise an exception; setting up runs the command to get the docs so
 # we only want to do this once at the module level and not inside a function that can be called
 # repeatedly
-grompp_warnonly = tools.Grompp(failure="warn",
-                               doc="grompp wrapper that only warns on failure but does not raise :exc:`GromacsError`")
+grompp_warnonly = tools.Grompp(failure="warn")
+# grompp_warnonly.__doc__ += "\n\ngrompp wrapper that only warns on failure but does not raise :exc:`GromacsError`"
 
 def grompp_qtot(*args, **kwargs):
     """Run ``gromacs.grompp`` and return the total charge of the  system.
@@ -632,7 +632,7 @@ def grompp_qtot(*args, **kwargs):
         if m:
             qtot = float(m.group('qtot'))
             break
-    logger.info("system total charge qtot = %(qtot)r" % vars())
+    logger.info("system total charge qtot = {qtot!r}".format(**vars()))
     return qtot
 
 def _mdp_include_string(dirs):
@@ -744,7 +744,7 @@ def create_portable_topology(topol, struct, **kwargs):
     grompp_kwargs, mdp_kwargs = filter_grompp_options(**kwargs)
     mdp_kwargs = add_mdp_includes(topol, mdp_kwargs)
     with tempfile.NamedTemporaryFile(suffix='.mdp') as mdp:
-        mdp.write('; empty mdp file\ninclude = %(include)s\n' % mdp_kwargs)
+        mdp.write('; empty mdp file\ninclude = {include!s}\n'.format(**mdp_kwargs))
         mdp.flush()
         grompp_kwargs['p'] = topol
         grompp_kwargs['pp'] = processed
@@ -840,7 +840,7 @@ def edit_mdp(mdp, new_mdp=None, extend_parameters=None, **substitutions):
         extend_parameters = list(asiterable(extend_parameters))
 
     # None parameters should be ignored (simple way to keep the template defaults)
-    substitutions = {k: v for k,v in substitutions.items() if not v is None}
+    substitutions = {k: v for k,v in substitutions.items() if v is not None}
 
     params = substitutions.keys()[:]   # list will be reduced for each match
 
@@ -850,15 +850,15 @@ def edit_mdp(mdp, new_mdp=None, extend_parameters=None, **substitutions):
 
     patterns = {parameter:
                       re.compile("""\
-                       (?P<assignment>\s*%s\s*=\s*)  # parameter == everything before the value
+                       (?P<assignment>\s*{0!s}\s*=\s*)  # parameter == everything before the value
                        (?P<value>[^;]*)              # value (stop before comment=;)
                        (?P<comment>\s*;.*)?          # optional comment
-                       """ % demangled(parameter), re.VERBOSE)
+                       """.format(demangled(parameter)), re.VERBOSE)
                      for parameter in substitutions}
 
     target = tempfile.TemporaryFile()
     with open(mdp) as src:
-        logger.info("editing mdp = %r: %r" % (mdp, substitutions.keys()))
+        logger.info("editing mdp = {0!r}: {1!r}".format(mdp, substitutions.keys()))
         for line in src:
             new_line = line.strip()  # \n must be stripped to ensure that new line is built without break
             for p in params[:]:
@@ -893,7 +893,7 @@ def edit_mdp(mdp, new_mdp=None, extend_parameters=None, **substitutions):
     target.close()
      # return all parameters that have NOT been substituted
     if len(params) > 0:
-        logger.warn("Not substituted in %(new_mdp)r: %(params)r" % vars())
+        logger.warn("Not substituted in {new_mdp!r}: {params!r}".format(**vars()))
     return {p: substitutions[p] for p in params}
 
 def edit_txt(filename, substitutions, newname=None):
@@ -953,11 +953,11 @@ def edit_txt(filename, substitutions, newname=None):
     _substitutions = [{'lRE': re.compile(str(lRE)),
                        'sRE': re.compile(str(sRE)),
                        'repl': repl}
-                      for lRE,sRE,repl in substitutions if not repl is None]
+                      for lRE,sRE,repl in substitutions if repl is not None]
 
     target = tempfile.TemporaryFile()
     with open(filename) as src:
-        logger.info("editing txt = %r (%d substitutions)" % (filename, len(substitutions)))
+        logger.info("editing txt = {0!r} ({1:d} substitutions)".format(filename, len(substitutions)))
         for line in src:
             keep_line = True
             for subst in _substitutions:
@@ -978,7 +978,7 @@ def edit_txt(filename, substitutions, newname=None):
     with open(newname, 'w') as final:
         shutil.copyfileobj(target, final)
     target.close()
-    logger.info("edited txt = %(newname)r" % vars())
+    logger.info("edited txt = {newname!r}".format(**vars()))
 
 def remove_molecules_from_topology(filename, **kwargs):
     """Remove autogenerated [ molecules ] entries from *filename*.
@@ -1026,7 +1026,7 @@ def remove_molecules_from_topology(filename, **kwargs):
         marker = "; Gromacs auto-generated entries follow:"
     logger.debug("Scrubbed [ molecules ]: marker = %(marker)r", vars())
 
-    p_marker = re.compile("\s*%s" % marker)
+    p_marker = re.compile("\s*{0!s}".format(marker))
     p_molecule = re.compile("\s*[\w+_-]+\s+\d+\s*(;.*)?$")
     target = tempfile.TemporaryFile()
     with open(filename) as src:
@@ -1323,7 +1323,7 @@ class IndexBuilder(object):
         except (TypeError, IndexError):
             gmx_resid = resid + self.offset
         except KeyError:
-            raise KeyError("offset must be a dict that contains the gmx resid for %d" % resid)
+            raise KeyError("offset must be a dict that contains the gmx resid for {0:d}".format(resid))
         return gmx_resid
 
     def combine(self, name_all=None, out_ndx=None, operation='|', defaultgroups=False):
@@ -1360,11 +1360,10 @@ class IndexBuilder(object):
         .. SeeAlso:: :meth:`IndexBuilder.write`.
         """
         if not operation in ('|', '&', False):
-            raise ValueError("Illegal operation %r, only '|' (OR) and '&' (AND) or False allowed." %
-                             operation)
-        if name_all is None:
-            if operation:
-                name_all = self.name_all or operation.join(self.indexfiles)
+            raise ValueError("Illegal operation {0!r}, only '|' (OR) and '&' (AND) or False allowed.".format(
+                             operation))
+        if name_all is None and operation:
+            name_all = self.name_all or operation.join(self.indexfiles)
         if out_ndx is None:
             out_ndx = self.output
 
@@ -1388,18 +1387,18 @@ class IndexBuilder(object):
                 fd, tmp_ndx = tempfile.mkstemp(suffix='.ndx', prefix='combined__')
                 # combine all selections by loading ALL temporary index files
                 operation = ' '+operation.strip()+' '
-                cmd = [operation.join(['"%s"' % gname for gname in self.indexfiles]),
+                cmd = [operation.join(['"{0!s}"'.format(gname) for gname in self.indexfiles]),
                        '', 'q']
                 rc,out,err = self.make_ndx(n=ndxfiles, o=tmp_ndx, input=cmd)
                 if self._is_empty_group(out):
-                    warnings.warn("No atoms found for %(cmd)r" % vars(),
+                    warnings.warn("No atoms found for {cmd!r}".format(**vars()),
                                   category=BadParameterWarning)
 
                 # second pass for naming, sigh (or: use NDX ?)
                 groups = parse_ndxlist(out)
                 last = groups[-1]
                 # name this group
-                name_cmd = ["name %d %s" % (last['nr'], name_all), 'q']
+                name_cmd = ["name {0:d} {1!s}".format(last['nr'], name_all), 'q']
                 rc,out,err = self.make_ndx(n=tmp_ndx, o=out_ndx, input=name_cmd)
                 # For debugging, look at out and err or set stdout=True, stderr=True
                 # TODO: check out if at least 1 atom selected
@@ -1456,7 +1455,7 @@ class IndexBuilder(object):
 
         self._command_counter += 1
         if name is None:
-            name = "CMD%03d" % self._command_counter
+            name = "CMD{0:03d}".format(self._command_counter)
 
         # Need to build it with two make_ndx calls because I cannot reliably
         # name the new group without knowing its number.
@@ -1465,7 +1464,7 @@ class IndexBuilder(object):
             cmd = [command, '', 'q']   # empty command '' necessary to get list
             # This sometimes fails with 'OSError: Broken Pipe' --- hard to debug
             rc,out,err = self.make_ndx(o=tmp_ndx, input=cmd)
-            self.check_output(out, "No atoms found for selection %(command)r." % vars(), err=err)
+            self.check_output(out, "No atoms found for selection {command!r}.".format(**vars()), err=err)
             # For debugging, look at out and err or set stdout=True, stderr=True
             # TODO: check '  0 r_300_&_ALA_&_O     :     1 atoms' has at least 1 atom
             ##print "DEBUG: _process_command()"
@@ -1474,8 +1473,8 @@ class IndexBuilder(object):
             last = groups[-1]
             # reduce and name this group
             fd, ndx = tempfile.mkstemp(suffix='.ndx', prefix=name+'__')
-            name_cmd = ["keep %d" % last['nr'],
-                        "name 0 %s" % name, 'q']
+            name_cmd = ["keep {0:d}".format(last['nr']),
+                        "name 0 {0!s}".format(name), 'q']
             rc,out,err = self.make_ndx(n=tmp_ndx, o=ndx, input=name_cmd)
         finally:
             utilities.unlink_gmx(tmp_ndx)
@@ -1503,7 +1502,7 @@ class IndexBuilder(object):
         # XXX: use _translate_residue() ....
         m = self.RESIDUE.match(selection)
         if not m:
-            raise ValueError("Selection %(selection)r is not valid." % vars())
+            raise ValueError("Selection {selection!r} is not valid.".format(**vars()))
 
         gmx_resid = self.gmx_resid(int(m.group('resid')))
         residue = m.group('aa')
@@ -1516,10 +1515,10 @@ class IndexBuilder(object):
             gmx_atomname = 'CA'
 
         #: select residue <gmx_resname><gmx_resid> atom <gmx_atomname>
-        _selection = 'r %(gmx_resid)d & r %(gmx_resname)s & a %(gmx_atomname)s' % vars()
+        _selection = 'r {gmx_resid:d} & r {gmx_resname!s} & a {gmx_atomname!s}'.format(**vars())
         cmd = ['keep 0', 'del 0',
                _selection,
-               'name 0 %(name)s' % vars(),
+               'name 0 {name!s}'.format(**vars()),
                'q']
         fd, ndx = tempfile.mkstemp(suffix='.ndx', prefix=name+'__')
         rc,out,err = self.make_ndx(n=self.ndx, o=ndx, input=cmd)
@@ -1550,15 +1549,15 @@ class IndexBuilder(object):
                 logger.error("%r is not a valid range selection", selection)
                 raise
         if name is None:
-            name = "%(first)s-%(last)s_%(gmx_atomname)s" % vars()
+            name = "{first!s}-{last!s}_{gmx_atomname!s}".format(**vars())
 
         _first = self._translate_residue(first, default_atomname=gmx_atomname)
         _last = self._translate_residue(last, default_atomname=gmx_atomname)
 
-        _selection = 'r %d - %d & & a %s' % (_first['resid'],  _last['resid'], gmx_atomname)
+        _selection = 'r {0:d} - {1:d} & & a {2!s}'.format(_first['resid'], _last['resid'], gmx_atomname)
         cmd = ['keep 0', 'del 0',
                _selection,
-               'name 0 %(name)s' % vars(),
+               'name 0 {name!s}'.format(**vars()),
                'q']
         fd, ndx = tempfile.mkstemp(suffix='.ndx', prefix=name+'__')
         rc,out,err = self.make_ndx(n=self.ndx, o=ndx, input=cmd)
@@ -1575,7 +1574,7 @@ class IndexBuilder(object):
         """Translate selection for a single res to make_ndx syntax."""
         m = self.RESIDUE.match(selection)
         if not m:
-            errmsg = "Selection %(selection)r is not valid." % vars()
+            errmsg = "Selection {selection!r} is not valid.".format(**vars())
             logger.error(errmsg)
             raise ValueError(errmsg)
 
@@ -1606,8 +1605,7 @@ class IndexBuilder(object):
 
         rc = True
         if self._is_empty_group(make_ndx_output):
-            warnings.warn("Selection produced empty group.%(message)s"
-                          % vars(), category=GromacsValueWarning)
+            warnings.warn("Selection produced empty group.{message!s}".format(**vars()), category=GromacsValueWarning)
             rc = False
         if self._has_syntax_error(make_ndx_output):
             rc = False
@@ -1623,11 +1621,11 @@ class IndexBuilder(object):
 
     def _is_empty_group(self, make_ndx_output):
         m = re.search('Group is empty', make_ndx_output)
-        return not (m is None)
+        return m is not None
 
     def _has_syntax_error(self, make_ndx_output):
         m = re.search('Syntax error:', make_ndx_output)
-        return not (m is None)
+        return m is not None
 
     def __del__(self):
         try:
@@ -1696,13 +1694,13 @@ class Transformer(utilities.FileUtils):
                 if f is None:
                     continue
                 if not os.path.exists(f):
-                    msg = "Possible problem: File %(f)r not found in %(dirname)r." % vars()
+                    msg = "Possible problem: File {f!r} not found in {dirname!r}.".format(**vars())
                     warnings.warn(msg, category=MissingDataWarning)
                     logger.warn(msg)
         logger.info("%r initialised", self)
 
     def __repr__(self):
-            return "%s(s=%r, f=%r, n=%r, force=%r)" % (self.__class__.__name__,
+            return "{0!s}(s={1!r}, f={2!r}, n={3!r}, force={4!r})".format(self.__class__.__name__,
                                                        self.tpr, self.xtc, self.ndx, self.force)
     def outfile(self, p):
         """Path for an output file.
@@ -1762,11 +1760,11 @@ class Transformer(utilities.FileUtils):
         kwargs.setdefault('o', self.outfile(self.infix_filename(None, self.xtc, '_centfit', 'xtc')))
         force = kwargs.pop('force', self.force)
 
-        logger.info("Centering and fitting trajectory %(f)r..." % kwargs)
+        logger.info("Centering and fitting trajectory {f!r}...".format(**kwargs))
         with utilities.in_dir(self.dirname):
             if not self.check_file_exists(kwargs['o'], resolve="indicate", force=force):
                 trj_fitandcenter(**kwargs)
-            logger.info("Centered and fit trajectory: %(o)r." % kwargs)
+            logger.info("Centered and fit trajectory: {o!r}.".format(**kwargs))
         return {'tpr': self.rp(kwargs['s']), 'xtc': self.rp(kwargs['o'])}
 
     def fit(self, xy=False, **kwargs):
@@ -1822,9 +1820,9 @@ class Transformer(utilities.FileUtils):
             fitmode = kwargs.pop('fit', 'rot+trans')  # user can use 'progressive', too
             infix_default = '_fit'
 
-        dt = kwargs.get('dt', None)
+        dt = kwargs.get('dt')
         if dt:
-            infix_default += '_dt%dps' % int(dt)    # dt in ps
+            infix_default += '_dt{0:d}ps'.format(int(dt))    # dt in ps
 
         kwargs.setdefault('o', self.outfile(self.infix_filename(None, self.xtc, infix_default, 'xtc')))
         fitgroup = kwargs.pop('fitgroup', 'backbone')
@@ -1922,7 +1920,7 @@ class Transformer(utilities.FileUtils):
         # clean kwargs, only legal arguments for Gromacs tool trjconv should remain
         kwargs.pop("centergroup", None)
 
-        NOTwater = "! r %(resn)s" % vars()  # make_ndx selection ("not water residues")
+        NOTwater = "! r {resn!s}".format(**vars())  # make_ndx selection ("not water residues")
         with utilities.in_dir(self.dirname):
             # ugly because I cannot break from the block
             if not self.check_file_exists(newxtc, resolve="indicate", force=force):
@@ -1932,7 +1930,7 @@ class Transformer(utilities.FileUtils):
                 B.combine(name_all=groupname, operation="|", defaultgroups=True)
                 logger.debug("Index file for water removal: %r", nowater_ndx)
 
-                logger.info("TPR file without water %(newtpr)r" % vars())
+                logger.info("TPR file without water {newtpr!r}".format(**vars()))
                 gromacs.tpbconv(s=self.tpr, o=newtpr, n=nowater_ndx, input=[groupname])
 
                 logger.info("NDX of the new system %r", newndx)
@@ -1942,7 +1940,7 @@ class Transformer(utilities.FileUtils):
                 #          atom indices changed. The only way to solve this is to regenerate the group with
                 #          a selection or only use Gromacs default groups.
 
-                logger.info("Trajectory without water %(newxtc)r" % vars())
+                logger.info("Trajectory without water {newxtc!r}".format(**vars()))
                 kwargs['s'] = self.tpr
                 kwargs['f'] = self.xtc
                 kwargs['n'] = nowater_ndx
@@ -2039,13 +2037,13 @@ class Transformer(utilities.FileUtils):
                                  ndx=self.ndx, out_ndx=selection_ndx)
                 B.combine(name_all=groupname, operation="|", defaultgroups=True)
 
-                logger.info("TPR file containg the protein %(newtpr)r" % vars())
+                logger.info("TPR file containg the protein {newtpr!r}".format(**vars()))
                 gromacs.tpbconv(s=self.tpr, o=newtpr, n=selection_ndx, input=[groupname])
 
-                logger.info("NDX of the new system %(newndx)r" % vars())
+                logger.info("NDX of the new system {newndx!r}".format(**vars()))
                 gromacs.make_ndx(f=newtpr, o=newndx, input=['q'], stderr=False, stdout=False)
 
-                logger.info("Trajectory with only the protein %(newxtc)r" % vars())
+                logger.info("Trajectory with only the protein {newxtc!r}".format(**vars()))
                 kwargs['s'] = self.tpr
                 kwargs['f'] = self.xtc
                 kwargs['n'] = selection_ndx

@@ -105,25 +105,18 @@ logger = logging.getLogger('gromacs.utilities')
 from .exceptions import AutoCorrectionWarning
 
 
-def Property(func):
-    """Simple decorator wrapper to make full fledged properties.
-    See eg http://adam.gomaa.us/blog/2008/aug/11/the-python-property-builtin/
-    """
-    return property(**func())
-
-
 class AttributeDict(dict):
     """A dictionary with pythonic access to keys as attributes --- useful for interactive work."""
-    def __getattribute__(self,x):
+    def __getattribute__(self, x):
         try:
             return super(AttributeDict,self).__getattribute__(x)
         except AttributeError:
             return self[x]
-    def __setattr__(self,name,value):
+    def __setattr__(self, name, value):
         try:
-            super(AttributeDict,self).__setitem__(name, value)
+            super(AttributeDict, self).__setitem__(name, value)
         except KeyError:
-            super(AttributeDict,self).__setattr__(name, value)
+            super(AttributeDict, self).__setattr__(name, value)
 
     def __getstate__(self):
         return self
@@ -137,14 +130,14 @@ def autoconvert(s):
     1. A non-string object is returned as it is
     2. Try conversion to int, float, str.
     """
-    if not type(s) is str:
+    if type(s) is not str:
         return s
     for converter in int, float, str:   # try them in increasing order of lenience
         try:
             return converter(s)
         except ValueError:
             pass
-    raise ValueError("Failed to autoconvert %r" % s)
+    raise ValueError("Failed to autoconvert {0!r}".format(s))
 
 @contextmanager
 def openany(datasource, mode='r', **kwargs):
@@ -186,21 +179,27 @@ def anyopen(datasource, mode='r', **kwargs):
     if mode.startswith('r'):
         if hasattr(datasource,'next') or hasattr(datasource,'readline'):
             stream = datasource
-            filename = '(%s)' % stream.name  # maybe that does not always work?
+            try:
+                filename = '({0})'.format(stream.name)  # maybe that does not always work?
+            except AttributeError:
+                filename = str(type(stream))
         else:
             stream = None
             filename = datasource
             for ext in ('bz2', 'gz', ''):   # file == '' should be last
                 openfunc = handlers[ext]
                 stream = _get_stream(datasource, openfunc, mode=mode, **kwargs)
-                if not stream is None:
+                if stream is not None:
                     break
             if stream is None:
-                raise IOError("Cannot open %(filename)r in mode=%(mode)r." % vars())
+                raise IOError("Cannot open {filename!r} in mode={mode!r}.".format(**vars()))
     elif mode.startswith('w'):
         if hasattr(datasource, 'write'):
             stream = datasource
-            filename = '(%s)' % stream.name  # maybe that does not always work?
+            try:
+                filename = '({0})'.format(stream.name)  # maybe that does not always work?
+            except AttributeError:
+                filename = str(type(stream))
         else:
             stream = None
             filename = datasource
@@ -212,9 +211,9 @@ def anyopen(datasource, mode='r', **kwargs):
             openfunc = handlers[ext]
             stream = openfunc(datasource, mode=mode, **kwargs)
             if stream is None:
-                raise IOError("Cannot open %(filename)r in mode=%(mode)r with type %(ext)r." % vars())
+                raise IOError("Cannot open {filename!r} in mode={mode!r} with type {ext!r}.".format(**vars()))
     else:
-        raise NotImplementedError("Sorry, mode=%(mode)r is not implemented for %(datasource)r" % vars())
+        raise NotImplementedError("Sorry, mode={mode!r} is not implemented for {datasource!r}".format(**vars()))
 
     return stream, filename
 
@@ -267,14 +266,14 @@ def in_dir(directory, create=True):
     try:
         try:
             os.chdir(directory)
-            logger.debug("Working in %(directory)r..." % vars())
+            logger.debug("Working in {directory!r}...".format(**vars()))
         except OSError, err:
             if create and err.errno == errno.ENOENT:
                 os.makedirs(directory)
                 os.chdir(directory)
-                logger.info("Working in %(directory)r (newly created)..." % vars())
+                logger.info("Working in {directory!r} (newly created)...".format(**vars()))
             else:
-                logger.exception("Failed to start working in %(directory)r." % vars())
+                logger.exception("Failed to start working in {directory!r}.".format(**vars()))
                 raise
         yield os.getcwd()
     finally:
@@ -459,12 +458,12 @@ class FileUtils(object):
               ignored, do whatever *resolve* says
         """
         def _warn(x):
-            msg = "File %r already exists." % x
+            msg = "File {0!r} already exists.".format(x)
             logger.warn(msg)
             warnings.warn(msg)
             return True
         def _raise(x):
-            msg = "File %r already exists." % x
+            msg = "File {0!r} already exists.".format(x)
             logger.error(msg)
             raise IOError(errno.EEXIST, x, msg)
         solutions = {'ignore': lambda x: False,      # file exists, but we pretend that it doesn't
@@ -497,7 +496,7 @@ class FileUtils(object):
         return name
 
     def __repr__(self):
-        fmt = "%s(filename=%%r)" % self.__class__.__name__
+        fmt = "{0!s}(filename=%r)".format(self.__class__.__name__)
         try:
             fn =  self.filename()
         except ValueError:
@@ -572,11 +571,11 @@ def cat(f=None, o=None):
         return
     target = o
     infiles = asiterable(f)
-    logger.debug("cat %s > %s " % (" ".join(infiles), target))
+    logger.debug("cat {0!s} > {1!s} ".format(" ".join(infiles), target))
     with open(target, 'w') as out:
         rc = subprocess.call(['cat'] + infiles, stdout=out)
     if rc != 0:
-        msg = "failed with return code %d: cat %r > %r " % (rc, " ".join(infiles), target)
+        msg = "failed with return code {0:d}: cat {1!r} > {2!r} ".format(rc, " ".join(infiles), target)
         logger.exception(msg)
         raise OSError(errno.EIO, msg, target)
 
@@ -651,10 +650,10 @@ class Timedelta(datetime.timedelta):
         """
         substitutions = {
             "%d": str(self.days),
-            "%H": "%02d" % self.dhours,
+            "%H": "{0:02d}".format(self.dhours),
             "%h": str(24*self.days + self.dhours),
-            "%M": "%02d" % self.dminutes,
-            "%S": "%02d" % self.dseconds,
+            "%M": "{0:02d}".format(self.dminutes),
+            "%S": "{0:02d}".format(self.dseconds),
             }
         s = fmt
         for search, replacement in substitutions.items():
@@ -685,7 +684,7 @@ def number_pdbs(*args, **kwargs):
         prefix = m.group('PREFIX')
         suffix = m.group('SUFFIX')
         newname = name_format % vars()
-        logger.info("Renaming %(f)r --> %(newname)r" % vars())
+        logger.info("Renaming {f!r} --> {newname!r}".format(**vars()))
         try:
             os.rename(f, newname)
         except OSError:

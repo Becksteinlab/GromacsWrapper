@@ -55,7 +55,6 @@ Helpers
 .. autofunction:: tool_factory
 .. autofunction:: load_v4_tools
 .. autofunction:: load_v5_tools
-.. autofunction:: load_extra_tools
 .. autofunction:: find_executables
 .. autofunction:: make_valid_identifier
 .. autoexception:: GromacsToolLoadingError
@@ -95,6 +94,8 @@ V4TOOLS = ("g_cluster", "g_dyndom", "g_mdmat", "g_principal", "g_select",
            "g_dist", "g_luck", "g_potential", "g_sas", "g_velacc", "make_ndx")
 
 
+#: dict of names in Gromacs 5 that correspond to an equivalent tool in
+#: in Gromacs 4. The names are literal Gromacs names.
 NAMES5TO4 = {
     # same name in both versions
     'grompp': 'grompp',
@@ -114,7 +115,7 @@ NAMES5TO4 = {
     'do_dssp': 'do_dssp',
 
     # changed names
-    'convert_tpr': 'tpbconv',
+    'convert-tpr': 'tpbconv',
     'dump': 'gmxdump',
     'check': 'gmxcheck',
     'solvate': 'genbox',
@@ -147,11 +148,10 @@ class GromacsCommandMultiIndex(GromacsCommand):
 
     def _fake_multi_ndx(self, **kwargs):
         ndx = kwargs.get('n')
-        if not (ndx is None or type(ndx) is basestring):
-            if len(ndx) > 1:
-                if 's' in kwargs:
-                    ndx.append(kwargs.get('s'))
-                kwargs['n'] = merge_ndx(*ndx)
+        if not (ndx is None or type(ndx) is basestring) and \
+           len(ndx) > 1 and 's' in kwargs:
+            ndx.append(kwargs.get('s'))
+            kwargs['n'] = merge_ndx(*ndx)
         return kwargs
 
 
@@ -220,12 +220,11 @@ def load_v5_tools():
                                            'commands'])
             for line in str(out).encode('ascii').splitlines()[5:-1]:
                 if line[4] != ' ':
-
                     name = line[4:line.index(' ', 4)]
                     fancy = make_valid_identifier(name)
                     suffix = driver.partition('_')[2]
                     if suffix:
-                        fancy = '%s_%s' % (fancy, suffix)
+                        fancy = '{0!s}_{1!s}'.format(fancy, suffix)
                     tools[fancy] = tool_factory(fancy, name, driver)
         except (subprocess.CalledProcessError, OSError):
             pass
@@ -305,37 +304,45 @@ def merge_ndx(*args):
 
 # Load tools
 if config.MAJOR_RELEASE == '5':
+    logger.debug("Trying to load configured Gromacs major release {0}".format(
+        config.MAJOR_RELEASE))
     registry = load_v5_tools()
 elif config.MAJOR_RELEASE == '4':
+    logger.debug("Trying to load configured Gromacs major release {0}".format(
+        config.MAJOR_RELEASE))
     registry = load_v4_tools()
 else:
+    logger.debug("No major release configured: trying 5 -> 4")
     try:
         registry = load_v5_tools()
     except GromacsToolLoadingError:
         try:
             registry = load_v4_tools()
         except GromacsToolLoadingError:
-            raise GromacsToolLoadingError("Unable to load any tool")
-
+            errmsg = "Autoloading was unable to load any Gromacs tool"
+            logger.critical(errmsg)
+            raise GromacsToolLoadingError(errmsg)
 
 # Aliases command names to run unmodified GromacsWrapper scripts on a machine
 # with only 5.x
 for fancy, cmd in registry.items():
     for c5, c4 in NAMES5TO4.iteritems():
         # have to check each one, since it's possible there are suffixes
-        # like for double precision
+        # like for double precision; cmd.command_name is Gromacs name
+        # (e.g. 'convert-tpr') so we need to be careful in the processing below.
         name = cmd.command_name
         if name.startswith(c5):
             if c4 == c5:
                 break
             else:
-                # mantain suffix
-                name = c4 + fancy.lower().split(c5)[1]
+                # maintain suffix (note: need to split with fancy because Gromacs
+                # names (c5) may contain '-' etc)
+                name = c4 + fancy.split(make_valid_identifier(c5))[1]
                 registry[make_valid_identifier(name)] = registry[fancy]
                 break
     else:
         # the common case of just adding the 'g_'
-        registry['G_%s' % fancy.lower()] = registry[fancy]
+        registry['G_{0!s}'.format(fancy.lower())] = registry[fancy]
 
 
 # Patching up commands that may be useful to accept multiple index files
@@ -350,7 +357,7 @@ for name4, name5 in [('G_mindist', 'Mindist'), ('G_dist', 'Distance')]:
 
 # Append class doc for each command
 for name in registry.iterkeys():
-    __doc__ += ".. class:: %s\n    :noindex:\n" % name
+    __doc__ += ".. class:: {0!s}\n    :noindex:\n".format(name)
 
 
 # Finally add command classes to module's scope

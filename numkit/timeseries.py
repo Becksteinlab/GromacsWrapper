@@ -162,7 +162,7 @@ def autocorrelation_fft(series, remove_mean=True, paddingcorrection=True,
 
     origin = ac.shape[0]/2        # should work for both odd and even len(series)
     ac = ac[origin:]              # only use second half of the symmetric acf
-    assert len(ac) <= len(series), "Oops: len(ac)=%d  len(series)=%d" % (len(ac),len(series))
+    assert len(ac) <= len(series), "Oops: len(ac)={0:d}  len(series)={1:d}".format(len(ac), len(series))
     if paddingcorrection and  not kwargs['mode'] == 'valid':     # 'valid' was not 0-padded
         # correct for 0 padding
         # XXX: reference? Where did I get this from? (But it makes sense.)
@@ -303,8 +303,7 @@ def smooth(x, window_len=11, window='flat'):
         try:
             w = windows[window](window_len)
         except KeyError:
-            raise ValueError("Window %r not supported; must be one of %r" %
-                             (window, windows.keys()))
+            raise ValueError("Window {0!r} not supported; must be one of {1!r}".format(window, windows.keys()))
 
     if x.ndim != 1:
         raise ValueError("smooth only accepts 1 dimension arrays.")

@@ -54,14 +54,14 @@ class _RMSF(Worker):
 
         """
         super(_RMSF, self).__init__(**kwargs)
-        if not self.simulation is None:
+        if self.simulation is not None:
             self._register_hook()
 
     def _register_hook(self, **kwargs):
         """Run when registering; requires simulation."""
 
         super(_RMSF, self)._register_hook(**kwargs)
-        assert not self.simulation is None
+        assert self.simulation is not None
 
         self.parameters.filenames = {
             'RMSF': self.plugindir('rmsf.xvg'),
@@ -82,16 +82,16 @@ class _RMSF(Worker):
         """
         if not self.check_file_exists(self.parameters.filenames['RMSF'], resolve='warning') or force:
             logger.info("Analyzing RMSF...")
-            gromacs.g_rmsf(s=self.simulation.tpr, f=self.simulation.xtc, fit=True, 
+            gromacs.g_rmsf(s=self.simulation.tpr, f=self.simulation.xtc, fit=True,
                            o=self.parameters.filenames['RMSF'],
-                           od=self.parameters.filenames['RMSD'], 
+                           od=self.parameters.filenames['RMSD'],
                            input=[group], **gmxargs)
 
     def analyze(self,**kwargs):
         """Collect output xvg files as :class:`gromacs.formats.XVG` objects.
 
         :Returns:  a dictionary of the results and also sets ``self.results``.
-        """        
+        """
         from gromacs.formats import XVG
 
         logger.info("Preparing RMSF graphs as XVG objects.")
@@ -110,7 +110,7 @@ class _RMSF(Worker):
                - ``False``: only show on screen
            formats : sequence
                sequence of all formats that should be saved [('png', 'pdf')]
-           plotargs    
+           plotargs
                keyword arguments for pylab.plot()
         """
 
@@ -122,8 +122,8 @@ class _RMSF(Worker):
             try:
                 result.plot(**kwargs)      # This requires result classes with a plot() method!!
             except AttributeError:
-                warnings.warn("Sorry, plotting of result %(name)r is not implemented" % vars(),
-                              category=UserWarning)                
+                warnings.warn("Sorry, plotting of result {name!r} is not implemented".format(**vars()),
+                              category=UserWarning)
         pylab.legend(loc='best')
         if figure is True:
             for ext in extensions:
@@ -131,7 +131,7 @@ class _RMSF(Worker):
         elif figure:
             self.savefig(filename=figure)
 
-    
+
 
 
 # Public classes that register the worker classes
@@ -139,13 +139,13 @@ class _RMSF(Worker):
 
 class RMSF(Plugin):
     """*RMSF* plugin.
-    
+
     Compute the root mean square fluctuations (RMSF) of the C-alpha
     atoms. The trajectory is always fitted to the reference structure
     in the tpr file.
 
     .. class:: RMSF([name[, simulation]])
-    
+
     :Arguments:
         *name* : string
             plugin name (used to access it)

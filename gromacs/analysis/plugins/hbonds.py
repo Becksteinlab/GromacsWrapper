@@ -128,14 +128,14 @@ class _HBonds(Worker):
         # already; just leave this snippet at the end. Do all
         # initialization that requires the simulation class in the
         # _register_hook() method.
-        if not self.simulation is None:
+        if self.simulation is not None:
             self._register_hook()
 
     def _register_hook(self, **kwargs):
         """Run when registering; requires simulation."""
 
         super(_HBonds, self)._register_hook(**kwargs)
-        assert not self.simulation is None
+        assert self.simulation is not None
 
         self.parameters.filenames = {
             'ndx': self.plugindir('hb_groups.ndx'),          # filename of the index file
@@ -224,7 +224,7 @@ class _HBonds(Worker):
                         self.parameters.filenames)
             for name,frac in results['existence']:
                 logger.info("hb_existence: %-40s %4.1f%%", name, 100*frac)
-                out.write("%-40s %4.1f%%\n" % (name, 100*frac))
+                out.write("{0:<40!s} {1:4.1f}%\n".format(name, 100*frac))
 
         self.results = results
         return results
@@ -253,7 +253,7 @@ class _HBonds(Worker):
             try:
                 result.plot(**kwargs)      # This requires result classes with a plot() method!!
             except AttributeError:
-                warnings.warn("Sorry, plotting of result %(name)r is not implemented" % vars(),
+                warnings.warn("Sorry, plotting of result {name!r} is not implemented".format(**vars()),
                               category=UserWarning)
         pylab.legend(loc='best')
         #if figure is True:

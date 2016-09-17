@@ -86,7 +86,7 @@ class _ProteinOnly(Worker):
         parameters = {}
         parameters['fit'] = kwargs.pop('fit',None)            # fitting algorithm
         if not parameters['fit'] in _fitvalues:
-            raise ValueError("ProteinOnly: *fit* must be one of %(_fitvalues)r, not %(fit)r." % vars())
+            raise ValueError("ProteinOnly: *fit* must be one of {_fitvalues!r}, not {fit!r}.".format(**vars()))
         parameters['compact'] = kwargs.pop('compact', False)  # compact+centered ?
         parameters['dt'] = kwargs.pop('dt', None)
         parameters['force'] = kwargs.pop('force', None)
@@ -104,14 +104,14 @@ class _ProteinOnly(Worker):
         # already; just leave this snippet at the end. Do all
         # initialization that requires the simulation class in the
         # _register_hook() method.
-        if not self.simulation is None:
+        if self.simulation is not None:
             self._register_hook()
 
     def _register_hook(self, **kwargs):
         """Run when registering; requires simulation."""
 
         super(_ProteinOnly, self)._register_hook(**kwargs)
-        assert not self.simulation is None
+        assert self.simulation is not None
 
         trjdir = os.path.dirname(self.simulation.tpr)
         self.transformer = gromacs.cbook.Transformer(dirname=trjdir,

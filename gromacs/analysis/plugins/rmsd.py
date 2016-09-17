@@ -55,14 +55,14 @@ class _RMSD(Worker):
         This is the worker class; this is where all the real analysis is done.
         """
         super(_RMSD, self).__init__(**kwargs)
-        if not self.simulation is None:
+        if self.simulation is not None:
             self._register_hook()
 
     def _register_hook(self, **kwargs):
         """Run when registering; requires simulation."""
 
         super(_RMSD, self)._register_hook(**kwargs)
-        assert not self.simulation is None
+        assert self.simulation is not None
 
         self.parameters.filenames = {
             'RMSD': self.plugindir('rmsd.xvg'),
@@ -84,7 +84,7 @@ class _RMSD(Worker):
         """
         if not self.check_file_exists(self.parameters.filenames['RMSD'], resolve='warning') or force:
             logger.info("Analyzing RMSD...")
-            gromacs.g_rms(s=self.simulation.tpr, f=self.simulation.xtc, fit="rot+trans", 
+            gromacs.g_rms(s=self.simulation.tpr, f=self.simulation.xtc, fit="rot+trans",
                           o=self.parameters.filenames['RMSD'],
                           input=['C-alpha', group], **gmxargs)
 
@@ -92,7 +92,7 @@ class _RMSD(Worker):
         """Collect output xvg files as :class:`gromacs.formats.XVG` objects.
 
         :Returns:  a dictionary of the results and also sets ``self.results``.
-        """        
+        """
         from gromacs.formats import XVG
 
         logger.info("Preparing RMSD graphs as XVG objects.")
@@ -110,7 +110,7 @@ class _RMSD(Worker):
                - ``False``: only show on screen
            formats : sequence
                sequence of all formats that should be saved [('png', 'pdf')]
-           plotargs    
+           plotargs
                keyword arguments for pylab.plot()
         """
 
@@ -122,8 +122,8 @@ class _RMSD(Worker):
             try:
                 result.plot(**kwargs)      # This requires result classes with a plot() method!!
             except AttributeError:
-                warnings.warn("Sorry, plotting of result %(name)r is not implemented" % vars(),
-                              category=UserWarning)                
+                warnings.warn("Sorry, plotting of result {name!r} is not implemented".format(**vars()),
+                              category=UserWarning)
         pylab.legend(loc='best')
         if figure is True:
             for ext in extensions:
@@ -131,7 +131,7 @@ class _RMSD(Worker):
         elif figure:
             self.savefig(filename=figure)
 
-    
+
 
 
 # Public classes that register the worker classes
@@ -139,7 +139,7 @@ class _RMSD(Worker):
 
 class RMSD(Plugin):
     """*RMSD* plugin.
-    
+
     Calculation of the root mean square distance (RMSD) of a protein
     structure over the course of a MD simulation.
 
@@ -147,7 +147,7 @@ class RMSD(Plugin):
     tpr file.
 
     .. class:: RMSD([name[, simulation]])
-    
+
     :Arguments:
         *name* : string
             plugin name (used to access it)

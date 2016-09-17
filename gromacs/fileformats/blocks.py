@@ -406,8 +406,8 @@ class AtomType(Param):
             self.charmm == other.charmm
 
     def __repr__(self):
-        return '<%s %s m=%g q=%g (gromacs:%s)>' % (
-            self.__class__.__name__, self.atype, self.mass, self.charge,self.gromacs)
+        return '<{0!s} {1!s} m={2:g} q={3:g} (gromacs:{4!s})>'.format(
+            self.__class__.__name__, self.atype, self.mass, self.charge, self.gromacs)
 
 
 class BondType(Param):
@@ -566,7 +566,7 @@ class InteractionType(Param):
             self.charmm == other.charmm
 
     def __repr__(self):
-        return '<%s %s %s (gromacs:%s)>' % (
+        return '<{0!s} {1!s} {2!s} (gromacs:{3!s})>'.format(
             self.__class__.__name__, self.atype1, self.atype2, self.gromacs)
 
 

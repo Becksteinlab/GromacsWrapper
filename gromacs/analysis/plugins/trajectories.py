@@ -77,14 +77,14 @@ class _Trajectories(Worker):
         # already; just leave this snippet at the end. Do all
         # initialization that requires the simulation class in the
         # _register_hook() method.
-        if not self.simulation is None:
+        if self.simulation is not None:
             self._register_hook()
 
     def _register_hook(self, **kwargs):
         """Run when registering; requires simulation."""
 
         super(_Trajectories, self)._register_hook(**kwargs)
-        assert not self.simulation is None
+        assert self.simulation is not None
 
         xtcdir,xtcname = os.path.split(self.simulation.xtc)
         xtcbasename, xtcext = os.path.splitext(xtcname)
@@ -128,7 +128,7 @@ class _Trajectories(Worker):
 
         filename = self.parameters.filenames['fitxydt']
         if not self.check_file_exists(filename, resolve='warning') or force:
-            logger.info("Writing fitted xtc file (frame every %d ps)..." % self.parameters.dt)
+            logger.info("Writing fitted xtc file (frame every {0:d} ps)...".format(self.parameters.dt))
             gromacs.cbook.trj_fitandcenter(xy=True, s=self.simulation.tpr, f=self.simulation.xtc,
                                            o=filename, dt=self.parameters.dt)
 
@@ -138,7 +138,7 @@ class _Trajectories(Worker):
             gromacs.cbook.trj_fitandcenter(xy=True, s=self.simulation.tpr, f=self.simulation.xtc,
                                            o=filename)
 
-        logger.info("New trajectories can be found in %r." % self.parameters.trjdir)
+        logger.info("New trajectories can be found in {0!r}.".format(self.parameters.trjdir))
 
     def analyze(self,**kwargs):
         """No postprocessing."""

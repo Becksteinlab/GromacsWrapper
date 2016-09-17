@@ -147,7 +147,7 @@ class XPM(utilities.FileUtils):
         self.__array = None
         super(XPM, self).__init__(**kwargs)  # can use kwargs to set dict! (but no sanity checks!)
 
-        if not filename is None:
+        if filename is not None:
             self._init_filename(filename)
             self.read(filename)
 
@@ -268,7 +268,7 @@ class XPM(utilities.FileUtils):
         m = self.COLOUR.search(c)
         if not m:
             self.logger.fatal("Cannot parse colour specification %r.", c)
-            raise ParseError("XPM reader: Cannot parse colour specification %r." % c)
+            raise ParseError("XPM reader: Cannot parse colour specification {0!r}.".format(c))
         value = m.group('value')
         color = m.group('symbol')
         self.logger.debug("%s: %s %s\n", c.strip(), color, value)

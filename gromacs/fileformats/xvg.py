@@ -336,7 +336,7 @@ class XVG(utilities.FileUtils):
         with utilities.openany(self.real_filename, 'w') as xvg:
             xvg.write("# xmgrace compatible NXY data file\n"
                       "# Written by gromacs.formats.XVG()\n")
-            xvg.write("# :columns: %r\n" % self.names)
+            xvg.write("# :columns: {0!r}\n".format(self.names))
             for xyy in self.array.T:
                 xyy.tofile(xvg, sep=" ", format="%-8s")  # quick and dirty ascii output...--no compression!
                 xvg.write('\n')
@@ -431,7 +431,7 @@ class XVG(utilities.FileUtils):
 
     def _correlprop(self, key, **kwargs):
         kwargs = self.set_correlparameters(**kwargs)
-        if not self.__cache.get('tcorrel',None) or kwargs.pop('force', False):
+        if not self.__cache.get('tcorrel', None) or kwargs.pop('force', False):
             self.__cache['tcorrel'] = self._tcorrel(**kwargs)
         return numpy.array(self.__cache['tcorrel'].get(key).tolist())
 
@@ -496,8 +496,7 @@ class XVG(utilities.FileUtils):
                 if line.startswith(('#', '@')) :
                                         continue
                 if line.startswith('&'):
-                    raise NotImplementedError('%s: Multi-data not supported, only simple NXY format.'
-                                              % self.real_filename)
+                    raise NotImplementedError('{0!s}: Multi-data not supported, only simple NXY format.'.format(self.real_filename))
                 # parse line as floats
                 try:
                     row = map(float, line.split())
@@ -511,13 +510,13 @@ class XVG(utilities.FileUtils):
                                       self.real_filename, lineno+1, line)
                     raise
                 # check for same number of columns as in previous step
-                if not ncol is None and len(row) != ncol:
+                if ncol is not None and len(row) != ncol:
                     if self.permissive:
                         self.logger.warn("%s: SKIPPING line %d with wrong number of columns: %r",
                                          self.real_filename, lineno+1, line)
                         self.corrupted_lineno.append(lineno+1)
                         continue
-                    errmsg = "%s: Wrong number of columns in line %d: %r" % (self.real_filename, lineno+1, line)
+                    errmsg = "{0!s}: Wrong number of columns in line {1:d}: {2!r}".format(self.real_filename, lineno+1, line)
                     self.logger.error(errmsg)
                     raise IOError(errno.ENODATA, errmsg, self.real_filename)
                 # finally: a good line
@@ -621,7 +620,7 @@ class XVG(utilities.FileUtils):
         # finally plot (each column separately to catch empty sets)
         for column, color in izip(xrange(1,len(columns)), colors):
             if len(ma[column]) == 0:
-                warnings.warn("No data to plot for column %(column)d" % vars(), category=MissingDataWarning)
+                warnings.warn("No data to plot for column {column:d}".format(**vars()), category=MissingDataWarning)
             kwargs['color'] = color
             pylab.plot(ma[0], ma[column], **kwargs)   # plot all other columns in parallel
 
@@ -740,7 +739,7 @@ class XVG(utilities.FileUtils):
         try:
             data = numpy.asarray(transform(self.array))[columns]
         except IndexError:
-            raise MissingDataError("columns %r are not suitable to index the transformed array, possibly not eneough data" % columns)
+            raise MissingDataError("columns {0!r} are not suitable to index the transformed array, possibly not eneough data".format(columns))
         if data.shape[-1] == 0:
             raise MissingDataError("There is no data to be plotted.")
         a = numpy.zeros((data.shape[0], maxpoints), dtype=numpy.float64)
@@ -1161,9 +1160,8 @@ def break_array(a, threshold=numpy.pi, other=None):
     """
     assert len(a.shape) == 1, "Only 1D arrays supported"
 
-    if other is not None:
-        if not a.shape == other.shape:
-            raise ValueError("arrays must be of identical shape")
+    if other is not None and a.shape != other.shape:
+        raise ValueError("arrays must be of identical shape")
 
     # jump occurs after the index in break
     breaks = numpy.where(numpy.abs(numpy.diff(a)) >= threshold)[0]

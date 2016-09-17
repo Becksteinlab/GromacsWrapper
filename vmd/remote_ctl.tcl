@@ -1,4 +1,3 @@
-# $Id$
 # vmd remote control --- client/server scripts to run VMD from python
 # Copyright (c) 2007-2009 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the GNU Lesser Public License, version 3 or later.

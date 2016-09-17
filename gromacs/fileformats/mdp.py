@@ -82,7 +82,7 @@ class MDP(odict, utilities.FileUtils):
 
         self.autoconvert = autoconvert
 
-        if not filename is None:
+        if filename is not None:
             self._init_filename(filename)
             self.read(filename)
 
@@ -97,9 +97,9 @@ class MDP(odict, utilities.FileUtils):
         self._init_filename(filename)
 
         def BLANK(i):
-            return "B%04d" % i
+            return "B{0:04d}".format(i)
         def COMMENT(i):
-            return "C%04d" % i
+            return "C{0:04d}".format(i)
 
         data = odict()
         iblank = icomment = 0
@@ -123,7 +123,7 @@ class MDP(odict, utilities.FileUtils):
                     value =  self._transform(m.group('value'))
                     data[parameter] = value
                 else:
-                    errmsg = '%(filename)r: unknown line in mdp file, %(line)r' % vars()
+                    errmsg = '{filename!r}: unknown line in mdp file, {line!r}'.format(**vars())
                     self.logger.error(errmsg)
                     raise ParseError(errmsg)
 
@@ -150,9 +150,9 @@ class MDP(odict, utilities.FileUtils):
                 if k[0] == 'B':        # blank line
                     mdp.write("\n")
                 elif k[0] == 'C':      # comment
-                    mdp.write("; %(v)s\n" % vars())
+                    mdp.write("; {v!s}\n".format(**vars()))
                 else:                  # parameter = value
                     if skipempty and (v == '' or v is None):
                         continue
-                    mdp.write("%(k)s = %(v)s\n" % vars())
+                    mdp.write("{k!s} = {v!s}\n".format(**vars()))
 

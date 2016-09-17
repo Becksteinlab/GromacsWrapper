@@ -125,7 +125,7 @@ class SGE_job(object):
     def msg(self,string,newline=True):
         # suppress newline here
         if not self.__continue_this_line:
-            print "%s(): "%self.__MODE__ + str(string),
+            print "{0!s}(): ".format(self.__MODE__) + str(string),
         else:
             print str(string),
         # add newline if requested
@@ -135,12 +135,12 @@ class SGE_job(object):
         self.__continue_this_line = not newline
 
     def statusmessage(self):
-        self.msg("hostname:       %s" % self.hostname)
-        self.msg("queuing system: %s" % self.queuingsystem)        
-        self.msg("JOB_NAME:       %s" % self.JOB_NAME)
-        self.msg("JOB_ID:         %s" % self.JOB_ID)
-        self.msg("SGE_TASK_ID:    %s" % self.TASK_ID)
-        self.msg("jobdir_name:    %s" % self.jobdir_name)
+        self.msg("hostname:       {0!s}".format(self.hostname))
+        self.msg("queuing system: {0!s}".format(self.queuingsystem))        
+        self.msg("JOB_NAME:       {0!s}".format(self.JOB_NAME))
+        self.msg("JOB_ID:         {0!s}".format(self.JOB_ID))
+        self.msg("SGE_TASK_ID:    {0!s}".format(self.TASK_ID))
+        self.msg("jobdir_name:    {0!s}".format(self.jobdir_name))
 
 
 class Job(SGE_job):
@@ -255,8 +255,8 @@ class Job(SGE_job):
 
     def statusmessage(self):
         super(Job,self).statusmessage()        
-        self.msg("startdir:       %s" % self.startdir)
-        self.msg("stagedir:       %s" % self.stagedir)
+        self.msg("startdir:       {0!s}".format(self.startdir))
+        self.msg("stagedir:       {0!s}".format(self.stagedir))
 
     def startdir_name(self,startdir=None):
         if startdir is None:
@@ -280,10 +280,10 @@ class Job(SGE_job):
         stagedir = self.stagedir
         try:
             os.makedirs(stagedir)
-            self.msg("Created stage dir %(stagedir)s." % locals())
+            self.msg("Created stage dir {stagedir!s}.".format(**locals()))
         except os.error,e:
             if e.errno == errno.EEXIST:
-                self.msg("WARNING %(stagedir)s already exists." % locals())
+                self.msg("WARNING {stagedir!s} already exists.".format(**locals()))
             else:
                 raise                        
         self._make_all_dirs(stagedir,self.input,refdir=self.startdir)  # copy input and preserve directory structure
@@ -291,13 +291,13 @@ class Job(SGE_job):
         for key,p in self.input.items():                 # copy input files
             srcpath = pathjoin(self.startdir,p, sanitize=False)   # may be absolute (and ignores startdir!)
             destpath = self.filenames[key]               # ALWAYS under stagedir
-            self.msg("item=%(key)s: copying %(srcpath)s" % locals(), newline=False)            
+            self.msg("item={key!s}: copying {srcpath!s}".format(**locals()), newline=False)            
             shutil.copyfile(srcpath,destpath)
-            self.msg(" --> %(destpath)s" % locals())
+            self.msg(" --> {destpath!s}".format(**locals()))
         # finally, change current directory to the stage dir: all further
         # commands can assume that staging has been completed            
         os.chdir(stagedir)
-        self.msg("chdir to %(stagedir)s successful." % locals())
+        self.msg("chdir to {stagedir!s} successful.".format(**locals()))
                
     def unstage(self):
         """Copy results back. Shell-style glob patterns are allowed."""
@@ -310,13 +310,13 @@ class Job(SGE_job):
             src = self.filenames[key]                                 # always relative to stagedir            
             srcdir = os.path.dirname(p)
             destdir = pathjoin(self.startdir,srcdir, sanitize=False)  # may be absolute
-            self.msg("item=%(key)s: looking for %(p)s [=%(src)s]..." % locals())
+            self.msg("item={key!s}: looking for {p!s} [={src!s}]...".format(**locals()))
             for srcpath in glob.glob(src):
                 srcname = os.path.basename(srcpath)
                 destpath = pathjoin(destdir,srcname, sanitize=False)
-                self.msg("item=%(key)s: copying %(srcpath)s" % locals(), newline=False)
+                self.msg("item={key!s}: copying {srcpath!s}".format(**locals()), newline=False)
                 shutil.copyfile(srcpath,destpath)   # silently replaces files !
-                self.msg(" --> %(destpath)s" % locals())
+                self.msg(" --> {destpath!s}".format(**locals()))
 		
     def cleanup(self):
         """Remove stage dir"""
@@ -326,10 +326,10 @@ class Job(SGE_job):
             return        
         try:
             shutil.rmtree(self.stagedir)
-            self.msg("removed stage dir %s" % self.stagedir)
+            self.msg("removed stage dir {0!s}".format(self.stagedir))
         except os.error,e:
             if e.errno == errno.ENOENT:
-                self.msg("%s does not exist any more" % self.stagedir)
+                self.msg("{0!s} does not exist any more".format(self.stagedir))
             else:
                 raise
  
@@ -340,7 +340,7 @@ class Job(SGE_job):
             destdir = pathjoin(topdir,srcdir,**kwargs)
             try:
                 os.makedirs(destdir)  # recursive
-                self.msg("item=%(key)s: created dir %(destdir)s" % locals())
+                self.msg("item={key!s}: created dir {destdir!s}".format(**locals()))
             except os.error,e:
                 if e.errno == errno.EEXIST:
                     pass

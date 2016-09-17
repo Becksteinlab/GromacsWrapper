@@ -5,7 +5,7 @@ gromacs.tests.datafiles
 
 In the test code, access a data file "fixtures.dat" in the ``data`` directory with::
 
-  from .datafiles import datafile
+  from gromacs.tests.datafiles import datafile
 
   test_something():
      filepath = datafile("fixtures.dat")
