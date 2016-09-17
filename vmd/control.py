@@ -1,4 +1,3 @@
-# $Id$
 # vmd remote control --- client/server scripts to run VMD from python
 # Copyright (c) 2007-2009 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the GNU Lesser Public License, version 3 or later.
@@ -8,8 +7,15 @@
 # http://squirl.nightmare.com/medusa/async_sockets.html)
 __docformat__ = "restructuredtext en"
 
-import asynchat, asyncore, socket
-import os, sys, readline, string, re
+import os
+import sys
+# import readline
+import string
+import re
+
+import asynchat
+import asyncore
+import socket
 
 try:
     # part of a python egg

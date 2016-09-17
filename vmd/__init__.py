@@ -1,4 +1,3 @@
-# $Id: __init__.py 1212 2007-10-24 20:23:03Z oliver$
 # vmd remote control --- client/server scripts to run VMD from python
 # Copyright (c) 2007-2009 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the GNU Lesser Public License, version 3 or later.
@@ -23,7 +22,7 @@ Start a VMD server and connect::
   VMD = server()
   VMD.command('molecule new load 1AKE')
 
-or start an interactive `Tcl`_ session connected to a running VMD 
+or start an interactive `Tcl`_ session connected to a running VMD
 server process::
 
   interactive(host)
