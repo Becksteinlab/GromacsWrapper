@@ -53,7 +53,7 @@ class _MinDistances(_Distances):
         """
 
         super(_MinDistances, self)._register_hook(**kwargs)
-        assert not self.simulation is None
+        assert self.simulation is not None
 
         # output filenames for g_mindist
         self.parameters.filenames = {'contacts': self.plugindir('contacts.xvg'),
@@ -61,7 +61,7 @@ class _MinDistances(_Distances):
                                      }
         # default filename for the combined plot
         self.parameters.figname = self.figdir('mindist')
-    
+
     def run(self,**kwargs):
         """Run ``g_mindist `` to compute distances between multiple groups.
 
@@ -104,7 +104,7 @@ class MinDistances(Plugin):
     step and written to files.
 
     .. class:: Distances(groups, ndx, [cutoff, [, name[, simulation]]])
-    
+
     :Arguments:
         name : string
             plugin name (used to access it)
@@ -121,16 +121,16 @@ class MinDistances(Plugin):
             A contact is recorded if the distance is <cutoff [0.6 nm]
 
     Example:
-    
+
     Generate index files with the groups of interest, for instance
     with :class:`gromacs.cbook.IndexBuilder`::
 
       from gromacs.cbook import IndexBuilder
-      A_grp, A_ndx = IndexBuilder(tpr, ['@a 62549 & r NA'], names=['Na1_ion'], offset=-9, 
+      A_grp, A_ndx = IndexBuilder(tpr, ['@a 62549 & r NA'], names=['Na1_ion'], offset=-9,
                                   out_ndx='Na1.ndx', name_all="Na1").combine()
-      B = IndexBuilder(tpr, ['S312:OG','T313:OG1','A38:O','I41:O','A309:O'], offset=-9, 
+      B = IndexBuilder(tpr, ['S312:OG','T313:OG1','A38:O','I41:O','A309:O'], offset=-9,
                             out_ndx='Na1_site.ndx', name_all="Na1_site")
-      B_grp, B_ndx = B.combine()                            
+      B_grp, B_ndx = B.combine()
       all_ndx_files = [A_ndx, B_ndx]
 
     To calculate the distance between "Na1" and the "Na1_site", create an instance with
@@ -147,7 +147,7 @@ class MinDistances(Plugin):
     (Keeping the second IndexBuilder instance ``B`` allows us to directly
     use all groups without typing them, ``B.names = ['A309_O', 'S312_OG', 'I41_O',
     'T313_OG1', 'A38_O']``.)
-    
+
 
     """
     worker_class = _MinDistances
