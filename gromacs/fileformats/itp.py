@@ -409,7 +409,7 @@ class ITPdata(ITPsection):
                 return True
             try:
                 return numpy.isnan(x)
-            except NotImplementedError:
+            except (NotImplementedError, TypeError):
                 pass
             return False
         for rec in self.data:
@@ -515,7 +515,7 @@ class Moleculetype(ITPsection):
     def section(self):
         # currently without user comments
         return "[ {0!s} ]\n; Name      nrexcl\n".format(self.name) + \
-            "{name:<10!s}  {nrexcl:d}".format(**self.data) + "\n"
+            "{name!s:<10}  {nrexcl:d}".format(**self.data) + "\n"
 
     def __repr__(self):
         return "<ITP::moleculetype {name!s} nrexcl={nrexcl:d}>".format(**self.data)
