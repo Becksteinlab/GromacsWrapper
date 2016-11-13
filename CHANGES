@@ -3,8 +3,10 @@
 ==============================
 
 2016-xx-xx      0.6.2
+mohebifar
 
-
+* fixed isnan test in ITPData._clean_records (#99)
+* fixed formatting replacement for molecule name in ITP moleculetype section (#98)
 
 2016-09-16      0.6.1
 orbeckst, quantifiedcode-bot
