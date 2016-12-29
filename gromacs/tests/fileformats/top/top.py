@@ -3,7 +3,7 @@
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
 
-from __future__ import division, absolute_import, print_function
+
 
 import os.path
 
@@ -67,7 +67,7 @@ class TopologyTest(object):
         def test_basic(self):
                 path = self.processed
                 top = TOP(path)
-                assert top.dict_molname_mol.keys() == self.molecules
+                assert list(top.dict_molname_mol.keys()) == self.molecules
 
         def test_equal(self):
                 """

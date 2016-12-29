@@ -61,7 +61,7 @@ The worker class performs the analysis.
 
 
 """
-from __future__ import with_statement
+
 
 __docformat__ = "restructuredtext en"
 
@@ -267,7 +267,7 @@ class _HelixBundle(Worker):
         from gromacs.formats import XVG
 
         logger.info("Preparing HelixBundle graphs as XVG objects.")
-        results = AttributeDict( (k, XVG(fn)) for k,fn in self.parameters.filenames.items() )
+        results = AttributeDict( (k, XVG(fn)) for k,fn in list(self.parameters.filenames.items()) )
         self.results = results
         return results
 
@@ -288,7 +288,7 @@ class _HelixBundle(Worker):
         import pylab
         figure = kwargs.pop('figure', False)
         extensions = kwargs.pop('formats', ('pdf','png'))
-        for name,result in self.results.items():
+        for name,result in list(self.results.items()):
             kwargs['label'] = name
             try:
                 result.plot(**kwargs)      # This requires result classes with a plot() method!!

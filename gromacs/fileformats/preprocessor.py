@@ -101,7 +101,7 @@ Classes
    :members:
 
 """
-from __future__ import with_statement
+
 
 __author__ = 'Evan Plaice'
 __version__ = '0.4.0'
@@ -318,7 +318,7 @@ class Preprocessor(object):
         The resulting instance can be treated as a read-only file containing
         the processed input from the last invocation of :meth:`parse`.
         """
-        from cStringIO import StringIO
+        from io import StringIO
         return StringIO(self.__outputBuffer)
 
     @contextmanager

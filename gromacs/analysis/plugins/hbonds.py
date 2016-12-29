@@ -50,7 +50,7 @@ The worker class performs the analysis.
 
 
 """
-from __future__ import with_statement
+
 
 __docformat__ = "restructuredtext en"
 
@@ -172,7 +172,7 @@ class _HBonds(Worker):
         rc,out,err = gromacs.gmxdump(s=self.simulation.tpr, stdout=False, stderr=False)
         for line in out.splitlines():
             if line.strip().startswith('ref_t'):
-                temperature = np.mean(map(float, line[10:].split()))
+                temperature = np.mean(list(map(float, line[10:].split())))
                 break
         return temperature
 
@@ -217,7 +217,7 @@ class _HBonds(Worker):
         hb_fraction = hbm.array.mean(axis=0)
         desc = [line.strip() for line in
                 open(self.parameters.filenames['log']) if not line.startswith('#')]
-        results['existence'] = zip(desc, hb_fraction)
+        results['existence'] = list(zip(desc, hb_fraction))
 
         with open(self.parameters.filenames['existence'], "w") as out:
             logger.info("Hydrogen bond existence analysis (results['existence'] and %(existence)r)",
@@ -248,7 +248,7 @@ class _HBonds(Worker):
         import pylab
         figure = kwargs.pop('figure', False)
         extensions = kwargs.pop('formats', ('pdf','png'))
-        for name,result in self.results.items():
+        for name,result in list(self.results.items()):
             kwargs['label'] = name
             try:
                 result.plot(**kwargs)      # This requires result classes with a plot() method!!

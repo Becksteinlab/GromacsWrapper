@@ -165,7 +165,7 @@ The following classes and functions are mainly documented for developers.
 .. _~/.ssh/config: http://linux.die.net/man/5/ssh_config
 
 """
-from __future__ import absolute_import, with_statement
+
 
 import os
 import errno
@@ -174,7 +174,7 @@ import shutil
 import fnmatch
 import re
 import glob
-from ConfigParser import SafeConfigParser
+from configparser import SafeConfigParser
 
 from .exceptions import MissingDataError
 from . import config
@@ -533,10 +533,10 @@ class Manager(object):
                     data = m.group('performance').split()
                     if len(data) == 4:
                         # Gromacs 4.5.x and earlier(?)
-                        performance = dict(zip(['Mnbf/s', 'GFlops', 'ns/day', 'hour/ns'], map(float, data)))
+                        performance = dict(list(zip(['Mnbf/s', 'GFlops', 'ns/day', 'hour/ns'], list(map(float, data)))))
                     elif len(data) == 2:
                         # Gromacs 4.6.x
-                        performance = dict(zip(['ns/day', 'hour/ns'], map(float, data)))
+                        performance = dict(list(zip(['ns/day', 'hour/ns'], list(map(float, data)))))
                     else:
                         logger.warn("Cannot reliably parse the 'Performance:' line %r in the log file.", m.group('performance'))
         elif rc == 255:

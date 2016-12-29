@@ -18,7 +18,7 @@ dictionary.
 """
 
 
-from __future__ import absolute_import, with_statement
+
 
 import os, errno
 import re
@@ -146,7 +146,7 @@ class MDP(odict, utilities.FileUtils):
         """
 
         with open(self.filename(filename, ext='mdp'), 'w') as mdp:
-            for k,v in self.items():
+            for k,v in list(self.items()):
                 if k[0] == 'B':        # blank line
                     mdp.write("\n")
                 elif k[0] == 'C':      # comment

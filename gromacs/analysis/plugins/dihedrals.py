@@ -26,7 +26,7 @@ The worker class performs the analysis.
 
 
 """
-from __future__ import with_statement
+
 
 __docformat__ = "restructuredtext en"
 
@@ -168,7 +168,7 @@ class _Dihedrals(Worker):
         results = AttributeDict()
 
         # get graphs that were produced by g_angle
-        for name, f in self.parameters.filenames.items():
+        for name, f in list(self.parameters.filenames.items()):
             try:
                 results[name] = XVG(f)
             except IOError:
@@ -182,7 +182,7 @@ class _Dihedrals(Worker):
 
         Ndih = len(dih)
         p = Ndih * [None]  # histograms (prob. distributions), one for each dihedral i
-        for i in xrange(Ndih):
+        for i in range(Ndih):
             phis = dih[i]
             p[i],e = numpy.histogram(phis, bins=bins, range=phi_range, normed=True, new=True)
 

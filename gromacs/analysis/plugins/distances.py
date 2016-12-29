@@ -150,7 +150,7 @@ class _Distances(Worker):
     def analyze(self,**kwargs):
         """Make data files available as numpy arrays."""
         results = AttributeDict()
-        for name, f in self.parameters.filenames.items():
+        for name, f in list(self.parameters.filenames.items()):
             results[name] = XVG(f)
         self.results = results
         return results
@@ -196,7 +196,7 @@ class _Distances(Worker):
         kwargs.setdefault('columns', self.default_plot_columns)
 
         if names is None:
-            names = self.results.keys()
+            names = list(self.results.keys())
         names = asiterable(names)  # this is now a list (hopefully of strings)
         ngraphs = len(names)
         for plotNum, name in enumerate(names):
@@ -206,7 +206,7 @@ class _Distances(Worker):
                 data = self.results[name].plot(**kwargs)   # results are XVG objects with plot method
             except KeyError:
                 ax.close()
-                raise KeyError('name = {0!r} not known, choose one of {1!r}'.format(name, self.results.keys()))
+                raise KeyError('name = {0!r} not known, choose one of {1!r}'.format(name, list(self.results.keys())))
             #pylab.title(r'Distances: %s' % name)
             pylab.xlabel(self.xlabels[name])
             pylab.ylabel(self.ylabels[name])

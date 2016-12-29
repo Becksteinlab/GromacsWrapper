@@ -270,7 +270,7 @@ class Simulation(object):
 
         # convenience: if only a single plugin was registered we default to that one
         if len(self.plugins) == 1:
-            self.set_plugin(self.plugins.keys()[0])
+            self.set_plugin(list(self.plugins.keys())[0])
 
         # Is this needed? If done properly, kwargs should be empty by now BUT
         # because the same list is re-used for all plugins I cannot pop them in
@@ -314,7 +314,7 @@ class Simulation(object):
         except (TypeError, AttributeError):
             # NOTE: this except clause can mask bugs in the plugin code!!
             if type(plugin) is str:
-                import plugins            # We should be able to import this safely now...
+                from . import plugins            # We should be able to import this safely now...
                 plugin = plugins.__plugin_classes__[plugin]
             # plugin registers itself in self.plugins
             plugin(simulation=self, **kwargs)  # simulation=self is REQUIRED!
@@ -328,7 +328,7 @@ class Simulation(object):
         parent = os.path.dirname(p)
         try:
             os.makedirs(parent)
-        except OSError,err:
+        except OSError as err:
             if err.errno != errno.EEXIST:
                 raise
         return p
@@ -384,7 +384,7 @@ class Simulation(object):
     def check_plugin_name(self,plugin_name):
         """Raises a exc:`ValueError` if *plugin_name* is not registered."""
         if not (plugin_name is None or self.has_plugin(plugin_name)):
-            raise ValueError('plugin_name ({0!r}) must be None or one of\n{1!r}\n'.format(plugin_name, self.plugins.keys()))
+            raise ValueError('plugin_name ({0!r}) must be None or one of\n{1!r}\n'.format(plugin_name, list(self.plugins.keys())))
 
     def has_plugin(self,plugin_name):
         """Returns True if *plugin_name* is registered."""

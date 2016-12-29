@@ -27,7 +27,7 @@ The worker class performs the analysis.
 
 
 """
-from __future__ import with_statement
+
 
 __docformat__ = "restructuredtext en"
 
@@ -202,7 +202,7 @@ class _StripWater(Worker):
                 xy = True
             else:
                 xy = False
-            transformer_nowater = self.transformer.nowater.values()[0]
+            transformer_nowater = list(self.transformer.nowater.values())[0]
             for delta_t in asiterable(dt):
                 transformer_nowater.fit(xy=xy, dt=delta_t, fitgroup=fitgroup, force=kwargs['force'])
 

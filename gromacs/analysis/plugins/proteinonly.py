@@ -27,7 +27,7 @@ The worker class performs the analysis.
 
 
 """
-from __future__ import with_statement
+
 
 __docformat__ = "restructuredtext en"
 
@@ -172,7 +172,7 @@ class _ProteinOnly(Worker):
                 xy = True
             else:
                 xy = False
-            transformer_proteinonly = self.transformer.proteinonly.values()[0]
+            transformer_proteinonly = list(self.transformer.proteinonly.values())[0]
             for delta_t in asiterable(dt):
                 transformer_proteinonly.fit(xy=xy, dt=delta_t, force=kwargs['force'])
 

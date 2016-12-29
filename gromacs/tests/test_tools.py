@@ -3,14 +3,14 @@
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
 
-from __future__ import division, absolute_import, print_function
+
 
 import pytest
 
 import gromacs
 
 common_tool_names = ["pdb2gmx", "grompp", "editconf", "mdrun"]
-aliased_tool_names = gromacs.tools.NAMES5TO4.values()
+aliased_tool_names = list(gromacs.tools.NAMES5TO4.values())
 
 @pytest.fixture(scope="module",
                 params=set(common_tool_names + aliased_tool_names))

@@ -27,7 +27,7 @@ The worker class performs the analysis.
 
 
 """
-from __future__ import with_statement
+
 
 __docformat__ = "restructuredtext en"
 
@@ -158,7 +158,7 @@ class _COM(Worker):
         from gromacs.formats import XVG
 
         logger.info("Preparing COM graphs as XVG objects.")
-        self.results = AttributeDict( (k, XVG(fn)) for k,fn in self.parameters.filenames.items() )
+        self.results = AttributeDict( (k, XVG(fn)) for k,fn in list(self.parameters.filenames.items()) )
 
         # compute RMSD of COM and shift of COM (drift) between avg pos
         # over first/last 5,000 frames
@@ -186,7 +186,7 @@ class _COM(Worker):
 
         logger.debug("drift calculated between %d-frame averages at beginning and end",nframesavg)
         records = []
-        for i in xrange(1, 3*ngroups+1, 3):
+        for i in range(1, 3*ngroups+1, 3):
             x = xcom[i:i+3]
             r  = vlength(x - x.mean(axis=1)[:,numpy.newaxis])  # distances over time step
             #r0 = vlength(r - r[:,0][:,numpy.newaxis])         # distances over time step from r(t=0)
@@ -228,7 +228,7 @@ class _COM(Worker):
 
         import pylab
         figure = kwargs.pop('figure', False)
-        observables = asiterable(kwargs.pop('observables', self.results.keys()))
+        observables = asiterable(kwargs.pop('observables', list(self.results.keys())))
         extensions = kwargs.pop('formats', ('pdf','png'))
 
         for name in observables:

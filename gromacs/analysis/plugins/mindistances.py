@@ -31,7 +31,7 @@ __docformat__ = "restructuredtext en"
 import gromacs
 from gromacs.utilities import asiterable
 from gromacs.analysis.core import Plugin
-from distances import _Distances
+from .distances import _Distances
 
 # Worker classes that are registered via Plugins (see below)
 # ----------------------------------------------------------

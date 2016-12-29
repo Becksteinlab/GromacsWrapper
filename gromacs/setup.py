@@ -115,7 +115,7 @@ Defined constants:
 
 """
 
-from __future__ import absolute_import, with_statement
+
 
 __docformat__ = "restructuredtext en"
 
@@ -342,7 +342,7 @@ def get_lipid_vdwradii(outdir=os.path.curdir, libdir=None):
         # write lipid stuff before general
         outfile.write('; Special larger vdw radii for solvating lipid membranes\n')
         for resname in patterns:
-            for atom,radius in vdw_lipid_atom_radii.items():
+            for atom,radius in list(vdw_lipid_atom_radii.items()):
                 outfile.write('{resname:4!s} {atom:<5!s} {radius:5.3f}\n'.format(**vars()))
         with open(filename, 'r') as infile:
             for line in infile:
@@ -553,7 +553,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
             # fake ionized file ... makes it easier to continue without too much fuzz
             try:
                 os.unlink('ionized.gro')
-            except OSError, err:
+            except OSError as err:
                 if err.errno != errno.ENOENT:
                     raise
             os.symlink('solvated.gro', 'ionized.gro')
@@ -569,7 +569,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
         # make main index
         try:
             make_main_index('ionized.tpr', selection=mainselection, ndx=ndx)
-        except GromacsError, err:
+        except GromacsError as err:
             # or should I rather fail here?
             wmsg = "Failed to make main index file %r ... maybe set mainselection='...'.\n"\
                    "The error message was:\n%s\n" % (ndx, str(err))
@@ -577,7 +577,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
             warnings.warn(wmsg, category=GromacsFailureWarning)
         try:
             trj_compact_main(f='ionized.gro', s='ionized.tpr', o='compact.pdb', n=ndx)
-        except GromacsError, err:
+        except GromacsError as err:
             wmsg = "Failed to make compact pdb for visualization... pressing on regardless. "\
                    "The error message was:\n%s\n" % str(err)
             logger.warn(wmsg)

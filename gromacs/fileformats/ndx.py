@@ -23,7 +23,7 @@ access to the individual groups.
 .. autoclass:: IndexSet
 """
 
-from __future__ import absolute_import, with_statement
+
 
 import os, errno
 import re
@@ -37,6 +37,7 @@ from .. import utilities
 from collections import OrderedDict as odict
 
 import logging
+from functools import reduce
 
 class NDX(odict, utilities.FileUtils):
     """Gromacs index file.
@@ -113,10 +114,10 @@ class NDX(odict, utilities.FileUtils):
                     data[current_section] = []  # can fail if name not legal python key
                     continue
                 if current_section is not None:
-                    data[current_section].extend(map(int, line.split()))
+                    data[current_section].extend(list(map(int, line.split())))
 
         super(NDX,self).update(odict([(name, self._transform(atomnumbers))
-                                     for name, atomnumbers in data.items()]))
+                                     for name, atomnumbers in list(data.items())]))
 
     def write(self, filename=None, ncol=ncol, format=format):
         """Write index file to *filename* (or overwrite the file that the index was read from)"""
@@ -124,7 +125,7 @@ class NDX(odict, utilities.FileUtils):
             for name in self:
                 atomnumbers = self._getarray(name)  # allows overriding
                 ndx.write('[ {0!s} ]\n'.format(name))
-                for k in xrange(0, len(atomnumbers), ncol):
+                for k in range(0, len(atomnumbers), ncol):
                     line = atomnumbers[k:k+ncol].astype(int)   # nice formatting in ncol-blocks
                     n = len(line)
                     ndx.write((" ".join(n*[format])+'\n') % tuple(line))
@@ -145,12 +146,12 @@ class NDX(odict, utilities.FileUtils):
     @property
     def groups(self):
         """Return a list of all groups."""
-        return self.keys()
+        return list(self.keys())
 
     @property
     def sizes(self):
         """Return a dict with group names and number of entries,"""
-        return {name: len(atomnumbers) for name, atomnumbers in self.items()}
+        return {name: len(atomnumbers) for name, atomnumbers in list(self.items())}
 
     @property
     def ndxlist(self):

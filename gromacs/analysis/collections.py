@@ -15,7 +15,7 @@ simultaneously for all simulations in the collection.
 """
 
 import os.path
-import cPickle
+import pickle
 from numpy import all, any
 
 class Collection(list):
@@ -48,8 +48,8 @@ class Collection(list):
         
         If no extension is provided, ".collection" is appended.
         """
-        cPickle.dump(self, open(self._canonicalize(filename), 'wb'), 
-                     protocol=cPickle.HIGHEST_PROTOCOL)
+        pickle.dump(self, open(self._canonicalize(filename), 'wb'), 
+                     protocol=pickle.HIGHEST_PROTOCOL)
 
     def load(self, filename, append=False):
         """Load collection from pickled file *filename*.
@@ -59,7 +59,7 @@ class Collection(list):
 
         If no extension is provided, ".collection" is appended.
         """
-        tmp = cPickle.load(open(self._canonicalize(filename), 'rb'))
+        tmp = pickle.load(open(self._canonicalize(filename), 'rb'))
         if append:
             self.extend(tmp)
         else:

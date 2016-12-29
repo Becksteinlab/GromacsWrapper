@@ -35,7 +35,7 @@ The worker class performs the analysis.
 
 
 """
-from __future__ import with_statement
+
 
 __docformat__ = "restructuredtext en"
 
@@ -47,7 +47,7 @@ import subprocess
 import gromacs
 from gromacs.utilities import AttributeDict
 from gromacs.analysis.core import Worker, Plugin
-import dist
+from . import dist
 
 
 # Worker classes that are registered via Plugins (see below)
@@ -82,7 +82,7 @@ class _CysAccessibility(Worker):
 
         # process specific parameters now
         try:
-            self.parameters.cysteines = map(int, cysteines)  # sequence resids
+            self.parameters.cysteines = list(map(int, cysteines))  # sequence resids
         except (TypeError,ValueError):
             raise ValueError("Keyword argument cysteines MUST be set to sequence of resids.")
         self.parameters.cysteines.sort()                 # sorted because make_ndx returns sorted order
@@ -134,7 +134,7 @@ class _CysAccessibility(Worker):
             filename = self.parameters.filenames[resid]
             if not force and self.check_file_exists(filename, resolve='warning'):
                 continue
-            print "run_g_dist: {groupname!s} --> {filename!r}".format(**vars())
+            print("run_g_dist: {groupname!s} --> {filename!r}".format(**vars()))
             sys.stdout.flush()
             with open(filename, 'w') as datafile:
                 p = gromacs.g_dist.Popen(
@@ -170,7 +170,7 @@ class _CysAccessibility(Worker):
         import pylab
         figure = kwargs.pop('figure', False)
         extensions = kwargs.pop('formats', ('pdf','png'))
-        for name,result in self.results.items():
+        for name,result in list(self.results.items()):
             kwargs['label'] = name
             result.plot(**kwargs)
         pylab.legend(loc='best')

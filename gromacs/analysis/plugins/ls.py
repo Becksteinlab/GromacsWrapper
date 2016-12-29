@@ -28,7 +28,7 @@ The worker class performs the analysis.
 
 
 """
-from __future__ import with_statement
+
 
 __docformat__ = "restructuredtext en"
 
@@ -108,14 +108,14 @@ def rulify(header, ncol=79):
     toprule = ncol * '='
     midrule = ncol * '-'
     botrule = toprule
-    print toprule
-    print header
-    print midrule
+    print(toprule)
+    print(header)
+    print(midrule)
     try:
         yield None
     finally:
-        print botrule
-        print
+        print(botrule)
+        print()
 
 # Public classes that register the worker classes
 #------------------------------------------------
