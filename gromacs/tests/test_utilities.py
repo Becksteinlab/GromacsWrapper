@@ -10,6 +10,8 @@ import pytest
 from six.moves import cPickle as pickle
 from six.moves import StringIO
 
+import numpy
+
 import gromacs.utilities
 
 @pytest.fixture
@@ -60,10 +62,14 @@ class TestAttributeDict(object):
         assert set(d.values()) == set(self.d.values())
 
 
-@pytest.fixture(params=[(42, int), ("42", int), (2.7, float), ("2.7", float),
-                        ("jabberwock", str)],
-                ids=["int -> int", "str -> int", "float -> float", "str -> float",
-                     "str -> str"])
+@pytest.fixture(params=[(42, int),("42", int), ([42],int) ,
+                        (2.7, float), ("2.7", float), ([2.7],float),
+                        ("jabberwock", str),(["foo","bar"], str),
+                        ("42 42",int),("2.7 2.7",float),("foo bar",str)],
+                ids=["int -> int", "str -> int","int list -> int list",
+                     "float -> float", "str -> float", "float list -> float list",
+                     "str -> str","str list -> str list",
+                     "str -> int list","str -> float list","str -> str list"])
 def conversions(request):
     value, target_type = request.param
     x = gromacs.utilities.autoconvert(value)
@@ -71,6 +77,7 @@ def conversions(request):
 
 def test_autoconvert(conversions):
     x, value, target_type = conversions
+    if hasattr(x, '__iter__'): x = x[0]
     assert isinstance(x, target_type), \
         "Failed to convert '{0}' to type {1}".format(value, target_type)
 
@@ -114,4 +121,3 @@ class TestOpenAny(object):
             # in MDAnalysis)
             # check inside with block
             assert data == self.quote
-
