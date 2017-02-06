@@ -38,7 +38,7 @@ def grompp(f, c, p, prefix="topol"):
 
 def mdrun(s, prefix):
         o = prefix + '.trr'
-        rc, output, junk = gromacs.mdrun(v=True, s=s, o=o, stdout=False, stderr=False)
+        rc, output, junk = gromacs.mdrun(v=True, s=s, o=o, stdout=False, stderr=False, nt=2)
         assert rc == 0, "mdrun failed"
         return o
 
