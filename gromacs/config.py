@@ -226,14 +226,14 @@ completely transparent to the user.
 .. autodata:: qscript_template
 
 """
-from __future__ import absolute_import, with_statement
+
 
 import os
 import logging
 import re
 import subprocess
 
-from ConfigParser import SafeConfigParser
+from configparser import SafeConfigParser
 from pkg_resources import resource_filename, resource_listdir
 
 from . import utilities
@@ -444,7 +444,7 @@ def _get_template(t):
                    break
          _t = os.path.basename(t)
          if not _t_found:            # 3) try template dirs
-              for p in templates.values():
+              for p in list(templates.values()):
                    if _t == os.path.basename(p):
                         t = p
                         _t_found = True     # NOTE: in principle this could match multiple
@@ -595,7 +595,7 @@ def setup(filename=CONFIGNAME):
                cfg.write(configfile)  # write the default file so that user can edit
                msg = "NOTE: GromacsWrapper created the configuration file \n\t%r\n" \
                      "      for you. Edit the file to customize the package." % filename
-               print msg
+               print(msg)
 
      # directories
      for d in config_directories:
@@ -621,7 +621,7 @@ def check_setup():
      missing = [d for d in config_directories if not os.path.exists(d)]
      if len(missing) > 0:
          print("NOTE: Some configuration directories are not set up yet: ")
-         print("\t{0!s}".format('\n\t'.join(missing)))
+         print(("\t{0!s}".format('\n\t'.join(missing))))
          print("NOTE: You can create the configuration file and directories with:")
          print("\t>>> import gromacs")
          print("\t>>> gromacs.config.setup()")

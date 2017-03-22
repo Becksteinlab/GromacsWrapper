@@ -179,7 +179,7 @@ level will have the string "-dev" affixed to distinguish it from a
 release.
 
 """
-from __future__ import absolute_import
+
 __docformat__ = "restructuredtext en"
 
 import os
@@ -267,7 +267,7 @@ from . import tools
 warnings.simplefilter("ignore", GromacsFailureWarning)
 _have_g_commands = []
 _missing_g_commands = []
-for clsname, cls in tools.registry.items():
+for clsname, cls in list(tools.registry.items()):
     name = clsname[0].lower() + clsname[1:]    # instances should start with lower case
     try:
         globals()[name] = cls()                # add instance of command for immediate use

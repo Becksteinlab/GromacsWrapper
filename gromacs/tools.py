@@ -63,7 +63,7 @@ Gromacs tools
 -------------
 
 """
-from __future__ import absolute_import
+
 
 import os.path
 import tempfile
@@ -148,7 +148,7 @@ class GromacsCommandMultiIndex(GromacsCommand):
 
     def _fake_multi_ndx(self, **kwargs):
         ndx = kwargs.get('n')
-        if not (ndx is None or type(ndx) is basestring) and \
+        if not (ndx is None or type(ndx) is str) and \
            len(ndx) > 1 and 's' in kwargs:
             ndx.append(kwargs.get('s'))
             kwargs['n'] = merge_ndx(*ndx)
@@ -325,8 +325,8 @@ else:
 
 # Aliases command names to run unmodified GromacsWrapper scripts on a machine
 # with only 5.x
-for fancy, cmd in registry.items():
-    for c5, c4 in NAMES5TO4.iteritems():
+for fancy, cmd in list(registry.items()):
+    for c5, c4 in NAMES5TO4.items():
         # have to check each one, since it's possible there are suffixes
         # like for double precision; cmd.command_name is Gromacs name
         # (e.g. 'convert-tpr') so we need to be careful in the processing below.
@@ -356,11 +356,11 @@ for name4, name5 in [('G_mindist', 'Mindist'), ('G_dist', 'Distance')]:
 
 
 # Append class doc for each command
-for name in registry.iterkeys():
+for name in registry.keys():
     __doc__ += ".. class:: {0!s}\n    :noindex:\n".format(name)
 
 
 # Finally add command classes to module's scope
 globals().update(registry)
 __all__ = ['GromacsCommandMultiIndex', 'merge_ndx']
-__all__.extend(registry.keys())
+__all__.extend(list(registry.keys()))

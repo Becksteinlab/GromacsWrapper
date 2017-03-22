@@ -30,7 +30,7 @@ Helper functions
 .. autofunction:: find_gromacs_command
 
 """
-from __future__ import absolute_import, with_statement
+
 __docformat__ = "restructuredtext en"
 
 import warnings
@@ -332,7 +332,7 @@ def check_mdrun_success(logfile):
     except IOError:
         return None
     try:
-        log.seek(-1024L, 2)
+        log.seek(-1024, 2)
         for line in log:
             if line.startswith("Finished mdrun on"):
                 status = True

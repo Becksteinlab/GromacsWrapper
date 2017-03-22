@@ -20,7 +20,7 @@ simulations with Hamiltonian replicate exchange and partial tempering
 .. autofunction:: partial_tempering
 
 """
-from __future__ import absolute_import
+
 
 import math
 import copy
@@ -110,7 +110,7 @@ def scale_impropers(mol, impropers, scale, banned_lines=None):
 def partial_tempering(args):
         """Set up topology for partial tempering (REST2) replica exchange"""
 
-        banned_lines = map(int, args.banned_lines.split())
+        banned_lines = list(map(int, args.banned_lines.split()))
         top = TOP(args.input)
         groups = [("_", args.scale_protein), ("=", args.scale_lipids)]
 
@@ -125,7 +125,7 @@ def partial_tempering(args):
                         ctA.atype1 += gr; ctA.atype2 += gr; ctA.atype3 += gr; ctA.atype4 += gr;  ctA.atype8 += gr;
                         ctA.gromacs['param'] = [ v*scale for v in ct.gromacs['param'] ]
                         cmaptypes.append(ctA)
-        print("cmaptypes was {0}, is {1}".format(len(top.cmaptypes), len(cmaptypes)))
+        print(("cmaptypes was {0}, is {1}".format(len(top.cmaptypes), len(cmaptypes))))
         top.cmaptypes = cmaptypes
 
 
@@ -197,7 +197,7 @@ def partial_tempering(args):
                 name = "{0}-{1}-{2}-{3}-{4}".format(dt.atype1, dt.atype2, dt.atype3, dt.atype4, dt.gromacs['func'])
                 if not name in dihedraltypes: dihedraltypes[name] = []
                 dihedraltypes[name].append(dt)
-        print("Build dihedraltypes dictionary with {0} entries".format(len(dihedraltypes)))
+        print(("Build dihedraltypes dictionary with {0} entries".format(len(dihedraltypes))))
 
         #
         # Build improper dictionary
@@ -209,7 +209,7 @@ def partial_tempering(args):
                 name = "{0}-{1}-{2}-{3}-{4}".format(it.atype1, it.atype2, it.atype3, it.atype4, it.gromacs['func'])
                 if not name in impropertypes: impropertypes[name] = []
                 impropertypes[name].append(it)
-        print("Build impropertypes dictionary with {0} entries".format(len(impropertypes)))
+        print(("Build impropertypes dictionary with {0} entries".format(len(impropertypes))))
 
         if 'Protein' in top.dict_molname_mol:
                 mol = top.dict_molname_mol['Protein']
@@ -218,7 +218,7 @@ def partial_tempering(args):
                 mol = scale_impropers(mol, impropertypes, 1.0, banned_lines)
 
         # Remove non-default moleculetypes
-        for k in top.dict_molname_mol.keys():
+        for k in list(top.dict_molname_mol.keys()):
                 if k in ["Protein", "SOL", "Ion" ]: continue
                 del top.dict_molname_mol[k]
 

@@ -84,7 +84,7 @@ Data
 .. autodata:: amino_acid_codes
 
 """
-from __future__ import absolute_import, with_statement
+
 
 __docformat__ = "restructuredtext en"
 
@@ -245,7 +245,7 @@ amino_acid_codes = {'A':'ALA', 'C':'CYS', 'D':'ASP', 'E':'GLU',
                     'K':'LYS', 'L':'LEU', 'M':'MET', 'N':'ASN',
                     'P':'PRO', 'Q':'GLN', 'R':'ARG', 'S':'SER',
                     'T':'THR', 'V':'VAL', 'W':'TRP', 'Y':'TYR'}
-inverse_aa_codes = {three: one for one,three in amino_acid_codes.items()}
+inverse_aa_codes = {three: one for one,three in list(amino_acid_codes.items())}
 
 def convert_aa_code(x):
     """Converts between 3-letter and 1-letter amino acid codes."""
@@ -272,7 +272,7 @@ def in_dir(directory, create=True):
         try:
             os.chdir(directory)
             logger.debug("Working in {directory!r}...".format(**vars()))
-        except OSError, err:
+        except OSError as err:
             if create and err.errno == errno.ENOENT:
                 os.makedirs(directory)
                 os.chdir(directory)
@@ -511,7 +511,7 @@ class FileUtils(object):
 
 def iterable(obj):
     """Returns ``True`` if *obj* can be iterated over and is *not* a  string."""
-    if isinstance(obj, basestring):
+    if isinstance(obj, str):
         return False    # avoid iterating over characters of a string
     if hasattr(obj, 'next'):
         return True    # any iterator will do
@@ -540,7 +540,7 @@ def unlink_f(path):
     """Unlink path but do not complain if file does not exist."""
     try:
         os.unlink(path)
-    except OSError, err:
+    except OSError as err:
         if err.errno != errno.ENOENT:
             raise
 
@@ -565,7 +565,7 @@ def mkdir_p(path):
     """
     try:
         os.makedirs(path)
-    except OSError, err:
+    except OSError as err:
         if err.errno != errno.EEXIST:
             raise
 
@@ -661,7 +661,7 @@ class Timedelta(datetime.timedelta):
             "%S": "{0:02d}".format(self.dseconds),
             }
         s = fmt
-        for search, replacement in substitutions.items():
+        for search, replacement in list(substitutions.items()):
             s = s.replace(search, replacement)
         return s
 
@@ -679,7 +679,7 @@ def number_pdbs(*args, **kwargs):
     format = kwargs.pop('format', "%(num)04d")
     name_format = "%(prefix)s" + format +".%(suffix)s"
     filenames = []
-    map(filenames.append, map(glob.glob, args))  # concatenate all filename lists
+    list(map(filenames.append, list(map(glob.glob, args))))  # concatenate all filename lists
     filenames = filenames[0]                     # ... ugly
     for f in filenames:
         m = NUMBERED_PDB.search(f)

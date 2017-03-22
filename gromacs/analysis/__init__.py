@@ -73,5 +73,5 @@ plugin documentation for what is required.
 __docformat__ = "restructuredtext en"
 __all__ = ['Simulation', 'plugins']
 
-from core import Simulation
-import plugins
+from .core import Simulation
+from . import plugins

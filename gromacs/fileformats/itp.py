@@ -172,7 +172,7 @@ The section hierarchy is
 
 """
 
-from __future__ import absolute_import, with_statement
+
 
 import os, errno
 import re
@@ -318,7 +318,7 @@ class ITPsection(object):
             def func(name, section):
                 return str(section)
         values = [func(self.name, self)]
-        for name, section in self.sections.items():
+        for name, section in list(self.sections.items()):
             values.append(section.walk_sections(func, flat=flat))
         if flat:
             return flatten(values)
@@ -497,7 +497,7 @@ class Moleculetype(ITPsection):
         try:
             self.data['name'] = fields[0]
             self.data['nrexcl'] = int(fields[1])
-        except Exception, err:
+        except Exception as err:
             msg = "Failed to parse [moleculetype] section: line: {0!r}\n".format(line)
             msg += "Exception: {0!r}".format(err)
             self.logger.error(msg)
@@ -789,7 +789,7 @@ class ITP(utilities.FileUtils):
 
         .. versionadded: 0.3.1
         """
-        from itertools import izip
+        
 
         kwargs = self.defines.copy()
         kwargs['commentchar'] = self.commentchar
@@ -808,7 +808,7 @@ class ITP(utilities.FileUtils):
             self.logger.debug("File %r is preprocessed (pp: %d vs raw %d lines (stripped))",
                               self.real_filename, len(pp_lines), len(raw_lines))
             return True
-        for linenum, (raw, pp) in enumerate(izip(raw_lines, pp_lines)):
+        for linenum, (raw, pp) in enumerate(zip(raw_lines, pp_lines)):
             if raw != pp:
                 self.logger.debug("File %r is preprocessed. Difference at (stripped) line %d",
                                   self.real_filename, linenum)
@@ -842,7 +842,7 @@ class ITP(utilities.FileUtils):
             itp = open(self.real_filename)
 
         try:
-            stream = OneLineBuffer(itp.next)
+            stream = OneLineBuffer(itp.__next__)
             self.parse(stream)
         finally:
             itp.close()
@@ -891,7 +891,7 @@ class ITP(utilities.FileUtils):
             def func(name, section):
                 return str(section)
         values = []
-        for name, section in self.sections.items():
+        for name, section in list(self.sections.items()):
             values.append(section.walk_sections(func, flat=flat))
         if flat:
             return flatten(values)
@@ -934,7 +934,7 @@ class OneLineBuffer(object):
         self.buffer = None
         self.getline = getline
         self._reread_last_line = False
-    def next(self):
+    def __next__(self):
         """Return next line (or previous line if :meth:`unread` was called)"""
         if not self._reread_last_line:
             self.buffer = self.getline()
@@ -955,7 +955,7 @@ def flatten(l):
     .. versionadded:: 0.2.5
     """
     for el in l:
-        if isinstance(el, collections.Iterable) and not isinstance(el, basestring):
+        if isinstance(el, collections.Iterable) and not isinstance(el, str):
             for sub in flatten(el):
                 yield sub
         else:

@@ -28,7 +28,7 @@ The worker class performs the analysis.
 
 
 """
-from __future__ import with_statement
+
 
 __docformat__ = "restructuredtext en"
 
@@ -90,7 +90,7 @@ class _FitCompact(Worker):
         # make sure trjdir exists
         try:
             os.makedirs(trjdir)
-        except OSError, err:
+        except OSError as err:
             if err.errno == errno.EEXIST:
                 pass
 

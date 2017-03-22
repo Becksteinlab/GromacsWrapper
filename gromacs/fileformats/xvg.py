@@ -189,7 +189,7 @@ Classes and functions
 """
 
 
-from __future__ import with_statement
+
 
 import os, errno
 import re
@@ -499,7 +499,7 @@ class XVG(utilities.FileUtils):
                     raise NotImplementedError('{0!s}: Multi-data not supported, only simple NXY format.'.format(self.real_filename))
                 # parse line as floats
                 try:
-                    row = map(float, line.split())
+                    row = list(map(float, line.split()))
                 except:
                     if self.permissive:
                         self.logger.warn("%s: SKIPPING unparsable line %d: %r",
@@ -580,7 +580,7 @@ class XVG(utilities.FileUtils):
           *kwargs*
                All other keyword arguments are passed on to :func:`pylab.plot`.
         """
-        from itertools import izip, cycle
+        from itertools import cycle
         import matplotlib.cm, matplotlib.colors
         import pylab
 
@@ -618,7 +618,7 @@ class XVG(utilities.FileUtils):
         ma = numpy.ma.MaskedArray(a, mask=numpy.logical_not(numpy.isfinite(a)))
 
         # finally plot (each column separately to catch empty sets)
-        for column, color in izip(xrange(1,len(columns)), colors):
+        for column, color in zip(range(1,len(columns)), colors):
             if len(ma[column]) == 0:
                 warnings.warn("No data to plot for column {column:d}".format(**vars()), category=MissingDataWarning)
             kwargs['color'] = color
@@ -652,7 +652,7 @@ class XVG(utilities.FileUtils):
 
         .. SeeAlso:: :meth:`XVG.plot`, :meth:`XVG.errorbar` and :meth:`XVG.decimate`
         """
-        from itertools import izip, cycle
+        from itertools import cycle
         import matplotlib.cm, matplotlib.colors
 
         columns = kwargs.pop('columns', Ellipsis)         # slice for everything
@@ -671,7 +671,7 @@ class XVG(utilities.FileUtils):
 
         t = columns[0]
         kwargs['demean'] = True
-        for column, color in izip(columns[1:], colors):
+        for column, color in zip(columns[1:], colors):
             kwargs['color'] = color
             self.errorbar(columns=[t, column, column], **kwargs)
 
@@ -1057,14 +1057,14 @@ class XVG(utilities.FileUtils):
         out = numpy.zeros((a.shape[0], maxpoints), dtype=float)
 
         t = a[0]
-        for i in xrange(1, a.shape[0]):
+        for i in range(1, a.shape[0]):
             # compute regularised data for each column separately
             out[i], out[0] = func(t, a[i], bins=maxpoints, **kwargs)
 
         if maxpoints == self.maxpoints_default:  # only warn if user did not set maxpoints
             warnings.warn("Plot had %d datapoints > maxpoints = %d; decimated to %d regularly "
                           "spaced points from the histogrammed data with %s()."
-                          % (ny, maxpoints, maxpoints, func.func_name),
+                          % (ny, maxpoints, maxpoints, func.__name__),
                           category=AutoCorrectionWarning)
         return out
 
@@ -1102,7 +1102,7 @@ class XVG(utilities.FileUtils):
 
         # smoothed
         out[0,:] = a[0]
-        for i in xrange(1, a.shape[0]):
+        for i in range(1, a.shape[0]):
             # process columns because smooth() only handles 1D arrays :-p
             out[i,:] = numkit.timeseries.smooth(a[i], stepsize, window=window)
 

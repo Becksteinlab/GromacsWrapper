@@ -78,9 +78,9 @@ class Flags(dict):
     def __setitem__(self,name,value):
         self.get_flag(name).set(value)
     def _itervalues(self):
-        return super(Flags,self).itervalues()
+        return iter(super(Flags,self).values())
     def _items(self):
-        return super(Flags,self).items()
+        return list(super(Flags,self).items())
     def itervalues(self):
         for flag in self._itervalues():
             yield flag.value
@@ -92,7 +92,7 @@ class Flags(dict):
     def items(self):
         return [(flag.name,flag.value) for flag in self._itervalues()]
     def __repr__(self):
-        return str(self.items())
+        return str(list(self.items()))
 
 class FlagsDynamicDocs(Flags):
     # docs are generated on the fly for interactive use; but because
@@ -148,7 +148,7 @@ class Flag(object):
             try:
                 self.value = self.mapping[value]
             except KeyError:
-                raise ValueError("flag must be None or one of "+str(self.mapping.keys()))
+                raise ValueError("flag must be None or one of "+str(list(self.mapping.keys())))
         return self.get()
     def prop(self):
         """Use this for property(**flag.prop())"""

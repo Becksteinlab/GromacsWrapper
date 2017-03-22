@@ -37,8 +37,8 @@ def to_unicode(obj, encoding='utf-8'):
     """Convert obj to unicode (if it can be be converted)
 
     from http://farmdev.com/talks/unicode/"""
-    if isinstance(obj, basestring) and not isinstance(obj, unicode):
-        obj = unicode(obj, encoding)
+    if isinstance(obj, str) and not isinstance(obj, str):
+        obj = str(obj, encoding)
     return obj
 
 class Autoconverter(object):
@@ -115,7 +115,7 @@ class Autoconverter(object):
               encoding of the input data [utf-8]
 
         """
-        self._convertors = {'unicode': unicode,
+        self._convertors = {'unicode': str,
                             'simple': besttype,
                             'singlet': self._convert_singlet,
                             'fancy': self._convert_fancy,

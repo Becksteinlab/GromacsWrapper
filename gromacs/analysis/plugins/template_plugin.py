@@ -36,7 +36,7 @@ The worker class performs the analysis.
 
 
 """
-from __future__ import with_statement
+
 
 __docformat__ = "restructuredtext en"
 
@@ -168,7 +168,7 @@ class _TEMPLATEplugin(Worker):
         import pylab
         figure = kwargs.pop('figure', False)
         extensions = kwargs.pop('formats', ('pdf','png'))
-        for name,result in self.results.items():
+        for name,result in list(self.results.items()):
             kwargs['label'] = name
             try:
                 result.plot(**kwargs)      # This requires result classes with a plot() method!!

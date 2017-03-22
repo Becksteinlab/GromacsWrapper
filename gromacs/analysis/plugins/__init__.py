@@ -140,7 +140,7 @@ __all__.extend(__plugins__)
 _modules = {p: __import__(p.lower(), globals(), locals()) for p in __plugins__}
 # 2. Get the classes
 #: Gives access to all available plugin classes (or use the module __dict__)
-__plugin_classes__ = {p: M.__dict__[p] for p,M in _modules.items()}
+__plugin_classes__ = {p: M.__dict__[p] for p,M in list(_modules.items())}
 # 3. add to the name space (bind classes to names)
 globals().update(__plugin_classes__)
 
