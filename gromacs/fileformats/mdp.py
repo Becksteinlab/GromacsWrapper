@@ -154,5 +154,7 @@ class MDP(odict, utilities.FileUtils):
                 else:                  # parameter = value
                     if skipempty and (v == '' or v is None):
                         continue
-                    mdp.write("{k!s} = {v!s}\n".format(**vars()))
-
+                    if hasattr(v, '__iter__'):
+                         mdp.write("{} = {}\n".format(k,' '.join(map(str, v))))
+                    else:
+                        mdp.write("{k!s} = {v!s}\n".format(**vars()))
