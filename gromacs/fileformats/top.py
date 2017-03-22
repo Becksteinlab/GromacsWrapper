@@ -850,7 +850,7 @@ class SystemToGroTop(object):
         'bonds_ext'      : '{:3d}  {:3d}   {:1d} {} {}\n',
         'settles'        : '{:3d}  {:3d}  {} {}\n',
         'virtual_sites3' : '{:3d}  {:3d}  {:3d}  {:3d}   {:1d}  {}  {}\n',
-        'exclusions'     : '{:3d}  {:3d}  {:3d}\n',
+        'exclusions'     : '{:3d}  {}\n',
         'pairtypes'      : '{:6s} {:6s}   {:d}    {:.13g}     {:.13g}\n',
         'pairs'          : '{:3d} {:3d}   {:1d}\n',
         'angletypes_1'   : '{:>8s} {:>8s} {:>8s} {:1d}    {}    {}\n',
@@ -1243,7 +1243,8 @@ class SystemToGroTop(object):
         for bond in m.bonds:
             fu = bond.gromacs["func"]
 
-            if "kb" in bond.gromacs["param"] and "b0" in bond.gromacs["param"]:
+
+            if bond.gromacs["param"]["kb"] and bond.gromacs["param"]["b0"]:
                 kb, b0 = bond.gromacs["param"]["kb"], bond.gromacs["param"]["b0"]
                 line = self.formats['bonds_ext'].format(bond.atom1.number, bond.atom2.number, fu, b0, kb)
             else:
@@ -1258,7 +1259,7 @@ class SystemToGroTop(object):
         result = []
         for ang in m.angles:
             fu = ang.gromacs["func"]
-            if "ktetha" in ang.gromacs["param"] and "tetha0" in ang.gromacs["param"]:
+            if ang.gromacs["param"]["ktetha"] and ang.gromacs["param"]["tetha0"]:
                 ktetha, tetha0 = ang.gromacs["param"]["ktetha"] , ang.gromacs["param"]["tetha0"]
                 line = self.formats['angles_ext'].format(ang.atom1.number, ang.atom2.number, ang.atom3.number, fu, tetha0, ktetha)
             else:
@@ -1292,8 +1293,8 @@ class SystemToGroTop(object):
     def _make_exclusions(self,m):
         result = []
         for excl in m.exclusions:
-
-            line = self.formats['exclusions'].format(excl.main_atom.number, excl.other_atoms[0].number, excl.other_atoms[1].number)
+            other_atoms = ["  {:3d}".format(at.number) for at in excl.other_atoms]
+            line = self.formats['exclusions'].format(excl.main_atom.number, "".join(other_atoms))
             result.append(line)
 
         result.insert(0,'; {0:5d} exclusions\n'.format(len(result)))
