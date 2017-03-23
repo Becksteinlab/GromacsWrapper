@@ -3,7 +3,11 @@
 ==============================
 
 2017-xx-xx      0.7.0
+orbeckst
 
+* removed vmd sub-package (#112), code now at
+  https://github.com/Becksteinlab/remote-vmd 
+* removed obsolete staging sub-package (#113)  
 
 
 2017-03-23      0.6.2
