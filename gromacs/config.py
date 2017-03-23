@@ -221,7 +221,6 @@ completely transparent to the user.
 
 .. autodata:: qscriptdir
 .. autodata:: templatesdir
-.. autodata:: managerdir
 .. autodata:: templates
 .. autodata:: qscript_template
 
@@ -253,18 +252,12 @@ CONFIGNAME = os.path.expanduser(os.path.join("~",".gromacswrapper.cfg"))
 #: :data:`templatesdir`
 #:    Directory to store user supplied template files such as mdp files.
 #:    The default value is ``~/.gromacswrapper/templates``.
-#: :data:`managerdir`
-#:    Directory to store configuration files for different queuing system
-#:    managers as used in :mod:`gromacs.manager`.
-#:    The default value is ``~/.gromacswrapper/managers``.
 
 configdir = os.path.expanduser(os.path.join("~",".gromacswrapper"))
 defaults = {
     'configdir':    configdir,
     'qscriptdir':   os.path.join(configdir, 'qscripts'),
     'templatesdir': os.path.join(configdir, 'templates'),
-    'managerdir':   os.path.join(configdir, 'managers'),
-
     'logfilename': "gromacs.log",
     'loglevel_console': 'INFO',
     'loglevel_file': 'DEBUG',
@@ -303,13 +296,8 @@ qscriptdir = defaults['qscriptdir']
 #: The default value is ``~/.gromacswrapper/templates``.
 templatesdir = defaults['templatesdir']
 
-#: Directory to store configuration files for remote queuing systems
-#: :class:`gromacs.qsub.Manager` instances.
-#: The default value is ``~/.gromacswrapper/managers``.
-managerdir = defaults['managerdir']
-
 #: List of all configuration directories.
-config_directories = [configdir, qscriptdir, templatesdir, managerdir]
+config_directories = [configdir, qscriptdir, templatesdir]
 
 
 #: Search path for user queuing scripts and templates. The internal package-supplied
@@ -488,8 +476,6 @@ class GMXConfigParser(SafeConfigParser):
                   os.path.join("%(configdir)s", os.path.basename(defaults['qscriptdir'])))
           self.set('DEFAULT', 'templatesdir',
                   os.path.join("%(configdir)s", os.path.basename(defaults['templatesdir'])))
-          self.set('DEFAULT', 'managerdir',
-                  os.path.join("%(configdir)s", os.path.basename(defaults['managerdir'])))
           self.add_section('Gromacs')
           self.set("Gromacs", "release", "")
           self.set("Gromacs", "GMXRC", "")
