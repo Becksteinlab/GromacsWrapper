@@ -55,7 +55,7 @@ def simps_error(dy, x=None, dx=1, axis=-1, even='avg'):
     if x is not None:
         x = numpy.asarray(x)
         if len(x.shape) == 1:
-            shapex = numpy.ones(nd)
+            shapex = numpy.ones(nd, dtype=numpy.int64)
             shapex[axis] = x.shape[0]
             saveshape = x.shape
             returnshape = True

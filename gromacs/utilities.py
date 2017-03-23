@@ -98,6 +98,7 @@ import subprocess
 from contextlib import contextmanager
 import bz2, gzip
 import datetime
+import numpy
 
 import logging
 logger = logging.getLogger('gromacs.utilities')
@@ -134,8 +135,12 @@ def autoconvert(s):
         return s
     for converter in int, float, str:   # try them in increasing order of lenience
         try:
-            return converter(s)
-        except ValueError:
+            s = [converter(i) for i in s.split()]
+            if len(s) == 1:
+                return s[0]
+            else:
+                return numpy.array(s)
+        except (ValueError,AttributeError):
             pass
     raise ValueError("Failed to autoconvert {0!r}".format(s))
 

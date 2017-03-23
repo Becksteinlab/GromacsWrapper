@@ -17,10 +17,8 @@ class TestAmber03star(TopologyTest):
         conf = datafile('fileformats/top/amber03star/conf.gro')
         molecules = ['Protein', 'SOL', 'IB+', 'CA', 'CL', 'NA', 'MG', 'K', 'RB', 'CS', 'LI', 'ZN']
 
-        @pytest.mark.xfail(raises=ValueError, reason="Not currently maintained. See #61.")
         def test_read_write(self, tmpdir):
                 super(TestAmber03star, self).test_read_write(tmpdir)
 
-        @pytest.mark.xfail(raises=GromacsError, reason="Not currently maintained. See #61.")
         def test_mdrun(self, tmpdir):
                 super(TestAmber03star, self).test_mdrun(tmpdir)

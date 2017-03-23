@@ -15,7 +15,5 @@ class TestCharmm22st(TopologyTest):
         conf = datafile('fileformats/top/charmm22st/conf.gro')
         molecules = ['SOL', 'Protein', 'Ion', 'Cal', 'Ces', 'CL', 'K', 'NA', 'ZN']
 
-        @pytest.mark.xfail(raises=ValueError, reason="Not currently maintained. See #61.")
         def test_read_write(self, tmpdir):
                 super(TestCharmm22st, self).test_read_write(tmpdir)
-

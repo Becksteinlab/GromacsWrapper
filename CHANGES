@@ -2,6 +2,16 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
+2017-03-23      0.6.2
+mohebifar, orbeckst, ianmkenney, PicoCentauri, dotsdl
+
+* fixed TOP parser (#61)
+* fixed isnan test in ITPData._clean_records (#99)
+* fixed formatting replacement for molecule name in ITP moleculetype section (#98)
+* fixed TypeError in numkit.integration.simps_error() (#115)
+* conversion for lists in Gromacs mdp files added (#104)
+
+
 2016-09-16      0.6.1
 orbeckst, quantifiedcode-bot
 
@@ -28,7 +38,7 @@ whitead, dotsdl, orbeckst
 
 * fixed: check_mdrun_success() works now for Gromacs 4 and Gromacs 5
   (issue #64)
-* fixed: MDRunner working for Gromacs 4 and Gromacs 5 (issue #64)  
+* fixed: MDRunner working for Gromacs 4 and Gromacs 5 (issue #64)
 * fixed setup.energy_minimize() not falling back to single precision
   mdrun (issue #63)
 * fixed: added missing alias "gmx solvate" <--> "genbox" (issue #62)
@@ -48,7 +58,7 @@ quantifiedcode-bot, orbeckst, jandom, whitead
   installation issues (#40)
 * Allows custom prefixes like gmx_mpi:mdrun and gmx:trjconv (#48)
 * Made it so GromacsWrapper can be imported and tools loaded even if they can't
-  be executed at import time. 
+  be executed at import time.
 
 2015-12-16      0.4.0
 orbeckst, richardjgowers
@@ -65,7 +75,7 @@ orbeckst, jandom
 * additional logging of filenames in setup._MD()
 * new repository URL: https://github.com/Becksteinlab/GromacsWrapper
 
-2013-08-07     0.3.2  
+2013-08-07     0.3.2
 orbeckst, andy.somogyi
 
 * fixed setup.make_main_index() by using a workaround for a bug in make_ndx
@@ -74,7 +84,7 @@ orbeckst, andy.somogyi
   write output to specified directory)
 * gw-fit_strip_trajectories.py: can use a custom group for centering
   (necessary when dealing with multimeric proteins that might get
-  split across the periodic boundaries)  
+  split across the periodic boundaries)
 
 
 2012-12-10     0.3.1
@@ -84,7 +94,7 @@ orbeckst, jandom
 * new HBonds hydrogen bonding analysis plugin (uses g_hbond and can
   return individual hbond existence probabilities)
 * XVG has initial support to plot periodic data such as dihedral angles
-* ITP reader: 
+* ITP reader:
   - ITP.contains_preprocessor_constructs() to check if the
     itp file uses some of the recognized preprocessing directives
   - new set_data() method to completely rebuild a topology
@@ -95,7 +105,7 @@ orbeckst, jandom
   - gw-fit_strip_trajectories.py: remove water and fit to protein
   - gw-join_parts.py: concatenate xtc, trr, edr, log for simulations
     done in parts (and with -noappend)
-  - gw-merge_topologies.py: join multiple building block topologies 
+  - gw-merge_topologies.py: join multiple building block topologies
 * updated MDP templates
   - increase Parrinello-Rahman time constant to 1.0 ps
   - use refcoord_scaling = "com" for position restraints
@@ -108,7 +118,7 @@ orbeckst, jandom
   - bt takes precedence over boxtype
 
 
-2012-04-24     0.3.0   
+2012-04-24     0.3.0
 orbeckst
 
 * improved file format handling (ITP (incomplete, but uses a
