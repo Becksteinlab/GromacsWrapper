@@ -5,10 +5,10 @@
 
 
 #: Package version; this is the only place where it is set.
-VERSION = 0,6,2
+VERSION = 0,7,0
 #: Set to ``True`` for a release. If set to ``False`` then the patch level
 #: will have the suffix "-dev".
-RELEASE = False
+RELEASE = True
 if not RELEASE:
     VERSION = VERSION[:2] + (str(VERSION[2]) + '-dev',)
 
