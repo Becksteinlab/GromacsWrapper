@@ -54,7 +54,6 @@ setup(name="GromacsWrapper",
                                 'tests/data/fileformats/top/*/*.gro',
                                 'tests/data/*.log',
                                 ],
-                    'vmd': ['*.tcl'],                                  # server start in VMD
                     },
       install_requires = ['numpy>=1.0',
                           'scipy',        # numkit needs it

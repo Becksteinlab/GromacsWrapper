@@ -12,4 +12,3 @@ if we ever get to a 1.0 release...).
    :maxdepth: 2
 
    numkit
-   vmd

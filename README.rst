@@ -49,12 +49,10 @@ the `GNU Public License v3`_ (or any higher version at your choice)
 except as noted below. See the file COPYING for the licensing terms
 for all modules.
 
-The **vmd** module is made available under the `LGPL v3`_ (see COPYING
-and COPYING.LESSER). **numkit** is provided under the "`Modified BSD
-Licence`_" (as it contains some code from scipy_).
+**numkit** is provided under the "`Modified BSD Licence`_" (as it
+contains some code from scipy_).
 
 .. _GNU Public License v3: http://www.gnu.org/licenses/gpl.html
-.. _LGPL v3: http://www.gnu.org/licenses/lgpl.html
 .. _Modified BSD Licence: http://www.opensource.org/licenses/bsd-license.php
 .. _scipy: http://www.scipy.org
 
