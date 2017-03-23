@@ -40,6 +40,14 @@ def scale_dihedrals(mol, dihedrals, scale, banned_lines=None):
         for dh in mol.dihedrals:
                 atypes = dh.atom1.get_atomtype(), dh.atom2.get_atomtype(), dh.atom3.get_atomtype(), dh.atom4.get_atomtype()
                 atypes = [a.replace("_", "").replace("=","") for a in atypes]
+
+                # special-case: this is a [ dihedral ] override in molecule block, continue and don't match
+                if dh.gromacs['param'] != []:
+                    for p in dh.gromacs['param']:
+                        p['kch'] *= scale
+                    new_dihedrals.append(dh)
+                    continue
+
                 for iswitch in range(32):
                         if  (iswitch%2==0 ):
                                 a1=atypes[0]; a2=atypes[1]; a3=atypes[2]; a4=atypes[3]
@@ -82,7 +90,7 @@ def scale_impropers(mol, impropers, scale, banned_lines=None):
                 atypes = im.atom1.get_atomtype(), im.atom2.get_atomtype(), im.atom3.get_atomtype(), im.atom4.get_atomtype()
                 atypes = [a.replace("_", "").replace("=","") for a in atypes]
 
-                # special-case: this is a dihedral override in molecule block, don't match
+                # special-case: this is a [ dihedral ] override in molecule block, continue and don't match
                 if im.gromacs['param'] != []:
                     for p in im.gromacs['param']:
                         p['kpsi'] *= scale
@@ -219,17 +227,13 @@ def partial_tempering(args):
                 impropertypes[name].append(it)
         print("Build impropertypes dictionary with {0} entries".format(len(impropertypes)))
 
-        for molname_mol in top.dict_molname_mol.keys():
-            if not 'Protein' in molname_mol: continue
+        for molname_mol in top.dict_molname_mol:
+            if not 'Protein' in molname_mol:
+                continue
             mol = top.dict_molname_mol[molname_mol]
-            for at in mol.atoms: at.charge *= math.sqrt(args.scale_protein)
+            for at in mol.atoms:
+                at.charge *= math.sqrt(args.scale_protein)
             mol = scale_dihedrals(mol, dihedraltypes, args.scale_protein, banned_lines)
             mol = scale_impropers(mol, impropertypes, 1.0, banned_lines)
-
-        # Remove non-default moleculetypes
-        #for k in top.dict_molname_mol.keys():
-        #        if k in ["Protein", "SOL", "Ion" ]: continue
-        #        del top.dict_molname_mol[k]
-
 
         top.write(args.output)
