@@ -2,12 +2,15 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
-2016-xx-xx      0.6.2
-mohebifar
+2017-03-23      0.6.2
+mohebifar, orbeckst, ianmkenney, PicoCentauri, dotsdl
 
+* fixed TOP parser (#61)
 * fixed isnan test in ITPData._clean_records (#99)
 * fixed formatting replacement for molecule name in ITP moleculetype section (#98)
+* fixed TypeError in numkit.integration.simps_error() (#115)
 * conversion for lists in Gromacs mdp files added (#104)
+
 
 2016-09-16      0.6.1
 orbeckst, quantifiedcode-bot
