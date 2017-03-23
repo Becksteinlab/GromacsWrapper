@@ -19,9 +19,6 @@ The working paradigm is that template scripts are provided (see
 :data:`gromacs.config.qscriptdir` (by default ``~/.gromacswrapper/qscripts``)
 and they will be picked up before the package-supplied ones.
 
-The :class:`~gromacs.qsub.Manager` handles setup and control of jobs
-in a queuing system on a remote system via :program:`ssh`.
-
 At the moment, some of the functions in :mod:`gromacs.setup` use this module
 but it is fairly independent and could conceivably be used for a wider range of
 projects.
@@ -193,8 +190,6 @@ Classes and functions
 .. autofunction:: detect_queuing_system
 
 .. autodata:: queuing_systems
-
-.. SeeAlso:: :mod:`gromacs.manager` for classes to manage jobs remotely.
 
 """
 from __future__ import absolute_import, with_statement
