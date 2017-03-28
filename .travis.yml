@@ -31,7 +31,8 @@ install:
   # Useful for debugging any issues with conda
   - conda info -a
 
-  # Replace dep1 dep2 ... with your dependencies
+  # scipy is not a direct dependency but indirectly through numkit
+  # (but we do not have a numkit conda package yet so we pull scipy here)
   - conda create --yes -q -n gw python=$TRAVIS_PYTHON_VERSION numpy scipy pandas
   - source activate gw
 
@@ -40,6 +41,7 @@ install:
 
   # install other dependencies through pip
   - pip install recsql>=0.7
+  - pip install numkit
 
   # install test tools
   - pip install codecov
@@ -52,7 +54,6 @@ install:
 
 # run tests
 script:
-  - py.test --cov numkit numkit/tests
   - py.test --cov gromacs gromacs/tests
 
 after_success:

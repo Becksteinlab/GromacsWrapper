@@ -56,15 +56,14 @@ setup(name="GromacsWrapper",
                                 ],
                     },
       install_requires = ['numpy>=1.0',
-                          'scipy',        # numkit needs it
                           'six',          # towards py 3 compatibility
+                          'numkit',       # numerical helpers
                           ],              # basic package (w/o analysis)
       extras_require = {
                 'analysis': ['matplotlib>=0.91.3',
                              'RecSQL>=0.7',
                              'pandas',
                              ],
-                'numkit': ['scipy'],
                 },
       tests_require = ['numpy', 'pandas'],
       zip_safe = True,
