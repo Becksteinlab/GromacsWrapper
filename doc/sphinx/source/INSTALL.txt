@@ -96,25 +96,9 @@ Required python modules
 -----------------------
 
 The basic package makes use of numpy_ and numkit_ (which uses scipy_)
-and can use matplotlib_ . Only numpy_ is immediately required (and
-automatically installed).
+Only numpy_ is immediately required (and automatically installed).
 
 .. _numpy: http://numpy.scipy.org
 .. _numkit: https://github.com/Becksteinlab/numkit
 .. _scipy: https://www.scipy.org/scipylib/index.html
-.. _matplotlib: http://matplotlib.sourceforge.net/
-
-For the :mod:`gromacs.analysis` library additional packages are required:
-
-  =============  ==========  ==================================================
-  package        version     source
-  =============  ==========  ==================================================
-  matplotlib     >=0.91.3    http://matplotlib.sourceforge.net/
-  RecSQL         >=0.3       https://github.com/orbeckst/RecSQL
-  =============  ==========  ==================================================
-
-It is generally easier to install ``matplotlib`` through your
-distribution manager. ``recsql`` can be easily installed with ``pip``
-(if it is not automatically installed).
-
 

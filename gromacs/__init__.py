@@ -55,12 +55,6 @@ Modules
      Classes to run :program:`mdrun` in various way, including on
      multiprocessor systems.
 
-:mod:`gromacs.analysis`
-     A package that collects whole analysis tasks. It uses the
-     :mod:`gromacs` package but is otherwise only loosely coupled with
-     the rest. At the moment it only contains the infrastructure and
-     an example application. See the package documentation.
-
 
 Examples
 --------

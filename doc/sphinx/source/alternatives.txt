@@ -133,8 +133,7 @@ they can be added here. Thanks.
 .. _VMD: http://www.ks.uiuc.edu/Research/vmd/
 .. _Schulten lab: http://www.ks.uiuc.edu/
 .. _bigdcd: http://www.ks.uiuc.edu/Research/vmd/script_library/scripts/bigdcd/
-.. _MDAnalysis: http://mdanalysis.googlecode.com
-.. _me: http://sbcb.bioch.ox.ac.uk/oliver/
+.. _MDAnalysis: http://mdanalysis.org
 .. _GPL: http://www.gnu.org/licenses/ 
 .. _numpy: http://numpy.scipy.org
 .. _Charmm: http://www.charmm.org
