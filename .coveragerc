@@ -1,6 +1,6 @@
 [run]
 branch = True
-source = gromacs numkit
+source = gromacs
 
 [report]
 exclude_lines =
@@ -14,4 +14,3 @@ exclude_lines =
 omit =
     gromacs/analysis/*
     gromacs/tests/*
-    numkit/tests/*

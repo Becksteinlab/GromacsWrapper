@@ -49,12 +49,7 @@ the `GNU Public License v3`_ (or any higher version at your choice)
 except as noted below. See the file COPYING for the licensing terms
 for all modules.
 
-**numkit** is provided under the "`Modified BSD Licence`_" (as it
-contains some code from scipy_).
-
 .. _GNU Public License v3: http://www.gnu.org/licenses/gpl.html
-.. _Modified BSD Licence: http://www.opensource.org/licenses/bsd-license.php
-.. _scipy: http://www.scipy.org
 
 The distribution contains third party software that is copyrighted by
 the authors but distributed under licences compatible with this

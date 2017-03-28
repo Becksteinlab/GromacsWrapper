@@ -5,6 +5,8 @@
 2017-xx-xx      0.7.0
 orbeckst
 
+* moved numkit to own package now at
+  https://github.com/Becksteinlab/numkit (#111)
 * removed vmd sub-package (#112), code now at
   https://github.com/Becksteinlab/remote-vmd 
 * removed obsolete staging sub-package (#113)  
