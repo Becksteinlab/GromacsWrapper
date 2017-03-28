@@ -100,7 +100,7 @@ MDAnalysis_. Some tools help in building and interpreting index files.
 .. autofunction:: make_ndx_captured
 
 
-.. _MDAnalysis: http://mdanalysis.googlecode.com
+.. _MDAnalysis: http://mdanalysis.org
 .. _VMD: http://www.ks.uiuc.edu/Research/vmd/current/ug/node87.html
 .. _Charmm: http://www.charmm.org/html/documentation/c35b1/select.html
 

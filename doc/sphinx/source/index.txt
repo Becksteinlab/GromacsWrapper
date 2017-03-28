@@ -59,7 +59,6 @@ Contents
    installation
    configuration
    gromacs
-   analysis
    alternatives
 
 

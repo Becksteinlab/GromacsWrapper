@@ -40,7 +40,6 @@ install:
   - conda install -c becksteinlab gromacs-$GMX_VERSION
 
   # install other dependencies through pip
-  - pip install recsql>=0.7
   - pip install numkit
 
   # install test tools

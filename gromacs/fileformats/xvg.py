@@ -201,7 +201,7 @@ import numpy
 from gromacs.exceptions import (ParseError, MissingDataError,
                                 MissingDataWarning, AutoCorrectionWarning)
 import gromacs.utilities as utilities
-
+import gromacs.collections
 
 import numkit.timeseries
 
@@ -393,9 +393,8 @@ class XVG(utilities.FileUtils):
 
         .. SeeAlso:: :func:`numkit.timeseries.tcorrel`
         """
-        from gromacs.analysis.collections import Collection
         t = self.array[0,::nstep]
-        r = Collection([numkit.timeseries.tcorrel(t, Y, nstep=1, **kwargs) for Y in self.array[1:,::nstep]])
+        r = gromacs.collections.Collection([numkit.timeseries.tcorrel(t, Y, nstep=1, **kwargs) for Y in self.array[1:,::nstep]])
         return r
 
     def set_correlparameters(self, **kwargs):

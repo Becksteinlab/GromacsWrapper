@@ -11,8 +11,7 @@
 
 A primitive wrapper around the Gromacs tools until we have proper
 python bindings. It also provides a small library (cook book) of
-often-used recipes and an optional analysis module with plugins for
-more complicated analysis tasks.
+often-used recipes and helper functions to set up MD simulations.
 
 `Documentation`_ is mostly provided through the python doc strings and
 available at http://gromacswrapper.readthedocs.org for recent releases.
