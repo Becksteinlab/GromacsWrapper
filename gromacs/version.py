@@ -8,7 +8,7 @@
 VERSION = 0,7,0
 #: Set to ``True`` for a release. If set to ``False`` then the patch level
 #: will have the suffix "-dev".
-RELEASE = True
+RELEASE = False
 if not RELEASE:
     VERSION = VERSION[:2] + (str(VERSION[2]) + '-dev',)
 
