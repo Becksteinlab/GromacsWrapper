@@ -278,7 +278,12 @@ if len(_missing_g_commands) > 0:
                   "maybe source GMXRC first? The following are missing:\n%r\n" % _missing_g_commands,
                   category=GromacsImportWarning)
 
-del name, cls, clsname
+#Python 2 and 3 compliant
+try:
+	del name,cls, clsname
+except NameError:
+	pass
+#del cls, clsname
 
 # get ALL active command instances with 'from gromacs import *'
 __all__.extend(_have_g_commands)
