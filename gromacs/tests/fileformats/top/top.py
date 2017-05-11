@@ -36,15 +36,15 @@ def grompp(f, c, p, prefix="topol"):
                 "grompp -o {0} -po {1} -f {2} -c {3} -p {4} failed".format(s, po, f, c, p)
         return s
 
-def mdrun(s, prefix):
+def mdrun(s, prefix, nt=0):
         o = prefix + '.trr'
-        rc, output, junk = gromacs.mdrun(v=True, s=s, o=o, stdout=False, stderr=False, nt=2)
+        rc, output, junk = gromacs.mdrun(v=True, s=s, o=o, stdout=False, stderr=False, nt=nt)
         assert rc == 0, "mdrun failed"
         return o
 
-def rerun_energy(s, o, prefix):
+def rerun_energy(s, o, prefix, nt=0):
         e = prefix + '.edr'
-        rc, output, junk = gromacs.mdrun(v=True, s=s, rerun=o, e=e, stdout=False, stderr=False)
+        rc, output, junk = gromacs.mdrun(v=True, s=s, rerun=o, e=e, stdout=False, stderr=False, nt=nt)
         assert rc == 0, "mdrun failed"
 
         xvg = prefix + '.xvg'
@@ -153,15 +153,21 @@ class TopologyTest(object):
                         rc, output, junk = gromacs.grompp(f=f, p=p, c=c, o=o, po=po, stdout=False, stderr=False)
                         assert rc == 0, "grompp -f {0} -o {1} ... failed to run".format(f, o)
 
-        def test_mdrun(self, tmpdir):
+        def test_mdrun(self, tmpdir, low_performance):
                 """Check if grompp can be run successfully at all"""
                 f = self.mdp
                 c = self.conf
                 processed = self.processed
+
+                if low_performance:
+                    nt = 2
+                else:
+                    nt = 0
+
                 with tmpdir.as_cwd():
                         tpr = grompp(f, c, processed, prefix="reference")
-                        reference_trr = mdrun(tpr, prefix="reference")
-                        df1 = rerun_energy(tpr, reference_trr, prefix="reference")
+                        reference_trr = mdrun(tpr, prefix="reference", nt=nt)
+                        df1 = rerun_energy(tpr, reference_trr, prefix="reference", nt=nt)
 
                         scaled = "scaled.top"
                         args = Namespace(banned_lines='', input=processed, output=scaled,
@@ -171,7 +177,7 @@ class TopologyTest(object):
                         assert os.path.exists(scaled), "failed to produce {0}".format(scaled)
 
                         tpr = grompp(f, c, scaled, prefix="scaled")
-                        df2 = rerun_energy(tpr, reference_trr, prefix="scaled")
+                        df2 = rerun_energy(tpr, reference_trr, prefix="scaled", nt=nt)
 
                         assert_frame_equal(df1, df2, check_names=True, check_like=True)
 
@@ -180,7 +186,7 @@ class TopologyTest(object):
                                          output=scaled, scale_lipids=1.0, scale_protein=0.5)
                         partial_tempering(args)
                         tpr = grompp(f, c, scaled, prefix="scaled")
-                        df3 = rerun_energy(tpr, reference_trr, prefix="scaled")
+                        df3 = rerun_energy(tpr, reference_trr, prefix="scaled", nt=nt)
                         # print(df1, df1.columns)
                         # print(df3, df3.columns)
                         unscaled_terms = ['Time (ps)', 'Improper Dih.']
