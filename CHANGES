@@ -3,8 +3,9 @@
 ==============================
 
 2018-xx-xx      0.7.0
-orbeckst
+orbeckst, kain88-de
 
+* support Python 3 (#44)
 * moved numkit to own package now at
   https://github.com/Becksteinlab/numkit (#111)
 * removed gromacs.analysis legacy code, can now be found
