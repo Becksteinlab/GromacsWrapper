@@ -37,6 +37,7 @@ import warnings
 import subprocess
 import os.path
 import errno
+import six
 
 # logging
 import logging
@@ -332,7 +333,7 @@ def check_mdrun_success(logfile):
     except IOError:
         return None
     try:
-        log.seek(-1024L, 2)
+        log.seek(six.long(-1024), 2)
         for line in log:
             if line.startswith("Finished mdrun on"):
                 status = True

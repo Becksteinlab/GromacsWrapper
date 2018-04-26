@@ -561,7 +561,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
             # fake ionized file ... makes it easier to continue without too much fuzz
             try:
                 os.unlink('ionized.gro')
-            except OSError, err:
+            except OSError as err:
                 if err.errno != errno.ENOENT:
                     raise
             os.symlink('solvated.gro', 'ionized.gro')
@@ -577,7 +577,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
         # make main index
         try:
             make_main_index('ionized.tpr', selection=mainselection, ndx=ndx)
-        except GromacsError, err:
+        except GromacsError as err:
             # or should I rather fail here?
             wmsg = "Failed to make main index file %r ... maybe set mainselection='...'.\n"\
                    "The error message was:\n%s\n" % (ndx, str(err))
@@ -585,7 +585,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
             warnings.warn(wmsg, category=GromacsFailureWarning)
         try:
             trj_compact_main(f='ionized.gro', s='ionized.tpr', o='compact.pdb', n=ndx)
-        except GromacsError, err:
+        except GromacsError as err:
             wmsg = "Failed to make compact pdb for visualization... pressing on regardless. "\
                    "The error message was:\n%s\n" % str(err)
             logger.warn(wmsg)

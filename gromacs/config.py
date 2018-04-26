@@ -225,14 +225,19 @@ completely transparent to the user.
 .. autodata:: qscript_template
 
 """
-from __future__ import absolute_import, with_statement
+from __future__ import absolute_import, with_statement, print_function
 
 import os
 import logging
 import re
 import subprocess
+import sys
 
-from ConfigParser import SafeConfigParser
+if sys.version_info[0] < 3:
+    from ConfigParser import SafeConfigParser
+else:
+    from configparser import SafeConfigParser
+
 from pkg_resources import resource_filename, resource_listdir
 
 from . import utilities
@@ -581,7 +586,7 @@ def setup(filename=CONFIGNAME):
                cfg.write(configfile)  # write the default file so that user can edit
                msg = "NOTE: GromacsWrapper created the configuration file \n\t%r\n" \
                      "      for you. Edit the file to customize the package." % filename
-               print msg
+               print(msg)
 
      # directories
      for d in config_directories:

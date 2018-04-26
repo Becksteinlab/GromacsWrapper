@@ -15,7 +15,7 @@ simultaneously for all simulations in the collection.
 """
 
 import os.path
-import cPickle
+from six.moves import cPickle
 from numpy import all, any
 
 class Collection(list):

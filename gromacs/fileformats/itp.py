@@ -497,7 +497,7 @@ class Moleculetype(ITPsection):
         try:
             self.data['name'] = fields[0]
             self.data['nrexcl'] = int(fields[1])
-        except Exception, err:
+        except Exception as err:
             msg = "Failed to parse [moleculetype] section: line: {0!r}\n".format(line)
             msg += "Exception: {0!r}".format(err)
             self.logger.error(msg)

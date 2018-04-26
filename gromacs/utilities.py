@@ -99,6 +99,7 @@ from contextlib import contextmanager
 import bz2, gzip
 import datetime
 import numpy
+from six import string_types
 
 import logging
 logger = logging.getLogger('gromacs.utilities')
@@ -179,7 +180,7 @@ def anyopen(datasource, mode='r', **kwargs):
           exception will be raised by the handler
 
     """
-    handlers = {'bz2': bz2.BZ2File, 'gz': gzip.open, '': file}
+    handlers = {'bz2': bz2.BZ2File, 'gz': gzip.open, '': open}
 
     if mode.startswith('r'):
         if hasattr(datasource,'next') or hasattr(datasource,'readline'):
@@ -222,7 +223,7 @@ def anyopen(datasource, mode='r', **kwargs):
 
     return stream, filename
 
-def _get_stream(filename, openfunction=file, mode='r'):
+def _get_stream(filename, openfunction=open, mode='r'):
     try:
         stream = openfunction(filename, mode=mode)
     except IOError:
@@ -272,7 +273,7 @@ def in_dir(directory, create=True):
         try:
             os.chdir(directory)
             logger.debug("Working in {directory!r}...".format(**vars()))
-        except OSError, err:
+        except OSError as err:
             if create and err.errno == errno.ENOENT:
                 os.makedirs(directory)
                 os.chdir(directory)
@@ -511,7 +512,7 @@ class FileUtils(object):
 
 def iterable(obj):
     """Returns ``True`` if *obj* can be iterated over and is *not* a  string."""
-    if isinstance(obj, basestring):
+    if isinstance(obj, string_types):
         return False    # avoid iterating over characters of a string
     if hasattr(obj, 'next'):
         return True    # any iterator will do
@@ -540,7 +541,7 @@ def unlink_f(path):
     """Unlink path but do not complain if file does not exist."""
     try:
         os.unlink(path)
-    except OSError, err:
+    except OSError as err:
         if err.errno != errno.ENOENT:
             raise
 
@@ -565,7 +566,7 @@ def mkdir_p(path):
     """
     try:
         os.makedirs(path)
-    except OSError, err:
+    except OSError as err:
         if err.errno != errno.EEXIST:
             raise
 

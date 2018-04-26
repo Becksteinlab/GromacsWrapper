@@ -70,6 +70,7 @@ import tempfile
 import subprocess
 import atexit
 import logging
+import six
 
 from . import config
 from .core import GromacsCommand
@@ -325,8 +326,9 @@ else:
 
 # Aliases command names to run unmodified GromacsWrapper scripts on a machine
 # with only 5.x
+tmp_registry = dict()
 for fancy, cmd in registry.items():
-    for c5, c4 in NAMES5TO4.iteritems():
+    for c5, c4 in six.iteritems(NAMES5TO4):
         # have to check each one, since it's possible there are suffixes
         # like for double precision; cmd.command_name is Gromacs name
         # (e.g. 'convert-tpr') so we need to be careful in the processing below.
@@ -338,11 +340,12 @@ for fancy, cmd in registry.items():
                 # maintain suffix (note: need to split with fancy because Gromacs
                 # names (c5) may contain '-' etc)
                 name = c4 + fancy.split(make_valid_identifier(c5))[1]
-                registry[make_valid_identifier(name)] = registry[fancy]
+                tmp_registry[make_valid_identifier(name)] = registry[fancy]
                 break
     else:
         # the common case of just adding the 'g_'
-        registry['G_{0!s}'.format(fancy.lower())] = registry[fancy]
+        tmp_registry['G_{0!s}'.format(fancy.lower())] = registry[fancy]
+registry = tmp_registry
 
 
 # Patching up commands that may be useful to accept multiple index files
@@ -356,7 +359,7 @@ for name4, name5 in [('G_mindist', 'Mindist'), ('G_dist', 'Distance')]:
 
 
 # Append class doc for each command
-for name in registry.iterkeys():
+for name in six.iterkeys(registry):
     __doc__ += ".. class:: {0!s}\n    :noindex:\n".format(name)
 
 
