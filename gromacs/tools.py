@@ -327,8 +327,7 @@ else:
 # Aliases command names to run unmodified GromacsWrapper scripts on a machine
 # with only 5.x
 # update with temporary directory
-tmp_registry = dict()
-for fancy, cmd in six.iteritems(registry):
+for fancy, cmd in list(registry.items()):
     for c5, c4 in six.iteritems(NAMES5TO4):
         # have to check each one, since it's possible there are suffixes
         # like for double precision; cmd.command_name is Gromacs name
@@ -341,14 +340,11 @@ for fancy, cmd in six.iteritems(registry):
                 # maintain suffix (note: need to split with fancy because Gromacs
                 # names (c5) may contain '-' etc)
                 name = c4 + fancy.split(make_valid_identifier(c5))[1]
-                tmp_registry[make_valid_identifier(name)] = registry[fancy]
+                registry[make_valid_identifier(name)] = registry[fancy]
                 break
     else:
         # the common case of just adding the 'g_'
-        tmp_registry['G_{0!s}'.format(fancy.lower())] = registry[fancy]
-# update now safely
-for fancy, cmd in six.iteritems(tmp_registry):
-    registry[fancy] = cmd
+        registry['G_{0!s}'.format(fancy.lower())] = registry[fancy]
 
 
 
@@ -370,4 +366,4 @@ for name in six.iterkeys(registry):
 # Finally add command classes to module's scope
 globals().update(registry)
 __all__ = ['GromacsCommandMultiIndex', 'merge_ndx']
-__all__.extend(registry.keys())
+__all__.extend(list(registry.keys()))
