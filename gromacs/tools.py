@@ -143,13 +143,13 @@ class GromacsCommandMultiIndex(GromacsCommand):
         kwargs = self._fake_multi_ndx(**kwargs)
         super(GromacsCommandMultiIndex, self).__init__(**kwargs)
 
-    def run(self,*args,**kwargs):
+    def run(self, *args, **kwargs):
         kwargs = self._fake_multi_ndx(**kwargs)
         return super(GromacsCommandMultiIndex, self).run(*args, **kwargs)
 
     def _fake_multi_ndx(self, **kwargs):
         ndx = kwargs.get('n')
-        if not (ndx is None or type(ndx) is basestring) and \
+        if not (ndx is None or isinstance(ndx, six.string_types)) and \
            len(ndx) > 1 and 's' in kwargs:
             ndx.append(kwargs.get('s'))
             kwargs['n'] = merge_ndx(*ndx)
@@ -326,8 +326,9 @@ else:
 
 # Aliases command names to run unmodified GromacsWrapper scripts on a machine
 # with only 5.x
+# update with temporary directory
 tmp_registry = dict()
-for fancy, cmd in registry.items():
+for fancy, cmd in six.iteritems(registry):
     for c5, c4 in six.iteritems(NAMES5TO4):
         # have to check each one, since it's possible there are suffixes
         # like for double precision; cmd.command_name is Gromacs name
@@ -345,7 +346,10 @@ for fancy, cmd in registry.items():
     else:
         # the common case of just adding the 'g_'
         tmp_registry['G_{0!s}'.format(fancy.lower())] = registry[fancy]
-registry = tmp_registry
+# update now safely
+for fancy, cmd in six.iteritems(tmp_registry):
+    registry[fancy] = cmd
+
 
 
 # Patching up commands that may be useful to accept multiple index files

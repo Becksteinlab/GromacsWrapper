@@ -586,7 +586,7 @@ class GromacsCommand(Command):
                     arglist.extend([flag] + value) # option with value list
                 except TypeError:
                     arglist.extend([flag, value])  # option with single value
-        return map(str, arglist)  # all arguments MUST be strings
+        return list(map(str, arglist))  # all arguments MUST be strings
 
     def _run_command(self,*args,**kwargs):
         """Execute the gromacs command; see the docs for __call__."""
