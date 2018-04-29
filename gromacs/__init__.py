@@ -338,3 +338,7 @@ from numpy.testing.nosetester import NoseTester
 
 test = NoseTester().test
 del NoseTester
+
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions

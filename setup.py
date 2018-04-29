@@ -7,19 +7,15 @@
 from __future__ import with_statement
 from setuptools import setup, find_packages
 
-import imp, os
+import versioneer
 
 with open("README.rst") as readme:
     long_description = readme.read()
 
-# Dynamically calculate the version based on gromacs.VERSION.
-# (but requires that we can actually import the package BEFORE it is
-# properly installed!)
-version_file = os.path.join(os.path.dirname(__file__), 'gromacs', 'version.py')
-version = imp.load_source('gromacs.version', version_file).get_version()
 
 setup(name="GromacsWrapper",
-      version=version,
+      version=versioneer.get_version(),
+      cmdclass=versioneer.get_cmdclass(),
       description="A python wrapper around the Gromacs tools.",
       long_description=long_description,
       author="Oliver Beckstein",
@@ -58,8 +54,8 @@ setup(name="GromacsWrapper",
       install_requires = ['numpy>=1.0',
                           'six',          # towards py 3 compatibility
                           'numkit',       # numerical helpers
-                          ],              # basic package (w/o analysis)
-      tests_require = ['numpy', 'pandas'],
+                          ],
+      tests_require = ['pytest', 'numpy', 'pandas'],
       zip_safe = True,
 )
 

@@ -1,3 +1,5 @@
 include   setup.py COPYING README.rst CHANGES
 recursive-include scripts *.py
 graft     gromacs/templates/
+include versioneer.py
+include gromacs/_version.py

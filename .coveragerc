@@ -8,8 +8,11 @@ exclude_lines =
     def __repr__
     def _repr_html_
     def __str__
+    raise AssertionError    
     raise NotImplementedError
     if __name__ == .__main__.:
 
 omit =
     gromacs/tests/*
+    # omit the versioneer-installed _version.py
+    src/numkit/_version.py
