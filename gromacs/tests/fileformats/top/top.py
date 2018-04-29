@@ -164,7 +164,8 @@ class TopologyTest(object):
                         df1 = rerun_energy(tpr, reference_trr, prefix="reference")
 
                         scaled = "scaled.top"
-                        args = Namespace(banned_lines='', input=processed, output=scaled, scale_lipids=1.0, scale_protein=1.0)
+                        args = Namespace(banned_lines='', input=processed, output=scaled,
+                                         scale_lipids=1.0, scale_protein=1.0)
                         partial_tempering(args)
 
                         assert os.path.exists(scaled), "failed to produce {0}".format(scaled)
@@ -172,10 +173,11 @@ class TopologyTest(object):
                         tpr = grompp(f, c, scaled, prefix="scaled")
                         df2 = rerun_energy(tpr, reference_trr, prefix="scaled")
 
-                        assert_frame_equal(df1.sort(axis=1), df2.sort(axis=1), check_names=True)
+                        assert_frame_equal(df1, df2, check_names=True, check_like=True)
 
                         scaled = "scaled.top"
-                        args = Namespace(banned_lines='', input=processed, output=scaled, scale_lipids=1.0, scale_protein=0.5)
+                        args = Namespace(banned_lines='', input=processed,
+                                         output=scaled, scale_lipids=1.0, scale_protein=0.5)
                         partial_tempering(args)
                         tpr = grompp(f, c, scaled, prefix="scaled")
                         df3 = rerun_energy(tpr, reference_trr, prefix="scaled")
@@ -184,7 +186,11 @@ class TopologyTest(object):
                         unscaled_terms = ['Time (ps)', 'Improper Dih.']
                         scaled_terms = ['Proper Dih.']
 
-                        assert_frame_equal(df1[unscaled_terms].sort(axis=1), df3[unscaled_terms].sort(axis=1), check_names=True)
-                        assert_frame_equal(df1[scaled_terms].sort(axis=1), 2*df3[scaled_terms].sort(axis=1), check_names=True)
+                        assert_frame_equal(df1[unscaled_terms],
+                                           df3[unscaled_terms],
+                                           check_names=True, check_like=True)
+                        assert_frame_equal(df1[scaled_terms],
+                                           2*df3[scaled_terms],
+                                           check_names=True, check_like=True)
 
 
