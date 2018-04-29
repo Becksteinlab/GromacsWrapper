@@ -2,7 +2,7 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
-2017-xx-xx      0.7.0
+2018-xx-xx      0.7.0
 orbeckst
 
 * moved numkit to own package now at

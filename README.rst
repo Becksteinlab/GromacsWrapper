@@ -1,6 +1,6 @@
 .. -*- mode: rst -*-
-.. The whole GromacsWrapper package is Copyright (c) 2009,2010,2011,2012 Oliver Beckstein,
-.. except where noted otherwise.
+.. The whole GromacsWrapper package is Copyright (c) 2009-2018 Oliver
+.. Beckstein and AUTHORS except where noted otherwise.
 
 
 ========================
@@ -14,7 +14,7 @@ python bindings. It also provides a small library (cook book) of
 often-used recipes and helper functions to set up MD simulations.
 
 `Documentation`_ is mostly provided through the python doc strings and
-available at http://gromacswrapper.readthedocs.org for recent releases.
+available at https://gromacswrapper.readthedocs.org for recent releases.
 
 The source code is available in the `GromacsWrapper git repository`_.
 
@@ -23,9 +23,9 @@ contains bugs. It is *your* responsibility to ensure that you are
 running simulations with sensible parameters.
 
 .. _Documentation: 
-   http://gromacswrapper.readthedocs.org/en/latest/
+   https://gromacswrapper.readthedocs.org/en/latest/
 .. _GromacsWrapper git repository:
-   http://github.com/Becksteinlab/GromacsWrapper
+   https://github.com/Becksteinlab/GromacsWrapper
 .. |build| image:: https://travis-ci.org/Becksteinlab/GromacsWrapper.svg?branch=develop
    :target: https://travis-ci.org/Becksteinlab/GromacsWrapper
    :alt: Build Status
@@ -37,7 +37,7 @@ running simulations with sensible parameters.
    :target: https://zenodo.org/badge/latestdoi/13219/Becksteinlab/GromacsWrapper
    :alt: Latest release on zenodo (with DOI)
 .. |docs| image:: https://readthedocs.org/projects/gromacswrapper/badge/?version=latest
-   :target: http://gromacswrapper.readthedocs.org/en/latest/?badge=latest
+   :target: https://gromacswrapper.readthedocs.org/en/latest/?badge=latest
    :alt: Documentation
 
 Licence
@@ -68,7 +68,7 @@ with ::
   pip install GromacsWrapper
 
 .. _`latest version of GromacsWrapper from PyPi`:
-   https://pypi.python.org/pypi/GromacsWrapper
+   https://pypi.org/project/GromacsWrapper/
 
 Development version
 -------------------
@@ -119,7 +119,7 @@ Building Documentation
 
 Install Sphinx::
 
-   apt-get install python-sphinx
+   pip install sphinx
 
 and compile::
 
@@ -140,7 +140,7 @@ If you find this package useful and use it in published work I'd be
 grateful if it was acknowledged in text as
 
   "... used GromacsWrapper (Oliver Beckstein et al,
-  http://github.com/Becksteinlab/GromacsWrapper doi: 10.5281/zenodo.17901)"
+  https://github.com/Becksteinlab/GromacsWrapper doi: 10.5281/zenodo.17901)"
 
 or in the Acknowledgements section.
 

@@ -19,7 +19,7 @@ you have suggestions on how to improve the package or these
 instructions.
 
 .. _Issue Tracker: https://github.com/Becksteinlab/GromacsWrapper/issues
-.. _setuptools: https://pypi.python.org/pypi/setuptools
+.. _setuptools: https://pypi.org/project/setuptools/
 
 
 Quick installation instructions
@@ -34,7 +34,7 @@ This will automatically download and install the `latest version of
 GromacsWrapper from PyPi`_.
 
 .. _`latest version of GromacsWrapper from PyPi`:
-   https://pypi.python.org/pypi/GromacsWrapper
+   https://pypi.org/project/GromacsWrapper/
 
 Manual Download
 ===============
@@ -43,12 +43,12 @@ If your prefer to download manually, get the latest stable release
 from https://github.com/Becksteinlab/GromacsWrapper/releases and
 either ::
 
-  pip install GromacsWrapper-0.4.0.tar.gz
+  pip install GromacsWrapper-0.7.0.tar.gz
 
 or install from the unpacked source::
 
-  tar -zxvf GromacsWrapper-0.4.0.tar.gz
-  cd GromacsWrapper-0.4.0
+  tar -zxvf GromacsWrapper-0.7.0.tar.gz
+  cd GromacsWrapper-0.7.0
   python setup.py install
 
 
@@ -60,7 +60,7 @@ The tar archive from https://github.com/Becksteinlab/GromacsWrapper/releases
 contains a full source code distribution.
 
 In order to follow code development you can also browse the code
-**git** repository at http://github.com/Becksteinlab/GromacsWrapper or
+**git** repository at https://github.com/Becksteinlab/GromacsWrapper or
 clone the git repository from
 
    git://github.com/Becksteinlab/GromacsWrapper.git
@@ -91,12 +91,16 @@ System requirements
 Tested with Python 2.7 on Linux and Mac OS X. Earlier python versions
 are not supported.
 
+.. Note:: Python 3 support is under development (Issue `#44`_).
+
+.. _`#44`: https://github.com/Becksteinlab/GromacsWrapper/issues/44	  
+
 
 Required python modules
 -----------------------
 
-The basic package makes use of numpy_ and numkit_ (which uses scipy_)
-Only numpy_ is immediately required (and automatically installed).
+The basic package makes use of numpy_ and numkit_ (which uses scipy_);
+all dependencies are installed during a normal installation process.
 
 .. _numpy: http://numpy.scipy.org
 .. _numkit: https://github.com/Becksteinlab/numkit

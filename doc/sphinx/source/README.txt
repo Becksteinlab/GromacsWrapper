@@ -29,9 +29,9 @@ running simulations with sensible parameters.
 
 
 .. _Documentation: 
-   http://gromacswrapper.readthedocs.org
+   https://gromacswrapper.readthedocs.org
 .. _GromacsWrapper git repository:
-   http://github.com/Becksteinlab/GromacsWrapper
+   https://github.com/Becksteinlab/GromacsWrapper
 .. |zenodo| image:: https://zenodo.org/badge/13219/Becksteinlab/GromacsWrapper.svg
    :target: https://zenodo.org/badge/latestdoi/13219/Becksteinlab/GromacsWrapper
    :alt: Latest release on zenodo (with DOI)
@@ -83,7 +83,7 @@ If you find this package useful and use it in published work I'd be
 grateful if it was acknowledged in text as
 
   "... used GromacsWrapper (Oliver Beckstein et al,
-  http://github.com/Becksteinlab/GromacsWrapper doi: 10.5281/zenodo.17901)"
+  https://github.com/Becksteinlab/GromacsWrapper doi: 10.5281/zenodo.17901)"
 
 or in the Acknowledgements section.
 
@@ -98,7 +98,7 @@ Download and Availability
 =========================
 
 The GromacsWrapper home page is
-http://github.com/Becksteinlab/GromacsWrapper.  The latest release of the
+https://github.com/Becksteinlab/GromacsWrapper.  The latest release of the
 package is being made available from https://github.com/Becksteinlab/GromacsWrapper/releases
 
 You can also clone the `GromacsWrapper git repository`_ or fork for
@@ -114,4 +114,4 @@ Contact
 Please use the `Issue Tracker`_ to report bugs, installation problems,
 and feature requests (mention ``@orbeckst`` in the issue report).
 
-.. _Issue Tracker: http://github.com/Becksteinlab/GromacsWrapper/issues
+.. _Issue Tracker: https://github.com/Becksteinlab/GromacsWrapper/issues
