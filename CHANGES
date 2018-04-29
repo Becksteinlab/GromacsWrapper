@@ -14,6 +14,7 @@ orbeckst
   https://github.com/Becksteinlab/remote-vmd 
 * removed obsolete staging sub-package (#113)  
 * removed obsolete gromacs.manager module (#115)
+* use versioneer for version management (removed gromacs.version)
 
 
 2017-03-23      0.6.2

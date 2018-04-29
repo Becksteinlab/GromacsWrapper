@@ -163,31 +163,24 @@ value that evaluates to ``True`` (e.g., "True" or "1").
 Version
 -------
 
-The package version can be queried with the :func:`gromacs.get_version` function.
-
-.. autofunction:: get_version
-.. autofunction:: get_version_tuple
-
-If the package was installed from a development version, the patch
-level will have the string "-dev" affixed to distinguish it from a
-release.
+The package version is recorded in the :const:`gromacs.__version__` variable.
 
 """
 from __future__ import absolute_import
 __docformat__ = "restructuredtext en"
 
 import os
-
-from .version import VERSION, RELEASE, get_version, get_version_tuple
+import warnings
+import logging
 
 # __all__ is extended with all gromacs command instances later
 __all__ = ['config', 'tools', 'cbook', 'fileformats']
 
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions
+
 from . import fileformats
-
-# Note: analysis not imported by default (requires additional pre-requisites)
-
-import warnings
 from .exceptions import (GromacsError, MissingDataError, ParseError,
                          GromacsFailureWarning, GromacsImportWarning,
                          GromacsValueWarning, AutoCorrectionWarning,
@@ -199,7 +192,6 @@ from .exceptions import (GromacsError, MissingDataError, ParseError,
 from . import config
 
 
-import logging
 # NOTE: logging is still iffy; when I reload I add a new logger each
 # time and output is repeated for each reload. Probably should heed
 # the advice on logging and libraries in
@@ -232,7 +224,8 @@ def start_logging(logfile="gromacs.log"):
     """
     from . import log
     log.create("gromacs", logfile=logfile)
-    logging.getLogger("gromacs").info("GromacsWrapper %s STARTED logging to %r", get_version(), logfile)
+    logging.getLogger("gromacs").info("GromacsWrapper %s STARTED logging to %r",
+                                      __version__, logfile)
 
 def stop_logging():
     """Stop logging to logfile and console."""
@@ -332,7 +325,3 @@ def enable_gromacs_warnings(categories=None):
     """
     filter_gromacs_warnings('always', categories=categories)
 
-
-from ._version import get_versions
-__version__ = get_versions()['version']
-del get_versions
