@@ -155,6 +155,11 @@ class TopologyTest(object):
 
         def test_mdrun(self, tmpdir, low_performance):
                 """Check if grompp can be run successfully at all"""
+                # set low_performance with
+                #
+                #    pytest --low-performance
+                #
+                # (needs plugin https://github.com/ianmkenney/pytest-gmx)
                 f = self.mdp
                 c = self.conf
                 processed = self.processed

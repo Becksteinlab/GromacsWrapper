@@ -16,9 +16,3 @@ class TestAmber03star(TopologyTest):
         processed = datafile('fileformats/top/amber03star/processed.top')
         conf = datafile('fileformats/top/amber03star/conf.gro')
         molecules = ['Protein', 'SOL', 'IB+', 'CA', 'CL', 'NA', 'MG', 'K', 'RB', 'CS', 'LI', 'ZN']
-
-        def test_read_write(self, tmpdir):
-                super(TestAmber03star, self).test_read_write(tmpdir)
-
-        def test_mdrun(self, tmpdir):
-                super(TestAmber03star, self).test_mdrun(tmpdir)
