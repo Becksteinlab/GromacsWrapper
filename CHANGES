@@ -15,6 +15,10 @@ orbeckst
 * removed obsolete staging sub-package (#113)  
 * removed obsolete gromacs.manager module (#115)
 * use versioneer for version management (removed gromacs.version)
+* add mdrun_args option to setup.energy_minimize to pass options to
+  the mdrun that carries out the energy minimization
+* set ff (OPLS/AA) and water model (TIP4P) as defaults for
+  setup.topology()
 
 
 2017-03-23      0.6.2
