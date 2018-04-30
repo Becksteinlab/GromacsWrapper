@@ -1,0 +1,28 @@
+; custom EM
+
+include        = -I. -I.. -I../top
+define         = -DPOSRES -DFLEXSPC
+
+integrator     = cg
+emtol          = 5000
+emstep         = 0.01
+nsteps         = 1000
+nstcgsteep     = 100
+
+constraints              = none
+nstcomm                  = 1
+cutoff-scheme            = Verlet
+vdwtype                  = shift
+coulombtype              = PME
+
+ns_type                  = grid
+rlist                    = 1.0
+rcoulomb                 = 1.0
+rvdw                     = 1.0
+rvdw-switch              = 0.8
+
+Tcoupl                   = no
+Pcoupl                   = no
+gen_vel                  = no
+
+nstxout                  = 0 ; write coords every # step

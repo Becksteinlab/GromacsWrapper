@@ -86,3 +86,14 @@ def test_energy_minimize(energy_minimize):
     assert em_args['mainselection'] == '"Protein"'
     # add more tests for content of files!
 
+def test_energy_minimize_custom_mdp(solvate, nt=2,
+                                    mdp=datafile("custom_em.mdp")):
+    TMPDIR, solvate_args = solvate
+    with TMPDIR.as_cwd():
+        em_args = gromacs.setup.energy_minimize(mdrun_args={'nt': nt},
+                                                mdp=mdp,
+                                                **solvate_args)
+    assert os.path.exists(em_args['struct'])
+    assert os.path.exists(em_args['top'])
+    assert em_args['mainselection'] == '"Protein"'
+    # add more tests for content of files!
