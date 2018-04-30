@@ -92,6 +92,7 @@ def test_energy_minimize_custom_mdp(solvate, nt=2,
     with TMPDIR.as_cwd():
         em_args = gromacs.setup.energy_minimize(mdrun_args={'nt': nt},
                                                 mdp=mdp,
+                                                emtol=5000,
                                                 **solvate_args)
     assert os.path.exists(em_args['struct'])
     assert os.path.exists(em_args['top'])
