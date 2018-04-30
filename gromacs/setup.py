@@ -170,7 +170,9 @@ trj_compact_main = gromacs.tools.Trjconv(ur='compact', center=True, boxcenter='t
 
 def topology(struct=None, protein='protein',
              top='system.top',  dirname='top',
-             posres="posres.itp", **pdb2gmx_args):
+             posres="posres.itp",
+             ff="oplsaa", water="tip4p",
+             **pdb2gmx_args):
     """Build Gromacs topology files from pdb.
 
     :Keywords:
@@ -182,8 +184,13 @@ def topology(struct=None, protein='protein',
            name of the topology file
        *dirname*
            directory in which the new topology will be stored
+       *ff*
+           force field (string understood by ``pdb2gmx``); default
+           "oplsaa"
+       *water*
+           water model (string), default "tip4p"
        *pdb2gmxargs*
-           arguments for ``pdb2gmx`` such as ``ff``, ``water``, ...
+           other arguments for ``pdb2gmx``
 
     .. note::
        At the moment this function simply runs ``pdb2gmx`` and uses
@@ -199,7 +206,8 @@ def topology(struct=None, protein='protein',
     if posres is None:
         posres = protein + '_posres.itp'
 
-    pdb2gmx_args.update({'f': structure, 'o': new_struct, 'p': top, 'i': posres})
+    pdb2gmx_args.update({'f': structure, 'o': new_struct, 'p': top, 'i': posres,
+                         'ff': ff, 'water': water})
 
     with in_dir(dirname):
         logger.info("[{dirname!s}] Building topology {top!r} from struct = {struct!r}".format(**vars()))
@@ -353,7 +361,7 @@ def get_lipid_vdwradii(outdir=os.path.curdir, libdir=None):
 def solvate(struct='top/protein.pdb', top='top/system.top',
             distance=0.9, boxtype='dodecahedron',
             concentration=0, cation='NA', anion='CL',
-            water='spc', solvent_name='SOL', with_membrane=False,
+            water='tip4p', solvent_name='SOL', with_membrane=False,
             ndx = 'main.ndx', mainselection = '"Protein"',
             dirname='solvate',
             **kwargs):
@@ -511,7 +519,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
         with open('none.mdp','w') as mdp:
             mdp.write('; empty mdp file\ninclude = {include!s}\nrcoulomb = 1\nrvdw = 1\nrlist = 1\n'.format(**mdp_kwargs))
         qtotgmx = cbook.grompp_qtot(f='none.mdp', o='topol.tpr', c='solvated.gro',
-                                            p=topology, stdout=False, maxwarn=grompp_maxwarn)
+                                    p=topology, stdout=False, maxwarn=grompp_maxwarn)
         qtot = round(qtotgmx)
         logger.info("[{dirname!s}] After solvation: total charge qtot = {qtotgmx!r} = {qtot!r}".format(**vars()))
 
@@ -601,7 +609,8 @@ def check_mdpargs(d):
 def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
                     struct='solvate/ionized.gro', top='top/system.top',
                     output='em.pdb', deffnm="em",
-                    mdrunner=None, **kwargs):
+                    mdrunner=None, mdrun_args=None,
+                    **kwargs):
     """Energy minimize the system.
 
     This sets up the system (creates run input files) and also runs
@@ -631,6 +640,12 @@ def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
           just try :func:`gromacs.mdrun_d` and :func:`gromacs.mdrun` but a
           MDrunner instance gives the user the ability to run mpi jobs
           etc. [None]
+       *mdrun_args*
+          arguments for *mdrunner* (as a dict), e.g. ``{'nt': 2}``;
+          empty by default
+
+          .. versionaddedd:: 0.7.0
+
        *kwargs*
           remaining key/value pairs that should be changed in the
           template mdp file, eg ``nstxtcout=250, nstfout=250``.
@@ -643,6 +658,8 @@ def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
     topology = realpath(top)
     mdp_template = config.get_template(mdp)
     deffnm = deffnm.strip()
+
+    mdrun_args = {} if mdrun_args is None else mdrun_args
 
     # write the processed topology to the default output
     kwargs.setdefault('pp', 'processed.top')
@@ -659,6 +676,7 @@ def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
     # only interesting when passed from solvate()
     qtot = kwargs.pop('qtot', 0)
 
+    # mdp is now the *output* MDP that will be generated from mdp_template
     mdp = deffnm+'.mdp'
     tpr = deffnm+'.tpr'
 
@@ -678,7 +696,7 @@ def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
         unprocessed = cbook.edit_mdp(mdp_template, new_mdp=mdp, **kwargs)
         check_mdpargs(unprocessed)
         gromacs.grompp(f=mdp, o=tpr, c=structure, p=topology, **unprocessed)
-        mdrun_args = dict(v=True, stepout=10, deffnm=deffnm, c=output)
+        mdrun_args.update(v=True, stepout=10, deffnm=deffnm, c=output)
         if mdrunner is None:
             mdrun = run.get_double_or_single_prec_mdrun()
             mdrun(**mdrun_args)
