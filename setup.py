@@ -55,6 +55,16 @@ setup(name="GromacsWrapper",
                           'six',          # towards py 3 compatibility
                           'numkit',       # numerical helpers
                           ],
+      # also currently requires
+      #
+      #    pip install git+git://github.com/ianmkenney/pytest-gmx.git
+      #
+      # for the low_performance pytest fixture: allows running
+      #
+      #    pytest --low-performance
+      #
+      # so that test are run with 'gmx mdrun -nt 2' as necessary on travis
+      # (instead of the maximum number of threads, as determined by Gromacs)
       tests_require = ['pytest', 'numpy>=1.0', 'pandas>=0.17'],
       zip_safe = True,
 )

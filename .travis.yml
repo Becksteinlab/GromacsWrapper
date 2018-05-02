@@ -12,7 +12,7 @@ env:
   global:
     - PYTHON_VERSION=2.7
     - CODECOV=true
-    - PYTEST_FLAGS="-v --disable-pytest-warnings --durations=20"
+    - PYTEST_FLAGS="-v --disable-pytest-warnings --durations=20 --low-performance"
     - PYTEST_LIST="gromacs/tests"
     - MAIN_CMD="pytest ${PYTEST_LIST}"
     - SETUP_CMD="${PYTEST_FLAGS}"
