@@ -1,8 +1,8 @@
 name: gw
 channels:
-- becksteinlab
+- bioconda
 dependencies:
-- gromacs-5.1.2
+- gromacs
 - numpy>=1.9
 - scipy
 - pandas
