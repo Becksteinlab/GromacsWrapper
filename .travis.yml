@@ -11,8 +11,8 @@ branches:
         - develop
 
 env:
-    - GMX_VERSION=4.6.7
-    - GMX_VERSION=5.1.2
+    - GMX_VERSION=4.6.5
+    - GMX_VERSION=2018
 
 # install python dependencies
 install:
@@ -36,8 +36,13 @@ install:
   - conda create --yes -q -n gw python=$TRAVIS_PYTHON_VERSION numpy scipy pandas
   - source activate gw
 
-  # install becksteinlab Gromacs build
-  - conda install -c becksteinlab gromacs-$GMX_VERSION
+  # install bioconda Gromacs build... Need to set up channels first
+  # per instructions at: https://bioconda.github.io/
+
+  - conda config --add channels defaults
+  - conda config --add channels conda-forge
+  - conda config --add channels bioconda
+  - conda install gromacs=$GMX_VERSION
 
   # install other dependencies through pip
   - pip install numkit
@@ -48,11 +53,9 @@ install:
   - pip install pytest-pep8
   - pip install -e .
 
-  # source gromacs
-  - source $($HOME/get_gmx $GMX_VERSION)
-
 # run tests
 script:
+  - gmx grompp --help
   - py.test --cov gromacs gromacs/tests
 
 after_success:
