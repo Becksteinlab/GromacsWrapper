@@ -38,6 +38,7 @@ install:
   - source activate gw
 
   # install becksteinlab Gromacs build
+  - conda config --add channels conda-forge
   - conda install -c bioconda gromacs=$GMX_VERSION
 
   # install other dependencies through pip
