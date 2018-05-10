@@ -99,6 +99,7 @@ Classes
    :members:
 """
 from __future__ import absolute_import, with_statement, print_function
+from six import string_types
 
 __docformat__ = "restructuredtext en"
 
@@ -252,7 +253,7 @@ class Command(object):
         use_shell = kwargs.pop('use_shell', False)
         if input:
             stdin = PIPE
-            if isinstance(input, basestring) and not input.endswith('\n'):
+            if isinstance(input, string_types) and not input.endswith('\n'):
                 # make sure that input is a simple string with \n line endings
                 input += '\n'
             else:
