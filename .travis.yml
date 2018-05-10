@@ -38,7 +38,7 @@ install:
   - source activate gw
 
   # install becksteinlab Gromacs build
-  - conda install -c bioconda gromacs-$GMX_VERSION
+  - conda install -c bioconda gromacs=$GMX_VERSION
 
   # install other dependencies through pip
   - pip install numkit
@@ -48,9 +48,6 @@ install:
   - pip install pytest-cov
   - pip install pytest-pep8
   - pip install -e .
-
-  # source gromacs
-  - source $($HOME/get_gmx $GMX_VERSION)
 
 # run tests
 script:
