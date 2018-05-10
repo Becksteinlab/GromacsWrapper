@@ -12,8 +12,8 @@ branches:
         - develop
 
 env:
-    - GMX_VERSION=4.6.7
-    - GMX_VERSION=5.1.2
+    - GMX_VERSION=4.6.5
+    - GMX_VERSION=2018
 
 # install python dependencies
 install:
@@ -38,7 +38,7 @@ install:
   - source activate gw
 
   # install becksteinlab Gromacs build
-  - conda install -c becksteinlab gromacs-$GMX_VERSION
+  - conda install -c bioconda gromacs-$GMX_VERSION
 
   # install other dependencies through pip
   - pip install numkit
