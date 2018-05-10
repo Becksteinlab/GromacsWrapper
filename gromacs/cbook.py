@@ -842,7 +842,7 @@ def edit_mdp(mdp, new_mdp=None, extend_parameters=None, **substitutions):
     # None parameters should be ignored (simple way to keep the template defaults)
     substitutions = {k: v for k,v in substitutions.items() if v is not None}
 
-    params = substitutions.keys()[:]   # list will be reduced for each match
+    params = list(substitutions.keys())   # list will be reduced for each match
 
     def demangled(p):
         """Return a RE string that matches the parameter."""
@@ -888,7 +888,7 @@ def edit_mdp(mdp, new_mdp=None, extend_parameters=None, **substitutions):
             target.write((new_line+'\n').encode('ascii'))
     target.seek(0)
     # XXX: Is there a danger of corrupting the original mdp if something went wrong?
-    with open(new_mdp, 'w') as final:
+    with open(new_mdp, 'wb') as final:
         shutil.copyfileobj(target, final)
     target.close()
      # return all parameters that have NOT been substituted

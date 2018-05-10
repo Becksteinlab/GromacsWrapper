@@ -9,8 +9,9 @@ import os.path
 import pytest
 from six.moves import cPickle as pickle
 from six.moves import StringIO
+from collections import Iterable
 
-import numpy
+import numpy as np
 
 import gromacs.utilities
 
@@ -48,14 +49,13 @@ class TestAttributeDict(object):
         self.d['gargl'] = "blaster"
         assert self.d['gargl'] == "blaster"
 
-    def test_pickle(self, string_buffer):
+    def test_pickle(self):
         try:
-            pickle.dump(self.d, string_buffer, pickle.HIGHEST_PROTOCOL)
+            dump = pickle.dumps(self.d, pickle.HIGHEST_PROTOCOL)
         except Exception as err:
-            raise AssertionError("serializing failed: {0}".format(str(err)))
-        string_buffer.seek(0)
+            raise AssertionError("serializing failed: {}".format(err))
         try:
-            d = pickle.load(string_buffer)
+            d = pickle.loads(dump)
         except Exception as err:
             raise AssertionError("de-serializing failed: {0}".format(str(err)))
         assert set(d.keys()) == set(self.d.keys())
@@ -65,7 +65,7 @@ class TestAttributeDict(object):
 @pytest.fixture(params=[(42, int),("42", int), ([42],int) ,
                         (2.7, float), ("2.7", float), ([2.7],float),
                         ("jabberwock", str),(["foo","bar"], str),
-                        ("42 42",int),("2.7 2.7",float),("foo bar",str)],
+                        ("42 42", np.integer),("2.7 2.7",float),("foo bar",str)],
                 ids=["int -> int", "str -> int","int list -> int list",
                      "float -> float", "str -> float", "float list -> float list",
                      "str -> str","str list -> str list",
@@ -77,7 +77,8 @@ def conversions(request):
 
 def test_autoconvert(conversions):
     x, value, target_type = conversions
-    if hasattr(x, '__iter__'): x = x[0]
+    if isinstance(x, Iterable):
+        x = x[0]
     assert isinstance(x, target_type), \
         "Failed to convert '{0}' to type {1}".format(value, target_type)
 
@@ -96,12 +97,18 @@ class TestOpenAny(object):
 
     def test_file(self, tmpdir, openanyfilename):
         filename = openanyfilename
+        name, ext = os.path.splitext(filename)
+        if ext in ['.gz', '.bz2']:
+            quote = self.quote.encode('utf8')
+        else:
+            quote = self.quote
+
         with tmpdir.as_cwd():
             with gromacs.utilities.openany(filename, "w") as datafile:
-                datafile.write(self.quote)
+                datafile.write(quote)
             with gromacs.utilities.openany(filename, "r") as datafile:
                 data = datafile.read()
-        assert data == self.quote
+        assert data == quote
 
     def test_stream_write(self, string_buffer):
         with gromacs.utilities.openany(string_buffer, "w") as datafile:

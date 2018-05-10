@@ -126,6 +126,7 @@ class AttributeDict(dict):
     def __setstate__(self, state):
         self.update(state)
 
+
 def autoconvert(s):
     """Convert input to a numerical type if possible.
 
@@ -141,9 +142,10 @@ def autoconvert(s):
                 return s[0]
             else:
                 return numpy.array(s)
-        except (ValueError,AttributeError):
+        except (ValueError, AttributeError):
             pass
     raise ValueError("Failed to autoconvert {0!r}".format(s))
+
 
 @contextmanager
 def openany(datasource, mode='r', **kwargs):
@@ -212,7 +214,7 @@ def anyopen(datasource, mode='r', **kwargs):
             name, ext = os.path.splitext(filename)
             if ext.startswith(os.path.extsep):
                 ext = ext[1:]
-            if not ext in ('bz2', 'gz'):
+            if ext not in ('bz2', 'gz'):
                 ext = ''   # anything else but bz2 or gz is just a normal file
             openfunc = handlers[ext]
             stream = openfunc(datasource, mode=mode, **kwargs)
