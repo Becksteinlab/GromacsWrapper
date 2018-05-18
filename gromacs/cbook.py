@@ -136,6 +136,7 @@ import warnings
 import tempfile
 import shutil
 import glob
+import six
 
 import logging
 logger = logging.getLogger('gromacs.cbook')
@@ -888,7 +889,8 @@ def edit_mdp(mdp, new_mdp=None, extend_parameters=None, **substitutions):
             target.write((new_line+'\n').encode('ascii'))
     target.seek(0)
     # XXX: Is there a danger of corrupting the original mdp if something went wrong?
-    with open(new_mdp, 'wb') as final:
+    mode = 'wb' if six.PY3 else 'w'
+    with open(new_mdp, mode) as final:
         shutil.copyfileobj(target, final)
     target.close()
      # return all parameters that have NOT been substituted
