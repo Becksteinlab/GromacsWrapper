@@ -70,6 +70,7 @@ import tempfile
 import subprocess
 import atexit
 import logging
+import copy
 
 from . import config
 from .core import GromacsCommand
@@ -325,13 +326,14 @@ else:
 
 # Aliases command names to run unmodified GromacsWrapper scripts on a machine
 # with only 5.x
-for fancy, cmd in registry.items():
-    for c5, c4 in NAMES5TO4.iteritems():
+registry_iter = copy.deepcopy(registry)
+for fancy, cmd in registry_iter.items():
+    for c5, c4 in NAMES5TO4.items():
         # have to check each one, since it's possible there are suffixes
         # like for double precision; cmd.command_name is Gromacs name
         # (e.g. 'convert-tpr') so we need to be careful in the processing below.
         name = cmd.command_name
-        if name.startswith(c5):
+        if cmd.command_name.startswith(c5):
             if c4 == c5:
                 break
             else:
@@ -356,7 +358,7 @@ for name4, name5 in [('G_mindist', 'Mindist'), ('G_dist', 'Distance')]:
 
 
 # Append class doc for each command
-for name in registry.iterkeys():
+for name in registry.keys():
     __doc__ += ".. class:: {0!s}\n    :noindex:\n".format(name)
 
 

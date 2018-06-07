@@ -88,6 +88,7 @@ from __future__ import absolute_import, with_statement
 
 __docformat__ = "restructuredtext en"
 
+import sys
 import os
 import glob
 import fnmatch
@@ -99,6 +100,19 @@ from contextlib import contextmanager
 import bz2, gzip
 import datetime
 import numpy
+
+pyv = sys.version.split('.')[0]
+if int(pyv) > 2:
+    str = str
+    unicode = str
+    bytes = bytes
+    basestring = (str,bytes)
+else:
+    str = str
+    unicode = unicode
+    bytes = str
+    basestring = basestring
+
 
 import logging
 logger = logging.getLogger('gromacs.utilities')
@@ -222,7 +236,7 @@ def anyopen(datasource, mode='r', **kwargs):
 
     return stream, filename
 
-def _get_stream(filename, openfunction=file, mode='r'):
+def _get_stream(filename, openfunction=open, mode='r'):
     try:
         stream = openfunction(filename, mode=mode)
     except IOError:
@@ -272,7 +286,7 @@ def in_dir(directory, create=True):
         try:
             os.chdir(directory)
             logger.debug("Working in {directory!r}...".format(**vars()))
-        except OSError, err:
+        except OSError as err:
             if create and err.errno == errno.ENOENT:
                 os.makedirs(directory)
                 os.chdir(directory)
@@ -540,7 +554,7 @@ def unlink_f(path):
     """Unlink path but do not complain if file does not exist."""
     try:
         os.unlink(path)
-    except OSError, err:
+    except OSError as err:
         if err.errno != errno.ENOENT:
             raise
 
@@ -565,7 +579,7 @@ def mkdir_p(path):
     """
     try:
         os.makedirs(path)
-    except OSError, err:
+    except OSError as err:
         if err.errno != errno.EEXIST:
             raise
 

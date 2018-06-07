@@ -15,7 +15,12 @@ simultaneously for all simulations in the collection.
 """
 
 import os.path
-import cPickle
+import sys
+pyv = sys.version.split('.')[0]
+if int(pyv) > 2:
+    import _pickle as cPickle
+else:
+    import cPickle
 from numpy import all, any
 
 class Collection(list):

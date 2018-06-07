@@ -561,7 +561,7 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
             # fake ionized file ... makes it easier to continue without too much fuzz
             try:
                 os.unlink('ionized.gro')
-            except OSError, err:
+            except OSError as err:
                 if err.errno != errno.ENOENT:
                     raise
             os.symlink('solvated.gro', 'ionized.gro')

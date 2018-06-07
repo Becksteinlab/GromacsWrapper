@@ -78,7 +78,7 @@ class Flags(dict):
     def __setitem__(self,name,value):
         self.get_flag(name).set(value)
     def _itervalues(self):
-        return super(Flags,self).itervalues()
+        return super(Flags,self).items()
     def _items(self):
         return super(Flags,self).items()
     def itervalues(self):
