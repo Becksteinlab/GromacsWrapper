@@ -227,12 +227,17 @@ completely transparent to the user.
 """
 from __future__ import absolute_import, with_statement
 
+import sys
 import os
 import logging
 import re
 import subprocess
 
-from ConfigParser import SafeConfigParser
+pyv = sys.version.split('.')[0]
+if int(pyv) > 2:
+    from configparser import SafeConfigParser
+else:
+    from ConfigParser import SafeConfigParser
 from pkg_resources import resource_filename, resource_listdir
 
 from . import utilities
@@ -581,7 +586,7 @@ def setup(filename=CONFIGNAME):
                cfg.write(configfile)  # write the default file so that user can edit
                msg = "NOTE: GromacsWrapper created the configuration file \n\t%r\n" \
                      "      for you. Edit the file to customize the package." % filename
-               print msg
+               print(msg)
 
      # directories
      for d in config_directories:
