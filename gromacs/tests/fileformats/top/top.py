@@ -67,7 +67,7 @@ class TopologyTest(object):
         def test_basic(self):
                 path = self.processed
                 top = TOP(path)
-                assert top.dict_molname_mol.keys() == self.molecules
+                assert list(top.dict_molname_mol.keys()) == self.molecules
 
         def test_equal(self):
                 """

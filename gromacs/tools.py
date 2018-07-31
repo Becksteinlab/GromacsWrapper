@@ -70,6 +70,7 @@ import tempfile
 import subprocess
 import atexit
 import logging
+import six
 
 from . import config
 from .core import GromacsCommand
@@ -142,13 +143,13 @@ class GromacsCommandMultiIndex(GromacsCommand):
         kwargs = self._fake_multi_ndx(**kwargs)
         super(GromacsCommandMultiIndex, self).__init__(**kwargs)
 
-    def run(self,*args,**kwargs):
+    def run(self, *args, **kwargs):
         kwargs = self._fake_multi_ndx(**kwargs)
         return super(GromacsCommandMultiIndex, self).run(*args, **kwargs)
 
     def _fake_multi_ndx(self, **kwargs):
         ndx = kwargs.get('n')
-        if not (ndx is None or type(ndx) is basestring) and \
+        if not (ndx is None or isinstance(ndx, six.string_types)) and \
            len(ndx) > 1 and 's' in kwargs:
             ndx.append(kwargs.get('s'))
             kwargs['n'] = merge_ndx(*ndx)
@@ -325,8 +326,9 @@ else:
 
 # Aliases command names to run unmodified GromacsWrapper scripts on a machine
 # with only 5.x
-for fancy, cmd in registry.items():
-    for c5, c4 in NAMES5TO4.iteritems():
+# update with temporary directory
+for fancy, cmd in list(registry.items()):
+    for c5, c4 in six.iteritems(NAMES5TO4):
         # have to check each one, since it's possible there are suffixes
         # like for double precision; cmd.command_name is Gromacs name
         # (e.g. 'convert-tpr') so we need to be careful in the processing below.
@@ -345,6 +347,7 @@ for fancy, cmd in registry.items():
         registry['G_{0!s}'.format(fancy.lower())] = registry[fancy]
 
 
+
 # Patching up commands that may be useful to accept multiple index files
 for name4, name5 in [('G_mindist', 'Mindist'), ('G_dist', 'Distance')]:
     if name4 in registry:
@@ -356,11 +359,11 @@ for name4, name5 in [('G_mindist', 'Mindist'), ('G_dist', 'Distance')]:
 
 
 # Append class doc for each command
-for name in registry.iterkeys():
+for name in six.iterkeys(registry):
     __doc__ += ".. class:: {0!s}\n    :noindex:\n".format(name)
 
 
 # Finally add command classes to module's scope
 globals().update(registry)
 __all__ = ['GromacsCommandMultiIndex', 'merge_ndx']
-__all__.extend(registry.keys())
+__all__.extend(list(registry.keys()))

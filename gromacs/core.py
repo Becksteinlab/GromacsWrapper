@@ -98,7 +98,8 @@ Classes
 .. autoclass:: PopenWithInput
    :members:
 """
-from __future__ import absolute_import, with_statement
+from __future__ import absolute_import, with_statement, print_function
+from six import string_types
 
 __docformat__ = "restructuredtext en"
 
@@ -252,7 +253,7 @@ class Command(object):
         use_shell = kwargs.pop('use_shell', False)
         if input:
             stdin = PIPE
-            if isinstance(input, basestring) and not input.endswith('\n'):
+            if isinstance(input, string_types) and not input.endswith('\n'):
                 # make sure that input is a simple string with \n line endings
                 input += '\n'
             else:
@@ -306,11 +307,11 @@ class Command(object):
 
     def help(self,long=False):
         """Print help; same as using ``?`` in ``ipython``. long=True also gives call signature."""
-        print "\ncommand: {0!s}\n\n".format(self.command_name)
-        print self.__doc__
+        print("\ncommand: {0!s}\n\n".format(self.command_name))
+        print(self.__doc__)
         if long:
-            print "\ncall method: command():\n"
-            print self.__call__.__doc__
+            print("\ncall method: command():\n")
+            print(self.__call__.__doc__)
 
     def __call__(self,*args,**kwargs):
         """Run command with the given arguments::
@@ -586,7 +587,7 @@ class GromacsCommand(Command):
                     arglist.extend([flag] + value) # option with value list
                 except TypeError:
                     arglist.extend([flag, value])  # option with single value
-        return map(str, arglist)  # all arguments MUST be strings
+        return list(map(str, arglist))  # all arguments MUST be strings
 
     def _run_command(self,*args,**kwargs):
         """Execute the gromacs command; see the docs for __call__."""

@@ -126,6 +126,11 @@ and compile::
    cd package/doc/sphinx
    make html
 
+PYTHON 3
+=======
+
+Python 3 support is still in alpha state currently
+
 
 
 Citing

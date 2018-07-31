@@ -498,7 +498,7 @@ class XVG(utilities.FileUtils):
                     raise NotImplementedError('{0!s}: Multi-data not supported, only simple NXY format.'.format(self.real_filename))
                 # parse line as floats
                 try:
-                    row = map(float, line.split())
+                    row = [float(el) for el in line.split()]
                 except:
                     if self.permissive:
                         self.logger.warn("%s: SKIPPING unparsable line %d: %r",

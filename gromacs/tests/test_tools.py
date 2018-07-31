@@ -10,7 +10,7 @@ import pytest
 import gromacs
 
 common_tool_names = ["pdb2gmx", "grompp", "editconf", "mdrun"]
-aliased_tool_names = gromacs.tools.NAMES5TO4.values()
+aliased_tool_names = list(gromacs.tools.NAMES5TO4.values())
 
 @pytest.fixture(scope="module",
                 params=set(common_tool_names + aliased_tool_names))

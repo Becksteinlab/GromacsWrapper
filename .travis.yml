@@ -3,6 +3,7 @@ sudo: false
 
 python:
   - "2.7"
+  - "3.6"
 
 # whitelist
 branches:
@@ -11,8 +12,13 @@ branches:
         - develop
 
 env:
-    - GMX_VERSION=4.6.7
-    - GMX_VERSION=5.1.2
+    - GMX_VERSION=4.6.5
+    - GMX_VERSION=2018
+
+matrix:
+  fast_finish: true
+  allow_failures:
+    - env: GMX_VERSION=2018
 
 # install python dependencies
 install:
@@ -37,7 +43,8 @@ install:
   - source activate gw
 
   # install becksteinlab Gromacs build
-  - conda install -c becksteinlab gromacs-$GMX_VERSION
+  - conda config --add channels conda-forge
+  - conda install -c bioconda gromacs=$GMX_VERSION
 
   # install other dependencies through pip
   - pip install numkit
@@ -47,9 +54,6 @@ install:
   - pip install pytest-cov
   - pip install pytest-pep8
   - pip install -e .
-
-  # source gromacs
-  - source $($HOME/get_gmx $GMX_VERSION)
 
 # run tests
 script:

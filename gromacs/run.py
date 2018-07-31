@@ -311,7 +311,6 @@ class MDrunnerMpich2Smpd(MDrunner):
         return rc
 
 
-
 def check_mdrun_success(logfile):
     """Check if ``mdrun`` finished successfully.
 
@@ -326,21 +325,15 @@ def check_mdrun_success(logfile):
     :Returns: ``True`` if all ok, ``False`` if not finished, and
               ``None`` if the *logfile* cannot be opened
     """
-    status = False
-    try:
-        log = open(logfile)
-    except IOError:
+    if not os.path.exists(logfile):
         return None
-    try:
-        log.seek(-1024L, 2)
+    with open(logfile, 'rb') as log:
+        log.seek(-1024, 2)
         for line in log:
+            line = line.decode('ASCII')
             if line.startswith("Finished mdrun on"):
-                status = True
-                break
-    finally:
-        log.close()
-
-    return status
+                return True
+    return False
 
 
 def get_double_or_single_prec_mdrun():
