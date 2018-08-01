@@ -39,7 +39,7 @@ running simulations with sensible parameters.
 .. |docs| image:: https://readthedocs.org/projects/gromacswrapper/badge/?version=latest
    :target: https://gromacswrapper.readthedocs.org/en/latest/?badge=latest
    :alt: Documentation
-.. |PRsWelcome| image:: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
+.. |PRsWelcome| image:: https://img.shields.io/badge/PRs-welcome-brightgreen.svg
    :target: http://makeapullrequest.com
    :alt: PRs Welcome!
 
