@@ -103,6 +103,11 @@ your own development::
 
   git clone git://github.com/Becksteinlab/GromacsWrapper.git
 
+Questions
+=========
+
+Please ask questions in the `Issue Tracker`_ (instead of private email).
+
 
 Reporting Bugs and Contributing to GromacsWrapper
 =================================================
