@@ -7,7 +7,7 @@
  README: GromacsWrapper
 ========================
 
-|build| |cov| |docs| |zenodo| 
+|build| |cov| |docs| |zenodo| |PRsWelcome|
 
 A primitive wrapper around the Gromacs tools until we have proper
 python bindings. It also provides a small library (cook book) of
