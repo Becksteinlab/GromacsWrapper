@@ -39,6 +39,9 @@ running simulations with sensible parameters.
 .. |docs| image:: https://readthedocs.org/projects/gromacswrapper/badge/?version=latest
    :target: https://gromacswrapper.readthedocs.org/en/latest/?badge=latest
    :alt: Documentation
+.. |PRsWelcome| image:: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
+   :target: http://makeapullrequest.com
+   :alt: PRs Welcome!
 
 Licence
 =======
@@ -115,7 +118,8 @@ Reporting Bugs and Contributing to GromacsWrapper
 Please use the `Issue Tracker`_ to report bugs, installation problems,
 and feature requests.
 
-**Pull requests** for bug fixes and enhancements are very welcome.
+**Pull requests** for bug fixes and enhancements are very welcome. See http://makeapullrequest.com for a 
+general introduction on how make a pull request and contribute to open source projects.
 
 .. _Issue Tracker: http://github.com/Becksteinlab/GromacsWrapper/issues
 
