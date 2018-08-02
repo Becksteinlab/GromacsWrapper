@@ -12,7 +12,7 @@ env:
   global:
     - PYTHON_VERSION=2.7
     - CODECOV=true
-    - PYTEST_FLAGS="-v --disable-pytest-warnings --durations=20 --low-performance"
+    - PYTEST_FLAGS="-v --disable-pytest-warnings --durations=20 --low-performance --cov=gromacs"
     - PYTEST_LIST="gromacs/tests"
     - MAIN_CMD="pytest ${PYTEST_LIST}"
     - SETUP_CMD="${PYTEST_FLAGS}"
@@ -27,17 +27,21 @@ env:
 
   matrix:
     # use ci-helper's PACKAGENAME_VERSION magic to pin the 'gromacs' package
-    - GROMACS_VERSION=4.6.5   PYTHON_VERSION=2.7 SETUP_CMD="${PYTEST_FLAGS} --cov=gromacs"
-    - GROMACS_VERSION=2018.2  PYTHON_VERSION=2.7 SETUP_CMD="${PYTEST_FLAGS} --cov=gromacs"
-    - GROMACS_VERSION=4.6.5   PYTHON_VERSION=3.6 SETUP_CMD="${PYTEST_FLAGS} --cov=gromacs"
-    - GROMACS_VERSION=2018.2  PYTHON_VERSION=3.6 SETUP_CMD="${PYTEST_FLAGS} --cov=gromacs"
+    - GROMACS_VERSION=4.6.5   PYTHON_VERSION=2.7
+    - GROMACS_VERSION=2018.2  PYTHON_VERSION=2.7 CODECOV=false
+    - GROMACS_VERSION=4.6.5   PYTHON_VERSION=3.6
+    - GROMACS_VERSION=2018.2  PYTHON_VERSION=3.6 CODECOV=false
 
 
 matrix:
   fast_finish: true
   allow_failures:
-    - env: GROMACS_VERSION=2018.2 PYTHON_VERSION=2.7
-    - env: GROMACS_VERSION=2018.2 PYTHON_VERSION=3.6
+    - env: GROMACS_VERSION=2018.2  PYTHON_VERSION=2.7 CODECOV=false
+    - env: GROMACS_VERSION=2018.2  PYTHON_VERSION=3.6 CODECOV=false
+    - env: GROMACS_VERSION=4.6.5   PYTHON_VERSION=3.6
+    - os: osx
+      env: GROMACS_VERSION=4.6.5 PYTHON_VERSION=3.6
+
 
   include:
     # note: no OSX Gromacs 2018 packages on bioconda https://anaconda.org/bioconda/gromacs/files
