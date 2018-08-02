@@ -648,7 +648,7 @@ def set_gmxrc_environment(gmxrc):
         out = subprocess.check_output(cmdargs)
         out = out.strip().split()
         for key, value in zip(envvars, out):
-            value = value.replace('___', '')  # remove sentinels
+            value = str(value.decode('ascii').replace('___', ''))  # remove sentinels
             os.environ[key] = value
             logger.debug("set_gmxrc_environment(): %s = %r", key, value)
     except (subprocess.CalledProcessError, OSError):
