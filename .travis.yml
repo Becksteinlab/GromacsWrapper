@@ -1,9 +1,6 @@
-language: python
+language: generic
+group: travis_latest
 sudo: false
-
-python:
-  - "2.7"
-  - "3.6"
 
 # whitelist
 branches:
@@ -12,52 +9,55 @@ branches:
         - develop
 
 env:
-    - GMX_VERSION=4.6.5
-    - GMX_VERSION=2018
+  global:
+    # Set default python version to avoid repetition later
+    - PYTHON_VERSION=2.7
+    - CODECOV=true
+    - PYTEST_FLAGS="--disable-pytest-warnings --numprocesses 2 --durations=20"
+    - MAIN_CMD="pytest ${PYTEST_LIST}"
+    - SETUP_CMD="${PYTEST_FLAGS}"
+    - BUILD_CMD="pip install -v ."
+    - CONDA_DEPENDENCIES="six scipy pandas"
+    - CONDA_CHANNELS='conda-forge'
+    - CONDA_CHANNEL_PRIORITY=True
+    - PIP_DEPENDENCIES="numkit codecov"
+    - NUMPY_VERSION=stable
+
+  matrix:
+    - GMX_VERSION=4.6.5 PYTHON_VERSION=2.7 SETUP_CMD="${PYTEST_FLAGS} --cov=gromacs"
+    - GMX_VERSION=2018  PYTHON_VERSION=2.7 SETUP_CMD="${PYTEST_FLAGS} --cov=gromacs"
+    - GMX_VERSION=4.6.5 PYTHON_VERSION=3.6 SETUP_CMD="${PYTEST_FLAGS} --cov=gromacs"
+    - GMX_VERSION=2018  PYTHON_VERSION=2.7 SETUP_CMD="${PYTEST_FLAGS} --cov=gromacs"
+
 
 matrix:
   fast_finish: true
   allow_failures:
     - env: GMX_VERSION=2018
 
-# install python dependencies
+  include:
+    - os: osx
+      env: GMX_VERSION=4.6.5 PYTHON_VERSION=3.6
+    - os: osx
+      env: GMX_VERSION=4.6.5 PYTHON_VERSION=2.7
+    
 install:
-  # We do this conditionally because it saves us some downloading if the
-  # version is the same.
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
-      wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
-    else
-      wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-    fi
-  - bash miniconda.sh -b -p $HOME/miniconda
-  - export PATH="$HOME/miniconda/bin:$PATH"
-  - hash -r
-  - conda config --set always_yes yes --set changeps1 no
-  - conda update -q conda
-  # Useful for debugging any issues with conda
-  - conda info -a
+  - git clone git://github.com/astropy/ci-helpers.git
+  - source ci-helpers/travis/setup_conda.sh
+  # install GromacsWrapper
+  - eval $BUILD_CMD
+  # install specific Gromacs build
+  - conda install -c bioconda gromacs=$GMX_VERSION  
 
-  # scipy is not a direct dependency but indirectly through numkit
-  # (but we do not have a numkit conda package yet so we pull scipy here)
-  - conda create --yes -q -n gw python=$TRAVIS_PYTHON_VERSION numpy scipy pandas
-  - source activate gw
 
-  # install becksteinlab Gromacs build
-  - conda config --add channels conda-forge
-  - conda install -c bioconda gromacs=$GMX_VERSION
-
-  # install other dependencies through pip
-  - pip install numkit
-
-  # install test tools
-  - pip install codecov
-  - pip install pytest-cov
-  - pip install pytest-pep8
-  - pip install -e .
-
-# run tests
 script:
-  - py.test --cov gromacs gromacs/tests
+  - cd ${TRAVIS_BUILD_DIR}
+  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then ulimit -S -n 2048; fi
+  - echo $MAIN_CMD $SETUP_CMD
+  - eval $MAIN_CMD $SETUP_CMD
 
 after_success:
-  - codecov
+  - |
+    if [[ $CODECOV == 'true' ]]; then \
+      codecov; \
+    fi
