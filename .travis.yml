@@ -49,9 +49,6 @@ matrix:
 install:
   - git clone --depth 1 git://github.com/astropy/ci-helpers.git
   - source ci-helpers/travis/setup_conda.sh
-  # install test tools (explicit instead of PIP_DEPENDENCIES because
-  # this is temporary until #137 is solved)
-  - pip install git+git://github.com/ianmkenney/pytest-gmx.git  
   - eval $BUILD_CMD
 
 script:
