@@ -195,7 +195,7 @@ def find_executables(path):
 
 
 def load_v5_tools():
-    """ Load Gromacs 5.x tools automatically using some heuristic.
+    """ Load Gromacs 2018/2016/5.x tools automatically using some heuristic.
 
     Tries to load tools (1) using the driver from configured groups (2) and
     falls back to automatic detection from ``GMXBIN`` (3) then to rough guesses.
@@ -204,7 +204,7 @@ def load_v5_tools():
 
     :return: dict mapping tool names to GromacsCommand classes
     """
-    logger.debug("Loading v5 tools...")
+    logger.debug("Loading 2018/2016/5.x tools...")
 
     drivers = config.get_tool_names()
 
@@ -219,7 +219,8 @@ def load_v5_tools():
         try:
             out = subprocess.check_output([driver, '-quiet', 'help',
                                            'commands'])
-            for line in str(out).encode('ascii').splitlines()[5:-1]:
+            for line in out.splitlines()[5:-1]:
+                line = str(line.decode('ascii'))   # Python 3: byte string -> str, Python 2: normal string
                 if line[4] != ' ':
                     name = line[4:line.index(' ', 4)]
                     fancy = make_valid_identifier(name)
@@ -231,7 +232,7 @@ def load_v5_tools():
             pass
 
     if not tools:
-        errmsg = "Failed to load v5 tools"
+        errmsg = "Failed to load 2018/2016/5.x tools (tried drivers: {})".format(drivers)
         logger.debug(errmsg)
         raise GromacsToolLoadingError(errmsg)
     logger.debug("Loaded {0} v5 tools successfully!".format(len(tools)))
@@ -304,7 +305,7 @@ def merge_ndx(*args):
 
 
 # Load tools
-if config.MAJOR_RELEASE == '5':
+if config.MAJOR_RELEASE in ('5', '2016', '2018'):
     logger.debug("Trying to load configured Gromacs major release {0}".format(
         config.MAJOR_RELEASE))
     registry = load_v5_tools()
@@ -313,7 +314,7 @@ elif config.MAJOR_RELEASE == '4':
         config.MAJOR_RELEASE))
     registry = load_v4_tools()
 else:
-    logger.debug("No major release configured: trying 5 -> 4")
+    logger.debug("No major release configured: trying 2018/2016/5.x -> 4.x")
     try:
         registry = load_v5_tools()
     except GromacsToolLoadingError:
