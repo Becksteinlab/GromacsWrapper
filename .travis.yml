@@ -36,7 +36,6 @@ env:
 matrix:
   fast_finish: true
   allow_failures:
-    - env: GROMACS_VERSION=2018.2  PYTHON_VERSION=2.7 CODECOV=false
     - env: GROMACS_VERSION=2018.2  PYTHON_VERSION=3.6 CODECOV=false
     - env: GROMACS_VERSION=4.6.5   PYTHON_VERSION=3.6
     - os: osx
