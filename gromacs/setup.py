@@ -695,7 +695,7 @@ def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
     with in_dir(dirname):
         unprocessed = cbook.edit_mdp(mdp_template, new_mdp=mdp, **kwargs)
         check_mdpargs(unprocessed)
-        gromacs.grompp(f=mdp, o=tpr, c=structure, p=topology, **unprocessed)
+        gromacs.grompp(f=mdp, o=tpr, c=structure, r=structure, p=topology, **unprocessed)
         mdrun_args.update(v=True, stepout=10, deffnm=deffnm, c=output)
         if mdrunner is None:
             mdrun = run.get_double_or_single_prec_mdrun()

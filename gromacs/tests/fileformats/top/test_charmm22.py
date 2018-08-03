@@ -14,6 +14,3 @@ class TestCharmm22st(TopologyTest):
         processed = datafile('fileformats/top/charmm22st/processed.top')
         conf = datafile('fileformats/top/charmm22st/conf.gro')
         molecules = ['SOL', 'Protein', 'Ion', 'Cal', 'Ces', 'CL', 'K', 'NA', 'ZN']
-
-        def test_read_write(self, tmpdir):
-                super(TestCharmm22st, self).test_read_write(tmpdir)
