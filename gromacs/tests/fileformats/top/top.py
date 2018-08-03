@@ -20,18 +20,20 @@ from gromacs.scaling import partial_tempering
 
 from ...datafiles import datafile
 
-def helper(attr, attr1, attr2):
-        print(attr)
+def errmsg_helper(attr, attr1, attr2):
+        msg = ["attr = " + str(attr)]
         for pair in zip(attr1, attr2):
-                if pair[0] == pair[1]: continue
-                print(pair)
+                if pair[0] == pair[1]:
+                        continue
+                msg.append(str(pair))
+        return "\n".join(msg)
 
-def grompp(f, c, p, prefix="topol"):
+def grompp(f, c, p, prefix="topol", **kwargs):
         s = prefix + '.tpr'
         po = prefix + '.mdp'
 
-        rc, output, junk = gromacs.grompp(f=f, p=p, c=c, o=s, po=po, stdout=False, stderr=False)
-        #print(rc, output, junk)
+        rc, output, junk = gromacs.grompp(f=f, p=p, c=c, o=s, po=po, stdout=False, stderr=False,
+                                          **kwargs)
         assert rc == 0, \
                 "grompp -o {0} -po {1} -f {2} -c {3} -p {4} failed".format(s, po, f, c, p)
         return s
@@ -140,7 +142,7 @@ class TopologyTest(object):
                         for attr in attrs1:
                                 attr1 = getattr(top1, attr)
                                 attr2 = getattr(top2, attr)
-                                assert attr1 == attr2, helper(attr, attr1, attr2)
+                                assert attr1 == attr2, errmsg_helper(attr, attr1, attr2)
 
         def test_grompp(self, tmpdir):
                 """Check if grompp can be run successfully at all"""
@@ -157,17 +159,13 @@ class TopologyTest(object):
                 """Check if grompp can be run successfully at all"""
                 # set low_performance with
                 #
-                #    pytest --low-performance
+                #    pytest --low-performance gromacs/tests
                 #
-                # (needs plugin https://github.com/ianmkenney/pytest-gmx)
                 f = self.mdp
                 c = self.conf
                 processed = self.processed
 
-                if low_performance:
-                    nt = 2
-                else:
-                    nt = 0
+                nt = 2 if low_performance else 0
 
                 with tmpdir.as_cwd():
                         tpr = grompp(f, c, processed, prefix="reference")
@@ -190,7 +188,7 @@ class TopologyTest(object):
                         args = Namespace(banned_lines='', input=processed,
                                          output=scaled, scale_lipids=1.0, scale_protein=0.5)
                         partial_tempering(args)
-                        tpr = grompp(f, c, scaled, prefix="scaled")
+                        tpr = grompp(f, c, scaled, prefix="scaled", maxwarn=1)
                         df3 = rerun_energy(tpr, reference_trr, prefix="scaled", nt=nt)
                         # print(df1, df1.columns)
                         # print(df3, df3.columns)
