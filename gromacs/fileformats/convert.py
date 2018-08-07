@@ -38,15 +38,27 @@ provided with the constructor keyword *mapping*.
 .. autofunction:: to_unicode
 
 """
+import six
 
 import re
 
-def to_unicode(obj, encoding='utf-8'):
-    """Convert obj to unicode (if it can be be converted)
+def to_unicode(obj):
+    """Convert obj to unicode (if it can be be converted).
 
-    from http://farmdev.com/talks/unicode/"""
-    if isinstance(obj, basestring) and not isinstance(obj, unicode):
-        obj = unicode(obj, encoding)
+    Conversion is only attempted if `obj` is a string type (as
+    determined by :data:`six.string_types`).
+
+    .. versionchanged:: 0.7.0
+       removed `encoding keyword argument
+
+    """
+    if not isinstance(obj, six.string_types):
+        return obj
+
+    try:
+        obj = six.text_type(obj)
+    except TypeError:
+        pass
     return obj
 
 class Autoconverter(object):
@@ -84,7 +96,8 @@ class Autoconverter(object):
     spaces.
 
     **Example**
-       - With *sep* = ``True``: 'foo bar 22  boing ``---``' --> ('foo', 'boing', 22, None)
+
+       - With *sep* = ``True``: 'foo bar 22  boing ``---``' --> ('foo', 'bar', 22, 'boing', None)
        - With *sep* = ',':       1,2,3,4 --> (1,2,3,4)
 
     """
@@ -119,11 +132,12 @@ class Autoconverter(object):
               character to split on (produces lists); use ``True`` or ``None``
               (!) to split on all white space.
 
-          *encoding*
-              encoding of the input data [utf-8]
+
+        .. versionchanged:: 0.7.0
+           removed `encoding keyword argument
 
         """
-        self._convertors = {'unicode': unicode,
+        self._convertors = {'unicode': to_unicode,
                             'simple': besttype,
                             'singlet': self._convert_singlet,
                             'fancy': self._convert_fancy,
@@ -134,7 +148,6 @@ class Autoconverter(object):
                        'True':True, 'x': True, 'X':True, 'yes':True, 'Present':True, 'present':True,
                        'False':False, 'no': False, '-':False, 'None':False, 'none':False, }
         self.mapping = mapping
-        self.encoding = kwargs.pop('encoding', "utf-8")
         self.mode = mode
         self.__active = None
         self.active = kwargs.pop('autoconvert', active)   # 'autoconvert' is a "strong" alias of 'active'
@@ -156,7 +169,7 @@ class Autoconverter(object):
     active = property(**active())
 
     def _convert_singlet(self, s):
-        x = besttype(s, self.encoding)
+        x = besttype(s)
         try:
             return self.mapping[x]
         except KeyError:
@@ -175,7 +188,7 @@ class Autoconverter(object):
         #print "%r --> %r" % (field, x)
         return x
 
-def besttype(x, encoding="utf-8"):
+def besttype(x):
     """Convert string x to the most useful type, i.e. int, float or unicode string.
 
     If x is a quoted string (single or double quotes) then the quotes
@@ -183,12 +196,12 @@ def besttype(x, encoding="utf-8"):
 
     .. Note::
 
-       Strings will be returned as Unicode strings (using :func:`unicode`),
-       based on the *encoding* argument, which is "utf-8" by default.
+       Strings will be returned as Unicode strings (using :func:`to_unicode`).
+
+    .. versionchanged:: 0.7.0
+       removed `encoding keyword argument
     """
-    def unicodify(x):
-        return to_unicode(x, encoding)
-    x = unicodify(x)  # make unicode as soon as possible
+    x = to_unicode(x)  # make unicode as soon as possible
     try:
         x = x.strip()
     except AttributeError:
@@ -196,14 +209,14 @@ def besttype(x, encoding="utf-8"):
     m = re.match(r"""['"](?P<value>.*)["']$""", x)
     if m is None:
         # not a quoted string, try different types
-        for converter in int, float, unicodify:   # try them in increasing order of lenience
+        for converter in int, float, to_unicode:   # try them in increasing order of lenience
             try:
                 return converter(x)
             except ValueError:
                 pass
     else:
         # quoted string
-        x = unicodify(m.group('value'))
+        x = to_unicode(m.group('value'))
     return x
 
 
