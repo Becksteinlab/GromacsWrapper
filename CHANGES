@@ -16,6 +16,7 @@ orbeckst, kain88-de, ianmkenney
   https://github.com/Becksteinlab/remote-vmd 
 * removed obsolete staging sub-package (#113)  
 * removed obsolete gromacs.manager module (#115)
+* removed obsolete fileformats.itp (and fileformats.preprocessor) (#139)
 * use versioneer for version management (removed gromacs.version)
 * add mdrun_args option to setup.energy_minimize to pass options to
   the mdrun that carries out the energy minimization

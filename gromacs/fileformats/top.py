@@ -1360,10 +1360,3 @@ class SystemToGroTop(object):
 
         result.insert(0,'; {0:5d} cmaps\n'.format(len(result)))
         return result
-
-
-
-if __name__ == '__main__':
-    import sys
-    grotop = GroTop(sys.argv[1])
-    print(grotop)

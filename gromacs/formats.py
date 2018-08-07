@@ -39,8 +39,6 @@ Classes
    :members:
 .. autoclass:: MDP
    :members:
-.. autoclass:: ITP
-   :members:
 .. autoclass:: XPM
    :members:
 .. autoclass:: TOP
@@ -51,8 +49,8 @@ from __future__ import absolute_import
 
 __docformat__ = "restructuredtext en"
 
-__all__ = ["XVG", "MDP", "NDX", "uniqueNDX", "ITP", "XPM", "TOP"]
+__all__ = ["XVG", "MDP", "NDX", "uniqueNDX", "XPM", "TOP"]
 
-from .fileformats import XVG, MDP, NDX, uniqueNDX, ITP, XPM, TOP
+from .fileformats import XVG, MDP, NDX, uniqueNDX, XPM, TOP
 
 
