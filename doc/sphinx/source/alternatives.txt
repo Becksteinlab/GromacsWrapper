@@ -16,6 +16,11 @@ MDAnalysis_ (N. Michaud-Agrawal, E. J. Dennning, and O. Beckstein)
   available as numpy_ arrays. It also has a fairly sophisticated
   selection language, similar to Charmm_ or VMD_.
 
+ParmEd_
+  A general tool for working with topology files for all the popular
+  MD codes, including the `parmed.gromacs`_ module for ITP and TOP
+  files.
+    
 pymacs_ (Daniel Seeliger)
    pymacs is a python module for dealing with structure files and
    trajectory data from the GROMACS molecular dynamics package. It has
@@ -139,4 +144,5 @@ they can be added here. Thanks.
 .. _Charmm: http://www.charmm.org
 .. _Gromacs: http://www.gromacs.org
 .. _issue tracker: https://github.com/Becksteinlab/GromacsWrapper/issues
-
+.. _ParmEd: http://parmed.github.io/ParmEd/html/index.html
+.. _parmed.gromacs: http://parmed.github.io/ParmEd/html/api/parmed/parmed.gromacs.html
