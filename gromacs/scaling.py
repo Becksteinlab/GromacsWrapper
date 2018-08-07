@@ -20,7 +20,7 @@ simulations with Hamiltonian replicate exchange and partial tempering
 .. autofunction:: partial_tempering
 
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, division
 
 import math
 import copy
@@ -102,10 +102,10 @@ def scale_impropers(mol, impropers, scale, banned_lines=None):
                                 a1=atypes[0]; a2=atypes[1]; a3=atypes[2]; a4=atypes[3];
                         else:
                                 a1=atypes[3]; a2=atypes[2]; a3=atypes[1]; a4=atypes[0];
-                        if((iswitch/2)%2==1): a1="X";
-                        if((iswitch/4)%2==1): a2="X";
-                        if((iswitch/8)%2==1): a3="X";
-                        if((iswitch/16)%2==1): a4="X";
+                        if((iswitch//2)%2==1): a1="X";
+                        if((iswitch//4)%2==1): a2="X";
+                        if((iswitch//8)%2==1): a3="X";
+                        if((iswitch//16)%2==1): a4="X";
                         key = "{0}-{1}-{2}-{3}-{4}".format(a1, a2, a3, a4, im.gromacs['func'])
                         if (key in impropers):
                                 for i, imt in enumerate(impropers[key]):

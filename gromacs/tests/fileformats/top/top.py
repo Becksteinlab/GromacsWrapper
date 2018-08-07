@@ -16,7 +16,7 @@ import pytest
 
 import gromacs
 from gromacs.fileformats import TOP, XVG
-from gromacs.scaling import partial_tempering
+from gromacs import scaling
 
 from ...datafiles import datafile
 
@@ -175,7 +175,7 @@ class TopologyTest(object):
                         scaled = "scaled.top"
                         args = Namespace(banned_lines='', input=processed, output=scaled,
                                          scale_lipids=1.0, scale_protein=1.0)
-                        partial_tempering(args)
+                        scaling.partial_tempering(args)
 
                         assert os.path.exists(scaled), "failed to produce {0}".format(scaled)
 
@@ -187,7 +187,7 @@ class TopologyTest(object):
                         scaled = "scaled.top"
                         args = Namespace(banned_lines='', input=processed,
                                          output=scaled, scale_lipids=1.0, scale_protein=0.5)
-                        partial_tempering(args)
+                        scaling.partial_tempering(args)
                         tpr = grompp(f, c, scaled, prefix="scaled", maxwarn=1)
                         df3 = rerun_energy(tpr, reference_trr, prefix="scaled", nt=nt)
                         # print(df1, df1.columns)
