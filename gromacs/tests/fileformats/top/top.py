@@ -58,11 +58,6 @@ def rerun_energy(s, o, prefix, nt=0):
 
         return XVG(xvg).to_df()
 
-class Namespace(object):
-        def __init__(self, **kwargs):
-                self.__dict__.update(kwargs)
-
-
 class TopologyTest(object):
         mdp = datafile('fileformats/top/grompp.mdp')
 
@@ -173,9 +168,9 @@ class TopologyTest(object):
                         df1 = rerun_energy(tpr, reference_trr, prefix="reference", nt=nt)
 
                         scaled = "scaled.top"
-                        args = Namespace(banned_lines='', input=processed, output=scaled,
-                                         scale_lipids=1.0, scale_protein=1.0)
-                        scaling.partial_tempering(args)
+                        kwargs = dict(banned_lines='', topfile=processed, outfile=scaled,
+                                      scale_lipids=1.0, scale_protein=1.0)
+                        scaling.partial_tempering(**kwargs)
 
                         assert os.path.exists(scaled), "failed to produce {0}".format(scaled)
 
@@ -185,9 +180,9 @@ class TopologyTest(object):
                         assert_frame_equal(df1, df2, check_names=True, check_like=True)
 
                         scaled = "scaled.top"
-                        args = Namespace(banned_lines='', input=processed,
-                                         output=scaled, scale_lipids=1.0, scale_protein=0.5)
-                        scaling.partial_tempering(args)
+                        kwargs = dict(banned_lines='', topfile=processed,
+                                      outfile=scaled, scale_lipids=1.0, scale_protein=0.5)
+                        scaling.partial_tempering(**kwargs)
                         tpr = grompp(f, c, scaled, prefix="scaled", maxwarn=1)
                         df3 = rerun_energy(tpr, reference_trr, prefix="scaled", nt=nt)
                         # print(df1, df1.columns)

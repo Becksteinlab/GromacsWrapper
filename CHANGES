@@ -21,6 +21,7 @@ orbeckst, kain88-de, ianmkenney
   the mdrun that carries out the energy minimization
 * set ff (OPLS/AA) and water model (TIP4P) as defaults for
   setup.topology()
+* changed call signature of scaling.partial_tempering() (PR #138)
 
 
 2017-03-23      0.6.2
