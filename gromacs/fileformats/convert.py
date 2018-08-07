@@ -2,16 +2,23 @@
 # Copyright (c) 2012 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
+
 """
 :mod:`gromacs.fileformats.convert` --- converting entries of tables
 ===================================================================
 
-The :class:`Autoconverter` class was taken and slightly adapted from
-RecSQL_, :mod:`recsql.converter`. It is mainly used by
-:class:`gromacs.fileformats.xpm.XPM` to automagically generate useful
-NumPy arrays from xpm files. Custom conversions beyond the default
-ones in :class:`Autoconverter` can be provided with the constructor
-keyword *mapping*.
+
+The :class:`Autoconverter` converts input values to appropriate Python
+types.
+
+It is mainly used by :class:`gromacs.fileformats.xpm.XPM`
+to automagically generate useful NumPy arrays from xpm files. Custom
+conversions beyond the default ones in :class:`Autoconverter` can be
+provided with the constructor keyword *mapping*.
+
+.. SeeAlso::
+   The :class:`Autoconverter` class was taken and slightly adapted from
+   `recsql.converter` in RecSQL_.
 
 .. _RecSQL: http://orbeckst.github.com/RecSQL/
 
@@ -29,6 +36,7 @@ keyword *mapping*.
 
 .. autofunction:: besttype
 .. autofunction:: to_unicode
+
 """
 
 import re
