@@ -2,8 +2,8 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
-2018-xx-xx      0.7.0
-orbeckst, kain88-de, ianmkenney
+2018-08-08      0.7.0
+orbeckst, dldotson, kain88-de, ianmkenney
 
 * support Python 3 (#44)
 * support Gromacs 2018 (and likely also Gromacs 2016) (#96)
