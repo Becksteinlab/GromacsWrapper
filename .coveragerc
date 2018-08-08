@@ -15,4 +15,4 @@ exclude_lines =
 omit =
     gromacs/tests/*
     # omit the versioneer-installed _version.py
-    src/numkit/_version.py
+    gromacs/_version.py
