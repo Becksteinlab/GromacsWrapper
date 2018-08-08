@@ -150,6 +150,23 @@ class Command(object):
         If this does not work (as for instance for the options of the
         UNIX ``find`` command) then provide options and values in the
         sequence of positional arguments.
+
+
+        *Example*
+
+        Create a ``Ls`` class whose instances execute the ``ls`` command::
+
+          LS = type("LS", (gromacs.core.Command,), {'command_name': 'ls'})
+          ls = LS()
+          ls()        # lists directory like ls
+          ls(l=True)  # lists directory like ls -l
+
+        Now create an instance that performs a long directory listing by
+        default::
+
+          lslong = LS(l=True)
+          lslong()    # like ls -l
+
         """
 
         self.args = args
@@ -305,7 +322,7 @@ class Command(object):
                 options.extend((option, str(value)))         # POSIX style
         return options + list(args)
 
-    def help(self,long=False):
+    def help(self, long=False):
         """Print help; same as using ``?`` in ``ipython``. long=True also gives call signature."""
         print("\ncommand: {0!s}\n\n".format(self.command_name))
         print(self.__doc__)
