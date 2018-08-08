@@ -23,4 +23,21 @@ def test_tools_help(gromacs_tool):
     assert out + err, "Gromacs command {0} produced no output for -h".format(
         gromacs_tool.command_name)
 
+def test_failure_raises():
+    # unknown option
+    with pytest.raises(gromacs.GromacsError):
+        gromacs.grompp(y=True)
 
+def test_failure_warns():
+    # unknown option
+    grompp_warn = gromacs.tools.Grompp(failure="warn")
+    with pytest.warns(gromacs.GromacsFailureWarning):
+        grompp_warn(y=True)
+
+def test_failure_ignore():
+    # unknown option
+    grompp_ignore = gromacs.tools.Grompp(failure=None)
+    try:
+        grompp_ignore(y=True)
+    except Exception as err:
+        raise AssertionError("Should have ignored exception {}".format(err))
