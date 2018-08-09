@@ -857,42 +857,42 @@ def edit_mdp(mdp, new_mdp=None, extend_parameters=None, **substitutions):
                        """.format(demangled(parameter)), re.VERBOSE)
                      for parameter in substitutions}
 
-    target = tempfile.TemporaryFile()
-    with open(mdp) as src:
-        logger.info("editing mdp = {0!r}: {1!r}".format(mdp, substitutions.keys()))
-        for line in src:
-            new_line = line.strip()  # \n must be stripped to ensure that new line is built without break
-            for p in params[:]:
-                m = patterns[p].match(new_line)
-                if m:
-                    # I am too stupid to replace a specific region in the string so I rebuild it
-                    # (matching a line and then replacing value requires TWO re calls)
-                    #print 'line:' + new_line
-                    #print m.groupdict()
-                    if m.group('comment') is None:
-                        comment = ''
-                    else:
-                        comment = " "+m.group('comment')
-                    assignment = m.group('assignment')
-                    if not assignment.endswith(' '):
-                        assignment += ' '
-                    # build new line piece-wise:
-                    new_line = assignment
-                    if p in extend_parameters:
-                        # keep original value and add new stuff at end
-                        new_line += str(m.group('value')) + ' '
-                    # automatically transform lists into space-separated string values
-                    value = " ".join(map(str, asiterable(substitutions[p])))
-                    new_line += value + comment
-                    params.remove(p)
-                    break
-            target.write((new_line+'\n').encode('ascii'))
-    target.seek(0)
-    # XXX: Is there a danger of corrupting the original mdp if something went wrong?
-    mode = 'wb' if six.PY3 else 'w'
-    with open(new_mdp, mode) as final:
-        shutil.copyfileobj(target, final)
-    target.close()
+    with tempfile.TemporaryFile() as target:
+        with open(mdp, 'rb') as src:
+            logger.info("editing mdp = {0!r}: {1!r}".format(mdp, substitutions.keys()))
+            for line in src:
+                line = line.decode('utf-8')
+                new_line = line.strip()  # \n must be stripped to ensure that new line is built without break
+                for p in params[:]:
+                    m = patterns[p].match(new_line)
+                    if m:
+                        # I am too stupid to replace a specific region in the string so I rebuild it
+                        # (matching a line and then replacing value requires TWO re calls)
+                        #print 'line:' + new_line
+                        #print m.groupdict()
+                        if m.group('comment') is None:
+                            comment = ''
+                        else:
+                            comment = " "+m.group('comment')
+                        assignment = m.group('assignment')
+                        if not assignment.endswith(' '):
+                            assignment += ' '
+                        # build new line piece-wise:
+                        new_line = assignment
+                        if p in extend_parameters:
+                            # keep original value and add new stuff at end
+                            new_line += str(m.group('value')) + ' '
+                        # automatically transform lists into space-separated string values
+                        value = " ".join(map(str, asiterable(substitutions[p])))
+                        new_line += value + comment
+                        params.remove(p)
+                        break
+                target.write((new_line+'\n').encode('utf-8'))
+        target.seek(0)
+        # XXX: Is there a danger of corrupting the original mdp if something went wrong?
+        with open(new_mdp, 'wb') as final:
+            shutil.copyfileobj(target, final)
+
      # return all parameters that have NOT been substituted
     if len(params) > 0:
         logger.warn("Not substituted in {new_mdp!r}: {params!r}".format(**vars()))
@@ -957,29 +957,29 @@ def edit_txt(filename, substitutions, newname=None):
                        'repl': repl}
                       for lRE,sRE,repl in substitutions if repl is not None]
 
-    target = tempfile.TemporaryFile()
-    with open(filename) as src:
-        logger.info("editing txt = {0!r} ({1:d} substitutions)".format(filename, len(substitutions)))
-        for line in src:
-            keep_line = True
-            for subst in _substitutions:
-                m = subst['lRE'].match(line)
-                if m:              # apply substition to this line?
-                    logger.debug('match:    '+line.rstrip())
-                    if subst['repl'] is False:   # special rule: delete line
-                        keep_line = False
-                    else:                        # standard replacement
-                        line = subst['sRE'].sub(str(subst['repl']), line)
-                        logger.debug('replaced: '+line.rstrip())
-            if keep_line:
-                target.write(line.encode('ascii'))
-            else:
-                logger.debug("Deleting line %r", line)
+    with tempfile.TemporaryFile() as target:
+        with open(filename, 'rb') as src:
+            logger.info("editing txt = {0!r} ({1:d} substitutions)".format(filename, len(substitutions)))
+            for line in src:
+                line = line.decode("utf-8")
+                keep_line = True
+                for subst in _substitutions:
+                    m = subst['lRE'].match(line)
+                    if m:              # apply substition to this line?
+                        logger.debug('match:    '+line.rstrip())
+                        if subst['repl'] is False:   # special rule: delete line
+                            keep_line = False
+                        else:                        # standard replacement
+                            line = subst['sRE'].sub(str(subst['repl']), line)
+                            logger.debug('replaced: '+line.rstrip())
+                if keep_line:
+                    target.write(line.encode('utf-8'))
+                else:
+                    logger.debug("Deleting line %r", line)
 
-    target.seek(0)
-    with open(newname, 'w') as final:
-        shutil.copyfileobj(target, final)
-    target.close()
+        target.seek(0)
+        with open(newname, 'wb') as final:
+            shutil.copyfileobj(target, final)
     logger.info("edited txt = {newname!r}".format(**vars()))
 
 def remove_molecules_from_topology(filename, **kwargs):
@@ -1030,24 +1030,24 @@ def remove_molecules_from_topology(filename, **kwargs):
 
     p_marker = re.compile("\s*{0!s}".format(marker))
     p_molecule = re.compile("\s*[\w+_-]+\s+\d+\s*(;.*)?$")
-    target = tempfile.TemporaryFile()
-    with open(filename) as src:
-        autogenerated = False
-        n_removed = 0
-        for line in src:
-            if p_marker.match(line):
-                autogenerated = True
-            if autogenerated and p_molecule.match(line):
-                n_removed += 1
-                continue  # remove by skipping
-            target.write(line.encode('ascii'))
-    if autogenerated and n_removed > 0:
-        target.seek(0)
-        with open(filename, 'w') as final:   # overwrite original!
-            shutil.copyfileobj(target, final)
-        logger.info("Removed %(n_removed)d autogenerated [ molecules ] from "
-                    "topol = %(filename)r" % vars())
-    target.close()
+    with tempfile.TemporaryFile() as target:
+        with open(filename, 'rb') as src:
+            autogenerated = False
+            n_removed = 0
+            for line in src:
+                line = line.decode('utf-8')
+                if p_marker.match(line):
+                    autogenerated = True
+                if autogenerated and p_molecule.match(line):
+                    n_removed += 1
+                    continue  # remove by skipping
+                target.write(line.encode('utf-8'))
+        if autogenerated and n_removed > 0:
+            target.seek(0)
+            with open(filename, 'wb') as final:   # overwrite original!
+                shutil.copyfileobj(target, final)
+            logger.info("Removed %(n_removed)d autogenerated [ molecules ] from "
+                        "topol = %(filename)r" % vars())
     return n_removed
 
 

@@ -194,7 +194,9 @@ Classes and functions
 """
 from __future__ import absolute_import, with_statement
 
-import os, errno
+import os
+import errno
+from os.path import relpath
 import warnings
 
 from . import config
@@ -204,27 +206,6 @@ from .exceptions import AutoCorrectionWarning
 
 import logging
 logger = logging.getLogger('gromacs.qsub')
-
-try:
-    from os.path import relpath
-except ImportError:
-    # appeared in python 2.6
-    def relpath(path, start=os.path.curdir):
-        """Return a relative version of a path (from posixpath 2.6)"""
-
-        if not path:
-            raise ValueError("no path specified")
-
-        start_list = os.path.abspath(start).split(os.path.sep)
-        path_list = os.path.abspath(path).split(os.path.sep)
-
-        # Work out how much of the filepath is shared by start and path.
-        i = len(os.path.commonprefix([start_list, path_list]))
-
-        rel_list = [os.path.pardir] * (len(start_list)-i) + path_list[i:]
-        if not rel_list:
-            return os.path.curdir
-        return os.path.join(*rel_list)
 
 
 class QueuingSystem(object):
