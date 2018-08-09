@@ -1,3 +1,4 @@
+.. -*- coding: utf-8 -*-
 .. GromacsWrapper documentation master file, created by sphinx-quickstart on Tue Jun 23 19:38:56 2009.
 
 ====================================================
@@ -8,14 +9,23 @@
 :Date: |today|
 
 
-**GromacsWrapper** is a Python package that wraps system calls to
-Gromacs_ tools into thin classes. This allows for fairly seamless
-integration of the gromacs tools into Python_ scripts. This is
-generally superior to shell scripts because of Python's better error
-handling and superior data structures. It also allows for
-modularization and code re-use. In addition, commands, warnings and
-errors are logged to a file so that there exists a complete history of
-what has been done.
+**GromacsWrapper** is a Python package (Python 2.7.x and Python > 3.4)
+that wraps system calls to Gromacs_ tools into thin classes. This
+allows for fairly seamless integration of the gromacs tools into
+Python_ scripts. This is generally superior to shell scripts because
+of Python's better error handling and superior data structures. It
+also allows for modularization and code re-use. In addition, commands,
+warnings and errors are logged to a file so that there exists a
+complete history of what has been done.
+
+Gromacs_ versions 4.6.x, 2016.x, and 2018.x are all
+supported. GromacsWrapper detects your Gromacs tools and provides them
+as :func:`gromacs.grompp`, :func:`gromacs.mdrun`, etc, regardless of
+your Gromacs version, which allows one to write scripts that are
+broadly Gromacs-version agnostic. Source your ``GMXRC`` file or make
+the :program:`gmx` binary (for versions ≥ 2016) or all the gromacs
+tools available on your :envvar:`PATH` for GromacsWrapper to find the
+Gromacs installation.
 
 See :doc:`INSTALL` for download and installation instructions. `Documentation`_
 is primarily provided through the Python doc strings (from which most of the

@@ -20,6 +20,19 @@ ParmEd_
   A general tool for working with topology files for all the popular
   MD codes, including the `parmed.gromacs`_ module for ITP and TOP
   files.
+
+gmxapi_ (M.E. Irrgang, J.M. Hays, and P.M. Kasson)
+   ``gmxapi`` provides interfaces for managing and extending molecular
+   dynamics simulation workflows. In this repository, a Python package
+   provides the ``gmx`` module for high-level interaction with
+   GROMACS. ``gmx.core`` provides Python bindings to the gmxapi C++
+   GROMACS external API.
+
+   Irrgang, M. E., Hays, J. M., & Kasson, P. M. gmxapi: a high-level
+   interface for advanced control and extension of molecular dynamics
+   simulations. Bioinformatics 2018. DOI:
+   `10.1093/bioinformatics/bty484
+   <https://doi.org/10.1093/bioinformatics/bty484>`_
     
 pymacs_ (Daniel Seeliger)
    pymacs is a python module for dealing with structure files and
@@ -122,6 +135,7 @@ Please open an issue in the `issue tracker`_ to let us know of other efforts so 
 they can be added here. Thanks.
 
 
+.. _gmxapi: https://github.com/kassonlab/gmxapi
 .. _copernicus: http://git.copernicus-computing.org/
 .. _gmxscript: https://github.com/pslacerda/gmx
 .. _XTC Library: http://www.gromacs.org/Developer_Zone/Programming_Guide/XTC_Library
