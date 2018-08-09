@@ -5,18 +5,9 @@
 =========
 
 This document should help you to install the **GromacsWrapper**
-package. The installation uses `setuptools`_ ; if this is not
-available on your system you can either let the installer download it
-automatically from the internet (so just go to `Quick installation
-instructions`_) or install it using your package manager, eg::
-
-  aptitude install python-setuptools
-
-or similar.
-
-Please raise and issue in the `Issue Tracker`_ if problems occur or if
-you have suggestions on how to improve the package or these
-instructions.
+package. Please raise and issue in the `Issue Tracker`_ if problems
+occur or if you have suggestions on how to improve the package or
+these instructions.
 
 .. _Issue Tracker: https://github.com/Becksteinlab/GromacsWrapper/issues
 .. _setuptools: https://pypi.org/project/setuptools/
@@ -75,10 +66,10 @@ and checkout the ``develop`` branch::
 Requirements
 ============
 
-Python_ 2.7 and Gromacs_ must be installed. ipython_ is very much
-recommended. These packages might already be available through your
-local package manager such as ``aptitude/apt``, ``yum``, ``yast``,
-``fink`` or ``macports``.
+Python_ 2.7.x or Python >= 3.4 and Gromacs_ (4.6.x, 2016, 2018) must
+be installed. ipython_ is very much recommended. These packages might
+already be available through your local package manager such as
+``aptitude/apt``, ``yum``, ``yast``, ``fink`` or ``macports``.
 
 .. _Python: http://www.python.org
 .. _Gromacs: http://www.gromacs.org
@@ -88,15 +79,15 @@ local package manager such as ``aptitude/apt``, ``yum``, ``yast``,
 System requirements
 -------------------
 
-Tested with Python 2.7 on Linux and Mac OS X. Earlier python versions
-are not supported.
+Tested with Python 2.7.x and Python 3.5/3.6 on Linux and Mac
+OS X. Earlier Python versions are not supported.
 
-.. Note:: Python 3 support is under development (Issue `#44`_).
+.. Note:: Python 3 support is currently in alpha state; in principle
+  it is fully supported but if you find bugs please report them
+  through the `Issue Tracker`_.
 
-.. _`#44`: https://github.com/Becksteinlab/GromacsWrapper/issues/44	  
 
-
-Required python modules
+Required Python modules
 -----------------------
 
 The basic package makes use of numpy_ and numkit_ (which uses scipy_);

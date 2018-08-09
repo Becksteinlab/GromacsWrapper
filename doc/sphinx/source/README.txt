@@ -47,29 +47,6 @@ for all modules.
 .. _GNU Public License v3: http://www.gnu.org/licenses/gpl.html
 
 
-Included Software
-=================
-
-The distribution contains third party software that is copyrighted by
-the authors but distributed under licences compatible with this
-package license. Where permitted and necessary, software/files were
-modified to integrate with GromacsWrapper.
-
-In case of problems please direct error reports through the
-GromacsWrapper `Issue Tracker`_ as these bugs might not have been
-present in the original software or files.
-
-Included third party content:
-
-``gromacs.fileformats.preprocess``
-  - The preprocessor is based on ``pypreprocessor.py`` from
-    `pypreprocessor`_, release 0.4.0.
-  - copyright: (c) 2010 Evan Plaice
-  - license: MIT
-  - https://github.com/evanplaice/pypreprocessor
-
-  .. _pypreprocessor: https://github.com/evanplaice/pypreprocessor
-
 
 Citing
 ======

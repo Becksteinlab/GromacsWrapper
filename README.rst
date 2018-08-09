@@ -123,6 +123,7 @@ general introduction on how make a pull request and contribute to open source pr
 
 .. _Issue Tracker: http://github.com/Becksteinlab/GromacsWrapper/issues
 
+
 Building Documentation
 ======================
 
@@ -135,10 +136,13 @@ and compile::
    cd package/doc/sphinx
    make html
 
-PYTHON 3
-=======
+   
+Python 3
+========
 
-Python 3 support is still in alpha state currently
+Python 3 support is currently in alpha state; in principle it is fully
+supported but if you find bugs please report them through the `Issue
+Tracker`_.
 
 
 
