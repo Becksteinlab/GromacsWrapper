@@ -67,7 +67,7 @@ or in the Acknowledgements section.
 Thank you.
 
 .. _AUTHORS:
-   https://raw.githubusercontent.com/Becksteinlab/GromacsWrapper/develop/AUTHORS
+   https://raw.githubusercontent.com/Becksteinlab/GromacsWrapper/master/AUTHORS
 
 
 

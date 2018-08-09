@@ -26,11 +26,11 @@ running simulations with sensible parameters.
    https://gromacswrapper.readthedocs.org/en/latest/
 .. _GromacsWrapper git repository:
    https://github.com/Becksteinlab/GromacsWrapper
-.. |build| image:: https://travis-ci.org/Becksteinlab/GromacsWrapper.svg?branch=develop
+.. |build| image:: https://travis-ci.org/Becksteinlab/GromacsWrapper.svg
    :target: https://travis-ci.org/Becksteinlab/GromacsWrapper
    :alt: Build Status
-.. |cov| image:: https://codecov.io/gh/Becksteinlab/GromacsWrapper/branch/develop/graph/badge.svg
-   :target: https://codecov.io/gh/Becksteinlab/GromacsWrapper?branch=develop
+.. |cov| image:: https://codecov.io/gh/Becksteinlab/GromacsWrapper/graph/badge.svg
+   :target: https://codecov.io/gh/Becksteinlab/GromacsWrapper
    :alt: Code Coverage
    :scale: 100%
 .. |zenodo| image:: https://zenodo.org/badge/13219/Becksteinlab/GromacsWrapper.svg
@@ -76,16 +76,15 @@ with ::
 Development version
 -------------------
 
-The *develop* branch in the GitHub source repository generally
+The *master* branch in the GitHub source repository generally
 contains useful code but nevertheless, things can break in weird and
 wonderful ways. Please report issues through the `Issue Tracker`_ and
 mention that you used the *develop branch*.
 
-To use the *development code base*:  checkout the ``develop`` branch::
+To use the *development code base*:  checkout the ``master`` branch::
 
    git clone https://github.com/Becksteinlab/GromacsWrapper.git
    cd GromacsWrapper
-   git checkout -b develop origin/develop
 
 and install ::
 
@@ -165,5 +164,5 @@ or in the Acknowledgements section.
 Thank you.
 
 .. _AUTHORS:
-   https://raw.githubusercontent.com/Becksteinlab/GromacsWrapper/develop/AUTHORS
+   https://raw.githubusercontent.com/Becksteinlab/GromacsWrapper/master/AUTHORS
 

@@ -23,7 +23,7 @@ orbeckst, dldotson, kain88-de, ianmkenney
 * set ff (OPLS/AA) and water model (TIP4P) as defaults for
   setup.topology()
 * changed call signature of scaling.partial_tempering() (PR #138)
-
+* development: master branch instead of develop branch (#146)
 
 2017-03-23      0.6.2
 mohebifar, orbeckst, ianmkenney, PicoCentauri, dotsdl

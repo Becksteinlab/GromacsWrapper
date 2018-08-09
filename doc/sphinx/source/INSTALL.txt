@@ -56,11 +56,10 @@ clone the git repository from
 
    git://github.com/Becksteinlab/GromacsWrapper.git
  
-and checkout the ``develop`` branch::
+and checkout the *master& branch::
 
    git clone https://github.com/Becksteinlab/GromacsWrapper.git
    cd GromacsWrapper
-   git checkout -b develop origin/develop
 
 
 Requirements

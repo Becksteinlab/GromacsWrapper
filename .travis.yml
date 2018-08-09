@@ -6,7 +6,6 @@ sudo: false
 branches:
     only:
         - master
-        - develop
 
 env:
   global:
