@@ -84,7 +84,7 @@ Data
 .. autodata:: amino_acid_codes
 
 """
-from __future__ import absolute_import, with_statement
+from __future__ import absolute_import, with_statement, division
 
 __docformat__ = "restructuredtext en"
 
@@ -625,12 +625,12 @@ class Timedelta(datetime.timedelta):
     @property
     def dhours(self):
         """Hours component of the timedelta."""
-        return self.seconds / 3600
+        return self.seconds // 3600
 
     @property
     def dminutes(self):
         """Minutes component of the timedelta."""
-        return self.seconds/60 - 60*self.dhours
+        return self.seconds // 60 - 60*self.dhours
 
     @property
     def dseconds(self):
