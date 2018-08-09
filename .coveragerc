@@ -6,7 +6,6 @@ omit =
     */gromacs/tests/*
     # omit the versioneer-installed _version.py
     */gromacs/_version.py
-    setup.py
     
 [report]
 exclude_lines =
