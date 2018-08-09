@@ -24,6 +24,7 @@ env:
     - CONDA_CHANNEL_PRIORITY=True
     - PIP_DEPENDENCIES="numkit codecov"
     - NUMPY_VERSION=stable
+    - MPLBACKEND=agg
 
   matrix:
     # use ci-helper's PACKAGENAME_VERSION magic to pin the 'gromacs' package
