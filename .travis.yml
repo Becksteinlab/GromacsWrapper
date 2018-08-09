@@ -17,7 +17,7 @@ env:
     - MAIN_CMD="pytest ${PYTEST_LIST}"
     - SETUP_CMD="${PYTEST_FLAGS}"
     - BUILD_CMD="pip install -v ."
-    - CONDA_DEPENDENCIES="six scipy pandas gromacs"
+    - CONDA_DEPENDENCIES="six scipy matplotlib pandas gromacs"
     # Gromacs 2018 packages from bioconda require conda-forge for
     # dependency, see https://bioconda.github.io/#set-up-channels
     - CONDA_CHANNELS="defaults conda-forge bioconda"

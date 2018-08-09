@@ -187,25 +187,27 @@ Classes and functions
 .. autofunction:: break_array
 
 """
+from __future__ import with_statement, absolute_import
 
-
-from __future__ import with_statement
-
-import os, errno
+import os
+import errno
 import re
 import warnings
-from collections import OrderedDict as odict
+from itertools import izip, cycle
+import logging
 
 import numpy
+import matplotlib.cm, matplotlib.colors
+from matplotlib import pyplot as plt
+
+import numkit.timeseries
 
 from gromacs.exceptions import (ParseError, MissingDataError,
                                 MissingDataWarning, AutoCorrectionWarning)
 import gromacs.utilities as utilities
 import gromacs.collections
 
-import numkit.timeseries
 
-import logging
 
 
 class XVG(utilities.FileUtils):
@@ -576,17 +578,20 @@ class XVG(utilities.FileUtils):
                (will be repeated as necessary); or a matplotlib
                colormap (e.g. "jet", see :mod:`matplotlib.cm`). The
                default is to use the :attr:`XVG.default_color_cycle`.
+          *ax*
+               plot into given axes or create new one if ``None`` [``None``]
           *kwargs*
-               All other keyword arguments are passed on to :func:`pylab.plot`.
-        """
-        from itertools import izip, cycle
-        import matplotlib.cm, matplotlib.colors
-        import pylab
+               All other keyword arguments are passed on to :func:`matplotlib.pyplot.plot`.
 
+        :Returns:
+          *ax*
+               axes instance
+        """
         columns = kwargs.pop('columns', Ellipsis)         # slice for everything
         maxpoints = kwargs.pop('maxpoints', self.maxpoints_default)
         transform = kwargs.pop('transform', lambda x: x)  # default is identity transformation
         method = kwargs.pop('method', "mean")
+        ax = kwargs.pop('ax', None)
 
         if columns is Ellipsis or columns is None:
             columns = numpy.arange(self.array.shape[0])
@@ -610,6 +615,9 @@ class XVG(utilities.FileUtils):
         except TypeError:
             colors = cycle(utilities.asiterable(color))
 
+        if ax is None:
+            ax = plt.gca()
+
         # (decimate/smooth o slice o transform)(array)
         a = self.decimate(method, numpy.asarray(transform(a))[columns], maxpoints=maxpoints)
 
@@ -621,7 +629,8 @@ class XVG(utilities.FileUtils):
             if len(ma[column]) == 0:
                 warnings.warn("No data to plot for column {column:d}".format(**vars()), category=MissingDataWarning)
             kwargs['color'] = color
-            pylab.plot(ma[0], ma[column], **kwargs)   # plot all other columns in parallel
+            ax.plot(ma[0], ma[column], **kwargs)   # plot all other columns in parallel
+        return ax
 
     def plot_coarsened(self, **kwargs):
         """Plot data like :meth:`XVG.plot` with the range of **all** data shown.
@@ -651,9 +660,7 @@ class XVG(utilities.FileUtils):
 
         .. SeeAlso:: :meth:`XVG.plot`, :meth:`XVG.errorbar` and :meth:`XVG.decimate`
         """
-        from itertools import izip, cycle
-        import matplotlib.cm, matplotlib.colors
-
+        ax = kwargs.pop('ax', None)
         columns = kwargs.pop('columns', Ellipsis)         # slice for everything
         if columns is Ellipsis or columns is None:
             columns = numpy.arange(self.array.shape[0])
@@ -668,11 +675,16 @@ class XVG(utilities.FileUtils):
         except TypeError:
             colors = cycle(utilities.asiterable(color))
 
+        if ax is None:
+            ax = plt.gca()
+
         t = columns[0]
         kwargs['demean'] = True
+        kwargs['ax'] = ax
         for column, color in izip(columns[1:], colors):
             kwargs['color'] = color
             self.errorbar(columns=[t, column, column], **kwargs)
+        return ax
 
     def errorbar(self, **kwargs):
         """errorbar plot for a single time series with errors.
@@ -712,8 +724,7 @@ class XVG(utilities.FileUtils):
 
            :meth:`XVG.plot` lists keywords common to both methods.
         """
-        import pylab
-
+        ax = kwargs.pop('ax', None)
         color = kwargs.pop('color', 'black')
         filled = kwargs.pop('filled', True)
         fill_alpha = kwargs.pop('fill_alpha', 0.2)
@@ -778,6 +789,9 @@ class XVG(utilities.FileUtils):
             except IndexError:
                 raise TypeError("Either too few columns selected or data does not have a error column")
 
+        if ax is None:
+            ax = plt.gca()
+
         if filled:
             # can only plot dy
             if error_method == "percentile":
@@ -792,7 +806,7 @@ class XVG(utilities.FileUtils):
             else:
                 y1 = Y - kwargs['yerr']
                 y2 = Y + kwargs['yerr']
-            pylab.fill_between(X, y1, y2, color=color, alpha=fill_alpha)
+            ax.fill_between(X, y1, y2, color=color, alpha=fill_alpha)
         else:
             if error_method == "percentile":
                 # errorbars extend to different lengths;
@@ -806,16 +820,18 @@ class XVG(utilities.FileUtils):
                     kwargs['xerr'] = numpy.vstack((X - mlower[0], X + kwargs['xerr']))
                 except (KeyError, IndexError):
                     pass
-            pylab.errorbar(X, Y, **kwargs)
+            ax.errorbar(X, Y, **kwargs)
 
         # clean up args for plot
         for kw in "yerr", "xerr", "capsize", "ecolor", "elinewidth", "fmt":
             kwargs.pop(kw, None)
         kwargs['alpha'] = 1.0
 
-        pylab.plot(X, Y, color=color, **kwargs)
+        ax.plot(X, Y, color=color, **kwargs)
 
-    def decimate(self, method, a, **kwargs):
+        return ax
+
+    def decimate(self, method, a, maxpoints=10000, **kwargs):
         """Decimate data *a* to *maxpoints* using *method*.
 
         If *a* is a 1D array then it is promoted to a (2, N) array
@@ -870,7 +886,6 @@ class XVG(utilities.FileUtils):
             X = numpy.arange(len(a))
             a = numpy.vstack([X, a])
         ny = a.shape[-1]   # assume 1D or 2D array with last dimension varying fastest
-        maxpoints = kwargs.pop("maxpoints", 10000)
         if maxpoints is None or ny <= maxpoints:
             return a
         return methods[method](a, maxpoints, **kwargs)
@@ -1048,8 +1063,9 @@ class XVG(utilities.FileUtils):
 
         """
         warnings.warn("Using undocumented decimate_error() is highly EXPERIMENTAL",
-                      category=LowAccuracyWarning)
-        return self._decimate(numkit.timeseries.error_histogrammed_function, a, maxpoints, **kwargs)
+                      category=gromacs.exceptions.LowAccuracyWarning)
+        return self._decimate(numkit.timeseries.error_histogrammed_function, a,
+                              maxpoints, **kwargs)
 
     def _decimate(self, func, a, maxpoints, **kwargs):
         ny = a.shape[-1]   # assume 2D array with last dimension varying fastest
