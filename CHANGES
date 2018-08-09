@@ -2,6 +2,29 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
+2018-08-08      0.7.0
+orbeckst, dldotson, kain88-de, ianmkenney
+
+* support Python 3 (#44)
+* support Gromacs 2018 (and likely also Gromacs 2016) (#96)
+* moved numkit to own package now at
+  https://github.com/Becksteinlab/numkit (#111)
+* removed gromacs.analysis legacy code, can now be found
+  in its own repository
+  https://github.com/Becksteinlab/gromacswrapper.analysis (#82)  
+* removed vmd sub-package (#112), code now at
+  https://github.com/Becksteinlab/remote-vmd 
+* removed obsolete staging sub-package (#113)  
+* removed obsolete gromacs.manager module (#115)
+* removed obsolete fileformats.itp (and fileformats.preprocessor) (#139)
+* use versioneer for version management (removed gromacs.version)
+* add mdrun_args option to setup.energy_minimize to pass options to
+  the mdrun that carries out the energy minimization
+* set ff (OPLS/AA) and water model (TIP4P) as defaults for
+  setup.topology()
+* changed call signature of scaling.partial_tempering() (PR #138)
+
+
 2017-03-23      0.6.2
 mohebifar, orbeckst, ianmkenney, PicoCentauri, dotsdl
 

@@ -84,7 +84,7 @@ Data
 .. autodata:: amino_acid_codes
 
 """
-from __future__ import absolute_import, with_statement
+from __future__ import absolute_import, with_statement, division
 
 __docformat__ = "restructuredtext en"
 
@@ -99,6 +99,7 @@ from contextlib import contextmanager
 import bz2, gzip
 import datetime
 import numpy
+from six import string_types
 
 import logging
 logger = logging.getLogger('gromacs.utilities')
@@ -125,6 +126,7 @@ class AttributeDict(dict):
     def __setstate__(self, state):
         self.update(state)
 
+
 def autoconvert(s):
     """Convert input to a numerical type if possible.
 
@@ -140,9 +142,10 @@ def autoconvert(s):
                 return s[0]
             else:
                 return numpy.array(s)
-        except (ValueError,AttributeError):
+        except (ValueError, AttributeError):
             pass
     raise ValueError("Failed to autoconvert {0!r}".format(s))
+
 
 @contextmanager
 def openany(datasource, mode='r', **kwargs):
@@ -179,7 +182,7 @@ def anyopen(datasource, mode='r', **kwargs):
           exception will be raised by the handler
 
     """
-    handlers = {'bz2': bz2.BZ2File, 'gz': gzip.open, '': file}
+    handlers = {'bz2': bz2.BZ2File, 'gz': gzip.open, '': open}
 
     if mode.startswith('r'):
         if hasattr(datasource,'next') or hasattr(datasource,'readline'):
@@ -211,7 +214,7 @@ def anyopen(datasource, mode='r', **kwargs):
             name, ext = os.path.splitext(filename)
             if ext.startswith(os.path.extsep):
                 ext = ext[1:]
-            if not ext in ('bz2', 'gz'):
+            if ext not in ('bz2', 'gz'):
                 ext = ''   # anything else but bz2 or gz is just a normal file
             openfunc = handlers[ext]
             stream = openfunc(datasource, mode=mode, **kwargs)
@@ -222,7 +225,7 @@ def anyopen(datasource, mode='r', **kwargs):
 
     return stream, filename
 
-def _get_stream(filename, openfunction=file, mode='r'):
+def _get_stream(filename, openfunction=open, mode='r'):
     try:
         stream = openfunction(filename, mode=mode)
     except IOError:
@@ -272,7 +275,7 @@ def in_dir(directory, create=True):
         try:
             os.chdir(directory)
             logger.debug("Working in {directory!r}...".format(**vars()))
-        except OSError, err:
+        except OSError as err:
             if create and err.errno == errno.ENOENT:
                 os.makedirs(directory)
                 os.chdir(directory)
@@ -511,7 +514,7 @@ class FileUtils(object):
 
 def iterable(obj):
     """Returns ``True`` if *obj* can be iterated over and is *not* a  string."""
-    if isinstance(obj, basestring):
+    if isinstance(obj, string_types):
         return False    # avoid iterating over characters of a string
     if hasattr(obj, 'next'):
         return True    # any iterator will do
@@ -540,7 +543,7 @@ def unlink_f(path):
     """Unlink path but do not complain if file does not exist."""
     try:
         os.unlink(path)
-    except OSError, err:
+    except OSError as err:
         if err.errno != errno.ENOENT:
             raise
 
@@ -565,7 +568,7 @@ def mkdir_p(path):
     """
     try:
         os.makedirs(path)
-    except OSError, err:
+    except OSError as err:
         if err.errno != errno.EEXIST:
             raise
 
@@ -622,12 +625,12 @@ class Timedelta(datetime.timedelta):
     @property
     def dhours(self):
         """Hours component of the timedelta."""
-        return self.seconds / 3600
+        return self.seconds // 3600
 
     @property
     def dminutes(self):
         """Minutes component of the timedelta."""
-        return self.seconds/60 - 60*self.dhours
+        return self.seconds // 60 - 60*self.dhours
 
     @property
     def dseconds(self):

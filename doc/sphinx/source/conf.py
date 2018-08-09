@@ -36,13 +36,13 @@ master_doc = 'index'
 
 # General substitutions.
 project = u'GromacsWrapper'
-copyright = u'2009-2016, The Authors of GromacsWrapper (see AUTHORS)'
+copyright = u'2009-2018, The Authors of GromacsWrapper (see AUTHORS)'
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
 #
-# Dynamically calculate the version based on __init__.VERSION.
-packageversion = __import__('gromacs').get_version()
+# Dynamically calculate the version (uses versioneer)
+packageversion = __import__('gromacs').__version__
 
 # The short X.Y version.
 version = '.'.join(packageversion.split('.')[:2])
@@ -185,10 +185,10 @@ latex_documents = [
 # ---------------------------
 # intersphinx: reference standard lib and RecSQL
 # http://sphinx.pocoo.org/latest/ext/intersphinx.html
-intersphinx_mapping = {'http://docs.python.org/': None,
-                       'http://docs.scipy.org/doc/numpy/': None,
-                       'http://docs.scipy.org/doc/scipy/reference/': None,
-                       'http://orbeckst.github.com/RecSQL/': None}
+intersphinx_mapping = {'https://docs.python.org/': None,
+                       'https://docs.scipy.org/doc/numpy/': None,
+                       'https://docs.scipy.org/doc/scipy/reference/': None,
+}
 
 
 # Options for ext.autodoc

@@ -19,9 +19,6 @@ The working paradigm is that template scripts are provided (see
 :data:`gromacs.config.qscriptdir` (by default ``~/.gromacswrapper/qscripts``)
 and they will be picked up before the package-supplied ones.
 
-The :class:`~gromacs.qsub.Manager` handles setup and control of jobs
-in a queuing system on a remote system via :program:`ssh`.
-
 At the moment, some of the functions in :mod:`gromacs.setup` use this module
 but it is fairly independent and could conceivably be used for a wider range of
 projects.
@@ -194,12 +191,12 @@ Classes and functions
 
 .. autodata:: queuing_systems
 
-.. SeeAlso:: :mod:`gromacs.manager` for classes to manage jobs remotely.
-
 """
 from __future__ import absolute_import, with_statement
 
-import os, errno
+import os
+import errno
+from os.path import relpath
 import warnings
 
 from . import config
@@ -209,27 +206,6 @@ from .exceptions import AutoCorrectionWarning
 
 import logging
 logger = logging.getLogger('gromacs.qsub')
-
-try:
-    from os.path import relpath
-except ImportError:
-    # appeared in python 2.6
-    def relpath(path, start=os.path.curdir):
-        """Return a relative version of a path (from posixpath 2.6)"""
-
-        if not path:
-            raise ValueError("no path specified")
-
-        start_list = os.path.abspath(start).split(os.path.sep)
-        path_list = os.path.abspath(path).split(os.path.sep)
-
-        # Work out how much of the filepath is shared by start and path.
-        i = len(os.path.commonprefix([start_list, path_list]))
-
-        rel_list = [os.path.pardir] * (len(start_list)-i) + path_list[i:]
-        if not rel_list:
-            return os.path.curdir
-        return os.path.join(*rel_list)
 
 
 class QueuingSystem(object):
@@ -403,7 +379,7 @@ def generate_submit_scripts(templates, prefix=None, deffnm='md', jobname='MD', b
                        newname=submitscript)
         ext = os.path.splitext(submitscript)[1]
         if ext in ('.sh', '.csh', '.bash'):
-            os.chmod(submitscript, 0755)
+            os.chmod(submitscript, 0o755)
         return submitscript
 
     return [write_script(template) for template in config.get_templates(templates)]

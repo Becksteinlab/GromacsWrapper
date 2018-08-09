@@ -13,6 +13,4 @@ as "library" for common tasks.
    blocks/setup
    blocks/scaling
    blocks/qsub
-   blocks/manager
-   blocks/simulation
 

@@ -14,7 +14,8 @@ mostly relevant to anyone who wants to extend the package.
    core/config
    core/environment
    core/formats
-   core/utilities   
+   core/utilities
+   core/collections
    core/tools
 
 

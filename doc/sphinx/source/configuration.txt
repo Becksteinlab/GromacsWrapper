@@ -92,9 +92,6 @@ files are located::
   # Directory to store user supplied template files such as mdp files.
   templatesdir = %(configdir)s/templates
 
-  # Directory to store manager configuration files
-  managerdir = %(configdir)s/managers
-
 
 And there are yet options for how to handle logging::
 

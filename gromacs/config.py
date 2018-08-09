@@ -221,19 +221,23 @@ completely transparent to the user.
 
 .. autodata:: qscriptdir
 .. autodata:: templatesdir
-.. autodata:: managerdir
 .. autodata:: templates
 .. autodata:: qscript_template
 
 """
-from __future__ import absolute_import, with_statement
+from __future__ import absolute_import, with_statement, print_function
 
 import os
 import logging
 import re
 import subprocess
+import sys
 
-from ConfigParser import SafeConfigParser
+if sys.version_info[0] < 3:
+    from ConfigParser import SafeConfigParser
+else:
+    from configparser import SafeConfigParser
+
 from pkg_resources import resource_filename, resource_listdir
 
 from . import utilities
@@ -253,18 +257,12 @@ CONFIGNAME = os.path.expanduser(os.path.join("~",".gromacswrapper.cfg"))
 #: :data:`templatesdir`
 #:    Directory to store user supplied template files such as mdp files.
 #:    The default value is ``~/.gromacswrapper/templates``.
-#: :data:`managerdir`
-#:    Directory to store configuration files for different queuing system
-#:    managers as used in :mod:`gromacs.manager`.
-#:    The default value is ``~/.gromacswrapper/managers``.
 
 configdir = os.path.expanduser(os.path.join("~",".gromacswrapper"))
 defaults = {
     'configdir':    configdir,
     'qscriptdir':   os.path.join(configdir, 'qscripts'),
     'templatesdir': os.path.join(configdir, 'templates'),
-    'managerdir':   os.path.join(configdir, 'managers'),
-
     'logfilename': "gromacs.log",
     'loglevel_console': 'INFO',
     'loglevel_file': 'DEBUG',
@@ -303,13 +301,8 @@ qscriptdir = defaults['qscriptdir']
 #: The default value is ``~/.gromacswrapper/templates``.
 templatesdir = defaults['templatesdir']
 
-#: Directory to store configuration files for remote queuing systems
-#: :class:`gromacs.qsub.Manager` instances.
-#: The default value is ``~/.gromacswrapper/managers``.
-managerdir = defaults['managerdir']
-
 #: List of all configuration directories.
-config_directories = [configdir, qscriptdir, templatesdir, managerdir]
+config_directories = [configdir, qscriptdir, templatesdir]
 
 
 #: Search path for user queuing scripts and templates. The internal package-supplied
@@ -488,8 +481,6 @@ class GMXConfigParser(SafeConfigParser):
                   os.path.join("%(configdir)s", os.path.basename(defaults['qscriptdir'])))
           self.set('DEFAULT', 'templatesdir',
                   os.path.join("%(configdir)s", os.path.basename(defaults['templatesdir'])))
-          self.set('DEFAULT', 'managerdir',
-                  os.path.join("%(configdir)s", os.path.basename(defaults['managerdir'])))
           self.add_section('Gromacs')
           self.set("Gromacs", "release", "")
           self.set("Gromacs", "GMXRC", "")
@@ -595,7 +586,7 @@ def setup(filename=CONFIGNAME):
                cfg.write(configfile)  # write the default file so that user can edit
                msg = "NOTE: GromacsWrapper created the configuration file \n\t%r\n" \
                      "      for you. Edit the file to customize the package." % filename
-               print msg
+               print(msg)
 
      # directories
      for d in config_directories:
@@ -657,7 +648,7 @@ def set_gmxrc_environment(gmxrc):
         out = subprocess.check_output(cmdargs)
         out = out.strip().split()
         for key, value in zip(envvars, out):
-            value = value.replace('___', '')  # remove sentinels
+            value = str(value.decode('ascii').replace('___', ''))  # remove sentinels
             os.environ[key] = value
             logger.debug("set_gmxrc_environment(): %s = %r", key, value)
     except (subprocess.CalledProcessError, OSError):

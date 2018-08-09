@@ -20,16 +20,18 @@ simulations with Hamiltonian replicate exchange and partial tempering
 .. autofunction:: partial_tempering
 
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function
 
 import math
 import copy
+import logging
 
 import numpy as np
 
 from .fileformats import TOP
 from .fileformats import blocks
 
+logger = logging.getLogger("gromacs.scaling")
 
 def scale_dihedrals(mol, dihedrals, scale, banned_lines=None):
         """Scale dihedral angles"""
@@ -69,9 +71,13 @@ def scale_dihedrals(mol, dihedrals, scale, banned_lines=None):
                                         dhA.gromacs['param'] = param
                                         #if key == "CT3-C-NH1-CT1-9": print i, dt, key
                                         if i == 0:
-                                                dhA.comment = "; banned lines {0} found={1}\n".format(" ".join(map(str, banned_lines)), 1 if dt.line in banned_lines else 0)
-                                                dhA.comment += "; parameters for types {}-{}-{}-{}-9 at LINE({})\n".format(dhA.atom1.atomtype, dhA.atom2.atomtype, dhA.atom3.atomtype, dhA.atom4.atomtype, dt.line).replace("_","")
-                                        name = "{}-{}-{}-{}-9".format(dhA.atom1.atomtype, dhA.atom2.atomtype, dhA.atom3.atomtype, dhA.atom4.atomtype).replace("_","")
+                                                dhA.comment = "; banned lines {0} found={1}\n".format(" ".join(
+                                                        map(str, banned_lines)), 1 if dt.line in banned_lines else 0)
+                                                dhA.comment += "; parameters for types {}-{}-{}-{}-9 at LINE({})\n".format(
+                                                        dhA.atom1.atomtype, dhA.atom2.atomtype, dhA.atom3.atomtype,
+                                                        dhA.atom4.atomtype, dt.line).replace("_","")
+                                        name = "{}-{}-{}-{}-9".format(dhA.atom1.atomtype, dhA.atom2.atomtype,
+                                                                      dhA.atom3.atomtype, dhA.atom4.atomtype).replace("_","")
                                         #if name == "CL-CTL2-CTL2-HAL2-9": print dihedrals[key], key
                                         new_dihedrals.append(dhA)
                                 break
@@ -87,8 +93,9 @@ def scale_impropers(mol, impropers, scale, banned_lines=None):
                 banned_lines = []
         new_impropers = []
         for im in mol.impropers:
-                atypes = im.atom1.get_atomtype(), im.atom2.get_atomtype(), im.atom3.get_atomtype(), im.atom4.get_atomtype()
-                atypes = [a.replace("_", "").replace("=","") for a in atypes]
+                atypes = (im.atom1.get_atomtype(), im.atom2.get_atomtype(),
+                          im.atom3.get_atomtype(), im.atom4.get_atomtype())
+                atypes = [a.replace("_", "").replace("=", "") for a in atypes]
 
                 # special-case: this is a [ dihedral ] override in molecule block, continue and don't match
                 if im.gromacs['param'] != []:
@@ -98,14 +105,14 @@ def scale_impropers(mol, impropers, scale, banned_lines=None):
                     continue
 
                 for iswitch in range(32):
-                        if  (iswitch%2==0 ):
+                        if  (iswitch%2==0):
                                 a1=atypes[0]; a2=atypes[1]; a3=atypes[2]; a4=atypes[3];
                         else:
                                 a1=atypes[3]; a2=atypes[2]; a3=atypes[1]; a4=atypes[0];
-                        if((iswitch/2)%2==1): a1="X";
-                        if((iswitch/4)%2==1): a2="X";
-                        if((iswitch/8)%2==1): a3="X";
-                        if((iswitch/16)%2==1): a4="X";
+                        if((iswitch//2)%2==1): a1="X";
+                        if((iswitch//4)%2==1): a2="X";
+                        if((iswitch//8)%2==1): a3="X";
+                        if((iswitch//16)%2==1): a4="X";
                         key = "{0}-{1}-{2}-{3}-{4}".format(a1, a2, a3, a4, im.gromacs['func'])
                         if (key in impropers):
                                 for i, imt in enumerate(impropers[key]):
@@ -115,7 +122,11 @@ def scale_impropers(mol, impropers, scale, banned_lines=None):
                                         if not impropers[key][0].line in banned_lines:
                                                 for p in param: p['kpsi'] *= scale
                                         imA.gromacs['param'] = param
-                                        if i == 0: imA.comment = "; banned lines {0} found={1}\n ; parameters for types {2}-{3}-{4}-{5}-9 at LINE({6})\n".format(" ".join(map(str, banned_lines)), 1 if imt.line in banned_lines else 0 , imt.atype1, imt.atype2, imt.atype3, imt.atype4, imt.line)
+                                        if i == 0:
+                                                imA.comment = "; banned lines {0} found={1}\n ; parameters for types {2}-{3}-{4}-{5}-9 at LINE({6})\n".format(
+                                                        " ".join(map(str, banned_lines)),
+                                                        1 if imt.line in banned_lines else 0,
+                                                        imt.atype1, imt.atype2, imt.atype3, imt.atype4, imt.line)
                                         new_impropers.append(imA)
                                 break
         #assert(len(mol.impropers) == new_impropers)
@@ -123,12 +134,18 @@ def scale_impropers(mol, impropers, scale, banned_lines=None):
         return mol
 
 
-def partial_tempering(args):
-        """Set up topology for partial tempering (REST2) replica exchange"""
+def partial_tempering(topfile="processed.top", outfile="scaled.top", banned_lines='',
+                      scale_lipids=1.0, scale_protein=1.0):
+        """Set up topology for partial tempering (REST2) replica exchange.
 
-        banned_lines = map(int, args.banned_lines.split())
-        top = TOP(args.input)
-        groups = [("_", args.scale_protein), ("=", args.scale_lipids)]
+
+        .. versionchanged:: 0.7.0
+           Use keyword arguments instead of an `args` Namespace object.
+        """
+
+        banned_lines = map(int, banned_lines.split())
+        top = TOP(topfile)
+        groups = [("_", float(scale_protein)), ("=", float(scale_lipids))]
 
         #
         # CMAPTYPES
@@ -138,10 +155,14 @@ def partial_tempering(args):
                 cmaptypes.append(ct)
                 for gr, scale in groups:
                         ctA = copy.deepcopy(ct)
-                        ctA.atype1 += gr; ctA.atype2 += gr; ctA.atype3 += gr; ctA.atype4 += gr;  ctA.atype8 += gr;
+                        ctA.atype1 += gr
+                        ctA.atype2 += gr
+                        ctA.atype3 += gr
+                        ctA.atype4 += gr
+                        ctA.atype8 += gr
                         ctA.gromacs['param'] = [ v*scale for v in ct.gromacs['param'] ]
                         cmaptypes.append(ctA)
-        print("cmaptypes was {0}, is {1}".format(len(top.cmaptypes), len(cmaptypes)))
+        logger.debug("cmaptypes was {0}, is {1}".format(len(top.cmaptypes), len(cmaptypes)))
         top.cmaptypes = cmaptypes
 
 
@@ -167,7 +188,8 @@ def partial_tempering(args):
                 pairtypes.append(pt)
                 for gr, scale in groups:
                         ptA = copy.deepcopy(pt)
-                        ptA.atype1 += gr; ptA.atype2 += gr
+                        ptA.atype1 += gr
+                        ptA.atype2 += gr
                         ptA.gromacs['param']['lje14'] *= scale
 
                         pairtypes.append(ptA)
@@ -178,11 +200,11 @@ def partial_tempering(args):
         #
         bondtypes = []
         for bt in top.bondtypes:
-                #break
                 bondtypes.append(bt)
                 for gr, scale in groups:
                         btA = copy.deepcopy(bt)
-                        btA.atype1 += gr; btA.atype2 += gr
+                        btA.atype1 += gr
+                        btA.atype2 += gr
                         bondtypes.append(btA)
         top.bondtypes = bondtypes
 
@@ -192,11 +214,12 @@ def partial_tempering(args):
         #
         angletypes = []
         for at in top.angletypes:
-                #break
                 angletypes.append(at)
                 for gr, scale in groups:
                         atA = copy.deepcopy(at)
-                        atA.atype1 += gr; atA.atype2 += gr;  atA.atype3 += gr;
+                        atA.atype1 += gr
+                        atA.atype2 += gr
+                        atA.atype3 += gr
                         angletypes.append(atA)
         top.angletypes = angletypes
 
@@ -206,14 +229,16 @@ def partial_tempering(args):
         dihedraltypes = {}
         for dt in top.dihedraltypes:
                 dt.disabled = True
-                dt.comment = "; type={0!s}-{1!s}-{2!s}-{3!s}-9\n; LINE({4:d}) ".format(dt.atype1, dt.atype2, dt.atype3, dt.atype4, dt.line)
+                dt.comment = "; type={0!s}-{1!s}-{2!s}-{3!s}-9\n; LINE({4:d}) ".format(
+                        dt.atype1, dt.atype2, dt.atype3, dt.atype4, dt.line)
                 dt.comment = dt.comment.replace("_","")
 
                 #if "X-CTL2-CTL2-X-9" in dt.comment: print dt
                 name = "{0}-{1}-{2}-{3}-{4}".format(dt.atype1, dt.atype2, dt.atype3, dt.atype4, dt.gromacs['func'])
-                if not name in dihedraltypes: dihedraltypes[name] = []
+                if not name in dihedraltypes:
+                        dihedraltypes[name] = []
                 dihedraltypes[name].append(dt)
-        print("Build dihedraltypes dictionary with {0} entries".format(len(dihedraltypes)))
+        logger.debug("Build dihedraltypes dictionary with {0} entries".format(len(dihedraltypes)))
 
         #
         # Build improper dictionary
@@ -222,18 +247,20 @@ def partial_tempering(args):
         for it in top.impropertypes:
                 it.disabled = True
                 it.comment = "; LINE({0:d}) ".format(it.line)
-                name = "{0}-{1}-{2}-{3}-{4}".format(it.atype1, it.atype2, it.atype3, it.atype4, it.gromacs['func'])
-                if not name in impropertypes: impropertypes[name] = []
+                name = "{0}-{1}-{2}-{3}-{4}".format(
+                        it.atype1, it.atype2, it.atype3, it.atype4, it.gromacs['func'])
+                if not name in impropertypes:
+                        impropertypes[name] = []
                 impropertypes[name].append(it)
-        print("Build impropertypes dictionary with {0} entries".format(len(impropertypes)))
+        logger.debug("Build impropertypes dictionary with {0} entries".format(len(impropertypes)))
 
         for molname_mol in top.dict_molname_mol:
             if not 'Protein' in molname_mol:
                 continue
             mol = top.dict_molname_mol[molname_mol]
             for at in mol.atoms:
-                at.charge *= math.sqrt(args.scale_protein)
-            mol = scale_dihedrals(mol, dihedraltypes, args.scale_protein, banned_lines)
+                at.charge *= math.sqrt(scale_protein)
+            mol = scale_dihedrals(mol, dihedraltypes, scale_protein, banned_lines)
             mol = scale_impropers(mol, impropertypes, 1.0, banned_lines)
 
-        top.write(args.output)
+        top.write(outfile)

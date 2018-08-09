@@ -5,12 +5,11 @@
 
 # file formats
 from __future__ import absolute_import
-__all__ = ["XVG", "MDP", "NDX", "uniqueNDX", "ITP", "XPM", "TOP"]
+__all__ = ["XVG", "MDP", "NDX", "uniqueNDX", "XPM", "TOP"]
 
 from .xvg import XVG
 from .mdp import MDP
 from .ndx import NDX, uniqueNDX
-from .itp import ITP
 from .top import TOP, SystemToGroTop
 from .xpm import XPM
 

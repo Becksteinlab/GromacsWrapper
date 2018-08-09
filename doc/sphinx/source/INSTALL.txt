@@ -5,21 +5,12 @@
 =========
 
 This document should help you to install the **GromacsWrapper**
-package. The installation uses `setuptools`_ ; if this is not
-available on your system you can either let the installer download it
-automatically from the internet (so just go to `Quick installation
-instructions`_) or install it using your package manager, eg::
-
-  aptitude install python-setuptools
-
-or similar.
-
-Please raise and issue in the `Issue Tracker`_ if problems occur or if
-you have suggestions on how to improve the package or these
-instructions.
+package. Please raise and issue in the `Issue Tracker`_ if problems
+occur or if you have suggestions on how to improve the package or
+these instructions.
 
 .. _Issue Tracker: https://github.com/Becksteinlab/GromacsWrapper/issues
-.. _setuptools: https://pypi.python.org/pypi/setuptools
+.. _setuptools: https://pypi.org/project/setuptools/
 
 
 Quick installation instructions
@@ -34,7 +25,7 @@ This will automatically download and install the `latest version of
 GromacsWrapper from PyPi`_.
 
 .. _`latest version of GromacsWrapper from PyPi`:
-   https://pypi.python.org/pypi/GromacsWrapper
+   https://pypi.org/project/GromacsWrapper/
 
 Manual Download
 ===============
@@ -43,12 +34,12 @@ If your prefer to download manually, get the latest stable release
 from https://github.com/Becksteinlab/GromacsWrapper/releases and
 either ::
 
-  pip install GromacsWrapper-0.4.0.tar.gz
+  pip install GromacsWrapper-0.7.0.tar.gz
 
 or install from the unpacked source::
 
-  tar -zxvf GromacsWrapper-0.4.0.tar.gz
-  cd GromacsWrapper-0.4.0
+  tar -zxvf GromacsWrapper-0.7.0.tar.gz
+  cd GromacsWrapper-0.7.0
   python setup.py install
 
 
@@ -60,7 +51,7 @@ The tar archive from https://github.com/Becksteinlab/GromacsWrapper/releases
 contains a full source code distribution.
 
 In order to follow code development you can also browse the code
-**git** repository at http://github.com/Becksteinlab/GromacsWrapper or
+**git** repository at https://github.com/Becksteinlab/GromacsWrapper or
 clone the git repository from
 
    git://github.com/Becksteinlab/GromacsWrapper.git
@@ -75,10 +66,10 @@ and checkout the ``develop`` branch::
 Requirements
 ============
 
-Python_ 2.7 and Gromacs_ must be installed. ipython_ is very much
-recommended. These packages might already be available through your
-local package manager such as ``aptitude/apt``, ``yum``, ``yast``,
-``fink`` or ``macports``.
+Python_ 2.7.x or Python >= 3.4 and Gromacs_ (4.6.x, 2016, 2018) must
+be installed. ipython_ is very much recommended. These packages might
+already be available through your local package manager such as
+``aptitude/apt``, ``yum``, ``yast``, ``fink`` or ``macports``.
 
 .. _Python: http://www.python.org
 .. _Gromacs: http://www.gromacs.org
@@ -88,31 +79,21 @@ local package manager such as ``aptitude/apt``, ``yum``, ``yast``,
 System requirements
 -------------------
 
-Tested with Python 2.7 on Linux and Mac OS X. Earlier python versions
-are not supported.
+Tested with Python 2.7.x and Python 3.5/3.6 on Linux and Mac
+OS X. Earlier Python versions are not supported.
+
+.. Note:: Python 3 support is currently in alpha state; in principle
+  it is fully supported but if you find bugs please report them
+  through the `Issue Tracker`_.
 
 
-Required python modules
+Required Python modules
 -----------------------
 
-The basic package makes use of numpy_ and can use matplotlib_ . Only
-numpy_ is immediately required (and automatically installed).
+The basic package makes use of numpy_ and numkit_ (which uses scipy_);
+all dependencies are installed during a normal installation process.
 
 .. _numpy: http://numpy.scipy.org
-.. _matplotlib: http://matplotlib.sourceforge.net/
-
-For the :mod:`gromacs.analysis` library additional packages are required:
-
-  =============  ==========  ==================================================
-  package        version     source
-  =============  ==========  ==================================================
-  matplotlib     >=0.91.3    http://matplotlib.sourceforge.net/
-  scipy                      http://www.scipy.org/
-  RecSQL         >=0.3       https://github.com/orbeckst/RecSQL
-  =============  ==========  ==================================================
-
-It is generally easier to install ``scipy`` and ``matplotlib`` through
-your distribution manager. ``recsql`` can be easily installed with
-``pip`` (if it is not automatically installed).
-
+.. _numkit: https://github.com/Becksteinlab/numkit
+.. _scipy: https://www.scipy.org/scipylib/index.html
 

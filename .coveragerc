@@ -1,17 +1,18 @@
 [run]
 branch = True
-source = gromacs numkit
+source = gromacs
 
+omit =
+    */gromacs/tests/*
+    # omit the versioneer-installed _version.py
+    */gromacs/_version.py
+    
 [report]
 exclude_lines =
     pragma: no cover
     def __repr__
     def _repr_html_
     def __str__
+    raise AssertionError    
     raise NotImplementedError
     if __name__ == .__main__.:
-
-omit =
-    gromacs/analysis/*
-    gromacs/tests/*
-    numkit/tests/*

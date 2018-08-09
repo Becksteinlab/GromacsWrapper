@@ -1,11 +1,12 @@
 name: gw
 channels:
-- becksteinlab
+- conda-forge
+- bioconda
 dependencies:
-- gromacs-5.1.2
+- gromacs
+- numkit
 - numpy>=1.9
 - scipy
 - pandas
+- matplotlib
 - sphinx
-- pip:
-  - recsql>=0.7

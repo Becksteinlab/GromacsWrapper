@@ -6,13 +6,12 @@
 from __future__ import division, absolute_import, print_function
 
 import pytest
-from unittest import TestCase
 
 from .datafiles import datafile
 
 import gromacs.run
 
-class Test_check_mdrun_success(TestCase):
+class Test_check_mdrun_success(object):
     @staticmethod
     def test_no_logfile():
         assert gromacs.run.check_mdrun_success("bogus_file.log") is None
@@ -45,7 +44,7 @@ def test_MDRunner():
     rc = mdrun.run(mdrunargs={'version': True})
     assert rc == 0, "mdrun failed to run through MDrunner"
 
-class Test_find_gromacs_command(TestCase):
+class Test_find_gromacs_command(object):
     # Gromacs 4 or Gromacs 5 (in this order)
     commands = ["grompp", "gmx grompp"]
 
