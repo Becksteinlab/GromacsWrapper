@@ -2,6 +2,11 @@ language: generic
 group: travis_latest
 sudo: false
 
+cache:
+    pip: true
+    directories:
+        - $HOME/miniconda  
+
 # whitelist
 branches:
     only:
