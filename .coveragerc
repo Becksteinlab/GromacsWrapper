@@ -2,6 +2,12 @@
 branch = True
 source = gromacs
 
+omit =
+    */gromacs/tests/*
+    # omit the versioneer-installed _version.py
+    */gromacs/_version.py
+    setup.py
+    
 [report]
 exclude_lines =
     pragma: no cover
@@ -11,8 +17,3 @@ exclude_lines =
     raise AssertionError    
     raise NotImplementedError
     if __name__ == .__main__.:
-
-omit =
-    gromacs/tests/*
-    # omit the versioneer-installed _version.py
-    gromacs/_version.py
