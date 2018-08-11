@@ -23,7 +23,7 @@ from __future__ import absolute_import, with_statement
 import os, errno
 import re
 import warnings
-
+import six
 import numpy
 
 
@@ -154,7 +154,7 @@ class MDP(odict, utilities.FileUtils):
                 else:                  # parameter = value
                     if skipempty and (v == '' or v is None):
                         continue
-                    if hasattr(v, '__iter__'):
-                         mdp.write("{} = {}\n".format(k,' '.join(map(str, v))))
-                    else:
+                    if isinstance(v, six.string_types) or not hasattr(v, '__iter__'):
                         mdp.write("{k!s} = {v!s}\n".format(**vars()))
+                    else:
+                         mdp.write("{} = {}\n".format(k,' '.join(map(str, v))))
