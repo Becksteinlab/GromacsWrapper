@@ -90,7 +90,7 @@ class MDP(odict, utilities.FileUtils):
         if self.autoconvert:
             return utilities.autoconvert(value)
         else:
-            return value
+            return value.rstrip()
 
     def read(self, filename=None):
         """Read and parse mdp file *filename*."""
