@@ -27,6 +27,7 @@ def CUSTOM_EM_MDP(request, tmpdir):
 
     return mdp, autoconvert
 
+
 class TestMDP(object):
     def test_values(self, CUSTOM_EM_MDP):
         mdp, autoconvert = CUSTOM_EM_MDP
@@ -89,3 +90,23 @@ class TestMDP(object):
         assert_equal(back['define'], ['-DPOSRES', '-DTHIS'])
         assert back['vdwtype'] == 'cutoff'
         assert back['nsteps'] == 1234
+
+@pytest.fixture
+def NONSENSE_MDP(tmpdir):
+    outfile = str(tmpdir.join('nonsense.mdp'))
+
+    with open(datafile('custom_em.mdp'), 'r') as infile:
+        data = infile.read()
+
+    data += 'errors: plenty\n'
+
+    with open(outfile, 'w') as out:
+        out.write(data)
+
+    return outfile
+
+
+def test_bad_mdp(NONSENSE_MDP):
+    with pytest.raises(gromacs.ParseError,
+                       match="unknown line in mdp file, 'errors: plenty'"):
+        gromacs.fileformats.mdp.MDP(NONSENSE_MDP)
