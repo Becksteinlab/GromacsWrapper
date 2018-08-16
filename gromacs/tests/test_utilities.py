@@ -155,3 +155,31 @@ def test_number_pdbs(pdb_files, args):
     assert os.path.exists('myfile0001.pdb')
     assert os.path.exists('myfile0015.pdb')
     assert os.path.exists('myfile0300.pdb')
+
+
+def test_cat(tmpdir):
+    # assert cat.noise == miaow
+    # assert not cat.noise == woof
+    f1 = tmpdir.join('file1.txt')
+    f1.write('foo\n')
+    f2 = tmpdir.join('file2.txt')
+    f2.write('bar\n')
+    out = tmpdir.join('out.txt')
+    gromacs.utilities.cat([str(f1), str(f2)], str(out))
+
+    assert out.read() == 'foo\nbar\n'
+
+
+def test_cat_fail(tmpdir):
+    with pytest.raises(OSError):
+        gromacs.utilities.cat(['not_here.txt'], str(tmpdir.join('new.txt')))
+
+
+def test_cat_None_out(tmpdir):
+    gromacs.utilities.cat(['some_file.txt'], None)
+
+
+def test_cat_None_in(tmpdir):
+    gromacs.utilities.cat(None, str(tmpdir.join('out.txt')))
+
+    assert not os.path.exists(str(tmpdir.join('out.txt')))
