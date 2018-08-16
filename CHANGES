@@ -7,6 +7,7 @@ richardjgowers
 
 * fixed MDP round trip writing, string fields no longer mangled
   (Issue #149)
+* fixed NDX writing (#152)
 
 2018-08-08      0.7.0
 orbeckst, dldotson, kain88-de, ianmkenney

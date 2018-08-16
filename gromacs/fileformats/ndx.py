@@ -25,6 +25,8 @@ access to the individual groups.
 
 from __future__ import absolute_import, with_statement
 
+from six.moves import range
+
 import os, errno
 import re
 import warnings
@@ -124,7 +126,7 @@ class NDX(odict, utilities.FileUtils):
             for name in self:
                 atomnumbers = self._getarray(name)  # allows overriding
                 ndx.write('[ {0!s} ]\n'.format(name))
-                for k in xrange(0, len(atomnumbers), ncol):
+                for k in range(0, len(atomnumbers), ncol):
                     line = atomnumbers[k:k+ncol].astype(int)   # nice formatting in ncol-blocks
                     n = len(line)
                     ndx.write((" ".join(n*[format])+'\n') % tuple(line))
