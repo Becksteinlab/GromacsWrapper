@@ -183,3 +183,53 @@ def test_cat_None_in(tmpdir):
     gromacs.utilities.cat(None, str(tmpdir.join('out.txt')))
 
     assert not os.path.exists(str(tmpdir.join('out.txt')))
+
+
+@pytest.fixture
+def unlink_files(tmpdir):
+    tmpdir.join('hello.mdp').write('foo\n')
+    tmpdir.join('#hello.mdp.1#').write('foo\n')
+    tmpdir.join('#hello.mdp.2#').write('foo\n')
+
+    tmpdir.join('out.gro').write('bar\n')
+    tmpdir.join('#out.gro.1#').write('bar\n')
+    tmpdir.join('#out.gro.2#').write('bar\n')
+
+    currdir = os.getcwd()
+    try:
+        os.chdir(str(tmpdir))
+        yield
+    finally:
+        os.chdir(currdir)
+
+
+def test_unlink(unlink_files):
+    assert os.path.exists('out.gro')
+
+    gromacs.utilities.unlink_f('out.gro')
+
+    assert not os.path.exists('out.gro')
+
+
+def test_unlink_nonexistant(unlink_files):
+    assert not os.path.exists('out.xtc')
+    gromacs.utilities.unlink_f('out.xtc')
+
+
+def test_unlink_gmx_backups(unlink_files):
+    gromacs.utilities.unlink_gmx_backups('hello.mdp')
+
+    assert os.path.exists('hello.mdp')
+    assert not os.path.exists('#hello.mdp.1#')
+    assert not os.path.exists('#hello.mdp.2#')
+    assert os.path.exists('out.gro')
+    assert os.path.exists('#out.gro.1#')
+
+
+def test_unlink_gmx(unlink_files):
+    gromacs.utilities.unlink_gmx('hello.mdp')
+    assert not os.path.exists('hello.mdp')
+    assert not os.path.exists('#hello.mdp.1#')
+    assert not os.path.exists('#hello.mdp.2#')
+    assert os.path.exists('out.gro')
+    assert os.path.exists('#out.gro.1#')
