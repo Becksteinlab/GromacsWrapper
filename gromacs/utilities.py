@@ -91,6 +91,7 @@ __docformat__ = "restructuredtext en"
 import os
 import glob
 import fnmatch
+import itertools
 import re
 import warnings
 import errno
@@ -681,10 +682,8 @@ def number_pdbs(*args, **kwargs):
 
     format = kwargs.pop('format', "%(num)04d")
     name_format = "%(prefix)s" + format +".%(suffix)s"
-    filenames = []
-    map(filenames.append, map(glob.glob, args))  # concatenate all filename lists
-    filenames = filenames[0]                     # ... ugly
-    for f in filenames:
+
+    for f in itertools.chain.from_iterable(map(glob.glob, args)):
         m = NUMBERED_PDB.search(f)
         if m is None:
             continue

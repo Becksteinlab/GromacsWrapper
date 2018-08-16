@@ -128,3 +128,30 @@ class TestOpenAny(object):
             # in MDAnalysis)
             # check inside with block
             assert data == self.quote
+
+
+@pytest.fixture
+def pdb_files(tmpdir):
+    for i in [1, 15, 300]:
+        tmpdir.join('myfile{}.pdb'.format(i)).write('foo\nbar\n')
+
+    currdir = os.getcwd()
+    try:
+        os.chdir(str(tmpdir))
+        yield
+    finally:
+        os.chdir(currdir)
+
+
+@pytest.mark.parametrize('args', [
+    ('myfile*.pdb',),
+    ('myfile1.pdb', 'myfile15.pdb', 'myfile300.pdb'),
+    ('myfile1.pdb', 'myfile*.pdb'),
+    ('myfile*.pdb', 'myotherfiles*.pdb'),
+])
+def test_number_pdbs(pdb_files, args):
+    gromacs.utilities.number_pdbs(*args)
+
+    assert os.path.exists('myfile0001.pdb')
+    assert os.path.exists('myfile0015.pdb')
+    assert os.path.exists('myfile0300.pdb')
