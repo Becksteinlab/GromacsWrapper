@@ -233,3 +233,13 @@ def test_unlink_gmx(unlink_files):
     assert not os.path.exists('#hello.mdp.2#')
     assert os.path.exists('out.gro')
     assert os.path.exists('#out.gro.1#')
+
+
+@pytest.mark.parametrize('iterable,expected', [
+    ('this', 'this'),
+    (['this', 'that'], 'this'),
+    ([1, 2, 3], 1),
+    (np.arange(4), 0),
+])
+def test_firstof(iterable, expected):
+    assert gromacs.utilities.firstof(iterable) == expected
