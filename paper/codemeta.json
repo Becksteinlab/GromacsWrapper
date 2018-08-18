@@ -17,11 +17,11 @@
       "affiliation": ""
     },
     {
-      "@id": "",
+      "@id": "https://orcid.org/0000-0002-3241-1846",
       "@type": "Person",
       "email": "richardjgowers@gmail.com",
-      "name": "Richard Gowers",
-      "affiliation": ""
+      "name": "Richard J. Gowers",
+      "affiliation": "University of New Hampshire"
     },
     {
       "@id": "",
