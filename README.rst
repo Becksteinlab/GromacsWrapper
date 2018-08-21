@@ -29,7 +29,7 @@ running simulations with sensible parameters.
 .. |build| image:: https://travis-ci.org/Becksteinlab/GromacsWrapper.svg
    :target: https://travis-ci.org/Becksteinlab/GromacsWrapper
    :alt: Build Status
-.. |cov| image:: https://codecov.io/gh/Becksteinlab/GromacsWrapper/graph/badge.svg
+.. |cov| image:: https://codecov.io/gh/Becksteinlab/GromacsWrapper/badge.svg
    :target: https://codecov.io/gh/Becksteinlab/GromacsWrapper
    :alt: Code Coverage
    :scale: 100%
