@@ -43,6 +43,13 @@
       "email": "",
       "name": "Philip Loche",
       "affiliation": ""
+    },
+    {
+      "@id": "http://orcid.org/0000-0002-6647-3965",
+      "@type": "Person",
+      "email": "andrew.white@rochester.edu",
+      "name": "Andrew D White",
+      "affiliation": "University of Rochester"
     }
   ],
   "identifier": "10.5281/zenodo.17901",

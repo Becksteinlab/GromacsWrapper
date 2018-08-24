@@ -15,6 +15,9 @@ authors:
   - name: Ian Kenney
     affiliation: 1
   - name: Philip Loche
+  - name: Andrew D. White
+    orcid: 0000-0002-6647-3965
+    affiliation: 4
 affiliations:
  - name: Department of Physics, Arizona State University
    index: 1
@@ -22,6 +25,8 @@ affiliations:
    index: 2
  - name: Department of Chemistry, University of New Hampshire
    index: 3
+ - name: Department of Chemical Engineering, University of Rochester
+   index: 4
 date: 17 August 2018
 bibliography: paper.bib
 ---
