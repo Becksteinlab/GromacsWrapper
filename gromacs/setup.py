@@ -35,6 +35,8 @@ sequence of functions that depend on the previous step(s):
         :func:`energy_minimize`)
   :func:`MD_restrained`
         set up restrained MD
+:func:`MD_restrained`
+      set up free energy pertubation MD
   :func:`MD`
         set up equilibrium MD
 
@@ -138,6 +140,7 @@ from . import run
 from . import cbook
 from . import qsub
 from . import utilities
+from .fileformats import mdp
 from .utilities import in_dir, realpath, Timedelta, asiterable, firstof
 
 
@@ -1031,6 +1034,80 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
     new_kwargs.pop('Pcoupl', None)
     return new_kwargs
 
+def MD_fep(dirname='MD_FEP', stateprefix="lambda_", **kwargs):
+    """Set up MD for free energy pertubation simulations. It will create the subfolders 
+    for all lambda states given in the mdp file to run them independently.
+    
+    Additional itp files should be in the same directory as the top file.
+
+    Many of the keyword arguments below already have sensible values. Note that
+    setting *mainselection* = ``None`` will disable many of the automated
+    choices and is often recommended when using your own mdp file.
+
+    :Keywords:
+       *dirname*
+          set up under directory dirname [MD_POSRES]
+       *stateprefix*
+          Folder prefix for the lambda state
+       *struct*
+          input structure (gro, pdb, ...) [em/em.pdb]
+       *top*
+          topology file [top/system.top]
+       *mdp*
+          mdp file (or use the template) [templates/md.mdp]
+       *ndx*
+          index file (supply when using a custom mdp)
+       *includes*
+          additional directories to search for itp files
+       *mainselection*
+          :program:`make_ndx` selection to select main group ["Protein"]
+          (If ``None`` then no canonical index file is generated and
+          it is the user's responsibility to set *tc_grps*,
+          *tau_t*, and *ref_t* as keyword arguments, or provide the mdp template
+          with all parameter pre-set in *mdp* and probably also your own *ndx*
+          index file.)
+       *deffnm*
+          default filename for Gromacs run [md]
+       *runtime*
+          total length of the simulation in ps [1000]
+       *dt*
+          integration time step in ps [0.002]
+       *qscript*
+          script to submit to the queuing system; by default
+          uses the template :data:`gromacs.config.qscript_template`, which can
+          be manually set to another template from :data:`gromacs.config.templates`;
+          can also be a list of template names.
+       *qname*
+          name to be used for the job in the queuing system [PR_GMX]
+       *mdrun_opts*
+          option flags for the :program:`mdrun` command in the queuing system
+          scripts such as "-stepout 100". [""]
+       *kwargs*
+          remaining key/value pairs that should be changed in the template mdp
+          file, eg ``nstxtcout=250, nstfout=250`` or command line options for
+          ``grompp` such as ``maxwarn=1``.
+
+    :Returns: a dict that can be fed into :func:`gromacs.setup.MD`
+    """
+    
+    def nlambdas(mdp):
+        """Returns the total number of lambda states of a given mdp dictionary"""
+        for t in "fep", "coul", "vdw", "bonded", "restraint", "mass", "temperature":
+            try:
+                return len(mdp['{}-lambdas'.format(t)])
+            except KeyError:
+                pass
+    
+    nlambdas = nlambdas(fileformats.mdp.MDP(kwargs["mdp"]))
+    logger.info("Create input folders and files for {} lambda states...".format(nlambdas))
+    
+    with in_dir(dirname):
+        for l in range(nlambdas):
+            new_kwargs = _setup_MD("stateprefix{}".format(l), 
+                                   init_lambda_state=l, **kwargs)
+            
+    return new_kwargs
+        
 def MD(dirname='MD', **kwargs):
     """Set up equilibrium MD.
 

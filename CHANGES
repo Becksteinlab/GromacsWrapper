@@ -3,11 +3,12 @@
 ==============================
 
 2018-??-??      0.?.?
-richardjgowers
+richardjgowers, PicoCentauri
 
 * fixed MDP round trip writing, string fields no longer mangled
   (Issue #149)
 * fixed NDX writing (#152)
+* Added function for setting up free energy pertubation simulations.
 
 2018-08-08      0.7.0
 orbeckst, dldotson, kain88-de, ianmkenney
