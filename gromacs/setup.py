@@ -35,7 +35,7 @@ sequence of functions that depend on the previous step(s):
         :func:`energy_minimize`)
   :func:`MD_restrained`
         set up restrained MD
-:func:`MD_restrained`
+  :func:`MD_restrained`
       set up free energy pertubation MD
   :func:`MD`
         set up equilibrium MD
@@ -1046,11 +1046,11 @@ def MD_fep(dirname='MD_FEP', stateprefix="lambda_", **kwargs):
 
     :Keywords:
        *dirname*
-          set up under directory dirname [MD_POSRES]
+          set up under directory dirname [MD_FEP]
        *stateprefix*
-          Folder prefix for the lambda state
+          Folder prefix for the lambda state [lambda_]
        *struct*
-          input structure (gro, pdb, ...) [em/em.pdb]
+          input structure (gro, pdb, ...) [conf.gro]
        *top*
           topology file [top/system.top]
        *mdp*
@@ -1066,12 +1066,6 @@ def MD_fep(dirname='MD_FEP', stateprefix="lambda_", **kwargs):
           *tau_t*, and *ref_t* as keyword arguments, or provide the mdp template
           with all parameter pre-set in *mdp* and probably also your own *ndx*
           index file.)
-       *deffnm*
-          default filename for Gromacs run [md]
-       *runtime*
-          total length of the simulation in ps [1000]
-       *dt*
-          integration time step in ps [0.002]
        *qscript*
           script to submit to the queuing system; by default
           uses the template :data:`gromacs.config.qscript_template`, which can
@@ -1098,13 +1092,16 @@ def MD_fep(dirname='MD_FEP', stateprefix="lambda_", **kwargs):
             except KeyError:
                 pass
     
-    nlambdas = nlambdas(fileformats.mdp.MDP(kwargs["mdp"]))
+    nlambdas = nlambdas(mdp.MDP(kwargs["mdp"]))
     logger.info("Create input folders and files for {} lambda states...".format(nlambdas))
     
-    with in_dir(dirname):
-        for l in range(nlambdas):
-            new_kwargs = _setup_MD("stateprefix{}".format(l), 
-                                   init_lambda_state=l, **kwargs)
+    kwargs.setdefault('struct', 'conf.gro')
+    
+    for l in range(nlambdas):
+        kwargs.setdefault('qname', 'MD_FEP_'.format(l))
+        new_kwargs = _setup_MD(dirname=os.path.join(dirname, stateprefix+str(l)), 
+                               init_lambda_state=l, 
+                               **kwargs)
             
     return new_kwargs
         
