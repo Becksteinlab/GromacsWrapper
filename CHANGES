@@ -2,6 +2,11 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
+2018-XX-XX      0.X.X
+PicoCentauri
+
+* Added function for setting up free energy pertubation simulations.
+
 2018-08-08      0.7.0
 orbeckst, dldotson, kain88-de, ianmkenney
 
