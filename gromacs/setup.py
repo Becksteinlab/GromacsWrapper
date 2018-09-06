@@ -35,7 +35,7 @@ sequence of functions that depend on the previous step(s):
         :func:`energy_minimize`)
   :func:`MD_restrained`
         set up restrained MD
-  :func:`MD_restrained`
+  :func:`MD_fep`
       set up free energy pertubation MD
   :func:`MD`
         set up equilibrium MD
@@ -140,7 +140,7 @@ from . import run
 from . import cbook
 from . import qsub
 from . import utilities
-from .fileformats import mdp
+from . import fileformats
 from .utilities import in_dir, realpath, Timedelta, asiterable, firstof
 
 
@@ -651,7 +651,8 @@ def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
 
        *kwargs*
           remaining key/value pairs that should be changed in the
-          template mdp file, eg ``nstxtcout=250, nstfout=250``.
+          template mdp file, eg ``nstxtcout=250, nstfout=250`` or 
+          command line options for ``grompp` such as ``maxwarn=1``.
 
     .. note:: If :func:`~gromacs.mdrun_d` is not found, the function
               falls back to :func:`~gromacs.mdrun` instead.
@@ -1034,7 +1035,10 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
     new_kwargs.pop('Pcoupl', None)
     return new_kwargs
 
-def MD_fep(dirname='MD_FEP', stateprefix="lambda_", **kwargs):
+def MD_fep(dirname='MD_FEP', stateprefix="lambda_", struct="conf.gro",
+           top="top/system.top", mdp="templates/md.mdp", em_mdp=None, 
+           ndx=None, mainselection=None, qsub_opts=None, mdrun_opts="",
+           **kwargs):
     """Set up MD for free energy pertubation simulations. It will create the subfolders 
     for all lambda states given in the mdp file to run them independently.
     
@@ -1048,17 +1052,19 @@ def MD_fep(dirname='MD_FEP', stateprefix="lambda_", **kwargs):
        *dirname*
           set up under directory dirname [MD_FEP]
        *stateprefix*
-          Folder prefix for the lambda state [lambda_]
+          folder prefix for the lambda state [lambda_]
        *struct*
           input structure (gro, pdb, ...) [conf.gro]
        *top*
           topology file [top/system.top]
        *mdp*
           mdp file (or use the template) [templates/md.mdp]
+       *em_mdp*
+          mdp file for doing an energy minimization before setting up the 
+          simulation. If ``None`` directly set up simulation. 
+          Without an energy minimization your simulation is most probably unstable.
        *ndx*
           index file (supply when using a custom mdp)
-       *includes*
-          additional directories to search for itp files
        *mainselection*
           :program:`make_ndx` selection to select main group ["Protein"]
           (If ``None`` then no canonical index file is generated and
@@ -1066,13 +1072,8 @@ def MD_fep(dirname='MD_FEP', stateprefix="lambda_", **kwargs):
           *tau_t*, and *ref_t* as keyword arguments, or provide the mdp template
           with all parameter pre-set in *mdp* and probably also your own *ndx*
           index file.)
-       *qscript*
-          script to submit to the queuing system; by default
-          uses the template :data:`gromacs.config.qscript_template`, which can
-          be manually set to another template from :data:`gromacs.config.templates`;
-          can also be a list of template names.
-       *qname*
-          name to be used for the job in the queuing system [PR_GMX]
+       *qsub_opts*
+          paramaters for submission script i.e. qscript, qname, walltime
        *mdrun_opts*
           option flags for the :program:`mdrun` command in the queuing system
           scripts such as "-stepout 100". [""]
@@ -1092,16 +1093,32 @@ def MD_fep(dirname='MD_FEP', stateprefix="lambda_", **kwargs):
             except KeyError:
                 pass
     
-    nlambdas = nlambdas(mdp.MDP(kwargs["mdp"]))
+    nlambdas = nlambdas(fileformats.mdp.MDP(mdp))
     logger.info("Create input folders and files for {} lambda states...".format(nlambdas))
     
-    kwargs.setdefault('struct', 'conf.gro')
+    qsub_opts = {} if qsub_opts is None else qsub_opts
+    qsub_opts["qname"] = 'FEP_GMX' if qsub_opts.get("qname") is None else qsub_opts["qname"]
+    qsub_opts['qname'] += "_"
     
     for l in range(nlambdas):
-        kwargs.setdefault('qname', 'MD_FEP_'.format(l))
-        new_kwargs = _setup_MD(dirname=os.path.join(dirname, stateprefix+str(l)), 
-                               init_lambda_state=l, 
-                               **kwargs)
+        qsub_opts['qname'] = qsub_opts['qname'].rsplit('_', 1)[0] + "_" + str(l)
+        dirname_state = os.path.join(dirname, stateprefix+str(l))
+        struct_state = struct
+        
+        if em_mdp is not None:
+            if l > 0: # Take prevoius energy minimization.
+                struct_state = os.path.join(os.path.join(dirname, stateprefix+str(l-1)),
+                                            "em.gro")
+            
+            energy_minimize(dirname=dirname_state, mdp=em_mdp,
+                            struct=struct_state, top=top, 
+                            output='em.gro', deffnm="em",
+                            init_lambda_state=l, **kwargs)
+            struct_state = os.path.join(dirname_state,"em.gro")
+        
+        new_kwargs = _setup_MD(dirname=dirname_state, mdp=mdp, struct=struct_state, 
+                               top=top, ndx=ndx, mainselection=mainselection, 
+                               init_lambda_state=l, **qsub_opts, **kwargs)
             
     return new_kwargs
         
