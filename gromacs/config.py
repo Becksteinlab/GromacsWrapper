@@ -487,6 +487,7 @@ class GMXConfigParser(SafeConfigParser):
           self.set("Gromacs", "tools", "")
           self.set("Gromacs", "extra", "")
           self.set("Gromacs", "groups", "tools")
+          self.set("Gromacs", "append_suffix", "yes")
           self.add_section('Logging')
           self.set('Logging', 'logfilename', defaults['logfilename'])
           self.set('Logging', 'loglevel_console', defaults['loglevel_console'])

@@ -214,8 +214,11 @@ def load_v5_tools():
     if len(drivers) == 0 or len(drivers) > 4:
         drivers = ['gmx', 'gmx_d', 'gmx_mpi', 'gmx_mpi_d']
 
+    append = config.cfg.getboolean('Gromacs', 'append_suffix', fallback=True)
+
     tools = {}
     for driver in drivers:
+        suffix = driver.partition('_')[2]
         try:
             out = subprocess.check_output([driver, '-quiet', 'help',
                                            'commands'])
@@ -224,8 +227,7 @@ def load_v5_tools():
                 if line[4] != ' ':
                     name = line[4:line.index(' ', 4)]
                     fancy = make_valid_identifier(name)
-                    suffix = driver.partition('_')[2]
-                    if suffix:
+                    if suffix and append:
                         fancy = '{0!s}_{1!s}'.format(fancy, suffix)
                     tools[fancy] = tool_factory(fancy, name, driver)
         except (subprocess.CalledProcessError, OSError):
