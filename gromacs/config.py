@@ -234,9 +234,9 @@ import subprocess
 import sys
 
 if sys.version_info[0] < 3:
-    from ConfigParser import SafeConfigParser
+    from ConfigParser import ConfigParser
 else:
-    from configparser import SafeConfigParser
+    from configparser import ConfigParser
 
 from pkg_resources import resource_filename, resource_listdir
 
@@ -454,7 +454,7 @@ def _get_template(t):
     return os.path.realpath(t)
 
 
-class GMXConfigParser(SafeConfigParser):
+class GMXConfigParser(ConfigParser):
      """Customized :class:`ConfigParser.SafeConfigParser`."""
      cfg_template = 'gromacswrapper.cfg'
 
@@ -474,8 +474,7 @@ class GMXConfigParser(SafeConfigParser):
 
           self.filename = kwargs.pop('filename', CONFIGNAME)
 
-          args = tuple([self] + list(args))
-          SafeConfigParser.__init__(*args, **kwargs)  # old style class ... grmbl
+          super(GMXConfigParser, self).__init__(*args, **kwargs)
           # defaults
           self.set('DEFAULT', 'qscriptdir',
                   os.path.join("%(configdir)s", os.path.basename(defaults['qscriptdir'])))
@@ -495,7 +494,7 @@ class GMXConfigParser(SafeConfigParser):
 
           # bundled defaults (should be ok to use get_template())
           default_cfg = get_template(self.cfg_template)
-          self.readfp(open(default_cfg))
+          self.read_file(open(default_cfg))
 
           # defaults are overriden by existing user global cfg file
           self.read([self.filename])
