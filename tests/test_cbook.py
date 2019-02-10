@@ -5,14 +5,12 @@
 
 from __future__ import division, absolute_import, print_function
 
-import pytest
-
 from numpy.testing import assert_almost_equal
 
 from gromacs import cbook
 import gromacs.setup
 
-from gromacs.tests.datafiles import datafile
+from .datafiles import datafile
 
 def test_grompp_qtot(tmpdir):
     pdb = datafile("1ake_A.pdb")

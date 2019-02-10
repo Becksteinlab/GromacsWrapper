@@ -3,7 +3,7 @@ branch = True
 source = gromacs
 
 omit =
-    */gromacs/tests/*
+    */tests/*
     # omit the versioneer-installed _version.py
     */gromacs/_version.py
     

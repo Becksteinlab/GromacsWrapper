@@ -12,7 +12,7 @@ from numpy.testing import assert_almost_equal
 
 import gromacs.setup
 
-from gromacs.tests.datafiles import datafile
+from .datafiles import datafile
 
 def test_trj_compact_main(tmpdir):
     pdb = datafile("1ake_A.pdb")

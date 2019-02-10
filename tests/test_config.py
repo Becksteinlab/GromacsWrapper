@@ -67,13 +67,23 @@ def test_set_gmxrc_environment(GMXRC):
             assert envvar in newvars, \
                 "GMX environment variable was not added correctly"
 
+
 def test_check_setup():
     rc = gromacs.config.check_setup()
     assert rc in (True, False)
+
 
 def test_get_configuration():
     cfg = gromacs.config.get_configuration()
     # could test more variables
     assert cfg.getpath('DEFAULT', 'configdir')
     assert isinstance(cfg.getboolean('Gromacs', 'append_suffix'), bool)
+
+
+def test_modified_config(modified_config):
+    tools, append_suffix, Path = modified_config
+    if tools != '':
+        assert Path('~/gmx_mpi').expanduser().exists()
+    assert gromacs.config.cfg.get('Gromacs', 'tools') == tools
+    assert gromacs.config.cfg.get('Gromacs', 'append_suffix') == append_suffix
 
