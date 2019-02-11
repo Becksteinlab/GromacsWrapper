@@ -234,7 +234,7 @@ import subprocess
 import sys
 
 if sys.version_info[0] < 3:
-    from ConfigParser import ConfigParser
+    from ConfigParser import SafeConfigParser as ConfigParser
 else:
     from configparser import ConfigParser
 
@@ -452,6 +452,9 @@ def _get_template(t):
          if not _t_found:            # 5) nothing else to try...
               raise ValueError("Failed to locate the template file {t!r}.".format(**vars()))
     return os.path.realpath(t)
+
+
+__metaclass__ = type
 
 
 class GMXConfigParser(ConfigParser):
