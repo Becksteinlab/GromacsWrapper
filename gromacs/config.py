@@ -235,6 +235,19 @@ import sys
 
 if sys.version_info[0] < 3:
     from ConfigParser import SafeConfigParser as ConfigParser
+    from ConfigParser import NoSectionError, NoOptionError
+    ConfigParser.read_file = ConfigParser.readfp
+    _cf_getbool = ConfigParser.getboolean
+    _UNSET = object()
+
+    def _getboolean(self, section, option, fallback=_UNSET, **kwargs):
+        try:
+            return _cf_getbool(self, section, option,**kwargs)
+        except (NoSectionError, NoOptionError):
+            if fallback is _UNSET:
+                raise
+        return fallback
+    ConfigParser.getboolean = _getboolean
 else:
     from configparser import ConfigParser
 
@@ -454,10 +467,7 @@ def _get_template(t):
     return os.path.realpath(t)
 
 
-__metaclass__ = type
-
-
-class GMXConfigParser(ConfigParser):
+class GMXConfigParser(ConfigParser, object):
      """Customized :class:`ConfigParser.SafeConfigParser`."""
      cfg_template = 'gromacswrapper.cfg'
 
