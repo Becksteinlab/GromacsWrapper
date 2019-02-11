@@ -54,8 +54,8 @@ install:
 script:
   - cd ${TRAVIS_BUILD_DIR}
   - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then ulimit -S -n 2048; fi
-  - if [[ $SUFFIX_TEST == 'true' ]]; then \
-      SETUP_CMD="${SETUP_CMD} ${SUFFIX_TEST_FLAGS}"; \
+  - if [[ $SUFFIX_TEST == 'true' ]]; then
+      SETUP_CMD="${SETUP_CMD} ${SUFFIX_TEST_FLAGS}";
     fi
   - echo $MAIN_CMD $SETUP_CMD
   - eval $MAIN_CMD $SETUP_CMD
