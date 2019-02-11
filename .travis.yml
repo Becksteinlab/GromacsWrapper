@@ -2,10 +2,10 @@ language: generic
 group: travis_latest
 sudo: false
 
-## whitelist
-#branches:
-#    only:
-#        - master
+# whitelist
+branches:
+    only:
+        - master
 
 env:
   global:
