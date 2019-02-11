@@ -8,6 +8,12 @@ from __future__ import division, absolute_import, print_function
 import contextlib
 import os
 import errno
+import sys
+
+if sys.version_info[0] < 3:
+    from ConfigParser import NoOptionError, NoSectionError
+else:
+    from configparser import NoOptionError, NoSectionError
 
 import pytest
 
@@ -87,3 +93,25 @@ def test_modified_config(modified_config):
     assert gromacs.config.cfg.get('Gromacs', 'tools') == tools
     assert gromacs.config.cfg.get('Gromacs', 'append_suffix') == append_suffix
 
+
+def test_get_boolean():
+    # The code for getboolean was custom implemented based on the Python 3.7
+    # ConfigParser.getboolean code.
+    # These tests should be unnecessary for the Python 3 version of the code.
+    cfg = gromacs.config.cfg
+    assert isinstance(cfg.getboolean('Gromacs', 'append_suffix'), bool)
+    assert isinstance(cfg.getboolean('Gromacs', 'append_suffix',
+                                     fallback=True), bool)
+    with pytest.raises(ValueError):
+        cfg.getboolean('DEFAULT', 'configdir')
+    with pytest.raises(ValueError):
+        cfg.getboolean('DEFAULT', 'configdir', fallback=True)
+    with pytest.raises(NoOptionError):
+        cfg.getboolean('Gromacs', 'bool')
+    with pytest.raises(NoSectionError):
+        cfg.getboolean('Not a section', 'bool')
+    cfg.set('Gromacs', 'bool', '')
+    cfg.remove_option('Gromacs', 'bool')
+    assert cfg.getboolean('Gromacs', 'bool', fallback=True) is True
+    with pytest.raises(NoOptionError):
+        cfg.getboolean('Gromacs', 'bool')
