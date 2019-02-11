@@ -86,8 +86,8 @@ def pytest_configure(config):
     if config_existed:
         shutil.copy(str(path_config), str(config_backup))
     tools = gmx_mpi_linked(link_gmx_mpi)
-    gw_config['Gromacs']['tools'] = tools
-    gw_config['Gromacs']['append_suffix'] = append_suffix
+    gw_config.set('Gromacs', 'tools', tools)
+    gw_config.set('Gromacs', 'append_suffix', append_suffix)
     with open(str(path_config), 'w') as config_file:
         gw_config.write(config_file)
 
