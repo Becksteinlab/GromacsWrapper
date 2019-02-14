@@ -233,10 +233,16 @@ import re
 import subprocess
 import sys
 
-if sys.version_info[0] < 3:
+if sys.version_info[0] < 3:  # several differences for Python 2
     from ConfigParser import SafeConfigParser as ConfigParser
     from ConfigParser import NoSectionError, NoOptionError
+    # Define read_file to point to the (deprecated in Python 3) readfp
+    # in order to have consistent, non-deprecated syntax
     ConfigParser.read_file = ConfigParser.readfp
+
+    # Implement the new `fallback` kwarg based on the Python 3.7 implementation
+    # https://github.com/python/cpython/blob/3.7/Lib/configparser.py#L804
+    # This should ensure backwards compatibility.
     _cf_getbool = ConfigParser.getboolean
     _UNSET = object()
 
