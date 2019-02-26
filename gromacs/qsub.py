@@ -293,6 +293,7 @@ queuing_systems = [
     QueuingSystem('Sun Gridengine', 'sge', '#$', array_variable='SGE_TASK_ID', array_option='-t %d-%d'),
     QueuingSystem('PBS', 'pbs', '#PBS', array_variable='PBS_ARRAY_INDEX', array_option='-J %d-%d'),
     QueuingSystem('LoadLeveler', 'll', '#@'),  # no idea how to do arrays in LL
+    QueuingSystem('Slurm', 'slu', '#SBATCH'), # will add array settings
     ]
 
 def detect_queuing_system(scriptfile):
@@ -365,19 +366,35 @@ def generate_submit_scripts(templates, prefix=None, deffnm='md', jobname='MD', b
         submitscript = os.path.join(dirname, prefix + os.path.basename(template))
         logger.info("Setting up queuing system script {submitscript!r}...".format(**vars()))
         # These substitution rules are documented for the user in the module doc string
-        cbook.edit_txt(template,
-                       [('^ *DEFFNM=','(?<==)(.*)', deffnm),
-                        ('^#.*(-N|job_name)', '((?<=-N\s)|(?<=job_name\s))\s*\w+', jobname),
-                        ('^#.*(-A|account_no)', '((?<=-A\s)|(?<=account_no\s))\s*\w+', budget),
-                        ('^#.*(-l walltime|wall_clock_limit)', '(?<==)(\d+:\d+:\d+)', walltime),
-                        ('^ *WALL_HOURS=', '(?<==)(.*)', wall_hours),
-                        ('^ *STARTDIR=', '(?<==)(.*)', startdir),
-                        ('^ *NPME=', '(?<==)(.*)', npme),
-                        ('^ *MDRUN_OPTS=', '(?<==)("")', mdrun_opts),  # only replace literal ""
-                        ('^# JOB_ARRAY_PLACEHOLDER', '^.*$', jobarray_string),
-                    ],
-                       newname=submitscript)
-        ext = os.path.splitext(submitscript)[1]
+        qsystem = detect_queuing_system(template)
+        if qsystem.name == 'Slurm':
+            cbook.edit_txt(template,
+                           [('^ *DEFFNM=','(?<==)(.*)', deffnm),
+                            ('^#.*(-J)', '((?<=-J\s))\s*\w+', jobname),
+                            ('^#.*(-A|account_no)', '((?<=-A\s)|(?<=account_no\s))\s*\w+', budget),
+                            ('^#.*(-t walltime)', '(?<==)(\d+:\d+:\d+)', walltime),
+                            ('^ *WALL_HOURS=', '(?<==)(.*)', wall_hours),
+                            ('^ *STARTDIR=', '(?<==)(.*)', startdir),
+                            ('^ *NPME=', '(?<==)(.*)', npme),
+                            ('^ *MDRUN_OPTS=', '(?<==)("")', mdrun_opts),  # only replace literal ""
+                            ('^# JOB_ARRAY_PLACEHOLDER', '^.*$', jobarray_string),
+                            ],
+                           newname=submitscript)
+            ext = os.path.splitext(submitscript)[1]
+        else:
+            cbook.edit_txt(template,
+                           [('^ *DEFFNM=','(?<==)(.*)', deffnm),
+                            ('^#.*(-N|job_name)', '((?<=-N\s)|(?<=job_name\s))\s*\w+', jobname),
+                            ('^#.*(-A|account_no)', '((?<=-A\s)|(?<=account_no\s))\s*\w+', budget),
+                            ('^#.*(-l walltime|wall_clock_limit)', '(?<==)(\d+:\d+:\d+)', walltime),
+                            ('^ *WALL_HOURS=', '(?<==)(.*)', wall_hours),
+                            ('^ *STARTDIR=', '(?<==)(.*)', startdir),
+                            ('^ *NPME=', '(?<==)(.*)', npme),
+                            ('^ *MDRUN_OPTS=', '(?<==)("")', mdrun_opts),  # only replace literal ""
+                            ('^# JOB_ARRAY_PLACEHOLDER', '^.*$', jobarray_string),
+                           ],
+                           newname=submitscript)
+            ext = os.path.splitext(submitscript)[1]
         if ext in ('.sh', '.csh', '.bash'):
             os.chmod(submitscript, 0o755)
         return submitscript
@@ -430,4 +447,3 @@ def generate_submit_array(templates, directories, **kwargs):
 
     # must use config.get_templates() because we need to access the file for detecting
     return [write_script(template) for template in config.get_templates(templates)]
-
