@@ -367,12 +367,12 @@ def generate_submit_scripts(templates, prefix=None, deffnm='md', jobname='MD', b
         logger.info("Setting up queuing system script {submitscript!r}...".format(**vars()))
         # These substitution rules are documented for the user in the module doc string
         qsystem = detect_queuing_system(template)
-        if qsystem.name == 'Slurm':
+        if qsystem is not None and (qsystem.name == 'Slurm'):
             cbook.edit_txt(template,
                            [('^ *DEFFNM=','(?<==)(.*)', deffnm),
                             ('^#.*(-J)', '((?<=-J\s))\s*\w+', jobname),
                             ('^#.*(-A|account_no)', '((?<=-A\s)|(?<=account_no\s))\s*\w+', budget),
-                            ('^#.*(-t walltime)', '(?<==)(\d+:\d+:\d+)', walltime),
+                            ('^#.*(-t)', '(?<=-t\s)(\d+:\d+:\d+)', walltime),
                             ('^ *WALL_HOURS=', '(?<==)(.*)', wall_hours),
                             ('^ *STARTDIR=', '(?<==)(.*)', startdir),
                             ('^ *NPME=', '(?<==)(.*)', npme),
