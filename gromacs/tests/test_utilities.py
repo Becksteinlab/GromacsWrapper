@@ -243,3 +243,86 @@ def test_unlink_gmx(unlink_files):
 ])
 def test_firstof(iterable, expected):
     assert gromacs.utilities.firstof(iterable) == expected
+
+
+@pytest.mark.parametrize('val,ref', [
+    ('a', 'ALA'), ('A', 'ALA'),
+    ('ala', 'A'), ('ALA', 'A'), ('Ala', 'A'),
+    ('Q', 'GLN'), ('q', 'GLN'),
+    ('GLN', 'Q'), ('gln', 'Q'), ('Gln', 'Q'),
+])
+def test_conv_aa_code(val, ref):
+    assert gromacs.utilities.convert_aa_code(val) == ref
+
+
+@pytest.mark.parametrize('val', ['ALAA', ''])
+def test_conv_aa_code_VE(val):
+    with pytest.raises(ValueError):
+        gromacs.utilities.convert_aa_code(val)
+
+
+@pytest.fixture
+def fileutil():
+    class MyFileUtil(gromacs.utilities.FileUtils):
+        default_extension = '.test'
+
+        def __init__(self):
+            self._init_filename(filename='simple.test')
+
+    return MyFileUtil()
+
+
+@pytest.mark.parametrize('filename,ext,ref', [
+    (None, None, 'simple'),
+    ('other', None, 'other'),
+    (None, 'pdf', 'simple.pdf'),
+    ('other', 'pdf', 'other.pdf'),
+])
+def test_FileUtils_filename(fileutil, filename, ext, ref):
+    assert fileutil.filename(filename=filename, ext=ext) == ref
+
+def test_FileUtils_filename_VE(fileutil):
+    del fileutil._filename
+
+    with pytest.raises(ValueError):
+        fileutil.filename()
+
+@pytest.fixture
+def fileutil_withfiles(fileutil, tmpdir):
+    curr = os.getcwd()
+
+    tmpdir.join('exists.txt').write('hello\n')
+
+    try:
+        os.chdir(str(tmpdir))
+        yield fileutil
+    finally:
+        os.chdir(curr)
+
+
+@pytest.mark.parametrize('fn', ['exists.txt', 'nonexistant.txt'])
+def test_check_file_exists_ignore(fileutil_withfiles, fn):
+    assert fileutil_withfiles.check_file_exists(fn, resolve='ignore') is False
+
+
+@pytest.mark.parametrize('fn', ['exists.txt', 'nonexistant.txt'])
+def test_check_file_exists_force(fileutil_withfiles, fn):
+    assert fileutil_withfiles.check_file_exists(fn, force=True) is False
+
+
+@pytest.mark.parametrize('fn,ref', [('exists.txt', True),
+                                    ('nonexistant.txt', False)])
+def test_check_file_exists_indicate(fileutil_withfiles, fn, ref):
+    assert fileutil_withfiles.check_file_exists(fn, resolve='indicate') is ref
+
+
+@pytest.mark.parametrize('resolve', ['warn', 'warning'])
+def test_check_file_exists_warn(fileutil_withfiles, resolve):
+    with pytest.warns(UserWarning):
+        fileutil_withfiles.check_file_exists('exists.txt', resolve=resolve)
+
+
+@pytest.mark.parametrize('resolve', ['exception', 'raise'])
+def test_check_file_exists_raise(fileutil_withfiles, resolve):
+    with pytest.raises(IOError):
+        fileutil_withfiles.check_file_exists('exists.txt', resolve=resolve)
