@@ -247,12 +247,16 @@ if sys.version_info[0] < 3:  # several differences for Python 2
     _UNSET = object()
 
     def _getboolean(self, section, option, fallback=_UNSET, **kwargs):
-        try:
-            return _cf_getbool(self, section, option,**kwargs)
+        """Return a boolean for the specified config option
+
+        If *fallback* is used, it will be returned if there if the
+        option is not specified anywhere (defaults, config file)."""
+        try:  # Try using the Python 2 function
+            return _cf_getbool(self, section, option, **kwargs)
         except (NoSectionError, NoOptionError):
             if fallback is _UNSET:
                 raise
-        return fallback
+        return fallback  # If fallback is given, use that value
     ConfigParser.getboolean = _getboolean
 else:
     from configparser import ConfigParser
