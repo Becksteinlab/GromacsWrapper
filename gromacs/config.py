@@ -233,10 +233,33 @@ import re
 import subprocess
 import sys
 
-if sys.version_info[0] < 3:
-    from ConfigParser import SafeConfigParser
+if sys.version_info[0] < 3:  # several differences for Python 2
+    from ConfigParser import SafeConfigParser as ConfigParser
+    from ConfigParser import NoSectionError, NoOptionError
+    # Define read_file to point to the (deprecated in Python 3) readfp
+    # in order to have consistent, non-deprecated syntax
+    ConfigParser.read_file = ConfigParser.readfp
+
+    # Implement the new `fallback` kwarg based on the Python 3.7 implementation
+    # https://github.com/python/cpython/blob/3.7/Lib/configparser.py#L804
+    # This should ensure backwards compatibility.
+    _cf_getbool = ConfigParser.getboolean
+    _UNSET = object()
+
+    def _getboolean(self, section, option, fallback=_UNSET, **kwargs):
+        """Return a boolean for the specified config option
+
+        If *fallback* is used, it will be returned if there if the
+        option is not specified anywhere (defaults, config file)."""
+        try:  # Try using the Python 2 function
+            return _cf_getbool(self, section, option, **kwargs)
+        except (NoSectionError, NoOptionError):
+            if fallback is _UNSET:
+                raise
+        return fallback  # If fallback is given, use that value
+    ConfigParser.getboolean = _getboolean
 else:
-    from configparser import SafeConfigParser
+    from configparser import ConfigParser
 
 from pkg_resources import resource_filename, resource_listdir
 
@@ -454,7 +477,7 @@ def _get_template(t):
     return os.path.realpath(t)
 
 
-class GMXConfigParser(SafeConfigParser):
+class GMXConfigParser(ConfigParser, object):
      """Customized :class:`ConfigParser.SafeConfigParser`."""
      cfg_template = 'gromacswrapper.cfg'
 
@@ -474,8 +497,7 @@ class GMXConfigParser(SafeConfigParser):
 
           self.filename = kwargs.pop('filename', CONFIGNAME)
 
-          args = tuple([self] + list(args))
-          SafeConfigParser.__init__(*args, **kwargs)  # old style class ... grmbl
+          super(GMXConfigParser, self).__init__(*args, **kwargs)
           # defaults
           self.set('DEFAULT', 'qscriptdir',
                   os.path.join("%(configdir)s", os.path.basename(defaults['qscriptdir'])))
@@ -487,6 +509,7 @@ class GMXConfigParser(SafeConfigParser):
           self.set("Gromacs", "tools", "")
           self.set("Gromacs", "extra", "")
           self.set("Gromacs", "groups", "tools")
+          self.set("Gromacs", "append_suffix", "yes")
           self.add_section('Logging')
           self.set('Logging', 'logfilename', defaults['logfilename'])
           self.set('Logging', 'loglevel_console', defaults['loglevel_console'])
@@ -494,7 +517,7 @@ class GMXConfigParser(SafeConfigParser):
 
           # bundled defaults (should be ok to use get_template())
           default_cfg = get_template(self.cfg_template)
-          self.readfp(open(default_cfg))
+          self.read_file(open(default_cfg))
 
           # defaults are overriden by existing user global cfg file
           self.read([self.filename])

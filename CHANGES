@@ -2,6 +2,12 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
+2019-03-07
+theavey
+
+* allow ignoring of gmx executable suffix (such as '_mpi' or '_d' by adding an
+  option to the configuration file (Issue #124)
+
 2018-??-??      0.?.?
 richardjgowers
 

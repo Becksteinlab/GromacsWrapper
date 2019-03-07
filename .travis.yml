@@ -12,7 +12,7 @@ env:
     - PYTHON_VERSION=2.7
     - CODECOV=true
     - PYTEST_FLAGS="-v --disable-pytest-warnings --durations=20 --low-performance --cov=gromacs"
-    - PYTEST_LIST="gromacs/tests"
+    - PYTEST_LIST="tests"
     - MAIN_CMD="pytest ${PYTEST_LIST}"
     - SETUP_CMD="${PYTEST_FLAGS}"
     - BUILD_CMD="pip install -v ."
@@ -31,6 +31,9 @@ env:
     - GROMACS_VERSION=2018.2  PYTHON_VERSION=2.7 CODECOV=false
     - GROMACS_VERSION=4.6.5   PYTHON_VERSION=3.6
     - GROMACS_VERSION=2018.2  PYTHON_VERSION=3.6 CODECOV=false
+    # Test "append_suffix" implementation
+    - GROMACS_VERSION=2018.2  PYTHON_VERSION=3.6 CODECOV=false
+        SETUP_CMD="${SETUP_CMD} --link-gmx-mpi --no-append-suffix"
 
 
 matrix:
