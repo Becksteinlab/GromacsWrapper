@@ -358,6 +358,180 @@ def get_lipid_vdwradii(outdir=os.path.curdir, libdir=None):
     logger.debug('Created lipid vdW radii file {vdwradii_dat!r}.'.format(**vars()))
     return realpath(vdwradii_dat)
 
+def solvate_sol(struct='top/protein.pdb', top='top/system.top',
+                distance=0.9, boxtype='dodecahedron',
+                water='tip4p', solvent_name='SOL', with_membrane=False,
+                dirname='solvate',
+                **kwargs):
+    structure = realpath(struct)
+    topology = realpath(top)
+
+    # arguments for editconf that we honour
+    editconf_keywords = ["box", "bt", "angles", "c", "center", "aligncenter",
+                         "align", "translate", "rotate", "princ"]
+    editconf_kwargs = dict((k,kwargs.pop(k,None)) for k in editconf_keywords)
+    editconf_boxtypes = ["triclinic", "cubic", "dodecahedron", "octahedron", None]
+
+    # needed for topology scrubbing
+    scrubber_kwargs = {'marker': kwargs.pop('marker',None)}
+
+    # sanity checks and argument dependencies
+    bt = editconf_kwargs.pop('bt')
+    boxtype = bt if bt else boxtype   # bt takes precedence over boxtype
+    if not boxtype in editconf_boxtypes:
+        msg = "Unsupported boxtype {boxtype!r}: Only {boxtypes!r} are possible.".format(**vars())
+        logger.error(msg)
+        raise ValueError(msg)
+    if editconf_kwargs['box']:
+        distance = None    # if box is set then user knows what she is doing...
+
+    if water.lower() in ('spc', 'spce'):
+        water = 'spc216'
+    elif water.lower() == 'tip3p':
+        water = 'spc216'
+        logger.warning("TIP3P water model selected: using SPC equilibrated box "
+                       "for initial solvation because it is a reasonable starting point "
+                       "for any 3-point model. EQUILIBRATE THOROUGHLY!")
+
+    # clean topology (if user added the marker; the default marker is
+    # ; Gromacs auto-generated entries follow:
+    n_removed = cbook.remove_molecules_from_topology(topology, **scrubber_kwargs)
+
+    with in_dir(dirname):
+        logger.info("[{dirname!s}] Solvating with water {water!r}...".format(**vars()))
+        if boxtype is None:
+            hasBox = False
+            ext = os.path.splitext(structure)[1]
+            if ext == '.gro':
+                hasBox = True
+            elif ext == '.pdb':
+                with open(structure) as struct:
+                    for line in struct:
+                        if line.startswith('CRYST'):
+                            hasBox = True
+                            break
+            if not hasBox:
+                msg = "No box data in the input structure {structure!r} and boxtype is set to None".format(**vars())
+                logger.exception(msg)
+                raise MissingDataError(msg)
+            distance = boxtype = None   # ensures that editconf just converts
+        editconf_kwargs.update({'f': structure, 'o': 'boxed.gro',
+                                'bt': boxtype, 'd': distance})
+        gromacs.editconf(**editconf_kwargs)
+
+        if with_membrane:
+            vdwradii_dat = get_lipid_vdwradii()  # need to clean up afterwards
+            logger.info("Using special vdW radii for lipids {0!r}".format(vdw_lipid_resnames))
+
+        try:
+            gromacs.genbox(p=topology, cp='boxed.gro', cs=water, o='solvated.gro')
+        except:
+            if with_membrane:
+                # remove so that it's not picked up accidentally
+                utilities.unlink_f(vdwradii_dat)
+            raise
+        logger.info("Solvated system with %s", water)
+    return {'struct': realpath(dirname, 'solvated.gro'),}
+
+def solvate_ion(struct='solvated.gro', top='top/system.top',
+                concentration=0, cation='NA', anion='CL',
+                solvent_name='SOL', ndx='main.ndx',
+                mainselection='"Protein"', dirname='solvate',
+                **kwargs):
+    structure = realpath(struct)
+    topology = realpath(top)
+    # By default, grompp should not choke on a few warnings because at
+    # this stage the user cannot do much about it (can be set to any
+    # value but is kept undocumented...)
+    grompp_maxwarn = kwargs.pop('maxwarn',10)
+    
+    # handle additional include directories (kwargs are also modified!)
+    mdp_kwargs = cbook.add_mdp_includes(topology, kwargs)
+
+    with in_dir(dirname):
+        with open('none.mdp','w') as mdp:
+            mdp.write('; empty mdp file\ninclude = {include!s}\nrcoulomb = 1\nrvdw = 1\nrlist = 1\n'.format(**mdp_kwargs))
+        qtotgmx = cbook.grompp_qtot(f='none.mdp', o='topol.tpr', c=structure,
+                                    p=topology, stdout=False, maxwarn=grompp_maxwarn)
+        qtot = round(qtotgmx)
+        logger.info("[{dirname!s}] After solvation: total charge qtot = {qtotgmx!r} = {qtot!r}".format(**vars()))
+
+        if concentration != 0:
+            logger.info("[{dirname!s}] Adding ions for c = {concentration:f} M...".format(**vars()))
+            # target concentration of free ions c ==>
+            #    N = N_water * c/c_water
+            # add ions for concentration to the counter ions (counter ions are less free)
+            #
+            # get number of waters (count OW ... works for SPC*, TIP*P water models)
+            rc,output,junk = gromacs.make_ndx(f='topol.tpr', o='ow.ndx',
+                                              input=('keep 0', 'del 0', 'a OW*', 'name 0 OW', '', 'q'),
+                                              stdout=False)
+            groups = cbook.parse_ndxlist(output)
+            gdict = {g['name']: g for g in groups}   # overkill...
+            N_water = gdict['OW']['natoms']                  # ... but dict lookup is nice
+            N_ions = int(N_water * concentration/CONC_WATER) # number of monovalents
+        else:
+            N_ions = 0
+
+        # neutralize (or try -neutral switch of genion???)
+        n_cation = n_anion = 0
+        if qtot > 0:
+            n_anion = int(abs(qtot))
+        elif qtot < 0:
+            n_cation = int(abs(qtot))
+
+        n_cation += N_ions
+        n_anion  += N_ions
+
+        if n_cation != 0 or n_anion != 0:
+            # sanity check:
+            assert qtot + n_cation - n_anion < 1e-6
+            logger.info("[{dirname!s}] Adding n_cation = {n_cation:d} and n_anion = {n_anion:d} ions...".format(**vars()))
+            gromacs.genion(s='topol.tpr', o='ionized.gro', p=topology,
+                           pname=cation, nname=anion, np=n_cation, nn=n_anion,
+                           input=solvent_name)
+        else:
+            # fake ionized file ... makes it easier to continue without too much fuzz
+            try:
+                os.unlink('ionized.gro')
+            except OSError as err:
+                if err.errno != errno.ENOENT:
+                    raise
+            os.symlink('solvated.gro', 'ionized.gro')
+
+        qtot = cbook.grompp_qtot(f='none.mdp', o='ionized.tpr', c='ionized.gro',
+                                 p=topology, stdout=False, maxwarn=grompp_maxwarn)
+
+        if abs(qtot) > 1e-4:
+            wmsg = "System has non-zero total charge qtot = {qtot:g} e.".format(**vars())
+            warnings.warn(wmsg, category=BadParameterWarning)
+            logger.warn(wmsg)
+
+        # make main index
+        try:
+            make_main_index('ionized.tpr', selection=mainselection, ndx=ndx)
+        except GromacsError as err:
+            # or should I rather fail here?
+            wmsg = "Failed to make main index file %r ... maybe set mainselection='...'.\n"\
+                   "The error message was:\n%s\n" % (ndx, str(err))
+            logger.warn(wmsg)
+            warnings.warn(wmsg, category=GromacsFailureWarning)
+        try:
+            trj_compact_main(f='ionized.gro', s='ionized.tpr', o='compact.pdb', n=ndx)
+        except GromacsError as err:
+            wmsg = "Failed to make compact pdb for visualization... pressing on regardless. "\
+                   "The error message was:\n%s\n" % str(err)
+            logger.warn(wmsg)
+            warnings.warn(wmsg, category=GromacsFailureWarning)
+
+    return {'qtot': qtot,
+            'struct': realpath(dirname, 'ionized.gro'),
+            'ndx': realpath(dirname, ndx),      # not sure why this is propagated-is it used?
+            'mainselection': mainselection,
+            }
+
+
+
 def solvate(struct='top/protein.pdb', top='top/system.top',
             distance=0.9, boxtype='dodecahedron',
             concentration=0, cation='NA', anion='CL',
@@ -439,163 +613,18 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
           changed in the mdp file.
 
     """
-    structure = realpath(struct)
-    topology = realpath(top)
-
-    # arguments for editconf that we honour
-    editconf_keywords = ["box", "bt", "angles", "c", "center", "aligncenter",
-                         "align", "translate", "rotate", "princ"]
-    editconf_kwargs = dict((k,kwargs.pop(k,None)) for k in editconf_keywords)
-    editconf_boxtypes = ["triclinic", "cubic", "dodecahedron", "octahedron", None]
-
-    # needed for topology scrubbing
-    scrubber_kwargs = {'marker': kwargs.pop('marker',None)}
-
-    # sanity checks and argument dependencies
-    bt = editconf_kwargs.pop('bt')
-    boxtype = bt if bt else boxtype   # bt takes precedence over boxtype
-    if not boxtype in editconf_boxtypes:
-        msg = "Unsupported boxtype {boxtype!r}: Only {boxtypes!r} are possible.".format(**vars())
-        logger.error(msg)
-        raise ValueError(msg)
-    if editconf_kwargs['box']:
-        distance = None    # if box is set then user knows what she is doing...
-
-    # handle additional include directories (kwargs are also modified!)
-    mdp_kwargs = cbook.add_mdp_includes(topology, kwargs)
-
-    if water.lower() in ('spc', 'spce'):
-        water = 'spc216'
-    elif water.lower() == 'tip3p':
-        water = 'spc216'
-        logger.warning("TIP3P water model selected: using SPC equilibrated box "
-                       "for initial solvation because it is a reasonable starting point "
-                       "for any 3-point model. EQUILIBRATE THOROUGHLY!")
-
-    # By default, grompp should not choke on a few warnings because at
-    # this stage the user cannot do much about it (can be set to any
-    # value but is kept undocumented...)
-    grompp_maxwarn = kwargs.pop('maxwarn',10)
-
-    # clean topology (if user added the marker; the default marker is
-    # ; Gromacs auto-generated entries follow:
-    n_removed = cbook.remove_molecules_from_topology(topology, **scrubber_kwargs)
-
-    with in_dir(dirname):
-        logger.info("[{dirname!s}] Solvating with water {water!r}...".format(**vars()))
-        if boxtype is None:
-            hasBox = False
-            ext = os.path.splitext(structure)[1]
-            if ext == '.gro':
-                hasBox = True
-            elif ext == '.pdb':
-                with open(structure) as struct:
-                    for line in struct:
-                        if line.startswith('CRYST'):
-                            hasBox = True
-                            break
-            if not hasBox:
-                msg = "No box data in the input structure {structure!r} and boxtype is set to None".format(**vars())
-                logger.exception(msg)
-                raise MissingDataError(msg)
-            distance = boxtype = None   # ensures that editconf just converts
-        editconf_kwargs.update({'f': structure, 'o': 'boxed.gro',
-                                'bt': boxtype, 'd': distance})
-        gromacs.editconf(**editconf_kwargs)
-
-        if with_membrane:
-            vdwradii_dat = get_lipid_vdwradii()  # need to clean up afterwards
-            logger.info("Using special vdW radii for lipids {0!r}".format(vdw_lipid_resnames))
-
-        try:
-            gromacs.genbox(p=topology, cp='boxed.gro', cs=water, o='solvated.gro')
-        except:
-            if with_membrane:
-                # remove so that it's not picked up accidentally
-                utilities.unlink_f(vdwradii_dat)
-            raise
-        logger.info("Solvated system with %s", water)
-
-        with open('none.mdp','w') as mdp:
-            mdp.write('; empty mdp file\ninclude = {include!s}\nrcoulomb = 1\nrvdw = 1\nrlist = 1\n'.format(**mdp_kwargs))
-        qtotgmx = cbook.grompp_qtot(f='none.mdp', o='topol.tpr', c='solvated.gro',
-                                    p=topology, stdout=False, maxwarn=grompp_maxwarn)
-        qtot = round(qtotgmx)
-        logger.info("[{dirname!s}] After solvation: total charge qtot = {qtotgmx!r} = {qtot!r}".format(**vars()))
-
-        if concentration != 0:
-            logger.info("[{dirname!s}] Adding ions for c = {concentration:f} M...".format(**vars()))
-            # target concentration of free ions c ==>
-            #    N = N_water * c/c_water
-            # add ions for concentration to the counter ions (counter ions are less free)
-            #
-            # get number of waters (count OW ... works for SPC*, TIP*P water models)
-            rc,output,junk = gromacs.make_ndx(f='topol.tpr', o='ow.ndx',
-                                              input=('keep 0', 'del 0', 'a OW*', 'name 0 OW', '', 'q'),
-                                              stdout=False)
-            groups = cbook.parse_ndxlist(output)
-            gdict = {g['name']: g for g in groups}   # overkill...
-            N_water = gdict['OW']['natoms']                  # ... but dict lookup is nice
-            N_ions = int(N_water * concentration/CONC_WATER) # number of monovalents
-        else:
-            N_ions = 0
-
-        # neutralize (or try -neutral switch of genion???)
-        n_cation = n_anion = 0
-        if qtot > 0:
-            n_anion = int(abs(qtot))
-        elif qtot < 0:
-            n_cation = int(abs(qtot))
-
-        n_cation += N_ions
-        n_anion  += N_ions
-
-        if n_cation != 0 or n_anion != 0:
-            # sanity check:
-            assert qtot + n_cation - n_anion < 1e-6
-            logger.info("[{dirname!s}] Adding n_cation = {n_cation:d} and n_anion = {n_anion:d} ions...".format(**vars()))
-            gromacs.genion(s='topol.tpr', o='ionized.gro', p=topology,
-                           pname=cation, nname=anion, np=n_cation, nn=n_anion,
-                           input=solvent_name)
-        else:
-            # fake ionized file ... makes it easier to continue without too much fuzz
-            try:
-                os.unlink('ionized.gro')
-            except OSError as err:
-                if err.errno != errno.ENOENT:
-                    raise
-            os.symlink('solvated.gro', 'ionized.gro')
-
-        qtot = cbook.grompp_qtot(f='none.mdp', o='ionized.tpr', c='ionized.gro',
-                                         p=topology, stdout=False, maxwarn=grompp_maxwarn)
-
-        if abs(qtot) > 1e-4:
-            wmsg = "System has non-zero total charge qtot = {qtot:g} e.".format(**vars())
-            warnings.warn(wmsg, category=BadParameterWarning)
-            logger.warn(wmsg)
-
-        # make main index
-        try:
-            make_main_index('ionized.tpr', selection=mainselection, ndx=ndx)
-        except GromacsError as err:
-            # or should I rather fail here?
-            wmsg = "Failed to make main index file %r ... maybe set mainselection='...'.\n"\
-                   "The error message was:\n%s\n" % (ndx, str(err))
-            logger.warn(wmsg)
-            warnings.warn(wmsg, category=GromacsFailureWarning)
-        try:
-            trj_compact_main(f='ionized.gro', s='ionized.tpr', o='compact.pdb', n=ndx)
-        except GromacsError as err:
-            wmsg = "Failed to make compact pdb for visualization... pressing on regardless. "\
-                   "The error message was:\n%s\n" % str(err)
-            logger.warn(wmsg)
-            warnings.warn(wmsg, category=GromacsFailureWarning)
-
-    return {'qtot': qtot,
-            'struct': realpath(dirname, 'ionized.gro'),
-            'ndx': realpath(dirname, ndx),      # not sure why this is propagated-is it used?
-            'mainselection': mainselection,
-            }
+    sol = solvate_sol(struct=struct, top=top,
+                      distance=distance, boxtype=boxtype,
+                      water=water, solvent_name=solvent_name, 
+                      with_membrane=with_membrane,
+                      dirname=dirname, **kwargs)
+    
+    ion = solvate_ion(struct=sol['struct'], top=top,
+                      concentration=concentration, cation=cation, anion=anion,
+                      solvent_name=solvent_name, ndx=ndx,
+                      mainselection=mainselection, dirname=dirname,
+                      **kwargs)
+    return ion
 
 
 def check_mdpargs(d):

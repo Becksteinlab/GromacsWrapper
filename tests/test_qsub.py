@@ -3,7 +3,7 @@ import pytest
 
 import gromacs.qsub
 
-def test_queuing_systems(known=("Sun Gridengine", "PBS", "LoadLeveler")):
+def test_queuing_systems(known=("Sun Gridengine", "PBS", "LoadLeveler", 'Slurm')):
     assert len(gromacs.qsub.queuing_systems) == len(known)
     for qs in gromacs.qsub.queuing_systems:
         assert qs.name in known
@@ -18,7 +18,8 @@ def test_queuing_systems(known=("Sun Gridengine", "PBS", "LoadLeveler")):
 @pytest.mark.parametrize("scriptfile,name", [
     ("foo.sge", "Sun Gridengine"),
     ("foo.pbs", "PBS"),
-    ("foo.ll", "LoadLeveler")])
+    ("foo.ll", "LoadLeveler"),
+    ("foo.slu", "Slurm")])
 def test_detect_queuing_system(scriptfile, name):
     qs = gromacs.qsub.detect_queuing_system(scriptfile)
     assert qs.name == name
