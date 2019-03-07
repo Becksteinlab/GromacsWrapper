@@ -385,9 +385,6 @@ def solvate_sol(struct='top/protein.pdb', top='top/system.top',
     if editconf_kwargs['box']:
         distance = None    # if box is set then user knows what she is doing...
 
-    # handle additional include directories (kwargs are also modified!)
-    mdp_kwargs = cbook.add_mdp_includes(topology, kwargs)
-
     if water.lower() in ('spc', 'spce'):
         water = 'spc216'
     elif water.lower() == 'tip3p':
@@ -441,13 +438,16 @@ def solvate_ion(struct='solvated.gro', top='top/system.top',
                 solvent_name='SOL', ndx='main.ndx',
                 mainselection='"Protein"', dirname='solvate',
                 **kwargs):
-
+    structure = realpath(struct)
+    topology = realpath(top)
     # By default, grompp should not choke on a few warnings because at
     # this stage the user cannot do much about it (can be set to any
     # value but is kept undocumented...)
     grompp_maxwarn = kwargs.pop('maxwarn',10)
-    structure = realpath(struct)
-    topology = realpath(top)
+    
+    # handle additional include directories (kwargs are also modified!)
+    mdp_kwargs = cbook.add_mdp_includes(topology, kwargs)
+
     with in_dir(dirname):
         with open('none.mdp','w') as mdp:
             mdp.write('; empty mdp file\ninclude = {include!s}\nrcoulomb = 1\nrvdw = 1\nrlist = 1\n'.format(**mdp_kwargs))
@@ -617,13 +617,13 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
                       distance=distance, boxtype=boxtype,
                       water=water, solvent_name=solvent_name, 
                       with_membrane=with_membrane,
-                      dirname=dirname, kwargs)
+                      dirname=dirname, **kwargs)
     
-    ion = solvate_ion(struct=sol.struct, top=top,
+    ion = solvate_ion(struct=sol['struct'], top=top,
                       concentration=concentration, cation=cation, anion=anion,
                       solvent_name=solvent_name, ndx=ndx,
                       mainselection=mainselection, dirname=dirname,
-                      kwargs)
+                      **kwargs)
     return ion
 
 
