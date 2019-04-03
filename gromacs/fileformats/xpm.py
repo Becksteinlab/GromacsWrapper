@@ -196,7 +196,8 @@ class XPM(utilities.FileUtils):
             # The next dim[2] lines contain the color definitions
             # Each pixel is encoded by dim[3] bytes, and a comment
             # at the end of the line contains the corresponding value
-            colors = dict([self.col(xpm.readline()) for i in xrange(nc)])
+            colors = dict([self.col(xpm.readline()) for i in range(nc)])
+
 
             if self.autoconvert:
                 autoconverter = Autoconverter(mode="singlet")
@@ -209,7 +210,7 @@ class XPM(utilities.FileUtils):
             self.logger.debug("Guessed array type: %s", dtype.name)
 
             # pre-allocate array
-            data = numpy.zeros((nx/nb, ny), dtype=dtype)
+            data = numpy.zeros((int(nx/nb), ny), dtype=dtype)
 
             self.logger.debug("dimensions: NX=%d NY=%d strideX=%d (NC=%d) --> (%d, %d)",
                               nx, ny, nb, nc, nx/nb, ny)
@@ -238,7 +239,7 @@ class XPM(utilities.FileUtils):
                 # However, without a test case I am not eager to change it right away so in
                 # case some faulty behavior is discovered with the XPM reader then this comment
                 # might be helpful. --- Oliver 2014-10-25
-                data[:, iy] = [colors[s[k:k+nb]] for k in xrange(0,nx,nb)]
+                data[:, iy] = [colors[s[k:k+nb]] for k in range(0,nx,nb)]
                 self.logger.debug("read row %d with %d columns: '%s....%s'",
                                   iy, data.shape[0], s[:4], s[-4:])
                 iy += 1  # for next row
