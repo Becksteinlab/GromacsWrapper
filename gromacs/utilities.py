@@ -36,6 +36,7 @@ directories:
    (uses :func:`anyopen`).
 
 .. autofunction:: anyopen
+.. autofunction:: isstream
 .. autofunction:: realpath
 .. function:: in_dir(directory[,create=True])
 
@@ -77,6 +78,7 @@ Miscellaneous functions:
 
 .. autofunction:: convert_aa_code
 .. autofunction:: autoconvert
+.. autofunction:: hasmethod
 
 Data
 ----
@@ -88,6 +90,10 @@ from __future__ import absolute_import, with_statement, division
 
 __docformat__ = "restructuredtext en"
 
+import six
+from six import string_types
+
+import sys
 import os
 import glob
 import fnmatch
@@ -97,10 +103,11 @@ import warnings
 import errno
 import subprocess
 from contextlib import contextmanager
-import bz2, gzip
+import bz2
+import gzip
 import datetime
+
 import numpy
-from six import string_types
 
 import logging
 logger = logging.getLogger('gromacs.utilities')
@@ -147,99 +154,238 @@ def autoconvert(s):
             pass
     raise ValueError("Failed to autoconvert {0!r}".format(s))
 
-
 @contextmanager
-def openany(datasource, mode='r', **kwargs):
-    """Open the datasource and close it when the context exits.
+def openany(datasource, mode='rt', reset=True):
+    """Context manager for :func:`anyopen`.
+
+    Open the `datasource` and close it when the context of the :keyword:`with`
+    statement exits.
+
+    `datasource` can be a filename or a stream (see :func:`isstream`). A stream
+    is reset to its start if possible (via :meth:`~io.IOBase.seek` or
+    :meth:`~cString.StringIO.reset`).
+
+    The advantage of this function is that very different input sources
+    ("streams") can be used for a "file", ranging from files on disk (including
+    compressed files) to open file objects to sockets and strings---as long as
+    they have a file-like interface.
 
     :Arguments:
-       *datasource*
-          a stream or a filename
-       *mode*
-          ``'r'`` opens for reading, ``'w'`` for writing ['r']
-       *kwargs*
-          additional keyword arguments that are passed through to the
-          actual handler; if these are not appropriate then an
-          exception will be raised by the handler
+      *datasource*
+           a file or a stream
+      *mode*
+           {'r', 'w'} (optional), open in r(ead) or w(rite) mode
+      *reset*
+           bool (optional) try to read (`mode` 'r') the stream from the
+           start [``True``]
+
+
+    **Example**
+
+    Open a gzipped file and process it line by line::
+
+        with openany("input.pdb.gz") as pdb:
+            for line in pdb:
+                if line.startswith('ATOM'):
+                    print(line)
+
+    Open a URL and read it::
+
+       import urllib2
+       with openany(urllib2.urlopen("https://www.mdanalysis.org/")) as html:
+           print(html.read())
+
+
+    .. SeeAlso::
+       :func:`anyopen`
 
     """
-    stream, filename = anyopen(datasource, mode=mode, **kwargs)
+    stream = anyopen(datasource, mode=mode, reset=reset)
     try:
         yield stream
     finally:
         stream.close()
 
-def anyopen(datasource, mode='r', **kwargs):
+
+# On python 3, we want to use bz2.open to open and uncompress bz2 files. That
+# function allows to specify the type of the uncompressed file (bytes ot text).
+# The function does not exist in python 2, thus we must use bz2.BZFile to
+# which we cannot tell if the uncompressed file contains bytes or text.
+# Therefore, on python 2 we use a proxy function that removes the type of the
+# uncompressed file from the `mode` argument.
+try:
+    bz2.open
+except AttributeError:
+    # We are on python 2 and bz2.open is not available
+    def bz2_open(filename, mode):
+        """Open and uncompress a BZ2 file"""
+        mode = mode.replace('t', '').replace('b', '')
+        return bz2.BZ2File(filename, mode)
+else:
+    # We are on python 3 so we can use bz2.open
+    bz2_open = bz2.open
+
+
+def anyopen(datasource, mode='rt', reset=True):
     """Open datasource (gzipped, bzipped, uncompressed) and return a stream.
 
+    `datasource` can be a filename or a stream (see :func:`isstream`). By
+    default, a stream is reset to its start if possible (via
+    :meth:`~io.IOBase.seek` or :meth:`~cString.StringIO.reset`).
+
+    If possible, the attribute ``stream.name`` is set to the filename or
+    "<stream>" if no filename could be associated with the *datasource*.
+
     :Arguments:
-       *datasource*
-          a stream or a filename
-       *mode*
-          ``'r'`` opens for reading, ``'w'`` for writing ['r']
-       *kwargs*
-          additional keyword arguments that are passed through to the
-          actual handler; if these are not appropriate then an
-          exception will be raised by the handler
+      *datasource*
+        a file (from :class:`file` or :func:`open`) or a stream (e.g. from
+        :func:`urllib2.urlopen` or :class:`cStringIO.StringIO`)
+      *mode*
+        {'r', 'w', 'a'} (optional),
+        Open in r(ead), w(rite) or a(ppen) mode. More complicated
+        modes ('r+', 'w+', ...) are not supported; only the first letter of
+        `mode` is used and thus any additional modifiers are silently ignored.
+      *reset*
+        bool (optional),
+        try to read (`mode` 'r') the stream from the start
+
+    :Returns:
+       file-like object
+
+
+    .. SeeAlso::
+       :func:`openany` to be used with the :keyword:`with` statement.
 
     """
-    handlers = {'bz2': bz2.BZ2File, 'gz': gzip.open, '': open}
+    handlers = {'bz2': bz2_open, 'gz': gzip.open, '': open}
 
     if mode.startswith('r'):
-        if hasattr(datasource,'next') or hasattr(datasource,'readline'):
+        if isstream(datasource):
             stream = datasource
             try:
-                filename = '({0})'.format(stream.name)  # maybe that does not always work?
+                filename = str(stream.name)  # maybe that does not always work?
             except AttributeError:
-                filename = str(type(stream))
+                filename = "<stream>"
+            if reset:
+                try:
+                    stream.reset()
+                except (AttributeError, IOError):
+                    try:
+                        stream.seek(0)
+                    except (AttributeError, IOError):
+                        warnings.warn("Stream {0}: not guaranteed to be at the beginning."
+                                      "".format(filename),
+                                      category=StreamWarning)
         else:
             stream = None
             filename = datasource
-            for ext in ('bz2', 'gz', ''):   # file == '' should be last
+            for ext in ('bz2', 'gz', ''):  # file == '' should be last
                 openfunc = handlers[ext]
-                stream = _get_stream(datasource, openfunc, mode=mode, **kwargs)
+                stream = _get_stream(datasource, openfunc, mode=mode)
                 if stream is not None:
                     break
             if stream is None:
-                raise IOError("Cannot open {filename!r} in mode={mode!r}.".format(**vars()))
-    elif mode.startswith('w'):
-        if hasattr(datasource, 'write'):
+                raise IOError(errno.EIO, "Cannot open file or stream in mode={mode!r}.".format(**vars()), repr(filename))
+    elif mode.startswith('w') or mode.startswith('a'):  # append 'a' not tested...
+        if isstream(datasource):
             stream = datasource
             try:
-                filename = '({0})'.format(stream.name)  # maybe that does not always work?
+                filename = str(stream.name)  # maybe that does not always work?
             except AttributeError:
-                filename = str(type(stream))
+                filename = "<stream>"
         else:
             stream = None
             filename = datasource
             name, ext = os.path.splitext(filename)
-            if ext.startswith(os.path.extsep):
+            if ext.startswith('.'):
                 ext = ext[1:]
-            if ext not in ('bz2', 'gz'):
-                ext = ''   # anything else but bz2 or gz is just a normal file
+            if not ext in ('bz2', 'gz'):
+                ext = ''  # anything else but bz2 or gz is just a normal file
             openfunc = handlers[ext]
-            stream = openfunc(datasource, mode=mode, **kwargs)
+            stream = openfunc(datasource, mode=mode)
             if stream is None:
-                raise IOError("Cannot open {filename!r} in mode={mode!r} with type {ext!r}.".format(**vars()))
+                raise IOError(errno.EIO, "Cannot open file or stream in mode={mode!r}.".format(**vars()), repr(filename))
     else:
         raise NotImplementedError("Sorry, mode={mode!r} is not implemented for {datasource!r}".format(**vars()))
+    try:
+        stream.name = filename
+    except (AttributeError, TypeError):
+        pass  # can't set name (e.g. cStringIO.StringIO)
+    return stream
 
-    return stream, filename
 
 def _get_stream(filename, openfunction=open, mode='r'):
+    """Return open stream if *filename* can be opened with *openfunction* or else ``None``."""
     try:
         stream = openfunction(filename, mode=mode)
-    except IOError:
+    except (IOError, OSError) as err:
+        # An exception might be raised due to two reasons, first the openfunction is unable to open the file, in this
+        # case we have to ignore the error and return None. Second is when openfunction can't open the file because
+        # either the file isn't there or the permissions don't allow access.
+        if errno.errorcode[err.errno] in ['ENOENT', 'EACCES']:
+            six.reraise(*sys.exc_info())
         return None
-
-    try:
-        stream.readline()
-        stream.close()
-        stream = openfunction(filename,'r')
-    except IOError:
-        stream.close()
-        stream = None
+    if mode.startswith('r'):
+        # additional check for reading (eg can we uncompress) --- is this needed?
+        try:
+            stream.readline()
+        except IOError:
+            stream.close()
+            stream = None
+        except:
+            stream.close()
+            raise
+        else:
+            stream.close()
+            stream = openfunction(filename, mode=mode)
     return stream
+
+def hasmethod(obj, m):
+    """Return ``True`` if object *obj* contains the method *m*.
+
+    .. versionadded:: 0.7.1
+    """
+    return hasattr(obj, m) and callable(getattr(obj, m))
+
+def isstream(obj):
+    """Detect if `obj` is a stream.
+
+    We consider anything a stream that has the methods
+
+    - ``close()``
+
+    and either set of the following
+
+    - ``read()``, ``readline()``, ``readlines()``
+    - ``write()``, ``writeline()``, ``writelines()``
+
+    :Arguments:
+      *obj*
+          stream or str
+
+    :Returns:
+      *bool*, ``True`` if `obj` is a stream, ``False`` otherwise
+
+    .. SeeAlso::
+       :mod:`io`
+
+
+    .. versionadded:: 0.7.1
+    """
+    signature_methods = ("close",)
+    alternative_methods = (
+        ("read", "readline", "readlines"),
+        ("write", "writeline", "writelines"))
+
+    # Must have ALL the signature methods
+    for m in signature_methods:
+        if not hasmethod(obj, m):
+            return False
+    # Must have at least one complete set of alternative_methods
+    alternative_results = [
+        numpy.all([hasmethod(obj, m) for m in alternatives])
+        for alternatives in alternative_methods]
+    return numpy.any(alternative_results)
 
 # TODO: make it work for non-default charge state amino acids.
 #: translation table for 1-letter codes --> 3-letter codes
