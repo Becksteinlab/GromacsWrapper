@@ -154,10 +154,9 @@ class XPM(utilities.FileUtils):
 
     def to_df(self):
         import pandas as _pd
-        import numpy as _np
 
         # Add Time to the data as column
-        data = _np.vstack((self.xvalues, self.array.T)).T
+        data = numpy.vstack((self.xvalues, self.array.T)).T
 
         # Column names are resids
         df = _pd.DataFrame(data, columns=["Time"]+ list(self.yvalues))
