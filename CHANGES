@@ -2,14 +2,16 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
-2019-??-??     0.7.1
-richardjgowers, theavey
+2019-??-??     0.8.0
+richardjgowers, theavey, andrejberg, orbeckst
 
 * allow ignoring of gmx executable suffix (such as '_mpi' or '_d' by adding an
   option to the configuration file (Issue #124)
+* allow reading of compressed XPM files (PR #169)
 * fixed MDP round trip writing, string fields no longer mangled
   (Issue #149)
 * fixed NDX writing (#152)
+* fixed Python 3 compatibility of XPM reader (PR #169)
 
 2018-08-08      0.7.0
 orbeckst, dldotson, kain88-de, ianmkenney

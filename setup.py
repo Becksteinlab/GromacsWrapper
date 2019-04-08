@@ -46,6 +46,7 @@ setup(name="GromacsWrapper",
                                 'templates/*.ll', 'templates/*.sh',
                                 'templates/*.mdp', 'templates/*.cfg',
                                 'tests/data/fileformats/top/*.mdp',    # test data
+                                'tests/data/fileformats/top/*.bz2',
                                 'tests/data/fileformats/top/*/*.top',
                                 'tests/data/fileformats/top/*/*.gro',
                                 'tests/data/*.log',

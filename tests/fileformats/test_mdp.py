@@ -7,7 +7,7 @@ import gromacs
 import pytest
 from numpy.testing import assert_equal
 
-from .datafiles import datafile
+from ..datafiles import datafile
 
 @pytest.fixture(
     params=['original', 'written', 'no_autoconvert'],

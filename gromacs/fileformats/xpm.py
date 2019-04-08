@@ -67,10 +67,11 @@ Show the results::
 
   print "\\n".join(["%-40s %4.1f%%" % p for p in zip(desc, 100*hb_fraction)])
 
-.. SeeAlso:: :mod:`gromacs.analysis.plugins.hbonds`
 """
 
 from __future__ import absolute_import, with_statement
+
+from six.moves import range
 
 import os, errno
 import re
@@ -133,7 +134,7 @@ class XPM(utilities.FileUtils):
 
         :Arguments:
           *filename*
-              read from mdp file
+              read from xpm file directly
           *autoconvert*
               try to guess the type of the output array from the
               colour legend [``True``]
@@ -154,10 +155,9 @@ class XPM(utilities.FileUtils):
 
     def to_df(self):
         import pandas as _pd
-        import numpy as _np
 
         # Add Time to the data as column
-        data = _np.vstack((self.xvalues, self.array.T)).T
+        data = numpy.vstack((self.xvalues, self.array.T)).T
 
         # Column names are resids
         df = _pd.DataFrame(data, columns=["Time"]+ list(self.yvalues))
@@ -181,7 +181,7 @@ class XPM(utilities.FileUtils):
 
     def parse(self):
         """Parse the xpm file and populate :attr:`XPM.array`."""
-        with open(self.real_filename) as xpm:
+        with utilities.openany(self.real_filename) as xpm:
             # Read in lines until we find the start of the array
             meta = [xpm.readline()]
             while not meta[-1].startswith("static char *gromacs_xpm[]"):
@@ -196,7 +196,8 @@ class XPM(utilities.FileUtils):
             # The next dim[2] lines contain the color definitions
             # Each pixel is encoded by dim[3] bytes, and a comment
             # at the end of the line contains the corresponding value
-            colors = dict([self.col(xpm.readline()) for i in xrange(nc)])
+            colors = dict([self.col(xpm.readline()) for i in range(nc)])
+
 
             if self.autoconvert:
                 autoconverter = Autoconverter(mode="singlet")
@@ -209,7 +210,7 @@ class XPM(utilities.FileUtils):
             self.logger.debug("Guessed array type: %s", dtype.name)
 
             # pre-allocate array
-            data = numpy.zeros((nx/nb, ny), dtype=dtype)
+            data = numpy.zeros((int(nx/nb), ny), dtype=dtype)
 
             self.logger.debug("dimensions: NX=%d NY=%d strideX=%d (NC=%d) --> (%d, %d)",
                               nx, ny, nb, nc, nx/nb, ny)
@@ -238,7 +239,7 @@ class XPM(utilities.FileUtils):
                 # However, without a test case I am not eager to change it right away so in
                 # case some faulty behavior is discovered with the XPM reader then this comment
                 # might be helpful. --- Oliver 2014-10-25
-                data[:, iy] = [colors[s[k:k+nb]] for k in xrange(0,nx,nb)]
+                data[:, iy] = [colors[s[k:k+nb]] for k in range(0,nx,nb)]
                 self.logger.debug("read row %d with %d columns: '%s....%s'",
                                   iy, data.shape[0], s[:4], s[-4:])
                 iy += 1  # for next row
