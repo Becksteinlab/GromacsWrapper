@@ -67,10 +67,11 @@ Show the results::
 
   print "\\n".join(["%-40s %4.1f%%" % p for p in zip(desc, 100*hb_fraction)])
 
-.. SeeAlso:: :mod:`gromacs.analysis.plugins.hbonds`
 """
 
 from __future__ import absolute_import, with_statement
+
+from six.moves import range
 
 import os, errno
 import re
@@ -133,7 +134,7 @@ class XPM(utilities.FileUtils):
 
         :Arguments:
           *filename*
-              read from mdp file
+              read from xpm file directly
           *autoconvert*
               try to guess the type of the output array from the
               colour legend [``True``]
@@ -180,7 +181,7 @@ class XPM(utilities.FileUtils):
 
     def parse(self):
         """Parse the xpm file and populate :attr:`XPM.array`."""
-        with open(self.real_filename) as xpm:
+        with utilities.openany(self.real_filename) as xpm:
             # Read in lines until we find the start of the array
             meta = [xpm.readline()]
             while not meta[-1].startswith("static char *gromacs_xpm[]"):
