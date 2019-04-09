@@ -16,6 +16,7 @@ python:
     install:
       - method: pip
         path: .
+      - requirements: ci/requirements.txt
 
 conda:
     environment: ci/environment.yml

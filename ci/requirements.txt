@@ -1,2 +1,2 @@
-numpy>=1.9
+numkit>=1.0
 
