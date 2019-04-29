@@ -234,7 +234,7 @@ class TOP(blocks.System):
 
                     '''
                     if len(fields) not in (6,7,8):
-                        self.logger('skipping atomtype line with neither 7 or 8 fields: \n {0:s}'.format(line))
+                        self.logger.warning('skipping atomtype line with neither 7 or 8 fields: \n {0:s}'.format(line))
                         continue
 
                     #shift = 0 if len(fields) == 7 else 1
@@ -249,7 +249,7 @@ class TOP(blocks.System):
                     particletype = fields[4+shift]
                     assert particletype in ('A', 'S', 'V', 'D')
                     if particletype not in ('A',):
-                        self.logger('warning: non-atom particletype: "{0:s}"'.format(line))
+                        self.logger.warning('warning: non-atom particletype: "{0:s}"'.format(line))
 
                     sig = float(fields[5+shift])
                     eps = float(fields[6+shift])
