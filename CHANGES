@@ -12,6 +12,7 @@ richardjgowers, theavey, andrejberg, orbeckst
   (Issue #149)
 * fixed NDX writing (#152)
 * fixed Python 3 compatibility of XPM reader (PR #169)
+* fixed bug in calling logger in fileformats.top (issue #173)
 
 2018-08-08      0.7.0
 orbeckst, dldotson, kain88-de, ianmkenney
