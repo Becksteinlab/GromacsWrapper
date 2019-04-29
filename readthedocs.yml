@@ -17,6 +17,7 @@ python:
       - method: pip
         path: .
       - requirements: ci/requirements.txt
+    system_packages: true
 
 conda:
     environment: ci/environment.yml

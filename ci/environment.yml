@@ -1,11 +1,5 @@
 name: gw
 channels:
-- conda-forge
 - bioconda
 dependencies:
 - gromacs
-- numpy>=1.9
-- scipy
-- pandas
-- matplotlib
-- sphinx
