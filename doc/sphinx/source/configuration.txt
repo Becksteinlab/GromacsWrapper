@@ -7,13 +7,24 @@
 This section documents how to configure the **GromacsWrapper** package. There
 are options to configure where log files and templates directories are located
 and options to tell exactly which commands to load into this package. Any
-configuration is optional and all options has sane defaults. Further
+configuration is optional and all options have sane defaults. Further
 documentation can be found at :mod:`gromacs.config`.
 
-.. versionchanged:: 0.6.0
-   The format of the ``tools`` variable in the ``[Gromacs]`` section of the
-   config file was changed for Gromacs 5 commands.
 
+Default configuration
+---------------------
+
+.. Note:: *Do not configure anything.* This is the best approach.
+
+If you are used to loading your Gromacs environment by sourcing the
+:file:`GMXRC` file yourself or via :program:`module` then do not
+configure anything and let **GromacsWrapper** find your Gromacs
+installation. Only read on if there are specific things that you want
+to configure or if you *always* want to use exactly the same version of Gromacs
+with **GromacsWrapper**.
+
+
+   
 Basic options
 -------------
 
@@ -24,10 +35,10 @@ may look like the following document::
   GMXRC = /usr/local/gromacs/bin/GMXRC
 
 The Gromacs software suite needs some environment variables that are set up
-sourcing the ``GMXRC`` file. You may source it yourself or set an option like
-the above one. If this option isn't provided, **GromacsWrapper** will guess
-that Gromacs was globally installed like if it was installed by the ``apt-get``
-program.
+sourcing the :file:`GMXRC` file. You may source it yourself or set an option
+like the above one. If this option isn't provided, **GromacsWrapper** will
+guess that Gromacs was globally installed as if it was installed somewhere on
+your :envvar:`PATH` or if you externally set the Gromacs environment.
 
 As there isn't yet any way to know which Gromacs version to use,
 **GromacsWrapper** will first try to use Gromacs 5 if available, then to use
@@ -67,13 +78,21 @@ specify more tools::
 	g_chi      g_dist        g_luck         g_potential  g_sas        g_velacc    make_ndx
 
 
-Commands will be available directly from the :mod:`gromacs`:
+Commands will be available directly from the :mod:`gromacs` module:
 
 .. code-block:: python
 
     import gromacs
     gromacs.mdrun_d # either v5 `gmx_d mdrun` or v4 `mdrun_d`
     gromacs.mdrun   # either v5 `gmx mdrun`   or v4 `mdrun`
+
+Gromacs 4 tools will be aliased to Gromacs 5 names (or Gromacs
+2016/2018/2019 names).
+
+.. versionchanged:: 0.6.0
+   The format of the ``tools`` variable in the ``[Gromacs]`` section of the
+   config file was changed for Gromacs 5 commands.
+
 
 
 More options
@@ -110,6 +129,9 @@ And there are yet options for how to handle logging::
 
   # file messages written to logfilename
   loglevel_file = DEBUG
+
+Creating default configuration files and directories
+----------------------------------------------------
 
 If needed you may set up basic configuration files and directories using
 :func:`gromacs.config.setup`:
