@@ -18,7 +18,7 @@ also allows for modularization and code re-use. In addition, commands,
 warnings and errors are logged to a file so that there exists a
 complete history of what has been done.
 
-Gromacs_ versions 4.6.x, 2016.x, and 2018.x are all
+Gromacs_ versions 4.6.x, 2016.x, 2018.x, and 2019.x are all
 supported. GromacsWrapper detects your Gromacs tools and provides them
 as :func:`gromacs.grompp`, :func:`gromacs.mdrun`, etc, regardless of
 your Gromacs version, which allows one to write scripts that are
@@ -27,14 +27,14 @@ the :program:`gmx` binary (for versions ≥ 2016) or all the gromacs
 tools available on your :envvar:`PATH` for GromacsWrapper to find the
 Gromacs installation.
 
-See :doc:`INSTALL` for download and installation instructions. `Documentation`_
-is primarily provided through the Python doc strings (from which most of the
-online documentation is generated).
+See :doc:`INSTALL` for download and installation instructions. The
+:ref:`quickstart` provides a brief example of how to use
+GromacsWrapper in the most basic fashion.
 
 The source code itself is available in the `GromacsWrapper git
 repository`_.
 
-.. warning:: Please be aware that this is **alpha** software that most
+.. warning:: Please be aware that this is **beta** software that most
   definitely contains bugs. The API is not stable yet and can change
   between releases.
   
@@ -65,6 +65,7 @@ Contents
    :maxdepth: 2
 
    installation
+   quickstart
    configuration
    gromacs
    alternatives

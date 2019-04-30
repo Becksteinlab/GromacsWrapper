@@ -1,4 +1,4 @@
-.. -*- mode: rst -*-
+.. -*- mode: rst, coding: utf-8 -*-
 .. The whole GromacsWrapper package is Copyright (c) 2009-2018 Oliver
 .. Beckstein and AUTHORS except where noted otherwise.
 
@@ -9,19 +9,23 @@
 
 |build| |cov| |docs| |zenodo| |PRsWelcome|
 
-A primitive wrapper around the Gromacs tools until we have proper
-python bindings. It also provides a small library (cook book) of
-often-used recipes and helper functions to set up MD simulations.
+A primitive Python wrapper around the Gromacs_ tools. The library is
+tested with Gromacs 4.6.5, 2018.x, 2019.x (and 2016.x also works) and
+is tested with Python 2.7 and 3.6.
+
+GromacsWrapper also provides a small library (cook book) of often-used
+recipes and helper functions to set up MD simulations.
 
 `Documentation`_ is mostly provided through the python doc strings and
 available at https://gromacswrapper.readthedocs.org for recent releases.
 
 The source code is available in the `GromacsWrapper git repository`_.
 
-Please be aware that this is **alpha** software that most definitely
+Please be aware that this is **beta** software that most definitely
 contains bugs. It is *your* responsibility to ensure that you are
 running simulations with sensible parameters.
 
+.. _Gromacs: http://www.gromacs.org
 .. _Documentation: 
    https://gromacswrapper.readthedocs.org/en/latest/
 .. _GromacsWrapper git repository:
@@ -43,7 +47,46 @@ running simulations with sensible parameters.
    :target: http://makeapullrequest.com
    :alt: PRs Welcome!
 
-Licence
+Quick Start
+===========
+
+Given a PDB file ``1iee.pdb``, set up and run a simple simulation (assuming
+you have all other input files at hand such as the MDP files)::
+
+  >>> import gromacs
+  >>> print(gromacs.release)
+  2018.2
+  >>> help(gromacs.pdb2gmx)
+  DESCRIPTION
+
+  gmx pdb2gmx reads a .pdb (or .gro) file, reads some database files,
+  adds hydrogens to the molecules and generates coordinates in GROMACS
+  ...
+  ...
+  OPTIONS
+
+  Options to specify input files:
+
+  -f      [<.gro/.g96/...>]  (eiwit.pdb)
+            Structure file: gro g96 pdb brk ent esp tpr
+  ...
+  ...
+  >>> gromacs.pdb2gmx(f="1ake.pdb", o="protein.gro", p="topol.top",
+  ...                 ff="oplsaa", water="tip4p")
+  >>> gromacs.editconf(f="protein.gro", o="boxed.gro",
+  ...                  bt="dodecahedron", d=1.5, princ=True,
+  ...                  input="Protein")
+  >>> gromacs.solvate(cp="boxed.gro", cs="tip4p", p="topol.top",
+  ...                 o="solvated.gro")
+  >>> gromacs.grompp(f="emin.mdp", c="solvated.gro", p="topol.top",
+  ...                o="emin.tpr")
+  >>> gromacs.mdrun(v=True, deffnm="emin")
+  >>> gromacs.grompp(f="md.mdp", c="md.gro", p="topol.top", o="md.tpr")
+  >>> gromacs.mdrun(v=True, deffnm="md")
+
+
+	 
+License
 =======
 
 The **GromacsWrapper** package is made available under the terms of
@@ -134,15 +177,6 @@ and compile::
 
    cd package/doc/sphinx
    make html
-
-   
-Python 3
-========
-
-Python 3 support is currently in alpha state; in principle it is fully
-supported but if you find bugs please report them through the `Issue
-Tracker`_.
-
 
 
 Citing

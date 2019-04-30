@@ -14,6 +14,7 @@ richardjgowers, theavey, andrejberg, orbeckst
 * fixed Python 3 compatibility of XPM reader (PR #169)
 * fixed bug in calling logger in fileformats.top (issue #173)
 * add gromacs.release() to get release of loaded Gromacs (issue #161) 
+* tested with Gromacs 2019.1, 2018.4, 4.6.5 (#172)
 
 2018-08-08      0.7.0
 orbeckst, dldotson, kain88-de, ianmkenney

@@ -9,11 +9,12 @@
 
 |zenodo|
 
-A primitive wrapper around the Gromacs tools until we have proper
-python bindings. It also provides a small library (cook book) of
-often-used recipes and an optional analysis module with plugins for
-more complicated analysis tasks.
+A primitive Python wrapper around the Gromacs_ tools. The library is
+tested with Gromacs 4.6.5, 2018.x, 2019.x (and 2016.x also works) and
+is tested with Python 2.7 and 3.6.
 
+GromacsWrapper also provides a small library (cook book) of often-used
+recipes and helper functions to set up MD simulations.
 
 See :doc:`INSTALL` for installation instructions. `Documentation`_ is
 mostly provided through the python doc strings. See `Download and
@@ -23,11 +24,12 @@ Availability`_ for download instructions if the instructions in
 The source code is also available in the `GromacsWrapper git
 repository`_.
 
-Please be aware that this is **alpha** software that most definitely
+Please be aware that this is **beta** software that most definitely
 contains bugs. It is *your* responsibility to ensure that you are
 running simulations with sensible parameters.
 
 
+.. _Gromacs: http://www.gromacs.org
 .. _Documentation: 
    https://gromacswrapper.readthedocs.org
 .. _GromacsWrapper git repository:
@@ -36,7 +38,7 @@ running simulations with sensible parameters.
    :target: https://zenodo.org/badge/latestdoi/13219/Becksteinlab/GromacsWrapper
    :alt: Latest release on zenodo (with DOI)
 
-Licence
+License
 =======
 
 The **GromacsWrapper** package is made available under the terms of

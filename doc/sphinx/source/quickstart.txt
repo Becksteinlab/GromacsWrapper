@@ -1,0 +1,68 @@
+.. -*- mode: rst, coding: utf-8 -*-
+.. The whole GromacsWrapper package is Copyright (c) 2009-2018 Oliver
+.. Beckstein and AUTHORS except where noted otherwise.
+
+
+.. _quickstart:
+
+=============
+ Quick Start
+=============
+
+Given a PDB file :file:`1iee.pdb`, set up and run a simple simulation (assuming
+you have all other input files at hand such as the MDP files).
+
+Start with importing the package. If you can find Gromacs in your
+shell then GromacsWrapper can find it, too. Check the release of the
+loaded Gromacs package::
+
+  >>> import gromacs
+  >>> print(gromacs.release())
+  2018.2
+
+You can get help through the usual Python mechanisms::
+
+  >>> help(gromacs.pdb2gmx)
+  DESCRIPTION
+
+  gmx pdb2gmx reads a .pdb (or .gro) file, reads some database files,
+  adds hydrogens to the molecules and generates coordinates in GROMACS
+  ...
+  ...
+  OPTIONS
+
+  Options to specify input files:
+
+  -f      [<.gro/.g96/...>]  (eiwit.pdb)
+            Structure file: gro g96 pdb brk ent esp tpr
+  ...
+  ...
+
+Now set up the system: (1) generate topology, (2) put in a
+dodecahedral simulation box, (3) solvate with water (for simplicity,
+we leave out the "add ions step")::
+
+  >>> gromacs.pdb2gmx(f="1ake.pdb", o="protein.gro", p="topol.top",
+  ...                 ff="oplsaa", water="tip4p")
+  >>> gromacs.editconf(f="protein.gro", o="boxed.gro",
+  ...                  bt="dodecahedron", d=1.5, princ=True,
+  ...                  input="Protein")
+  >>> gromacs.solvate(cp="boxed.gro", cs="tip4p", p="topol.top",
+  ...                 o="solvated.gro")
+
+Given an MDP input file for energy minimization, generate the TPR file
+and run the energy minimization locally::
+
+  >>> gromacs.grompp(f="emin.mdp", c="solvated.gro", p="topol.top",
+  ...                o="emin.tpr")
+  >>> gromacs.mdrun(v=True, deffnm="emin")
+
+
+Assuming it all went well, set up and run a MD simulation::
+
+  >>> gromacs.grompp(f="md.mdp", c="md.gro", p="topol.top", o="md.tpr")
+  >>> gromacs.mdrun(v=True, deffnm="md")
+
+.. SeeAlso::
+   The documentation of the :mod:`gromacs` package itself contains
+   more examples and explains the common arguments of all commands.
