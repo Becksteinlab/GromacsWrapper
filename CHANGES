@@ -2,7 +2,7 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
-2019-??-??     0.8.0
+2019-04-30     0.8.0
 richardjgowers, theavey, andrejberg, orbeckst
 
 * allow ignoring of gmx executable suffix (such as '_mpi' or '_d' by adding an
