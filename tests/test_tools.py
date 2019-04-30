@@ -47,3 +47,13 @@ def test_failure_ignore():
         grompp_ignore(y=True)
     except Exception as err:
         raise AssertionError("Should have ignored exception {}".format(err))
+
+class TestRelease(object):
+    def test_release(self):
+        assert gromacs.release().startswith(('4', '2016', '2018', '2019'))
+
+    def test_release_startswith(self):
+        assert gromacs.release.startswith(('4', '2016', '2018', '2019'))
+
+    def test_str(self):
+        assert str(gromacs.release()) == gromacs.release()
