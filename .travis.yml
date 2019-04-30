@@ -9,7 +9,7 @@ branches:
 
 env:
   global:
-    - PYTHON_VERSION=2.7
+    - PYTHON_VERSION=3.6
     - CODECOV=true
     - PYTEST_FLAGS="-v --disable-pytest-warnings --durations=20 --low-performance --cov=gromacs"
     - PYTEST_LIST="tests"
@@ -28,24 +28,29 @@ env:
   matrix:
     # use ci-helper's PACKAGENAME_VERSION magic to pin the 'gromacs' package
     - GROMACS_VERSION=4.6.5   PYTHON_VERSION=2.7
-    - GROMACS_VERSION=2018.2  PYTHON_VERSION=2.7 CODECOV=false
+    - GROMACS_VERSION=2019.1  PYTHON_VERSION=2.7
     - GROMACS_VERSION=4.6.5   PYTHON_VERSION=3.6
-    - GROMACS_VERSION=2018.2  PYTHON_VERSION=3.6 CODECOV=false
+    - GROMACS_VERSION=2018.6  PYTHON_VERSION=3.6
+    - GROMACS_VERSION=2019.1  PYTHON_VERSION=3.6
+    - GROMACS_VERSION=2019.1  PYTHON_VERSION=3.7    
     # Test "append_suffix" implementation
-    - GROMACS_VERSION=2018.2  PYTHON_VERSION=3.6 CODECOV=false
-        SETUP_CMD="${SETUP_CMD} --link-gmx-mpi --no-append-suffix"
+    - GROMACS_VERSION=2018.6  PYTHON_VERSION=3.6
+      SETUP_CMD="${SETUP_CMD} --link-gmx-mpi --no-append-suffix"
 
 
 matrix:
   fast_finish: true
 
   include:
-    # note: no OSX Gromacs 2018 packages on bioconda https://anaconda.org/bioconda/gromacs/files
+    # see Gromacs packages on bioconda https://anaconda.org/bioconda/gromacs/files
     - os: osx
-      env: GROMACS_VERSION=4.6.5 PYTHON_VERSION=2.7
+      env: GROMACS_VERSION=4.6.5 PYTHON_VERSION=3.6    
     - os: osx
-      env: GROMACS_VERSION=4.6.5 PYTHON_VERSION=3.6
-    
+      env: GROMACS_VERSION=2019.1 PYTHON_VERSION=2.7
+    - os: osx
+      env: GROMACS_VERSION=2019.1 PYTHON_VERSION=3.6
+
+
 install:
   - git clone --depth 1 git://github.com/astropy/ci-helpers.git
   - source ci-helpers/travis/setup_conda.sh
