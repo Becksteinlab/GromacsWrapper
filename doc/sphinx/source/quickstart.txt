@@ -58,9 +58,9 @@ and run the energy minimization locally::
   >>> gromacs.mdrun(v=True, deffnm="emin")
 
 
-Assuming it all went well, set up and run a MD simulation::
+Assuming it all went well, set up and run a MD simulation, starting from the energy minimized system::
 
-  >>> gromacs.grompp(f="md.mdp", c="md.gro", p="topol.top", o="md.tpr")
+  >>> gromacs.grompp(f="md.mdp", c="emin.gro", p="topol.top", o="md.tpr")
   >>> gromacs.mdrun(v=True, deffnm="md")
 
 .. SeeAlso::
