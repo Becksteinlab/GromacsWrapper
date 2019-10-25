@@ -6,7 +6,7 @@
 orbeckst
 
 * fixed: xpm.to_df() used outdated convert_objects()
-
+* fixed: gw-forcefield.py use print() function for Py 2/3 compatibility
 
 2019-04-30     0.8.0
 richardjgowers, theavey, andrejberg, orbeckst
