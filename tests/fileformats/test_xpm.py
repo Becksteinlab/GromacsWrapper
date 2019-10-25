@@ -18,6 +18,10 @@ def ssfile():
 def xpm(ssfile):
     return XPM(filename=ssfile)
 
+@pytest.fixture
+def xpm_df(xpm):
+    return xpm.to_df()
+
 class TestXPM(object):
     def _run_tests(self, x):
         assert_equal(x.array.shape, (500, 769))
@@ -36,7 +40,10 @@ class TestXPM(object):
     def test_reversed_by_default(self, xpm):
         assert xpm.reverse
 
-    def test_to_pd(self, xpm):
-        df = xpm.to_df()
-        assert_equal(df.shape, (500, 770))
+    def test_to_pd(self, xpm_df):
+        assert_equal(xpm_df.shape, (500, 770))
 
+    def test_to_pd_types(self, xpm_df):
+        time = xpm_df['Time']
+        assert len(time) == 500
+        assert time.dtype == np.dtype("int64")  # true for this file

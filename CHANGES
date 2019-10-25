@@ -2,6 +2,12 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
+2019-xx-xx     0.8.1
+orbeckst
+
+* fixed: xpm.to_df() used outdated convert_objects()
+
+
 2019-04-30     0.8.0
 richardjgowers, theavey, andrejberg, orbeckst
 
