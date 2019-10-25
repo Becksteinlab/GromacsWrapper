@@ -81,7 +81,7 @@ you have all other input files at hand such as the MDP files)::
   >>> gromacs.grompp(f="emin.mdp", c="solvated.gro", p="topol.top",
   ...                o="emin.tpr")
   >>> gromacs.mdrun(v=True, deffnm="emin")
-  >>> gromacs.grompp(f="md.mdp", c="md.gro", p="topol.top", o="md.tpr")
+  >>> gromacs.grompp(f="md.mdp", c="emin.gro", p="topol.top", o="md.tpr")
   >>> gromacs.mdrun(v=True, deffnm="md")
 
 
