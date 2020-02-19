@@ -744,7 +744,7 @@ def create_portable_topology(topol, struct, **kwargs):
     processed = kwargs.pop('processed', os.path.join(_topoldir, 'pp_'+_topol))
     grompp_kwargs, mdp_kwargs = filter_grompp_options(**kwargs)
     mdp_kwargs = add_mdp_includes(topol, mdp_kwargs)
-    with tempfile.NamedTemporaryFile(suffix='.mdp') as mdp:
+    with tempfile.NamedTemporaryFile(suffix='.mdp', mode='w') as mdp:
         mdp.write('; empty mdp file\ninclude = {include!s}\n'.format(**mdp_kwargs))
         mdp.flush()
         grompp_kwargs['p'] = topol
