@@ -2,6 +2,10 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
+2020-xx-xx     0.8.1
+
+* fixed: xvg._decimate used python-2.0-specific func_name()
+
 2019-xx-xx     0.8.1
 orbeckst
 

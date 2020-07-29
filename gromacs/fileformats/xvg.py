@@ -1079,9 +1079,13 @@ class XVG(utilities.FileUtils):
             out[i], out[0] = func(t, a[i], bins=maxpoints, **kwargs)
 
         if maxpoints == self.maxpoints_default:  # only warn if user did not set maxpoints
+            try:
+                funcname = func.func_name    # Python 2
+            except AttributeError:
+                funcname = func.__name__     # Python 3
             warnings.warn("Plot had %d datapoints > maxpoints = %d; decimated to %d regularly "
                           "spaced points from the histogrammed data with %s()."
-                          % (ny, maxpoints, maxpoints, func.func_name),
+                          % (ny, maxpoints, maxpoints, funcname),
                           category=AutoCorrectionWarning)
         return out
 
