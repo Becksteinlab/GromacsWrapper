@@ -154,16 +154,17 @@ class XPM(utilities.FileUtils):
 
 
     def to_df(self):
-        import pandas as _pd
+        import pandas as pd
 
         # Add Time to the data as column
         data = numpy.vstack((self.xvalues, self.array.T)).T
 
         # Column names are resids
-        df = _pd.DataFrame(data, columns=["Time"]+ list(self.yvalues))
+        df = pd.DataFrame(data, columns=["Time"]+ list(self.yvalues))
 
         # Converts Time to a numeric type
-        return df.convert_objects(convert_numeric='force')
+        df['Time'] = pd.to_numeric(df['Time'])
+        return df
 
     @property
     def array(self):

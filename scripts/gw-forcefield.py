@@ -1,3 +1,4 @@
+from __future__ import print_function
 
 from gromacs.fileformats import TOP
 import numpy as np
@@ -50,7 +51,7 @@ def scale_dihedrals(mol, dihedrals):
                                         new_dihedrals[key] = dt
                                 break
 
-        print new_dihedrals
+        print(new_dihedrals)
         return new_dihedrals.values()
 
 
@@ -73,7 +74,7 @@ def scale_impropers(mol, impropers):
                                 for i, imt in enumerate(impropers[key]):
                                         new_impropers[key] = imt
                                 break
-        print new_impropers
+        print(new_impropers)
         return new_impropers.values()
 
 
