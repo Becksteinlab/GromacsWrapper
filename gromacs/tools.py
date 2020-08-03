@@ -278,12 +278,14 @@ def load_v5_tools():
                                            'commands'])
             for line in out.splitlines()[5:-1]:
                 line = str(line.decode('ascii'))   # Python 3: byte string -> str, Python 2: normal string
-                if line[4] != ' ':
-                    name = line[4:line.index(' ', 4)]
-                    fancy = make_valid_identifier(name)
-                    if suffix and append:
-                        fancy = '{0!s}_{1!s}'.format(fancy, suffix)
-                    tools[fancy] = tool_factory(fancy, name, driver)
+
+                if len(line) > 4:
+                    if (line[4] != ' ') and (' ' in line[4:]):
+                        name = line[4:line.index(' ', 4)]
+                        fancy = make_valid_identifier(name)
+                        if suffix and append:
+                            fancy = '{0!s}_{1!s}'.format(fancy, suffix)
+                        tools[fancy] = tool_factory(fancy, name, driver)
         except (subprocess.CalledProcessError, OSError):
             pass
 
