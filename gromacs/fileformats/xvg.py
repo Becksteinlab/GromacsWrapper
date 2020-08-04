@@ -612,7 +612,7 @@ class XVG(utilities.FileUtils):
 
         color = kwargs.pop('color', self.default_color_cycle)
         try:
-            cmap = matplotlib.cm.get_cmap(color)
+            cmap = matplotlib.cm.register_cmap(color)
             colors = cmap(matplotlib.colors.Normalize()(numpy.arange(len(columns[1:]), dtype=float)))
         except TypeError:
             colors = cycle(utilities.asiterable(color))
