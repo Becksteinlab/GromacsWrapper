@@ -192,6 +192,7 @@ from __future__ import with_statement, absolute_import
 from six.moves import zip, range
 
 import os
+import sys
 import errno
 import re
 import warnings
@@ -612,7 +613,10 @@ class XVG(utilities.FileUtils):
 
         color = kwargs.pop('color', self.default_color_cycle)
         try:
-            cmap = matplotlib.cm.register_cmap(color)
+            if(sys.version_info[0] == 3):
+                cmap = matplotlib.cm.register_cmap(color)
+            else:
+                cmap = matplotlib.cm.get_cmap(color)
             colors = cmap(matplotlib.colors.Normalize()(numpy.arange(len(columns[1:]), dtype=float)))
         except TypeError:
             colors = cycle(utilities.asiterable(color))
