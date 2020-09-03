@@ -207,7 +207,7 @@ class Command(object):
             else:
                 # XXX: not race or thread proof; potentially many commands write to the same file
                 fn = environment.flags['capture_output_filename']
-                capturefile = file(fn, "w")   # overwrite (clobber) capture file
+                capturefile = open(fn, "w")   # overwrite (clobber) capture file
                 if 'stdout' in kwargs and 'stderr' not in kwargs:
                     # special case of stdout used by code but stderr should be captured to file
                     kwargs.setdefault('stderr', capturefile)
