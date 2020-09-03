@@ -5,7 +5,8 @@
 2020-xx-xx     0.8.1
 orbeckst, PolyachenkoYA, whitead 
 
-* fixed: core._run_command capture_output_file argument fixed to us python-3.0 file open
+* fixed: core._run_command capture_output_file argument fixed to us python-3.0 
+  file open (#181)
 * fixed: xvg._decimate used python-2.0-specific func_name() (issue #183)
 * fixed: make parsing gmx output more robust to avoid failure on 
   'import gromacs' (PR #186)
