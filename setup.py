@@ -36,7 +36,7 @@ setup(name="GromacsWrapper",
                    'Topic :: Software Development :: Libraries :: Python Modules',
                    ],
       packages=find_packages(
-          exclude=['scripts', 'tests', 'extras', 'doc/examples']),
+          exclude=['scripts', 'tests', 'tests.*', 'extras', 'doc/examples']),
       scripts=[
           'scripts/gw-join_parts.py',
           'scripts/gw-merge_topologies.py',
