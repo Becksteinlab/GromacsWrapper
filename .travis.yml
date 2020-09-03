@@ -32,7 +32,7 @@ env:
     - GROMACS_VERSION=4.6.5   PYTHON_VERSION=3.6
     - GROMACS_VERSION=2018.6  PYTHON_VERSION=3.6
     - GROMACS_VERSION=2019.1  PYTHON_VERSION=3.6
-    - GROMACS_VERSION=2019.1  PYTHON_VERSION=3.7    
+    - GROMACS_VERSION=2019.1  PYTHON_VERSION=3.7
     # Test "append_suffix" implementation
     - GROMACS_VERSION=2018.6  PYTHON_VERSION=3.6
       SETUP_CMD="${SETUP_CMD} --link-gmx-mpi --no-append-suffix"
@@ -44,7 +44,7 @@ matrix:
   include:
     # see Gromacs packages on bioconda https://anaconda.org/bioconda/gromacs/files
     - os: osx
-      env: GROMACS_VERSION=4.6.5 PYTHON_VERSION=3.6    
+      env: GROMACS_VERSION=4.6.5 PYTHON_VERSION=3.6
     - os: osx
       env: GROMACS_VERSION=2019.1 PYTHON_VERSION=2.7 NUMPY_VERSION=1.16
     - os: osx

@@ -35,31 +35,24 @@ setup(name="GromacsWrapper",
                    'Topic :: Scientific/Engineering :: Chemistry',
                    'Topic :: Software Development :: Libraries :: Python Modules',
                    ],
-      packages=find_packages(exclude=['tests','scripts','extras','doc/examples']),
-      scripts = [
-                 'scripts/gw-join_parts.py',
-                 'scripts/gw-merge_topologies.py',
-                 'scripts/gw-forcefield.py',
-                 'scripts/gw-partial_tempering.py',
-                 ],
+      packages=find_packages(
+          exclude=['scripts', 'tests', 'extras', 'doc/examples']),
+      scripts=[
+          'scripts/gw-join_parts.py',
+          'scripts/gw-merge_topologies.py',
+          'scripts/gw-forcefield.py',
+          'scripts/gw-partial_tempering.py',
+      ],
       package_data={'gromacs': ['templates/*.sge', 'templates/*.pbs',  # template files
                                 'templates/*.ll', 'templates/*.sh',
-                                'templates/*.mdp', 'templates/*.cfg',
-                                'tests/data/fileformats/top/*.mdp',    # test data
-                                'tests/data/fileformats/top/*.bz2',
-                                'tests/data/fileformats/top/*/*.top',
-                                'tests/data/fileformats/top/*/*.gro',
-                                'tests/data/*.log',
-                                'tests/data/*.ndx',
+                                'templates/*.mdp', 'templates/*.cfg'
                                 ],
                     },
-      install_requires = ['numpy>=1.0',
-                          'six',          # towards py 3 compatibility
-                          'numkit',       # numerical helpers
-                          'matplotlib',
-                          ],
-      tests_require = ['pytest', 'numpy>=1.0', 'pandas>=0.17'],
-      zip_safe = True,
-)
-
-
+      install_requires=['numpy>=1.0',
+                        'six',          # towards py 3 compatibility
+                        'numkit',       # numerical helpers
+                        'matplotlib',
+                        ],
+      tests_require=['pytest', 'numpy>=1.0', 'pandas>=0.17'],
+      zip_safe=True,
+      )
