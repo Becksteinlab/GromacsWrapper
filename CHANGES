@@ -3,13 +3,12 @@
 ==============================
 
 2020-xx-xx     0.8.1
+orbeckst, PolyachenkoYA, whitead 
 
-* fixed: xvg._decimate used python-2.0-specific func_name()
 * fixed: core._run_command capture_output_file argument fixed to us python-3.0 file open
-
-2019-xx-xx     0.8.1
-orbeckst
-
+* fixed: xvg._decimate used python-2.0-specific func_name() (issue #183)
+* fixed: make parsing gmx output more robust to avoid failure on 
+  'import gromacs' (PR #186)
 * fixed: xpm.to_df() used outdated convert_objects()
 * fixed: gw-forcefield.py use print() function for Py 2/3 compatibility
 
