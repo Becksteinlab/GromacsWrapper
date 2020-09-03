@@ -10,7 +10,7 @@ from numpy.testing import assert_almost_equal
 from gromacs import cbook
 import gromacs.setup
 
-from datafiles import datafile
+from .datafiles import datafile
 
 
 def test_grompp_qtot(tmpdir):
