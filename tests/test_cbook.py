@@ -12,12 +12,13 @@ import gromacs.setup
 
 from .datafiles import datafile
 
+
 def test_grompp_qtot(tmpdir):
     pdb = datafile("1ake_A.pdb")
     top = tmpdir.mkdir("top")
     with top.as_cwd():
         f = gromacs.setup.topology(struct=pdb, ff="oplsaa", water="tip4p")
-        with open('none.mdp','w') as mdp:
+        with open('none.mdp', 'w') as mdp:
             mdp.write('; empty mdp file\nrcoulomb = 1\nrvdw = 1\nrlist = 1\n')
         qtot = cbook.grompp_qtot(f="none.mdp", c=f['struct'], p=f['top'],
                                  stdout=False, maxwarn=10)
