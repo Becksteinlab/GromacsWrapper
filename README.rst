@@ -50,7 +50,7 @@ running simulations with sensible parameters.
 Quick Start
 ===========
 
-Given a PDB file ``1iee.pdb``, set up and run a simple simulation (assuming
+Given a PDB file ``1ake.pdb``, set up and run a simple simulation (assuming
 you have all other input files at hand such as the MDP files)::
 
   >>> import gromacs
