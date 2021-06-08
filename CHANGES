@@ -2,7 +2,7 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
-2020-xx-xx     0.8.1
+2021-xx-xx     0.8.1
 orbeckst, PolyachenkoYA, whitead 
 
 * fixed: core._run_command capture_output_file argument fixed to us python-3.0 
@@ -12,6 +12,8 @@ orbeckst, PolyachenkoYA, whitead
   'import gromacs' (PR #186)
 * fixed: xpm.to_df() used outdated convert_objects()
 * fixed: gw-forcefield.py use print() function for Py 2/3 compatibility
+* fixed: xvg.plot() and xvg.plot_coarsened() failed with Py 3 matplotlib
+  due to incompatible colors (issue #194)
 
 2019-04-30     0.8.0
 richardjgowers, theavey, andrejberg, orbeckst
