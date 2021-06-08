@@ -547,6 +547,14 @@ class XVG(utilities.FileUtils):
         """
         self.__array = numpy.asarray(a)
 
+    def _get_colors(self, color, columns):
+        try:
+            cmap = matplotlib.cm.get_cmap(color)
+            colors = cmap(matplotlib.colors.Normalize()(numpy.arange(len(columns[1:]), dtype=float)))
+        except (TypeError, ValueError):
+            colors = cycle(utilities.asiterable(color))
+        return colors
+
     def plot(self, **kwargs):
         """Plot xvg file data.
 
@@ -610,12 +618,7 @@ class XVG(utilities.FileUtils):
         else:
             a = self.array
 
-        color = kwargs.pop('color', self.default_color_cycle)
-        try:
-            cmap = matplotlib.cm.get_cmap(color)
-            colors = cmap(matplotlib.colors.Normalize()(numpy.arange(len(columns[1:]), dtype=float)))
-        except TypeError:
-            colors = cycle(utilities.asiterable(color))
+        colors = self._get_colors(kwargs.pop('color', self.default_color_cycle), columns)
 
         if ax is None:
             ax = plt.gca()
@@ -670,12 +673,7 @@ class XVG(utilities.FileUtils):
             raise MissingDataError("plot_coarsened() assumes that there is at least one column "
                                    "of data for the abscissa and one or more for the ordinate.")
 
-        color = kwargs.pop('color', self.default_color_cycle)
-        try:
-            cmap = matplotlib.cm.get_cmap(color)
-            colors = cmap(matplotlib.colors.Normalize()(numpy.arange(len(columns[1:]), dtype=float)))
-        except TypeError:
-            colors = cycle(utilities.asiterable(color))
+        colors = self._get_colors(kwargs.pop('color', self.default_color_cycle), columns)
 
         if ax is None:
             ax = plt.gca()
