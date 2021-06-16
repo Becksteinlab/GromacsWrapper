@@ -30,9 +30,9 @@ running simulations with sensible parameters.
    https://gromacswrapper.readthedocs.org/en/latest/
 .. _GromacsWrapper git repository:
    https://github.com/Becksteinlab/GromacsWrapper
-.. |build| image:: https://travis-ci.org/Becksteinlab/GromacsWrapper.svg
-   :target: https://travis-ci.org/Becksteinlab/GromacsWrapper
-   :alt: Build Status
+.. |build| image:: https://travis-ci.com/Becksteinlab/GromacsWrapper.svg?branch=master
+   :target: https://travis-ci.com/Becksteinlab/GromacsWrapper
+   :alt: Build Status	     
 .. |cov| image:: https://codecov.io/gh/Becksteinlab/GromacsWrapper/badge.svg
    :target: https://codecov.io/gh/Becksteinlab/GromacsWrapper
    :alt: Code Coverage
