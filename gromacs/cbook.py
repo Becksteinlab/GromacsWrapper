@@ -725,7 +725,7 @@ def create_portable_topology(topol, struct, **kwargs):
       *topol*
           topology file
       *struct*
-          coordinat (structure) file
+          coordinate (structure) file
 
     :Keywords:
       *processed*
