@@ -44,8 +44,8 @@ def test_portable_topology(tmpdir, simulation):
     lines =  open(pptopol).readlines()
     subsections_only = [line.strip() for line in lines if line.startswith("[")]
 
-    assert re.match(";\s+File 'system.top' was generated", lines[1])
-    assert re.match(";\s+This is a standalone topology file", lines[6])
+    assert re.match(r";\s+File 'system.top' was generated", lines[1])
+    assert re.match(r";\s+This is a standalone topology file", lines[6])
     for subsection in ("[ defaults ]", "[ atomtypes ]", "[ bondtypes ]",
                        "[ constrainttypes ]", "[ angletypes ]", "[ dihedraltypes ]",
                        "[ moleculetype ]", "[ atoms ]", "[ bonds ]", "[ pairs ]",
