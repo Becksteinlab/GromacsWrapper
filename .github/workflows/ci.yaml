@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  # run once a day at 4:44 UTC
+  schedule:
+    - cron: "44 4 * * *"
+  push:
+    branches:
+      - "master"
+  pull_request:
+    branches:
+      - "master"
+
+concurrency:
+  group: "${{ github.ref }}-${{ github.head_ref }}"
+  cancel-in-progress: true
+
+# TODO: test different OS (but difficult with GROMACS versions)
+#       for right now: test on Linux only
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [2.7, 3.6, 3.7, 3.8, 3.9]
+    env:
+      MPLBACKEND: agg
+        
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+        python-version: ${{ matrix.python-version }}      
+        auto-update-conda: true
+        mamba-version: "*"
+        channels: conda-forge,bioconda,defaults
+        channel-priority: true
+        show-channel-urls: true
+          
+    - name: Conda info
+      shell: bash -l {0}
+      run: |
+         conda info
+         conda list
+         conda config --show-sources
+         conda config --show
+
+    - name: Python version
+      shell: bash -l {0}
+      run: |
+         python -c "import sys; print(sys.version)"                
+
+    - name: Install package dependencies
+      shell: bash -l {0}
+      run: |
+         mamba install six numpy scipy matplotlib pandas
+         python -m pip install --no-deps numkit 
+
+    - name: Install pytest and plugins
+      shell: bash -l {0}
+      run: |
+         mamba install pytest pytest-pep8 pytest-cov codecov
+
+    # TODO: test different GROMACS versions
+    - name: Install GROMACS (latest)
+      shell: bash -l {0}
+      run: |
+         mamba install gromacs
+
+    - name: Install package
+      shell: bash -l {0}
+      run: |
+        python -m pip install --no-deps .
+
+    - name: Run tests
+      shell: bash -l {0}
+      run: |
+        pytest -v --disable-pytest-warnings --durations=20 --low-performance --cov=gromacs --cov-report=xml ./tests
+
+    - name: Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        file: ./coverage.xml
+        fail_ci_if_error: true
