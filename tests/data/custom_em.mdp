@@ -1,7 +1,7 @@
 ; custom EM
 
 include        = -I. -I.. -I../top
-define         = -DPOSRES -DFLEXSPC
+define         = -DPOSRES
 
 integrator     = cg
 emtol          = 500
