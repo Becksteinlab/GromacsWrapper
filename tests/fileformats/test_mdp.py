@@ -16,15 +16,11 @@ def CUSTOM_EM_MDP(request, tmpdir):
     autoconvert = not request.param == 'no_autoconvert'
     mdp = gromacs.fileformats.mdp.MDP(datafile('custom_em.mdp'),
                                       autoconvert=autoconvert)
-
     if request.param == 'written':
         # to check that written mdp has same data
         out = str(tmpdir.join('out.mdp'))
-
         mdp.write(out)
-
         mdp = gromacs.fileformats.mdp.MDP(out)
-
     return mdp, autoconvert
 
 
@@ -41,10 +37,10 @@ class TestMDP(object):
 
         if autoconvert:
             assert_equal(mdp['include'], ['-I.', '-I..', '-I../top'])
-            assert_equal(mdp['define'], ['-DPOSRES', '-DFLEXSPC'])
+            assert_equal(mdp['define'], '-DPOSRES')
         else:
             assert mdp['include'] == '-I. -I.. -I../top'
-            assert mdp['define'] == '-DPOSRES -DFLEXSPC'
+            assert mdp['define'] == '-DPOSRES'
         assert mdp['integrator'] == 'cg'
         assert mdp['emtol'] == conv(500)
         assert mdp['emstep'] == conv(0.01)

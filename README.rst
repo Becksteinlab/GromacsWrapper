@@ -11,7 +11,7 @@
 
 A primitive Python wrapper around the Gromacs_ tools. The library is
 tested with Gromacs 4.6.5, 2018.x, 2019.x (and 2016.x also works) and
-is tested with Python 2.7 and 3.6.
+is tested with Python 2.7 and 3.6--3.9.
 
 GromacsWrapper also provides a small library (cook book) of often-used
 recipes and helper functions to set up MD simulations.
@@ -30,8 +30,8 @@ running simulations with sensible parameters.
    https://gromacswrapper.readthedocs.org/en/latest/
 .. _GromacsWrapper git repository:
    https://github.com/Becksteinlab/GromacsWrapper
-.. |build| image:: https://travis-ci.com/Becksteinlab/GromacsWrapper.svg?branch=master
-   :target: https://travis-ci.com/Becksteinlab/GromacsWrapper
+.. |build| image:: https://github.com/Becksteinlab/GromacsWrapper/actions/workflows/ci.yaml/badge.svg?branch=master
+   :target: https://github.com/Becksteinlab/GromacsWrapper/actions/workflows/ci.yaml
    :alt: Build Status	     
 .. |cov| image:: https://codecov.io/gh/Becksteinlab/GromacsWrapper/badge.svg
    :target: https://codecov.io/gh/Becksteinlab/GromacsWrapper
