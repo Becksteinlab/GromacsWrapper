@@ -69,7 +69,7 @@ jobs:
     - name: Install GROMACS (latest)
       shell: bash -l {0}
       run: |
-         mamba install gromacs
+         mamba install gromacs pocl
 
     - name: Install package
       shell: bash -l {0}
