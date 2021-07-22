@@ -1,13 +1,76 @@
+# -*- coding: utf-8 -*-
 # GromacsWrapper: run.py
 # Copyright (c) 2009 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
 
-"""
-:mod:`gromacs.run` -- Running simulations
+""":mod:`gromacs.run` -- Running simulations
 =========================================
 
-Helper functions and classes around :class:`gromacs.tools.Mdrun`.
+The :mod:`gromacs.run` module contains tools for launching a Gromacs MD
+simulation with :program:`gmx mdrun`. The basic tool is the :class:`MDrunner`
+class that customizes how :class:`mdrun<gromacs.tools.Mdrun>` is actually
+called. It enables setting a driver such as :program:`mpiexec` for launching
+MPI-enabled runs. The :ref:`example-mdrunner-mpi` should make clearer what one
+needs to do.
+
+Additionally, :ref:`helpers` are provided to check and manage MD runs.
+
+
+.. _example-mdrunner-mpi:
+
+Example: How to create your own MDrunner with ``mpiexec -n``
+------------------------------------------------------------
+
+- Question: How do I change the GromacsWrapper configuration file so that
+  ``mdrun`` gets called with an ``mpiexec -n`` prefix?
+
+- Answer: That's not directly supported but if you just want to change how
+  ``mdrun`` is launched then you can create a custom :class:`MDrunner` for this
+  purpose.
+
+In many cases, you really only need the path to :program:`mpiexec` and then you
+can just derive your own class :class:`MDrunnerMPI`::
+
+  import gromacs.run
+  class MDrunnerMPI(gromacs.run.MDrunner):
+      \"\"\"Manage running :program:`mdrun` as an MPI multiprocessor job.\"\"\"
+
+      mdrun = "gmx_mpi mdrun"
+      mpiexec = "/opt/local/bin/mpiexec"
+
+
+The full path to the MPI runner :program:`mpiexec` (or :program:`mpirun`) is
+stored in the class attribute :attr:`MDrunnerMPI.mpiexec`.
+
+This class can then be used as ::
+
+  mdrun_mpi = MDrunnerMPI(s="md.tpr", deffnm="md")
+  rc = mdrun_mpi.run(ncores=16)
+
+Our :class:`MDrunnerMPI` only supports running ``mpiexec -n ncores
+gmx mdrun ...``, i.e., only the ``-n ncores`` arguments for :program:`mpiexec`
+is supported. If you need more functionality then you need write your own
+:meth:`MDrunner.mpicommand` method, which you would add to your own
+:class:`MDrunnerMPI` class.
+
+The included :class:`MDrunnerOpenMP` could be used instead of our own
+:class:`MDrunnerMPI`; the only difference is that multiple names of MPI-enabled
+``mdrun`` binaries are stored as a tuple in the attribute
+:attr:`MDrunnerOpenMP.mdrun` so that the class works for old Gromacs 4.x and
+modern Gromacs ≥ 2016.
+
+If you need to run some code before or after launching you can add it as the
+:meth:`MDrunnerMPI.prehook` and :meth:`MDrunnerMPI.posthook` methods as shown
+in :class:`MDrunnerMpich2Smpd`.
+
+
+
+MDrunner
+--------
+
+The :class:`MDrunner` wraps :class:`gromacs.tools.Mdrun` to customize launching
+a Gromacs MD simulation from inside the Python interpreter.
 
 .. autoclass:: MDrunner
    :members:
@@ -19,8 +82,11 @@ Example implementations
 -----------------------
 
 .. autoclass:: MDrunnerOpenMP
+   :members:
 .. autoclass:: MDrunnerMpich2Smpd
+   :members:
 
+.. _helpers:
 
 Helper functions
 ----------------
