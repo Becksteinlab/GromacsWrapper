@@ -1,3 +1,5 @@
+.. _building-blocks:
+
 =========================
  Gromacs building blocks
 =========================
@@ -13,4 +15,5 @@ as "library" for common tasks.
    blocks/setup
    blocks/scaling
    blocks/qsub
+   blocks/simulation
 

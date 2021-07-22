@@ -49,7 +49,7 @@ def to_unicode(obj):
     determined by :data:`six.string_types`).
 
     .. versionchanged:: 0.7.0
-       removed `encoding keyword argument
+       removed *encoding* keyword argument
 
     """
     if not isinstance(obj, six.string_types):
@@ -134,7 +134,7 @@ class Autoconverter(object):
 
 
         .. versionchanged:: 0.7.0
-           removed `encoding keyword argument
+           removed *encoding* keyword argument
 
         """
         self._convertors = {'unicode': to_unicode,
@@ -199,7 +199,7 @@ def besttype(x):
        Strings will be returned as Unicode strings (using :func:`to_unicode`).
 
     .. versionchanged:: 0.7.0
-       removed `encoding keyword argument
+       removed *encoding* keyword argument
     """
     x = to_unicode(x)  # make unicode as soon as possible
     try:

@@ -11,16 +11,6 @@ included). Other people have given more thought to the problem and you
 are encouraged to see if their efforts speed up your work more than
 does *GromacsWrapper*.
 
-MDAnalysis_ (N. Michaud-Agrawal, E. J. Dennning, and O. Beckstein)
-  Reads various trajectories (dcd, xtc, trr) and makes coordinates
-  available as numpy_ arrays. It also has a fairly sophisticated
-  selection language, similar to Charmm_ or VMD_.
-
-ParmEd_
-  A general tool for working with topology files for all the popular
-  MD codes, including the `parmed.gromacs`_ module for ITP and TOP
-  files.
-
 gmxapi_ (M.E. Irrgang, J.M. Hays, and P.M. Kasson)
    ``gmxapi`` provides interfaces for managing and extending molecular
    dynamics simulation workflows. In this repository, a Python package
@@ -33,6 +23,16 @@ gmxapi_ (M.E. Irrgang, J.M. Hays, and P.M. Kasson)
    simulations. Bioinformatics 2018. DOI:
    `10.1093/bioinformatics/bty484
    <https://doi.org/10.1093/bioinformatics/bty484>`_
+
+MDAnalysis_ (N. Michaud-Agrawal, E. J. Dennning, and O. Beckstein)
+  Reads various trajectories (dcd, xtc, trr) and makes coordinates
+  available as numpy_ arrays. It also has a fairly sophisticated
+  selection language, similar to Charmm_ or VMD_.
+
+ParmEd_
+  A general tool for working with topology files for all the popular
+  MD codes, including the `parmed.gromacs`_ module for ITP and TOP
+  files.
     
 pymacs_ (Daniel Seeliger)
    pymacs is a python module for dealing with structure files and

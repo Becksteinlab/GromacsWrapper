@@ -225,8 +225,7 @@ def trj_fitandcenter(xy=False, **kwargs):
        *o*
            output trajectory
        *input*
-           A list with three groups. The default is
-               ['backbone', 'protein','system']
+           A list with three groups. The default is ``['backbone', 'protein','system']``.
            The fit command uses all three (1st for least square fit,
            2nd for centering, 3rd for output), the centered/make-whole stage use
            2nd for centering and 3rd for output.
@@ -371,13 +370,15 @@ def cat(prefix="md", dirname=os.path.curdir, partsdir="parts", fulldir="full",
     :Keywords:
         *prefix*
             deffnm of the trajectories [md]
-        *resolve_multi"
+        *resolve_multi*
             how to deal with multiple "final" gro or pdb files: normally there should
             only be one but in case of restarting from the checkpoint of a finished
             simulation one can end up with multiple identical ones.
+
               - "pass" : do nothing and log a warning
               - "guess" : take prefix.pdb or prefix.gro if it exists, otherwise the one of
-                          prefix.partNNNN.gro|pdb with the highes NNNN
+                prefix.partNNNN.gro|pdb with the highes NNNN
+
         *dirname*
             change to *dirname* and assume all tarjectories are located there [.]
         *partsdir*
@@ -1671,9 +1672,11 @@ class Transformer(utilities.FileUtils):
               groups this should contain those groups)
            *force*
               Set the default behaviour for handling existing files:
-                - ``True``: overwrite existing trajectories
-                - ``False``: throw a IOError exception
-                - ``None``: skip existing and log a warning [default]
+
+              - ``True``: overwrite existing trajectories
+              - ``False``: throw a IOError exception
+              - ``None``: skip existing and log a warning [default]
+
            *dirname*
               directory in which all operations are performed, relative paths
               are interpreted relative to *dirname* [.]
@@ -1791,24 +1794,28 @@ class Transformer(utilities.FileUtils):
              Name of the output trajectory. A default name is created.
              If e.g. *dt* = 100  is one of the *kwargs* then the default name includes
              "_dt100ps".
-          *xy* : boolean
+           *xy* : boolean
              If ``True`` then only do a rot+trans fit in the xy plane
              (good for membrane simulations); default is ``False``.
-          *force*
-            ``True``: overwrite existing trajectories
-            ``False``: throw a IOError exception
-            ``None``: skip existing and log a warning [default]
-          *fitgroup*
-            index group to fit on ["backbone"]
+           *force*
+             Override standard behavior (potentially dangerous)
+             - ``True``: overwrite existing trajectories
+             - ``False``: throw a IOError exception
+             - ``None``: skip existing and log a warning [default]
 
-            .. Note:: If keyword *input* is supplied then it will override
-                      *fitgroup*; *input* = ``[fitgroup, outgroup]``
-          *kwargs*
+           *fitgroup*
+             index group to fit on ["backbone"]
+
+             .. Note:: If keyword *input* is supplied then it will override
+                       *fitgroup*; *input* = ``[fitgroup, outgroup]``
+           *kwargs*
              kwargs are passed to :func:`~gromacs.cbook.trj_xyfitted`
+
 
         :Returns:
               dictionary with keys *tpr*, *xtc*, which are the names of the
               the new files
+
         """
         kwargs.setdefault('s', self.tpr)
         kwargs.setdefault('n', self.ndx)

@@ -3,8 +3,9 @@
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
 
-""":mod:`gromacs` -- GromacsWrapper Package Overview
-=================================================
+"""
+GromacsWrapper Overview
+=======================
 
 **GromacsWrapper** (package :mod:`gromacs`) is a thin shell around the `Gromacs`_
 tools for light-weight integration into python scripts or interactive use in

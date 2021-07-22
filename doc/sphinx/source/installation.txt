@@ -1,21 +1,94 @@
 .. -*- encoding: utf-8 -*-
 
+.. _installation:
+
 ==============
  Installation
 ==============
 
-The package contains two files, README and INSTALL, which should get you
-started quickly.
 
-If everything works perfectly then you might be able to install a
-working version of *GromacsWrapper* with a simple  ::
+This document should help you to install the **GromacsWrapper**
+package. Please raise and issue in the `Issue Tracker`_ if problems
+occur or if you have suggestions on how to improve the package or
+these instructions.
 
- python setup.py install
+.. _Issue Tracker: https://github.com/Becksteinlab/GromacsWrapper/issues
+.. _setuptools: https://pypi.org/project/setuptools/
 
-from the unpacked sources.
 
-.. toctree::
-   :maxdepth: 2
+Quick installation instructions
+===============================
 
-   README
-   INSTALL
+The latest release can be directly installed
+from the internet::
+
+  pip install GromacsWrapper
+
+This will automatically download and install the `latest version of
+GromacsWrapper from PyPi`_.
+
+.. _`latest version of GromacsWrapper from PyPi`:
+   https://pypi.org/project/GromacsWrapper/
+
+Manual Download
+===============
+
+If your prefer to download manually, get the latest stable release
+from https://github.com/Becksteinlab/GromacsWrapper/releases and
+either ::
+
+  pip install GromacsWrapper-0.7.0.tar.gz
+
+or install from the unpacked source::
+
+  tar -zxvf GromacsWrapper-0.7.0.tar.gz
+  cd GromacsWrapper-0.7.0
+  python setup.py install
+
+
+
+Source code access
+==================
+
+The tar archive from https://github.com/Becksteinlab/GromacsWrapper/releases
+contains a full source code distribution.
+
+In order to follow code development you can also browse the code
+**git** repository at https://github.com/Becksteinlab/GromacsWrapper
+and checkout the *master* branch::
+
+   git clone https://github.com/Becksteinlab/GromacsWrapper.git
+   cd GromacsWrapper
+
+
+Requirements
+============
+
+Python_ 2.7.x or Python >= 3.6 and Gromacs_ (4.6.x, 2016, 2018, 2019,
+2020, 2021) must be installed. ipython_ is very much
+recommended. These packages might already be available through your
+local package manager such as ``aptitude/apt``, ``yum``, ``yast``,
+``fink`` or ``macports``.
+
+.. _Python: http://www.python.org
+.. _Gromacs: http://www.gromacs.org
+.. _ipython: http://ipython.scipy.org
+
+
+System requirements
+-------------------
+
+Tested with Python 2.7.x and Python 3.6--3.9 on Linux and Mac
+OS X. Earlier Python versions are not supported.
+
+
+Required Python modules
+-----------------------
+
+The basic package makes use of numpy_ and numkit_ (which uses scipy_);
+all dependencies are installed during a normal installation process.
+
+.. _numpy: http://numpy.scipy.org
+.. _numkit: https://github.com/Becksteinlab/numkit
+.. _scipy: https://www.scipy.org/scipylib/index.html
+

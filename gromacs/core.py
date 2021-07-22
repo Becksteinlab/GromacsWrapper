@@ -406,7 +406,7 @@ class GromacsCommand(Command):
 
     The class doc string is dynamically replaced by the documentation of the
     gromacs command the first time the doc string is requested. If the tool is
-    not available at the time (i.e., cannot be found on :env:`PATH`) then the
+    not available at the time (i.e., cannot be found on :envvar:`PATH`) then the
     generic doc string is shown and an :exc:`OSError` exception is only raised
     when the user is actually trying to the execute the command.
     """

@@ -97,11 +97,6 @@ for all modules.
 
 .. _GNU Public License v3: http://www.gnu.org/licenses/gpl.html
 
-The distribution contains third party software that is copyrighted by
-the authors but distributed under licences compatible with this
-package license. Where permitted and necessary, software/files were
-modified to integrate with GromacsWrapper.
-
 
 Installation
 ============
@@ -176,9 +171,9 @@ Install Sphinx::
 
 and compile::
 
-   cd package/doc/sphinx
-   make html
-
+  cd GromacsWrapper
+  python setup.py build_sphinx
+  
 
 Citing
 ======
