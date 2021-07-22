@@ -15,16 +15,42 @@ concurrency:
   group: "${{ github.ref }}-${{ github.head_ref }}"
   cancel-in-progress: true
 
-# TODO: test different OS (but difficult with GROMACS versions)
-#       for right now: test on Linux only
 jobs:
   test:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, macOS-latest]
         python-version: [2.7, 3.6, 3.7, 3.8, 3.9]
+        gromacs-version: ["2021.1"]
+        # Test other GROMACS versions selectively on a recent Python.
+        # On macOS only test one GROMACS version and two Python versions
+        # to keep the testing matrix manageable.
+        exclude:
+          - os: macOS-latest
+            python-version: 3.6
+          - os: macOS-latest
+            python-version: 3.7
+          - os: macOS-latest
+            python-version: 3.9
+        include:
+          - os: ubuntu-latest
+            python-version: 2.7
+            gromacs-version: "4.6.5"	
+          - os: ubuntu-latest
+            python-version: 3.8
+            gromacs-version: "4.6.5"
+          - os: ubuntu-latest
+            python-version: 3.8
+            gromacs-version: "2018.6"
+          - os: ubuntu-latest
+            python-version: 3.8
+            gromacs-version: "2019.1"
+          - os: ubuntu-latest
+            python-version: 3.8
+            gromacs-version: "2020.6"
+
     env:
       MPLBACKEND: agg
         
@@ -34,7 +60,7 @@ jobs:
 
     - uses: conda-incubator/setup-miniconda@v2
       with:
-        python-version: ${{ matrix.python-version }}      
+        python-version: ${{ matrix.python-version }}
         auto-update-conda: true
         mamba-version: "*"
         channels: conda-forge,bioconda,defaults
@@ -65,11 +91,10 @@ jobs:
       run: |
          mamba install pytest pytest-pep8 pytest-cov codecov
 
-    # TODO: test different GROMACS versions
-    - name: Install GROMACS (latest)
+    - name: Install GROMACS (${{ matrix.gromacs-version }})
       shell: bash -l {0}
       run: |
-         mamba install gromacs pocl
+         mamba install 'gromacs==${{ matrix.gromacs-version }}' pocl
 
     - name: Install package
       shell: bash -l {0}
@@ -79,7 +104,7 @@ jobs:
     - name: Run tests
       shell: bash -l {0}
       run: |
-        pytest -v --disable-pytest-warnings --durations=20 --low-performance --cov=gromacs --cov-report=xml ./tests
+        pytest -v --disable-pytest-warnings --durations=20 --low-performance --cov=gromacs --cov-report=xml --color=yes ./tests
 
     - name: Codecov
       uses: codecov/codecov-action@v1
