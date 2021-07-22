@@ -9,7 +9,7 @@
 :Date: |today|
 
 
-**GromacsWrapper** is a Python package (Python 2.7.x and Python > 3.4)
+**GromacsWrapper** is a Python package (Python 2.7.x and Python ≥ 3.6)
 that wraps system calls to Gromacs_ tools into thin classes. This
 allows for fairly seamless integration of the gromacs tools into
 Python_ scripts. This is generally superior to shell scripts because
@@ -23,46 +23,101 @@ supported. GromacsWrapper detects your Gromacs tools and provides them
 as :func:`gromacs.grompp`, :func:`gromacs.mdrun`, etc, regardless of
 your Gromacs version, which allows one to write scripts that are
 broadly Gromacs-version agnostic. Source your ``GMXRC`` file or make
-the :program:`gmx` binary (for versions ≥ 2016) or all the gromacs
+the :program:`gmx` binary (for versions ≥ 5.x) or all the Gromacs
 tools available on your :envvar:`PATH` for GromacsWrapper to find the
 Gromacs installation.
 
-See :doc:`INSTALL` for download and installation instructions. The
+.. warning::
+
+  Although GromacsWrapper has been used in published research over the
+  last 10 years or so, there is no guarantee that any of the defaults
+  chosen are suitable for any particular project or simulation setup.
+   
+  It is **your responsibility to ensure that you are running
+  simulations with sensible parameters.** Provide appropriate template
+  files instead of the bundled defaults and check the logger output!
+
+Any `feedback, bug reports, suggestions`_ and contributions are very
+welcome.
+
+.. SeeAlso:: Other approaches to interfacing Python_ and Gromacs_
+             are listed under :doc:`alternatives`.
+
+	     
+Getting started
+===============
+	     
+See :ref:`installation` for download and installation instructions. The
 :ref:`quickstart` provides a brief example of how to use
 GromacsWrapper in the most basic fashion.
 
 The source code itself is available in the `GromacsWrapper git
 repository`_.
 
-.. warning:: Please be aware that this is **beta** software that most
-  definitely contains bugs. The API is not stable yet and can change
-  between releases.
-  
-  It is *your* responsibility to ensure that you are running
-  simulations with sensible parameters.
+You also need to have a version of Gromacs_ installed.
 
-The package and the documentation are still in flux and any 
-`feedback, bug reports, suggestions`_ and contributions are very welcome. See the
-package :doc:`README` for contact details.
-
-.. SeeAlso:: Other approaches to interfacing Python_ and Gromacs_
-             are listed under :doc:`alternatives`.
 
 
 .. _Gromacs: http://www.gromacs.org
-.. _Python: http://www.python.org
+.. _Python: https://www.python.org
 .. _Documentation: https://gromacswrapper.readthedocs.io/
 .. _GromacsWrapper git repository:
    https://github.com/Becksteinlab/GromacsWrapper
 .. _feedback, bug reports, suggestions:
    https://github.com/Becksteinlab/GromacsWrapper/issues
 
+	     
+License
+=======
 
-Contents
---------
+The **GromacsWrapper** package is made available under the terms of
+the `GNU Public License v3`_ (or any higher version at your choice)
+except as noted below. See the file COPYING for the licensing terms
+for all modules.
+
+.. _GNU Public License v3: http://www.gnu.org/licenses/gpl.html
+
+Citing
+======
+
+|zenodo|
+
+GromacsWrapper was written by Oliver Beckstein with contributions from
+many other people. Please see the file AUTHORS_ for all the names.
+
+If you find this package useful and use it in published work I'd be
+grateful if it was acknowledged in text as
+
+  "... used GromacsWrapper (Oliver Beckstein et al,
+  https://github.com/Becksteinlab/GromacsWrapper doi: 10.5281/zenodo.17901)"
+
+or in the Acknowledgements section.
+
+Thank you.
+
+.. _AUTHORS:
+   https://raw.githubusercontent.com/Becksteinlab/GromacsWrapper/master/AUTHORS
+
+.. |zenodo| image:: https://zenodo.org/badge/13219/Becksteinlab/GromacsWrapper.svg
+   :target: https://zenodo.org/badge/latestdoi/13219/Becksteinlab/GromacsWrapper
+   :alt: Latest release on zenodo (with DOI)
+   
+
+Contact
+=======
+
+Please use the `Issue Tracker`_ to report bugs, installation problems,
+and feature requests (mention ``@orbeckst`` in the issue report).
+
+.. _Issue Tracker: https://github.com/Becksteinlab/GromacsWrapper/issues
+   
+
+.. Contents
+.. --------
 
 .. toctree::
    :maxdepth: 2
+   :hidden:	      
 
    installation
    quickstart
@@ -73,10 +128,11 @@ Contents
 
 
 
-Indices and tables
-------------------
+..
+   Indices and tables
+   ------------------
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   * :ref:`genindex`
+   * :ref:`modindex`
+   * :ref:`search`
 
