@@ -112,7 +112,7 @@ files are located::
   templatesdir = %(configdir)s/templates
 
 
-And there are yet options for how to handle logging::
+And there are options for how to handle logging::
 
   [Logging]
   # name of the logfile that is written to the current directory

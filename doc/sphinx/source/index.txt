@@ -18,7 +18,7 @@ also allows for modularization and code re-use. In addition, commands,
 warnings and errors are logged to a file so that there exists a
 complete history of what has been done.
 
-Gromacs_ versions 4.6.x, 2016.x, 2018.x, and 2019.x are all
+Gromacs_ versions 4.6.x, 2016.x, 2018.x, 2019.x, 2020.x, and 2021.x are all
 supported. GromacsWrapper detects your Gromacs tools and provides them
 as :func:`gromacs.grompp`, :func:`gromacs.mdrun`, etc, regardless of
 your Gromacs version, which allows one to write scripts that are

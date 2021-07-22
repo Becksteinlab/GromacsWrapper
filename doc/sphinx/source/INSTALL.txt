@@ -51,12 +51,8 @@ The tar archive from https://github.com/Becksteinlab/GromacsWrapper/releases
 contains a full source code distribution.
 
 In order to follow code development you can also browse the code
-**git** repository at https://github.com/Becksteinlab/GromacsWrapper or
-clone the git repository from
-
-   git://github.com/Becksteinlab/GromacsWrapper.git
- 
-and checkout the *master& branch::
+**git** repository at https://github.com/Becksteinlab/GromacsWrapper
+and checkout the *master* branch::
 
    git clone https://github.com/Becksteinlab/GromacsWrapper.git
    cd GromacsWrapper
@@ -65,10 +61,11 @@ and checkout the *master& branch::
 Requirements
 ============
 
-Python_ 2.7.x or Python >= 3.4 and Gromacs_ (4.6.x, 2016, 2018) must
-be installed. ipython_ is very much recommended. These packages might
-already be available through your local package manager such as
-``aptitude/apt``, ``yum``, ``yast``, ``fink`` or ``macports``.
+Python_ 2.7.x or Python >= 3.6 and Gromacs_ (4.6.x, 2016, 2018, 2019,
+2020, 2021) must be installed. ipython_ is very much
+recommended. These packages might already be available through your
+local package manager such as ``aptitude/apt``, ``yum``, ``yast``,
+``fink`` or ``macports``.
 
 .. _Python: http://www.python.org
 .. _Gromacs: http://www.gromacs.org
@@ -78,12 +75,8 @@ already be available through your local package manager such as
 System requirements
 -------------------
 
-Tested with Python 2.7.x and Python 3.5/3.6 on Linux and Mac
+Tested with Python 2.7.x and Python 3.6--3.9 on Linux and Mac
 OS X. Earlier Python versions are not supported.
-
-.. Note:: Python 3 support is currently in alpha state; in principle
-  it is fully supported but if you find bugs please report them
-  through the `Issue Tracker`_.
 
 
 Required Python modules
