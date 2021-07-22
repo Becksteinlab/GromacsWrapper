@@ -10,10 +10,13 @@ import pytest
 
 from numpy.testing import assert_almost_equal
 
+import gromacs
 import gromacs.setup
 
 from .datafiles import datafile
 
+@pytest.mark.xfail(gromacs.release.startswith("2020.6"),
+                   reason="pdb2gmx 2020.6 fails to build the TIP4P waters")
 def test_trj_compact_main(tmpdir):
     pdb = datafile("1ake_A.pdb")
     top = tmpdir.mkdir("top")

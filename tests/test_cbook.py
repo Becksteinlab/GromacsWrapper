@@ -11,6 +11,7 @@ import re
 import pytest
 from numpy.testing import assert_almost_equal
 
+import gromacs
 from gromacs import cbook
 import gromacs.setup
 
@@ -24,6 +25,8 @@ def simulation(tmpdir):
         f = gromacs.setup.topology(struct=pdb, ff="oplsaa", water="tip4p")
         yield f
 
+@pytest.mark.xfail(gromacs.release.startswith("2020.6"),
+                   reason="pdb2gmx 2020.6 fails to build the TIP4P waters")
 def test_grompp_qtot(tmpdir, simulation):
     with tmpdir.mkdir("qtot").as_cwd():
         with open('none.mdp', 'w') as mdp:
@@ -33,7 +36,8 @@ def test_grompp_qtot(tmpdir, simulation):
     assert_almost_equal(qtot, -4, decimal=5,
                         err_msg="grompp_qtot() failed to compute total charge correctly")
 
-
+@pytest.mark.xfail(gromacs.release.startswith("2020.6"),
+                   reason="pdb2gmx 2020.6 fails to build the TIP4P waters")
 def test_portable_topology(tmpdir, simulation):
     with tmpdir.mkdir("processed").as_cwd():
         pptopol = cbook.create_portable_topology(simulation['top'], simulation['struct'])

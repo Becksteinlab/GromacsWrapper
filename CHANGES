@@ -5,6 +5,8 @@
 2021-xx-xx     0.8.1
 orbeckst, PolyachenkoYA, whitead 
 
+* confirmed support for GROMACS 4.6.5, 2018, 2019, 2020, 2021 on Python 2.7 and
+  3.6--3.9 on Linux and macOS (#200, #202, #203)
 * fixed: core._run_command capture_output_file argument fixed to us python-3.0 
   file open (#181)
 * fixed: xvg._decimate used python-2.0-specific func_name() (issue #183)
