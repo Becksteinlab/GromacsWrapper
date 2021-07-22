@@ -1,22 +1,27 @@
 .. -*- mode: rst; encoding: utf-8 -*-
 
-========================
- GromacsWrapper package
-========================
+=================
+API documentation
+=================
 
-The :mod:`gromacs` package makes `Gromacs`_ tools available via
-thin python wrappers. In addition, it provides little building blocks
-to solve commonly encountered tasks.
+The :mod:`gromacs` package makes `Gromacs`_ tools available via thin
+Python wrappers, which are generated in :mod:`gromacs.tools` and made
+available in the top-level name space :mod:`gromacs`. The
+functionality to generate the tool wrappers resides in the :ref:`core
+modules<core-modules>`.
+
+Building blocks to solve commonly encountered tasks related to set-up
+and running of simulations are collected as :ref:`building
+blocks<building-blocks>`.
 
 .. _Gromacs: http://www.gromacs.org
 
 
-Contents:
+.. Contents:
 
 .. toctree::
    :maxdepth: 2
 
-   gromacs/init
    gromacs/core
    gromacs/building_blocks
 

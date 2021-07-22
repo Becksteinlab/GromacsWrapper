@@ -242,14 +242,15 @@ class XVG(utilities.FileUtils):
      - :attr:`~XVG.tc`: correlation time of the data (assuming a simple
        exponential decay of the fluctuations around the mean)
 
-    These attributes are numpy arrays that correspond to the data columns,
-    i.e. :attr:`XVG.array`[1:].
+    These attributes are numpy arrays that correspond to the data columns in
+    :attr:`XVG.array`, i.e. ``XVG.array[1:]``.
 
     .. Note::
 
        - Only simple XY or NXY files are currently supported, *not*
          Grace files that contain multiple data sets separated by '&'.
        - Any kind of formatting (i.e. :program:`xmgrace` commands) is discarded.
+
     """
 
     #: Default extension of XVG files.

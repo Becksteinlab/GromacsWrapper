@@ -175,8 +175,8 @@ file can be like this::
    # which tool groups to make available
    groups = tools extra
 
-For Gromacs 5.x use a section like the following, where driver commands
-are supplied::
+For Gromacs 5.x and later (e.g., 2021) use a section like the following, where
+driver commands are supplied::
 
    [Gromacs]
    # Release of the Gromacs package to which information in this sections applies.
@@ -269,23 +269,14 @@ from . import utilities
 #: Default name of the global configuration file.
 CONFIGNAME = os.path.expanduser(os.path.join("~",".gromacswrapper.cfg"))
 
-#:
-#: :data:`configdir`
-#:    Directory to store user templates and configurations.
-#:    The default value is ``~/.gromacswrapper``.
-#: :data:`qscriptdir`
-#:    Directory to store user supplied queuing system scripts as
-#:    used by :mod:`gromacs.qsub`.
-#:    The default value is ``~/.gromacswrapper/qscripts``.
-#: :data:`templatesdir`
-#:    Directory to store user supplied template files such as mdp files.
-#:    The default value is ``~/.gromacswrapper/templates``.
+#: Default configuration directory in GromacsWrapper.
+default_configdir = os.path.expanduser(os.path.join("~",".gromacswrapper"))
 
-configdir = os.path.expanduser(os.path.join("~",".gromacswrapper"))
+#: Initial defaults for directories, filenames, and logger options.
 defaults = {
-    'configdir':    configdir,
-    'qscriptdir':   os.path.join(configdir, 'qscripts'),
-    'templatesdir': os.path.join(configdir, 'templates'),
+    'configdir':    default_configdir,
+    'qscriptdir':   os.path.join(default_configdir, 'qscripts'),
+    'templatesdir': os.path.join(default_configdir, 'templates'),
     'logfilename': "gromacs.log",
     'loglevel_console': 'INFO',
     'loglevel_file': 'DEBUG',
@@ -711,7 +702,7 @@ for name in get_tool_names():
         driver = match.group(1)
         raise ValueError("'%s' isn't a valid tool name anymore."
                          " Replace it by '%s'.\n            See "
-                         "http://gromacswrapper.readthedocs.io/en/latest/"
+                         "https://gromacswrapper.readthedocs.io/en/latest/"
                          "configuration.html" % (name, match.group(1)))
 
 

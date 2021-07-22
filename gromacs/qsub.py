@@ -406,8 +406,10 @@ def generate_submit_array(templates, directories, **kwargs):
     """Generate a array job.
 
     For each ``work_dir`` in *directories*, the array job will
-     1. cd into ``work_dir``
-     2. run the job as detailed in the template
+
+    1. cd into ``work_dir``
+    2. run the job as detailed in the template
+
     It will use all the queuing system directives found in the
     template. If more complicated set ups are required, then this
     function cannot be used.
@@ -416,7 +418,9 @@ def generate_submit_array(templates, directories, **kwargs):
        *templates*
           Basic template for a single job; the job array logic is spliced into
           the position of the line ::
+
               # JOB_ARRAY_PLACEHOLDER
+
           The appropriate commands for common queuing systems (Sun Gridengine, PBS)
           are hard coded here. The queuing system is detected from the suffix of
           the template.

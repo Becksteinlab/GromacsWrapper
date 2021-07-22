@@ -38,14 +38,12 @@ Classes
 """
 import six
 
-# Flags infrastructure taken from MDAnalysis.core.__init__ (same author ... :-) )
-
 # set up flags for core routines (more convoluted than strictly necessary but should
 # be clean to add more flags if needed)
 class Flags(dict):
     """Global registry of flags. Acts like a dict for item access.
 
-    There are a number flags defined that influence how MDAnalysis behaves. They are
+    There are a number flags defined that influence how GromacsWrapper behaves. They are
     accessible through the pseudo-dictionary
 
       :data:`gromacs.environment.flags`
@@ -113,9 +111,11 @@ class IdentityMapping(dict):
 class Flag(object):
     """A Flag, essentially a variable that knows its default and legal values."""
     def __init__(self,name,default,mapping=None,doc=None):
-        """Create a new flag which will be registered with FLags.
+        """Create a new flag which will be registered with Flags.
 
-          newflag = Flag(name,default,mapping,doc)
+        Usage ::
+
+           newflag = Flag(name, default, mapping, doc)
 
         :Arguments:
          *name*
@@ -152,7 +152,7 @@ class Flag(object):
                 raise ValueError("flag must be None or one of "+str(self.mapping.keys()))
         return self.get()
     def prop(self):
-        """Use this for property(**flag.prop())"""
+        """Use this for ``property(**flag.prop())``"""
         return {'fget':self.get, 'fset':self.set, 'doc':self.__doc__}
     def __repr__(self):
         return """Flag('{name!s}',{value!r})""".format(**self.__dict__)
@@ -207,7 +207,7 @@ _flags = [
     _Flag('capture_output_filename',
           'gromacs_captured_output.txt',
           doc="""
-            Name of the file that captures output if ``flags['capture_output'] = "file"
+            Name of the file that captures output if ``flags['capture_output'] = "file"``
 
             >>> flags['%(name)s'] = %(value)r
 

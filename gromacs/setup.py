@@ -444,7 +444,7 @@ def solvate_ion(struct='solvated.gro', top='top/system.top',
     # this stage the user cannot do much about it (can be set to any
     # value but is kept undocumented...)
     grompp_maxwarn = kwargs.pop('maxwarn',10)
-    
+
     # handle additional include directories (kwargs are also modified!)
     mdp_kwargs = cbook.add_mdp_includes(topology, kwargs)
 
@@ -615,10 +615,10 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
     """
     sol = solvate_sol(struct=struct, top=top,
                       distance=distance, boxtype=boxtype,
-                      water=water, solvent_name=solvent_name, 
+                      water=water, solvent_name=solvent_name,
                       with_membrane=with_membrane,
                       dirname=dirname, **kwargs)
-    
+
     ion = solvate_ion(struct=sol['struct'], top=top,
                       concentration=concentration, cation=cation, anion=anion,
                       solvent_name=solvent_name, ndx=ndx,
@@ -673,7 +673,7 @@ def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
           arguments for *mdrunner* (as a dict), e.g. ``{'nt': 2}``;
           empty by default
 
-          .. versionaddedd:: 0.7.0
+          .. versionadded:: 0.7.0
 
        *kwargs*
           remaining key/value pairs that should be changed in the
@@ -776,9 +776,11 @@ def em_schedule(**kwargs):
 
     :Example:
        Conduct three minimizations:
-         1. low memory Broyden-Goldfarb-Fletcher-Shannon (BFGS) for 30 steps
-         2. steepest descent for 200 steps
-         3. finish with BFGS for another 30 steps
+
+       1. low memory Broyden-Goldfarb-Fletcher-Shannon (BFGS) for 30 steps
+       2. steepest descent for 200 steps
+       3. finish with BFGS for another 30 steps
+
        We also do a multi-processor minimization when possible (i.e. for steep
        (and conjugate gradient) by using a :class:`gromacs.run.MDrunner` class
        for a :program:`mdrun` executable compiled for OpenMP in 64 bit (see
