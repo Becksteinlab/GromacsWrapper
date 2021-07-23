@@ -42,7 +42,7 @@ Now set up the system: (1) generate topology, (2) put in a
 dodecahedral simulation box, (3) solvate with water (for simplicity,
 we leave out the "add ions step")::
 
-  >>> gromacs.pdb2gmx(f="1ake.pdb", o="protein.gro", p="topol.top",
+  >>> gromacs.pdb2gmx(f="1iee.pdb", o="protein.gro", p="topol.top",
   ...                 ff="oplsaa", water="tip4p")
   >>> gromacs.editconf(f="protein.gro", o="boxed.gro",
   ...                  bt="dodecahedron", d=1.5, princ=True,

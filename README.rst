@@ -51,7 +51,7 @@ running simulations with sensible parameters.
 Quick Start
 ===========
 
-Given a PDB file ``1ake.pdb``, set up and run a simple simulation (assuming
+Given a PDB file ``1iee.pdb``, set up and run a simple simulation (assuming
 you have all other input files at hand such as the MDP files)::
 
   >>> import gromacs
@@ -72,7 +72,7 @@ you have all other input files at hand such as the MDP files)::
             Structure file: gro g96 pdb brk ent esp tpr
   ...
   ...
-  >>> gromacs.pdb2gmx(f="1ake.pdb", o="protein.gro", p="topol.top",
+  >>> gromacs.pdb2gmx(f="1iee.pdb", o="protein.gro", p="topol.top",
   ...                 ff="oplsaa", water="tip4p")
   >>> gromacs.editconf(f="protein.gro", o="boxed.gro",
   ...                  bt="dodecahedron", d=1.5, princ=True,
