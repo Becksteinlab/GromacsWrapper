@@ -2,7 +2,7 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
-2021-xx-xx     0.8.1
+2021-07-23     0.8.1
 orbeckst, PolyachenkoYA, whitead 
 
 * confirmed support for GROMACS 4.6.5, 2018, 2019, 2020, 2021 on Python 2.7 and
