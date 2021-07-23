@@ -29,36 +29,42 @@ Basic options
 -------------
 
 Place an INI file named ``~/.gromacswrapper.cfg`` in your home directory, it
-may look like the following document::
+may look like the following document. The **GMXRC** parameter is the path your
+:file:`GMXRC` start-up script::
 
   [Gromacs]
   GMXRC = /usr/local/gromacs/bin/GMXRC
 
 The Gromacs software suite needs some environment variables that are set up
-sourcing the :file:`GMXRC` file. You may source it yourself or set an option
-like the above one. If this option isn't provided, **GromacsWrapper** will
-guess that Gromacs was globally installed as if it was installed somewhere on
-your :envvar:`PATH` or if you externally set the Gromacs environment.
+sourcing the :file:`GMXRC` file. You may source it yourself (then do not
+include it in the config file) or set the option like the above one. If this
+option isn't provided, GromacsWrapper will guess that Gromacs was globally
+installed as if it was installed somewhere on your :envvar:`PATH` or if you
+externally set the Gromacs environment.
 
 As there isn't yet any way to know which Gromacs version to use,
-**GromacsWrapper** will first try to use Gromacs 5 if available, then to use
-Gromacs 4. If you have both versions and want to use version 4 or just want
-to document it, you may specify the which release version will be used::
+GromacsWrapper will first try to use "modern" Gromacs (i.e., version 5,
+2016, 2018, 2019, 2020, 2021, ...) if available, then to use Gromacs 4.x. If you
+have modern versions (collectively referred to as "version 5") and want to use
+version 4 or just want to document it, you may specify which version will be
+used with the **release** parameter::
 
   [Gromacs]
   GMXRC = /usr/local/gromacs/bin/GMXRC
   release = 4.6.7
 
-For now **GromacsWrapper** will guess which tools are available to put it into
-:mod:`gromacs.tools`, but you can always configure it manually. Gromacs 5 has
-up to 4 commands usually named::
+For now GromacsWrapper will guess which tools are available to put it into
+:mod:`gromacs.tools`, but you can always configure it manually with the
+**tools** parameter. Gromacs 5/2016/.../2021 has a *driver* command (typically
+called :program:`gmx`) but depending on how you compile Gromacs, you can have
+different drivers installed. For example, you might have 4 "gmx" commands ::
 
   [Gromacs]
   tools = gmx gmx_d gmx_mpi gmx_mpi_d
 
+for single and double precision work and compiled with MPI support.
 
-This option will instruct which commands to load. For Gromacs 4 you'll need to
-specify more tools::
+For Gromacs 4, tools are separate executables and you can specify them explicitly::
 
   [Gromacs]
   GMXRC = /usr/local/gromacs/bin/GMXRC
@@ -86,8 +92,11 @@ Commands will be available directly from the :mod:`gromacs` module:
     gromacs.mdrun_d # either v5 `gmx_d mdrun` or v4 `mdrun_d`
     gromacs.mdrun   # either v5 `gmx mdrun`   or v4 `mdrun`
 
-Gromacs 4 tools will be aliased to Gromacs 5 names (or Gromacs
-2016/2018/2019 names).
+Gromacs 4 tools will also be aliased to Gromacs 5 names (i.e., Gromacs
+5/2016/2018/2019/2020/2021 names) so that it is, at least in principle,
+possible to run GromacsWrapper scripts under any version of Gromacs (between
+4.x and at least 2021.x, except for incompatible changes in input files and
+command behavior).
 
 .. versionchanged:: 0.6.0
    The format of the ``tools`` variable in the ``[Gromacs]`` section of the
@@ -98,8 +107,8 @@ Gromacs 4 tools will be aliased to Gromacs 5 names (or Gromacs
 More options
 ------------
 
-Other options are to set where template for job submission systems and.mdp
-files are located::
+Other parameters can be set to customize where templates for job submission
+systems and mdp files are located::
 
   [DEFAULT]
   # Directory to store user templates and rc files.
@@ -129,6 +138,7 @@ And there are options for how to handle logging::
 
   # file messages written to logfilename
   loglevel_file = DEBUG
+
 
 Creating default configuration files and directories
 ----------------------------------------------------
