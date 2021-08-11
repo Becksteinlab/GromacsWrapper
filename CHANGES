@@ -2,6 +2,12 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
+2021-xx-yy     0.8.2
+orbeckst
+
+* fixed stop_logging() fails with NameError (#211)
+
+
 2021-07-23     0.8.1
 orbeckst, PolyachenkoYA, whitead 
 

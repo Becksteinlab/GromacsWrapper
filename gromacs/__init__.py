@@ -232,7 +232,7 @@ def stop_logging():
     """Stop logging to logfile and console."""
     from . import log
     logger = logging.getLogger("gromacs")
-    logger.info("GromacsWrapper %s STOPPED logging", get_version())
+    logger.info("GromacsWrapper %s STOPPED logging", __version__)
     log.clear_handlers(logger)  # this _should_ do the job...
 
 # for testing (maybe enable with envar GW_START_LOGGING)
