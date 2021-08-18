@@ -419,6 +419,6 @@ def get_double_or_single_prec_mdrun():
         # fall back to mdrun if no double precision binary
         wmsg = "No 'mdrun_d' binary found so trying 'mdrun' instead.\n"\
             "(Note that energy minimization runs better with mdrun_d.)"
-        logger.warn(wmsg)
+        logger.warning(wmsg)
         warnings.warn(wmsg, category=AutoCorrectionWarning)
         return gromacs.mdrun

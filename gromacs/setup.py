@@ -505,7 +505,7 @@ def solvate_ion(struct='solvated.gro', top='top/system.top',
         if abs(qtot) > 1e-4:
             wmsg = "System has non-zero total charge qtot = {qtot:g} e.".format(**vars())
             warnings.warn(wmsg, category=BadParameterWarning)
-            logger.warn(wmsg)
+            logger.warning(wmsg)
 
         # make main index
         try:
@@ -514,14 +514,14 @@ def solvate_ion(struct='solvated.gro', top='top/system.top',
             # or should I rather fail here?
             wmsg = "Failed to make main index file %r ... maybe set mainselection='...'.\n"\
                    "The error message was:\n%s\n" % (ndx, str(err))
-            logger.warn(wmsg)
+            logger.warning(wmsg)
             warnings.warn(wmsg, category=GromacsFailureWarning)
         try:
             trj_compact_main(f='ionized.gro', s='ionized.tpr', o='compact.pdb', n=ndx)
         except GromacsError as err:
             wmsg = "Failed to make compact pdb for visualization... pressing on regardless. "\
                    "The error message was:\n%s\n" % str(err)
-            logger.warn(wmsg)
+            logger.warning(wmsg)
             warnings.warn(wmsg, category=GromacsFailureWarning)
 
     return {'qtot': qtot,
@@ -631,7 +631,7 @@ def check_mdpargs(d):
     """Check if any arguments remain in dict *d*."""
     if len(d) > 0:
         wmsg = "Unprocessed mdp option are interpreted as options for grompp:\n"+str(d)
-        logger.warn(wmsg)
+        logger.warning(wmsg)
         warnings.warn(wmsg, category=UsageWarning)
     return len(d) == 0
 
@@ -718,7 +718,7 @@ def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
         # it might get fed into the function when using the keyword-expansion pipeline
         # usage paradigm.
         wmsg = "Total charge was reported as qtot = {qtot:g} <> 0; probably a problem.".format(**vars())
-        logger.warn(wmsg)
+        logger.warning(wmsg)
         warnings.warn(wmsg, category=BadParameterWarning)
 
     with in_dir(dirname):
@@ -884,7 +884,7 @@ def _setup_MD(dirname,
                        "in order to set up temperature coupling.\n" \
                        "If no T-coupling is required then set Tcoupl='no'.\n" \
                        "For now we will just couple everything to 'System'."
-                logger.warn(wmsg)
+                logger.warning(wmsg)
                 warnings.warn(wmsg, category=AutoCorrectionWarning)
             if x < 0.1:
                 # couple everything together
@@ -899,7 +899,7 @@ def _setup_MD(dirname,
                        "we use 'System' for T-coupling and ref_t = %g K and " \
                        "tau_t = %g 1/ps (can be changed in mdp_parameters).\n" \
                        % (x * 100, ref_t, tau_t)
-                logger.warn(wmsg)
+                logger.warning(wmsg)
                 warnings.warn(wmsg, category=AutoCorrectionWarning)
             else:
                 # couple protein and bath separately
@@ -911,13 +911,13 @@ def _setup_MD(dirname,
                     tau_t = n_tc_groups * [tau_t[0]]
                     wmsg = "%d coupling constants should have been supplied for tau_t. "\
                         "Using %f 1/ps for all of them." % (n_tc_groups, tau_t[0])
-                    logger.warn(wmsg)
+                    logger.warning(wmsg)
                     warnings.warn(wmsg, category=AutoCorrectionWarning)
                 if len(ref_t) != n_tc_groups:
                     ref_t = n_tc_groups * [ref_t[0]]
                     wmsg = "%d temperatures should have been supplied for ref_t. "\
                         "Using %g K for all of them." % (n_tc_groups, ref_t[0])
-                    logger.warn(wmsg)
+                    logger.warning(wmsg)
                     warnings.warn(wmsg, category=AutoCorrectionWarning)
 
                 mdp_parameters['tc-grps'] = tc_group_names
