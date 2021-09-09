@@ -3,8 +3,9 @@
 ==============================
 
 2021-xx-yy     0.8.2
-orbeckst
+orbeckst, simonbray
 
+* conda package (created by @simonbray for bioconda) (#109)
 * fixed stop_logging() fails with NameError (#211)
 
 
