@@ -5,8 +5,8 @@ Alternatives to GromacsWrapper
 ==============================
 
 *GromacsWrapper* is simplistic; in particular it does not directly
-link to the Gromacs libraries but relies on python wrappers to call
-gromacs tools. Some people find this very crude (the author
+link to the GROMACS_ libraries but relies on Python wrappers to call
+GROMACS tools. Some people find this very crude (the author
 included). Other people have given more thought to the problem and you
 are encouraged to see if their efforts speed up your work more than
 does *GromacsWrapper*.
@@ -53,15 +53,15 @@ pymacs_ (Daniel Seeliger)
    - Handling gromacs index files
 
 gmxscript_ (Pedro Lacerda)
-  **gmxscript** is a framework for Gromacs simulations. Its main goal
+  **gmxscript** is a framework for GROMACS simulations. Its main goal
   is make simulation protocols easily reproducible and to define
   canonical steps to perform and analyze a simulation. The commands
   are stored in very readable and structured Python file that requires
   no programming knowledge except syntax.
 
-Gromacs `XTC Library`_
+GROMACS `XTC Library`_
    Version 1.1 of the separate xtc/trr library contains example code
-   to access a Gromacs trajectory from python. It appears to be based
+   to access a GROMACS trajectory from python. It appears to be based
    on grompy_ (also see below).
 
 various implementations of python wrappers
@@ -110,13 +110,13 @@ LOOS_ (`Grossfield lab`_ at the University of Rochester)
 copernicus_  
   Copernicus is a Python-based client-server network that allows
   running of large and complicated MD simulation workflows. It
-  supports Gromacs_ (grompp and mdrun).
+  supports GROMACS_ (grompp and mdrun).
 
 VMD_ (`Schulten lab`_ at UIUC)
   VMD is a great analysis tool; the only downside is that (at the
   moment) trajectories have to fit into memory. In some cases this can
   be circumvented by reading a trajectory frame by frame using the
-  `bigdcd`_ script (which might also work for Gromacs xtcs).
+  `bigdcd`_ script (which might also work for GROMACS xtcs).
 
 JGromacs_ (Márton Münz and Philip C Biggin)
    JGromacs is a Java library designed to facilitate the development
@@ -128,7 +128,7 @@ JGromacs_ (Márton Münz and Philip C Biggin)
    toolkit is included in the package. The programmer is also provided
    with simple tools (e.g. XML-based configuration) to create
    applications with a user interface resembling the command-line UI
-   of Gromacs applications.
+   of GROMACS applications.
 
 
 Please open an issue in the `issue tracker`_ to let us know of other efforts so that
@@ -156,7 +156,7 @@ they can be added here. Thanks.
 .. _GPL: http://www.gnu.org/licenses/ 
 .. _numpy: http://numpy.scipy.org
 .. _Charmm: http://www.charmm.org
-.. _Gromacs: http://www.gromacs.org
+.. _GROMACS: http://www.gromacs.org
 .. _issue tracker: https://github.com/Becksteinlab/GromacsWrapper/issues
 .. _ParmEd: http://parmed.github.io/ParmEd/html/index.html
 .. _parmed.gromacs: http://parmed.github.io/ParmEd/html/api/parmed/parmed.gromacs.html

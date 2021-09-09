@@ -7,7 +7,7 @@
  README: GromacsWrapper
 ========================
 
-|build| |cov| |docs| |zenodo| |PRsWelcome|
+|build| |cov| |docs| |zenodo| |PRsWelcome| |anaconda| |install-conda|
 
 A primitive Python wrapper around the Gromacs_ tools. The library is
 tested with GROMACS 4.6.5, 2018.x, 2019.x, 2020.x, and 2021.x (and 5.x
@@ -47,7 +47,14 @@ running simulations with sensible parameters.
 .. |PRsWelcome| image:: https://img.shields.io/badge/PRs-welcome-brightgreen.svg
    :target: http://makeapullrequest.com
    :alt: PRs Welcome!
-
+.. |anaconda| image:: https://anaconda.org/bioconda/gromacswrapper/badges/version.svg
+   :target: https://anaconda.org/bioconda/gromacswrapper
+   :alt: Anaconda.org package
+.. |install-conda| image:: https://anaconda.org/bioconda/gromacswrapper/badges/installer/conda.svg
+   :target: https://conda.anaconda.org/bioconda
+   :alt: install with conda	    
+	 
+	 
 Quick Start
 ===========
 
@@ -104,14 +111,23 @@ Installation
 Releases
 --------
 
-The `latest version of GromacsWrapper from PyPi`_ and can be installed
+The `latest version of GromacsWrapper from PyPi`_ can be installed
 with ::
 
   pip install GromacsWrapper
 
+
+or as a `bioconda package`_ with ``conda`` from the *bioconda* channel ::
+
+   conda install -c conda-forge -c bioconda gromacswrapper
+    
+
 .. _`latest version of GromacsWrapper from PyPi`:
    https://pypi.org/project/GromacsWrapper/
 
+.. _`bioconda package`:
+   https://anaconda.org/bioconda/GromacsWrapper
+   
 Development version
 -------------------
 
