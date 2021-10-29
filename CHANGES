@@ -2,9 +2,10 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
-2021-xx-yy     0.8.2
-orbeckst
+2021-09-09     0.8.2
+orbeckst, simonbray
 
+* conda package (created by @simonbray for bioconda) (#109)
 * fixed stop_logging() fails with NameError (#211)
 
 

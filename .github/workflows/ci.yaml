@@ -1,9 +1,9 @@
 name: CI
 
 on:
-  # run once a day at 4:44 UTC
+  # run every Sunday at 4:44 UTC
   schedule:
-    - cron: "44 4 * * *"
+    - cron: "44 4 * * 0"
   push:
     branches:
       - "master"
@@ -83,8 +83,7 @@ jobs:
     - name: Install package dependencies
       shell: bash -l {0}
       run: |
-         mamba install six numpy scipy matplotlib pandas
-         python -m pip install --no-deps numkit 
+         mamba install six numpy scipy matplotlib-base pandas numkit
 
     - name: Install pytest and plugins
       shell: bash -l {0}

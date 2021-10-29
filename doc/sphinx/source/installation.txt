@@ -16,20 +16,49 @@ these instructions.
 .. _setuptools: https://pypi.org/project/setuptools/
 
 
-Quick installation instructions
-===============================
+``pip`` installation
+====================
 
-The latest release can be directly installed
-from the internet::
+The latest release can be directly installed with :program:`pip`::
 
   pip install GromacsWrapper
 
-This will automatically download and install the `latest version of
-GromacsWrapper from PyPi`_.
+(This will automatically download and install the `latest version of
+GromacsWrapper from PyPi`_.)
 
 .. _`latest version of GromacsWrapper from PyPi`:
    https://pypi.org/project/GromacsWrapper/
 
+
+``conda`` installation
+======================
+
+.. versionadded:: 0.8.1
+
+Install as a `bioconda package`_ with the `conda`_ package manager from the
+`bioconda`_ channel ::
+
+   conda install -c conda-forge -c bioconda gromacswrapper
+
+Both the *conda-forge* and the *bioconda* channel should be specified.
+
+.. Note::
+
+   The *bioconda* channel also contains `bioconda packages for
+   GROMACS`_, which can be used for testing and system setup; for
+   running in a high-performance environment you are advised to
+   carefully benchmark and possibly compile a version of GROMACS_ that
+   is tuned for the system.
+
+.. _conda: https://docs.conda.io
+.. _bioconda: https://bioconda.github.io/ 
+.. _`bioconda package`:
+   https://anaconda.org/bioconda/GromacsWrapper
+.. _`bioconda packages for GROMACS`:    
+   https://anaconda.org/bioconda/gromacs/
+.. _GROMACS: http://www.gromacs.org/
+   
+   
 Manual Download
 ===============
 
@@ -37,12 +66,12 @@ If your prefer to download manually, get the latest stable release
 from https://github.com/Becksteinlab/GromacsWrapper/releases and
 either ::
 
-  pip install GromacsWrapper-0.7.0.tar.gz
+  pip install GromacsWrapper-0.8.2.tar.gz
 
 or install from the unpacked source::
 
-  tar -zxvf GromacsWrapper-0.7.0.tar.gz
-  cd GromacsWrapper-0.7.0
+  tar -zxvf GromacsWrapper-0.8.2.tar.gz
+  cd GromacsWrapper-0.8.2
   python setup.py install
 
 
@@ -64,14 +93,13 @@ and checkout the *master* branch::
 Requirements
 ============
 
-Python_ 2.7.x or Python >= 3.6 and Gromacs_ (4.6.x, 2016, 2018, 2019,
+Python_ 2.7.x or Python >= 3.6 and GROMACS_ (4.6.x, 2016, 2018, 2019,
 2020, 2021) must be installed. ipython_ is very much
 recommended. These packages might already be available through your
 local package manager such as ``aptitude/apt``, ``yum``, ``yast``,
 ``fink`` or ``macports``.
 
 .. _Python: http://www.python.org
-.. _Gromacs: http://www.gromacs.org
 .. _ipython: http://ipython.scipy.org
 
 

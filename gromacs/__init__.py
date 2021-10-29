@@ -166,6 +166,8 @@ Version
 
 The package version is recorded in the :const:`gromacs.__version__` variable.
 
+.. autodata:: __version__
+
 """
 from __future__ import absolute_import
 __docformat__ = "restructuredtext en"
@@ -178,6 +180,19 @@ import logging
 __all__ = ['config', 'tools', 'cbook', 'fileformats']
 
 from ._version import get_versions
+#: Version of the package, following `semantic versioning`_ in the form
+#: MAJOR.MINOR.PATCH. When PATCH increases, bugs are fixed or documentation
+#: or metadata are updated. Increases in MINOR can introduce new features and
+#: deprecate old code. API-breaking and backwards incompatible changes can only
+#: occur when MAJOR is increased, except during initial development while MAJOR
+#: == 0, in which also increases in MINOR may (rarely) introduce breaking
+#: changes.
+#:
+#: Additional information after PATCH indicates that you are working with an
+#: unreleased version, with the number of git commits after the release and
+#: the commit ID encoded in the trailing string.
+#:
+#: .. _`semantic versioning`: https://semver.org/
 __version__ = get_versions()['version']
 del get_versions
 
