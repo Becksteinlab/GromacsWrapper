@@ -506,7 +506,7 @@ class XVG(utilities.FileUtils):
                     row = [float(el) for el in line.split()]
                 except:
                     if self.permissive:
-                        self.logger.warn("%s: SKIPPING unparsable line %d: %r",
+                        self.logger.warning("%s: SKIPPING unparsable line %d: %r",
                                          self.real_filename, lineno+1, line)
                         self.corrupted_lineno.append(lineno+1)
                         continue
@@ -516,7 +516,7 @@ class XVG(utilities.FileUtils):
                 # check for same number of columns as in previous step
                 if ncol is not None and len(row) != ncol:
                     if self.permissive:
-                        self.logger.warn("%s: SKIPPING line %d with wrong number of columns: %r",
+                        self.logger.warning("%s: SKIPPING line %d with wrong number of columns: %r",
                                          self.real_filename, lineno+1, line)
                         self.corrupted_lineno.append(lineno+1)
                         continue
@@ -1160,7 +1160,7 @@ class XVG(utilities.FileUtils):
         if not 'savedata' in d:
             wmsg = "Reading pre 0.1.13 pickle file: setting savedata=False"
             warnings.warn(wmsg, category=DeprecationWarning)
-            self.logger.warn(wmsg)
+            self.logger.warning(wmsg)
             d['savedata'] = False  # new default
         self.__dict__.update(d)
 

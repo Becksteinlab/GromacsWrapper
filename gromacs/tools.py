@@ -470,7 +470,7 @@ class Release(object):
 
     def __call__(self):
         if self.release is None:
-            logger.warn("gromacs.release(): cannot determine Gromacs release")
+            logger.warning("gromacs.release(): cannot determine Gromacs release")
 
         return self.release
 

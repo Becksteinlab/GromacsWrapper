@@ -349,7 +349,7 @@ def generate_submit_scripts(templates, prefix=None, deffnm='md', jobname='MD', b
     if not jobname[0].isalpha():
         jobname = 'MD_'+jobname
         wmsg = "To make the jobname legal it must start with a letter: changed to {0!r}".format(jobname)
-        logger.warn(wmsg)
+        logger.warning(wmsg)
         warnings.warn(wmsg, category=AutoCorrectionWarning)
     if prefix is None:
         prefix = ""

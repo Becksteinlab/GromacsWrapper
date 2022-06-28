@@ -404,7 +404,7 @@ def cat(prefix="md", dirname=os.path.curdir, partsdir="parts", fulldir="full",
         nonempty_files = []
         for f in filenames:
             if os.stat(f).st_size == 0:
-                logger.warn("File {f!r} is empty, skipping".format(**vars()))
+                logger.warning("File {f!r} is empty, skipping".format(**vars()))
                 continue
             if os.path.islink(f):
                 # TODO: re-write the symlink to point to the original file
@@ -461,7 +461,7 @@ def cat(prefix="md", dirname=os.path.curdir, partsdir="parts", fulldir="full",
 
 
     partsdirpath = utilities.realpath(dirname, partsdir)
-    logger.warn("[%(dirname)s] cat() complete in %(fulldir)r but original files "
+    logger.warning("[%(dirname)s] cat() complete in %(fulldir)r but original files "
                 "in %(partsdirpath)r must be manually removed", vars())
 
 def glob_parts(prefix, ext):
@@ -896,7 +896,7 @@ def edit_mdp(mdp, new_mdp=None, extend_parameters=None, **substitutions):
 
      # return all parameters that have NOT been substituted
     if len(params) > 0:
-        logger.warn("Not substituted in {new_mdp!r}: {params!r}".format(**vars()))
+        logger.warning("Not substituted in {new_mdp!r}: {params!r}".format(**vars()))
     return {p: substitutions[p] for p in params}
 
 def edit_txt(filename, substitutions, newname=None):
@@ -1701,7 +1701,7 @@ class Transformer(utilities.FileUtils):
                 if not os.path.exists(f):
                     msg = "Possible problem: File {f!r} not found in {dirname!r}.".format(**vars())
                     warnings.warn(msg, category=MissingDataWarning)
-                    logger.warn(msg)
+                    logger.warning(msg)
         logger.info("%r initialised", self)
 
     def __repr__(self):
@@ -1838,7 +1838,7 @@ class Transformer(utilities.FileUtils):
         kwargs.setdefault('input', [fitgroup, "system"])
 
         if kwargs.get('center', False):
-            logger.warn("Transformer.fit(): center=%(center)r used: centering should not be combined with fitting.", kwargs)
+            logger.warning("Transformer.fit(): center=%(center)r used: centering should not be combined with fitting.", kwargs)
             if len(kwargs['inputs']) != 3:
                 logger.error("If you insist on centering you must provide three groups in the 'input' kwarg: (center, fit, output)")
                 raise ValuError("Insufficient index groups for centering,fitting,output")
@@ -1847,7 +1847,7 @@ class Transformer(utilities.FileUtils):
         logger.info("Fitting on index group %(fitgroup)r", vars())
         with utilities.in_dir(self.dirname):
             if self.check_file_exists(kwargs['o'], resolve="indicate", force=force):
-                logger.warn("File %r exists; force regenerating it with force=True.", kwargs['o'])
+                logger.warning("File %r exists; force regenerating it with force=True.", kwargs['o'])
             else:
                 gromacs.trjconv(fit=fitmode, **kwargs)
                 logger.info("Fitted trajectory (fitmode=%s): %r.", fitmode, kwargs['o'])
@@ -1916,7 +1916,7 @@ class Transformer(utilities.FileUtils):
             TRJCONV = trj_compact
             # input overrides centergroup
             if kwargs.get('centergroup') is not None and 'input' in kwargs:
-                logger.warn("centergroup = %r will be superceded by input[0] = %r", kwargs['centergroup'], kwargs['input'][0])
+                logger.warning("centergroup = %r will be superceded by input[0] = %r", kwargs['centergroup'], kwargs['input'][0])
             _input = kwargs.get('input', [kwargs.get('centergroup', 'Protein')])
             kwargs['input'] = [_input[0], groupname]  # [center group, write-out selection]
             del _input

@@ -614,7 +614,7 @@ class FileUtils(object):
         """
         def _warn(x):
             msg = "File {0!r} already exists.".format(x)
-            logger.warn(msg)
+            logger.warning(msg)
             warnings.warn(msg)
             return True
         def _raise(x):
