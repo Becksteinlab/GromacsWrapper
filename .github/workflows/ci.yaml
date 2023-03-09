@@ -6,10 +6,10 @@ on:
     - cron: "44 4 * * 0"
   push:
     branches:
-      - "master"
+      - "main"
   pull_request:
     branches:
-      - "master"
+      - "main"
 
 concurrency:
   group: "${{ github.ref }}-${{ github.head_ref }}"
