@@ -1200,7 +1200,7 @@ def break_array(a, threshold=numpy.pi, other=None):
     b = numpy.empty((len(a) + m))
     # calculate new indices for breaks in b, taking previous insertions into account
     b_breaks = breaks + numpy.arange(m)
-    mask =  numpy.zeros_like(b, dtype=numpy.bool)
+    mask =  numpy.zeros_like(b, dtype=bool)
     mask[b_breaks] = True
     b[~mask] = a
     b[mask] = numpy.NAN

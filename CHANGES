@@ -5,7 +5,8 @@
 2023-03-09      0.8.3
 orbeckst
 
-* replaced deprecacted logger.warn() with logger.warning() (#229)
+* replaced deprecated logger.warn() with logger.warning() (#229)
+* replaced deprecated numpy.bool with bool in a test (#234)
 
 
 2021-09-09     0.8.2
