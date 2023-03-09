@@ -5,6 +5,8 @@
 2023-03-09      0.8.3
 orbeckst
 
+* confirmed support for GROMACS 4.6.5, 2018, 2019, 2020, 2021, 2022 on
+  Python 2.7 and 3.6--3.11 on Linux and macOS  
 * replaced deprecated logger.warn() with logger.warning() (#229)
 * replaced deprecated numpy.bool with bool in a test (#234)
 

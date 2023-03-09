@@ -49,7 +49,8 @@ def test_failure_ignore():
         raise AssertionError("Should have ignored exception {}".format(err))
 
 class TestRelease(object):
-    major_releases = ('4', '5', '2016', '2018', '2019', '2020', '2021')
+    # add tested releases here
+    major_releases = ('4', '5', '2016', '2018', '2019', '2020', '2021', '2022')
 
     def test_release(self):
         assert gromacs.release().startswith(self.major_releases)

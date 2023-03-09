@@ -22,34 +22,41 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macOS-latest]
-        python-version: [2.7, 3.6, 3.7, 3.8, 3.9]
+        python-version: ["2.7", "3.6", "3.7", "3.8", "3.9", "3.10", "3.11"]
         gromacs-version: ["2021.1"]
         # Test other GROMACS versions selectively on a recent Python.
         # On macOS only test one GROMACS version and two Python versions
         # to keep the testing matrix manageable.
         exclude:
           - os: macOS-latest
-            python-version: 3.6
+            python-version: "3.6"
           - os: macOS-latest
-            python-version: 3.7
+            python-version: "3.7"
           - os: macOS-latest
-            python-version: 3.9
+            python-version: "3.8"
+          - os: macOS-latest
+            python-version: "3.9"
+          - os: macOS-latest
+            python-version: "3.10"
         include:
           - os: ubuntu-latest
-            python-version: 2.7
+            python-version: "2.7"
             gromacs-version: "4.6.5"	
           - os: ubuntu-latest
-            python-version: 3.8
+            python-version: "3.10"
             gromacs-version: "4.6.5"
           - os: ubuntu-latest
-            python-version: 3.8
+            python-version: "3.10"
             gromacs-version: "2018.6"
           - os: ubuntu-latest
-            python-version: 3.8
+            python-version: "3.10"
             gromacs-version: "2019.1"
           - os: ubuntu-latest
-            python-version: 3.8
+            python-version: "3.10"
             gromacs-version: "2020.6"
+          - os: ubuntu-latest
+            python-version: "3.10"
+            gromacs-version: "2022.4"
 
     env:
       MPLBACKEND: agg
