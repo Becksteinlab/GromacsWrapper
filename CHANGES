@@ -2,6 +2,12 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
+2023-03-09      0.8.3
+orbeckst
+
+* replaced deprecacted logger.warn() with logger.warning() (#229)
+
+
 2021-09-09     0.8.2
 orbeckst, simonbray
 
