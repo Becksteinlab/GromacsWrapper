@@ -7,7 +7,7 @@
  README: GromacsWrapper
 ========================
 
-|build| |cov| |docs| |zenodo| |PRsWelcome| |anaconda| |install-conda|
+|build| |cov| |docs| |zenodo| |PRsWelcome| |anaconda|
 
 A primitive Python wrapper around the Gromacs_ tools. The library is
 tested with GROMACS 4.6.5, 2018.x, 2019.x, 2020.x, 2021.x, 2022.x (and 5.x
@@ -50,9 +50,6 @@ running simulations with sensible parameters.
 .. |anaconda| image:: https://anaconda.org/bioconda/gromacswrapper/badges/version.svg
    :target: https://anaconda.org/bioconda/gromacswrapper
    :alt: Anaconda.org package
-.. |install-conda| image:: https://anaconda.org/bioconda/gromacswrapper/badges/installer/conda.svg
-   :target: https://conda.anaconda.org/bioconda
-   :alt: install with conda	    
 	 
 	 
 Quick Start
