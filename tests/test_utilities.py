@@ -9,7 +9,7 @@ import os.path
 import pytest
 from six.moves import cPickle as pickle
 from six.moves import StringIO
-from collections import Iterable
+from six.moves.collections_abc import Iterable
 
 import numpy as np
 

@@ -9,6 +9,7 @@ orbeckst
   Python 2.7 and 3.6--3.11 on Linux and macOS  
 * replaced deprecated logger.warn() with logger.warning() (#229)
 * replaced deprecated numpy.bool with bool in a test (#234)
+* fixed use of moved collections.Iterable in test (#235)
 
 
 2021-09-09     0.8.2
