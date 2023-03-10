@@ -10,9 +10,9 @@
 |build| |cov| |docs| |zenodo| |PRsWelcome| |anaconda| |install-conda|
 
 A primitive Python wrapper around the Gromacs_ tools. The library is
-tested with GROMACS 4.6.5, 2018.x, 2019.x, 2020.x, and 2021.x (and 5.x
+tested with GROMACS 4.6.5, 2018.x, 2019.x, 2020.x, 2021.x, 2022.x (and 5.x
 and 2016.x should also work). It supports Python 2.7 and
-3.6--3.9 on Linux and macOS.
+3.6--3.11 on Linux and macOS.
 
 GromacsWrapper also provides a small library (cook book) of often-used
 recipes and helper functions to set up MD simulations.
