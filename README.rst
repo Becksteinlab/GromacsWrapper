@@ -128,12 +128,12 @@ or as a `bioconda package`_ with ``conda`` from the *bioconda* channel ::
 Development version
 -------------------
 
-The *master* branch in the GitHub source repository generally
+The *main* branch in the GitHub source repository generally
 contains useful code but nevertheless, things can break in weird and
 wonderful ways. Please report issues through the `Issue Tracker`_ and
 mention that you used the *develop branch*.
 
-To use the *development code base*:  checkout the ``master`` branch::
+To use the *development code base*:  checkout the ``main`` branch::
 
    git clone https://github.com/Becksteinlab/GromacsWrapper.git
    cd GromacsWrapper
@@ -172,7 +172,7 @@ and feature requests.
 **Pull requests** for bug fixes and enhancements are very welcome. See http://makeapullrequest.com for a 
 general introduction on how make a pull request and contribute to open source projects.
 
-.. _Issue Tracker: http://github.com/Becksteinlab/GromacsWrapper/issues
+.. _Issue Tracker: https://github.com/Becksteinlab/GromacsWrapper/issues
 
 
 Building Documentation
@@ -207,5 +207,5 @@ or in the Acknowledgements section.
 Thank you.
 
 .. _AUTHORS:
-   https://raw.githubusercontent.com/Becksteinlab/GromacsWrapper/master/AUTHORS
+   https://raw.githubusercontent.com/Becksteinlab/GromacsWrapper/main/AUTHORS
 

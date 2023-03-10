@@ -18,14 +18,14 @@ also allows for modularization and code re-use. In addition, commands,
 warnings and errors are logged to a file so that there exists a
 complete history of what has been done.
 
-GROMACS_ versions 4.6.x, 2016.x, 2018.x, 2019.x, 2020.x, and 2021.x are all
-supported. GromacsWrapper detects your Gromacs tools and provides them
-as :func:`gromacs.grompp`, :func:`gromacs.mdrun`, etc, regardless of
-your Gromacs version, which allows one to write scripts that are
-broadly Gromacs-version agnostic. Source your ``GMXRC`` file or make
-the :program:`gmx` binary (for versions ≥ 5.x) or all the Gromacs
-tools available on your :envvar:`PATH` for GromacsWrapper to find the
-Gromacs installation.
+GROMACS_ versions 4.6.x, 2016.x, 2018.x, 2019.x, 2020.x, 2021.x, and
+2022.x are all supported. GromacsWrapper detects your Gromacs tools
+and provides them as :func:`gromacs.grompp`, :func:`gromacs.mdrun`,
+etc, regardless of your Gromacs version, which allows one to write
+scripts that are broadly Gromacs-version agnostic. Source your
+``GMXRC`` file or make the :program:`gmx` binary (for versions ≥ 5.x)
+or all the Gromacs tools available on your :envvar:`PATH` for
+GromacsWrapper to find the Gromacs installation.
 
 .. warning::
 
@@ -37,8 +37,12 @@ Gromacs installation.
   simulations with sensible parameters.** Provide appropriate template
   files instead of the bundled defaults and check the logger output!
 
-Any `feedback, bug reports, suggestions`_ and contributions are very
-welcome.
+Please report bugs in the `issue tracker`_ and go to the
+`discussions`_ forum for questions.
+
+Contributions are very welcome --- start by raising an issue in the
+`issue tracker`_ to describe what feature you're adding or what bug
+you're fixing.
 
 .. SeeAlso:: Other approaches to interfacing Python_ and GROMACS_
              are listed under :doc:`alternatives`.
@@ -63,9 +67,10 @@ You also need to have a version of GROMACS_ installed.
 .. _Documentation: https://gromacswrapper.readthedocs.io/
 .. _GromacsWrapper git repository:
    https://github.com/Becksteinlab/GromacsWrapper
-.. _feedback, bug reports, suggestions:
+.. _issue tracker:
    https://github.com/Becksteinlab/GromacsWrapper/issues
-
+.. _discussions:
+   https://github.com/Becksteinlab/GromacsWrapper/discussions
 	     
 License
 =======
@@ -106,10 +111,10 @@ Thank you.
 Contact
 =======
 
-Please use the `Issue Tracker`_ to report bugs, installation problems,
-and feature requests (mention ``@orbeckst`` in the issue report).
+Please use the `issue tracker`_ to report bugs, installation problems,
+and feature requests (mention ``@orbeckst`` in the issue report) and
+use the `discussions`_ forum for general questions.
 
-.. _Issue Tracker: https://github.com/Becksteinlab/GromacsWrapper/issues
    
 
 .. Contents
