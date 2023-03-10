@@ -7,11 +7,13 @@ from __future__ import division, absolute_import, print_function
 
 import pytest
 
-from gromacs.exceptions import GromacsError
+import gromacs
 
 from .top import TopologyTest
 from ...datafiles import datafile
 
+@pytest.mark.xfail(gromacs.release().startswith("2022"),
+                   reason="issue https://github.com/Becksteinlab/GromacsWrapper/issues/236")
 class TestAmber03star(TopologyTest):
         processed = datafile('fileformats/top/amber03star/processed.top')
         conf = datafile('fileformats/top/amber03star/conf.gro')
