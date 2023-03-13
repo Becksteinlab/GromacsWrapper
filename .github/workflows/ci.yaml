@@ -41,7 +41,7 @@ jobs:
         include:
           - os: ubuntu-latest
             python-version: "2.7"
-            gromacs-version: "4.6.5"	
+            gromacs-version: "4.6.5"    
           - os: ubuntu-latest
             python-version: "3.10"
             gromacs-version: "4.6.5"
@@ -63,9 +63,10 @@ jobs:
         
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
-    - uses: conda-incubator/setup-miniconda@v2
+    - name: setup miniconda (Python ${{ matrix.python-version }})
+      uses: conda-incubator/setup-miniconda@v2
       with:
         python-version: ${{ matrix.python-version }}
         auto-update-conda: true
@@ -82,7 +83,7 @@ jobs:
          conda config --show-sources
          conda config --show
 
-    - name: Python version
+    - name: Python version ${{ matrix.python-version }}
       shell: bash -l {0}
       run: |
          python -c "import sys; print(sys.version)"                
@@ -113,7 +114,8 @@ jobs:
         pytest -v --disable-pytest-warnings --durations=20 --low-performance --cov=gromacs --cov-report=xml --color=yes ./tests
 
     - name: Codecov
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v3
       with:
+        name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}
         file: ./coverage.xml
         fail_ci_if_error: false

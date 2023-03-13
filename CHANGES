@@ -2,6 +2,12 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
+2023-03-13      0.8.4
+orbeckst
+
+* fix supported Python metadata in setup.py (#238)
+
+
 2023-03-09      0.8.3
 orbeckst
 
