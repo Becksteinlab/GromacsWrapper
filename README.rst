@@ -31,7 +31,7 @@ running simulations with sensible parameters.
    https://gromacswrapper.readthedocs.org/en/latest/
 .. _GromacsWrapper git repository:
    https://github.com/Becksteinlab/GromacsWrapper
-.. |build| image:: https://github.com/Becksteinlab/GromacsWrapper/actions/workflows/ci.yaml/badge.svg?branch=master
+.. |build| image:: https://github.com/Becksteinlab/GromacsWrapper/actions/workflows/ci.yaml/badge.svg?branch=main
    :target: https://github.com/Becksteinlab/GromacsWrapper/actions/workflows/ci.yaml
    :alt: Build Status	     
 .. |cov| image:: https://codecov.io/gh/Becksteinlab/GromacsWrapper/badge.svg
@@ -46,10 +46,11 @@ running simulations with sensible parameters.
    :alt: Documentation
 .. |PRsWelcome| image:: https://img.shields.io/badge/PRs-welcome-brightgreen.svg
    :target: http://makeapullrequest.com
-   :alt: PRs Welcome!
-.. |anaconda| image:: https://anaconda.org/bioconda/gromacswrapper/badges/version.svg
-   :target: https://anaconda.org/bioconda/gromacswrapper
+   :alt: PRs Welcome!	 
+.. |anaconda| image:: https://anaconda.org/conda-forge/gromacswrapper/badges/version.svg
+   :target: https://anaconda.org/conda-forge/gromacswrapper
    :alt: Anaconda.org package
+
 	 
 	 
 Quick Start
@@ -114,24 +115,24 @@ with ::
   pip install GromacsWrapper
 
 
-or as a `bioconda package`_ with ``conda`` from the *bioconda* channel ::
+or as a `conda-forge package`_ with ``conda`` from the *conda-forge* channel ::
 
-   conda install -c conda-forge -c bioconda gromacswrapper
+   conda install -c conda-forge gromacswrapper
     
 
 .. _`latest version of GromacsWrapper from PyPi`:
    https://pypi.org/project/GromacsWrapper/
 
-.. _`bioconda package`:
-   https://anaconda.org/bioconda/GromacsWrapper
-   
+.. _`conda-forge package`:
+   https://anaconda.org/conda-forge/gromacswrapper
+
+
 Development version
 -------------------
 
 The *main* branch in the GitHub source repository generally
 contains useful code but nevertheless, things can break in weird and
-wonderful ways. Please report issues through the `Issue Tracker`_ and
-mention that you used the *develop branch*.
+wonderful ways. Please report issues through the `Issue Tracker`_.
 
 To use the *development code base*:  checkout the ``main`` branch::
 
@@ -167,12 +168,13 @@ Reporting Bugs and Contributing to GromacsWrapper
 =================================================
 
 Please use the `Issue Tracker`_ to report bugs, installation problems,
-and feature requests.
+and feature requests. Ask questions in the `Discussion forum`_.
 
 **Pull requests** for bug fixes and enhancements are very welcome. See http://makeapullrequest.com for a 
 general introduction on how make a pull request and contribute to open source projects.
 
 .. _Issue Tracker: https://github.com/Becksteinlab/GromacsWrapper/issues
+.. _Discussion forum: https://github.com/Becksteinlab/GromacsWrapper/discussions
 
 
 Building Documentation

@@ -101,7 +101,7 @@ or in the Acknowledgements section.
 Thank you.
 
 .. _AUTHORS:
-   https://raw.githubusercontent.com/Becksteinlab/GromacsWrapper/master/AUTHORS
+   https://raw.githubusercontent.com/Becksteinlab/GromacsWrapper/main/AUTHORS
 
 .. |zenodo| image:: https://zenodo.org/badge/13219/Becksteinlab/GromacsWrapper.svg
    :target: https://zenodo.org/badge/latestdoi/13219/Becksteinlab/GromacsWrapper

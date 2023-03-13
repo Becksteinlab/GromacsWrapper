@@ -36,28 +36,31 @@ GromacsWrapper from PyPi`_.)
 ======================
 
 .. versionadded:: 0.8.1
+.. versionchanged:: 0.8.3
+   Package migrated from *bioconda* to *conda-forge*.
 
-Install as a `bioconda package`_ with the `conda`_ package manager from the
-`bioconda`_ channel ::
+Install as a `conda-forge package`_ with the `conda`_ package manager from the
+`conda-forge`_ channel ::
 
-   conda install -c conda-forge -c bioconda gromacswrapper
+   conda install -c conda-forge gromacswrapper
 
-Both the *conda-forge* and the *bioconda* channel should be specified.
+The *conda-forge* channel should be explicitly specified if you are
+not already using it by default.
 
 .. Note::
 
-   The *bioconda* channel also contains `bioconda packages for
-   GROMACS`_, which can be used for testing and system setup; for
-   running in a high-performance environment you are advised to
-   carefully benchmark and possibly compile a version of GROMACS_ that
-   is tuned for the system.
+   The *conda-forge* channel also contains `conda-forge packages for
+   GROMACS`_ (earlier versions ≤ 2021.x are available as `GROMACS
+   bioconda packages`_), which can be used for testing and system
+   setup; for running in a high-performance environment you are
+   advised to carefully benchmark and possibly compile a version of
+   GROMACS_ that is tuned for the system.
 
 .. _conda: https://docs.conda.io
-.. _bioconda: https://bioconda.github.io/ 
-.. _`bioconda package`:
-   https://anaconda.org/bioconda/GromacsWrapper
-.. _`bioconda packages for GROMACS`:    
-   https://anaconda.org/bioconda/gromacs/
+.. _conda-forge: https://conda-forge.org/
+.. _`conda-forge package`: https://anaconda.org/conda-forge/GromacsWrapper
+.. _`conda-forge packages for GROMACS`: https://anaconda.org/conda-forge/gromacs/
+.. _`GROMACS bioconda packages`: https://anaconda.org/bioconda/gromacs/
 .. _GROMACS: http://www.gromacs.org/
    
    
@@ -68,12 +71,12 @@ If your prefer to download manually, get the latest stable release
 from https://github.com/Becksteinlab/GromacsWrapper/releases and
 either ::
 
-  pip install GromacsWrapper-0.8.2.tar.gz
+  pip install GromacsWrapper-0.8.3.tar.gz
 
 or install from the unpacked source::
 
-  tar -zxvf GromacsWrapper-0.8.2.tar.gz
-  cd GromacsWrapper-0.8.2
+  tar -zxvf GromacsWrapper-0.8.3.tar.gz
+  cd GromacsWrapper-0.8.3
   python setup.py install
 
 

@@ -11,6 +11,8 @@ orbeckst
 * replaced deprecated numpy.bool with bool in a test (#234)
 * fixed use of moved collections.Iterable in test (#235)
 
+NOTE: since 0.8.3, the conda package is available from conda-forge
+      (thanks to @njzjz)
 
 2021-09-09     0.8.2
 orbeckst, simonbray
