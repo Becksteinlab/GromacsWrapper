@@ -28,17 +28,22 @@ import gromacs.cbook
 import os.path
 
 import logging
-logger = logging.getLogger("gromacs.app")
 
+logger = logging.getLogger("gromacs.app")
 
 
 if __name__ == "__main__":
     from optparse import OptionParser
 
     parser = OptionParser(usage=usage)
-    parser.add_option("-B", "--basedir", dest="basedir", default=os.curdir,
-                      metavar="DIR",
-                      help="find trajectories in DIR [%default]")
+    parser.add_option(
+        "-B",
+        "--basedir",
+        dest="basedir",
+        default=os.curdir,
+        metavar="DIR",
+        help="find trajectories in DIR [%default]",
+    )
     opts, args = parser.parse_args()
 
     fulldir = "full"
@@ -55,13 +60,24 @@ if __name__ == "__main__":
 
     logger.info("Processing PREFIX=%(prefix)r...", vars())
     try:
-        gromacs.cbook.cat(prefix=prefix, dirname=opts.basedir, 
-                          partsdir=partsdir, fulldir=fulldir,
-                          resolve_multi="guess")
+        gromacs.cbook.cat(
+            prefix=prefix,
+            dirname=opts.basedir,
+            partsdir=partsdir,
+            fulldir=fulldir,
+            resolve_multi="guess",
+        )
     except:
         logger.fatal("Something went wrong during joining (see below)")
-        logger.fatal("To recover, manually move the processed parts from %r back to %r", partsdir_path, opts.basedir)
-        logger.fatal("It is also recommended to delete %(fulldir_path)r and start from the beginning", vars())
+        logger.fatal(
+            "To recover, manually move the processed parts from %r back to %r",
+            partsdir_path,
+            opts.basedir,
+        )
+        logger.fatal(
+            "It is also recommended to delete %(fulldir_path)r and start from the beginning",
+            vars(),
+        )
         logger.exception("See stacktrace for details")
         raise
 

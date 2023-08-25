@@ -8,11 +8,13 @@ import logging
 
 # This is almost certainly not thread/parallel safe.
 
+
 @pytest.fixture
 def logger_with_file(tmp_path):
-    logfile = tmp_path / 'gmx.log'
+    logfile = tmp_path / "gmx.log"
     logger = gromacs.log.create("GMX", logfile=str(logfile))
     return logfile, logger
+
 
 def test_create(logger_with_file):
     logfile, logger = logger_with_file
@@ -22,6 +24,7 @@ def test_create(logger_with_file):
     assert "Jabberwock" in txt
     assert "Cheshire Cat" in txt
 
+
 def test_clear_handlers(logger_with_file):
     logfile, logger = logger_with_file
     gromacs.log.clear_handlers(logger)
@@ -29,12 +32,14 @@ def test_clear_handlers(logger_with_file):
     txt = logfile.read_text()
     assert "Dodo" not in txt
 
+
 def test_NullHandler():
     h = gromacs.log.NullHandler()
     logger = logging.getLogger("GMX")
     logger.addHandler(h)
     logger.warning("screaming in silence")
-    assert True   # not sure what to test here
+    assert True  # not sure what to test here
+
 
 @pytest.fixture
 def gromacs_logger(tmp_path):
@@ -45,18 +50,23 @@ def gromacs_logger(tmp_path):
     gromacs.stop_logging()
     return logfile
 
+
 def _assert_msg_in_log(logfile, msg):
     output = logfile.read_text()
     assert msg in output
 
+
 def test_start_logger(gromacs_logger):
-    _assert_msg_in_log(gromacs_logger,
-                       "GromacsWrapper {} STARTED".format(gromacs.__version__))
+    _assert_msg_in_log(
+        gromacs_logger, "GromacsWrapper {} STARTED".format(gromacs.__version__)
+    )
+
 
 def test_using_logger(gromacs_logger):
-    _assert_msg_in_log(gromacs_logger,
-                       "Running a test for logging")
+    _assert_msg_in_log(gromacs_logger, "Running a test for logging")
+
 
 def test_stop_logger(gromacs_logger):
-    _assert_msg_in_log(gromacs_logger,
-                       "GromacsWrapper {} STOPPED".format(gromacs.__version__))
+    _assert_msg_in_log(
+        gromacs_logger, "GromacsWrapper {} STOPPED".format(gromacs.__version__)
+    )

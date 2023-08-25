@@ -8,4 +8,5 @@
 #
 # The following is left because (1) harmless and (2) documentation
 import matplotlib
-matplotlib.use('agg')
+
+matplotlib.use("agg")

@@ -97,6 +97,7 @@ Helper functions
 
 """
 from __future__ import absolute_import, with_statement
+
 __docformat__ = "restructuredtext en"
 
 import warnings
@@ -106,14 +107,16 @@ import errno
 
 # logging
 import logging
-logger = logging.getLogger('gromacs.run')
+
+logger = logging.getLogger("gromacs.run")
 
 
 # gromacs modules
 import gromacs
-from . exceptions import GromacsError, AutoCorrectionWarning
+from .exceptions import GromacsError, AutoCorrectionWarning
 from . import core
 from . import utilities
+
 
 def find_gromacs_command(commands):
     """Return *driver* and *name* of the first command that can be found on :envvar:`PATH`"""
@@ -132,7 +135,9 @@ def find_gromacs_command(commands):
         if utilities.which(executable):
             break
     else:
-        raise OSError(errno.ENOENT, "No Gromacs executable found in", ", ".join(commands))
+        raise OSError(
+            errno.ENOENT, "No Gromacs executable found in", ", ".join(commands)
+        )
 
     return driver, name
 
@@ -204,24 +209,29 @@ class MDrunner(utilities.FileUtils):
         self.driver, self.name = find_gromacs_command(self.mdrun)
 
         # use a GromacsCommand class for handling arguments
-        cls = type('MDRUN', (core.GromacsCommand,),
-                   {'command_name': self.name,
-                    'driver': self.driver,
-                    '__doc__': "MDRUN command {0} {1}".format(self.driver, self.name)
-                   })
+        cls = type(
+            "MDRUN",
+            (core.GromacsCommand,),
+            {
+                "command_name": self.name,
+                "driver": self.driver,
+                "__doc__": "MDRUN command {0} {1}".format(self.driver, self.name),
+            },
+        )
 
-        kwargs['failure'] = 'raise'    # failure mode of class
+        kwargs["failure"] = "raise"  # failure mode of class
         self.MDRUN = cls(**kwargs)  # might fail for mpi binaries? .. -h?
 
         # analyze command line to deduce logfile name
-        logname = kwargs.get('g')          # explicit
-        if logname in (True, None):        # implicit
-            logname = 'md'             # mdrun default
-            deffnm = kwargs.get('deffnm')
+        logname = kwargs.get("g")  # explicit
+        if logname in (True, None):  # implicit
+            logname = "md"  # mdrun default
+            deffnm = kwargs.get("deffnm")
             if deffnm is not None:
                 logname = deffnm
         self.logname = os.path.realpath(
-            os.path.join(self.dirname, self.filename(logname, ext='log')))
+            os.path.join(self.dirname, self.filename(logname, ext="log"))
+        )
 
     def commandline(self, **mpiargs):
         """Returns simple command line to invoke mdrun.
@@ -250,10 +260,12 @@ class MDrunner(utilities.FileUtils):
         complicated cases.)
         """
         if self.mpiexec is None:
-            raise NotImplementedError("Override mpiexec to enable the simple OpenMP launcher")
+            raise NotImplementedError(
+                "Override mpiexec to enable the simple OpenMP launcher"
+            )
         # example implementation
-        ncores = kwargs.pop('ncores', 8)
-        return [self.mpiexec, '-n', str(ncores)]
+        ncores = kwargs.pop("ncores", 8)
+        return [self.mpiexec, "-n", str(ncores)]
 
     def prehook(self, **kwargs):
         """Called directly before launching the process."""
@@ -286,22 +298,24 @@ class MDrunner(utilities.FileUtils):
             try:
                 self.MDRUN.gmxargs.update(mdrunargs)
             except (ValueError, TypeError):
-                msg = "mdrunargs must be a dict of mdrun options, not {0}".format(mdrunargs)
+                msg = "mdrunargs must be a dict of mdrun options, not {0}".format(
+                    mdrunargs
+                )
                 logger.error(msg)
                 raise
 
         cmd = self.commandline(**mpiargs)
 
         with utilities.in_dir(self.dirname, create=False):
-           try:
-               self.prehook(**pre)
-               logger.info(" ".join(cmd))
-               rc = subprocess.call(cmd)
-           except:
-               logger.exception("Failed MD run for unknown reasons.")
-               raise
-           finally:
-               self.posthook(**post)
+            try:
+                self.prehook(**pre)
+                logger.info(" ".join(cmd))
+                rc = subprocess.call(cmd)
+            except:
+                logger.exception("Failed MD run for unknown reasons.")
+                raise
+            finally:
+                self.posthook(**post)
         if rc == 0:
             logger.info("MDrun completed ok, returncode = {0:d}".format(rc))
         else:
@@ -323,7 +337,7 @@ class MDrunner(utilities.FileUtils):
            - ``True`` if run completed successfully
            - ``False`` otherwise
         """
-        rc = None   # set to something in case we ever want to look at it later (and bomb in the try block)
+        rc = None  # set to something in case we ever want to look at it later (and bomb in the try block)
         try:
             rc = self.run(**kwargs)
         except:
@@ -342,37 +356,43 @@ class MDrunner(utilities.FileUtils):
         """
         return check_mdrun_success(self.logname)
 
+
 class MDrunnerDoublePrecision(MDrunner):
     """Manage running :program:`mdrun_d`."""
+
     mdrun = ("mdrun_d", "gmx_d mdrun")
+
 
 class MDrunnerOpenMP(MDrunner):
     """Manage running :program:`mdrun` as an OpenMP_ multiprocessor job.
 
     .. _OpenMP: http://openmp.org/wp/
     """
+
     mdrun = ("mdrun_openmp", "gmx_openmp mdrun")
     mpiexec = "mpiexec"
+
 
 class MDrunnerMpich2Smpd(MDrunner):
     """Manage running :program:`mdrun` as mpich2_ multiprocessor job with the SMPD mechanism.
 
     .. _mpich2: http://www.mcs.anl.gov/research/projects/mpich2/
     """
+
     mdrun = "mdrun_mpich2"
     mpiexec = "mpiexec"
 
     def prehook(self, **kwargs):
         """Launch local smpd."""
-        cmd = ['smpd', '-s']
-        logger.info("Starting smpd: "+" ".join(cmd))
+        cmd = ["smpd", "-s"]
+        logger.info("Starting smpd: " + " ".join(cmd))
         rc = subprocess.call(cmd)
         return rc
 
     def posthook(self, **kwargs):
         """Shut down smpd"""
-        cmd = ['smpd', '-shutdown']
-        logger.info("Shutting down smpd: "+" ".join(cmd))
+        cmd = ["smpd", "-shutdown"]
+        logger.info("Shutting down smpd: " + " ".join(cmd))
         rc = subprocess.call(cmd)
         return rc
 
@@ -393,10 +413,10 @@ def check_mdrun_success(logfile):
     """
     if not os.path.exists(logfile):
         return None
-    with open(logfile, 'rb') as log:
+    with open(logfile, "rb") as log:
         log.seek(-1024, 2)
         for line in log:
-            line = line.decode('ASCII')
+            line = line.decode("ASCII")
             if line.startswith("Finished mdrun on"):
                 return True
     return False
@@ -417,8 +437,10 @@ def get_double_or_single_prec_mdrun():
         return gromacs.mdrun_d
     except (AttributeError, GromacsError, OSError):
         # fall back to mdrun if no double precision binary
-        wmsg = "No 'mdrun_d' binary found so trying 'mdrun' instead.\n"\
+        wmsg = (
+            "No 'mdrun_d' binary found so trying 'mdrun' instead.\n"
             "(Note that energy minimization runs better with mdrun_d.)"
+        )
         logger.warning(wmsg)
         warnings.warn(wmsg, category=AutoCorrectionWarning)
         return gromacs.mdrun

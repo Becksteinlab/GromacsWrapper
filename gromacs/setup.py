@@ -126,14 +126,21 @@ import shutil
 import warnings
 
 import logging
-logger = logging.getLogger('gromacs.setup')
+
+logger = logging.getLogger("gromacs.setup")
 
 
 import gromacs
 from . import config
-from .exceptions import (GromacsError, GromacsFailureWarning, GromacsValueWarning,
-                         AutoCorrectionWarning, BadParameterWarning, UsageWarning,
-                         MissingDataError)
+from .exceptions import (
+    GromacsError,
+    GromacsFailureWarning,
+    GromacsValueWarning,
+    AutoCorrectionWarning,
+    BadParameterWarning,
+    UsageWarning,
+    MissingDataError,
+)
 from . import run
 from . import cbook
 from . import qsub
@@ -160,19 +167,26 @@ rlist        1.4 ?      1.0
 """
 
 
-trj_compact_main = gromacs.tools.Trjconv(ur='compact', center=True, boxcenter='tric', pbc='mol',
-                                         input=('__main__', 'system'))
+trj_compact_main = gromacs.tools.Trjconv(
+    ur="compact", center=True, boxcenter="tric", pbc="mol", input=("__main__", "system")
+)
 # trj_compact_main.__doc__ += "Returns a compact representation of the system centered on the __main__ group"
 
 # TODO:
 # - should be part of a class so that we can store the topology etc !!!
 #   and also store mainselection
 
-def topology(struct=None, protein='protein',
-             top='system.top',  dirname='top',
-             posres="posres.itp",
-             ff="oplsaa", water="tip4p",
-             **pdb2gmx_args):
+
+def topology(
+    struct=None,
+    protein="protein",
+    top="system.top",
+    dirname="top",
+    posres="posres.itp",
+    ff="oplsaa",
+    water="tip4p",
+    **pdb2gmx_args
+):
     """Build Gromacs topology files from pdb.
 
     :Keywords:
@@ -202,23 +216,37 @@ def topology(struct=None, protein='protein',
 
     structure = realpath(struct)
 
-    new_struct = protein + '.pdb'
+    new_struct = protein + ".pdb"
     if posres is None:
-        posres = protein + '_posres.itp'
+        posres = protein + "_posres.itp"
 
-    pdb2gmx_args.update({'f': structure, 'o': new_struct, 'p': top, 'i': posres,
-                         'ff': ff, 'water': water})
+    pdb2gmx_args.update(
+        {
+            "f": structure,
+            "o": new_struct,
+            "p": top,
+            "i": posres,
+            "ff": ff,
+            "water": water,
+        }
+    )
 
     with in_dir(dirname):
-        logger.info("[{dirname!s}] Building topology {top!r} from struct = {struct!r}".format(**vars()))
+        logger.info(
+            "[{dirname!s}] Building topology {top!r} from struct = {struct!r}".format(
+                **vars()
+            )
+        )
         # perhaps parse output from pdb2gmx 4.5.x to get the names of the chain itp files?
         gromacs.pdb2gmx(**pdb2gmx_args)
-    return { \
-            'top': realpath(dirname, top), \
-            'struct': realpath(dirname, new_struct), \
-            'posres' : realpath(dirname, posres) }
+    return {
+        "top": realpath(dirname, top),
+        "struct": realpath(dirname, new_struct),
+        "posres": realpath(dirname, posres),
+    }
 
-def make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None):
+
+def make_main_index(struct, selection='"Protein"', ndx="main.ndx", oldndx=None):
     """Make index file with the special groups.
 
     This routine adds the group __main__ and the group __environment__
@@ -258,8 +286,9 @@ def make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None):
     # pass 1: select
     # get a list of groups
     # need the first "" to get make_ndx to spit out the group list.
-    _,out,_ = gromacs.make_ndx(f=struct, n=oldndx, o=ndx, stdout=False,
-                                      input=("", "q"))
+    _, out, _ = gromacs.make_ndx(
+        f=struct, n=oldndx, o=ndx, stdout=False, input=("", "q")
+    )
     groups = cbook.parse_ndxlist(out)
 
     # find the matching groups,
@@ -267,15 +296,17 @@ def make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None):
     # groups, which caused the previous approach to fail big time.
     # this is a work around the make_ndx bug.
     # striping the "" allows compatibility with existing make_ndx selection commands.
-    selection = selection.strip("\"")
+    selection = selection.strip('"')
 
-    selected_groups = [g for g in groups if g['name'].lower() == selection.lower()]
+    selected_groups = [g for g in groups if g["name"].lower() == selection.lower()]
 
     if len(selected_groups) > 1:
         logging.warn("make_ndx created duplicated groups, performing work around")
 
     if len(selected_groups) <= 0:
-        msg = "no groups found for selection {0}, available groups are {1}".format(selection, groups)
+        msg = "no groups found for selection {0}, available groups are {1}".format(
+            selection, groups
+        )
         logging.error(msg)
         raise ValueError(msg)
 
@@ -283,27 +314,33 @@ def make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None):
 
     # index of last group
     last = len(groups) - 1
-    assert last == groups[-1]['nr']
+    assert last == groups[-1]["nr"]
 
     group = selected_groups[0]
 
     # pass 2:
     # 1) last group is __main__
     # 2) __environment__ is everything else (eg SOL, ions, ...)
-    _,out,_ = gromacs.make_ndx(f=struct, n=ndx, o=ndx,
-                                      stdout=False,
-                                             # make copy selected group, this now has index last + 1
-                                      input=("{0}".format(group['nr']),
-                                             # rename this to __main__
-                                             "name {0} __main__".format(last+1),
-                                             # make a complement to this group, it get index last + 2
-                                             "! \"__main__\"",
-                                             # rename this to __environment__
-                                             "name {0} __environment__".format(last+2),
-                                             # list the groups
-                                             "",
-                                             # quit
-                                             "q"))
+    _, out, _ = gromacs.make_ndx(
+        f=struct,
+        n=ndx,
+        o=ndx,
+        stdout=False,
+        # make copy selected group, this now has index last + 1
+        input=(
+            "{0}".format(group["nr"]),
+            # rename this to __main__
+            "name {0} __main__".format(last + 1),
+            # make a complement to this group, it get index last + 2
+            '! "__main__"',
+            # rename this to __environment__
+            "name {0} __environment__".format(last + 2),
+            # list the groups
+            "",
+            # quit
+            "q",
+        ),
+    )
     return cbook.parse_ndxlist(out)
 
 
@@ -312,7 +349,8 @@ def make_main_index(struct, selection='"Protein"', ndx='main.ndx', oldndx=None):
 vdw_lipid_resnames = ["POPC", "POPE", "POPG", "DOPC", "DPPC", "DLPC", "DMPC", "DPPG"]
 #: Increased atom radii for lipid atoms; these are simply the standard values from
 #: ``GMXLIB/vdwradii.dat`` increased by 0.1 nm (C) or 0.05 nm (N, O, H).
-vdw_lipid_atom_radii = {'C': 0.25, 'N': 0.16, 'O': 0.155, 'H': 0.09}
+vdw_lipid_atom_radii = {"C": 0.25, "N": 0.16, "O": 0.155, "H": 0.09}
+
 
 def get_lipid_vdwradii(outdir=os.path.curdir, libdir=None):
     """Find vdwradii.dat and add special entries for lipids.
@@ -323,75 +361,100 @@ def get_lipid_vdwradii(outdir=os.path.curdir, libdir=None):
     vdwradii_dat = os.path.join(outdir, "vdwradii.dat")
 
     if libdir is not None:
-        filename = os.path.join(libdir, 'vdwradii.dat')  # canonical name
+        filename = os.path.join(libdir, "vdwradii.dat")  # canonical name
         if not os.path.exists(filename):
-            msg = 'No VDW database file found in {filename!r}.'.format(**vars())
+            msg = "No VDW database file found in {filename!r}.".format(**vars())
             logger.exception(msg)
             raise OSError(msg, errno.ENOENT)
     else:
         try:
-            filename = os.path.join(os.environ['GMXLIB'], 'vdwradii.dat')
+            filename = os.path.join(os.environ["GMXLIB"], "vdwradii.dat")
         except KeyError:
             try:
-                filename = os.path.join(os.environ['GMXDATA'], 'top', 'vdwradii.dat')
+                filename = os.path.join(os.environ["GMXDATA"], "top", "vdwradii.dat")
             except KeyError:
                 msg = "Cannot find vdwradii.dat. Set GMXLIB (point to 'top') or GMXDATA ('share/gromacs')."
                 logger.exception(msg)
                 raise OSError(msg, errno.ENOENT)
     if not os.path.exists(filename):
-        msg = "Cannot find {filename!r}; something is wrong with the Gromacs installation.".format(**vars())
+        msg = "Cannot find {filename!r}; something is wrong with the Gromacs installation.".format(
+            **vars()
+        )
         logger.exception(msg, errno.ENOENT)
         raise OSError(msg)
 
     # make sure to catch 3 and 4 letter resnames
     patterns = vdw_lipid_resnames + list({x[:3] for x in vdw_lipid_resnames})
     # TODO: should do a tempfile...
-    with open(vdwradii_dat, 'w') as outfile:
+    with open(vdwradii_dat, "w") as outfile:
         # write lipid stuff before general
-        outfile.write('; Special larger vdw radii for solvating lipid membranes\n')
+        outfile.write("; Special larger vdw radii for solvating lipid membranes\n")
         for resname in patterns:
-            for atom,radius in vdw_lipid_atom_radii.items():
-                outfile.write('{resname:4!s} {atom:<5!s} {radius:5.3f}\n'.format(**vars()))
-        with open(filename, 'r') as infile:
+            for atom, radius in vdw_lipid_atom_radii.items():
+                outfile.write(
+                    "{resname:4!s} {atom:<5!s} {radius:5.3f}\n".format(**vars())
+                )
+        with open(filename, "r") as infile:
             for line in infile:
                 outfile.write(line)
-    logger.debug('Created lipid vdW radii file {vdwradii_dat!r}.'.format(**vars()))
+    logger.debug("Created lipid vdW radii file {vdwradii_dat!r}.".format(**vars()))
     return realpath(vdwradii_dat)
 
-def solvate_sol(struct='top/protein.pdb', top='top/system.top',
-                distance=0.9, boxtype='dodecahedron',
-                water='tip4p', solvent_name='SOL', with_membrane=False,
-                dirname='solvate',
-                **kwargs):
+
+def solvate_sol(
+    struct="top/protein.pdb",
+    top="top/system.top",
+    distance=0.9,
+    boxtype="dodecahedron",
+    water="tip4p",
+    solvent_name="SOL",
+    with_membrane=False,
+    dirname="solvate",
+    **kwargs
+):
     structure = realpath(struct)
     topology = realpath(top)
 
     # arguments for editconf that we honour
-    editconf_keywords = ["box", "bt", "angles", "c", "center", "aligncenter",
-                         "align", "translate", "rotate", "princ"]
-    editconf_kwargs = dict((k,kwargs.pop(k,None)) for k in editconf_keywords)
+    editconf_keywords = [
+        "box",
+        "bt",
+        "angles",
+        "c",
+        "center",
+        "aligncenter",
+        "align",
+        "translate",
+        "rotate",
+        "princ",
+    ]
+    editconf_kwargs = dict((k, kwargs.pop(k, None)) for k in editconf_keywords)
     editconf_boxtypes = ["triclinic", "cubic", "dodecahedron", "octahedron", None]
 
     # needed for topology scrubbing
-    scrubber_kwargs = {'marker': kwargs.pop('marker',None)}
+    scrubber_kwargs = {"marker": kwargs.pop("marker", None)}
 
     # sanity checks and argument dependencies
-    bt = editconf_kwargs.pop('bt')
-    boxtype = bt if bt else boxtype   # bt takes precedence over boxtype
+    bt = editconf_kwargs.pop("bt")
+    boxtype = bt if bt else boxtype  # bt takes precedence over boxtype
     if not boxtype in editconf_boxtypes:
-        msg = "Unsupported boxtype {boxtype!r}: Only {boxtypes!r} are possible.".format(**vars())
+        msg = "Unsupported boxtype {boxtype!r}: Only {boxtypes!r} are possible.".format(
+            **vars()
+        )
         logger.error(msg)
         raise ValueError(msg)
-    if editconf_kwargs['box']:
-        distance = None    # if box is set then user knows what she is doing...
+    if editconf_kwargs["box"]:
+        distance = None  # if box is set then user knows what she is doing...
 
-    if water.lower() in ('spc', 'spce'):
-        water = 'spc216'
-    elif water.lower() == 'tip3p':
-        water = 'spc216'
-        logger.warning("TIP3P water model selected: using SPC equilibrated box "
-                       "for initial solvation because it is a reasonable starting point "
-                       "for any 3-point model. EQUILIBRATE THOROUGHLY!")
+    if water.lower() in ("spc", "spce"):
+        water = "spc216"
+    elif water.lower() == "tip3p":
+        water = "spc216"
+        logger.warning(
+            "TIP3P water model selected: using SPC equilibrated box "
+            "for initial solvation because it is a reasonable starting point "
+            "for any 3-point model. EQUILIBRATE THOROUGHLY!"
+        )
 
     # clean topology (if user added the marker; the default marker is
     # ; Gromacs auto-generated entries follow:
@@ -402,74 +465,110 @@ def solvate_sol(struct='top/protein.pdb', top='top/system.top',
         if boxtype is None:
             hasBox = False
             ext = os.path.splitext(structure)[1]
-            if ext == '.gro':
+            if ext == ".gro":
                 hasBox = True
-            elif ext == '.pdb':
+            elif ext == ".pdb":
                 with open(structure) as struct:
                     for line in struct:
-                        if line.startswith('CRYST'):
+                        if line.startswith("CRYST"):
                             hasBox = True
                             break
             if not hasBox:
-                msg = "No box data in the input structure {structure!r} and boxtype is set to None".format(**vars())
+                msg = "No box data in the input structure {structure!r} and boxtype is set to None".format(
+                    **vars()
+                )
                 logger.exception(msg)
                 raise MissingDataError(msg)
-            distance = boxtype = None   # ensures that editconf just converts
-        editconf_kwargs.update({'f': structure, 'o': 'boxed.gro',
-                                'bt': boxtype, 'd': distance})
+            distance = boxtype = None  # ensures that editconf just converts
+        editconf_kwargs.update(
+            {"f": structure, "o": "boxed.gro", "bt": boxtype, "d": distance}
+        )
         gromacs.editconf(**editconf_kwargs)
 
         if with_membrane:
             vdwradii_dat = get_lipid_vdwradii()  # need to clean up afterwards
-            logger.info("Using special vdW radii for lipids {0!r}".format(vdw_lipid_resnames))
+            logger.info(
+                "Using special vdW radii for lipids {0!r}".format(vdw_lipid_resnames)
+            )
 
         try:
-            gromacs.genbox(p=topology, cp='boxed.gro', cs=water, o='solvated.gro')
+            gromacs.genbox(p=topology, cp="boxed.gro", cs=water, o="solvated.gro")
         except:
             if with_membrane:
                 # remove so that it's not picked up accidentally
                 utilities.unlink_f(vdwradii_dat)
             raise
         logger.info("Solvated system with %s", water)
-    return {'struct': realpath(dirname, 'solvated.gro'),}
+    return {
+        "struct": realpath(dirname, "solvated.gro"),
+    }
 
-def solvate_ion(struct='solvated.gro', top='top/system.top',
-                concentration=0, cation='NA', anion='CL',
-                solvent_name='SOL', ndx='main.ndx',
-                mainselection='"Protein"', dirname='solvate',
-                **kwargs):
+
+def solvate_ion(
+    struct="solvated.gro",
+    top="top/system.top",
+    concentration=0,
+    cation="NA",
+    anion="CL",
+    solvent_name="SOL",
+    ndx="main.ndx",
+    mainselection='"Protein"',
+    dirname="solvate",
+    **kwargs
+):
     structure = realpath(struct)
     topology = realpath(top)
     # By default, grompp should not choke on a few warnings because at
     # this stage the user cannot do much about it (can be set to any
     # value but is kept undocumented...)
-    grompp_maxwarn = kwargs.pop('maxwarn',10)
+    grompp_maxwarn = kwargs.pop("maxwarn", 10)
 
     # handle additional include directories (kwargs are also modified!)
     mdp_kwargs = cbook.add_mdp_includes(topology, kwargs)
 
     with in_dir(dirname):
-        with open('none.mdp','w') as mdp:
-            mdp.write('; empty mdp file\ninclude = {include!s}\nrcoulomb = 1\nrvdw = 1\nrlist = 1\n'.format(**mdp_kwargs))
-        qtotgmx = cbook.grompp_qtot(f='none.mdp', o='topol.tpr', c=structure,
-                                    p=topology, stdout=False, maxwarn=grompp_maxwarn)
+        with open("none.mdp", "w") as mdp:
+            mdp.write(
+                "; empty mdp file\ninclude = {include!s}\nrcoulomb = 1\nrvdw = 1\nrlist = 1\n".format(
+                    **mdp_kwargs
+                )
+            )
+        qtotgmx = cbook.grompp_qtot(
+            f="none.mdp",
+            o="topol.tpr",
+            c=structure,
+            p=topology,
+            stdout=False,
+            maxwarn=grompp_maxwarn,
+        )
         qtot = round(qtotgmx)
-        logger.info("[{dirname!s}] After solvation: total charge qtot = {qtotgmx!r} = {qtot!r}".format(**vars()))
+        logger.info(
+            "[{dirname!s}] After solvation: total charge qtot = {qtotgmx!r} = {qtot!r}".format(
+                **vars()
+            )
+        )
 
         if concentration != 0:
-            logger.info("[{dirname!s}] Adding ions for c = {concentration:f} M...".format(**vars()))
+            logger.info(
+                "[{dirname!s}] Adding ions for c = {concentration:f} M...".format(
+                    **vars()
+                )
+            )
             # target concentration of free ions c ==>
             #    N = N_water * c/c_water
             # add ions for concentration to the counter ions (counter ions are less free)
             #
             # get number of waters (count OW ... works for SPC*, TIP*P water models)
-            rc,output,junk = gromacs.make_ndx(f='topol.tpr', o='ow.ndx',
-                                              input=('keep 0', 'del 0', 'a OW*', 'name 0 OW', '', 'q'),
-                                              stdout=False)
+            rc, output, junk = gromacs.make_ndx(
+                f="topol.tpr",
+                o="ow.ndx",
+                input=("keep 0", "del 0", "a OW*", "name 0 OW", "", "q"),
+                stdout=False,
+            )
             groups = cbook.parse_ndxlist(output)
-            gdict = {g['name']: g for g in groups}   # overkill...
-            N_water = gdict['OW']['natoms']                  # ... but dict lookup is nice
-            N_ions = int(N_water * concentration/CONC_WATER) # number of monovalents
+            gdict = {g["name"]: g for g in groups}  # overkill...
+            N_water = gdict["OW"]["natoms"]  # ... but dict lookup is nice
+            N_ions = int(N_water * concentration / CONC_WATER)  # number of monovalents
         else:
             N_ions = 0
 
@@ -481,64 +580,96 @@ def solvate_ion(struct='solvated.gro', top='top/system.top',
             n_cation = int(abs(qtot))
 
         n_cation += N_ions
-        n_anion  += N_ions
+        n_anion += N_ions
 
         if n_cation != 0 or n_anion != 0:
             # sanity check:
             assert qtot + n_cation - n_anion < 1e-6
-            logger.info("[{dirname!s}] Adding n_cation = {n_cation:d} and n_anion = {n_anion:d} ions...".format(**vars()))
-            gromacs.genion(s='topol.tpr', o='ionized.gro', p=topology,
-                           pname=cation, nname=anion, np=n_cation, nn=n_anion,
-                           input=solvent_name)
+            logger.info(
+                "[{dirname!s}] Adding n_cation = {n_cation:d} and n_anion = {n_anion:d} ions...".format(
+                    **vars()
+                )
+            )
+            gromacs.genion(
+                s="topol.tpr",
+                o="ionized.gro",
+                p=topology,
+                pname=cation,
+                nname=anion,
+                np=n_cation,
+                nn=n_anion,
+                input=solvent_name,
+            )
         else:
             # fake ionized file ... makes it easier to continue without too much fuzz
             try:
-                os.unlink('ionized.gro')
+                os.unlink("ionized.gro")
             except OSError as err:
                 if err.errno != errno.ENOENT:
                     raise
-            os.symlink('solvated.gro', 'ionized.gro')
+            os.symlink("solvated.gro", "ionized.gro")
 
-        qtot = cbook.grompp_qtot(f='none.mdp', o='ionized.tpr', c='ionized.gro',
-                                 p=topology, stdout=False, maxwarn=grompp_maxwarn)
+        qtot = cbook.grompp_qtot(
+            f="none.mdp",
+            o="ionized.tpr",
+            c="ionized.gro",
+            p=topology,
+            stdout=False,
+            maxwarn=grompp_maxwarn,
+        )
 
         if abs(qtot) > 1e-4:
-            wmsg = "System has non-zero total charge qtot = {qtot:g} e.".format(**vars())
+            wmsg = "System has non-zero total charge qtot = {qtot:g} e.".format(
+                **vars()
+            )
             warnings.warn(wmsg, category=BadParameterWarning)
             logger.warning(wmsg)
 
         # make main index
         try:
-            make_main_index('ionized.tpr', selection=mainselection, ndx=ndx)
+            make_main_index("ionized.tpr", selection=mainselection, ndx=ndx)
         except GromacsError as err:
             # or should I rather fail here?
-            wmsg = "Failed to make main index file %r ... maybe set mainselection='...'.\n"\
-                   "The error message was:\n%s\n" % (ndx, str(err))
+            wmsg = (
+                "Failed to make main index file %r ... maybe set mainselection='...'.\n"
+                "The error message was:\n%s\n" % (ndx, str(err))
+            )
             logger.warning(wmsg)
             warnings.warn(wmsg, category=GromacsFailureWarning)
         try:
-            trj_compact_main(f='ionized.gro', s='ionized.tpr', o='compact.pdb', n=ndx)
+            trj_compact_main(f="ionized.gro", s="ionized.tpr", o="compact.pdb", n=ndx)
         except GromacsError as err:
-            wmsg = "Failed to make compact pdb for visualization... pressing on regardless. "\
-                   "The error message was:\n%s\n" % str(err)
+            wmsg = (
+                "Failed to make compact pdb for visualization... pressing on regardless. "
+                "The error message was:\n%s\n" % str(err)
+            )
             logger.warning(wmsg)
             warnings.warn(wmsg, category=GromacsFailureWarning)
 
-    return {'qtot': qtot,
-            'struct': realpath(dirname, 'ionized.gro'),
-            'ndx': realpath(dirname, ndx),      # not sure why this is propagated-is it used?
-            'mainselection': mainselection,
-            }
+    return {
+        "qtot": qtot,
+        "struct": realpath(dirname, "ionized.gro"),
+        "ndx": realpath(dirname, ndx),  # not sure why this is propagated-is it used?
+        "mainselection": mainselection,
+    }
 
 
-
-def solvate(struct='top/protein.pdb', top='top/system.top',
-            distance=0.9, boxtype='dodecahedron',
-            concentration=0, cation='NA', anion='CL',
-            water='tip4p', solvent_name='SOL', with_membrane=False,
-            ndx = 'main.ndx', mainselection = '"Protein"',
-            dirname='solvate',
-            **kwargs):
+def solvate(
+    struct="top/protein.pdb",
+    top="top/system.top",
+    distance=0.9,
+    boxtype="dodecahedron",
+    concentration=0,
+    cation="NA",
+    anion="CL",
+    water="tip4p",
+    solvent_name="SOL",
+    with_membrane=False,
+    ndx="main.ndx",
+    mainselection='"Protein"',
+    dirname="solvate",
+    **kwargs
+):
     """Put protein into box, add water, add counter-ions.
 
     Currently this really only supports solutes in water. If you need
@@ -613,33 +744,55 @@ def solvate(struct='top/protein.pdb', top='top/system.top',
           changed in the mdp file.
 
     """
-    sol = solvate_sol(struct=struct, top=top,
-                      distance=distance, boxtype=boxtype,
-                      water=water, solvent_name=solvent_name,
-                      with_membrane=with_membrane,
-                      dirname=dirname, **kwargs)
+    sol = solvate_sol(
+        struct=struct,
+        top=top,
+        distance=distance,
+        boxtype=boxtype,
+        water=water,
+        solvent_name=solvent_name,
+        with_membrane=with_membrane,
+        dirname=dirname,
+        **kwargs
+    )
 
-    ion = solvate_ion(struct=sol['struct'], top=top,
-                      concentration=concentration, cation=cation, anion=anion,
-                      solvent_name=solvent_name, ndx=ndx,
-                      mainselection=mainselection, dirname=dirname,
-                      **kwargs)
+    ion = solvate_ion(
+        struct=sol["struct"],
+        top=top,
+        concentration=concentration,
+        cation=cation,
+        anion=anion,
+        solvent_name=solvent_name,
+        ndx=ndx,
+        mainselection=mainselection,
+        dirname=dirname,
+        **kwargs
+    )
     return ion
 
 
 def check_mdpargs(d):
     """Check if any arguments remain in dict *d*."""
     if len(d) > 0:
-        wmsg = "Unprocessed mdp option are interpreted as options for grompp:\n"+str(d)
+        wmsg = "Unprocessed mdp option are interpreted as options for grompp:\n" + str(
+            d
+        )
         logger.warning(wmsg)
         warnings.warn(wmsg, category=UsageWarning)
     return len(d) == 0
 
-def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
-                    struct='solvate/ionized.gro', top='top/system.top',
-                    output='em.pdb', deffnm="em",
-                    mdrunner=None, mdrun_args=None,
-                    **kwargs):
+
+def energy_minimize(
+    dirname="em",
+    mdp=config.templates["em.mdp"],
+    struct="solvate/ionized.gro",
+    top="top/system.top",
+    output="em.pdb",
+    deffnm="em",
+    mdrunner=None,
+    mdrun_args=None,
+    **kwargs
+):
     """Energy minimize the system.
 
     This sets up the system (creates run input files) and also runs
@@ -691,25 +844,29 @@ def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
     mdrun_args = {} if mdrun_args is None else mdrun_args
 
     # write the processed topology to the default output
-    kwargs.setdefault('pp', 'processed.top')
+    kwargs.setdefault("pp", "processed.top")
 
     # filter some kwargs that might come through when feeding output
     # from previous stages such as solvate(); necessary because *all*
     # **kwargs must be *either* substitutions in the mdp file *or* valid
     # command line parameters for ``grompp``.
-    kwargs.pop('ndx', None)
+    kwargs.pop("ndx", None)
     # mainselection is not used but only passed through; right now we
     # set it to the default that is being used in all argument lists
     # but that is not pretty. TODO.
-    mainselection = kwargs.pop('mainselection', '"Protein"')
+    mainselection = kwargs.pop("mainselection", '"Protein"')
     # only interesting when passed from solvate()
-    qtot = kwargs.pop('qtot', 0)
+    qtot = kwargs.pop("qtot", 0)
 
     # mdp is now the *output* MDP that will be generated from mdp_template
-    mdp = deffnm+'.mdp'
-    tpr = deffnm+'.tpr'
+    mdp = deffnm + ".mdp"
+    tpr = deffnm + ".tpr"
 
-    logger.info("[{dirname!s}] Energy minimization of struct={struct!r}, top={top!r}, mdp={mdp!r} ...".format(**vars()))
+    logger.info(
+        "[{dirname!s}] Energy minimization of struct={struct!r}, top={top!r}, mdp={mdp!r} ...".format(
+            **vars()
+        )
+    )
 
     cbook.add_mdp_includes(topology, kwargs)
 
@@ -717,14 +874,18 @@ def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
         # At the moment this is purely user-reported and really only here because
         # it might get fed into the function when using the keyword-expansion pipeline
         # usage paradigm.
-        wmsg = "Total charge was reported as qtot = {qtot:g} <> 0; probably a problem.".format(**vars())
+        wmsg = "Total charge was reported as qtot = {qtot:g} <> 0; probably a problem.".format(
+            **vars()
+        )
         logger.warning(wmsg)
         warnings.warn(wmsg, category=BadParameterWarning)
 
     with in_dir(dirname):
         unprocessed = cbook.edit_mdp(mdp_template, new_mdp=mdp, **kwargs)
         check_mdpargs(unprocessed)
-        gromacs.grompp(f=mdp, o=tpr, c=structure, r=structure, p=topology, **unprocessed)
+        gromacs.grompp(
+            f=mdp, o=tpr, c=structure, r=structure, p=topology, **unprocessed
+        )
         mdrun_args.update(v=True, stepout=10, deffnm=deffnm, c=output)
         if mdrunner is None:
             mdrun = run.get_double_or_single_prec_mdrun()
@@ -741,8 +902,12 @@ def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
                 try:
                     mdrunner.run(mdrunargs=mdrun_args)
                 except AttributeError:
-                    logger.error("mdrunner: Provide a gromacs.run.MDrunner class or instance or a callback with a run() method")
-                    raise TypeError("mdrunner: Provide a gromacs.run.MDrunner class or instance or a callback with a run() method")
+                    logger.error(
+                        "mdrunner: Provide a gromacs.run.MDrunner class or instance or a callback with a run() method"
+                    )
+                    raise TypeError(
+                        "mdrunner: Provide a gromacs.run.MDrunner class or instance or a callback with a run() method"
+                    )
 
         # em.gro --> gives 'Bad box in file em.gro' warning --- why??
         # --> use em.pdb instead.
@@ -752,11 +917,15 @@ def energy_minimize(dirname='em', mdp=config.templates['em.mdp'],
             raise GromacsError(errmsg)
         final_struct = realpath(output)
 
-    logger.info("[{dirname!s}] energy minimized structure {final_struct!r}".format(**vars()))
-    return {'struct': final_struct,
-            'top': topology,
-            'mainselection': mainselection,
-            }
+    logger.info(
+        "[{dirname!s}] energy minimized structure {final_struct!r}".format(**vars())
+    )
+    return {
+        "struct": final_struct,
+        "top": topology,
+        "mainselection": mainselection,
+    }
+
 
 def em_schedule(**kwargs):
     """Run multiple energy minimizations one after each other.
@@ -797,173 +966,232 @@ def em_schedule(**kwargs):
               per-minimizer basis.
     """
 
-    mdrunner = kwargs.pop('mdrunner', None)
-    integrators = kwargs.pop('integrators', ['l-bfgs', 'steep'])
-    kwargs.pop('integrator', None)  # clean input; we set intgerator from integrators
-    nsteps = kwargs.pop('nsteps', [100, 1000])
+    mdrunner = kwargs.pop("mdrunner", None)
+    integrators = kwargs.pop("integrators", ["l-bfgs", "steep"])
+    kwargs.pop("integrator", None)  # clean input; we set intgerator from integrators
+    nsteps = kwargs.pop("nsteps", [100, 1000])
 
-    outputs = ['em{0:03d}_{1!s}.pdb'.format(i, integrator) for i,integrator in enumerate(integrators)]
-    outputs[-1] = kwargs.pop('output', 'em.pdb')
+    outputs = [
+        "em{0:03d}_{1!s}.pdb".format(i, integrator)
+        for i, integrator in enumerate(integrators)
+    ]
+    outputs[-1] = kwargs.pop("output", "em.pdb")
 
-    files = {'struct': kwargs.pop('struct', None)}  # fake output from energy_minimize()
+    files = {"struct": kwargs.pop("struct", None)}  # fake output from energy_minimize()
 
     for i, integrator in enumerate(integrators):
-        struct = files['struct']
-        logger.info("[em %d] energy minimize with %s for maximum %d steps", i, integrator, nsteps[i])
-        kwargs.update({'struct':struct, 'output':outputs[i],
-                       'integrator':integrator, 'nsteps': nsteps[i]})
-        if not integrator == 'l-bfgs':
-            kwargs['mdrunner'] = mdrunner
+        struct = files["struct"]
+        logger.info(
+            "[em %d] energy minimize with %s for maximum %d steps",
+            i,
+            integrator,
+            nsteps[i],
+        )
+        kwargs.update(
+            {
+                "struct": struct,
+                "output": outputs[i],
+                "integrator": integrator,
+                "nsteps": nsteps[i],
+            }
+        )
+        if not integrator == "l-bfgs":
+            kwargs["mdrunner"] = mdrunner
         else:
-            kwargs['mdrunner'] = None
-            logger.warning("[em %d]  Not using mdrunner for L-BFGS because it cannot "
-                           "do parallel runs.", i)
+            kwargs["mdrunner"] = None
+            logger.warning(
+                "[em %d]  Not using mdrunner for L-BFGS because it cannot "
+                "do parallel runs.",
+                i,
+            )
 
         files = energy_minimize(**kwargs)
 
     return files
 
 
-def _setup_MD(dirname,
-              deffnm='md', mdp=config.templates['md_OPLSAA.mdp'],
-              struct=None,
-              top='top/system.top', ndx=None,
-              mainselection='"Protein"',
-              qscript=config.qscript_template, qname=None, startdir=None, mdrun_opts="", budget=None, walltime=1/3.,
-              dt=0.002, runtime=1e3, **mdp_kwargs):
+def _setup_MD(
+    dirname,
+    deffnm="md",
+    mdp=config.templates["md_OPLSAA.mdp"],
+    struct=None,
+    top="top/system.top",
+    ndx=None,
+    mainselection='"Protein"',
+    qscript=config.qscript_template,
+    qname=None,
+    startdir=None,
+    mdrun_opts="",
+    budget=None,
+    walltime=1 / 3.0,
+    dt=0.002,
+    runtime=1e3,
+    **mdp_kwargs
+):
     """Generic function to set up a ``mdrun`` MD simulation.
 
     See the user functions for usage.
     """
 
     if struct is None:
-        raise ValueError('struct must be set to a input structure')
+        raise ValueError("struct must be set to a input structure")
     structure = realpath(struct)
     topology = realpath(top)
     try:
         index = realpath(ndx)
     except AttributeError:  # (that's what realpath(None) throws...)
-        index = None        # None is handled fine below
+        index = None  # None is handled fine below
 
-    qname = mdp_kwargs.pop('sgename', qname)    # compatibility for old scripts
-    qscript = mdp_kwargs.pop('sge', qscript)    # compatibility for old scripts
+    qname = mdp_kwargs.pop("sgename", qname)  # compatibility for old scripts
+    qscript = mdp_kwargs.pop("sge", qscript)  # compatibility for old scripts
     qscript_template = config.get_template(qscript)
     mdp_template = config.get_template(mdp)
 
-    nsteps = int(float(runtime)/float(dt))
+    nsteps = int(float(runtime) / float(dt))
 
-    mdp = deffnm + '.mdp'
-    tpr = deffnm + '.tpr'
-    mainindex = deffnm + '.ndx'
-    final_structure = deffnm + '.gro'   # guess... really depends on templates,could also be DEFFNM.pdb
+    mdp = deffnm + ".mdp"
+    tpr = deffnm + ".tpr"
+    mainindex = deffnm + ".ndx"
+    final_structure = (
+        deffnm + ".gro"
+    )  # guess... really depends on templates,could also be DEFFNM.pdb
 
     # write the processed topology to the default output
-    mdp_parameters = {'nsteps':nsteps, 'dt':dt, 'pp': 'processed.top'}
+    mdp_parameters = {"nsteps": nsteps, "dt": dt, "pp": "processed.top"}
     mdp_parameters.update(mdp_kwargs)
 
     cbook.add_mdp_includes(topology, mdp_parameters)
 
     logger.info("[%(dirname)s] input mdp  = %(mdp_template)r", vars())
     with in_dir(dirname):
-        if not (mdp_parameters.get('Tcoupl','').lower() == 'no' or mainselection is None):
-            logger.info("[{dirname!s}] Automatic adjustment of T-coupling groups".format(**vars()))
+        if not (
+            mdp_parameters.get("Tcoupl", "").lower() == "no" or mainselection is None
+        ):
+            logger.info(
+                "[{dirname!s}] Automatic adjustment of T-coupling groups".format(
+                    **vars()
+                )
+            )
 
             # make index file in almost all cases; with mainselection == None the user
             # takes FULL control and also has to provide the template or index
-            groups = make_main_index(structure, selection=mainselection,
-                                     oldndx=index, ndx=mainindex)
-            natoms = {g['name']: float(g['natoms']) for g in groups}
-            tc_group_names = ('__main__', '__environment__')   # defined in make_main_index()
+            groups = make_main_index(
+                structure, selection=mainselection, oldndx=index, ndx=mainindex
+            )
+            natoms = {g["name"]: float(g["natoms"]) for g in groups}
+            tc_group_names = (
+                "__main__",
+                "__environment__",
+            )  # defined in make_main_index()
             try:
-                x = natoms['__main__']/natoms['__environment__']
+                x = natoms["__main__"] / natoms["__environment__"]
             except KeyError:
-                x = 0   # force using SYSTEM in code below
-                wmsg = "Missing __main__ and/or __environment__ index group.\n" \
-                       "This probably means that you have an atypical system. You can " \
-                       "set mainselection=None and provide your own mdp and index files " \
-                       "in order to set up temperature coupling.\n" \
-                       "If no T-coupling is required then set Tcoupl='no'.\n" \
-                       "For now we will just couple everything to 'System'."
+                x = 0  # force using SYSTEM in code below
+                wmsg = (
+                    "Missing __main__ and/or __environment__ index group.\n"
+                    "This probably means that you have an atypical system. You can "
+                    "set mainselection=None and provide your own mdp and index files "
+                    "in order to set up temperature coupling.\n"
+                    "If no T-coupling is required then set Tcoupl='no'.\n"
+                    "For now we will just couple everything to 'System'."
+                )
                 logger.warning(wmsg)
                 warnings.warn(wmsg, category=AutoCorrectionWarning)
             if x < 0.1:
                 # couple everything together
-                tau_t = firstof(mdp_parameters.pop('tau_t', 0.1))
-                ref_t = firstof(mdp_parameters.pop('ref_t', 300))
+                tau_t = firstof(mdp_parameters.pop("tau_t", 0.1))
+                ref_t = firstof(mdp_parameters.pop("ref_t", 300))
                 # combine all in one T-coupling group
-                mdp_parameters['tc-grps'] = 'System'
-                mdp_parameters['tau_t'] = tau_t   # this overrides the commandline!
-                mdp_parameters['ref_t'] = ref_t   # this overrides the commandline!
-                mdp_parameters['gen-temp'] = mdp_parameters.pop('gen_temp', ref_t)
-                wmsg = "Size of __main__ is only %.1f%% of __environment__ so " \
-                       "we use 'System' for T-coupling and ref_t = %g K and " \
-                       "tau_t = %g 1/ps (can be changed in mdp_parameters).\n" \
-                       % (x * 100, ref_t, tau_t)
+                mdp_parameters["tc-grps"] = "System"
+                mdp_parameters["tau_t"] = tau_t  # this overrides the commandline!
+                mdp_parameters["ref_t"] = ref_t  # this overrides the commandline!
+                mdp_parameters["gen-temp"] = mdp_parameters.pop("gen_temp", ref_t)
+                wmsg = (
+                    "Size of __main__ is only %.1f%% of __environment__ so "
+                    "we use 'System' for T-coupling and ref_t = %g K and "
+                    "tau_t = %g 1/ps (can be changed in mdp_parameters).\n"
+                    % (x * 100, ref_t, tau_t)
+                )
                 logger.warning(wmsg)
                 warnings.warn(wmsg, category=AutoCorrectionWarning)
             else:
                 # couple protein and bath separately
                 n_tc_groups = len(tc_group_names)
-                tau_t = asiterable(mdp_parameters.pop('tau_t', 0.1))
-                ref_t = asiterable(mdp_parameters.pop('ref_t', 300))
+                tau_t = asiterable(mdp_parameters.pop("tau_t", 0.1))
+                ref_t = asiterable(mdp_parameters.pop("ref_t", 300))
 
                 if len(tau_t) != n_tc_groups:
                     tau_t = n_tc_groups * [tau_t[0]]
-                    wmsg = "%d coupling constants should have been supplied for tau_t. "\
+                    wmsg = (
+                        "%d coupling constants should have been supplied for tau_t. "
                         "Using %f 1/ps for all of them." % (n_tc_groups, tau_t[0])
+                    )
                     logger.warning(wmsg)
                     warnings.warn(wmsg, category=AutoCorrectionWarning)
                 if len(ref_t) != n_tc_groups:
                     ref_t = n_tc_groups * [ref_t[0]]
-                    wmsg = "%d temperatures should have been supplied for ref_t. "\
+                    wmsg = (
+                        "%d temperatures should have been supplied for ref_t. "
                         "Using %g K for all of them." % (n_tc_groups, ref_t[0])
+                    )
                     logger.warning(wmsg)
                     warnings.warn(wmsg, category=AutoCorrectionWarning)
 
-                mdp_parameters['tc-grps'] = tc_group_names
-                mdp_parameters['tau_t'] = tau_t
-                mdp_parameters['ref_t'] = ref_t
-                mdp_parameters['gen-temp'] = mdp_parameters.pop('gen_temp', ref_t[0])
+                mdp_parameters["tc-grps"] = tc_group_names
+                mdp_parameters["tau_t"] = tau_t
+                mdp_parameters["ref_t"] = ref_t
+                mdp_parameters["gen-temp"] = mdp_parameters.pop("gen_temp", ref_t[0])
             index = realpath(mainindex)
-        if mdp_parameters.get('Tcoupl','').lower() == 'no':
+        if mdp_parameters.get("Tcoupl", "").lower() == "no":
             logger.info("Tcoupl == no: disabling all temperature coupling mdp options")
-            mdp_parameters['tc-grps'] = ""
-            mdp_parameters['tau_t'] = ""
-            mdp_parameters['ref_t'] = ""
-            mdp_parameters['gen-temp'] = ""
-        if mdp_parameters.get('Pcoupl','').lower() == 'no':
+            mdp_parameters["tc-grps"] = ""
+            mdp_parameters["tau_t"] = ""
+            mdp_parameters["ref_t"] = ""
+            mdp_parameters["gen-temp"] = ""
+        if mdp_parameters.get("Pcoupl", "").lower() == "no":
             logger.info("Pcoupl == no: disabling all pressure coupling mdp options")
-            mdp_parameters['tau_p'] = ""
-            mdp_parameters['ref_p'] = ""
-            mdp_parameters['compressibility'] = ""
+            mdp_parameters["tau_p"] = ""
+            mdp_parameters["ref_p"] = ""
+            mdp_parameters["compressibility"] = ""
 
         unprocessed = cbook.edit_mdp(mdp_template, new_mdp=mdp, **mdp_parameters)
         check_mdpargs(unprocessed)
         gromacs.grompp(f=mdp, p=topology, c=structure, n=index, o=tpr, **unprocessed)
 
         runscripts = qsub.generate_submit_scripts(
-            qscript_template, deffnm=deffnm, jobname=qname, budget=budget,
-            startdir=startdir, mdrun_opts=mdrun_opts, walltime=walltime)
+            qscript_template,
+            deffnm=deffnm,
+            jobname=qname,
+            budget=budget,
+            startdir=startdir,
+            mdrun_opts=mdrun_opts,
+            walltime=walltime,
+        )
 
     logger.info("[%(dirname)s] output mdp = %(mdp)r", vars())
     logger.info("[%(dirname)s] output ndx = %(ndx)r", vars())
     logger.info("[%(dirname)s] output tpr = %(tpr)r", vars())
     logger.info("[%(dirname)s] output runscripts = %(runscripts)r", vars())
-    logger.info("[%(dirname)s] All files set up for a run time of %(runtime)g ps "
-                "(dt=%(dt)g, nsteps=%(nsteps)g)" % vars())
+    logger.info(
+        "[%(dirname)s] All files set up for a run time of %(runtime)g ps "
+        "(dt=%(dt)g, nsteps=%(nsteps)g)" % vars()
+    )
 
-    kwargs = {'struct': realpath(os.path.join(dirname, final_structure)),      # guess
-              'top': topology,
-              'ndx': index,            # possibly mainindex
-              'qscript': runscripts,
-              'mainselection': mainselection,
-              'deffnm': deffnm,        # return deffnm (tpr = deffnm.tpr!)
-              }
-    kwargs.update(mdp_kwargs)  # return extra mdp args so that one can use them for prod run
+    kwargs = {
+        "struct": realpath(os.path.join(dirname, final_structure)),  # guess
+        "top": topology,
+        "ndx": index,  # possibly mainindex
+        "qscript": runscripts,
+        "mainselection": mainselection,
+        "deffnm": deffnm,  # return deffnm (tpr = deffnm.tpr!)
+    }
+    kwargs.update(
+        mdp_kwargs
+    )  # return extra mdp args so that one can use them for prod run
     return kwargs
 
 
-def MD_restrained(dirname='MD_POSRES', **kwargs):
+def MD_restrained(dirname="MD_POSRES", **kwargs):
     """Set up MD with position restraints.
 
     Additional itp files should be in the same directory as the top file.
@@ -1039,30 +1267,33 @@ def MD_restrained(dirname='MD_POSRES', **kwargs):
     .. _`pressure coupling`: http://manual.gromacs.org/online/mdp_opt.html#pc
     """
 
-    logger.info("[{dirname!s}] Setting up MD with position restraints...".format(**vars()))
-    kwargs.setdefault('struct', 'em/em.pdb')
-    kwargs.setdefault('qname', 'PR_GMX')
-    kwargs.setdefault('define', '-DPOSRES')
+    logger.info(
+        "[{dirname!s}] Setting up MD with position restraints...".format(**vars())
+    )
+    kwargs.setdefault("struct", "em/em.pdb")
+    kwargs.setdefault("qname", "PR_GMX")
+    kwargs.setdefault("define", "-DPOSRES")
     # reduce size of output files
-    kwargs.setdefault('nstxout', '50000')   # trr pos
-    kwargs.setdefault('nstvout', '50000')   # trr veloc
-    kwargs.setdefault('nstfout', '0')       # trr forces
-    kwargs.setdefault('nstlog', '500')      # log file
-    kwargs.setdefault('nstenergy', '2500')  # edr energy
-    kwargs.setdefault('nstxtcout', '5000')  # xtc pos
+    kwargs.setdefault("nstxout", "50000")  # trr pos
+    kwargs.setdefault("nstvout", "50000")  # trr veloc
+    kwargs.setdefault("nstfout", "0")  # trr forces
+    kwargs.setdefault("nstlog", "500")  # log file
+    kwargs.setdefault("nstenergy", "2500")  # edr energy
+    kwargs.setdefault("nstxtcout", "5000")  # xtc pos
     # try to get good pressure equilibration
-    kwargs.setdefault('refcoord_scaling', 'com')
-    kwargs.setdefault('Pcoupl', "Berendsen")
+    kwargs.setdefault("refcoord_scaling", "com")
+    kwargs.setdefault("Pcoupl", "Berendsen")
 
-    new_kwargs =  _setup_MD(dirname, **kwargs)
+    new_kwargs = _setup_MD(dirname, **kwargs)
 
     # clean up output kwargs
-    new_kwargs.pop('define', None)          # but make sure that -DPOSRES does not stay...
-    new_kwargs.pop('refcoord_scaling', None)
-    new_kwargs.pop('Pcoupl', None)
+    new_kwargs.pop("define", None)  # but make sure that -DPOSRES does not stay...
+    new_kwargs.pop("refcoord_scaling", None)
+    new_kwargs.pop("Pcoupl", None)
     return new_kwargs
 
-def MD(dirname='MD', **kwargs):
+
+def MD(dirname="MD", **kwargs):
     """Set up equilibrium MD.
 
     Additional itp files should be in the same directory as the top file.
@@ -1118,10 +1349,9 @@ def MD(dirname='MD', **kwargs):
     """
 
     logger.info("[{dirname!s}] Setting up MD...".format(**vars()))
-    kwargs.setdefault('struct', 'MD_POSRES/md.gro')
-    kwargs.setdefault('qname', 'MD_GMX')
+    kwargs.setdefault("struct", "MD_POSRES/md.gro")
+    kwargs.setdefault("qname", "MD_GMX")
     return _setup_MD(dirname, **kwargs)
-
 
 
 # TODO: autorun (qv MI lipids/setup.pl)

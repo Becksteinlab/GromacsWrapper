@@ -12,9 +12,25 @@ import gromacs
 from .top import TopologyTest
 from ...datafiles import datafile
 
-@pytest.mark.xfail(gromacs.release().startswith("2022"),
-                   reason="issue https://github.com/Becksteinlab/GromacsWrapper/issues/236")
+
+@pytest.mark.xfail(
+    gromacs.release().startswith("2022"),
+    reason="issue https://github.com/Becksteinlab/GromacsWrapper/issues/236",
+)
 class TestAmber03w(TopologyTest):
-        processed = datafile('fileformats/top/amber03w/processed.top')
-        conf = datafile('fileformats/top/amber03w/conf.gro')
-        molecules = ['Protein_chain_A', 'SOL', 'IB+', 'CA', 'CL', 'NA', 'MG', 'K', 'RB', 'CS', 'LI', 'ZN']
+    processed = datafile("fileformats/top/amber03w/processed.top")
+    conf = datafile("fileformats/top/amber03w/conf.gro")
+    molecules = [
+        "Protein_chain_A",
+        "SOL",
+        "IB+",
+        "CA",
+        "CL",
+        "NA",
+        "MG",
+        "K",
+        "RB",
+        "CS",
+        "LI",
+        "ZN",
+    ]

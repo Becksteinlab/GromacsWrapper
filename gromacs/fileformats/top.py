@@ -59,6 +59,7 @@ from collections import OrderedDict as odict
 
 from . import blocks
 
+
 class TOP(blocks.System):
     """Class to make a TOP object from a GROMACS processed.top file
 
@@ -70,8 +71,9 @@ class TOP(blocks.System):
        are supported - the usual topol.top files are not supported (yet!)
 
     """
+
     default_extension = "top"
-    logger = logging.getLogger('gromacs.fileformats.TOP')
+    logger = logging.getLogger("gromacs.fileformats.TOP")
 
     def __init__(self, fname):
         """Initialize the TOP structure.
@@ -85,12 +87,16 @@ class TOP(blocks.System):
         self.fname = fname
 
         self.defaults = {
-            'nbfunc': None, 'comb-rule':None, 'gen-pairs':None, 'fudgeLJ':None, 'fudgeQQ':None,
+            "nbfunc": None,
+            "comb-rule": None,
+            "gen-pairs": None,
+            "fudgeLJ": None,
+            "fudgeQQ": None,
         }
 
-        self.dict_molname_mol = odict()   # contains molname:mol
-        self.found_sections   = []
-        self.forcefield       = 'gromacs'
+        self.dict_molname_mol = odict()  # contains molname:mol
+        self.found_sections = []
+        self.forcefield = "gromacs"
 
         self.molecules = []
         self._parse(fname)
@@ -106,48 +112,63 @@ class TOP(blocks.System):
         moltypenames.sort()
 
         data = []
-        data.append('\n')
+        data.append("\n")
 
-        main_items = set(['atomtypes', 'pairtypes', 'bondtypes', 'angletypes', 'dihedraltypes'])
-        other_items = ['{0:s} ({1:d})'.format(m, len(self.information[m])) for m in list(self.information.keys()) if m not in main_items]
-        other_items = ' '.join(other_items)
+        main_items = set(
+            ["atomtypes", "pairtypes", "bondtypes", "angletypes", "dihedraltypes"]
+        )
+        other_items = [
+            "{0:s} ({1:d})".format(m, len(self.information[m]))
+            for m in list(self.information.keys())
+            if m not in main_items
+        ]
+        other_items = " ".join(other_items)
         nattype = len(self.atomtypes)
         nprtype = len(self.pairtypes)
-        nbndtype= len(self.bondtypes)
-        nangtype= len(self.angletypes)
-        ndihtype= len(self.dihedraltypes)
-        nimptype= len(self.impropertypes)
-        data.append('{0:>20s}  {1:>7s} {2:>7s} {3:>7s} {4:>7s} {5:>7s} {6:>7s}'.format('Param types:', 'atom', 'pair', 'bond', 'ang', 'dih', 'imp'))
-        msg = '{0:20s}  {1:7d} {2:7d} {3:7d} {4:7d} {5:7d} {6:7d}    {7:s}'.format('', nattype, nprtype, nbndtype, nangtype, ndihtype, nimptype, other_items)
-        data.append('=' * 69)
+        nbndtype = len(self.bondtypes)
+        nangtype = len(self.angletypes)
+        ndihtype = len(self.dihedraltypes)
+        nimptype = len(self.impropertypes)
+        data.append(
+            "{0:>20s}  {1:>7s} {2:>7s} {3:>7s} {4:>7s} {5:>7s} {6:>7s}".format(
+                "Param types:", "atom", "pair", "bond", "ang", "dih", "imp"
+            )
+        )
+        msg = "{0:20s}  {1:7d} {2:7d} {3:7d} {4:7d} {5:7d} {6:7d}    {7:s}".format(
+            "", nattype, nprtype, nbndtype, nangtype, ndihtype, nimptype, other_items
+        )
+        data.append("=" * 69)
         data.append(msg)
-        data.append('\n')
+        data.append("\n")
 
-
-        main_items = set(['atoms', 'pairs', 'bonds', 'angles', 'dihedrals'])
-        data.append('{0:>20s}  {1:>7s} {2:>7s} {3:>7s} {4:>7s} {5:>7s} {6:>7s}'.format('Params:', 'atom', 'pair', 'bond', 'ang', 'dih', 'imp'))
-        data.append('=' * 69)
+        main_items = set(["atoms", "pairs", "bonds", "angles", "dihedrals"])
+        data.append(
+            "{0:>20s}  {1:>7s} {2:>7s} {3:>7s} {4:>7s} {5:>7s} {6:>7s}".format(
+                "Params:", "atom", "pair", "bond", "ang", "dih", "imp"
+            )
+        )
+        data.append("=" * 69)
         for mname in moltypenames:
             mol = self.dict_molname_mol[mname]
-            other_items = ['{0:s} ({1:d})'.format(m, len(mol.information[m])) for m in list(mol.information.keys()) if m not in main_items]
-            other_items = ' '.join(other_items)
+            other_items = [
+                "{0:s} ({1:d})".format(m, len(mol.information[m]))
+                for m in list(mol.information.keys())
+                if m not in main_items
+            ]
+            other_items = " ".join(other_items)
 
             natoms = len(mol.atoms)
             npairs = len(mol.pairs)
             nbonds = len(mol.bonds)
-            nangles= len(mol.angles)
-            ndih   = len(mol.dihedrals)
-            nimp   = len(mol.impropers)
-            msg = '{0:20s}  {1:7d} {2:7d} {3:7d} {4:7d} {5:7d} {6:7d}    {7:s}'.format(mol.name, natoms, npairs, nbonds, nangles, ndih, nimp, other_items)
+            nangles = len(mol.angles)
+            ndih = len(mol.dihedrals)
+            nimp = len(mol.impropers)
+            msg = "{0:20s}  {1:7d} {2:7d} {3:7d} {4:7d} {5:7d} {6:7d}    {7:s}".format(
+                mol.name, natoms, npairs, nbonds, nangles, ndih, nimp, other_items
+            )
             data.append(msg)
 
-
-
-
-        return '\n'.join(data)
-
-
-
+        return "\n".join(data)
 
     def _parse(self, fname):
         """Parse a processed.top GROMACS topology file
@@ -172,97 +193,104 @@ class TOP(blocks.System):
 
         :Returns: None
         """
+
         def _find_section(line):
-            return  line.strip('[').strip(']').strip()
+            return line.strip("[").strip("]").strip()
 
         def _add_info(sys_or_mol, section, container):
             # like (mol, 'atomtypes', mol.atomtypes)
             if sys_or_mol.information.get(section, False) is False:
                 sys_or_mol.information[section] = container
 
-        mol        = None   # to hold the current mol
-        curr_sec   = None
+        mol = None  # to hold the current mol
+        curr_sec = None
         cmap_lines = []
 
         with open(fname) as f:
             for i_line, line in enumerate(f):
-
                 # trimming
-                if ';' in line:
-                    line = line[0:line.index(';')]
+                if ";" in line:
+                    line = line[0 : line.index(";")]
                 line = line.strip()
 
-                if line == '':
+                if line == "":
                     continue
 
-                if line[0] == '*':
+                if line[0] == "*":
                     continue
 
                 # the topology must be stand-alone (i.e. no includes)
-                if line.startswith('#include'):
+                if line.startswith("#include"):
                     msg = 'The topology file has "#include" statements.'
-                    msg+= ' You must provide a processed topology file that grompp creates.'
+                    msg += " You must provide a processed topology file that grompp creates."
                     raise ValueError(msg)
 
                 # find sections
-                if line[0] == '[':
+                if line[0] == "[":
                     curr_sec = _find_section(line)
                     self.found_sections.append(curr_sec)
                     continue
 
                 fields = line.split()
 
-                if curr_sec == 'defaults':
-                    '''
+                if curr_sec == "defaults":
+                    """
                     # ; nbfunc        comb-rule       gen-pairs       fudgeLJ fudgeQQ
                     #1               2               yes             0.5     0.8333
-                    '''
-                    assert len(fields) in  [2, 5]
-                    self.defaults['nbfunc']    = int(fields[0])
-                    self.defaults['comb-rule'] = int(fields[1])
+                    """
+                    assert len(fields) in [2, 5]
+                    self.defaults["nbfunc"] = int(fields[0])
+                    self.defaults["comb-rule"] = int(fields[1])
                     if len(fields) == 5:
+                        self.defaults["gen-pairs"] = fields[2]
+                        self.defaults["fudgeLJ"] = float(fields[3])
+                        self.defaults["fudgeQQ"] = float(fields[4])
 
-                       self.defaults['gen-pairs'] = fields[2]
-                       self.defaults['fudgeLJ']   = float(fields[3])
-                       self.defaults['fudgeQQ']   = float(fields[4])
-
-                elif curr_sec == 'atomtypes':
-                    '''
+                elif curr_sec == "atomtypes":
+                    """
                     # ;name               at.num    mass         charge    ptype  sigma   epsilon
                     # ;name   bond_type   at.num    mass         charge    ptype  sigma   epsilon
                     # ;name                         mass         charge    ptype  c6      c12
 
-                    '''
-                    if len(fields) not in (6,7,8):
-                        self.logger.warning('skipping atomtype line with neither 7 or 8 fields: \n {0:s}'.format(line))
+                    """
+                    if len(fields) not in (6, 7, 8):
+                        self.logger.warning(
+                            "skipping atomtype line with neither 7 or 8 fields: \n {0:s}".format(
+                                line
+                            )
+                        )
                         continue
 
-                    #shift = 0 if len(fields) == 7 else 1
+                    # shift = 0 if len(fields) == 7 else 1
                     shift = len(fields) - 7
-                    at = blocks.AtomType('gromacs')
+                    at = blocks.AtomType("gromacs")
                     at.atype = fields[0]
-                    if shift == 1: at.bond_type = fields[1]
+                    if shift == 1:
+                        at.bond_type = fields[1]
 
-                    at.mass  = float(fields[2+shift])
-                    at.charge= float(fields[3+shift])
+                    at.mass = float(fields[2 + shift])
+                    at.charge = float(fields[3 + shift])
 
-                    particletype = fields[4+shift]
-                    assert particletype in ('A', 'S', 'V', 'D')
-                    if particletype not in ('A',):
-                        self.logger.warning('warning: non-atom particletype: "{0:s}"'.format(line))
+                    particletype = fields[4 + shift]
+                    assert particletype in ("A", "S", "V", "D")
+                    if particletype not in ("A",):
+                        self.logger.warning(
+                            'warning: non-atom particletype: "{0:s}"'.format(line)
+                        )
 
-                    sig = float(fields[5+shift])
-                    eps = float(fields[6+shift])
+                    sig = float(fields[5 + shift])
+                    eps = float(fields[6 + shift])
 
-                    at.gromacs= {'param': {'lje':eps, 'ljl':sig, 'lje14':None, 'ljl14':None} }
+                    at.gromacs = {
+                        "param": {"lje": eps, "ljl": sig, "lje14": None, "ljl14": None}
+                    }
 
                     self.atomtypes.append(at)
 
                     _add_info(self, curr_sec, self.atomtypes)
 
-
                 # extend system.molecules
-                elif curr_sec == 'moleculetype':
+                elif curr_sec == "moleculetype":
                     assert len(fields) == 2
 
                     mol = blocks.Molecule()
@@ -272,9 +300,8 @@ class TOP(blocks.System):
 
                     self.dict_molname_mol[mol.name] = mol
 
-
-                elif curr_sec == 'atoms':
-                    '''
+                elif curr_sec == "atoms":
+                    """
                     #id    at_type     res_nr  residu_name at_name  cg_nr  charge   mass  typeB    chargeB      massB
                     # 1       OC          1       OH          O1       1      -1.32
 
@@ -284,24 +311,24 @@ class TOP(blocks.System):
                     ; id   at type  res nr  residu name at name     cg nr   charge
                     1       OT      1       SOL              OW             1       -0.834
 
-                    '''
+                    """
 
                     aserial = int(fields[0])
-                    atype   = fields[1]
+                    atype = fields[1]
                     resnumb = int(fields[2])
                     resname = fields[3]
-                    aname   = fields[4]
-                    cgnr    = int(fields[5])
-                    charge  = float(fields[6])
+                    aname = fields[4]
+                    cgnr = int(fields[5])
+                    charge = float(fields[6])
                     rest = fields[7:]
 
-                    atom         = blocks.Atom()
-                    atom.name    = aname
-                    atom.atomtype= atype
-                    atom.number  = aserial
+                    atom = blocks.Atom()
+                    atom.name = aname
+                    atom.atomtype = atype
+                    atom.number = aserial
                     atom.resname = resname
                     atom.resnumb = resnumb
-                    atom.charge  = charge
+                    atom.charge = charge
 
                     if rest:
                         mass = float(rest[0])
@@ -311,36 +338,44 @@ class TOP(blocks.System):
 
                     _add_info(mol, curr_sec, mol.atoms)
 
-                elif curr_sec in ('pairtypes', 'pairs', 'pairs_nb'):
-                    '''
+                elif curr_sec in ("pairtypes", "pairs", "pairs_nb"):
+                    """
                     section     #at     fu      #param
                     ---------------------------------
                     pairs       2       1       V,W
                     pairs       2       2       fudgeQQ, qi, qj, V, W
                     pairs_nb    2       1       qi, qj, V, W
 
-                    '''
+                    """
 
                     ai, aj = fields[:2]
-                    fu     = int(fields[2])
-                    assert fu in (1,2)
+                    fu = int(fields[2])
+                    assert fu in (1, 2)
 
-                    pair = blocks.InteractionType('gromacs')
+                    pair = blocks.InteractionType("gromacs")
                     if fu == 1:
-                        if curr_sec=='pairtypes':
+                        if curr_sec == "pairtypes":
                             pair.atype1 = ai
                             pair.atype2 = aj
                             v, w = list(map(float, fields[3:5]))
-                            pair.gromacs = {'param': {'lje':None, 'ljl':None, 'lje14':w, 'ljl14':v}, 'func':fu }
+                            pair.gromacs = {
+                                "param": {
+                                    "lje": None,
+                                    "ljl": None,
+                                    "lje14": w,
+                                    "ljl14": v,
+                                },
+                                "func": fu,
+                            }
 
                             self.pairtypes.append(pair)
                             _add_info(self, curr_sec, self.pairtypes)
 
-                        elif curr_sec == 'pairs':
-                            ai, aj = list( map(int, [ai,aj]) )
-                            pair.atom1 = mol.atoms[ai-1]
-                            pair.atom2 = mol.atoms[aj-1]
-                            pair.gromacs['func'] = fu
+                        elif curr_sec == "pairs":
+                            ai, aj = list(map(int, [ai, aj]))
+                            pair.atom1 = mol.atoms[ai - 1]
+                            pair.atom2 = mol.atoms[aj - 1]
+                            pair.gromacs["func"] = fu
 
                             mol.pairs.append(pair)
                             _add_info(mol, curr_sec, mol.pairs)
@@ -349,34 +384,38 @@ class TOP(blocks.System):
                             raise ValueError
 
                     else:
-                        raise NotImplementedError('{0:s} with functiontype {1:d} is not supported'.format(curr_sec,fu))
+                        raise NotImplementedError(
+                            "{0:s} with functiontype {1:d} is not supported".format(
+                                curr_sec, fu
+                            )
+                        )
 
-                elif curr_sec == 'nonbond_params':
-                    '''
+                elif curr_sec == "nonbond_params":
+                    """
                     ; typei typej  f.type sigma   epsilon
                     ; f.type=1 means LJ (not buckingham)
                     ; sigma&eps since mixing-rule = 2
-                    '''
+                    """
 
                     assert len(fields) == 5
                     ai, aj = fields[:2]
-                    fu     = int(fields[2])
+                    fu = int(fields[2])
 
                     assert fu == 1
-                    sig    = float(fields[3])
-                    eps    = float(fields[4])
+                    sig = float(fields[3])
+                    eps = float(fields[4])
 
-                    nonbond_param = blocks.NonbondedParamType('gromacs')
+                    nonbond_param = blocks.NonbondedParamType("gromacs")
                     nonbond_param.atype1 = ai
                     nonbond_param.atype2 = aj
-                    nonbond_param.gromacs['func'] = fu
-                    nonbond_param.gromacs['param'] = {'eps': eps, 'sig': sig}
+                    nonbond_param.gromacs["func"] = fu
+                    nonbond_param.gromacs["param"] = {"eps": eps, "sig": sig}
 
                     self.nonbond_params.append(nonbond_param)
                     _add_info(self, curr_sec, self.nonbond_params)
 
-                elif curr_sec in ('bondtypes', 'bonds'):
-                    '''
+                elif curr_sec in ("bondtypes", "bonds"):
+                    """
                     section     #at     fu      #param
                     ----------------------------------
                     bonds       2       1       2
@@ -389,37 +428,42 @@ class TOP(blocks.System):
                     bonds       2       8       ??
                     bonds       2       9       ??
                     bonds       2       10      4
-                    '''
+                    """
 
                     ai, aj = fields[:2]
-                    fu     = int(fields[2])
-                    assert fu in (1,2,3,4,5,6,7,8,9,10)
+                    fu = int(fields[2])
+                    assert fu in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
 
                     if fu != 1:
-                        raise NotImplementedError('function {0:d} is not yet supported'.format(fu))
+                        raise NotImplementedError(
+                            "function {0:d} is not yet supported".format(fu)
+                        )
 
-                    bond = blocks.BondType('gromacs')
+                    bond = blocks.BondType("gromacs")
 
                     if fu == 1:
-                        if curr_sec == 'bondtypes':
+                        if curr_sec == "bondtypes":
                             bond.atype1 = ai
                             bond.atype2 = aj
 
                             b0, kb = list(map(float, fields[3:5]))
-                            bond.gromacs = {'param':{'kb':kb, 'b0':b0}, 'func':fu}
+                            bond.gromacs = {"param": {"kb": kb, "b0": b0}, "func": fu}
 
                             self.bondtypes.append(bond)
                             _add_info(self, curr_sec, self.bondtypes)
 
-                        elif curr_sec == 'bonds':
+                        elif curr_sec == "bonds":
                             ai, aj = list(map(int, [ai, aj]))
-                            bond.atom1 = mol.atoms[ai-1]
-                            bond.atom2 = mol.atoms[aj-1]
-                            bond.gromacs['func'] = fu
+                            bond.atom1 = mol.atoms[ai - 1]
+                            bond.atom2 = mol.atoms[aj - 1]
+                            bond.gromacs["func"] = fu
 
                             if len(fields) > 3:
                                 b0, kb = list(map(float, fields[3:5]))
-                                bond.gromacs = {'param':{'kb':kb, 'b0':b0}, 'func':fu}
+                                bond.gromacs = {
+                                    "param": {"kb": kb, "b0": b0},
+                                    "func": fu,
+                                }
 
                             mol.bonds.append(bond)
                             _add_info(mol, curr_sec, mol.bonds)
@@ -427,8 +471,8 @@ class TOP(blocks.System):
                     else:
                         raise NotImplementedError
 
-                elif curr_sec in ('angletypes', 'angles'):
-                    '''
+                elif curr_sec in ("angletypes", "angles"):
+                    """
                     section     #at     fu      #param
                     ----------------------------------
                     angles      3       1       2
@@ -438,34 +482,44 @@ class TOP(blocks.System):
                     angles      3       5       4
                     angles      3       6       6
                     angles      3       8       ??
-                    '''
+                    """
 
-                    ai, aj , ak = fields[:3]
-                    fu          = int(fields[3])
-                    assert fu in (1,2,3,4,5,6,8)  # no 7
+                    ai, aj, ak = fields[:3]
+                    fu = int(fields[3])
+                    assert fu in (1, 2, 3, 4, 5, 6, 8)  # no 7
 
-                    if fu not in (1,2,5):
-                        raise NotImplementedError('function {0:d} is not yet supported'.format(fu))
+                    if fu not in (1, 2, 5):
+                        raise NotImplementedError(
+                            "function {0:d} is not yet supported".format(fu)
+                        )
 
-                    ang = blocks.AngleType('gromacs')
+                    ang = blocks.AngleType("gromacs")
                     if fu == 1:
-                        if curr_sec == 'angletypes':
+                        if curr_sec == "angletypes":
                             ang.atype1 = ai
                             ang.atype2 = aj
                             ang.atype3 = ak
 
                             tetha0, ktetha = list(map(float, fields[4:6]))
-                            ang.gromacs = {'param':{'ktetha':ktetha, 'tetha0':tetha0, 'kub':None, 's0':None}, 'func':fu}
+                            ang.gromacs = {
+                                "param": {
+                                    "ktetha": ktetha,
+                                    "tetha0": tetha0,
+                                    "kub": None,
+                                    "s0": None,
+                                },
+                                "func": fu,
+                            }
 
                             self.angletypes.append(ang)
                             _add_info(self, curr_sec, self.angletypes)
 
-                        elif curr_sec == 'angles':
+                        elif curr_sec == "angles":
                             ai, aj, ak = list(map(int, [ai, aj, ak]))
-                            ang.atom1 = mol.atoms[ai-1]
-                            ang.atom2 = mol.atoms[aj-1]
-                            ang.atom3 = mol.atoms[ak-1]
-                            ang.gromacs['func'] = fu
+                            ang.atom1 = mol.atoms[ai - 1]
+                            ang.atom2 = mol.atoms[aj - 1]
+                            ang.atom3 = mol.atoms[ak - 1]
+                            ang.gromacs["func"] = fu
 
                             mol.angles.append(ang)
                             _add_info(mol, curr_sec, mol.angles)
@@ -474,40 +528,56 @@ class TOP(blocks.System):
                             raise ValueError
 
                     elif fu == 2:
-                        if curr_sec == 'angletypes':
+                        if curr_sec == "angletypes":
                             raise NotImplementedError()
 
-                        elif curr_sec == 'angles':
+                        elif curr_sec == "angles":
                             ai, aj, ak = list(map(int, [ai, aj, ak]))
-                            ang.atom1 = mol.atoms[ai-1]
-                            ang.atom2 = mol.atoms[aj-1]
-                            ang.atom3 = mol.atoms[ak-1]
-                            ang.gromacs['func'] = fu
+                            ang.atom1 = mol.atoms[ai - 1]
+                            ang.atom2 = mol.atoms[aj - 1]
+                            ang.atom3 = mol.atoms[ak - 1]
+                            ang.gromacs["func"] = fu
 
                             tetha0, ktetha = list(map(float, fields[4:6]))
-                            ang.gromacs = {'param':{'ktetha':ktetha, 'tetha0':tetha0, 'kub':None, 's0':None}, 'func':fu}
+                            ang.gromacs = {
+                                "param": {
+                                    "ktetha": ktetha,
+                                    "tetha0": tetha0,
+                                    "kub": None,
+                                    "s0": None,
+                                },
+                                "func": fu,
+                            }
 
                             mol.angles.append(ang)
                             _add_info(mol, curr_sec, mol.angles)
 
                     elif fu == 5:
-                        if curr_sec == 'angletypes':
+                        if curr_sec == "angletypes":
                             ang.atype1 = ai
                             ang.atype2 = aj
                             ang.atype3 = ak
                             tetha0, ktetha, s0, kub = list(map(float, fields[4:8]))
 
-                            ang.gromacs = {'param':{'ktetha':ktetha, 'tetha0':tetha0, 'kub':kub, 's0':s0}, 'func':fu}
+                            ang.gromacs = {
+                                "param": {
+                                    "ktetha": ktetha,
+                                    "tetha0": tetha0,
+                                    "kub": kub,
+                                    "s0": s0,
+                                },
+                                "func": fu,
+                            }
 
                             self.angletypes.append(ang)
                             _add_info(self, curr_sec, self.angletypes)
 
-                        elif curr_sec == 'angles':
+                        elif curr_sec == "angles":
                             ai, aj, ak = list(map(int, [ai, aj, ak]))
-                            ang.atom1 = mol.atoms[ai-1]
-                            ang.atom2 = mol.atoms[aj-1]
-                            ang.atom3 = mol.atoms[ak-1]
-                            ang.gromacs['func'] = fu
+                            ang.atom1 = mol.atoms[ai - 1]
+                            ang.atom2 = mol.atoms[aj - 1]
+                            ang.atom3 = mol.atoms[ak - 1]
+                            ang.gromacs["func"] = fu
 
                             mol.angles.append(ang)
                             _add_info(mol, curr_sec, mol.angles)
@@ -518,9 +588,8 @@ class TOP(blocks.System):
                     else:
                         raise NotImplementedError
 
-
-                elif curr_sec in  ('dihedraltypes', 'dihedrals'):
-                    '''
+                elif curr_sec in ("dihedraltypes", "dihedrals"):
+                    """
                     section     #at     fu      #param
                     ----------------------------------
                     dihedrals   4       1       3
@@ -530,25 +599,27 @@ class TOP(blocks.System):
                     dihedrals   4       5       4
                     dihedrals   4       8       ??
                     dihedrals   4       9       3
-                    '''
+                    """
 
-                    if curr_sec == 'dihedraltypes' and len(fields) == 6:
+                    if curr_sec == "dihedraltypes" and len(fields) == 6:
                         # in oplsaa - quartz parameters
-                        fields.insert(2, 'X')
-                        fields.insert(0, 'X')
+                        fields.insert(2, "X")
+                        fields.insert(0, "X")
 
                     ai, aj, ak, am = fields[:4]
                     fu = int(fields[4])
-                    assert fu in (1,2,3,4,5,8,9)
+                    assert fu in (1, 2, 3, 4, 5, 8, 9)
 
-                    if fu not in (1,2,3,4,9):
-                        raise NotImplementedError('dihedral function {0:d} is not yet supported'.format(fu))
+                    if fu not in (1, 2, 3, 4, 9):
+                        raise NotImplementedError(
+                            "dihedral function {0:d} is not yet supported".format(fu)
+                        )
 
-                    dih = blocks.DihedralType('gromacs')
-                    imp = blocks.ImproperType('gromacs')
+                    dih = blocks.DihedralType("gromacs")
+                    imp = blocks.ImproperType("gromacs")
                     # proper dihedrals
-                    if fu in (1,3,9):
-                        if curr_sec == 'dihedraltypes':
+                    if fu in (1, 3, 9):
+                        if curr_sec == "dihedraltypes":
                             dih.atype1 = ai
                             dih.atype2 = aj
                             dih.atype3 = ak
@@ -558,37 +629,45 @@ class TOP(blocks.System):
 
                             if fu == 1:
                                 delta, kchi, n = list(map(float, fields[5:8]))
-                                dih.gromacs['param'].append({'kchi':kchi, 'n':n, 'delta':delta})
+                                dih.gromacs["param"].append(
+                                    {"kchi": kchi, "n": n, "delta": delta}
+                                )
                             elif fu == 3:
                                 c0, c1, c2, c3, c4, c5 = list(map(float, fields[5:11]))
                                 m = dict(c0=c0, c1=c1, c2=c2, c3=c3, c4=c4, c5=c5)
-                                dih.gromacs['param'].append(m)
+                                dih.gromacs["param"].append(m)
                             elif fu == 4:
                                 delta, kchi, n = list(map(float, fields[5:8]))
-                                dih.gromacs['param'].append({'kchi':kchi, 'n':int(n), 'delta':delta})
+                                dih.gromacs["param"].append(
+                                    {"kchi": kchi, "n": int(n), "delta": delta}
+                                )
                             elif fu == 9:
                                 delta, kchi, n = list(map(float, fields[5:8]))
-                                dih.gromacs['param'].append({'kchi':kchi, 'n':int(n), 'delta':delta})
+                                dih.gromacs["param"].append(
+                                    {"kchi": kchi, "n": int(n), "delta": delta}
+                                )
                             else:
                                 raise ValueError
 
-                            dih.gromacs['func'] = fu
+                            dih.gromacs["func"] = fu
                             self.dihedraltypes.append(dih)
                             _add_info(self, curr_sec, self.dihedraltypes)
 
-                        elif curr_sec == 'dihedrals':
+                        elif curr_sec == "dihedrals":
                             ai, aj, ak, am = list(map(int, fields[:4]))
-                            dih.atom1 = mol.atoms[ai-1]
-                            dih.atom2 = mol.atoms[aj-1]
-                            dih.atom3 = mol.atoms[ak-1]
-                            dih.atom4 = mol.atoms[am-1]
-                            dih.gromacs['func'] = fu
+                            dih.atom1 = mol.atoms[ai - 1]
+                            dih.atom2 = mol.atoms[aj - 1]
+                            dih.atom3 = mol.atoms[ak - 1]
+                            dih.atom4 = mol.atoms[am - 1]
+                            dih.gromacs["func"] = fu
 
                             dih.line = i_line + 1
 
                             if fu == 1:
                                 delta, kchi, n = list(map(float, fields[5:8]))
-                                dih.gromacs['param'].append({'kchi':kchi, 'n': int(n), 'delta':delta})
+                                dih.gromacs["param"].append(
+                                    {"kchi": kchi, "n": int(n), "delta": delta}
+                                )
                             elif fu == 3:
                                 pass
                             elif fu == 4:
@@ -596,7 +675,9 @@ class TOP(blocks.System):
                             elif fu == 9:
                                 if len(fields[5:8]) == 3:
                                     delta, kchi, n = list(map(float, fields[5:8]))
-                                    dih.gromacs['param'].append({'kchi':kchi, 'n':int(n), 'delta':delta})
+                                    dih.gromacs["param"].append(
+                                        {"kchi": kchi, "n": int(n), "delta": delta}
+                                    )
                             else:
                                 raise ValueError
 
@@ -606,8 +687,8 @@ class TOP(blocks.System):
                         else:
                             raise ValueError
                     # impropers
-                    elif fu in (2,4):
-                        if curr_sec == 'dihedraltypes':
+                    elif fu in (2, 4):
+                        if curr_sec == "dihedraltypes":
                             imp.atype1 = ai
                             imp.atype2 = aj
                             imp.atype3 = ak
@@ -616,25 +697,29 @@ class TOP(blocks.System):
                             imp.line = i_line + 1
 
                             if fu == 2:
-                                psi0 , kpsi = list(map(float, fields[5:7]))
-                                imp.gromacs['param'].append({'kpsi':kpsi, 'psi0': psi0})
+                                psi0, kpsi = list(map(float, fields[5:7]))
+                                imp.gromacs["param"].append(
+                                    {"kpsi": kpsi, "psi0": psi0}
+                                )
                             elif fu == 4:
-                                psi0 , kpsi, n = list(map(float, fields[5:8]))
-                                imp.gromacs['param'].append({'kpsi':kpsi, 'psi0': psi0, 'n': int(n)})
+                                psi0, kpsi, n = list(map(float, fields[5:8]))
+                                imp.gromacs["param"].append(
+                                    {"kpsi": kpsi, "psi0": psi0, "n": int(n)}
+                                )
                             else:
                                 raise ValueError
 
-                            imp.gromacs['func'] = fu
+                            imp.gromacs["func"] = fu
                             self.impropertypes.append(imp)
                             _add_info(self, curr_sec, self.impropertypes)
 
-                        elif curr_sec == 'dihedrals':
+                        elif curr_sec == "dihedrals":
                             ai, aj, ak, am = list(map(int, fields[:4]))
-                            imp.atom1 = mol.atoms[ai-1]
-                            imp.atom2 = mol.atoms[aj-1]
-                            imp.atom3 = mol.atoms[ak-1]
-                            imp.atom4 = mol.atoms[am-1]
-                            imp.gromacs['func'] = fu
+                            imp.atom1 = mol.atoms[ai - 1]
+                            imp.atom2 = mol.atoms[aj - 1]
+                            imp.atom3 = mol.atoms[ak - 1]
+                            imp.atom4 = mol.atoms[am - 1]
+                            imp.gromacs["func"] = fu
 
                             imp.line = i_line + 1
 
@@ -643,8 +728,10 @@ class TOP(blocks.System):
                             elif fu == 4:
                                 # in-line override of dihedral parameters
                                 if len(fields[5:8]) == 3:
-                                    psi0 , kpsi, n = list(map(float, fields[5:8]))
-                                    imp.gromacs['param'].append({'kpsi':kpsi, 'psi0': psi0, 'n': int(n)})
+                                    psi0, kpsi, n = list(map(float, fields[5:8]))
+                                    imp.gromacs["param"].append(
+                                        {"kpsi": kpsi, "psi0": psi0, "n": int(n)}
+                                    )
                             else:
                                 raise ValueError
 
@@ -657,41 +744,38 @@ class TOP(blocks.System):
                     else:
                         raise NotImplementedError
 
-
-                elif curr_sec in ('cmaptypes', 'cmap'):
-
-                    cmap = blocks.CMapType('gromacs')
-                    if curr_sec == 'cmaptypes':
+                elif curr_sec in ("cmaptypes", "cmap"):
+                    cmap = blocks.CMapType("gromacs")
+                    if curr_sec == "cmaptypes":
                         cmap_lines.append(line)
                         _add_info(self, curr_sec, self.cmaptypes)
                     else:
                         ai, aj, ak, am, an = list(map(int, fields[:5]))
                         fu = int(fields[5])
                         assert fu == 1
-                        cmap.atom1 = mol.atoms[ai-1]
-                        cmap.atom2 = mol.atoms[aj-1]
-                        cmap.atom3 = mol.atoms[ak-1]
-                        cmap.atom4 = mol.atoms[am-1]
-                        cmap.atom8 = mol.atoms[an-1]
-                        cmap.gromacs['func'] = fu
+                        cmap.atom1 = mol.atoms[ai - 1]
+                        cmap.atom2 = mol.atoms[aj - 1]
+                        cmap.atom3 = mol.atoms[ak - 1]
+                        cmap.atom4 = mol.atoms[am - 1]
+                        cmap.atom8 = mol.atoms[an - 1]
+                        cmap.gromacs["func"] = fu
 
                         mol.cmaps.append(cmap)
                         _add_info(mol, curr_sec, mol.cmaps)
 
-
-                elif curr_sec == 'settles':
-                    '''
+                elif curr_sec == "settles":
+                    """
                     section     #at     fu      #param
                     ----------------------------------
-                    '''
+                    """
 
                     assert len(fields) == 4
                     ai = int(fields[0])
                     fu = int(fields[1])
                     assert fu == 1
 
-                    settle = blocks.SettleType('gromacs')
-                    settle.atom = mol.atoms[ai-1]
+                    settle = blocks.SettleType("gromacs")
+                    settle.atom = mol.atoms[ai - 1]
                     settle.dOH = float(fields[2])
                     settle.dHH = float(fields[3])
 
@@ -699,10 +783,10 @@ class TOP(blocks.System):
                     _add_info(mol, curr_sec, mol.settles)
 
                 elif curr_sec == "virtual_sites3":
-                    '''
-                        ; Dummy from            funct   a       b
-                        4   1   2   3   1   0.131937768 0.131937768
-                    '''
+                    """
+                    ; Dummy from            funct   a       b
+                    4   1   2   3   1   0.131937768 0.131937768
+                    """
                     assert len(fields) == 7
                     ai = int(fields[0])
                     aj = int(fields[1])
@@ -713,59 +797,57 @@ class TOP(blocks.System):
                     a = float(fields[5])
                     b = float(fields[6])
 
-                    vs3 = blocks.VirtualSites3Type('gromacs')
+                    vs3 = blocks.VirtualSites3Type("gromacs")
                     vs3.atom1 = ai
                     vs3.atom2 = aj
                     vs3.atom3 = ak
                     vs3.atom4 = al
-                    vs3.gromacs['func'] = fu
-                    vs3.gromacs['param'] = { 'a': a, 'b':b }
+                    vs3.gromacs["func"] = fu
+                    vs3.gromacs["param"] = {"a": a, "b": b}
                     mol.virtual_sites3.append(vs3)
                     _add_info(mol, curr_sec, mol.virtual_sites3)
 
-
-                elif curr_sec in ('exclusions',):
+                elif curr_sec in ("exclusions",):
                     ai = int(fields[0])
                     other = list(map(int, fields[1:]))
 
                     exc = blocks.Exclusion()
-                    exc.main_atom  = mol.atoms[ai-1]
-                    exc.other_atoms= [mol.atoms[k-1] for k in other]
+                    exc.main_atom = mol.atoms[ai - 1]
+                    exc.other_atoms = [mol.atoms[k - 1] for k in other]
 
                     mol.exclusions.append(exc)
                     _add_info(mol, curr_sec, mol.exclusions)
 
-
-                elif curr_sec in ('constrainttypes', 'constraints'):
-                    '''
+                elif curr_sec in ("constrainttypes", "constraints"):
+                    """
                     section     #at     fu      #param
                     ----------------------------------
                     constraints 2       1       1
                     constraints 2       2       1
-                    '''
+                    """
 
                     ai, aj = fields[:2]
                     fu = int(fields[2])
-                    assert fu in (1,2)
+                    assert fu in (1, 2)
 
-                    cons = blocks.ConstraintType('gromacs')
+                    cons = blocks.ConstraintType("gromacs")
 
                     # TODO: what's different between 1 and 2
                     if fu in [1, 2]:
-                        if curr_sec == 'constrainttypes':
+                        if curr_sec == "constrainttypes":
                             cons.atype1 = ai
                             cons.atype2 = aj
                             b0 = float(fields[3])
-                            cons.gromacs = {'param':{'b0':b0}, 'func': fu}
+                            cons.gromacs = {"param": {"b0": b0}, "func": fu}
 
                             self.constrainttypes.append(cons)
                             _add_info(self, curr_sec, self.constrainttypes)
 
-                        elif curr_sec == 'constraints':
+                        elif curr_sec == "constraints":
                             ai, aj = list(map(int, fields[:2]))
-                            cons.atom1 = mol.atoms[ai-1]
-                            cons.atom2 = mol.atoms[aj-1]
-                            cons.gromacs['func'] = fu
+                            cons.atom1 = mol.atoms[ai - 1]
+                            cons.atom2 = mol.atoms[aj - 1]
+                            cons.gromacs["func"] = fu
 
                             mol.constraints.append(cons)
                             _add_info(mol, curr_sec, mol.constraints)
@@ -775,27 +857,27 @@ class TOP(blocks.System):
                     else:
                         raise ValueError
 
-                elif curr_sec in ('position_restraints',
-                                  'distance_restraints',
-                                  'dihedral_restraints',
-                                  'orientation_restraints',
-                                  'angle_restraints',
-                                  'angle_restraints_z'):
+                elif curr_sec in (
+                    "position_restraints",
+                    "distance_restraints",
+                    "dihedral_restraints",
+                    "orientation_restraints",
+                    "angle_restraints",
+                    "angle_restraints_z",
+                ):
                     pass
 
-
-                elif curr_sec in ('implicit_genborn_params',):
-                    '''
+                elif curr_sec in ("implicit_genborn_params",):
+                    """
                     attype   sar     st      pi      gbr      hct
-                    '''
+                    """
                     pass
 
-                elif curr_sec == 'system':
-                    #assert len(fields) == 1
+                elif curr_sec == "system":
+                    # assert len(fields) == 1
                     self.name = fields[0]
 
-
-                elif curr_sec == 'molecules':
+                elif curr_sec == "molecules":
                     assert len(fields) == 2
                     mname, nmol = fields[0], int(fields[1])
 
@@ -804,70 +886,81 @@ class TOP(blocks.System):
                         self.molecules.append(self.dict_molname_mol[mname])
 
                 else:
-                    raise NotImplementedError('Unknown section in topology: {0}'.format(curr_sec))
+                    raise NotImplementedError(
+                        "Unknown section in topology: {0}".format(curr_sec)
+                    )
 
         # process cmap_lines
         curr_cons = None
         for line in cmap_lines:
-
             # cmaptype opening line
             if len(line.split()) == 8:
-                cons = blocks.CMapType('gromacs')
+                cons = blocks.CMapType("gromacs")
 
-                atype1, atype2, atype3, atype4, atype8, func, sizeX, sizeY = line.replace("\\","").split()
+                (
+                    atype1,
+                    atype2,
+                    atype3,
+                    atype4,
+                    atype8,
+                    func,
+                    sizeX,
+                    sizeY,
+                ) = line.replace("\\", "").split()
                 func, sizeX, sizeY = int(func), int(sizeX), int(sizeY)
                 cons.atype1 = atype1
                 cons.atype2 = atype2
                 cons.atype3 = atype3
                 cons.atype4 = atype4
                 cons.atype8 = atype8
-                cons.gromacs = {'param':[], 'func': func}
+                cons.gromacs = {"param": [], "func": func}
 
                 curr_cons = cons
 
             # cmap body
             elif len(line.split()) == 10:
-                cmap_param = map(float, line.replace("\\","").split())
-                cons.gromacs['param'] += cmap_param
+                cmap_param = map(float, line.replace("\\", "").split())
+                cons.gromacs["param"] += cmap_param
 
             # cmaptype cloning line
             elif len(line.split()) == 6:
-                cmap_param = map(float, line.replace("\\","").split())
-                cons.gromacs['param'] += cmap_param
+                cmap_param = map(float, line.replace("\\", "").split())
+                cons.gromacs["param"] += cmap_param
                 self.cmaptypes.append(curr_cons)
             else:
                 raise ValueError
 
+
 class SystemToGroTop(object):
     """Converter class - represent TOP objects as GROMACS topology file."""
-    formats = {
-        'atomtypes'      : '{:<7s} {:3s} {:>7} {} {:3s} {} {}\n',
-        'atoms'          : '{:6d} {:>10s} {:6d} {:6s} {:6s} {:6d} {} {}\n',
-        'atoms_nomass'   : '{:6d} {:>10s} {:6d} {:6s} {:6s} {:6d} {}\n',
-        'nonbond_params' : '{:20s}  {:20s}  {:1d}  {}  {}\n',
-        'bondtypes'      : '{:5s}  {:5s}  {:1d}  {}  {}\n',
-        'bonds'          : '{:3d}  {:3d}   {:1d}\n',
-        'bonds_ext'      : '{:3d}  {:3d}   {:1d} {} {}\n',
-        'settles'        : '{:3d}  {:3d}  {} {}\n',
-        'virtual_sites3' : '{:3d}  {:3d}  {:3d}  {:3d}   {:1d}  {}  {}\n',
-        'exclusions'     : '{:3d}  {}\n',
-        'pairtypes'      : '{:6s} {:6s}   {:d}    {:.13g}     {:.13g}\n',
-        'pairs'          : '{:3d} {:3d}   {:1d}\n',
-        'angletypes_1'   : '{:>8s} {:>8s} {:>8s} {:1d}    {}    {}\n',
-        'angletypes_5'   : '{:>8s} {:>8s} {:>8s} {:1d}    {}    {}    {}    {}\n',
-        'constrainttypes': '{:6s} {:6s} {:1d}    {}\n',
-        'angles'         : '{:3d} {:3d} {:3d}   {:1d}\n',
-        'angles_ext'     : '{:3d} {:3d} {:3d}   {:1d} {} {}\n',
-        'dihedraltypes'  : '{:6s} {:6s} {:6s} {:6s}   {:1d}    {}    {}    {:1d}\n',
-        'dihedrals'      : '{:3d} {:3d} {:3d} {:3d}   {:1d}\n',
-        'dihedrals_ext'  : '{:3d} {:3d} {:3d} {:3d}   {:1d}    {}    {}    {:1d}\n',
-        'impropertypes_2'  : '{:6s} {:6s} {:6s} {:6s}   {:1d} {} {} \n',
-        'impropertypes_4'  : '{:6s} {:6s} {:6s} {:6s}   {:1d} {} {} {:2d}\n',
-        'impropers'      : '{:3d} {:3d} {:3d} {:3d}   {:1d}\n',
-        'impropers_2'  : '{:3d} {:3d} {:3d} {:3d}   {:1d} {} {} \n',
-        'impropers_4'  : '{:3d} {:3d} {:3d} {:3d}   {:1d} {} {} {:2d}\n',
-    }
 
+    formats = {
+        "atomtypes": "{:<7s} {:3s} {:>7} {} {:3s} {} {}\n",
+        "atoms": "{:6d} {:>10s} {:6d} {:6s} {:6s} {:6d} {} {}\n",
+        "atoms_nomass": "{:6d} {:>10s} {:6d} {:6s} {:6s} {:6d} {}\n",
+        "nonbond_params": "{:20s}  {:20s}  {:1d}  {}  {}\n",
+        "bondtypes": "{:5s}  {:5s}  {:1d}  {}  {}\n",
+        "bonds": "{:3d}  {:3d}   {:1d}\n",
+        "bonds_ext": "{:3d}  {:3d}   {:1d} {} {}\n",
+        "settles": "{:3d}  {:3d}  {} {}\n",
+        "virtual_sites3": "{:3d}  {:3d}  {:3d}  {:3d}   {:1d}  {}  {}\n",
+        "exclusions": "{:3d}  {}\n",
+        "pairtypes": "{:6s} {:6s}   {:d}    {:.13g}     {:.13g}\n",
+        "pairs": "{:3d} {:3d}   {:1d}\n",
+        "angletypes_1": "{:>8s} {:>8s} {:>8s} {:1d}    {}    {}\n",
+        "angletypes_5": "{:>8s} {:>8s} {:>8s} {:1d}    {}    {}    {}    {}\n",
+        "constrainttypes": "{:6s} {:6s} {:1d}    {}\n",
+        "angles": "{:3d} {:3d} {:3d}   {:1d}\n",
+        "angles_ext": "{:3d} {:3d} {:3d}   {:1d} {} {}\n",
+        "dihedraltypes": "{:6s} {:6s} {:6s} {:6s}   {:1d}    {}    {}    {:1d}\n",
+        "dihedrals": "{:3d} {:3d} {:3d} {:3d}   {:1d}\n",
+        "dihedrals_ext": "{:3d} {:3d} {:3d} {:3d}   {:1d}    {}    {}    {:1d}\n",
+        "impropertypes_2": "{:6s} {:6s} {:6s} {:6s}   {:1d} {} {} \n",
+        "impropertypes_4": "{:6s} {:6s} {:6s} {:6s}   {:1d} {} {} {:2d}\n",
+        "impropers": "{:3d} {:3d} {:3d} {:3d}   {:1d}\n",
+        "impropers_2": "{:3d} {:3d} {:3d} {:3d}   {:1d} {} {} \n",
+        "impropers_4": "{:3d} {:3d} {:3d} {:3d}   {:1d} {} {} {:2d}\n",
+    }
 
     toptemplate = """
             [ defaults ]
@@ -930,92 +1023,113 @@ class SystemToGroTop(object):
           *multiple_output*
               if True, write moleculetypes to separate files, named mol_MOLNAME.itp (default: False)
         """
-        self.logger = logging.getLogger('gromacs.fileformats.SystemToGroTop')
+        self.logger = logging.getLogger("gromacs.fileformats.SystemToGroTop")
         self.logger.debug(">> entering SystemToGroTop")
 
-        self.system   = system
+        self.system = system
         self.outfile = outfile
         self.multiple_output = multiple_output
         self.assemble_topology()
 
         self.logger.debug("<< leaving SystemToGroTop")
 
-
     @staticmethod
     def _redefine_atomtypes(mol):
         for i, atom in enumerate(mol.atoms):
-            atom.atomtype = 'at{0:03d}'.format(i+1)
+            atom.atomtype = "at{0:03d}".format(i + 1)
 
     def assemble_topology(self):
         """Call the various member self._make_* functions to convert the topology object into a string"""
         self.logger.debug("starting to assemble topology...")
 
-        top = ''
+        top = ""
 
         self.logger.debug("making atom/pair/bond/angle/dihedral/improper types")
         top += self.toptemplate
-        top = top.replace('*DEFAULTS*',       ''.join( self._make_defaults(self.system)) )
-        top = top.replace('*ATOMTYPES*',      ''.join( self._make_atomtypes(self.system)) )
-        top = top.replace('*NONBOND_PARAM*',  ''.join( self._make_nonbond_param(self.system)) )
-        top = top.replace('*PAIRTYPES*',      ''.join( self._make_pairtypes(self.system)) )
-        top = top.replace('*BONDTYPES*',      ''.join( self._make_bondtypes(self.system)) )
-        top = top.replace('*CONSTRAINTTYPES*',''.join( self._make_constrainttypes(self.system)))
-        top = top.replace('*ANGLETYPES*',     ''.join( self._make_angletypes(self.system)))
-        top = top.replace('*DIHEDRALTYPES*',  ''.join( self._make_dihedraltypes(self.system)) )
-        top = top.replace('*IMPROPERTYPES*',  ''.join( self._make_impropertypes(self.system)) )
-        top = top.replace('*CMAPTYPES*',      ''.join( self._make_cmaptypes(self.system)) )
+        top = top.replace("*DEFAULTS*", "".join(self._make_defaults(self.system)))
+        top = top.replace("*ATOMTYPES*", "".join(self._make_atomtypes(self.system)))
+        top = top.replace(
+            "*NONBOND_PARAM*", "".join(self._make_nonbond_param(self.system))
+        )
+        top = top.replace("*PAIRTYPES*", "".join(self._make_pairtypes(self.system)))
+        top = top.replace("*BONDTYPES*", "".join(self._make_bondtypes(self.system)))
+        top = top.replace(
+            "*CONSTRAINTTYPES*", "".join(self._make_constrainttypes(self.system))
+        )
+        top = top.replace("*ANGLETYPES*", "".join(self._make_angletypes(self.system)))
+        top = top.replace(
+            "*DIHEDRALTYPES*", "".join(self._make_dihedraltypes(self.system))
+        )
+        top = top.replace(
+            "*IMPROPERTYPES*", "".join(self._make_impropertypes(self.system))
+        )
+        top = top.replace("*CMAPTYPES*", "".join(self._make_cmaptypes(self.system)))
 
-        for i,(molname,m) in enumerate(self.system.dict_molname_mol.items()):
-
+        for i, (molname, m) in enumerate(self.system.dict_molname_mol.items()):
             itp = self.itptemplate
-            itp = itp.replace('*MOLECULETYPE*',  ''.join( self._make_moleculetype(m, molname, m.exclusion_numb))  )
-            itp = itp.replace('*ATOMS*',         ''.join( self._make_atoms(m))  )
-            itp = itp.replace('*BONDS*',         ''.join( self._make_bonds(m))  )
-            itp = itp.replace('*PAIRS*',         ''.join( self._make_pairs(m))  )
-            itp = itp.replace('*SETTLES*',       ''.join( self._make_settles(m))  )
-            itp = itp.replace('*VIRTUAL_SITES3*',''.join( self._make_virtual_sites3(m))  )
-            itp = itp.replace('*EXCLUSIONS*',    ''.join( self._make_exclusions(m))  )
-            itp = itp.replace('*ANGLES*',        ''.join( self._make_angles(m)) )
-            itp = itp.replace('*DIHEDRALS*',     ''.join( self._make_dihedrals(m)) )
-            itp = itp.replace('*IMPROPERS*',     ''.join( self._make_impropers(m)) )
-            itp = itp.replace('*CMAPS*',         ''.join( self._make_cmaps(m)) )
+            itp = itp.replace(
+                "*MOLECULETYPE*",
+                "".join(self._make_moleculetype(m, molname, m.exclusion_numb)),
+            )
+            itp = itp.replace("*ATOMS*", "".join(self._make_atoms(m)))
+            itp = itp.replace("*BONDS*", "".join(self._make_bonds(m)))
+            itp = itp.replace("*PAIRS*", "".join(self._make_pairs(m)))
+            itp = itp.replace("*SETTLES*", "".join(self._make_settles(m)))
+            itp = itp.replace("*VIRTUAL_SITES3*", "".join(self._make_virtual_sites3(m)))
+            itp = itp.replace("*EXCLUSIONS*", "".join(self._make_exclusions(m)))
+            itp = itp.replace("*ANGLES*", "".join(self._make_angles(m)))
+            itp = itp.replace("*DIHEDRALS*", "".join(self._make_dihedrals(m)))
+            itp = itp.replace("*IMPROPERS*", "".join(self._make_impropers(m)))
+            itp = itp.replace("*CMAPS*", "".join(self._make_cmaps(m)))
             if not self.multiple_output:
                 top += itp
             else:
                 outfile = "mol_{0}.itp".format(molname)
-                top += '#include "mol_{0}.itp" \n'.format( molname )
+                top += '#include "mol_{0}.itp" \n'.format(molname)
                 with open(outfile, "w") as f:
                     f.writelines([itp])
 
-        top += '\n[system]  \nConvertedSystem\n\n'
-        top += '[molecules] \n'
+        top += "\n[system]  \nConvertedSystem\n\n"
+        top += "[molecules] \n"
         molecules = [("", 0)]
 
         for m in self.system.molecules:
-            if (molecules[-1][0] != m.name):
+            if molecules[-1][0] != m.name:
                 molecules.append([m.name, 0])
             if molecules[-1][0] == m.name:
                 molecules[-1][1] += 1
 
         for molname, n in molecules[1:]:
-            top += '{0:s}     {1:d}\n'.format(molname, n)
-        top += '\n'
+            top += "{0:s}     {1:d}\n".format(molname, n)
+        top += "\n"
 
-        with open(self.outfile, 'w') as f:
+        with open(self.outfile, "w") as f:
             f.writelines([top])
 
-    def _make_defaults(self,m):
-        if m.defaults['gen-pairs'] and m.defaults['fudgeLJ']and m.defaults['fudgeQQ']:
-            line = ['{0:d}          {1:d}           {2}          {3}       {4} \n'.format(m.defaults['nbfunc'], m.defaults['comb-rule'], m.defaults['gen-pairs'] , m.defaults['fudgeLJ'], m.defaults['fudgeQQ'])]
+    def _make_defaults(self, m):
+        if m.defaults["gen-pairs"] and m.defaults["fudgeLJ"] and m.defaults["fudgeQQ"]:
+            line = [
+                "{0:d}          {1:d}           {2}          {3}       {4} \n".format(
+                    m.defaults["nbfunc"],
+                    m.defaults["comb-rule"],
+                    m.defaults["gen-pairs"],
+                    m.defaults["fudgeLJ"],
+                    m.defaults["fudgeQQ"],
+                )
+            ]
         else:
-            line = ['{0:d}          {1:d}\n'.format(m.defaults['nbfunc'], m.defaults['comb-rule'], )]
+            line = [
+                "{0:d}          {1:d}\n".format(
+                    m.defaults["nbfunc"],
+                    m.defaults["comb-rule"],
+                )
+            ]
         return line
 
-
-    def _make_atomtypes(self,m):
+    def _make_atomtypes(self, m):
         def get_prot(at):
             # TODO improve this
-            _protons = {'C':6, 'H':1, 'N':7, 'O':8, 'S':16, 'P':15}
+            _protons = {"C": 6, "H": 1, "N": 7, "O": 8, "S": 16, "P": 15}
             if at[0] in list(_protons.keys()):
                 return _protons[at[0]]
             else:
@@ -1023,12 +1137,21 @@ class SystemToGroTop(object):
 
         result = []
         for at in m.atomtypes:
-            at.convert('gromacs')
+            at.convert("gromacs")
             prot = get_prot(at.atype)
-            ljl  = at.gromacs['param']['ljl']
-            lje  = at.gromacs['param']['lje']
-            line = self.formats['atomtypes'].format(at.atype, at.bond_type if at.bond_type else "", at.mass, at.charge, 'A', ljl, lje)
-            if at.comment : line += at.comment
+            ljl = at.gromacs["param"]["ljl"]
+            lje = at.gromacs["param"]["lje"]
+            line = self.formats["atomtypes"].format(
+                at.atype,
+                at.bond_type if at.bond_type else "",
+                at.mass,
+                at.charge,
+                "A",
+                ljl,
+                lje,
+            )
+            if at.comment:
+                line += at.comment
             result.append(line)
 
         return result
@@ -1039,87 +1162,89 @@ class SystemToGroTop(object):
             at1 = pr.atype1
             at2 = pr.atype2
 
-            #pr.convert('gromacs')
-            eps = pr.gromacs['param']['eps']
-            sig = pr.gromacs['param']['sig']
+            # pr.convert('gromacs')
+            eps = pr.gromacs["param"]["eps"]
+            sig = pr.gromacs["param"]["sig"]
 
             fu = 1  # TODO
-            line = self.formats['nonbond_params'].format(at1, at2, fu, sig, eps)
-            if pr.comment : line = line[:-1] + pr.comment + line[-1:]
+            line = self.formats["nonbond_params"].format(at1, at2, fu, sig, eps)
+            if pr.comment:
+                line = line[:-1] + pr.comment + line[-1:]
             result.append(line)
 
         return result
 
-    def _make_pairtypes(self,m):
-
+    def _make_pairtypes(self, m):
         result = []
         for pt in m.pairtypes:
             at1, at2 = pt.atype1, pt.atype2
-            fu, l14, e14 = pt.gromacs['func'], pt.gromacs['param']['ljl14'], pt.gromacs['param']['lje14']
-            line = self.formats['pairtypes'].format(at1, at2, fu, l14, e14)
-            if pt.comment : line = line[:-1] + pt.comment
+            fu, l14, e14 = (
+                pt.gromacs["func"],
+                pt.gromacs["param"]["ljl14"],
+                pt.gromacs["param"]["lje14"],
+            )
+            line = self.formats["pairtypes"].format(at1, at2, fu, l14, e14)
+            if pt.comment:
+                line = line[:-1] + pt.comment
             result.append(line)
 
         return result
 
-
-
-    def _make_bondtypes(self,m):
+    def _make_bondtypes(self, m):
         result = []
         for bond in m.bondtypes:
             at1 = bond.atype1
             at2 = bond.atype2
-            bond.convert('gromacs')
+            bond.convert("gromacs")
 
-            kb = bond.gromacs['param']['kb']
-            b0 = bond.gromacs['param']['b0']
-            fu = bond.gromacs['func']
+            kb = bond.gromacs["param"]["kb"]
+            b0 = bond.gromacs["param"]["b0"]
+            fu = bond.gromacs["func"]
 
-            line = self.formats['bondtypes'].format(at1, at2, fu, b0, kb)
+            line = self.formats["bondtypes"].format(at1, at2, fu, b0, kb)
             result.append(line)
 
         return result
 
-
-    def _make_constrainttypes(self,m):
+    def _make_constrainttypes(self, m):
         result = []
 
         for con in m.constrainttypes:
             at1 = con.atype1
             at2 = con.atype2
 
-            fu  = con.gromacs['func']
-            b0  = con.gromacs['param']['b0']
+            fu = con.gromacs["func"]
+            b0 = con.gromacs["param"]["b0"]
 
-            line = self.formats['constrainttypes'].format(at1, at2, fu, b0)
+            line = self.formats["constrainttypes"].format(at1, at2, fu, b0)
             result.append(line)
 
         return result
 
-
-    def _make_angletypes(self,m):
+    def _make_angletypes(self, m):
         result = []
         for ang in m.angletypes:
             at1 = ang.atype1
             at2 = ang.atype2
             at3 = ang.atype3
-            ang.convert('gromacs')
+            ang.convert("gromacs")
 
-            ktetha = ang.gromacs['param']['ktetha']
-            tetha0 = ang.gromacs['param']['tetha0']
-            kub    = ang.gromacs['param']['kub']
-            s0     = ang.gromacs['param']['s0']
+            ktetha = ang.gromacs["param"]["ktetha"]
+            tetha0 = ang.gromacs["param"]["tetha0"]
+            kub = ang.gromacs["param"]["kub"]
+            s0 = ang.gromacs["param"]["s0"]
 
-            fu = ang.gromacs['func']
+            fu = ang.gromacs["func"]
 
-            angletypes = 'angletypes_{0:d}'.format(fu)
-            line = self.formats[angletypes].format(at1, at2, at3, fu, tetha0, ktetha, s0, kub)
+            angletypes = "angletypes_{0:d}".format(fu)
+            line = self.formats[angletypes].format(
+                at1, at2, at3, fu, tetha0, ktetha, s0, kub
+            )
             result.append(line)
 
         return result
 
-
-    def _make_dihedraltypes(self,m):
+    def _make_dihedraltypes(self, m):
         result = []
         for dih in m.dihedraltypes:
             at1 = dih.atype1
@@ -1127,24 +1252,28 @@ class SystemToGroTop(object):
             at3 = dih.atype3
             at4 = dih.atype4
 
-            dih.convert('gromacs')
-            fu = dih.gromacs['func']
+            dih.convert("gromacs")
+            fu = dih.gromacs["func"]
 
-            for dpar in dih.gromacs['param']:
-                kchi = dpar['kchi']
-                n    = dpar['n']
-                delta= dpar['delta']
+            for dpar in dih.gromacs["param"]:
+                kchi = dpar["kchi"]
+                n = dpar["n"]
+                delta = dpar["delta"]
 
                 if not dih.disabled:
-                    line = self.formats['dihedraltypes'].format(at1, at2, at3, at4, fu, delta, kchi, n)
+                    line = self.formats["dihedraltypes"].format(
+                        at1, at2, at3, at4, fu, delta, kchi, n
+                    )
                 else:
-                    line = self.formats['dihedraltypes'].format(at1, at2, at3, at4, fu, delta, kchi, n)
+                    line = self.formats["dihedraltypes"].format(
+                        at1, at2, at3, at4, fu, delta, kchi, n
+                    )
                     line = dih.comment + line
                 result.append(line)
 
         return result
 
-    def _make_impropertypes(self,m):
+    def _make_impropertypes(self, m):
         result = []
         for imp in m.impropertypes:
             at1 = imp.atype1
@@ -1152,21 +1281,25 @@ class SystemToGroTop(object):
             at3 = imp.atype3
             at4 = imp.atype4
 
-            imp.convert('gromacs')
-            fu = imp.gromacs['func']
+            imp.convert("gromacs")
+            fu = imp.gromacs["func"]
 
-            for ipar in imp.gromacs['param']:
-
-                kpsi = ipar['kpsi']
-                psi0 = ipar['psi0']
+            for ipar in imp.gromacs["param"]:
+                kpsi = ipar["kpsi"]
+                psi0 = ipar["psi0"]
 
                 if fu == 2:
-                    line = self.formats['impropertypes_2'].format(at1, at2, at3, at4, fu, psi0, kpsi)
+                    line = self.formats["impropertypes_2"].format(
+                        at1, at2, at3, at4, fu, psi0, kpsi
+                    )
                 if fu == 4:
-                    n = ipar['n']
-                    line = self.formats['impropertypes_4'].format(at1, at2, at3, at4, fu, psi0, kpsi, n)
+                    n = ipar["n"]
+                    line = self.formats["impropertypes_4"].format(
+                        at1, at2, at3, at4, fu, psi0, kpsi, n
+                    )
 
-                if imp.disabled: line = imp.comment + line
+                if imp.disabled:
+                    line = imp.comment + line
                 result.append(line)
 
         return result
@@ -1178,174 +1311,250 @@ class SystemToGroTop(object):
             at2 = cmap.atype2
             at3 = cmap.atype3
             at4 = cmap.atype4
-            #at5 = cmap.atype5
-            #at6 = cmap.atype6
-            #at7 = cmap.atype7
+            # at5 = cmap.atype5
+            # at6 = cmap.atype6
+            # at7 = cmap.atype7
             at8 = cmap.atype8
 
-            cmap.convert('gromacs')
+            cmap.convert("gromacs")
 
-            fu = cmap.gromacs['func']
-            line = '{0:s} {1:s} {2:s} {3:s} {4:s} {5:d} 24 24'.format(at1, at2, at3, at4, at8, fu)
-            for i,c in enumerate(cmap.gromacs['param']):
-                if i%10 == 0:
-                    line += '\\\n'
+            fu = cmap.gromacs["func"]
+            line = "{0:s} {1:s} {2:s} {3:s} {4:s} {5:d} 24 24".format(
+                at1, at2, at3, at4, at8, fu
+            )
+            for i, c in enumerate(cmap.gromacs["param"]):
+                if i % 10 == 0:
+                    line += "\\\n"
                 else:
-                    line += ' '
-                line += '{0:12.8f}'.format(c)
+                    line += " "
+                line += "{0:12.8f}".format(c)
 
-            line += '\n\n'
+            line += "\n\n"
             result.append(line)
 
         return result
 
-    def _make_moleculetype(self,m,molname,nrexcl):
-        return ['; Name \t\t  nrexcl \n {0}    {1} \n'.format(molname,nrexcl)]
+    def _make_moleculetype(self, m, molname, nrexcl):
+        return ["; Name \t\t  nrexcl \n {0}    {1} \n".format(molname, nrexcl)]
 
-    def _make_atoms(self,m):
+    def _make_atoms(self, m):
         result = []
-        #i = 1
+        # i = 1
         for atom in m.atoms:
             numb = cgnr = atom.number
             atype = atom.get_atomtype()
 
-            assert atype!= False
-            assert hasattr(atom, 'charge') #and hasattr(atom, 'mass')
+            assert atype != False
+            assert hasattr(atom, "charge")  # and hasattr(atom, 'mass')
 
-            if hasattr(atom, 'mass'):
-                line = self.formats['atoms'].format(
-                    numb, atype, atom.resnumb, atom.resname, atom.name, cgnr, atom.charge, atom.mass)
+            if hasattr(atom, "mass"):
+                line = self.formats["atoms"].format(
+                    numb,
+                    atype,
+                    atom.resnumb,
+                    atom.resname,
+                    atom.name,
+                    cgnr,
+                    atom.charge,
+                    atom.mass,
+                )
             else:
-                line = self.formats['atoms_nomass'].format(
-                    numb, atype, atom.resnumb, atom.resname, atom.name, cgnr, atom.charge)
+                line = self.formats["atoms_nomass"].format(
+                    numb,
+                    atype,
+                    atom.resnumb,
+                    atom.resname,
+                    atom.name,
+                    cgnr,
+                    atom.charge,
+                )
             result.append(line)
 
-        result.insert(0,'; {0:5d} atoms\n'.format(len(result)))
+        result.insert(0, "; {0:5d} atoms\n".format(len(result)))
         return result
 
-    def _make_pairs(self,m):
-
+    def _make_pairs(self, m):
         result = []
         for pr in m.pairs:
             fu = 1
             p1 = pr.atom1.number
             p4 = pr.atom2.number
 
-            line = self.formats['pairs'].format(p1, p4, fu)
+            line = self.formats["pairs"].format(p1, p4, fu)
             result.append(line)
 
-        result.insert(0,'; {0:5d} pairs\n'.format(len(result)))
+        result.insert(0, "; {0:5d} pairs\n".format(len(result)))
         return result
 
-
-    def _make_bonds(self,m):
+    def _make_bonds(self, m):
         result = []
         for bond in m.bonds:
             fu = bond.gromacs["func"]
 
-
             if bond.gromacs["param"]["kb"] and bond.gromacs["param"]["b0"]:
                 kb, b0 = bond.gromacs["param"]["kb"], bond.gromacs["param"]["b0"]
-                line = self.formats['bonds_ext'].format(bond.atom1.number, bond.atom2.number, fu, b0, kb)
+                line = self.formats["bonds_ext"].format(
+                    bond.atom1.number, bond.atom2.number, fu, b0, kb
+                )
             else:
-                line = self.formats['bonds'].format(bond.atom1.number, bond.atom2.number, fu)
+                line = self.formats["bonds"].format(
+                    bond.atom1.number, bond.atom2.number, fu
+                )
 
             result.append(line)
 
-        result.insert(0,'; {0:5d} bonds\n'.format(len(result)))
+        result.insert(0, "; {0:5d} bonds\n".format(len(result)))
         return result
 
-    def _make_angles(self,m):
+    def _make_angles(self, m):
         result = []
         for ang in m.angles:
             fu = ang.gromacs["func"]
             if ang.gromacs["param"]["ktetha"] and ang.gromacs["param"]["tetha0"]:
-                ktetha, tetha0 = ang.gromacs["param"]["ktetha"] , ang.gromacs["param"]["tetha0"]
-                line = self.formats['angles_ext'].format(ang.atom1.number, ang.atom2.number, ang.atom3.number, fu, tetha0, ktetha)
+                ktetha, tetha0 = (
+                    ang.gromacs["param"]["ktetha"],
+                    ang.gromacs["param"]["tetha0"],
+                )
+                line = self.formats["angles_ext"].format(
+                    ang.atom1.number,
+                    ang.atom2.number,
+                    ang.atom3.number,
+                    fu,
+                    tetha0,
+                    ktetha,
+                )
             else:
-                line = self.formats['angles'].format(ang.atom1.number, ang.atom2.number, ang.atom3.number, fu)
+                line = self.formats["angles"].format(
+                    ang.atom1.number, ang.atom2.number, ang.atom3.number, fu
+                )
             result.append(line)
 
-        result.insert(0,'; {0:5d} angles\n'.format(len(result)))
+        result.insert(0, "; {0:5d} angles\n".format(len(result)))
         return result
 
-    def _make_settles(self,m):
+    def _make_settles(self, m):
         result = []
         for st in m.settles:
-            line = self.formats['settles'].format(st.atom.number, 1, st.dOH, st.dHH)
+            line = self.formats["settles"].format(st.atom.number, 1, st.dOH, st.dHH)
             result.append(line)
 
-        result.insert(0,'; {0:5d} settles\n'.format(len(result)))
+        result.insert(0, "; {0:5d} settles\n".format(len(result)))
         return result
 
-
-    def _make_virtual_sites3(self,m):
+    def _make_virtual_sites3(self, m):
         result = []
         for vs in m.virtual_sites3:
             fu = 1
-            line = self.formats['virtual_sites3'].format(vs.atom1, vs.atom2, vs.atom3, vs.atom4, fu, vs.gromacs['param']['a'], vs.gromacs['param']['b'])
+            line = self.formats["virtual_sites3"].format(
+                vs.atom1,
+                vs.atom2,
+                vs.atom3,
+                vs.atom4,
+                fu,
+                vs.gromacs["param"]["a"],
+                vs.gromacs["param"]["b"],
+            )
             result.append(line)
 
-        result.insert(0,'; {0:5d} virtual_sites3\n'.format(len(result)))
+        result.insert(0, "; {0:5d} virtual_sites3\n".format(len(result)))
         return result
 
-
-    def _make_exclusions(self,m):
+    def _make_exclusions(self, m):
         result = []
         for excl in m.exclusions:
             other_atoms = ["  {:3d}".format(at.number) for at in excl.other_atoms]
-            line = self.formats['exclusions'].format(excl.main_atom.number, "".join(other_atoms))
+            line = self.formats["exclusions"].format(
+                excl.main_atom.number, "".join(other_atoms)
+            )
             result.append(line)
 
-        result.insert(0,'; {0:5d} exclusions\n'.format(len(result)))
+        result.insert(0, "; {0:5d} exclusions\n".format(len(result)))
         return result
 
-    def _make_dihedrals(self,m):
+    def _make_dihedrals(self, m):
         result = []
         for dih in m.dihedrals:
             fu = dih.gromacs["func"]
 
-            if not dih.gromacs['param']:
-                line = self.formats['dihedrals'].format(
-                    dih.atom1.number, dih.atom2.number, dih.atom3.number, dih.atom4.number, fu)
+            if not dih.gromacs["param"]:
+                line = self.formats["dihedrals"].format(
+                    dih.atom1.number,
+                    dih.atom2.number,
+                    dih.atom3.number,
+                    dih.atom4.number,
+                    fu,
+                )
                 result.append(line)
 
-            for dpar in dih.gromacs['param']:
-                kchi = dpar['kchi']
-                n    = dpar['n']
-                delta= dpar['delta']
+            for dpar in dih.gromacs["param"]:
+                kchi = dpar["kchi"]
+                n = dpar["n"]
+                delta = dpar["delta"]
 
-                line = self.formats['dihedrals_ext'].format(dih.atom1.number, dih.atom2.number, dih.atom3.number, dih.atom4.number, fu, delta, kchi, n)
-                if dih.comment: line = dih.comment + line
+                line = self.formats["dihedrals_ext"].format(
+                    dih.atom1.number,
+                    dih.atom2.number,
+                    dih.atom3.number,
+                    dih.atom4.number,
+                    fu,
+                    delta,
+                    kchi,
+                    n,
+                )
+                if dih.comment:
+                    line = dih.comment + line
                 result.append(line)
 
-        result.insert(0,'; {0:5d} dihedrals\n'.format(len(result)))
+        result.insert(0, "; {0:5d} dihedrals\n".format(len(result)))
         return result
 
-    def _make_impropers(self,m):
+    def _make_impropers(self, m):
         result = []
         for imp in m.impropers:
-            fu = imp.gromacs['func']
+            fu = imp.gromacs["func"]
 
-            if not imp.gromacs['param']:
-                line = self.formats['impropers'].format(
-                    imp.atom1.number, imp.atom2.number, imp.atom3.number, imp.atom4.number, fu)
+            if not imp.gromacs["param"]:
+                line = self.formats["impropers"].format(
+                    imp.atom1.number,
+                    imp.atom2.number,
+                    imp.atom3.number,
+                    imp.atom4.number,
+                    fu,
+                )
                 result.append(line)
 
-            for ipar in imp.gromacs['param']:
-                kpsi = ipar['kpsi']
-                psi0 = ipar['psi0']
+            for ipar in imp.gromacs["param"]:
+                kpsi = ipar["kpsi"]
+                psi0 = ipar["psi0"]
 
                 if fu == 2:
-                    line = self.formats['impropers_2'].format(imp.atom1.number, imp.atom2.number, imp.atom3.number, imp.atom4.number, fu, psi0, kpsi)
+                    line = self.formats["impropers_2"].format(
+                        imp.atom1.number,
+                        imp.atom2.number,
+                        imp.atom3.number,
+                        imp.atom4.number,
+                        fu,
+                        psi0,
+                        kpsi,
+                    )
                 if fu == 4:
-                    n = ipar['n']
-                    line = self.formats['impropers_4'].format(imp.atom1.number, imp.atom2.number, imp.atom3.number, imp.atom4.number, fu, psi0, kpsi, n)
+                    n = ipar["n"]
+                    line = self.formats["impropers_4"].format(
+                        imp.atom1.number,
+                        imp.atom2.number,
+                        imp.atom3.number,
+                        imp.atom4.number,
+                        fu,
+                        psi0,
+                        kpsi,
+                        n,
+                    )
 
-                if imp.comment: line = imp.comment + line
+                if imp.comment:
+                    line = imp.comment + line
                 result.append(line)
 
-        result.insert(0,'; {0:5d} impropers\n'.format(len(result)))
+        result.insert(0, "; {0:5d} impropers\n".format(len(result)))
         return result
 
     def _make_cmaps(self, m):
@@ -1353,10 +1562,15 @@ class SystemToGroTop(object):
 
         for cmap in m.cmaps:
             fu = 1
-            line = '{0:5d} {1:5d} {2:5d} {3:5d} {4:5d}   {5:d}\n'.format(
-                cmap.atom1.number, cmap.atom2.number, cmap.atom3.number, cmap.atom4.number,
-                cmap.atom8.number, fu)
+            line = "{0:5d} {1:5d} {2:5d} {3:5d} {4:5d}   {5:d}\n".format(
+                cmap.atom1.number,
+                cmap.atom2.number,
+                cmap.atom3.number,
+                cmap.atom4.number,
+                cmap.atom8.number,
+                fu,
+            )
             result.append(line)
 
-        result.insert(0,'; {0:5d} cmaps\n'.format(len(result)))
+        result.insert(0, "; {0:5d} cmaps\n".format(len(result)))
         return result

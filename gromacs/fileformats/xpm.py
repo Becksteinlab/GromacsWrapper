@@ -85,6 +85,7 @@ from .convert import Autoconverter
 
 import logging
 
+
 class XPM(utilities.FileUtils):
     """Class to make a Gromacs XPM matrix available as a NumPy :class:`numpy.ndarray`.
 
@@ -100,8 +101,9 @@ class XPM(utilities.FileUtils):
        file) to match the order of the rows.
 
     """
+
     default_extension = "xpm"
-    logger = logging.getLogger('gromacs.formats.XPM')
+    logger = logging.getLogger("gromacs.formats.XPM")
     #: compiled regular expression to parse the colors in the xpm file::
     #:
     #:   static char *gromacs_xpm[] = {
@@ -116,7 +118,8 @@ class XPM(utilities.FileUtils):
     #: 0x20 (space) to 0x7E (~).
     #:
     #: .. _`printable ASCII character`: http://www.danshort.com/ASCIImap/indexhex.htm
-    COLOUR = re.compile("""\
+    COLOUR = re.compile(
+        """\
             ^.*"                   # start with quotation mark
             (?P<symbol>[\x20-\x7E])# printable ASCII symbol used in the actual pixmap: 'space' to '~'
             \s+                    # white-space separated
@@ -127,7 +130,9 @@ class XPM(utilities.FileUtils):
             "                      # start new string
             (?P<value>.*)          # description/value as free form string
             "                      # ... terminated by quotes
-            """, re.VERBOSE)
+            """,
+        re.VERBOSE,
+    )
 
     def __init__(self, filename=None, **kwargs):
         """Initialize xpm structure.
@@ -146,12 +151,13 @@ class XPM(utilities.FileUtils):
         self.autoconvert = kwargs.pop("autoconvert", True)
         self.reverse = kwargs.pop("reverse", True)
         self.__array = None
-        super(XPM, self).__init__(**kwargs)  # can use kwargs to set dict! (but no sanity checks!)
+        super(XPM, self).__init__(
+            **kwargs
+        )  # can use kwargs to set dict! (but no sanity checks!)
 
         if filename is not None:
             self._init_filename(filename)
             self.read(filename)
-
 
     def to_df(self):
         import pandas as pd
@@ -160,10 +166,10 @@ class XPM(utilities.FileUtils):
         data = numpy.vstack((self.xvalues, self.array.T)).T
 
         # Column names are resids
-        df = pd.DataFrame(data, columns=["Time"]+ list(self.yvalues))
+        df = pd.DataFrame(data, columns=["Time"] + list(self.yvalues))
 
         # Converts Time to a numeric type
-        df['Time'] = pd.to_numeric(df['Time'])
+        df["Time"] = pd.to_numeric(df["Time"])
         return df
 
     @property
@@ -199,7 +205,6 @@ class XPM(utilities.FileUtils):
             # at the end of the line contains the corresponding value
             colors = dict([self.col(xpm.readline()) for i in range(nc)])
 
-
             if self.autoconvert:
                 autoconverter = Autoconverter(mode="singlet")
                 for symbol, value in colors.items():
@@ -211,10 +216,17 @@ class XPM(utilities.FileUtils):
             self.logger.debug("Guessed array type: %s", dtype.name)
 
             # pre-allocate array
-            data = numpy.zeros((int(nx/nb), ny), dtype=dtype)
+            data = numpy.zeros((int(nx / nb), ny), dtype=dtype)
 
-            self.logger.debug("dimensions: NX=%d NY=%d strideX=%d (NC=%d) --> (%d, %d)",
-                              nx, ny, nb, nc, nx/nb, ny)
+            self.logger.debug(
+                "dimensions: NX=%d NY=%d strideX=%d (NC=%d) --> (%d, %d)",
+                nx,
+                ny,
+                nb,
+                nc,
+                nx / nb,
+                ny,
+            )
 
             iy = 0
             xval = []
@@ -225,9 +237,9 @@ class XPM(utilities.FileUtils):
                     # lines '/* x-axis:' ... and '/* y-axis:' contain the
                     # values of x and y coordinates
                     s = self.uncomment(line).strip()
-                    if s.startswith('x-axis:'):
+                    if s.startswith("x-axis:"):
                         xval.extend([autoconverter.convert(x) for x in s[7:].split()])
-                    elif s.startswith('y-axis:'):
+                    elif s.startswith("y-axis:"):
                         yval.extend([autoconverter.convert(y) for y in s[7:].split()])
                     continue
                 s = self.unquote(line)
@@ -240,9 +252,14 @@ class XPM(utilities.FileUtils):
                 # However, without a test case I am not eager to change it right away so in
                 # case some faulty behavior is discovered with the XPM reader then this comment
                 # might be helpful. --- Oliver 2014-10-25
-                data[:, iy] = [colors[s[k:k+nb]] for k in range(0,nx,nb)]
-                self.logger.debug("read row %d with %d columns: '%s....%s'",
-                                  iy, data.shape[0], s[:4], s[-4:])
+                data[:, iy] = [colors[s[k : k + nb]] for k in range(0, nx, nb)]
+                self.logger.debug(
+                    "read row %d with %d columns: '%s....%s'",
+                    iy,
+                    data.shape[0],
+                    s[:4],
+                    s[-4:],
+                )
                 iy += 1  # for next row
 
         self.xvalues = numpy.array(xval)
@@ -257,22 +274,22 @@ class XPM(utilities.FileUtils):
     @staticmethod
     def unquote(s):
         """Return string *s* with quotes ``"`` removed."""
-        return s[1+s.find('"'):s.rfind('"')]
+        return s[1 + s.find('"') : s.rfind('"')]
 
     @staticmethod
     def uncomment(s):
         """Return string *s* with C-style comments ``/*`` ... ``*/`` removed."""
-        return s[2+s.find('/*'):s.rfind('*/')]
-
+        return s[2 + s.find("/*") : s.rfind("*/")]
 
     def col(self, c):
         """Parse colour specification"""
         m = self.COLOUR.search(c)
         if not m:
             self.logger.fatal("Cannot parse colour specification %r.", c)
-            raise ParseError("XPM reader: Cannot parse colour specification {0!r}.".format(c))
-        value = m.group('value')
-        color = m.group('symbol')
+            raise ParseError(
+                "XPM reader: Cannot parse colour specification {0!r}.".format(c)
+            )
+        value = m.group("value")
+        color = m.group("symbol")
         self.logger.debug("%s: %s %s\n", c.strip(), color, value)
         return color, value
-

@@ -7,6 +7,7 @@ import pytest
 
 import gromacs
 
+
 def test_version():
     release = gromacs.__version__
     assert isinstance(release, str)

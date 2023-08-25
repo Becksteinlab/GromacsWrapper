@@ -40,6 +40,7 @@ from collections import OrderedDict as odict
 
 import logging
 
+
 class NDX(odict, utilities.FileUtils):
     """Gromacs index file.
 
@@ -81,6 +82,7 @@ class NDX(odict, utilities.FileUtils):
         ndx.write()
 
     """
+
     default_extension = "ndx"
 
     # match:  [ index_groupname ]
@@ -89,10 +91,12 @@ class NDX(odict, utilities.FileUtils):
     #: standard ndx file format: 15 columns
     ncol = 15
     #: standard ndx file format: '%6d'
-    format = '%6d'
+    format = "%6d"
 
     def __init__(self, filename=None, **kwargs):
-        super(NDX, self).__init__(**kwargs)  # can use kwargs to set dict! (but no sanity checks!)
+        super(NDX, self).__init__(
+            **kwargs
+        )  # can use kwargs to set dict! (but no sanity checks!)
 
         if filename is not None:
             self._init_filename(filename)
@@ -111,26 +115,34 @@ class NDX(odict, utilities.FileUtils):
                     continue
                 m = self.SECTION.match(line)
                 if m:
-                    current_section = m.group('name')
+                    current_section = m.group("name")
                     data[current_section] = []  # can fail if name not legal python key
                     continue
                 if current_section is not None:
                     data[current_section].extend(map(int, line.split()))
 
-        super(NDX,self).update(odict([(name, self._transform(atomnumbers))
-                                     for name, atomnumbers in data.items()]))
+        super(NDX, self).update(
+            odict(
+                [
+                    (name, self._transform(atomnumbers))
+                    for name, atomnumbers in data.items()
+                ]
+            )
+        )
 
     def write(self, filename=None, ncol=ncol, format=format):
         """Write index file to *filename* (or overwrite the file that the index was read from)"""
-        with open(self.filename(filename, ext='ndx'), 'w') as ndx:
+        with open(self.filename(filename, ext="ndx"), "w") as ndx:
             for name in self:
                 atomnumbers = self._getarray(name)  # allows overriding
-                ndx.write('[ {0!s} ]\n'.format(name))
+                ndx.write("[ {0!s} ]\n".format(name))
                 for k in range(0, len(atomnumbers), ncol):
-                    line = atomnumbers[k:k+ncol].astype(int)   # nice formatting in ncol-blocks
+                    line = atomnumbers[k : k + ncol].astype(
+                        int
+                    )  # nice formatting in ncol-blocks
                     n = len(line)
-                    ndx.write((" ".join(n*[format])+'\n') % tuple(line))
-                ndx.write('\n')
+                    ndx.write((" ".join(n * [format]) + "\n") % tuple(line))
+                ndx.write("\n")
 
     def get(self, name):
         """Return index array for index group *name*."""
@@ -161,8 +173,10 @@ class NDX(odict, utilities.FileUtils):
         Format:
            [ {'name': group_name, 'natoms': number_atoms, 'nr':  # group_number}, ....]
         """
-        return [{'name': name, 'natoms': len(atomnumbers), 'nr': nr+1} for
-                nr,(name,atomnumbers) in enumerate(self.items())]
+        return [
+            {"name": name, "natoms": len(atomnumbers), "nr": nr + 1}
+            for nr, (name, atomnumbers) in enumerate(self.items())
+        ]
 
     def _getarray(self, name):
         """Helper getter that is used in write().
@@ -181,14 +195,16 @@ class NDX(odict, utilities.FileUtils):
     def __setitem__(self, k, v):
         super(NDX, self).__setitem__(k, self._transform(v))
 
-    def setdefault(*args,**kwargs):
+    def setdefault(*args, **kwargs):
         raise NotImplementedError
 
 
 class IndexSet(set):
     """set which defines '+' as union (OR) and '-' as intersection  (AND)."""
+
     def __add__(self, x):
         return self.union(x)
+
     def __sub__(self, x):
         return self.intersection(x)
 
@@ -231,8 +247,7 @@ class uniqueNDX(NDX):
         return IndexSet(v)
 
     def _getarray(self, k):
-        return numpy.sort(numpy.fromiter(self[k],dtype=int,count=len(self[k])))
-
+        return numpy.sort(numpy.fromiter(self[k], dtype=int, count=len(self[k])))
 
 
 # or use list of these?
