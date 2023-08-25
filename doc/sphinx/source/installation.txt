@@ -77,7 +77,7 @@ or install from the unpacked source::
 
   tar -zxvf GromacsWrapper-0.8.3.tar.gz
   cd GromacsWrapper-0.8.3
-  python setup.py install
+  pip install .
 
 
 
@@ -94,6 +94,11 @@ and checkout the *main* branch::
    git clone https://github.com/Becksteinlab/GromacsWrapper.git
    cd GromacsWrapper
 
+Code contributions are welcome. We use `black`_ for uniform code
+formatting so please install black_ and run it on your code.
+
+.. _`black`: https://github.com/psf/black
+   
 
 Requirements
 ============
