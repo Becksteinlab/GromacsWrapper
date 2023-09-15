@@ -66,6 +66,6 @@ setup(name="GromacsWrapper",
                         'numkit',       # numerical helpers
                         'matplotlib',
                         ],
-      tests_require=['pytest', 'numpy>=1.0', 'pandas>=0.17'],
+      tests_require=['pytest', 'pandas>=0.17'],
       zip_safe=True,
       )

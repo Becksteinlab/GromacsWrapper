@@ -5,8 +5,7 @@ channels:
 dependencies:
 - python
 - six
-- numpy
-- scipy
-- matplotlib-base
-- pandas
+- numpy>=1.0
+- matplotlib
+- pandas>=0.17
 - numkit
