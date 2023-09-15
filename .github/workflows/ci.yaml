@@ -81,7 +81,7 @@ jobs:
         cache-downloads: true
         cache-environment: true
         create-args: >-
-           python=${{ matrix.python-version }}
+           python=${{ matrix.python-version }}.*=*_cpython
 
     - name: Python version information ${{ matrix.python-version }}
       run: |
@@ -97,8 +97,12 @@ jobs:
          micromamba install pytest pytest-pep8 pytest-cov codecov
 
     - name: Install GROMACS (${{ matrix.gromacs-version }})
+      # UGLY HACK/FIX (probably to issues with bioconda packages)
+      # - For 3.9, micromamba insists on using pypy 3.9 (and --py-pin does not help).
+      # - For 2.7 macOS, numkit would get uninstalled.
+      # We can't freeze because then it's not possible to install older GROMACS versions from bioconda. 
       run: |
-         micromamba install --py-pin 'gromacs==${{ matrix.gromacs-version }}' pocl
+         micromamba install 'gromacs==${{ matrix.gromacs-version }}' pocl numkit python=${{ matrix.python-version }}.*=*_cpython
 
     - name: Install package (with no dependencies)
       run: |
