@@ -1,0 +1,12 @@
+name: test
+channels:
+- conda-forge
+- bioconda
+dependencies:
+- python
+- six
+- numpy
+- scipy
+- matplotlib-base
+- pandas
+- numkit
