@@ -77,7 +77,7 @@ jobs:
            channels:
               - conda-forge
               - bioconda
-           channel_priority: flexible
+           channel_priority: flexible	      
         cache-downloads: true
         cache-environment: true
         create-args: >-
@@ -98,7 +98,7 @@ jobs:
 
     - name: Install GROMACS (${{ matrix.gromacs-version }})
       run: |
-         micromamba install 'gromacs==${{ matrix.gromacs-version }}' pocl
+         micromamba install --py-pin 'gromacs==${{ matrix.gromacs-version }}' pocl
 
     - name: Install package (with no dependencies)
       run: |
