@@ -15,6 +15,10 @@ concurrency:
   group: "${{ github.ref }}-${{ github.head_ref }}"
   cancel-in-progress: true
 
+defaults:
+  run:
+    shell: bash -l {0}
+
 jobs:
   test:
     runs-on: ${{ matrix.os }}
@@ -65,57 +69,53 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: setup miniconda (Python ${{ matrix.python-version }})
-      uses: conda-incubator/setup-miniconda@v2
+    - name: micromamba environment and package installation (Python ${{ matrix.python-version }})
+      uses: mamba-org/setup-micromamba@v1
       with:
-        python-version: ${{ matrix.python-version }}
-        auto-update-conda: true
-        mamba-version: "*"
-        channels: conda-forge,bioconda,defaults
-        channel-priority: true
-        show-channel-urls: true
-          
-    - name: Conda info
-      shell: bash -l {0}
-      run: |
-         conda info
-         conda list
-         conda config --show-sources
-         conda config --show
+        environment-file: ci/conda-envs/test_env.yaml
+        condarc: |
+           channels:
+              - conda-forge
+              - bioconda
+           channel_priority: flexible	      
+        cache-downloads: true
+        cache-environment: true
+        create-args: >-
+           python=${{ matrix.python-version }}.*=*_cpython
 
-    - name: Python version ${{ matrix.python-version }}
-      shell: bash -l {0}
+    - name: Python version information ${{ matrix.python-version }}
       run: |
          python -c "import sys; print(sys.version)"                
 
-    - name: Install package dependencies
-      shell: bash -l {0}
+    - name: micromamba environment information
       run: |
-         mamba install six numpy scipy matplotlib-base pandas numkit
+         micromamba info
+         micromamba list
 
     - name: Install pytest and plugins
-      shell: bash -l {0}
       run: |
-         mamba install pytest pytest-pep8 pytest-cov codecov
+         micromamba install pytest pytest-pep8 pytest-cov codecov
 
     - name: Install GROMACS (${{ matrix.gromacs-version }})
-      shell: bash -l {0}
+      # UGLY HACK/FIX (probably to issues with bioconda packages)
+      # - For 3.9, micromamba insists on using pypy 3.9 (and --py-pin does not help).
+      # - For 2.7 macOS, numkit would get uninstalled.
+      # We can't freeze because then it's not possible to install older GROMACS versions from bioconda. 
       run: |
-         mamba install 'gromacs==${{ matrix.gromacs-version }}' pocl
+         micromamba install 'gromacs==${{ matrix.gromacs-version }}' pocl numkit python=${{ matrix.python-version }}.*=*_cpython
 
-    - name: Install package
-      shell: bash -l {0}
+    - name: Install package (with no dependencies)
       run: |
         python -m pip install --no-deps .
 
     - name: Run tests
-      shell: bash -l {0}
       run: |
         pytest -v --disable-pytest-warnings --durations=20 --low-performance --cov=gromacs --cov-report=xml --color=yes ./tests
 
     - name: Codecov
       uses: codecov/codecov-action@v3
       with:
+        token: ${{ secrets.CODECOV_TOKEN }}
         name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}
         file: ./coverage.xml
         fail_ci_if_error: false
