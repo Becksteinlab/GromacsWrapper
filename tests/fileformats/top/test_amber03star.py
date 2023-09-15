@@ -31,8 +31,9 @@ class TestAmber03star(TopologyTest):
         "ZN",
     ]
 
-    @pytest.mark.xfail(gromacs.release().startswith(("2022", "2023")),
-                       reason="issue #236 https://github.com/Becksteinlab/GromacsWrapper/issues/236")
+    @pytest.mark.xfail(
+        gromacs.release().startswith(("2022", "2023")),
+        reason="issue #236 https://github.com/Becksteinlab/GromacsWrapper/issues/236",
+    )
     def test_mdrun(self, tmpdir, low_performance):
-            super(TestAmber03star, self).test_mdrun(tmpdir, low_performance)
- 
+        super(TestAmber03star, self).test_mdrun(tmpdir, low_performance)
