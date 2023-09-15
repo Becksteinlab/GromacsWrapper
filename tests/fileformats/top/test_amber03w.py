@@ -13,10 +13,6 @@ from .top import TopologyTest
 from ...datafiles import datafile
 
 
-@pytest.mark.xfail(
-    gromacs.release().startswith("2022"),
-    reason="issue https://github.com/Becksteinlab/GromacsWrapper/issues/236",
-)
 class TestAmber03w(TopologyTest):
     processed = datafile("fileformats/top/amber03w/processed.top")
     conf = datafile("fileformats/top/amber03w/conf.gro")
@@ -34,3 +30,9 @@ class TestAmber03w(TopologyTest):
         "LI",
         "ZN",
     ]
+
+    @pytest.mark.xfail(gromacs.release().startswith(("2022", "2023")),
+                       reason="issue #236 https://github.com/Becksteinlab/GromacsWrapper/issues/236")
+    def test_mdrun(self, tmpdir, low_performance):
+            super(TestAmber03w, self).test_mdrun(tmpdir, low_performance)
+
