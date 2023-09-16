@@ -28,7 +28,7 @@ def pytest_addoption(parser):
         "--low-performance",
         action="store_true",
         dest="low_performance",
-        help="Instruct Gromacs to run in low performance " "mode (as defined in tests)",
+        help="Instruct Gromacs to run in low performance mode (as defined in tests)",
     )
     group.addoption(
         "--no-append-suffix",

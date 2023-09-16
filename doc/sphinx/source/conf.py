@@ -227,9 +227,9 @@ latex_documents = [
 # intersphinx: reference standard lib and RecSQL
 # http://sphinx.pocoo.org/latest/ext/intersphinx.html
 intersphinx_mapping = {
-    "https://docs.python.org/": None,
-    "https://numpy.org/doc/stable/": None,
-    "https://docs.scipy.org/doc/scipy/reference/": None,
+    "python": ("https://docs.python.org/", None),
+    "numpy": ("https://numpy.org/doc/stable/", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None),
 }
 
 
