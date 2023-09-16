@@ -527,7 +527,8 @@ class GMXConfigParser(ConfigParser, object):
 
         # bundled defaults (should be ok to use get_template())
         default_cfg = get_template(self.cfg_template)
-        self.read_file(open(default_cfg))
+        with open(default_cfg) as cfgfile:
+            self.read_file(cfgfile)
 
         # defaults are overriden by existing user global cfg file
         self.read([self.filename])

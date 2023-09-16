@@ -12,6 +12,7 @@ orbeckst
   not directly argument-compatible so GromacsWrapper does NOT alias
   it. Therefore, scripts relying on `gromacs.do_dssp` will
   break. (#249)
+* fixed unclosed file in config.py (#244)
 
 
 2023-03-13      0.8.4
