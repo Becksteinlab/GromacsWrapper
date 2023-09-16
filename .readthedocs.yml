@@ -4,20 +4,22 @@
 
 version: 2
 
+build:
+  os: "ubuntu-22.04"
+  tools:
+    python: "3.11"
+
 sphinx:
     configuration: doc/sphinx/source/conf.py
 
 # Optionally build your docs in additional formats such as PDF and ePub
 formats: all
 
-
 python:
-    version: 3.6
     install:
       - method: pip
         path: .
-      - requirements: ci/requirements.txt
-    system_packages: true
+      - requirements: ci/readthedocs/requirements.txt
 
 conda:
-    environment: ci/environment.yml
+    environment: ci/readthedocs/environment.yml

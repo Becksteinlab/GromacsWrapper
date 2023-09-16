@@ -1,5 +1,5 @@
 name: gw
 channels:
-- bioconda
+- conda-forge
 dependencies:
-- gromacs
+- gromacs==2023.1
