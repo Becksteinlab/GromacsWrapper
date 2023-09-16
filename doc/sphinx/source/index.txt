@@ -18,14 +18,14 @@ also allows for modularization and code re-use. In addition, commands,
 warnings and errors are logged to a file so that there exists a
 complete history of what has been done.
 
-GROMACS_ versions 4.6.x, 2016.x, 2018.x, 2019.x, 2020.x, 2021.x, and
-2022.x are all supported. GromacsWrapper detects your Gromacs tools
-and provides them as :func:`gromacs.grompp`, :func:`gromacs.mdrun`,
-etc, regardless of your Gromacs version, which allows one to write
-scripts that are broadly Gromacs-version agnostic. Source your
-``GMXRC`` file or make the :program:`gmx` binary (for versions ≥ 5.x)
-or all the Gromacs tools available on your :envvar:`PATH` for
-GromacsWrapper to find the Gromacs installation.
+GROMACS_ versions 4.6.x, 2016.x, 2018.x, 2019.x, 2020.x, 2021.x,
+2022.x, and 2023.x are all supported. GromacsWrapper detects your
+Gromacs tools and provides them as :func:`gromacs.grompp`,
+:func:`gromacs.mdrun`, etc, regardless of your Gromacs version, which
+allows one to write scripts that are broadly Gromacs-version
+agnostic. Source your ``GMXRC`` file or make the :program:`gmx` binary
+(for versions ≥ 5.x) or all the Gromacs tools available on your
+:envvar:`PATH` for GromacsWrapper to find the Gromacs installation.
 
 .. warning::
 

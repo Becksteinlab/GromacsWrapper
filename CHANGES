@@ -5,6 +5,7 @@
 2023-??-??      0.8.5
 orbeckst
 
+* added testing for GROMACS 2023.1
 * use black for uniformly formatted code (#246)
 * minor doc/installation updates
 
