@@ -7,4 +7,4 @@ dependencies:
 - numpy>=1.0
 - matplotlib
 - pandas>=0.17
-- numkit
+- numkit>=1.0
