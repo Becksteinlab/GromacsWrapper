@@ -2,7 +2,7 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
-2023-??-??      0.8.5
+2023-09-16      0.8.5
 orbeckst
 
 * added testing for GROMACS 2023.1 (#251)
