@@ -13,23 +13,25 @@ import pytest
 import gromacs
 
 
-@pytest.fixture(scope="function",
-                params=[
-                    [0, "foo", None, 2.7e-2, "foo"],
-                    (0, "foo", None, 2.7e-2, "foo"),
-                    set([0, "foo", None, 2.7e-2]),
-                    ['ant', 'boar', 'ape', 'gnu'],
-                    [['ant', 'spider'], ['boar', 'ape', 'gnu']]
-                ])
+@pytest.fixture(
+    scope="function",
+    params=[
+        [0, "foo", None, 2.7e-2, "foo"],
+        (0, "foo", None, 2.7e-2, "foo"),
+        set([0, "foo", None, 2.7e-2]),
+        ["ant", "boar", "ape", "gnu"],
+        [["ant", "spider"], ["boar", "ape", "gnu"]],
+    ],
+)
 def things(request):
     stuff = request.param
     return stuff, gromacs.collections.Collection(stuff)
 
-@pytest.fixture(scope="function",
-                params=[
-                    ['ant', 'boar', 'ape', 'gnu'],
-                    [u'åmeise', u'Beißfliege', u'Ürmelchen']
-                ])
+
+@pytest.fixture(
+    scope="function",
+    params=[["ant", "boar", "ape", "gnu"], ["åmeise", "Beißfliege", "Ürmelchen"]],
+)
 def textthings(request):
     stuff = request.param
     return stuff, gromacs.collections.Collection(stuff)
@@ -56,18 +58,15 @@ class TestCollection(object):
         assert newcollection.tolist() == list(seq)
         assert newcollection == collection
 
-    @pytest.mark.parametrize('method,args',
-                             [
-                                 ('startswith', (u'å',)),
-                                 ('upper', ()),
-                                 ('capitalize', ())
-                             ])
+    @pytest.mark.parametrize(
+        "method,args", [("startswith", ("å",)), ("upper", ()), ("capitalize", ())]
+    )
     def test_method_pass_through(self, textthings, method, args):
         seq, collection = textthings
         results = getattr(collection, method)(*args)
         assert results == [getattr(elem, method)(*args) for elem in seq]
 
-    @pytest.mark.parametrize('attribute', ['__doc__'])
+    @pytest.mark.parametrize("attribute", ["__doc__"])
     def test_attribute_pass_through(self, textthings, attribute):
         _, collection = textthings
         results = getattr(collection, attribute)

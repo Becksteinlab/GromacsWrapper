@@ -170,6 +170,7 @@ The package version is recorded in the :const:`gromacs.__version__` variable.
 
 """
 from __future__ import absolute_import
+
 __docformat__ = "restructuredtext en"
 
 import os
@@ -177,9 +178,10 @@ import warnings
 import logging
 
 # __all__ is extended with all gromacs command instances later
-__all__ = ['config', 'tools', 'cbook', 'fileformats']
+__all__ = ["config", "tools", "cbook", "fileformats"]
 
 from ._version import get_versions
+
 #: Version of the package, following `semantic versioning`_ in the form
 #: MAJOR.MINOR.PATCH. When PATCH increases, bugs are fixed or documentation
 #: or metadata are updated. Increases in MINOR can introduce new features and
@@ -193,15 +195,23 @@ from ._version import get_versions
 #: the commit ID encoded in the trailing string.
 #:
 #: .. _`semantic versioning`: https://semver.org/
-__version__ = get_versions()['version']
+__version__ = get_versions()["version"]
 del get_versions
 
 from . import fileformats
-from .exceptions import (GromacsError, MissingDataError, ParseError,
-                         GromacsFailureWarning, GromacsImportWarning,
-                         GromacsValueWarning, AutoCorrectionWarning,
-                         BadParameterWarning, MissingDataWarning,
-                         UsageWarning, LowAccuracyWarning)
+from .exceptions import (
+    GromacsError,
+    MissingDataError,
+    ParseError,
+    GromacsFailureWarning,
+    GromacsImportWarning,
+    GromacsValueWarning,
+    AutoCorrectionWarning,
+    BadParameterWarning,
+    MissingDataWarning,
+    UsageWarning,
+    LowAccuracyWarning,
+)
 
 
 # Import configuration before anything else
@@ -215,6 +225,7 @@ from . import config
 class NullHandler(logging.Handler):
     def emit(self, record):
         pass
+
 
 # default silent logger --- just here for illustration; below we
 # we get a proper logger from log.create()
@@ -232,6 +243,7 @@ del h
 #     import logging
 #     logger = logging.getLogger('gromacs.MODULENAME')
 
+
 def start_logging(logfile="gromacs.log"):
     """Start logging of messages to file and console.
 
@@ -239,19 +251,24 @@ def start_logging(logfile="gromacs.log"):
     logged with the tag *gromacs*.
     """
     from . import log
+
     log.create("gromacs", logfile=logfile)
-    logging.getLogger("gromacs").info("GromacsWrapper %s STARTED logging to %r",
-                                      __version__, logfile)
+    logging.getLogger("gromacs").info(
+        "GromacsWrapper %s STARTED logging to %r", __version__, logfile
+    )
+
 
 def stop_logging():
     """Stop logging to logfile and console."""
     from . import log
+
     logger = logging.getLogger("gromacs")
     logger.info("GromacsWrapper %s STOPPED logging", __version__)
     log.clear_handlers(logger)  # this _should_ do the job...
 
+
 # for testing (maybe enable with envar GW_START_LOGGING)
-if os.environ.get('GW_START_LOGGING', False):
+if os.environ.get("GW_START_LOGGING", False):
     start_logging()
 
 # Try to load environment variables set by GMXRC
@@ -271,9 +288,9 @@ warnings.simplefilter("ignore", GromacsFailureWarning)
 _have_g_commands = []
 _missing_g_commands = []
 for clsname, cls in tools.registry.items():
-    name = clsname[0].lower() + clsname[1:]    # instances should start with lower case
+    name = clsname[0].lower() + clsname[1:]  # instances should start with lower case
     try:
-        globals()[name] = cls()                # add instance of command for immediate use
+        globals()[name] = cls()  # add instance of command for immediate use
         _have_g_commands.append(name)
     except:
         _missing_g_commands.append(name)
@@ -283,9 +300,12 @@ warnings.simplefilter("always", GromacsImportWarning)
 _have_g_commands.sort()
 _missing_g_commands.sort()
 if len(_missing_g_commands) > 0:
-    warnings.warn("Some Gromacs commands were NOT found; "
-                  "maybe source GMXRC first? The following are missing:\n%r\n" % _missing_g_commands,
-                  category=GromacsImportWarning)
+    warnings.warn(
+        "Some Gromacs commands were NOT found; "
+        "maybe source GMXRC first? The following are missing:\n%r\n"
+        % _missing_g_commands,
+        category=GromacsImportWarning,
+    )
 
 del name, cls, clsname
 
@@ -303,7 +323,8 @@ __all__.extend(_have_g_commands)
 
 # convenience functions for warnings
 
-less_important_warnings = ['AutoCorrectionWarning', 'UsageWarning']
+less_important_warnings = ["AutoCorrectionWarning", "UsageWarning"]
+
 
 def filter_gromacs_warnings(action, categories=None):
     """Set the :meth:`warnings.simplefilter` to *action*.
@@ -320,8 +341,13 @@ def filter_gromacs_warnings(action, categories=None):
         except KeyError:
             w = c
         if not issubclass(w, Warning):
-            raise TypeError("{0!r} is neither a Warning nor the name of a Gromacs warning.".format(c))
+            raise TypeError(
+                "{0!r} is neither a Warning nor the name of a Gromacs warning.".format(
+                    c
+                )
+            )
         warnings.simplefilter(action, category=w)
+
 
 def disable_gromacs_warnings(categories=None):
     """Disable ("ignore") specified warnings from the gromacs package.
@@ -330,7 +356,8 @@ def disable_gromacs_warnings(categories=None):
     ``None`` selects the defaults.
 
     """
-    filter_gromacs_warnings('ignore', categories=categories)
+    filter_gromacs_warnings("ignore", categories=categories)
+
 
 def enable_gromacs_warnings(categories=None):
     """Enable ("always") specified warnings from the gromacs package.
@@ -339,5 +366,4 @@ def enable_gromacs_warnings(categories=None):
     ``None`` selects the defaults, :data:`gromacs._less_important_warnings`.
 
     """
-    filter_gromacs_warnings('always', categories=categories)
-
+    filter_gromacs_warnings("always", categories=categories)

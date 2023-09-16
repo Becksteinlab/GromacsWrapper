@@ -9,19 +9,22 @@ from numpy.testing import assert_almost_equal, assert_equal
 import gromacs.fileformats.xvg
 from gromacs.formats import XVG
 
+
 @pytest.fixture(scope="module")
 def data():
     data = np.random.normal(loc=2.1, scale=0.5, size=(6, 1000))
     data[0] = 0.1 * np.arange(data.shape[1])
     return data
 
+
 @pytest.fixture(scope="module")
-def correldata(omega=2*np.pi/5):
+def correldata(omega=2 * np.pi / 5):
     t = np.linspace(-100, 100, 10000)
-    Y1 = 1 * np.sin(omega*t) - 4
-    Y2 = -0.5 * np.sin(0.3*omega*t)
+    Y1 = 1 * np.sin(omega * t) - 4
+    Y2 = -0.5 * np.sin(0.3 * omega * t)
     DY = np.random.normal(scale=2, size=(2, len(t)))
     return np.vstack([t, Y1 + DY[0], Y2 + DY[1]])
+
 
 class TestXVG_array(object):
     @pytest.fixture
@@ -29,17 +32,15 @@ class TestXVG_array(object):
         return XVG(array=data.copy(), names="t,a,b,c,d,e")
 
     def test_names(self, xvg):
-        assert_equal(xvg.names,  ['t', 'a', 'b', 'c', 'd', 'e'])
+        assert_equal(xvg.names, ["t", "a", "b", "c", "d", "e"])
 
     def test_array(self, xvg, data):
         assert_equal(xvg.array.shape, data.shape)
         assert_almost_equal(xvg.array, data)
 
-    @pytest.mark.parametrize("name",
-                             ("mean", "max", "min", "std"))
+    @pytest.mark.parametrize("name", ("mean", "max", "min", "std"))
     def test_props(self, xvg, data, name):
-        assert_almost_equal(getattr(xvg, name),
-                            getattr(data[1:], name)(axis=1))
+        assert_almost_equal(getattr(xvg, name), getattr(data[1:], name)(axis=1))
 
     def test_write_read(self, xvg, tmpdir):
         fname = "random.xvg"
@@ -61,9 +62,10 @@ class TestXVG_array(object):
         assert_equal(sigma.shape, (2,))
         assert_equal(tc.shape, (2,))
 
-    @pytest.mark.parametrize('method', ('mean', 'circmean', 'min', 'max',
-                                        'rms', 'percentile', 'smooth',
-                                        'error'))
+    @pytest.mark.parametrize(
+        "method",
+        ("mean", "circmean", "min", "max", "rms", "percentile", "smooth", "error"),
+    )
     def test_decimate(self, correldata, method, maxpoints=100):
         xvg = XVG(array=correldata)
         data = xvg.array
@@ -87,10 +89,10 @@ def test_break_array():
     angles = np.pi * np.array([-1.9, -1, -1, -0.5, 0, 0.9, 1.5, 2, -2, -1.4])
     expected = np.pi * np.array([-1.9, -1, -1, -0.5, 0, 0.9, 1.5, 2, np.NAN, -2, -1.4])
     other = np.ones_like(angles)
-    ma, mother = gromacs.fileformats.xvg.break_array(angles,
-                                                     threshold=np.pi, other=other)
+    ma, mother = gromacs.fileformats.xvg.break_array(
+        angles, threshold=np.pi, other=other
+    )
     assert isinstance(ma, np.ma.core.MaskedArray)
     assert isinstance(mother, np.ma.core.MaskedArray)
     assert_almost_equal(ma, expected)
     assert len(ma) == len(mother)
-

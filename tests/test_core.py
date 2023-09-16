@@ -13,14 +13,13 @@ import pytest
 
 import gromacs
 
+
 # use 'ls' as command and only use common BSD/GNU options
 @pytest.fixture
-def command(command="ls",
-                 args=('-a', '-1'),
-                 options={'l': True, 'v': True}):
-    Command_cls = type(command.capitalize(),
-                       (gromacs.core.Command,),
-                       {'command_name': command})
+def command(command="ls", args=("-a", "-1"), options={"l": True, "v": True}):
+    Command_cls = type(
+        command.capitalize(), (gromacs.core.Command,), {"command_name": command}
+    )
     return Command_cls(*args, **options)
 
 
@@ -32,7 +31,7 @@ class TestCommand(object):
         assert not err
 
     def test_run_with_args(self, command):
-        rc, out, err = command('-d', os.path.curdir, b=True, F=True )
+        rc, out, err = command("-d", os.path.curdir, b=True, F=True)
         assert rc == 0
         assert not out
         assert not err
@@ -44,32 +43,38 @@ class TestCommand(object):
         assert not err
 
     def test_run_capture_stderr(self, command):
-        rc, out, err = command('/this_does_not_exist_Foo_Bar', stderr=False)
+        rc, out, err = command("/this_does_not_exist_Foo_Bar", stderr=False)
         assert rc > 0
         assert not out
         assert err
 
-    @pytest.mark.parametrize('inp',
-                             ("not_used",
-                              ("not", "used"),
-                              ("unicode", u"Ångström", u"Planck_constant_over_two_π__ℏ"),
-                             ))
+    @pytest.mark.parametrize(
+        "inp",
+        (
+            "not_used",
+            ("not", "used"),
+            ("unicode", u"Ångström", u"Planck_constant_over_two_π__ℏ"),
+        ),
+    )
     def test_run_with_input(self, command, inp):
         rc, out, err = command(stdout=False, stderr=False, input=inp)
         assert rc == 0
         assert out
         assert not err
 
-    @pytest.mark.parametrize('inp',
-                             ("not_used",
-                              ("not", "used"),
-                              ("unicode", u"Ångström", u"Planck_constant_over_two_π__ℏ"),
-                             ))
+    @pytest.mark.parametrize(
+        "inp",
+        (
+            "not_used",
+            ("not", "used"),
+            ("unicode", u"Ångström", u"Planck_constant_over_two_π__ℏ"),
+        ),
+    )
     def test_Popen_with_input(self, command, inp):
         po = command.Popen(stdout=False, stderr=False, input=inp)
-        inp_string = u"\n".join(gromacs.utilities.asiterable(inp)) + u"\n"
+        inp_string = "\n".join(gromacs.utilities.asiterable(inp)) + "\n"
         if six.PY2:
-            assert po.input == inp_string.encode('utf-8')
+            assert po.input == inp_string.encode("utf-8")
         else:
             assert po.input == inp_string
 

@@ -111,14 +111,17 @@ import warnings
 import errno
 
 import logging
-logger = logging.getLogger('gromacs.core')
+
+logger = logging.getLogger("gromacs.core")
 
 
 from .exceptions import GromacsError, GromacsFailureWarning
 from . import environment
 
+
 class Command(object):
     """Wrap simple script or command."""
+
     #: Derive a class from command; typically one only has to set *command_name*
     #: to the name of the script or executable. The full path is required if it
     #: cannot be found by searching :envvar:`PATH`.
@@ -193,36 +196,38 @@ class Command(object):
         """
         # hack to run command WITHOUT input (-h...) even though user defined
         # input (should have named it "ignore_input" with opposite values...)
-        use_input = kwargs.pop('use_input', True)
+        use_input = kwargs.pop("use_input", True)
 
         # logic for capturing output (see docs on I/O and the flags)
         capturefile = None
-        if environment.flags['capture_output'] is True:
+        if environment.flags["capture_output"] is True:
             # capture into Python vars (see subprocess.Popen.communicate())
-            kwargs.setdefault('stderr', PIPE)
-            kwargs.setdefault('stdout', PIPE)
-        elif environment.flags['capture_output'] == "file":
-            if 'stdout' in kwargs and 'stderr' in kwargs:
+            kwargs.setdefault("stderr", PIPE)
+            kwargs.setdefault("stdout", PIPE)
+        elif environment.flags["capture_output"] == "file":
+            if "stdout" in kwargs and "stderr" in kwargs:
                 pass
             else:
                 # XXX: not race or thread proof; potentially many commands write to the same file
-                fn = environment.flags['capture_output_filename']
-                capturefile = open(fn, "w")   # overwrite (clobber) capture file
-                if 'stdout' in kwargs and 'stderr' not in kwargs:
+                fn = environment.flags["capture_output_filename"]
+                capturefile = open(fn, "w")  # overwrite (clobber) capture file
+                if "stdout" in kwargs and "stderr" not in kwargs:
                     # special case of stdout used by code but stderr should be captured to file
-                    kwargs.setdefault('stderr', capturefile)
+                    kwargs.setdefault("stderr", capturefile)
                 else:
                     # merge stderr with stdout and write stdout to file
                     # (stderr comes *before* stdout in capture file, could split...)
-                    kwargs.setdefault('stderr', STDOUT)
-                    kwargs.setdefault('stdout', capturefile)
+                    kwargs.setdefault("stderr", STDOUT)
+                    kwargs.setdefault("stdout", capturefile)
 
         try:
             p = self.Popen(*args, **kwargs)
-            out, err = p.communicate(use_input=use_input) # special Popen knows input!
+            out, err = p.communicate(use_input=use_input)  # special Popen knows input!
         except:
             if capturefile is not None:
-                logger.error("Use captured command output in %r for diagnosis.", capturefile)
+                logger.error(
+                    "Use captured command output in %r for diagnosis.", capturefile
+                )
             raise
         finally:
             if capturefile is not None:
@@ -232,7 +237,7 @@ class Command(object):
 
     def _commandline(self, *args, **kwargs):
         """Returns the command line (without pipes) as a list."""
-         # transform_args() is a hook (used in GromacsCommand very differently!)
+        # transform_args() is a hook (used in GromacsCommand very differently!)
         return [self.command_name] + self.transform_args(*args, **kwargs)
 
     def commandline(self, *args, **kwargs):
@@ -252,48 +257,63 @@ class Command(object):
         :TODO:
           Write example.
         """
-        stderr = kwargs.pop('stderr', None)     # default: print to stderr (if STDOUT then merge)
-        if stderr is False:                     # False: capture it
+        stderr = kwargs.pop(
+            "stderr", None
+        )  # default: print to stderr (if STDOUT then merge)
+        if stderr is False:  # False: capture it
             stderr = PIPE
         elif stderr is True:
-            stderr = None                       # use stderr
+            stderr = None  # use stderr
 
-        stdout = kwargs.pop('stdout', None)     # either set to PIPE for capturing output
-        if stdout is False:                     # ... or to False
+        stdout = kwargs.pop("stdout", None)  # either set to PIPE for capturing output
+        if stdout is False:  # ... or to False
             stdout = PIPE
         elif stdout is True:
-            stdout = None                       # for consistency, make True write to screen
+            stdout = None  # for consistency, make True write to screen
 
-        stdin = kwargs.pop('stdin', None)
-        input = kwargs.pop('input', None)
+        stdin = kwargs.pop("stdin", None)
+        input = kwargs.pop("input", None)
 
-        use_shell = kwargs.pop('use_shell', False)
+        use_shell = kwargs.pop("use_shell", False)
         if input:
             stdin = PIPE
-            if isinstance(input, six.string_types) and not input.endswith('\n'):
+            if isinstance(input, six.string_types) and not input.endswith("\n"):
                 # make sure that input is a simple string with \n line endings
-                input = six.text_type(input) + '\n'
+                input = six.text_type(input) + "\n"
             else:
                 try:
                     # make sure that input is a simple string with \n line endings
-                    input = '\n'.join(map(six.text_type, input)) + '\n'
+                    input = "\n".join(map(six.text_type, input)) + "\n"
                 except TypeError:
                     # so maybe we are a file or something ... and hope for the best
                     pass
 
-        cmd = self._commandline(*args, **kwargs)   # lots of magic happening here
-                                                   # (cannot move out of method because filtering of stdin etc)
+        cmd = self._commandline(*args, **kwargs)  # lots of magic happening here
+        # (cannot move out of method because filtering of stdin etc)
         try:
-            p = PopenWithInput(cmd, stdin=stdin, stderr=stderr, stdout=stdout,
-                               universal_newlines=True, input=input, shell=use_shell)
+            p = PopenWithInput(
+                cmd,
+                stdin=stdin,
+                stderr=stderr,
+                stdout=stdout,
+                universal_newlines=True,
+                input=input,
+                shell=use_shell,
+            )
         except OSError as err:
-            logger.error(" ".join(cmd))            # log command line
+            logger.error(" ".join(cmd))  # log command line
             if err.errno == errno.ENOENT:
-                errmsg = "Failed to find Gromacs command {0!r}, maybe its not on PATH or GMXRC must be sourced?".format(self.command_name)
+                errmsg = "Failed to find Gromacs command {0!r}, maybe its not on PATH or GMXRC must be sourced?".format(
+                    self.command_name
+                )
                 logger.fatal(errmsg)
                 raise OSError(errmsg)
             else:
-                logger.exception("Setting up Gromacs command {0!r} raised an exception.".format(self.command_name))
+                logger.exception(
+                    "Setting up Gromacs command {0!r} raised an exception.".format(
+                        self.command_name
+                    )
+                )
                 raise
         logger.debug(p.command_string)
         return p
@@ -301,24 +321,26 @@ class Command(object):
     def transform_args(self, *args, **kwargs):
         """Transform arguments and return them as a list suitable for Popen."""
         options = []
-        for option,value in kwargs.items():
-            if not option.startswith('-'):
+        for option, value in kwargs.items():
+            if not option.startswith("-"):
                 # heuristic for turning key=val pairs into options
                 # (fails for commands such as 'find' -- then just use args)
                 if len(option) == 1:
-                    option = '-' + option         # POSIX style
+                    option = "-" + option  # POSIX style
                 else:
-                    option = '--' + option        # GNU option
+                    option = "--" + option  # GNU option
             if value is True:
                 options.append(option)
                 continue
             elif value is False:
-                raise ValueError('A False value is ambiguous for option {0!r}'.format(option))
+                raise ValueError(
+                    "A False value is ambiguous for option {0!r}".format(option)
+                )
 
-            if option[:2] == '--':
-                options.append(option + '=' + str(value))    # GNU option
+            if option[:2] == "--":
+                options.append(option + "=" + str(value))  # GNU option
             else:
-                options.extend((option, str(value)))         # POSIX style
+                options.extend((option, str(value)))  # POSIX style
         return options + list(args)
 
     def help(self, long=False):
@@ -329,7 +351,7 @@ class Command(object):
             print("\ncall method: command():\n")
             print(self.__call__.__doc__)
 
-    def __call__(self,*args,**kwargs):
+    def __call__(self, *args, **kwargs):
         """Run command with the given arguments::
 
            rc,stdout,stderr = command(*args, input=None, **kwargs)
@@ -430,7 +452,7 @@ class GromacsCommand(Command):
     # -------------------------------------------------------
 
     #: Available failure modes.
-    failuremodes = ('raise', 'warn', None)
+    failuremodes = ("raise", "warn", None)
 
     def __init__(self, *args, **kwargs):
         """Set up the command with gromacs flags as keyword arguments.
@@ -515,9 +537,9 @@ class GromacsCommand(Command):
            The *doc* keyword is now ignored (because it was not worth the effort to
            make it work with the lazy-loading of docs).
         """
-        doc = kwargs.pop('doc', None)  # ignored
+        doc = kwargs.pop("doc", None)  # ignored
         self.__failuremode = None
-        self.failuremode = kwargs.pop('failure', 'raise')
+        self.failuremode = kwargs.pop("failure", "raise")
         self.gmxargs = self._combineargs(*args, **kwargs)
         self._doc_cache = None
 
@@ -534,47 +556,64 @@ class GromacsCommand(Command):
                    just continue silently
 
         """
+
         def fget(self):
             return self.__failuremode
+
         def fset(self, mode):
             if not mode in self.failuremodes:
-                raise ValueError('failuremode must be one of {0!r}'.format(self.failuremodes))
+                raise ValueError(
+                    "failuremode must be one of {0!r}".format(self.failuremodes)
+                )
             self.__failuremode = mode
+
         return locals()
+
     failuremode = property(**failuremode())
 
     def _combine_arglist(self, args, kwargs):
         """Combine the default values and the supplied values."""
         gmxargs = self.gmxargs.copy()
         gmxargs.update(self._combineargs(*args, **kwargs))
-        return (), gmxargs    # Gromacs tools don't have positional args --> args = ()
+        return (), gmxargs  # Gromacs tools don't have positional args --> args = ()
 
-    def check_failure(self, result, msg='Gromacs tool failed', command_string=None):
+    def check_failure(self, result, msg="Gromacs tool failed", command_string=None):
         rc, out, err = result
         if command_string is not None:
-            msg += '\nCommand invocation: ' + str(command_string)
-        had_success = (rc == 0)
+            msg += "\nCommand invocation: " + str(command_string)
+        had_success = rc == 0
         if not had_success:
             gmxoutput = "\n".join([x for x in [out, err] if x is not None])
             m = re.search(self.gmxfatal_pattern, gmxoutput, re.VERBOSE | re.DOTALL)
             if m:
-                formatted_message = ['GMX_FATAL  '+line for line in m.group('message').split('\n')]
-                msg = "\n".join(\
-                    [msg, "Gromacs command {program_name!r} fatal error message:".format(**m.groupdict())] +
-                    formatted_message)
-            if self.failuremode == 'raise':
+                formatted_message = [
+                    "GMX_FATAL  " + line for line in m.group("message").split("\n")
+                ]
+                msg = "\n".join(
+                    [
+                        msg,
+                        "Gromacs command {program_name!r} fatal error message:".format(
+                            **m.groupdict()
+                        ),
+                    ]
+                    + formatted_message
+                )
+            if self.failuremode == "raise":
                 raise GromacsError(rc, msg)
-            elif self.failuremode == 'warn':
-                warnings.warn(msg + '\nError code: {0!r}\n'.format(rc), category=GromacsFailureWarning)
+            elif self.failuremode == "warn":
+                warnings.warn(
+                    msg + "\nError code: {0!r}\n".format(rc),
+                    category=GromacsFailureWarning,
+                )
             elif self.failuremode is None:
                 pass
             else:
-                raise ValueError('unknown failure mode {0!r}'.format(self.failuremode))
+                raise ValueError("unknown failure mode {0!r}".format(self.failuremode))
         return had_success
 
     def _combineargs(self, *args, **kwargs):
         """Add switches as 'options' with value True to the options dict."""
-        d = {arg: True for arg in args}   # switches are kwargs with value True
+        d = {arg: True for arg in args}  # switches are kwargs with value True
         d.update(kwargs)
         return d
 
@@ -584,28 +623,30 @@ class GromacsCommand(Command):
         for flag, value in kwargs.items():
             # XXX: check flag against allowed values
             flag = str(flag)
-            if flag.startswith('_'):
-                flag = flag[1:]                 # python-illegal keywords are '_'-quoted
-            if not flag.startswith('-'):
-                flag = '-' + flag               # now flag is guaranteed to start with '-'
+            if flag.startswith("_"):
+                flag = flag[1:]  # python-illegal keywords are '_'-quoted
+            if not flag.startswith("-"):
+                flag = "-" + flag  # now flag is guaranteed to start with '-'
             if value is True:
-                arglist.append(flag)            # simple command line flag
+                arglist.append(flag)  # simple command line flag
             elif value is False:
-                if flag.startswith('-no'):
+                if flag.startswith("-no"):
                     # negate a negated flag ('noX=False' --> X=True --> -X ... but who uses that?)
-                    arglist.append('-' + flag[3:])
+                    arglist.append("-" + flag[3:])
                 else:
-                    arglist.append('-no' + flag[1:])  # gromacs switches booleans by prefixing 'no'
+                    arglist.append(
+                        "-no" + flag[1:]
+                    )  # gromacs switches booleans by prefixing 'no'
             elif value is None:
-                pass                            # ignore flag = None
+                pass  # ignore flag = None
             else:
                 try:
-                    arglist.extend([flag] + value) # option with value list
+                    arglist.extend([flag] + value)  # option with value list
                 except TypeError:
                     arglist.extend([flag, value])  # option with single value
         return list(map(str, arglist))  # all arguments MUST be strings
 
-    def _run_command(self,*args,**kwargs):
+    def _run_command(self, *args, **kwargs):
         """Execute the gromacs command; see the docs for __call__."""
         result, p = super(GromacsCommand, self)._run_command(*args, **kwargs)
         self.check_failure(result, command_string=p.command_string)
@@ -613,12 +654,13 @@ class GromacsCommand(Command):
 
     def _commandline(self, *args, **kwargs):
         """Returns the command line (without pipes) as a list. Inserts driver if present"""
-        if(self.driver is not None):
-            return [self.driver, self.command_name] + self.transform_args(*args, **kwargs)
+        if self.driver is not None:
+            return [self.driver, self.command_name] + self.transform_args(
+                *args, **kwargs
+            )
         return [self.command_name] + self.transform_args(*args, **kwargs)
 
-
-    def transform_args(self,*args,**kwargs):
+    def transform_args(self, *args, **kwargs):
         """Combine arguments and turn them into gromacs tool arguments."""
         newargs = self._combineargs(*args, **kwargs)
         return self._build_arg_list(**newargs)
@@ -634,9 +676,13 @@ class GromacsCommand(Command):
 
         try:
             logging.disable(logging.CRITICAL)
-            rc, header, docs = self.run('h', stdout=PIPE, stderr=PIPE, use_input=False)
+            rc, header, docs = self.run("h", stdout=PIPE, stderr=PIPE, use_input=False)
         except:
-            logging.critical("Invoking command {0} failed when determining its doc string. Proceed with caution".format(self.command_name))
+            logging.critical(
+                "Invoking command {0} failed when determining its doc string. Proceed with caution".format(
+                    self.command_name
+                )
+            )
             self._doc_cache = "(No Gromacs documentation available)"
             return self._doc_cache
         finally:
@@ -653,7 +699,7 @@ class GromacsCommand(Command):
                 self._doc_cache = "(No Gromacs documentation available)"
                 return self._doc_cache
 
-        self._doc_cache = m.group('DOCS')
+        self._doc_cache = m.group("DOCS")
         return self._doc_cache
 
 
@@ -685,19 +731,20 @@ class PopenWithInput(subprocess.Popen):
                string that is piped into the command
 
         """
-        kwargs.setdefault('close_fds', True)   # fixes 'Too many open fds' with 2.6
-        self.input = kwargs.pop('input', None)
+        kwargs.setdefault("close_fds", True)  # fixes 'Too many open fds' with 2.6
+        self.input = kwargs.pop("input", None)
         if six.PY2 and self.input is not None:
             # in Python 2, subprocess.Popen uses os.write(chunk) with default ASCII encoding
-            self.input = self.input.encode('utf-8')
+            self.input = self.input.encode("utf-8")
         self.command = args[0]
         try:
-            input_string = 'printf "' + \
-                self.input.replace('\n','\\n') + '" | '  # display newlines
+            input_string = (
+                'printf "' + self.input.replace("\n", "\\n") + '" | '
+            )  # display newlines
         except (TypeError, AttributeError):
             input_string = ""
         self.command_string = input_string + " ".join(self.command)
-        super(PopenWithInput,self).__init__(*args, **kwargs)
+        super(PopenWithInput, self).__init__(*args, **kwargs)
 
     def communicate(self, use_input=True):
         """Run the command, using the input that was set up on __init__ (for *use_input* = ``True``)"""

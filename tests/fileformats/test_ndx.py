@@ -10,20 +10,18 @@ from numpy.testing import assert_equal
 from ..datafiles import datafile
 
 
-@pytest.fixture(
-    params=['original', 'nofilename', 'written']
-)
+@pytest.fixture(params=["original", "nofilename", "written"])
 def SIMPLE_NDX(request, tmpdir):
-    ndx = gromacs.fileformats.ndx.NDX(datafile('simple.ndx'))
+    ndx = gromacs.fileformats.ndx.NDX(datafile("simple.ndx"))
 
-    if request.param == 'written':
-        out = str(tmpdir.join('out.ndx'))
+    if request.param == "written":
+        out = str(tmpdir.join("out.ndx"))
 
         ndx.write(out)
         ndx = gromacs.fileformats.ndx.NDX(out)
-    elif request.param == 'nofilename':
+    elif request.param == "nofilename":
         ndx = gromacs.fileformats.ndx.NDX()
-        ndx.read(datafile('simple.ndx'))
+        ndx.read(datafile("simple.ndx"))
 
     return ndx
 
@@ -31,18 +29,18 @@ def SIMPLE_NDX(request, tmpdir):
 def test_read(SIMPLE_NDX):
     ndx = SIMPLE_NDX
 
-    assert_equal(ndx['Oxygen'], [1, 4, 7])
-    assert_equal(ndx['Hydrogen'], [2, 3, 5, 6, 8, 9])
+    assert_equal(ndx["Oxygen"], [1, 4, 7])
+    assert_equal(ndx["Hydrogen"], [2, 3, 5, 6, 8, 9])
 
 
 def test_get(SIMPLE_NDX):
-    assert_equal(SIMPLE_NDX.get('Oxygen'), [1, 4, 7])
+    assert_equal(SIMPLE_NDX.get("Oxygen"), [1, 4, 7])
 
 
 def test_set(SIMPLE_NDX):
-    SIMPLE_NDX['Nitrogen'] = [10, 11, 12]
+    SIMPLE_NDX["Nitrogen"] = [10, 11, 12]
 
-    assert_equal(SIMPLE_NDX['Nitrogen'], [10, 11, 12])
+    assert_equal(SIMPLE_NDX["Nitrogen"], [10, 11, 12])
 
 
 def test_size(SIMPLE_NDX):
@@ -50,8 +48,8 @@ def test_size(SIMPLE_NDX):
 
 
 def test_sizes(SIMPLE_NDX):
-    assert SIMPLE_NDX.sizes == {'Oxygen': 3, 'Hydrogen': 6}
+    assert SIMPLE_NDX.sizes == {"Oxygen": 3, "Hydrogen": 6}
 
 
 def test_groups(SIMPLE_NDX):
-    assert list(SIMPLE_NDX.groups) == ['Oxygen', 'Hydrogen']
+    assert list(SIMPLE_NDX.groups) == ["Oxygen", "Hydrogen"]

@@ -42,6 +42,7 @@ import six
 
 import re
 
+
 def to_unicode(obj):
     """Convert obj to unicode (if it can be be converted).
 
@@ -60,6 +61,7 @@ def to_unicode(obj):
     except TypeError:
         pass
     return obj
+
 
 class Autoconverter(object):
     """Automatically convert an input value to a special python object.
@@ -102,7 +104,7 @@ class Autoconverter(object):
 
     """
 
-    def __init__(self, mode="fancy",  mapping=None, active=True, sep=False, **kwargs):
+    def __init__(self, mode="fancy", mapping=None, active=True, sep=False, **kwargs):
         """Initialize the converter.
 
         :Arguments:
@@ -137,35 +139,54 @@ class Autoconverter(object):
            removed *encoding* keyword argument
 
         """
-        self._convertors = {'unicode': to_unicode,
-                            'simple': besttype,
-                            'singlet': self._convert_singlet,
-                            'fancy': self._convert_fancy,
-                            }
+        self._convertors = {
+            "unicode": to_unicode,
+            "simple": besttype,
+            "singlet": self._convert_singlet,
+            "fancy": self._convert_fancy,
+        }
         self.convert = None  # convertor function; set when self.active <-- True.
         if mapping is None:
-            mapping = {'---': None, '':None,
-                       'True':True, 'x': True, 'X':True, 'yes':True, 'Present':True, 'present':True,
-                       'False':False, 'no': False, '-':False, 'None':False, 'none':False, }
+            mapping = {
+                "---": None,
+                "": None,
+                "True": True,
+                "x": True,
+                "X": True,
+                "yes": True,
+                "Present": True,
+                "present": True,
+                "False": False,
+                "no": False,
+                "-": False,
+                "None": False,
+                "none": False,
+            }
         self.mapping = mapping
         self.mode = mode
         self.__active = None
-        self.active = kwargs.pop('autoconvert', active)   # 'autoconvert' is a "strong" alias of 'active'
+        self.active = kwargs.pop(
+            "autoconvert", active
+        )  # 'autoconvert' is a "strong" alias of 'active'
         if sep is True:
-            sep = None   # split on *all* white space, sep=' ' splits single spaces!
+            sep = None  # split on *all* white space, sep=' ' splits single spaces!
         self.sep = sep
 
     def active():
         doc = """Toggle the state of the Autoconverter. ``True`` uses the mode, ``False`` does nothing"""
+
         def fget(self):
             return self.__active
+
         def fset(self, x):
             self.__active = x
             if self.__active:
                 self.convert = self._convertors[self.mode]
             else:
-                self.convert = lambda x: x     # do nothing
+                self.convert = lambda x: x  # do nothing
+
         return locals()
+
     active = property(**active())
 
     def _convert_singlet(self, s):
@@ -182,11 +203,12 @@ class Autoconverter(object):
         else:
             x = tuple([self._convert_singlet(s) for s in field.split(self.sep)])
             if len(x) == 0:
-                x = ''
+                x = ""
             elif len(x) == 1:
                 x = x[0]
-        #print "%r --> %r" % (field, x)
+        # print "%r --> %r" % (field, x)
         return x
+
 
 def besttype(x):
     """Convert string x to the most useful type, i.e. int, float or unicode string.
@@ -209,40 +231,48 @@ def besttype(x):
     m = re.match(r"""['"](?P<value>.*)["']$""", x)
     if m is None:
         # not a quoted string, try different types
-        for converter in int, float, to_unicode:   # try them in increasing order of lenience
+        for converter in (
+            int,
+            float,
+            to_unicode,
+        ):  # try them in increasing order of lenience
             try:
                 return converter(x)
             except ValueError:
                 pass
     else:
         # quoted string
-        x = to_unicode(m.group('value'))
+        x = to_unicode(m.group("value"))
     return x
 
 
 def to_int64(a):
     """Return view of the recarray with all int32 cast to int64."""
+
     # build new dtype and replace i4 --> i8
     def promote_i4(typestr):
-        if typestr[1:] == 'i4':
-            typestr = typestr[0]+'i8'
+        if typestr[1:] == "i4":
+            typestr = typestr[0] + "i8"
         return typestr
 
-    dtype = [(name, promote_i4(typestr)) for name,typestr in a.dtype.descr]
+    dtype = [(name, promote_i4(typestr)) for name, typestr in a.dtype.descr]
     return a.astype(dtype)
 
+
 def pyify(typestr):
-    if typestr[1] in 'iu':
+    if typestr[1] in "iu":
         return int
-    elif typestr[1] == 'f':
+    elif typestr[1] == "f":
         return float
-    elif typestr[1] == 'S':
+    elif typestr[1] == "S":
         return str
     return lambda x: x
 
+
 def to_pytypes(a):
-    dtype = [(name, pyify(typestr)) for name,typestr in a.dtype.descr]
+    dtype = [(name, pyify(typestr)) for name, typestr in a.dtype.descr]
     return a.astype(dtype)
+
 
 def irecarray_to_py(a):
     """Slow conversion of a recarray into a list of records with python types.
@@ -251,7 +281,9 @@ def irecarray_to_py(a):
 
     :Returns: iterator so that one can handle big input arrays
     """
-    pytypes = [pyify(typestr) for name,typestr in a.dtype.descr]
+    pytypes = [pyify(typestr) for name, typestr in a.dtype.descr]
+
     def convert_record(r):
-        return tuple([converter(value) for converter, value in zip(pytypes,r)])
+        return tuple([converter(value) for converter, value in zip(pytypes, r)])
+
     return (convert_record(r) for r in a)

@@ -25,37 +25,62 @@ def simulation(tmpdir):
         f = gromacs.setup.topology(struct=pdb, ff="oplsaa", water="tip4p")
         yield f
 
-@pytest.mark.xfail(gromacs.release.startswith("2020.6"),
-                   reason="pdb2gmx 2020.6 fails to build the TIP4P waters")
+
+@pytest.mark.xfail(
+    gromacs.release.startswith("2020.6"),
+    reason="pdb2gmx 2020.6 fails to build the TIP4P waters",
+)
 def test_grompp_qtot(tmpdir, simulation):
     with tmpdir.mkdir("qtot").as_cwd():
-        with open('none.mdp', 'w') as mdp:
-            mdp.write('; empty mdp file\nrcoulomb = 1\nrvdw = 1\nrlist = 1\n')
-        qtot = cbook.grompp_qtot(f="none.mdp", c=simulation['struct'], p=simulation['top'],
-                                 stdout=False, maxwarn=10)
-    assert_almost_equal(qtot, -4, decimal=5,
-                        err_msg="grompp_qtot() failed to compute total charge correctly")
+        with open("none.mdp", "w") as mdp:
+            mdp.write("; empty mdp file\nrcoulomb = 1\nrvdw = 1\nrlist = 1\n")
+        qtot = cbook.grompp_qtot(
+            f="none.mdp",
+            c=simulation["struct"],
+            p=simulation["top"],
+            stdout=False,
+            maxwarn=10,
+        )
+    assert_almost_equal(
+        qtot,
+        -4,
+        decimal=5,
+        err_msg="grompp_qtot() failed to compute total charge correctly",
+    )
 
-@pytest.mark.xfail(gromacs.release.startswith("2020.6"),
-                   reason="pdb2gmx 2020.6 fails to build the TIP4P waters")
+
+@pytest.mark.xfail(
+    gromacs.release.startswith("2020.6"),
+    reason="pdb2gmx 2020.6 fails to build the TIP4P waters",
+)
 def test_portable_topology(tmpdir, simulation):
     with tmpdir.mkdir("processed").as_cwd():
-        pptopol = cbook.create_portable_topology(simulation['top'], simulation['struct'])
+        pptopol = cbook.create_portable_topology(
+            simulation["top"], simulation["struct"]
+        )
 
     # correct filename
     assert os.path.split(pptopol)[-1].startswith("pp_")
 
-    lines =  open(pptopol).readlines()
+    lines = open(pptopol).readlines()
     subsections_only = [line.strip() for line in lines if line.startswith("[")]
 
     assert re.match(r";\s+File 'system.top' was generated", lines[1])
     assert re.match(r";\s+This is a standalone topology file", lines[6])
-    for subsection in ("[ defaults ]", "[ atomtypes ]", "[ bondtypes ]",
-                       "[ constrainttypes ]", "[ angletypes ]", "[ dihedraltypes ]",
-                       "[ moleculetype ]", "[ atoms ]", "[ bonds ]", "[ pairs ]",
-                       "[ angles ]", "[ dihedrals ]",
-                       "[ system ]", "[ molecules ]"):
+    for subsection in (
+        "[ defaults ]",
+        "[ atomtypes ]",
+        "[ bondtypes ]",
+        "[ constrainttypes ]",
+        "[ angletypes ]",
+        "[ dihedraltypes ]",
+        "[ moleculetype ]",
+        "[ atoms ]",
+        "[ bonds ]",
+        "[ pairs ]",
+        "[ angles ]",
+        "[ dihedrals ]",
+        "[ system ]",
+        "[ molecules ]",
+    ):
         assert subsection in subsections_only
-
-
-

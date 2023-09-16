@@ -19,7 +19,6 @@ Basically, wheneever you need the path to the file, wrap the filename in ``dataf
 import os.path
 from pkg_resources import resource_filename
 
+
 def datafile(name):
     return resource_filename(__name__, os.path.join("data", name))
-
-

@@ -33,6 +33,7 @@ from collections import OrderedDict as odict
 
 import logging
 
+
 class MDP(odict, utilities.FileUtils):
     """Class that represents a Gromacs mdp run input file.
 
@@ -53,16 +54,20 @@ class MDP(odict, utilities.FileUtils):
                 :func:`gromacs.cbook.edit_mdp` (which works like a
                 poor replacement for sed).
     """
-    default_extension = "mdp"
-    logger = logging.getLogger('gromacs.formats.MDP')
 
-    COMMENT = re.compile("""\s*;\s*(?P<value>.*)""")   # eat initial ws
+    default_extension = "mdp"
+    logger = logging.getLogger("gromacs.formats.MDP")
+
+    COMMENT = re.compile("""\s*;\s*(?P<value>.*)""")  # eat initial ws
     # see regex in cbook.edit_mdp()
-    PARAMETER = re.compile("""
+    PARAMETER = re.compile(
+        """
                             \s*(?P<parameter>[^=]+?)\s*=\s*  # parameter (ws-stripped), before '='
                             (?P<value>[^;]*)                # value (stop before comment=;)
                             (?P<comment>\s*;.*)?            # optional comment
-                            """, re.VERBOSE)
+                            """,
+        re.VERBOSE,
+    )
 
     def __init__(self, filename=None, autoconvert=True, **kwargs):
         """Initialize mdp structure.
@@ -78,7 +83,9 @@ class MDP(odict, utilities.FileUtils):
               does not work for keys that are not legal python variable names such
               as anything that includes a minus '-' sign or starts with a number).
         """
-        super(MDP, self).__init__(**kwargs)  # can use kwargs to set dict! (but no sanity checks!)
+        super(MDP, self).__init__(
+            **kwargs
+        )  # can use kwargs to set dict! (but no sanity checks!)
 
         self.autoconvert = autoconvert
 
@@ -98,6 +105,7 @@ class MDP(odict, utilities.FileUtils):
 
         def BLANK(i):
             return "B{0:04d}".format(i)
+
         def COMMENT(i):
             return "C{0:04d}".format(i)
 
@@ -108,27 +116,28 @@ class MDP(odict, utilities.FileUtils):
                 line = line.strip()
                 if len(line) == 0:
                     iblank += 1
-                    data[BLANK(iblank)] = ''
+                    data[BLANK(iblank)] = ""
                     continue
                 m = self.COMMENT.match(line)
                 if m:
                     icomment += 1
-                    data[COMMENT(icomment)] = m.group('value')
+                    data[COMMENT(icomment)] = m.group("value")
                     continue
                 # parameter
                 m = self.PARAMETER.match(line)
                 if m:
                     # check for comments after parameter?? -- currently discarded
-                    parameter = m.group('parameter')
-                    value =  self._transform(m.group('value'))
+                    parameter = m.group("parameter")
+                    value = self._transform(m.group("value"))
                     data[parameter] = value
                 else:
-                    errmsg = '{filename!r}: unknown line in mdp file, {line!r}'.format(**vars())
+                    errmsg = "{filename!r}: unknown line in mdp file, {line!r}".format(
+                        **vars()
+                    )
                     self.logger.error(errmsg)
                     raise ParseError(errmsg)
 
-        super(MDP,self).update(data)
-
+        super(MDP, self).update(data)
 
     def write(self, filename=None, skipempty=False):
         """Write mdp file to *filename*.
@@ -145,16 +154,16 @@ class MDP(odict, utilities.FileUtils):
                   *filename* supplied.
         """
 
-        with open(self.filename(filename, ext='mdp'), 'w') as mdp:
-            for k,v in self.items():
-                if k[0] == 'B':        # blank line
+        with open(self.filename(filename, ext="mdp"), "w") as mdp:
+            for k, v in self.items():
+                if k[0] == "B":  # blank line
                     mdp.write("\n")
-                elif k[0] == 'C':      # comment
+                elif k[0] == "C":  # comment
                     mdp.write("; {v!s}\n".format(**vars()))
-                else:                  # parameter = value
-                    if skipempty and (v == '' or v is None):
+                else:  # parameter = value
+                    if skipempty and (v == "" or v is None):
                         continue
-                    if isinstance(v, six.string_types) or not hasattr(v, '__iter__'):
+                    if isinstance(v, six.string_types) or not hasattr(v, "__iter__"):
                         mdp.write("{k!s} = {v!s}\n".format(**vars()))
                     else:
-                         mdp.write("{} = {}\n".format(k,' '.join(map(str, v))))
+                        mdp.write("{} = {}\n".format(k, " ".join(map(str, v))))

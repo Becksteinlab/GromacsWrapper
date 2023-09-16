@@ -110,18 +110,21 @@ import datetime
 import numpy
 
 import logging
-logger = logging.getLogger('gromacs.utilities')
+
+logger = logging.getLogger("gromacs.utilities")
 
 from .exceptions import AutoCorrectionWarning
 
 
 class AttributeDict(dict):
     """A dictionary with pythonic access to keys as attributes --- useful for interactive work."""
+
     def __getattribute__(self, x):
         try:
-            return super(AttributeDict,self).__getattribute__(x)
+            return super(AttributeDict, self).__getattribute__(x)
         except AttributeError:
             return self[x]
+
     def __setattr__(self, name, value):
         try:
             super(AttributeDict, self).__setitem__(name, value)
@@ -143,7 +146,7 @@ def autoconvert(s):
     """
     if type(s) is not str:
         return s
-    for converter in int, float, str:   # try them in increasing order of lenience
+    for converter in int, float, str:  # try them in increasing order of lenience
         try:
             s = [converter(i) for i in s.split()]
             if len(s) == 1:
@@ -154,8 +157,9 @@ def autoconvert(s):
             pass
     raise ValueError("Failed to autoconvert {0!r}".format(s))
 
+
 @contextmanager
-def openany(datasource, mode='rt', reset=True):
+def openany(datasource, mode="rt", reset=True):
     """Context manager for :func:`anyopen`.
 
     Open the `datasource` and close it when the context of the :keyword:`with`
@@ -219,14 +223,15 @@ except AttributeError:
     # We are on python 2 and bz2.open is not available
     def bz2_open(filename, mode):
         """Open and uncompress a BZ2 file"""
-        mode = mode.replace('t', '').replace('b', '')
+        mode = mode.replace("t", "").replace("b", "")
         return bz2.BZ2File(filename, mode)
+
 else:
     # We are on python 3 so we can use bz2.open
     bz2_open = bz2.open
 
 
-def anyopen(datasource, mode='rt', reset=True):
+def anyopen(datasource, mode="rt", reset=True):
     """Open datasource (gzipped, bzipped, uncompressed) and return a stream.
 
     `datasource` can be a filename or a stream (see :func:`isstream`). By
@@ -257,9 +262,9 @@ def anyopen(datasource, mode='rt', reset=True):
        :func:`openany` to be used with the :keyword:`with` statement.
 
     """
-    handlers = {'bz2': bz2_open, 'gz': gzip.open, '': open}
+    handlers = {"bz2": bz2_open, "gz": gzip.open, "": open}
 
-    if mode.startswith('r'):
+    if mode.startswith("r"):
         if isstream(datasource):
             stream = datasource
             try:
@@ -273,20 +278,26 @@ def anyopen(datasource, mode='rt', reset=True):
                     try:
                         stream.seek(0)
                     except (AttributeError, IOError):
-                        warnings.warn("Stream {0}: not guaranteed to be at the beginning."
-                                      "".format(filename),
-                                      category=StreamWarning)
+                        warnings.warn(
+                            "Stream {0}: not guaranteed to be at the beginning."
+                            "".format(filename),
+                            category=StreamWarning,
+                        )
         else:
             stream = None
             filename = datasource
-            for ext in ('bz2', 'gz', ''):  # file == '' should be last
+            for ext in ("bz2", "gz", ""):  # file == '' should be last
                 openfunc = handlers[ext]
                 stream = _get_stream(datasource, openfunc, mode=mode)
                 if stream is not None:
                     break
             if stream is None:
-                raise IOError(errno.EIO, "Cannot open file or stream in mode={mode!r}.".format(**vars()), repr(filename))
-    elif mode.startswith('w') or mode.startswith('a'):  # append 'a' not tested...
+                raise IOError(
+                    errno.EIO,
+                    "Cannot open file or stream in mode={mode!r}.".format(**vars()),
+                    repr(filename),
+                )
+    elif mode.startswith("w") or mode.startswith("a"):  # append 'a' not tested...
         if isstream(datasource):
             stream = datasource
             try:
@@ -297,16 +308,24 @@ def anyopen(datasource, mode='rt', reset=True):
             stream = None
             filename = datasource
             name, ext = os.path.splitext(filename)
-            if ext.startswith('.'):
+            if ext.startswith("."):
                 ext = ext[1:]
-            if not ext in ('bz2', 'gz'):
-                ext = ''  # anything else but bz2 or gz is just a normal file
+            if not ext in ("bz2", "gz"):
+                ext = ""  # anything else but bz2 or gz is just a normal file
             openfunc = handlers[ext]
             stream = openfunc(datasource, mode=mode)
             if stream is None:
-                raise IOError(errno.EIO, "Cannot open file or stream in mode={mode!r}.".format(**vars()), repr(filename))
+                raise IOError(
+                    errno.EIO,
+                    "Cannot open file or stream in mode={mode!r}.".format(**vars()),
+                    repr(filename),
+                )
     else:
-        raise NotImplementedError("Sorry, mode={mode!r} is not implemented for {datasource!r}".format(**vars()))
+        raise NotImplementedError(
+            "Sorry, mode={mode!r} is not implemented for {datasource!r}".format(
+                **vars()
+            )
+        )
     try:
         stream.name = filename
     except (AttributeError, TypeError):
@@ -314,7 +333,7 @@ def anyopen(datasource, mode='rt', reset=True):
     return stream
 
 
-def _get_stream(filename, openfunction=open, mode='r'):
+def _get_stream(filename, openfunction=open, mode="r"):
     """Return open stream if *filename* can be opened with *openfunction* or else ``None``."""
     try:
         stream = openfunction(filename, mode=mode)
@@ -322,10 +341,10 @@ def _get_stream(filename, openfunction=open, mode='r'):
         # An exception might be raised due to two reasons, first the openfunction is unable to open the file, in this
         # case we have to ignore the error and return None. Second is when openfunction can't open the file because
         # either the file isn't there or the permissions don't allow access.
-        if errno.errorcode[err.errno] in ['ENOENT', 'EACCES']:
+        if errno.errorcode[err.errno] in ["ENOENT", "EACCES"]:
             six.reraise(*sys.exc_info())
         return None
-    if mode.startswith('r'):
+    if mode.startswith("r"):
         # additional check for reading (eg can we uncompress) --- is this needed?
         try:
             stream.readline()
@@ -340,12 +359,14 @@ def _get_stream(filename, openfunction=open, mode='r'):
             stream = openfunction(filename, mode=mode)
     return stream
 
+
 def hasmethod(obj, m):
     """Return ``True`` if object *obj* contains the method *m*.
 
     .. versionadded:: 0.7.1
     """
     return hasattr(obj, m) and callable(getattr(obj, m))
+
 
 def isstream(obj):
     """Detect if `obj` is a stream.
@@ -375,7 +396,8 @@ def isstream(obj):
     signature_methods = ("close",)
     alternative_methods = (
         ("read", "readline", "readlines"),
-        ("write", "writeline", "writelines"))
+        ("write", "writeline", "writelines"),
+    )
 
     # Must have ALL the signature methods
     for m in signature_methods:
@@ -384,18 +406,38 @@ def isstream(obj):
     # Must have at least one complete set of alternative_methods
     alternative_results = [
         numpy.all([hasmethod(obj, m) for m in alternatives])
-        for alternatives in alternative_methods]
+        for alternatives in alternative_methods
+    ]
     return numpy.any(alternative_results)
+
 
 # TODO: make it work for non-default charge state amino acids.
 #: translation table for 1-letter codes --> 3-letter codes
 #: .. Note: This does not work for HISB and non-default charge state aa!
-amino_acid_codes = {'A':'ALA', 'C':'CYS', 'D':'ASP', 'E':'GLU',
-                    'F':'PHE', 'G':'GLY', 'H':'HIS', 'I':'ILE',
-                    'K':'LYS', 'L':'LEU', 'M':'MET', 'N':'ASN',
-                    'P':'PRO', 'Q':'GLN', 'R':'ARG', 'S':'SER',
-                    'T':'THR', 'V':'VAL', 'W':'TRP', 'Y':'TYR'}
-inverse_aa_codes = {three: one for one,three in amino_acid_codes.items()}
+amino_acid_codes = {
+    "A": "ALA",
+    "C": "CYS",
+    "D": "ASP",
+    "E": "GLU",
+    "F": "PHE",
+    "G": "GLY",
+    "H": "HIS",
+    "I": "ILE",
+    "K": "LYS",
+    "L": "LEU",
+    "M": "MET",
+    "N": "ASN",
+    "P": "PRO",
+    "Q": "GLN",
+    "R": "ARG",
+    "S": "SER",
+    "T": "THR",
+    "V": "VAL",
+    "W": "TRP",
+    "Y": "TYR",
+}
+inverse_aa_codes = {three: one for one, three in amino_acid_codes.items()}
+
 
 def convert_aa_code(x):
     """Converts between 3-letter and 1-letter amino acid codes."""
@@ -404,8 +446,10 @@ def convert_aa_code(x):
     elif len(x) == 3:
         return inverse_aa_codes[x.upper()]
     else:
-        raise ValueError("Can only convert 1-letter or 3-letter amino acid codes, "
-                         "not %r" % x)
+        raise ValueError(
+            "Can only convert 1-letter or 3-letter amino acid codes, " "not %r" % x
+        )
+
 
 @contextmanager
 def in_dir(directory, create=True):
@@ -426,13 +470,18 @@ def in_dir(directory, create=True):
             if create and err.errno == errno.ENOENT:
                 os.makedirs(directory)
                 os.chdir(directory)
-                logger.info("Working in {directory!r} (newly created)...".format(**vars()))
+                logger.info(
+                    "Working in {directory!r} (newly created)...".format(**vars())
+                )
             else:
-                logger.exception("Failed to start working in {directory!r}.".format(**vars()))
+                logger.exception(
+                    "Failed to start working in {directory!r}.".format(**vars())
+                )
                 raise
         yield os.getcwd()
     finally:
         os.chdir(startdir)
+
 
 def realpath(*args):
     """Join all args and return the real path, rooted at /.
@@ -443,8 +492,8 @@ def realpath(*args):
     """
     if None in args:
         return None
-    return os.path.realpath(
-        os.path.expandvars(os.path.expanduser(os.path.join(*args))))
+    return os.path.realpath(os.path.expandvars(os.path.expanduser(os.path.join(*args))))
+
 
 def find_first(filename, suffices=None):
     """Find first *filename* with a suffix from *suffices*.
@@ -460,7 +509,7 @@ def find_first(filename, suffices=None):
     """
     # struct is not reliable as it depends on qscript so now we just try everything...
 
-    root,extension = os.path.splitext(filename)
+    root, extension = os.path.splitext(filename)
     if suffices is None:
         suffices = []
     else:
@@ -472,13 +521,17 @@ def find_first(filename, suffices=None):
             return fn
     return None
 
+
 def withextsep(extensions):
     """Return list in which each element is guaranteed to start with :data:`os.path.extsep`."""
+
     def dottify(x):
         if x.startswith(os.path.extsep):
             return x
         return os.path.extsep + x
+
     return [dottify(x) for x in asiterable(extensions)]
+
 
 def find_files(directory, pattern):
     """Find files recursively under *directory*, matching *pattern* (generator).
@@ -493,6 +546,7 @@ def find_files(directory, pattern):
             if fnmatch.fnmatch(basename, pattern):
                 filename = os.path.join(root, basename)
                 yield filename
+
 
 def which(program):
     """Determine full path of executable *program* on :envvar:`PATH`.
@@ -517,6 +571,7 @@ def which(program):
                 return exe_file
     return None
 
+
 class FileUtils(object):
     """Mixin class to provide additional file-related capabilities."""
 
@@ -538,11 +593,13 @@ class FileUtils(object):
         """
 
         extension = ext or self.default_extension
-        filename = self.filename(filename, ext=extension, use_my_ext=True, set_default=True)
+        filename = self.filename(
+            filename, ext=extension, use_my_ext=True, set_default=True
+        )
         #: Current full path of the object for reading and writing I/O.
         self.real_filename = os.path.realpath(filename)
 
-    def filename(self,filename=None,ext=None,set_default=False,use_my_ext=False):
+    def filename(self, filename=None, ext=None, set_default=False, use_my_ext=False):
         """Supply a file name for the class object.
 
         Typical uses::
@@ -568,16 +625,18 @@ class FileUtils(object):
            An empty string as *ext* = "" will suppress appending an extension.
         """
         if filename is None:
-            if not hasattr(self,'_filename'):
-                self._filename = None        # add attribute to class
+            if not hasattr(self, "_filename"):
+                self._filename = None  # add attribute to class
             if self._filename:
                 filename = self._filename
             else:
-                raise ValueError("A file name is required because no default file name was defined.")
+                raise ValueError(
+                    "A file name is required because no default file name was defined."
+                )
             my_ext = None
         else:
             filename, my_ext = os.path.splitext(filename)
-            if set_default:                  # replaces existing default file name
+            if set_default:  # replaces existing default file name
                 self._filename = filename
         if my_ext and use_my_ext:
             ext = my_ext
@@ -588,7 +647,7 @@ class FileUtils(object):
                 filename = filename + os.extsep + ext
         return filename
 
-    def check_file_exists(self, filename, resolve='exception', force=None):
+    def check_file_exists(self, filename, resolve="exception", force=None):
         """If a file exists then continue with the action specified in ``resolve``.
 
         ``resolve`` must be one of
@@ -612,27 +671,31 @@ class FileUtils(object):
         ``None``
               ignored, do whatever *resolve* says
         """
+
         def _warn(x):
             msg = "File {0!r} already exists.".format(x)
             logger.warning(msg)
             warnings.warn(msg)
             return True
+
         def _raise(x):
             msg = "File {0!r} already exists.".format(x)
             logger.error(msg)
             raise IOError(errno.EEXIST, x, msg)
-        solutions = {'ignore': lambda x: False,      # file exists, but we pretend that it doesn't
-                     'indicate': lambda x: True,     # yes, file exists
-                     'warn': _warn,
-                     'warning': _warn,
-                     'exception': _raise,
-                     'raise': _raise,
-                     }
+
+        solutions = {
+            "ignore": lambda x: False,  # file exists, but we pretend that it doesn't
+            "indicate": lambda x: True,  # yes, file exists
+            "warn": _warn,
+            "warning": _warn,
+            "exception": _raise,
+            "raise": _raise,
+        }
 
         if force is True:
-            resolve = 'ignore'
+            resolve = "ignore"
         elif force is False:
-            resolve = 'exception'
+            resolve = "exception"
 
         if not os.path.isfile(filename):
             return False
@@ -647,13 +710,13 @@ class FileUtils(object):
                 ext = oldext
             if ext.startswith(os.extsep):
                 ext = ext[1:]
-            name = self.filename(p+infix, ext=ext)
+            name = self.filename(p + infix, ext=ext)
         return name
 
     def __repr__(self):
         fmt = "{0!s}(filename=%r)".format(self.__class__.__name__)
         try:
-            fn =  self.filename()
+            fn = self.filename()
         except ValueError:
             fn = None
         return fmt % fn
@@ -662,20 +725,22 @@ class FileUtils(object):
 def iterable(obj):
     """Returns ``True`` if *obj* can be iterated over and is *not* a  string."""
     if isinstance(obj, string_types):
-        return False    # avoid iterating over characters of a string
-    if hasattr(obj, 'next'):
-        return True    # any iterator will do
+        return False  # avoid iterating over characters of a string
+    if hasattr(obj, "next"):
+        return True  # any iterator will do
     try:
-        len(obj)       # anything else that might work
+        len(obj)  # anything else that might work
     except TypeError:
         return False
     return True
+
 
 def asiterable(obj):
     """Returns obj so that it can be iterated over; a string is *not* treated as iterable"""
     if not iterable(obj):
         obj = [obj]
     return obj
+
 
 def firstof(obj):
     """Returns the first entry of a sequence or the obj.
@@ -684,7 +749,9 @@ def firstof(obj):
     """
     return asiterable(obj)[0]
 
+
 # In utilities so that it can be safely used in tools, cbook, ...
+
 
 def unlink_f(path):
     """Unlink path but do not complain if file does not exist."""
@@ -694,19 +761,22 @@ def unlink_f(path):
         if err.errno != errno.ENOENT:
             raise
 
+
 def unlink_gmx(*args):
     """Unlink (remove) Gromacs file(s) and all corresponding backups."""
     for path in args:
         unlink_f(path)
     unlink_gmx_backups(*args)
 
+
 def unlink_gmx_backups(*args):
     """Unlink (rm) all backup files corresponding to the listed files."""
     for path in args:
         dirname, filename = os.path.split(path)
-        fbaks = glob.glob(os.path.join(dirname, '#'+filename+'.*#'))
+        fbaks = glob.glob(os.path.join(dirname, "#" + filename + ".*#"))
         for bak in fbaks:
             unlink_f(bak)
+
 
 def mkdir_p(path):
     """Create a directory *path* with subdirs but do not complain if it exists.
@@ -719,6 +789,7 @@ def mkdir_p(path):
         if err.errno != errno.EEXIST:
             raise
 
+
 def cat(f=None, o=None):
     """Concatenate files *f*=[...] and write to *o*"""
     # need f, o to be compatible with trjcat and eneconv
@@ -727,10 +798,12 @@ def cat(f=None, o=None):
     target = o
     infiles = asiterable(f)
     logger.debug("cat {0!s} > {1!s} ".format(" ".join(infiles), target))
-    with open(target, 'w') as out:
-        rc = subprocess.call(['cat'] + infiles, stdout=out)
+    with open(target, "w") as out:
+        rc = subprocess.call(["cat"] + infiles, stdout=out)
     if rc != 0:
-        msg = "failed with return code {0:d}: cat {1!r} > {2!r} ".format(rc, " ".join(infiles), target)
+        msg = "failed with return code {0:d}: cat {1!r} > {2!r} ".format(
+            rc, " ".join(infiles), target
+        )
         logger.exception(msg)
         raise OSError(errno.EIO, msg, target)
 
@@ -744,8 +817,10 @@ def activate_subplot(numPlot):
     """
     # see http://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg07156.html
     from pylab import gcf, axes
+
     numPlot -= 1  # index is 0-based, plots are 1-based
     return axes(gcf().get_axes()[numPlot])
+
 
 def remove_legend(ax=None):
     """Remove legend for axes or gca.
@@ -753,6 +828,7 @@ def remove_legend(ax=None):
     See http://osdir.com/ml/python.matplotlib.general/2005-07/msg00285.html
     """
     from pylab import gca, draw
+
     if ax is None:
         ax = gca()
     ax.legend_ = None
@@ -777,17 +853,17 @@ class Timedelta(datetime.timedelta):
     @property
     def dminutes(self):
         """Minutes component of the timedelta."""
-        return self.seconds // 60 - 60*self.dhours
+        return self.seconds // 60 - 60 * self.dhours
 
     @property
     def dseconds(self):
         """Seconds component of the timedelta."""
-        return self.seconds - 3600*self.dhours - 60*self.dminutes
+        return self.seconds - 3600 * self.dhours - 60 * self.dminutes
 
     @property
     def ashours(self):
         """Timedelta in (fractional) hours."""
-        return 24*self.days + self.seconds / 3600.0
+        return 24 * self.days + self.seconds / 3600.0
 
     def strftime(self, fmt="%d:%H:%M:%S"):
         """Primitive string formatter.
@@ -806,10 +882,10 @@ class Timedelta(datetime.timedelta):
         substitutions = {
             "%d": str(self.days),
             "%H": "{0:02d}".format(self.dhours),
-            "%h": str(24*self.days + self.dhours),
+            "%h": str(24 * self.days + self.dhours),
             "%M": "{0:02d}".format(self.dminutes),
             "%S": "{0:02d}".format(self.dseconds),
-            }
+        }
         s = fmt
         for search, replacement in substitutions.items():
             s = s.replace(search, replacement)
@@ -817,6 +893,7 @@ class Timedelta(datetime.timedelta):
 
 
 NUMBERED_PDB = re.compile(r"(?P<PREFIX>.*\D)(?P<NUMBER>\d+)\.(?P<SUFFIX>pdb)")
+
 
 def number_pdbs(*args, **kwargs):
     """Rename pdbs x1.pdb ... x345.pdb --> x0001.pdb ... x0345.pdb
@@ -826,16 +903,16 @@ def number_pdbs(*args, **kwargs):
        - *format*: format string including keyword *num* ["%(num)04d"]
     """
 
-    format = kwargs.pop('format', "%(num)04d")
-    name_format = "%(prefix)s" + format +".%(suffix)s"
+    format = kwargs.pop("format", "%(num)04d")
+    name_format = "%(prefix)s" + format + ".%(suffix)s"
 
     for f in itertools.chain.from_iterable(map(glob.glob, args)):
         m = NUMBERED_PDB.search(f)
         if m is None:
             continue
-        num = int(m.group('NUMBER'))
-        prefix = m.group('PREFIX')
-        suffix = m.group('SUFFIX')
+        num = int(m.group("NUMBER"))
+        prefix = m.group("PREFIX")
+        suffix = m.group("SUFFIX")
         newname = name_format % vars()
         logger.info("Renaming {f!r} --> {newname!r}".format(**vars()))
         try:

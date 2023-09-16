@@ -52,5 +52,3 @@ __docformat__ = "restructuredtext en"
 __all__ = ["XVG", "MDP", "NDX", "uniqueNDX", "XPM", "TOP"]
 
 from .fileformats import XVG, MDP, NDX, uniqueNDX, XPM, TOP
-
-

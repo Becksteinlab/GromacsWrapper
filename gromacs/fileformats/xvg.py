@@ -204,12 +204,14 @@ from matplotlib import pyplot as plt
 
 import numkit.timeseries
 
-from gromacs.exceptions import (ParseError, MissingDataError,
-                                MissingDataWarning, AutoCorrectionWarning)
+from gromacs.exceptions import (
+    ParseError,
+    MissingDataError,
+    MissingDataWarning,
+    AutoCorrectionWarning,
+)
 import gromacs.utilities as utilities
 import gromacs.collections
-
-
 
 
 class XVG(utilities.FileUtils):
@@ -261,18 +263,32 @@ class XVG(utilities.FileUtils):
 
     # logger: for pickling to work, this *must* be class-level and
     # cannot be done in __init__() (because we cannot pickle self.logger)
-    logger = logging.getLogger('gromacs.formats.XVG')
+    logger = logging.getLogger("gromacs.formats.XVG")
 
     #: If :attr:`XVG.savedata` is ``False`` then any attributes in
     #: :attr:`XVG.__pickle_excluded` are *not* pickled as they are but simply
     #: pickled with the default value.
-    __pickle_excluded = {'__array': None}   # note class name un-mangling in __getstate__()!
+    __pickle_excluded = {
+        "__array": None
+    }  # note class name un-mangling in __getstate__()!
 
     #: Default color cycle for :meth:`XVG.plot_coarsened`:
     #: ``['black', 'red', 'blue', 'orange', 'magenta', 'cyan', 'yellow', 'brown', 'green']``
-    default_color_cycle = ['black', 'red', 'blue', 'orange', 'magenta', 'cyan', 'yellow', 'brown', 'green']
+    default_color_cycle = [
+        "black",
+        "red",
+        "blue",
+        "orange",
+        "magenta",
+        "cyan",
+        "yellow",
+        "brown",
+        "green",
+    ]
 
-    def __init__(self, filename=None, names=None, array=None, permissive=False, **kwargs):
+    def __init__(
+        self, filename=None, names=None, array=None, permissive=False, **kwargs
+    ):
         """Initialize the class from a xvg file.
 
         :Arguments:
@@ -304,25 +320,27 @@ class XVG(utilities.FileUtils):
                     dictionary of metadata, which is not touched by the class
 
         """
-        self.__array = None           # cache for array (BIG) (used by XVG.array)
-        self.__cache = {}             # cache for computed results
-        self.savedata = kwargs.pop('savedata', False)
+        self.__array = None  # cache for array (BIG) (used by XVG.array)
+        self.__cache = {}  # cache for computed results
+        self.savedata = kwargs.pop("savedata", False)
         if filename is not None:
-            self._init_filename(filename)  # note: reading data from file is delayed until required
+            self._init_filename(
+                filename
+            )  # note: reading data from file is delayed until required
         if names is None:
             self.names = []
         else:
             try:
-                self.names = names.split(',')
+                self.names = names.split(",")
             except AttributeError:
                 self.names = names
-        self.metadata = kwargs.pop('metadata', {})  # reserved for user data
+        self.metadata = kwargs.pop("metadata", {})  # reserved for user data
         self.permissive = permissive
-        self.stride = kwargs.pop('stride', 1)
-        self.corrupted_lineno = None      # must parse() first before this makes sense
+        self.stride = kwargs.pop("stride", 1)
+        self.corrupted_lineno = None  # must parse() first before this makes sense
         # default number of data points for calculating correlation times via FFT
-        self.ncorrel = kwargs.pop('ncorrel', 25000)
-        self.__correlkwargs = {}          # see set_correlparameters()
+        self.ncorrel = kwargs.pop("ncorrel", 25000)
+        self.__correlkwargs = {}  # see set_correlparameters()
 
         if array is not None:
             self.set(array)
@@ -338,13 +356,17 @@ class XVG(utilities.FileUtils):
         .. Note:: Only plain files working at the moment, not compressed.
         """
         self._init_filename(filename)
-        with utilities.openany(self.real_filename, 'w') as xvg:
-            xvg.write("# xmgrace compatible NXY data file\n"
-                      "# Written by gromacs.formats.XVG()\n")
+        with utilities.openany(self.real_filename, "w") as xvg:
+            xvg.write(
+                "# xmgrace compatible NXY data file\n"
+                "# Written by gromacs.formats.XVG()\n"
+            )
             xvg.write("# :columns: {0!r}\n".format(self.names))
             for xyy in self.array.T:
-                xyy.tofile(xvg, sep=" ", format="%-8s")  # quick and dirty ascii output...--no compression!
-                xvg.write('\n')
+                xyy.tofile(
+                    xvg, sep=" ", format="%-8s"
+                )  # quick and dirty ascii output...--no compression!
+                xvg.write("\n")
 
     @property
     def array(self):
@@ -398,8 +420,13 @@ class XVG(utilities.FileUtils):
 
         .. SeeAlso:: :func:`numkit.timeseries.tcorrel`
         """
-        t = self.array[0,::nstep]
-        r = gromacs.collections.Collection([numkit.timeseries.tcorrel(t, Y, nstep=1, **kwargs) for Y in self.array[1:,::nstep]])
+        t = self.array[0, ::nstep]
+        r = gromacs.collections.Collection(
+            [
+                numkit.timeseries.tcorrel(t, Y, nstep=1, **kwargs)
+                for Y in self.array[1:, ::nstep]
+            ]
+        )
         return r
 
     def set_correlparameters(self, **kwargs):
@@ -423,21 +450,23 @@ class XVG(utilities.FileUtils):
 
         .. SeeAlso: :attr:`XVG.error` for details and references.
         """
-        self.ncorrel = kwargs.pop('ncorrel', self.ncorrel) or 25000
-        nstep = kwargs.pop('nstep', None)
+        self.ncorrel = kwargs.pop("ncorrel", self.ncorrel) or 25000
+        nstep = kwargs.pop("nstep", None)
         if nstep is None:
             # good step size leads to ~25,000 data points
-            nstep = len(self.array[0])/float(self.ncorrel)
+            nstep = len(self.array[0]) / float(self.ncorrel)
             nstep = int(numpy.ceil(nstep))  # catch small data sets
-        kwargs['nstep'] = nstep
-        self.__correlkwargs.update(kwargs)  # only contains legal kw for numkit.timeseries.tcorrel or force
+        kwargs["nstep"] = nstep
+        self.__correlkwargs.update(
+            kwargs
+        )  # only contains legal kw for numkit.timeseries.tcorrel or force
         return self.__correlkwargs
 
     def _correlprop(self, key, **kwargs):
         kwargs = self.set_correlparameters(**kwargs)
-        if not self.__cache.get('tcorrel', None) or kwargs.pop('force', False):
-            self.__cache['tcorrel'] = self._tcorrel(**kwargs)
-        return numpy.array(self.__cache['tcorrel'].get(key).tolist())
+        if not self.__cache.get("tcorrel", None) or kwargs.pop("force", False):
+            self.__cache["tcorrel"] = self._tcorrel(**kwargs)
+        return numpy.array(self.__cache["tcorrel"].get(key).tolist())
 
     @property
     def error(self):
@@ -457,7 +486,7 @@ class XVG(utilities.FileUtils):
 
         .. _p526: http://books.google.co.uk/books?id=XmyO2oRUg0cC&pg=PA526
         """
-        return self._correlprop('sigma')
+        return self._correlprop("sigma")
 
     @property
     def tc(self):
@@ -465,7 +494,7 @@ class XVG(utilities.FileUtils):
 
         See :meth:`XVG.error` for details.
         """
-        return self._correlprop('tc')
+        return self._correlprop("tc")
 
     def parse(self, stride=None):
         """Read and cache the file as a numpy array.
@@ -478,49 +507,70 @@ class XVG(utilities.FileUtils):
         if stride is None:
             stride = self.stride
         self.corrupted_lineno = []
-        irow  = 0  # count rows of data
+        irow = 0  # count rows of data
         # cannot use numpy.loadtxt() because xvg can have two types of 'comment' lines
         with utilities.openany(self.real_filename) as xvg:
             rows = []
             ncol = None
-            for lineno,line in enumerate(xvg):
+            for lineno, line in enumerate(xvg):
                 line = line.strip()
                 if len(line) == 0:
                     continue
                 if "label" in line and "xaxis" in line:
-                        self.xaxis = line.split('"')[-2]
+                    self.xaxis = line.split('"')[-2]
                 if "label" in line and "yaxis" in line:
-                        self.yaxis = line.split('"')[-2]
+                    self.yaxis = line.split('"')[-2]
                 if line.startswith("@ legend"):
-                                        if not "legend" in self.metadata: self.metadata["legend"] = []
-                                        self.metadata["legend"].append(line.split("legend ")[-1])
+                    if not "legend" in self.metadata:
+                        self.metadata["legend"] = []
+                    self.metadata["legend"].append(line.split("legend ")[-1])
                 if line.startswith("@ s") and "subtitle" not in line:
-                                        name = line.split("legend ")[-1].replace('"','').strip()
-                                        self.names.append(name)
-                if line.startswith(('#', '@')) :
-                                        continue
-                if line.startswith('&'):
-                    raise NotImplementedError('{0!s}: Multi-data not supported, only simple NXY format.'.format(self.real_filename))
+                    name = line.split("legend ")[-1].replace('"', "").strip()
+                    self.names.append(name)
+                if line.startswith(("#", "@")):
+                    continue
+                if line.startswith("&"):
+                    raise NotImplementedError(
+                        "{0!s}: Multi-data not supported, only simple NXY format.".format(
+                            self.real_filename
+                        )
+                    )
                 # parse line as floats
                 try:
                     row = [float(el) for el in line.split()]
                 except:
                     if self.permissive:
-                        self.logger.warning("%s: SKIPPING unparsable line %d: %r",
-                                         self.real_filename, lineno+1, line)
-                        self.corrupted_lineno.append(lineno+1)
+                        self.logger.warning(
+                            "%s: SKIPPING unparsable line %d: %r",
+                            self.real_filename,
+                            lineno + 1,
+                            line,
+                        )
+                        self.corrupted_lineno.append(lineno + 1)
                         continue
-                    self.logger.error("%s: Cannot parse line %d: %r",
-                                      self.real_filename, lineno+1, line)
+                    self.logger.error(
+                        "%s: Cannot parse line %d: %r",
+                        self.real_filename,
+                        lineno + 1,
+                        line,
+                    )
                     raise
                 # check for same number of columns as in previous step
                 if ncol is not None and len(row) != ncol:
                     if self.permissive:
-                        self.logger.warning("%s: SKIPPING line %d with wrong number of columns: %r",
-                                         self.real_filename, lineno+1, line)
-                        self.corrupted_lineno.append(lineno+1)
+                        self.logger.warning(
+                            "%s: SKIPPING line %d with wrong number of columns: %r",
+                            self.real_filename,
+                            lineno + 1,
+                            line,
+                        )
+                        self.corrupted_lineno.append(lineno + 1)
                         continue
-                    errmsg = "{0!s}: Wrong number of columns in line {1:d}: {2!r}".format(self.real_filename, lineno+1, line)
+                    errmsg = (
+                        "{0!s}: Wrong number of columns in line {1:d}: {2!r}".format(
+                            self.real_filename, lineno + 1, line
+                        )
+                    )
                     self.logger.error(errmsg)
                     raise IOError(errno.ENODATA, errmsg, self.real_filename)
                 # finally: a good line
@@ -529,17 +579,25 @@ class XVG(utilities.FileUtils):
                     rows.append(row)
                 irow += 1
         try:
-            self.__array = numpy.array(rows).transpose()    # cache result
+            self.__array = numpy.array(rows).transpose()  # cache result
         except:
-            self.logger.error("%s: Failed reading XVG file, possibly data corrupted. "
-                              "Check the last line of the file...", self.real_filename)
+            self.logger.error(
+                "%s: Failed reading XVG file, possibly data corrupted. "
+                "Check the last line of the file...",
+                self.real_filename,
+            )
             raise
         finally:
-            del rows     # try to clean up as well as possible as it can be massively big
+            del rows  # try to clean up as well as possible as it can be massively big
 
     def to_df(self):
         import pandas as _pd
-        return _pd.DataFrame(self.array.T, columns=[self.xaxis] + (self.names if len(self.names) else [self.yaxis]) , dtype=float)
+
+        return _pd.DataFrame(
+            self.array.T,
+            columns=[self.xaxis] + (self.names if len(self.names) else [self.yaxis]),
+            dtype=float,
+        )
 
     def set(self, a):
         """Set the *array* data from *a* (i.e. completely replace).
@@ -551,7 +609,11 @@ class XVG(utilities.FileUtils):
     def _get_colors(self, color, columns):
         try:
             cmap = matplotlib.cm.get_cmap(color)
-            colors = cmap(matplotlib.colors.Normalize()(numpy.arange(len(columns[1:]), dtype=float)))
+            colors = cmap(
+                matplotlib.colors.Normalize()(
+                    numpy.arange(len(columns[1:]), dtype=float)
+                )
+            )
         except (TypeError, ValueError):
             colors = cycle(utilities.asiterable(color))
         return colors
@@ -598,11 +660,13 @@ class XVG(utilities.FileUtils):
           *ax*
                axes instance
         """
-        columns = kwargs.pop('columns', Ellipsis)         # slice for everything
-        maxpoints = kwargs.pop('maxpoints', self.maxpoints_default)
-        transform = kwargs.pop('transform', lambda x: x)  # default is identity transformation
-        method = kwargs.pop('method', "mean")
-        ax = kwargs.pop('ax', None)
+        columns = kwargs.pop("columns", Ellipsis)  # slice for everything
+        maxpoints = kwargs.pop("maxpoints", self.maxpoints_default)
+        transform = kwargs.pop(
+            "transform", lambda x: x
+        )  # default is identity transformation
+        method = kwargs.pop("method", "mean")
+        ax = kwargs.pop("ax", None)
 
         if columns is Ellipsis or columns is None:
             columns = numpy.arange(self.array.shape[0])
@@ -615,27 +679,34 @@ class XVG(utilities.FileUtils):
             a = numpy.ravel(self.array)
             X = numpy.arange(len(a))
             a = numpy.vstack((X, a))
-            columns = [0] + [c+1 for c in columns]
+            columns = [0] + [c + 1 for c in columns]
         else:
             a = self.array
 
-        colors = self._get_colors(kwargs.pop('color', self.default_color_cycle), columns)
+        colors = self._get_colors(
+            kwargs.pop("color", self.default_color_cycle), columns
+        )
 
         if ax is None:
             ax = plt.gca()
 
         # (decimate/smooth o slice o transform)(array)
-        a = self.decimate(method, numpy.asarray(transform(a))[columns], maxpoints=maxpoints)
+        a = self.decimate(
+            method, numpy.asarray(transform(a))[columns], maxpoints=maxpoints
+        )
 
         # now deal with infs, nans etc AFTER all transformations (needed for plotting across inf/nan)
         ma = numpy.ma.MaskedArray(a, mask=numpy.logical_not(numpy.isfinite(a)))
 
         # finally plot (each column separately to catch empty sets)
-        for column, color in zip(range(1,len(columns)), colors):
+        for column, color in zip(range(1, len(columns)), colors):
             if len(ma[column]) == 0:
-                warnings.warn("No data to plot for column {column:d}".format(**vars()), category=MissingDataWarning)
-            kwargs['color'] = color
-            ax.plot(ma[0], ma[column], **kwargs)   # plot all other columns in parallel
+                warnings.warn(
+                    "No data to plot for column {column:d}".format(**vars()),
+                    category=MissingDataWarning,
+                )
+            kwargs["color"] = color
+            ax.plot(ma[0], ma[column], **kwargs)  # plot all other columns in parallel
         return ax
 
     def plot_coarsened(self, **kwargs):
@@ -666,24 +737,28 @@ class XVG(utilities.FileUtils):
 
         .. SeeAlso:: :meth:`XVG.plot`, :meth:`XVG.errorbar` and :meth:`XVG.decimate`
         """
-        ax = kwargs.pop('ax', None)
-        columns = kwargs.pop('columns', Ellipsis)         # slice for everything
+        ax = kwargs.pop("ax", None)
+        columns = kwargs.pop("columns", Ellipsis)  # slice for everything
         if columns is Ellipsis or columns is None:
             columns = numpy.arange(self.array.shape[0])
         if len(columns) < 2:
-            raise MissingDataError("plot_coarsened() assumes that there is at least one column "
-                                   "of data for the abscissa and one or more for the ordinate.")
+            raise MissingDataError(
+                "plot_coarsened() assumes that there is at least one column "
+                "of data for the abscissa and one or more for the ordinate."
+            )
 
-        colors = self._get_colors(kwargs.pop('color', self.default_color_cycle), columns)
+        colors = self._get_colors(
+            kwargs.pop("color", self.default_color_cycle), columns
+        )
 
         if ax is None:
             ax = plt.gca()
 
         t = columns[0]
-        kwargs['demean'] = True
-        kwargs['ax'] = ax
+        kwargs["demean"] = True
+        kwargs["ax"] = ax
         for column, color in zip(columns[1:], colors):
-            kwargs['color'] = color
+            kwargs["color"] = color
             self.errorbar(columns=[t, column, column], **kwargs)
         return ax
 
@@ -725,32 +800,40 @@ class XVG(utilities.FileUtils):
 
            :meth:`XVG.plot` lists keywords common to both methods.
         """
-        ax = kwargs.pop('ax', None)
-        color = kwargs.pop('color', 'black')
-        filled = kwargs.pop('filled', True)
-        fill_alpha = kwargs.pop('fill_alpha', 0.2)
+        ax = kwargs.pop("ax", None)
+        color = kwargs.pop("color", "black")
+        filled = kwargs.pop("filled", True)
+        fill_alpha = kwargs.pop("fill_alpha", 0.2)
 
-        kwargs.setdefault('capsize', 0)
-        kwargs.setdefault('elinewidth', 1)
-        kwargs.setdefault('ecolor', color)
-        kwargs.setdefault('alpha', 0.3)
-        kwargs.setdefault('fmt', None)
+        kwargs.setdefault("capsize", 0)
+        kwargs.setdefault("elinewidth", 1)
+        kwargs.setdefault("ecolor", color)
+        kwargs.setdefault("alpha", 0.3)
+        kwargs.setdefault("fmt", None)
 
-        columns = kwargs.pop('columns', Ellipsis)         # slice for everything
-        maxpoints = kwargs.pop('maxpoints', self.maxpoints_default)
-        transform = kwargs.pop('transform', lambda x: x)  # default is identity transformation
-        method = kwargs.pop('method', "mean")
+        columns = kwargs.pop("columns", Ellipsis)  # slice for everything
+        maxpoints = kwargs.pop("maxpoints", self.maxpoints_default)
+        transform = kwargs.pop(
+            "transform", lambda x: x
+        )  # default is identity transformation
+        method = kwargs.pop("method", "mean")
         if method != "mean":
             raise NotImplementedError("For errors only method == 'mean' is supported.")
-        error_method = kwargs.pop('error_method', "percentile")  # can also use 'rms' and 'error'
-        percentile = numpy.abs(kwargs.pop('percentile', 95.))
-        demean = kwargs.pop('demean', False)
+        error_method = kwargs.pop(
+            "error_method", "percentile"
+        )  # can also use 'rms' and 'error'
+        percentile = numpy.abs(kwargs.pop("percentile", 95.0))
+        demean = kwargs.pop("demean", False)
 
         # order: (decimate/smooth o slice o transform)(array)
         try:
             data = numpy.asarray(transform(self.array))[columns]
         except IndexError:
-            raise MissingDataError("columns {0!r} are not suitable to index the transformed array, possibly not eneough data".format(columns))
+            raise MissingDataError(
+                "columns {0!r} are not suitable to index the transformed array, possibly not eneough data".format(
+                    columns
+                )
+            )
         if data.shape[-1] == 0:
             raise MissingDataError("There is no data to be plotted.")
         a = numpy.zeros((data.shape[0], maxpoints), dtype=numpy.float64)
@@ -765,30 +848,46 @@ class XVG(utilities.FileUtils):
                 lower_per = percentile
             # demean generally does not make sense with the percentiles (but for analysing
             # the regularised data itself we use this as a flag --- see below!)
-            upper = a[2:] = self.decimate("percentile", error_data, maxpoints=maxpoints,
-                                          per=upper_per, demean=False)[1:]
-            lower = self.decimate("percentile", error_data, maxpoints=maxpoints,
-                                  per=lower_per, demean=False)[1:]
+            upper = a[2:] = self.decimate(
+                "percentile",
+                error_data,
+                maxpoints=maxpoints,
+                per=upper_per,
+                demean=False,
+            )[1:]
+            lower = self.decimate(
+                "percentile",
+                error_data,
+                maxpoints=maxpoints,
+                per=lower_per,
+                demean=False,
+            )[1:]
         else:
-            a[2:] = self.decimate(error_method, error_data, maxpoints=maxpoints, demean=demean)[1:]
+            a[2:] = self.decimate(
+                error_method, error_data, maxpoints=maxpoints, demean=demean
+            )[1:]
             lower = None
 
         # now deal with infs, nans etc AFTER all transformations (needed for plotting across inf/nan)
         ma = numpy.ma.MaskedArray(a, mask=numpy.logical_not(numpy.isfinite(a)))
         if lower is not None:
-            mlower = numpy.ma.MaskedArray(lower, mask=numpy.logical_not(numpy.isfinite(lower)))
+            mlower = numpy.ma.MaskedArray(
+                lower, mask=numpy.logical_not(numpy.isfinite(lower))
+            )
 
         # finally plot
-        X = ma[0]          # abscissa set separately
+        X = ma[0]  # abscissa set separately
         Y = ma[1]
         try:
-            kwargs['yerr'] = ma[3]
-            kwargs['xerr'] = ma[2]
+            kwargs["yerr"] = ma[3]
+            kwargs["xerr"] = ma[2]
         except IndexError:
             try:
-                kwargs['yerr'] = ma[2]
+                kwargs["yerr"] = ma[2]
             except IndexError:
-                raise TypeError("Either too few columns selected or data does not have a error column")
+                raise TypeError(
+                    "Either too few columns selected or data does not have a error column"
+                )
 
         if ax is None:
             ax = plt.gca()
@@ -799,26 +898,26 @@ class XVG(utilities.FileUtils):
                 if demean:
                     # signal that we are looking at percentiles of an observable and not error
                     y1 = mlower[-1]
-                    y2 = kwargs['yerr']
+                    y2 = kwargs["yerr"]
                 else:
                     # percentiles of real errors (>0)
                     y1 = Y - mlower[-1]
-                    y2 = Y + kwargs['yerr']
+                    y2 = Y + kwargs["yerr"]
             else:
-                y1 = Y - kwargs['yerr']
-                y2 = Y + kwargs['yerr']
+                y1 = Y - kwargs["yerr"]
+                y2 = Y + kwargs["yerr"]
             ax.fill_between(X, y1, y2, color=color, alpha=fill_alpha)
         else:
             if error_method == "percentile":
                 # errorbars extend to different lengths;
                 if demean:
-                    kwargs['yerr'] = numpy.vstack((mlower[-1], kwargs['yerr']))
+                    kwargs["yerr"] = numpy.vstack((mlower[-1], kwargs["yerr"]))
                 else:
-                    kwargs['yerr'] = numpy.vstack((Y - mlower[-1], Y + kwargs['yerr']))
+                    kwargs["yerr"] = numpy.vstack((Y - mlower[-1], Y + kwargs["yerr"]))
                 try:
                     # xerr only makes sense when the data is a real
                     # error so we don't even bother with demean=?
-                    kwargs['xerr'] = numpy.vstack((X - mlower[0], X + kwargs['xerr']))
+                    kwargs["xerr"] = numpy.vstack((X - mlower[0], X + kwargs["xerr"]))
                 except (KeyError, IndexError):
                     pass
             ax.errorbar(X, Y, **kwargs)
@@ -826,7 +925,7 @@ class XVG(utilities.FileUtils):
         # clean up args for plot
         for kw in "yerr", "xerr", "capsize", "ecolor", "elinewidth", "fmt":
             kwargs.pop(kw, None)
-        kwargs['alpha'] = 1.0
+        kwargs["alpha"] = 1.0
 
         ax.plot(X, Y, color=color, **kwargs)
 
@@ -872,21 +971,22 @@ class XVG(utilities.FileUtils):
                   with ``M' == M`` (except when ``M == 1``, see above)
                   and ``N' <= N`` (``N'`` is *maxpoints*).
         """
-        methods = {'mean': self.decimate_mean,
-                   'min': self.decimate_min,
-                   'max': self.decimate_max,
-                   'smooth': self.decimate_smooth,
-                   'rms': self.decimate_rms,
-                   'percentile': self.decimate_percentile,
-                   'error': self.decimate_error,  # undocumented, not working well
-                   'circmean': self.decimate_circmean,
-                   }
+        methods = {
+            "mean": self.decimate_mean,
+            "min": self.decimate_min,
+            "max": self.decimate_max,
+            "smooth": self.decimate_smooth,
+            "rms": self.decimate_rms,
+            "percentile": self.decimate_percentile,
+            "error": self.decimate_error,  # undocumented, not working well
+            "circmean": self.decimate_circmean,
+        }
         if len(a.shape) == 1:
             # add first column as index
             # (probably should do this in class/init anyway...)
             X = numpy.arange(len(a))
             a = numpy.vstack([X, a])
-        ny = a.shape[-1]   # assume 1D or 2D array with last dimension varying fastest
+        ny = a.shape[-1]  # assume 1D or 2D array with last dimension varying fastest
         if maxpoints is None or ny <= maxpoints:
             return a
         return methods[method](a, maxpoints, **kwargs)
@@ -909,7 +1009,9 @@ class XVG(utilities.FileUtils):
            Assumes that the first column is time.
 
         """
-        return self._decimate(numkit.timeseries.mean_histogrammed_function, a, maxpoints, **kwargs)
+        return self._decimate(
+            numkit.timeseries.mean_histogrammed_function, a, maxpoints, **kwargs
+        )
 
     def decimate_circmean(self, a, maxpoints, **kwargs):
         """Return data *a* circmean-decimated on *maxpoints*.
@@ -944,13 +1046,17 @@ class XVG(utilities.FileUtils):
 
         """
         a_rad = numpy.vstack((a[0], numpy.deg2rad(a[1:])))
-        b = self._decimate(numkit.timeseries.circmean_histogrammed_function, a_rad, maxpoints, **kwargs)
+        b = self._decimate(
+            numkit.timeseries.circmean_histogrammed_function, a_rad, maxpoints, **kwargs
+        )
         y_ma, x_ma = break_array(b[1], threshold=numpy.pi, other=b[0])
         v = [y_ma]
         for y in b[2:]:
             v.append(break_array(y, threshold=numpy.pi)[0])
             if v[-1].shape != v[0].shape:
-                raise ValueError("y dimensions have different breaks: you MUST deal with them separately")
+                raise ValueError(
+                    "y dimensions have different breaks: you MUST deal with them separately"
+                )
         return numpy.vstack((x_ma, numpy.rad2deg(v)))
 
     def decimate_min(self, a, maxpoints, **kwargs):
@@ -971,7 +1077,9 @@ class XVG(utilities.FileUtils):
            Assumes that the first column is time.
 
         """
-        return self._decimate(numkit.timeseries.min_histogrammed_function, a, maxpoints, **kwargs)
+        return self._decimate(
+            numkit.timeseries.min_histogrammed_function, a, maxpoints, **kwargs
+        )
 
     def decimate_max(self, a, maxpoints, **kwargs):
         """Return data *a* max-decimated on *maxpoints*.
@@ -991,7 +1099,9 @@ class XVG(utilities.FileUtils):
            Assumes that the first column is time.
 
         """
-        return self._decimate(numkit.timeseries.max_histogrammed_function, a, maxpoints, **kwargs)
+        return self._decimate(
+            numkit.timeseries.max_histogrammed_function, a, maxpoints, **kwargs
+        )
 
     def decimate_rms(self, a, maxpoints, **kwargs):
         """Return data *a* rms-decimated on *maxpoints*.
@@ -1011,7 +1121,9 @@ class XVG(utilities.FileUtils):
            Assumes that the first column is time.
 
         """
-        return self._decimate(numkit.timeseries.rms_histogrammed_function, a, maxpoints, **kwargs)
+        return self._decimate(
+            numkit.timeseries.rms_histogrammed_function, a, maxpoints, **kwargs
+        )
 
     def decimate_percentile(self, a, maxpoints, **kwargs):
         """Return data *a* percentile-decimated on *maxpoints*.
@@ -1038,7 +1150,9 @@ class XVG(utilities.FileUtils):
 
         .. SeeAlso:: :func:`numkit.timeseries.regularized_function` with :func:`scipy.stats.scoreatpercentile`
         """
-        return self._decimate(numkit.timeseries.percentile_histogrammed_function, a, maxpoints, **kwargs)
+        return self._decimate(
+            numkit.timeseries.percentile_histogrammed_function, a, maxpoints, **kwargs
+        )
 
     def decimate_error(self, a, maxpoints, **kwargs):
         """Return data *a* error-decimated on *maxpoints*.
@@ -1063,13 +1177,16 @@ class XVG(utilities.FileUtils):
            datapoints to compute a good autocorrelation function.
 
         """
-        warnings.warn("Using undocumented decimate_error() is highly EXPERIMENTAL",
-                      category=gromacs.exceptions.LowAccuracyWarning)
-        return self._decimate(numkit.timeseries.error_histogrammed_function, a,
-                              maxpoints, **kwargs)
+        warnings.warn(
+            "Using undocumented decimate_error() is highly EXPERIMENTAL",
+            category=gromacs.exceptions.LowAccuracyWarning,
+        )
+        return self._decimate(
+            numkit.timeseries.error_histogrammed_function, a, maxpoints, **kwargs
+        )
 
     def _decimate(self, func, a, maxpoints, **kwargs):
-        ny = a.shape[-1]   # assume 2D array with last dimension varying fastest
+        ny = a.shape[-1]  # assume 2D array with last dimension varying fastest
         out = numpy.zeros((a.shape[0], maxpoints), dtype=float)
 
         t = a[0]
@@ -1077,17 +1194,20 @@ class XVG(utilities.FileUtils):
             # compute regularised data for each column separately
             out[i], out[0] = func(t, a[i], bins=maxpoints, **kwargs)
 
-        if maxpoints == self.maxpoints_default:  # only warn if user did not set maxpoints
+        if (
+            maxpoints == self.maxpoints_default
+        ):  # only warn if user did not set maxpoints
             try:
-                funcname = func.func_name    # Python 2
+                funcname = func.func_name  # Python 2
             except AttributeError:
-                funcname = func.__name__     # Python 3
-            warnings.warn("Plot had %d datapoints > maxpoints = %d; decimated to %d regularly "
-                          "spaced points from the histogrammed data with %s()."
-                          % (ny, maxpoints, maxpoints, funcname),
-                          category=AutoCorrectionWarning)
+                funcname = func.__name__  # Python 3
+            warnings.warn(
+                "Plot had %d datapoints > maxpoints = %d; decimated to %d regularly "
+                "spaced points from the histogrammed data with %s()."
+                % (ny, maxpoints, maxpoints, funcname),
+                category=AutoCorrectionWarning,
+            )
         return out
-
 
     def decimate_smooth(self, a, maxpoints, window="flat"):
         """Return smoothed data *a* decimated on approximately *maxpoints* points.
@@ -1110,7 +1230,7 @@ class XVG(utilities.FileUtils):
         TODO:
         - Allow treating the 1st column as data
         """
-        ny = a.shape[-1]   # assume 1D or 2D array with last dimension varying fastest
+        ny = a.shape[-1]  # assume 1D or 2D array with last dimension varying fastest
         # reduce size by averaging oover stepsize steps and then just
         # picking every stepsize data points.  (primitive --- can
         # leave out bits at the end or end up with almost twice of
@@ -1121,16 +1241,20 @@ class XVG(utilities.FileUtils):
         out = numpy.empty_like(a)
 
         # smoothed
-        out[0,:] = a[0]
+        out[0, :] = a[0]
         for i in range(1, a.shape[0]):
             # process columns because smooth() only handles 1D arrays :-p
-            out[i,:] = numkit.timeseries.smooth(a[i], stepsize, window=window)
+            out[i, :] = numkit.timeseries.smooth(a[i], stepsize, window=window)
 
-        if maxpoints == self.maxpoints_default:  # only warn if user did not set maxpoints
-            warnings.warn("Plot had %d datapoints > maxpoints = %d; decimated to %d regularly "
-                          "spaced points with smoothing (%r) over %d steps."
-                          % (ny, maxpoints, ny/stepsize, window, stepsize),
-                          category=AutoCorrectionWarning)
+        if (
+            maxpoints == self.maxpoints_default
+        ):  # only warn if user did not set maxpoints
+            warnings.warn(
+                "Plot had %d datapoints > maxpoints = %d; decimated to %d regularly "
+                "spaced points with smoothing (%r) over %d steps."
+                % (ny, maxpoints, ny / stepsize, window, stepsize),
+                category=AutoCorrectionWarning,
+            )
         return out[..., ::stepsize]
 
     def __getstate__(self):
@@ -1144,12 +1268,14 @@ class XVG(utilities.FileUtils):
             d = self.__dict__
         else:
             # do not pickle the big array cache
-            mangleprefix = '_'+self.__class__.__name__
+            mangleprefix = "_" + self.__class__.__name__
+
             def demangle(k):
                 """_XVG__array --> __array"""
                 if k.startswith(mangleprefix):
-                    k = k.replace(mangleprefix,'')
+                    k = k.replace(mangleprefix, "")
                 return k
+
             d = {}
             for k in self.__dict__:
                 d[k] = self.__pickle_excluded.get(demangle(k), self.__dict__[k])
@@ -1157,11 +1283,11 @@ class XVG(utilities.FileUtils):
 
     def __setstate__(self, d):
         # compatibility with older (pre 0.1.13) pickled instances
-        if not 'savedata' in d:
+        if not "savedata" in d:
             wmsg = "Reading pre 0.1.13 pickle file: setting savedata=False"
             warnings.warn(wmsg, category=DeprecationWarning)
             self.logger.warning(wmsg)
-            d['savedata'] = False  # new default
+            d["savedata"] = False  # new default
         self.__dict__.update(d)
 
 
@@ -1189,18 +1315,18 @@ def break_array(a, threshold=numpy.pi, other=None):
     breaks += 1
 
     # is this needed?? -- no, but leave it here as a reminder
-    #f2 = numpy.diff(a, 2)
-    #up = (f2[breaks - 1] >= 0)  # >0: up, <0: down
+    # f2 = numpy.diff(a, 2)
+    # up = (f2[breaks - 1] >= 0)  # >0: up, <0: down
     # sort into up and down breaks:
-    #breaks_up = breaks[up]
-    #breaks_down = breaks[~up]
+    # breaks_up = breaks[up]
+    # breaks_down = breaks[~up]
 
     # new array b including insertions for all the breaks
     m = len(breaks)
     b = numpy.empty((len(a) + m))
     # calculate new indices for breaks in b, taking previous insertions into account
     b_breaks = breaks + numpy.arange(m)
-    mask =  numpy.zeros_like(b, dtype=bool)
+    mask = numpy.zeros_like(b, dtype=bool)
     mask[b_breaks] = True
     b[~mask] = a
     b[mask] = numpy.NAN
@@ -1214,6 +1340,3 @@ def break_array(a, threshold=numpy.pi, other=None):
         ma_c = None
 
     return numpy.ma.array(b, mask=mask), ma_c
-
-
-

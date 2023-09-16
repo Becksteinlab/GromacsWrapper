@@ -131,52 +131,128 @@ from .core import GromacsCommand
 
 logger = logging.getLogger("gromacs.tools")
 
-V4TOOLS = ("g_cluster", "g_dyndom", "g_mdmat", "g_principal", "g_select",
-           "g_wham", "mdrun", "do_dssp", "g_clustsize", "g_enemat", "g_membed",
-           "g_protonate", "g_sgangle", "g_wheel", "mdrun_d", "editconf",
-           "g_confrms", "g_energy", "g_mindist", "g_rama", "g_sham", "g_x2top",
-           "mk_angndx", "eneconv", "g_covar", "g_filter", "g_morph", "g_rdf",
-           "g_sigeps", "genbox", "pdb2gmx", "g_anadock", "g_current",
-           "g_gyrate", "g_msd", "g_sorient", "genconf", "g_anaeig", "g_density",
-           "g_h2order", "g_nmeig", "g_rms", "g_spatial", "genion", "tpbconv",
-           "g_analyze", "g_densmap", "g_hbond", "g_nmens", "g_rmsdist",
-           "g_spol", "genrestr", "trjcat", "g_angle", "g_dielectric", "g_helix",
-           "g_nmtraj", "g_rmsf", "g_tcaf", "gmxcheck", "trjconv", "g_bar",
-           "g_dih", "g_helixorient", "g_order", "g_rotacf", "g_traj", "gmxdump",
-           "trjorder", "g_bond", "g_dipoles", "g_kinetics", "g_pme_error",
-           "g_rotmat", "g_tune_pme", "grompp", "g_bundle", "g_disre", "g_lie",
-           "g_polystat", "g_saltbr", "g_vanhove", "make_edi", "xpm2ps", "g_chi",
-           "g_dist", "g_luck", "g_potential", "g_sas", "g_velacc", "make_ndx")
+V4TOOLS = (
+    "g_cluster",
+    "g_dyndom",
+    "g_mdmat",
+    "g_principal",
+    "g_select",
+    "g_wham",
+    "mdrun",
+    "do_dssp",
+    "g_clustsize",
+    "g_enemat",
+    "g_membed",
+    "g_protonate",
+    "g_sgangle",
+    "g_wheel",
+    "mdrun_d",
+    "editconf",
+    "g_confrms",
+    "g_energy",
+    "g_mindist",
+    "g_rama",
+    "g_sham",
+    "g_x2top",
+    "mk_angndx",
+    "eneconv",
+    "g_covar",
+    "g_filter",
+    "g_morph",
+    "g_rdf",
+    "g_sigeps",
+    "genbox",
+    "pdb2gmx",
+    "g_anadock",
+    "g_current",
+    "g_gyrate",
+    "g_msd",
+    "g_sorient",
+    "genconf",
+    "g_anaeig",
+    "g_density",
+    "g_h2order",
+    "g_nmeig",
+    "g_rms",
+    "g_spatial",
+    "genion",
+    "tpbconv",
+    "g_analyze",
+    "g_densmap",
+    "g_hbond",
+    "g_nmens",
+    "g_rmsdist",
+    "g_spol",
+    "genrestr",
+    "trjcat",
+    "g_angle",
+    "g_dielectric",
+    "g_helix",
+    "g_nmtraj",
+    "g_rmsf",
+    "g_tcaf",
+    "gmxcheck",
+    "trjconv",
+    "g_bar",
+    "g_dih",
+    "g_helixorient",
+    "g_order",
+    "g_rotacf",
+    "g_traj",
+    "gmxdump",
+    "trjorder",
+    "g_bond",
+    "g_dipoles",
+    "g_kinetics",
+    "g_pme_error",
+    "g_rotmat",
+    "g_tune_pme",
+    "grompp",
+    "g_bundle",
+    "g_disre",
+    "g_lie",
+    "g_polystat",
+    "g_saltbr",
+    "g_vanhove",
+    "make_edi",
+    "xpm2ps",
+    "g_chi",
+    "g_dist",
+    "g_luck",
+    "g_potential",
+    "g_sas",
+    "g_velacc",
+    "make_ndx",
+)
 
 
 #: dict of names in Gromacs 5 that correspond to an equivalent tool in
 #: in Gromacs 4. The names are literal Gromacs names.
 NAMES5TO4 = {
     # same name in both versions
-    'grompp': 'grompp',
-    'eneconv': 'eneconv',
-    'editconf': 'editconf',
-    'pdb2gmx': 'pdb2gmx',
-    'trjcat': 'trjcat',
-    'trjconv': 'trjconv',
-    'trjorder': 'trjorder',
-    'xpm2ps': 'xpm2ps',
-    'mdrun': 'mdrun',
-    'make_ndx': 'make_ndx',
-    'make_edi': 'make_edi',
-    'genrestr': 'genrestr',
-    'genion': 'genion',
-    'genconf': 'genconf',
-    'do_dssp': 'do_dssp',
-
+    "grompp": "grompp",
+    "eneconv": "eneconv",
+    "editconf": "editconf",
+    "pdb2gmx": "pdb2gmx",
+    "trjcat": "trjcat",
+    "trjconv": "trjconv",
+    "trjorder": "trjorder",
+    "xpm2ps": "xpm2ps",
+    "mdrun": "mdrun",
+    "make_ndx": "make_ndx",
+    "make_edi": "make_edi",
+    "genrestr": "genrestr",
+    "genion": "genion",
+    "genconf": "genconf",
+    "do_dssp": "do_dssp",
     # changed names
-    'convert-tpr': 'tpbconv',
-    'dump': 'gmxdump',
-    'check': 'gmxcheck',
-    'solvate': 'genbox',
-    'distance': 'g_dist',
-    'sasa': 'g_sas',
-    'gangle': 'g_sgangle'
+    "convert-tpr": "tpbconv",
+    "dump": "gmxdump",
+    "check": "gmxcheck",
+    "solvate": "genbox",
+    "distance": "g_dist",
+    "sasa": "g_sas",
+    "gangle": "g_sgangle",
 }
 
 
@@ -185,7 +261,7 @@ class GromacsToolLoadingError(Exception):
 
 
 class GromacsCommandMultiIndex(GromacsCommand):
-    """ Command class that accept multiple index files.
+    """Command class that accept multiple index files.
 
     It works combining multiple index files into a single temporary one so
     that tools that do not (yet) support multi index files as input can be
@@ -193,6 +269,7 @@ class GromacsCommandMultiIndex(GromacsCommand):
 
     It creates a new file only if multiple index files are supplied.
     """
+
     def __init__(self, **kwargs):
         kwargs = self._fake_multi_ndx(**kwargs)
         super(GromacsCommandMultiIndex, self).__init__(**kwargs)
@@ -202,35 +279,38 @@ class GromacsCommandMultiIndex(GromacsCommand):
         return super(GromacsCommandMultiIndex, self).run(*args, **kwargs)
 
     def _fake_multi_ndx(self, **kwargs):
-        ndx = kwargs.get('n')
-        if not (ndx is None or isinstance(ndx, six.string_types)) and \
-           len(ndx) > 1 and 's' in kwargs:
-            ndx.append(kwargs.get('s'))
-            kwargs['n'] = merge_ndx(*ndx)
+        ndx = kwargs.get("n")
+        if (
+            not (ndx is None or isinstance(ndx, six.string_types))
+            and len(ndx) > 1
+            and "s" in kwargs
+        ):
+            ndx.append(kwargs.get("s"))
+            kwargs["n"] = merge_ndx(*ndx)
         return kwargs
 
 
 def tool_factory(clsname, name, driver, base=GromacsCommand):
-    """ Factory for GromacsCommand derived types. """
+    """Factory for GromacsCommand derived types."""
     clsdict = {
-        'command_name': name,
-        'driver': driver,
-        '__doc__': property(base._get_gmx_docs)
+        "command_name": name,
+        "driver": driver,
+        "__doc__": property(base._get_gmx_docs),
     }
     return type(clsname, (base,), clsdict)
 
 
 def make_valid_identifier(name):
-    """ Turns tool names into valid identifiers.
+    """Turns tool names into valid identifiers.
 
     :param name: tool name
     :return: valid identifier
     """
-    return name.replace('-', '_').capitalize()
+    return name.replace("-", "_").capitalize()
 
 
 def find_executables(path):
-    """ Find executables in a path.
+    """Find executables in a path.
 
     Searches executables in a directory excluding some know commands
     unusable with GromacsWrapper.
@@ -241,15 +321,25 @@ def find_executables(path):
     execs = []
     for exe in os.listdir(path):
         fullexe = os.path.join(path, exe)
-        if (os.access(fullexe, os.X_OK) and not os.path.isdir(fullexe) and
-             exe not in ['GMXRC', 'GMXRC.bash', 'GMXRC.csh', 'GMXRC.zsh',
-                         'demux.pl', 'xplor2gmx.pl']):
+        if (
+            os.access(fullexe, os.X_OK)
+            and not os.path.isdir(fullexe)
+            and exe
+            not in [
+                "GMXRC",
+                "GMXRC.bash",
+                "GMXRC.csh",
+                "GMXRC.zsh",
+                "demux.pl",
+                "xplor2gmx.pl",
+            ]
+        ):
             execs.append(exe)
     return execs
 
 
 def load_v5_tools():
-    """ Load Gromacs 2018/2016/5.x tools automatically using some heuristic.
+    """Load Gromacs 2018/2016/5.x tools automatically using some heuristic.
 
     Tries to load tools (1) using the driver from configured groups (2) and
     falls back to automatic detection from ``GMXBIN`` (3) then to rough guesses.
@@ -262,35 +352,38 @@ def load_v5_tools():
 
     drivers = config.get_tool_names()
 
-    if len(drivers) == 0 and 'GMXBIN' in os.environ:
-        drivers = find_executables(os.environ['GMXBIN'])
+    if len(drivers) == 0 and "GMXBIN" in os.environ:
+        drivers = find_executables(os.environ["GMXBIN"])
 
     if len(drivers) == 0 or len(drivers) > 4:
-        drivers = ['gmx', 'gmx_d', 'gmx_mpi', 'gmx_mpi_d']
+        drivers = ["gmx", "gmx_d", "gmx_mpi", "gmx_mpi_d"]
 
-    append = config.cfg.getboolean('Gromacs', 'append_suffix', fallback=True)
+    append = config.cfg.getboolean("Gromacs", "append_suffix", fallback=True)
 
     tools = {}
     for driver in drivers:
-        suffix = driver.partition('_')[2]
+        suffix = driver.partition("_")[2]
         try:
-            out = subprocess.check_output([driver, '-quiet', 'help',
-                                           'commands'])
+            out = subprocess.check_output([driver, "-quiet", "help", "commands"])
             for line in out.splitlines()[5:-1]:
-                line = str(line.decode('ascii'))   # Python 3: byte string -> str, Python 2: normal string
+                line = str(
+                    line.decode("ascii")
+                )  # Python 3: byte string -> str, Python 2: normal string
 
                 if len(line) > 4:
-                    if (line[4] != ' ') and (' ' in line[4:]):
-                        name = line[4:line.index(' ', 4)]
+                    if (line[4] != " ") and (" " in line[4:]):
+                        name = line[4 : line.index(" ", 4)]
                         fancy = make_valid_identifier(name)
                         if suffix and append:
-                            fancy = '{0!s}_{1!s}'.format(fancy, suffix)
+                            fancy = "{0!s}_{1!s}".format(fancy, suffix)
                         tools[fancy] = tool_factory(fancy, name, driver)
         except (subprocess.CalledProcessError, OSError):
             pass
 
     if not tools:
-        errmsg = "Failed to load 2018/2016/5.x tools (tried drivers: {})".format(drivers)
+        errmsg = "Failed to load 2018/2016/5.x tools (tried drivers: {})".format(
+            drivers
+        )
         logger.debug(errmsg)
         raise GromacsToolLoadingError(errmsg)
     logger.debug("Loaded {0} v5 tools successfully!".format(len(tools)))
@@ -298,7 +391,7 @@ def load_v5_tools():
 
 
 def load_v4_tools():
-    """ Load Gromacs 4.x tools automatically using some heuristic.
+    """Load Gromacs 4.x tools automatically using some heuristic.
 
     Tries to load tools (1) in configured tool groups (2) and fails back  to
     automatic detection from ``GMXBIN`` (3) then to a prefilled list.
@@ -311,8 +404,8 @@ def load_v4_tools():
 
     names = config.get_tool_names()
 
-    if len(names) == 0 and 'GMXBIN' in os.environ:
-        names = find_executables(os.environ['GMXBIN'])
+    if len(names) == 0 and "GMXBIN" in os.environ:
+        names = find_executables(os.environ["GMXBIN"])
 
     if len(names) == 0 or len(names) > len(V4TOOLS) * 4:
         names = list(V4TOOLS)
@@ -333,7 +426,7 @@ def load_v4_tools():
 
 
 def merge_ndx(*args):
-    """ Takes one or more index files and optionally one structure file and
+    """Takes one or more index files and optionally one structure file and
     returns a path for a new merged index file.
 
     :param args: index files and zero or one structure file
@@ -342,34 +435,40 @@ def merge_ndx(*args):
     ndxs = []
     struct = None
     for fname in args:
-        if fname.endswith('.ndx'):
+        if fname.endswith(".ndx"):
             ndxs.append(fname)
         else:
             if struct is not None:
                 raise ValueError("only one structure file supported")
             struct = fname
 
-    fd, multi_ndx = tempfile.mkstemp(suffix='.ndx', prefix='multi_')
+    fd, multi_ndx = tempfile.mkstemp(suffix=".ndx", prefix="multi_")
     os.close(fd)
     atexit.register(os.unlink, multi_ndx)
 
     if struct:
-        make_ndx = registry['Make_ndx'](f=struct, n=ndxs, o=multi_ndx)
+        make_ndx = registry["Make_ndx"](f=struct, n=ndxs, o=multi_ndx)
     else:
-        make_ndx = registry['Make_ndx'](n=ndxs, o=multi_ndx)
+        make_ndx = registry["Make_ndx"](n=ndxs, o=multi_ndx)
 
-    _, _, _ = make_ndx(input=['q'], stdout=False, stderr=False)
+    _, _, _ = make_ndx(input=["q"], stdout=False, stderr=False)
     return multi_ndx
 
 
 # Load tools
-if config.MAJOR_RELEASE in ('5', '2016', '2018'):
-    logger.debug("Trying to load configured Gromacs major release {0}".format(
-        config.MAJOR_RELEASE))
+if config.MAJOR_RELEASE in ("5", "2016", "2018"):
+    logger.debug(
+        "Trying to load configured Gromacs major release {0}".format(
+            config.MAJOR_RELEASE
+        )
+    )
     registry = load_v5_tools()
-elif config.MAJOR_RELEASE == '4':
-    logger.debug("Trying to load configured Gromacs major release {0}".format(
-        config.MAJOR_RELEASE))
+elif config.MAJOR_RELEASE == "4":
+    logger.debug(
+        "Trying to load configured Gromacs major release {0}".format(
+            config.MAJOR_RELEASE
+        )
+    )
     registry = load_v4_tools()
 else:
     logger.debug("No major release configured: trying 2018/2016/5.x -> 4.x")
@@ -403,18 +502,19 @@ for fancy, cmd in list(registry.items()):
                 break
     else:
         # the common case of just adding the 'g_'
-        registry['G_{0!s}'.format(fancy.lower())] = registry[fancy]
-
+        registry["G_{0!s}".format(fancy.lower())] = registry[fancy]
 
 
 # Patching up commands that may be useful to accept multiple index files
-for name4, name5 in [('G_mindist', 'Mindist'), ('G_dist', 'Distance')]:
+for name4, name5 in [("G_mindist", "Mindist"), ("G_dist", "Distance")]:
     if name4 in registry:
         cmd = registry[name4]
-        registry[name4] = tool_factory(name4, cmd.command_name, cmd.driver,
-                                       GromacsCommandMultiIndex)
+        registry[name4] = tool_factory(
+            name4, cmd.command_name, cmd.driver, GromacsCommandMultiIndex
+        )
         if name5 in registry:
             registry[name5] = registry[name4]
+
 
 # create a release "virtual command" (issue #161)
 class Release(object):
@@ -449,13 +549,15 @@ class Release(object):
     .. versionadded:: 0.8.0
 
     """
-    gromacs_version = re.compile("^G[rR][oO][mM][aA][cC][sS] version:"
-                                 "\s*(VERSION)?\s*(?P<version>.+)$")
+
+    gromacs_version = re.compile(
+        "^G[rR][oO][mM][aA][cC][sS] version:" "\s*(VERSION)?\s*(?P<version>.+)$"
+    )
 
     def __init__(self):
         self.release = None
         try:
-            grompp = registry['Grompp']()
+            grompp = registry["Grompp"]()
             rc, out, err = grompp(version=True, stdout=False, stderr=False)
             output_lines = out.splitlines() + err.splitlines()
         except KeyError:
@@ -465,7 +567,7 @@ class Release(object):
             line = line.strip()
             m = self.gromacs_version.match(line)
             if m:
-                self.release = m.group('version')
+                self.release = m.group("version")
                 break
 
     def __call__(self):
@@ -497,9 +599,9 @@ class Release(object):
 for name in six.iterkeys(registry):
     __doc__ += ".. class:: {0!s}\n    :noindex:\n".format(name)
 
-registry['Release'] = Release
+registry["Release"] = Release
 
 # Finally add command classes to module's scope
 globals().update(registry)
-__all__ = ['GromacsCommandMultiIndex', 'merge_ndx']
+__all__ = ["GromacsCommandMultiIndex", "merge_ndx"]
 __all__.extend(list(registry.keys()))

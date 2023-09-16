@@ -236,6 +236,7 @@ import sys
 if sys.version_info[0] < 3:  # several differences for Python 2
     from ConfigParser import SafeConfigParser as ConfigParser
     from ConfigParser import NoSectionError, NoOptionError
+
     # Define read_file to point to the (deprecated in Python 3) readfp
     # in order to have consistent, non-deprecated syntax
     ConfigParser.read_file = ConfigParser.readfp
@@ -257,6 +258,7 @@ if sys.version_info[0] < 3:  # several differences for Python 2
             if fallback is _UNSET:
                 raise
         return fallback  # If fallback is given, use that value
+
     ConfigParser.getboolean = _getboolean
 else:
     from configparser import ConfigParser
@@ -267,19 +269,19 @@ from . import utilities
 
 
 #: Default name of the global configuration file.
-CONFIGNAME = os.path.expanduser(os.path.join("~",".gromacswrapper.cfg"))
+CONFIGNAME = os.path.expanduser(os.path.join("~", ".gromacswrapper.cfg"))
 
 #: Default configuration directory in GromacsWrapper.
-default_configdir = os.path.expanduser(os.path.join("~",".gromacswrapper"))
+default_configdir = os.path.expanduser(os.path.join("~", ".gromacswrapper"))
 
 #: Initial defaults for directories, filenames, and logger options.
 defaults = {
-    'configdir':    default_configdir,
-    'qscriptdir':   os.path.join(default_configdir, 'qscripts'),
-    'templatesdir': os.path.join(default_configdir, 'templates'),
-    'logfilename': "gromacs.log",
-    'loglevel_console': 'INFO',
-    'loglevel_file': 'DEBUG',
+    "configdir": default_configdir,
+    "qscriptdir": os.path.join(default_configdir, "qscripts"),
+    "templatesdir": os.path.join(default_configdir, "templates"),
+    "logfilename": "gromacs.log",
+    "loglevel_console": "INFO",
+    "loglevel_file": "DEBUG",
 }
 
 
@@ -291,13 +293,13 @@ logger = logging.getLogger("gromacs.config")
 #: File name for the log file; all gromacs command and many utility functions (e.g. in
 #: :mod:`gromacs.cbook` and :mod:`gromacs.setup`) append messages there. Warnings and
 #: errors are also recorded here. The default is *gromacs.log*.
-logfilename = defaults['logfilename']
+logfilename = defaults["logfilename"]
 
 #: The default loglevel that is still printed to the console.
-loglevel_console = logging.getLevelName(defaults['loglevel_console'])
+loglevel_console = logging.getLevelName(defaults["loglevel_console"])
 
 #: The default loglevel that is still written to the :data:`logfilename`.
-loglevel_file = logging.getLevelName(defaults['loglevel_file'])
+loglevel_file = logging.getLevelName(defaults["loglevel_file"])
 
 
 # User-accessible configuration
@@ -305,15 +307,15 @@ loglevel_file = logging.getLevelName(defaults['loglevel_file'])
 
 #: Directory to store user templates and rc files.
 #: The default value is ``~/.gromacswrapper``.
-configdir = defaults['configdir']
+configdir = defaults["configdir"]
 
 #: Directory to store user supplied queuing system scripts.
 #: The default value is ``~/.gromacswrapper/qscripts``.
-qscriptdir = defaults['qscriptdir']
+qscriptdir = defaults["qscriptdir"]
 
 #: Directory to store user supplied template files such as mdp files.
 #: The default value is ``~/.gromacswrapper/templates``.
-templatesdir = defaults['templatesdir']
+templatesdir = defaults["templatesdir"]
 
 #: List of all configuration directories.
 config_directories = [configdir, qscriptdir, templatesdir]
@@ -333,6 +335,7 @@ path = [os.path.curdir, qscriptdir, templatesdir]
 # Location of template files
 # --------------------------
 
+
 def _generate_template_dict(dirname):
     """Generate a list of included files *and* extract them to a temp space.
 
@@ -340,18 +343,22 @@ def _generate_template_dict(dirname):
     by external code. All template filenames are stored in
     :data:`config.templates`.
     """
-    return dict((resource_basename(fn), resource_filename(__name__, dirname +'/'+fn))
-                for fn in resource_listdir(__name__, dirname)
-                if not fn.endswith('~'))
+    return dict(
+        (resource_basename(fn), resource_filename(__name__, dirname + "/" + fn))
+        for fn in resource_listdir(__name__, dirname)
+        if not fn.endswith("~")
+    )
+
 
 def resource_basename(resource):
     """Last component of a resource (which always uses '/' as sep)."""
-    if resource.endswith('/'):
-         resource = resource[:-1]
-    parts = resource.split('/')
+    if resource.endswith("/"):
+        resource = resource[:-1]
+    parts = resource.split("/")
     return parts[-1]
 
-templates = _generate_template_dict('templates')
+
+templates = _generate_template_dict("templates")
 """*GromacsWrapper* comes with a number of templates for run input files
 and queuing system scripts. They are provided as a convenience and
 examples but **WITHOUT ANY GUARANTEE FOR CORRECTNESS OR SUITABILITY FOR
@@ -383,11 +390,12 @@ code: find the actual file locations from this variable.
 """
 
 #: The default template for SGE/PBS run scripts.
-qscript_template = templates['local.sh']
+qscript_template = templates["local.sh"]
 
 
 # Functions to access configuration data
 # --------------------------------------
+
 
 def get_template(t):
     """Find template file *t* and return its real path.
@@ -412,8 +420,9 @@ def get_template(t):
     """
     templates = [_get_template(s) for s in utilities.asiterable(t)]
     if len(templates) == 1:
-         return templates[0]
+        return templates[0]
     return templates
+
 
 def get_templates(t):
     """Find template file(s) *t* and return their real paths.
@@ -436,118 +445,131 @@ def get_templates(t):
     """
     return [_get_template(s) for s in utilities.asiterable(t)]
 
+
 def _get_template(t):
     """Return a single template *t*."""
-    if os.path.exists(t):           # 1) Is it an accessible file?
-         pass
+    if os.path.exists(t):  # 1) Is it an accessible file?
+        pass
     else:
-         _t = t
-         _t_found = False
-         for d in path:              # 2) search config.path
-              p = os.path.join(d, _t)
-              if os.path.exists(p):
-                   t = p
-                   _t_found = True
-                   break
-         _t = os.path.basename(t)
-         if not _t_found:            # 3) try template dirs
-              for p in templates.values():
-                   if _t == os.path.basename(p):
-                        t = p
-                        _t_found = True     # NOTE: in principle this could match multiple
-                        break               #       times if more than one template dir existed.
-         if not _t_found:            # 4) try it as a key into templates
-              try:
-                   t = templates[t]
-              except KeyError:
-                   pass
-              else:
-                   _t_found = True
-         if not _t_found:            # 5) nothing else to try...
-              raise ValueError("Failed to locate the template file {t!r}.".format(**vars()))
+        _t = t
+        _t_found = False
+        for d in path:  # 2) search config.path
+            p = os.path.join(d, _t)
+            if os.path.exists(p):
+                t = p
+                _t_found = True
+                break
+        _t = os.path.basename(t)
+        if not _t_found:  # 3) try template dirs
+            for p in templates.values():
+                if _t == os.path.basename(p):
+                    t = p
+                    _t_found = True  # NOTE: in principle this could match multiple
+                    break  #       times if more than one template dir existed.
+        if not _t_found:  # 4) try it as a key into templates
+            try:
+                t = templates[t]
+            except KeyError:
+                pass
+            else:
+                _t_found = True
+        if not _t_found:  # 5) nothing else to try...
+            raise ValueError(
+                "Failed to locate the template file {t!r}.".format(**vars())
+            )
     return os.path.realpath(t)
 
 
 class GMXConfigParser(ConfigParser, object):
-     """Customized :class:`ConfigParser.SafeConfigParser`."""
-     cfg_template = 'gromacswrapper.cfg'
+    """Customized :class:`ConfigParser.SafeConfigParser`."""
 
-     def __init__(self, *args, **kwargs):
-          """Reads and parses the configuration file.
+    cfg_template = "gromacswrapper.cfg"
 
-          Default values are loaded and then replaced with the values from
-          ``~/.gromacswrapper.cfg`` if that file exists. The global
-          configuration instance :data:`gromacswrapper.config.cfg` is updated
-          as are a number of global variables such as :data:`configdir`,
-          :data:`qscriptdir`, :data:`templatesdir`, :data:`logfilename`, ...
+    def __init__(self, *args, **kwargs):
+        """Reads and parses the configuration file.
 
-          Normally, the configuration is only loaded when the :mod:`gromacswrapper`
-          package is imported but a re-reading of the configuration can be forced
-          anytime by calling :func:`get_configuration`.
-          """
+        Default values are loaded and then replaced with the values from
+        ``~/.gromacswrapper.cfg`` if that file exists. The global
+        configuration instance :data:`gromacswrapper.config.cfg` is updated
+        as are a number of global variables such as :data:`configdir`,
+        :data:`qscriptdir`, :data:`templatesdir`, :data:`logfilename`, ...
 
-          self.filename = kwargs.pop('filename', CONFIGNAME)
+        Normally, the configuration is only loaded when the :mod:`gromacswrapper`
+        package is imported but a re-reading of the configuration can be forced
+        anytime by calling :func:`get_configuration`.
+        """
 
-          super(GMXConfigParser, self).__init__(*args, **kwargs)
-          # defaults
-          self.set('DEFAULT', 'qscriptdir',
-                  os.path.join("%(configdir)s", os.path.basename(defaults['qscriptdir'])))
-          self.set('DEFAULT', 'templatesdir',
-                  os.path.join("%(configdir)s", os.path.basename(defaults['templatesdir'])))
-          self.add_section('Gromacs')
-          self.set("Gromacs", "release", "")
-          self.set("Gromacs", "GMXRC", "")
-          self.set("Gromacs", "tools", "")
-          self.set("Gromacs", "extra", "")
-          self.set("Gromacs", "groups", "tools")
-          self.set("Gromacs", "append_suffix", "yes")
-          self.add_section('Logging')
-          self.set('Logging', 'logfilename', defaults['logfilename'])
-          self.set('Logging', 'loglevel_console', defaults['loglevel_console'])
-          self.set('Logging', 'loglevel_file', defaults['loglevel_file'])
+        self.filename = kwargs.pop("filename", CONFIGNAME)
 
-          # bundled defaults (should be ok to use get_template())
-          default_cfg = get_template(self.cfg_template)
-          self.read_file(open(default_cfg))
+        super(GMXConfigParser, self).__init__(*args, **kwargs)
+        # defaults
+        self.set(
+            "DEFAULT",
+            "qscriptdir",
+            os.path.join("%(configdir)s", os.path.basename(defaults["qscriptdir"])),
+        )
+        self.set(
+            "DEFAULT",
+            "templatesdir",
+            os.path.join("%(configdir)s", os.path.basename(defaults["templatesdir"])),
+        )
+        self.add_section("Gromacs")
+        self.set("Gromacs", "release", "")
+        self.set("Gromacs", "GMXRC", "")
+        self.set("Gromacs", "tools", "")
+        self.set("Gromacs", "extra", "")
+        self.set("Gromacs", "groups", "tools")
+        self.set("Gromacs", "append_suffix", "yes")
+        self.add_section("Logging")
+        self.set("Logging", "logfilename", defaults["logfilename"])
+        self.set("Logging", "loglevel_console", defaults["loglevel_console"])
+        self.set("Logging", "loglevel_file", defaults["loglevel_file"])
 
-          # defaults are overriden by existing user global cfg file
-          self.read([self.filename])
+        # bundled defaults (should be ok to use get_template())
+        default_cfg = get_template(self.cfg_template)
+        self.read_file(open(default_cfg))
 
-     @property
-     def configuration(self):
-          """Dict of variables that we make available as globals in the module.
+        # defaults are overriden by existing user global cfg file
+        self.read([self.filename])
 
-          Can be used as ::
+    @property
+    def configuration(self):
+        """Dict of variables that we make available as globals in the module.
 
-             globals().update(GMXConfigParser.configuration)        # update configdir, templatesdir ...
-          """
-          configuration = {
-               'configfilename': self.filename,
-               'logfilename': self.getpath('Logging', 'logfilename'),
-               'loglevel_console': self.getLogLevel('Logging', 'loglevel_console'),
-               'loglevel_file': self.getLogLevel('Logging', 'loglevel_file'),
-               'configdir': self.getpath('DEFAULT', 'configdir'),
-               'qscriptdir': self.getpath('DEFAULT', 'qscriptdir'),
-               'templatesdir': self.getpath('DEFAULT', 'templatesdir'),
-               }
-          configuration['path'] = [os.path.curdir,
-                                   configuration['qscriptdir'],
-                                   configuration['templatesdir']]
-          return configuration
+        Can be used as ::
 
-     def getpath(self, section, option):
-          """Return option as an expanded path."""
-          return os.path.expanduser(os.path.expandvars(self.get(section, option)))
+           globals().update(GMXConfigParser.configuration)        # update configdir, templatesdir ...
+        """
+        configuration = {
+            "configfilename": self.filename,
+            "logfilename": self.getpath("Logging", "logfilename"),
+            "loglevel_console": self.getLogLevel("Logging", "loglevel_console"),
+            "loglevel_file": self.getLogLevel("Logging", "loglevel_file"),
+            "configdir": self.getpath("DEFAULT", "configdir"),
+            "qscriptdir": self.getpath("DEFAULT", "qscriptdir"),
+            "templatesdir": self.getpath("DEFAULT", "templatesdir"),
+        }
+        configuration["path"] = [
+            os.path.curdir,
+            configuration["qscriptdir"],
+            configuration["templatesdir"],
+        ]
+        return configuration
 
-     def getLogLevel(self, section, option):
-          """Return the textual representation of logging level 'option' or the number.
+    def getpath(self, section, option):
+        """Return option as an expanded path."""
+        return os.path.expanduser(os.path.expandvars(self.get(section, option)))
 
-          Note that option is always interpreted as an UPPERCASE string
-          and hence integer log levels will not be recognized.
+    def getLogLevel(self, section, option):
+        """Return the textual representation of logging level 'option' or the number.
 
-          .. SeeAlso: :mod:`logging` and :func:`logging.getLevelName`
-          """
-          return logging.getLevelName(self.get(section, option).upper())
+        Note that option is always interpreted as an UPPERCASE string
+        and hence integer log levels will not be recognized.
+
+        .. SeeAlso: :mod:`logging` and :func:`logging.getLevelName`
+        """
+        return logging.getLevelName(self.get(section, option).upper())
+
 
 def get_configuration(filename=CONFIGNAME):
     """Reads and parses the configuration file.
@@ -564,51 +586,55 @@ def get_configuration(filename=CONFIGNAME):
 
     :Returns: a dict with all updated global configuration variables
     """
-    global cfg, configuration    # very iffy --- most of the whole config mod should a class
+    global cfg, configuration  # very iffy --- most of the whole config mod should a class
 
     #: :data:`cfg` is the instance of :class:`GMXConfigParser` that makes all
     #: global configuration data accessible
-    cfg = GMXConfigParser(filename=filename)   # update module-level cfg
-    globals().update(cfg.configuration)        # update configdir, templatesdir ...
-    configuration = cfg.configuration          # update module-level configuration
+    cfg = GMXConfigParser(filename=filename)  # update module-level cfg
+    globals().update(cfg.configuration)  # update configdir, templatesdir ...
+    configuration = cfg.configuration  # update module-level configuration
     return cfg
+
 
 #: :data:`cfg` is the instance of :class:`GMXConfigParser` that makes all
 #: global configuration data accessible
 cfg = GMXConfigParser()
-globals().update(cfg.configuration)        # update configdir, templatesdir ...
+globals().update(cfg.configuration)  # update configdir, templatesdir ...
 
 #: Dict containing important configuration variables, populated by
 #: :func:`get_configuration` (mainly a shortcut; use :data:`cfg` in most cases).
 configuration = cfg.configuration
 
+
 def setup(filename=CONFIGNAME):
-     """Prepare a default GromacsWrapper global environment.
+    """Prepare a default GromacsWrapper global environment.
 
-     1) Create the global config file.
-     2) Create the directories in which the user can store template and config files.
+    1) Create the global config file.
+    2) Create the directories in which the user can store template and config files.
 
-     This function can be run repeatedly without harm.
-     """
-     # setup() must be separate and NOT run automatically when config
-     # is loaded so that easy_install installations work
-     # (otherwise we get a sandbox violation)
-     # populate cfg with defaults (or existing data)
-     get_configuration()
-     if not os.path.exists(filename):
-          with open(filename, 'w') as configfile:
-               cfg.write(configfile)  # write the default file so that user can edit
-               msg = "NOTE: GromacsWrapper created the configuration file \n\t%r\n" \
-                     "      for you. Edit the file to customize the package." % filename
-               print(msg)
+    This function can be run repeatedly without harm.
+    """
+    # setup() must be separate and NOT run automatically when config
+    # is loaded so that easy_install installations work
+    # (otherwise we get a sandbox violation)
+    # populate cfg with defaults (or existing data)
+    get_configuration()
+    if not os.path.exists(filename):
+        with open(filename, "w") as configfile:
+            cfg.write(configfile)  # write the default file so that user can edit
+            msg = (
+                "NOTE: GromacsWrapper created the configuration file \n\t%r\n"
+                "      for you. Edit the file to customize the package." % filename
+            )
+            print(msg)
 
-     # directories
-     for d in config_directories:
-          utilities.mkdir_p(d)
+    # directories
+    for d in config_directories:
+        utilities.mkdir_p(d)
 
 
 def check_setup():
-     """Check if templates directories are setup and issue a warning and help.
+    """Check if templates directories are setup and issue a warning and help.
 
     Set the environment variable  :envvar:`GROMACSWRAPPER_SUPPRESS_SETUP_CHECK`
     skip the check and make it always return ``True``
@@ -618,20 +644,20 @@ def check_setup():
      .. versionchanged:: 0.3.1
         Uses :envvar:`GROMACSWRAPPER_SUPPRESS_SETUP_CHECK` to suppress check
         (useful for scripts run on a server)
-     """
+    """
 
-     if "GROMACSWRAPPER_SUPPRESS_SETUP_CHECK" in os.environ:
-         return True
+    if "GROMACSWRAPPER_SUPPRESS_SETUP_CHECK" in os.environ:
+        return True
 
-     missing = [d for d in config_directories if not os.path.exists(d)]
-     if len(missing) > 0:
-         print("NOTE: Some configuration directories are not set up yet: ")
-         print("\t{0!s}".format('\n\t'.join(missing)))
-         print("NOTE: You can create the configuration file and directories with:")
-         print("\t>>> import gromacs")
-         print("\t>>> gromacs.config.setup()")
-         return False
-     return True
+    missing = [d for d in config_directories if not os.path.exists(d)]
+    if len(missing) > 0:
+        print("NOTE: Some configuration directories are not set up yet: ")
+        print("\t{0!s}".format("\n\t".join(missing)))
+        print("NOTE: You can create the configuration file and directories with:")
+        print("\t>>> import gromacs")
+        print("\t>>> gromacs.config.setup()")
+        return False
+    return True
 
 
 def set_gmxrc_environment(gmxrc):
@@ -645,14 +671,27 @@ def set_gmxrc_environment(gmxrc):
     this function.
     """
     # only v5: 'GMXPREFIX', 'GROMACS_DIR'
-    envvars = ['GMXBIN', 'GMXLDLIB', 'GMXMAN', 'GMXDATA',
-               'LD_LIBRARY_PATH', 'MANPATH', 'PKG_CONFIG_PATH',
-               'PATH',
-               'GMXPREFIX', 'GROMACS_DIR']
+    envvars = [
+        "GMXBIN",
+        "GMXLDLIB",
+        "GMXMAN",
+        "GMXDATA",
+        "LD_LIBRARY_PATH",
+        "MANPATH",
+        "PKG_CONFIG_PATH",
+        "PATH",
+        "GMXPREFIX",
+        "GROMACS_DIR",
+    ]
     # in order to keep empty values, add ___ sentinels around result
     # (will be removed later)
-    cmdargs = ['bash', '-c', ". {0} && echo {1}".format(gmxrc,
-               ' '.join(['___${{{0}}}___'.format(v) for v in envvars]))]
+    cmdargs = [
+        "bash",
+        "-c",
+        ". {0} && echo {1}".format(
+            gmxrc, " ".join(["___${{{0}}}___".format(v) for v in envvars])
+        ),
+    ]
 
     if not gmxrc:
         logger.debug("set_gmxrc_environment(): no GMXRC, nothing done.")
@@ -662,48 +701,51 @@ def set_gmxrc_environment(gmxrc):
         out = subprocess.check_output(cmdargs)
         out = out.strip().split()
         for key, value in zip(envvars, out):
-            value = str(value.decode('ascii').replace('___', ''))  # remove sentinels
+            value = str(value.decode("ascii").replace("___", ""))  # remove sentinels
             os.environ[key] = value
             logger.debug("set_gmxrc_environment(): %s = %r", key, value)
     except (subprocess.CalledProcessError, OSError):
-        logger.warning("Failed to automatically set the Gromacs environment"
-                       "from GMXRC=%r", gmxrc)
+        logger.warning(
+            "Failed to automatically set the Gromacs environment" "from GMXRC=%r", gmxrc
+        )
 
 
 def get_tool_names():
-    """ Get tool names from all configured groups.
+    """Get tool names from all configured groups.
 
     :return: list of tool names
     """
     names = []
-    for group in cfg.get('Gromacs', 'groups').split():
-        names.extend(cfg.get('Gromacs', group).split())
+    for group in cfg.get("Gromacs", "groups").split():
+        names.extend(cfg.get("Gromacs", group).split())
     return names
 
 
 def get_extra_tool_names():
-    """ Get tool names from all configured groups.
+    """Get tool names from all configured groups.
 
     :return: list of tool names
     """
-    return cfg.get('Gromacs', 'extra').split()
+    return cfg.get("Gromacs", "extra").split()
 
 
 RELEASE = None
 MAJOR_RELEASE = None
 
-if cfg.get('Gromacs', 'release'):
-    RELEASE = cfg.get('Gromacs', 'release')
-    MAJOR_RELEASE = RELEASE.split('.')[0]
+if cfg.get("Gromacs", "release"):
+    RELEASE = cfg.get("Gromacs", "release")
+    MAJOR_RELEASE = RELEASE.split(".")[0]
 
 for name in get_tool_names():
-    match = re.match(r'(gmx[^:]*):.*', name)
+    match = re.match(r"(gmx[^:]*):.*", name)
     if match:
         driver = match.group(1)
-        raise ValueError("'%s' isn't a valid tool name anymore."
-                         " Replace it by '%s'.\n            See "
-                         "https://gromacswrapper.readthedocs.io/en/latest/"
-                         "configuration.html" % (name, match.group(1)))
+        raise ValueError(
+            "'%s' isn't a valid tool name anymore."
+            " Replace it by '%s'.\n            See "
+            "https://gromacswrapper.readthedocs.io/en/latest/"
+            "configuration.html" % (name, match.group(1))
+        )
 
 
 check_setup()

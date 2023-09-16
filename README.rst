@@ -7,7 +7,7 @@
  README: GromacsWrapper
 ========================
 
-|build| |cov| |docs| |zenodo| |PRsWelcome| |anaconda|
+|build| |cov| |docs| |zenodo| |black| |PRsWelcome| |anaconda|
 
 A primitive Python wrapper around the Gromacs_ tools. The library is
 tested with GROMACS 4.6.5, 2018.x, 2019.x, 2020.x, 2021.x, 2022.x (and 5.x
@@ -50,6 +50,9 @@ running simulations with sensible parameters.
 .. |anaconda| image:: https://anaconda.org/conda-forge/gromacswrapper/badges/version.svg
    :target: https://anaconda.org/conda-forge/gromacswrapper
    :alt: Anaconda.org package
+.. |black| image:: https://img.shields.io/badge/code%20style-black-000000.svg
+   :target: https://github.com/psf/black	 
+   :alt: black   
 
 	 
 	 
@@ -136,15 +139,16 @@ wonderful ways. Please report issues through the `Issue Tracker`_.
 
 To use the *development code base*:  checkout the ``main`` branch::
 
-   git clone https://github.com/Becksteinlab/GromacsWrapper.git
-   cd GromacsWrapper
+   git clone https://github.com/Becksteinlab/GromacsWrapper.git   
 
 and install ::
 
-   python setup.py install
+   pip install GromacsWrapper/
 
+Code contributions are welcome. We use `black`_ for uniform code
+formatting so please install black_ and run it on your code.
 
-
+.. _`black`: https://github.com/psf/black
 
 Download and Availability
 =========================
