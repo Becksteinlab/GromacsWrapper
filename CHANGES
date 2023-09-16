@@ -5,8 +5,13 @@
 2023-??-??      0.8.5
 orbeckst
 
+* added testing for GROMACS 2023.1 (#251)
 * use black for uniformly formatted code (#246)
 * minor doc/installation updates
+* NOTE: GROMACS 2023 replaced `gmx do_dssp` with `gmx dssp` which is
+  not directly argument-compatible so GromacsWrapper does NOT alias
+  it. Therefore, scripts relying on `gromacs.do_dssp` will
+  break. (#249)
 
 
 2023-03-13      0.8.4
