@@ -53,7 +53,7 @@ class TestCommand(object):
         (
             "not_used",
             ("not", "used"),
-            ("unicode", "Ångström", "Planck_constant_over_two_π__ℏ"),
+            ("unicode", u"Ångström", u"Planck_constant_over_two_π__ℏ"),
         ),
     )
     def test_run_with_input(self, command, inp):
@@ -67,7 +67,7 @@ class TestCommand(object):
         (
             "not_used",
             ("not", "used"),
-            ("unicode", "Ångström", "Planck_constant_over_two_π__ℏ"),
+            ("unicode", u"Ångström", u"Planck_constant_over_two_π__ℏ"),
         ),
     )
     def test_Popen_with_input(self, command, inp):

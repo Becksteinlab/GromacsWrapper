@@ -17,7 +17,7 @@ from gromacs.fileformats import convert
     [
         (100, 100),
         ("Jabberwock", "Jabberwock"),
-        ("Ångström", "Ångström"),
+        (u"Ångström", u"Ångström"),
     ],
 )
 def test_to_unicode(s, expected):
