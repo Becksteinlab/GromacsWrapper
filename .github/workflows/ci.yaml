@@ -1,9 +1,9 @@
 name: CI
 
 on:
-  # run every Sunday at 4:44 UTC
+  # run every month on day 14 and 28 at 4:44 UTC
   schedule:
-    - cron: "44 4 * * 0"
+    - cron: "44 4 14,28 * *"
   push:
     branches:
       - "main"
