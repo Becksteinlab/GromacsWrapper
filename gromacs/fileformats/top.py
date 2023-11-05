@@ -509,62 +509,63 @@ class TOP(blocks.System):
                     params = list(map(float, fields[4:]))
 
                     # Handle parameters based on function types
-                    if fu in {
-                        blocks.AngleFunctionType.HARMONIC,
-                        blocks.AngleFunctionType.G96_ANGLE,
-                    }:
-                        ang.gromacs["params"] = {
-                            "tetha0": params[0],
-                            "ktetha": params[1],
-                        }
-                    elif fu == blocks.AngleFunctionType.CROSS_BOND_BOND:
-                        ang.gromacs["params"] = {
-                            "r1e": params[0],
-                            "r2e": params[1],
-                            "krrprime": params[2],
-                        }
-                    elif fu == blocks.AngleFunctionType.CROSS_BOND_ANGLE:
-                        ang.gromacs["params"] = {
-                            "r1e": params[0],
-                            "r2eprime": params[1],
-                            "r3e": params[2],
-                            "krtheta": params[3],
-                        }
-                    elif fu == blocks.AngleFunctionType.UREY_BRADLEY:
-                        ang.gromacs["params"] = {
-                            "tetha0": params[0],
-                            "ktetha": params[1],
-                            "r13": params[2],
-                            "kub": params[3],
-                        }
-                    elif fu == blocks.AngleFunctionType.QUARTIC_ANGLE:
-                        ang.gromacs["params"] = {
-                            "tetha0": params[0],
-                            "C1": params[1],
-                            "C2": params[2],
-                            "C3": params[3],
-                            "C4": params[4],
-                            "C5": params[5],
-                        }
-                    elif fu == blocks.AngleFunctionType.TABULATED_ANGLE:
-                        ang.gromacs["params"] = {
-                            "table_number": params[0],
-                            "k": params[1],
-                        }  # Assuming 'table number' is a parameter here
-                    elif fu == blocks.AngleFunctionType.LINEAR_ANGLE:
-                        ang.gromacs["params"] = {
-                            "a0": params[0],
-                            "klin": params[1],
-                        }
-                    elif fu == blocks.AngleFunctionType.RESTRICTED_BENDING:
-                        ang.gromacs["params"] = {
-                            "tetha0": params[0],
-                            "ktheta": params[1],
-                        }
-                    else:
-                        raise NotImplementedError(
-                            f"Function type {fu} is not implemented"
-                        )
+                    if fu.num_params == len(params):
+                        if fu in {
+                            blocks.AngleFunctionType.HARMONIC,
+                            blocks.AngleFunctionType.G96_ANGLE,
+                        }:
+                            ang.gromacs["params"] = {
+                                "tetha0": params[0],
+                                "ktetha": params[1],
+                            }
+                        elif fu == blocks.AngleFunctionType.CROSS_BOND_BOND:
+                            ang.gromacs["params"] = {
+                                "r1e": params[0],
+                                "r2e": params[1],
+                                "krrprime": params[2],
+                            }
+                        elif fu == blocks.AngleFunctionType.CROSS_BOND_ANGLE:
+                            ang.gromacs["params"] = {
+                                "r1e": params[0],
+                                "r2eprime": params[1],
+                                "r3e": params[2],
+                                "krtheta": params[3],
+                            }
+                        elif fu == blocks.AngleFunctionType.UREY_BRADLEY:
+                            ang.gromacs["params"] = {
+                                "tetha0": params[0],
+                                "ktetha": params[1],
+                                "r13": params[2],
+                                "kub": params[3],
+                            }
+                        elif fu == blocks.AngleFunctionType.QUARTIC_ANGLE:
+                            ang.gromacs["params"] = {
+                                "tetha0": params[0],
+                                "C1": params[1],
+                                "C2": params[2],
+                                "C3": params[3],
+                                "C4": params[4],
+                                "C5": params[5],
+                            }
+                        elif fu == blocks.AngleFunctionType.TABULATED_ANGLE:
+                            ang.gromacs["params"] = {
+                                "table_number": params[0],
+                                "k": params[1],
+                            }  # Assuming 'table number' is a parameter here
+                        elif fu == blocks.AngleFunctionType.LINEAR_ANGLE:
+                            ang.gromacs["params"] = {
+                                "a0": params[0],
+                                "klin": params[1],
+                            }
+                        elif fu == blocks.AngleFunctionType.RESTRICTED_BENDING:
+                            ang.gromacs["params"] = {
+                                "tetha0": params[0],
+                                "ktheta": params[1],
+                            }
+                        else:
+                            raise NotImplementedError(
+                                f"Function type {fu} is not implemented"
+                            )
 
                     # Add the angle to the appropriate list and call _add_info
                     if curr_sec == "angletypes":
