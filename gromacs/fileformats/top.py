@@ -535,7 +535,7 @@ class TOP(blocks.System):
                             ang.gromacs["params"] = {
                                 "tetha0": params[0],
                                 "ktetha": params[1],
-                                "r13": params[2],
+                                "s0": params[2],
                                 "kub": params[3],
                             }
                         elif fu == blocks.AngleFunctionType.QUARTIC_ANGLE:
