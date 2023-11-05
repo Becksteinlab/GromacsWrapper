@@ -483,12 +483,11 @@ class TOP(blocks.System):
                     angles      3       6       6
                     angles      3       8       ??
                     """
-                    print(fields)
                     ai, aj, ak = fields[:3]
 
                     fu = blocks.AngleFunctionType(int(fields[3]))
 
-                    if len(fields[4:]) != fu.num_params:
+                    if len(fields[4:]) != 0 and len(fields[4:]) != fu.num_params:
                         raise ValueError(
                             f"Expected {fu.num_params} parameters for function type {fu}, got {len(fields[4:])}"
                         )
