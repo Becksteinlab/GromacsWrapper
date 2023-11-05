@@ -2,6 +2,7 @@ import gromacs as gmx
 from unittest.mock import patch, mock_open
 import enum
 
+
 class AnglesFuncT(enum.Enum):
     Angle = 1
     G96_angle = 2
@@ -13,11 +14,14 @@ class AnglesFuncT(enum.Enum):
     tabulated_angle = 8
     linear_angle = 9
     restricted_bending_potential = 10
-    
+
 
 angles_types = {
-    AnglesFuncT.Angle: {"theta0",   }
+    AnglesFuncT.Angle: {
+        "theta0",
+    }
 }
+
 
 def create_topology_data() -> str:
     """
@@ -43,6 +47,7 @@ Example     3
 ; Compound        #mols
 Example	1
 """
+
 
 @patch("builtins.open", mock_open(read_data=create_topology_data()))
 def test_angles():
