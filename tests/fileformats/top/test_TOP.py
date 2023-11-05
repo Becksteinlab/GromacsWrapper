@@ -64,4 +64,4 @@ def test_angles(func_type: blocks.AngleFunctionType):
         topol = gmx.fileformats.top.TOP("topol.top")
         [molecule] = topol.molecules
         [angle] = molecule.angles
-        assert len(angle.gromacs["params"].keys()) == func_type.num_params
+        assert len(angle.gromacs["param"].keys()) == func_type.num_params

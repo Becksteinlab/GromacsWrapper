@@ -514,32 +514,32 @@ class TOP(blocks.System):
                             blocks.AngleFunctionType.HARMONIC,
                             blocks.AngleFunctionType.G96_ANGLE,
                         }:
-                            ang.gromacs["params"] = {
+                            ang.gromacs["param"] = {
                                 "tetha0": params[0],
                                 "ktetha": params[1],
                             }
                         elif fu == blocks.AngleFunctionType.CROSS_BOND_BOND:
-                            ang.gromacs["params"] = {
+                            ang.gromacs["param"] = {
                                 "r1e": params[0],
                                 "r2e": params[1],
                                 "krrprime": params[2],
                             }
                         elif fu == blocks.AngleFunctionType.CROSS_BOND_ANGLE:
-                            ang.gromacs["params"] = {
+                            ang.gromacs["param"] = {
                                 "r1e": params[0],
                                 "r2eprime": params[1],
                                 "r3e": params[2],
                                 "krtheta": params[3],
                             }
                         elif fu == blocks.AngleFunctionType.UREY_BRADLEY:
-                            ang.gromacs["params"] = {
+                            ang.gromacs["param"] = {
                                 "tetha0": params[0],
                                 "ktetha": params[1],
                                 "s0": params[2],
                                 "kub": params[3],
                             }
                         elif fu == blocks.AngleFunctionType.QUARTIC_ANGLE:
-                            ang.gromacs["params"] = {
+                            ang.gromacs["param"] = {
                                 "tetha0": params[0],
                                 "C1": params[1],
                                 "C2": params[2],
@@ -548,17 +548,17 @@ class TOP(blocks.System):
                                 "C5": params[5],
                             }
                         elif fu == blocks.AngleFunctionType.TABULATED_ANGLE:
-                            ang.gromacs["params"] = {
+                            ang.gromacs["param"] = {
                                 "table_number": params[0],
                                 "k": params[1],
                             }  # Assuming 'table number' is a parameter here
                         elif fu == blocks.AngleFunctionType.LINEAR_ANGLE:
-                            ang.gromacs["params"] = {
+                            ang.gromacs["param"] = {
                                 "a0": params[0],
                                 "klin": params[1],
                             }
                         elif fu == blocks.AngleFunctionType.RESTRICTED_BENDING:
-                            ang.gromacs["params"] = {
+                            ang.gromacs["param"] = {
                                 "tetha0": params[0],
                                 "ktheta": params[1],
                             }
@@ -1218,10 +1218,10 @@ class SystemToGroTop(object):
             at3 = ang.atype3
             ang.convert("gromacs")
 
-            ktetha = ang.gromacs["params"]["ktetha"]
-            tetha0 = ang.gromacs["params"]["tetha0"]
-            kub = ang.gromacs["params"]["kub"]
-            s0 = ang.gromacs["params"]["s0"]
+            ktetha = ang.gromacs["param"]["ktetha"]
+            tetha0 = ang.gromacs["param"]["tetha0"]
+            kub = ang.gromacs["param"]["kub"]
+            s0 = ang.gromacs["param"]["s0"]
 
             fu = ang.gromacs["func"]
 
