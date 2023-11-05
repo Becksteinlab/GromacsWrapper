@@ -55,6 +55,7 @@ Sources adapted from code by Reza Salari https://github.com/resal81/PyTopol
 
 """
 
+import enum
 import logging
 
 
@@ -439,6 +440,34 @@ class BondType(Param):
             and self.gromacs == other.gromacs
             and self.charmm == other.charmm
         )
+
+
+class AngleFunctionType(enum.IntEnum):
+    HARMONIC = 1
+    G96_ANGLE = 2
+    CROSS_BOND_BOND = 3
+    CROSS_BOND_ANGLE = 4
+    UREY_BRADLEY = 5
+    QUARTIC_ANGLE = 6
+    # There's no function type 7 as per the given code comments
+    TABULATED_ANGLE = 8
+    LINEAR_ANGLE = 9
+    RESTRICTED_BENDING = 10
+
+    @property
+    def num_params(self):
+        # Define the number of parameters expected for each function type
+        return {
+            self.HARMONIC: 2,
+            self.G96_ANGLE: 2,
+            self.CROSS_BOND_BOND: 3,
+            self.CROSS_BOND_ANGLE: 4,
+            self.UREY_BRADLEY: 4,
+            self.QUARTIC_ANGLE: 6,
+            self.TABULATED_ANGLE: 2,  # This might be different depending on your implementation
+            self.LINEAR_ANGLE: 2,
+            self.RESTRICTED_BENDING: 2,
+        }[self]
 
 
 class AngleType(Param):
