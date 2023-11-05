@@ -485,7 +485,6 @@ class TOP(blocks.System):
                     """
                     print(fields)
                     ai, aj, ak = fields[:3]
-                    ai, aj, ak = list(map(int, [ai, aj, ak]))
 
                     fu = blocks.AngleFunctionType(int(fields[3]))
 
@@ -502,6 +501,7 @@ class TOP(blocks.System):
                         ang.atype2 = aj
                         ang.atype3 = ak
                     elif curr_sec == "angles":
+                        ai, aj, ak = list(map(int, [ai, aj, ak]))
                         ang.atom1 = mol.atoms[ai - 1]
                         ang.atom2 = mol.atoms[aj - 1]
                         ang.atom3 = mol.atoms[ak - 1]
