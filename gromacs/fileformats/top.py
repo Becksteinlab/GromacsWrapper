@@ -1218,10 +1218,10 @@ class SystemToGroTop(object):
             at3 = ang.atype3
             ang.convert("gromacs")
 
-            ktetha = ang.gromacs["param"]["ktetha"]
-            tetha0 = ang.gromacs["param"]["tetha0"]
-            kub = ang.gromacs["param"]["kub"]
-            s0 = ang.gromacs["param"]["s0"]
+            ktetha = ang.gromacs["params"]["ktetha"]
+            tetha0 = ang.gromacs["params"]["tetha0"]
+            kub = ang.gromacs["params"]["kub"]
+            s0 = ang.gromacs["params"]["s0"]
 
             fu = ang.gromacs["func"]
 
