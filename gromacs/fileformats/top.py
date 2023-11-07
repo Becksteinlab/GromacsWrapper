@@ -517,8 +517,6 @@ class TOP(blocks.System):
                             ang.gromacs["param"] = {
                                 "tetha0": params[0],
                                 "ktetha": params[1],
-                                "kub": None,  # FIXME(jandom)
-                                "s0": None,  # FIXME(jandom)
                             }
                         elif fu == blocks.AngleFunctionType.CROSS_BOND_BOND:
                             ang.gromacs["param"] = {
@@ -1222,8 +1220,8 @@ class SystemToGroTop(object):
 
             ktetha = ang.gromacs["param"]["ktetha"]
             tetha0 = ang.gromacs["param"]["tetha0"]
-            kub = ang.gromacs["param"]["kub"]
-            s0 = ang.gromacs["param"]["s0"]
+            kub = ang.gromacs["param"].get("kub")
+            s0 = ang.gromacs["param"].get("s0")
 
             fu = ang.gromacs["func"]
 
