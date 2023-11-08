@@ -56,7 +56,7 @@ jobs:
           # version; locally 2023.1 was successfully tested on Intel macOS 13.5)
           - os: macOS-latest
             python-version: "3.11"
-            gromacs-version: "2022.4"       
+            gromacs-version: "2020.6"       
             
 
     env:
