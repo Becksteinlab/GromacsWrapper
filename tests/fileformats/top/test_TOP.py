@@ -25,7 +25,7 @@ def generate_topology_line(func_type):
 
     atoms = [1, 2, 3]
     params = random_params(func_type.num_params)
-    line = patterns[func_type].format(*atoms, *params)
+    line = patterns[func_type].format(*(atoms + params))
     return line
 
 
