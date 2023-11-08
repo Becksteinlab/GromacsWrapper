@@ -5,7 +5,7 @@ import pytest
 from gromacs.fileformats import blocks
 
 
-def generate_topology_line(func_type: blocks.AngleFunctionType):
+def generate_topology_line(func_type):
     # Generates random parameters for the different function types
     def random_params(num):
         return [random.uniform(0.0, 100.0) for _ in range(num)]
@@ -29,7 +29,7 @@ def generate_topology_line(func_type: blocks.AngleFunctionType):
     return line
 
 
-def create_topology_data(func_type: blocks.AngleFunctionType):
+def create_topology_data(func_type):
     """
     https://manual.gromacs.org/current/reference-manual/topologies/topology-file-formats.html#tab-topfile2
     """
@@ -59,7 +59,7 @@ Example	1
 
 
 @pytest.mark.parametrize("func_type", blocks.AngleFunctionType)
-def test_angles(func_type: blocks.AngleFunctionType):
+def test_angles(func_type):
     with patch(
         "builtins.open", mock_open(read_data=create_topology_data(func_type))
     ) as mock:
