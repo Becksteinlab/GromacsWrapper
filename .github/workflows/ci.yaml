@@ -53,10 +53,12 @@ jobs:
           # explicitly include a few macOS runners
           # (conda-forge GROMACS 2023.1 is compiled to use rdtscp CPU instruction but these
           # are not available in the GitHub runner so we need to use a different GROMACS
-          # version; locally 2023.1 was successfully tested on Intel macOS 13.5)
+          # version; locally 2023.1 was successfully tested on Intel macOS 13.5. Try 2021.3
+          # from bioconda (2021.1 is on conda-forge, so choosing 2021.3 forces the bioconda
+          # package...)
           - os: macOS-latest
             python-version: "3.11"
-            gromacs-version: "2020.6"       
+            gromacs-version: "2021.3"       
             
 
     env:
