@@ -192,8 +192,6 @@ Classes and functions
 .. autodata:: queuing_systems
 
 """
-from __future__ import absolute_import, with_statement
-
 import os
 import errno
 from os.path import relpath

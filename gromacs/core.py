@@ -98,9 +98,6 @@ Classes
 .. autoclass:: PopenWithInput
    :members:
 """
-from __future__ import absolute_import, with_statement, print_function
-import six
-
 __docformat__ = "restructuredtext en"
 
 import sys
@@ -277,13 +274,13 @@ class Command(object):
         use_shell = kwargs.pop("use_shell", False)
         if input:
             stdin = PIPE
-            if isinstance(input, six.string_types) and not input.endswith("\n"):
+            if isinstance(input, str) and not input.endswith("\n"):
                 # make sure that input is a simple string with \n line endings
-                input = six.text_type(input) + "\n"
+                input = str(input) + "\n"
             else:
                 try:
                     # make sure that input is a simple string with \n line endings
-                    input = "\n".join(map(six.text_type, input)) + "\n"
+                    input = "\n".join(map(str, input)) + "\n"
                 except TypeError:
                     # so maybe we are a file or something ... and hope for the best
                     pass
@@ -733,9 +730,6 @@ class PopenWithInput(subprocess.Popen):
         """
         kwargs.setdefault("close_fds", True)  # fixes 'Too many open fds' with 2.6
         self.input = kwargs.pop("input", None)
-        if six.PY2 and self.input is not None:
-            # in Python 2, subprocess.Popen uses os.write(chunk) with default ASCII encoding
-            self.input = self.input.encode("utf-8")
         self.command = args[0]
         try:
             input_string = (

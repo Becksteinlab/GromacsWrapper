@@ -2,6 +2,12 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
+2023-xx-xx      0.9.0
+orbeckst
+
+* removed support for legacy Python (<= 3.7) (#259)
+
+
 2023-09-16      0.8.5
 orbeckst
 

@@ -36,7 +36,6 @@ Classes
    :members:
 
 """
-import six
 
 
 # set up flags for core routines (more convoluted than strictly necessary but should
@@ -87,7 +86,7 @@ class Flags(dict):
         self.get_flag(name).set(value)
 
     def _itervalues(self):
-        return six.itervalues(super(Flags, self))
+        return super(Flags, self).values()
 
     def _items(self):
         return super(Flags, self).items()
