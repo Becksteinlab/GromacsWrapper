@@ -169,8 +169,6 @@ The package version is recorded in the :const:`gromacs.__version__` variable.
 .. autodata:: __version__
 
 """
-from __future__ import absolute_import
-
 __docformat__ = "restructuredtext en"
 
 import os

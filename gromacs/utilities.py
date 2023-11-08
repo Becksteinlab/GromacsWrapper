@@ -86,14 +86,8 @@ Data
 .. autodata:: amino_acid_codes
 
 """
-from __future__ import absolute_import, with_statement, division
-
 __docformat__ = "restructuredtext en"
 
-import six
-from six import string_types
-
-import sys
 import os
 import glob
 import fnmatch
@@ -342,7 +336,7 @@ def _get_stream(filename, openfunction=open, mode="r"):
         # case we have to ignore the error and return None. Second is when openfunction can't open the file because
         # either the file isn't there or the permissions don't allow access.
         if errno.errorcode[err.errno] in ["ENOENT", "EACCES"]:
-            six.reraise(*sys.exc_info())
+            raise
         return None
     if mode.startswith("r"):
         # additional check for reading (eg can we uncompress) --- is this needed?
@@ -724,7 +718,7 @@ class FileUtils(object):
 
 def iterable(obj):
     """Returns ``True`` if *obj* can be iterated over and is *not* a  string."""
-    if isinstance(obj, string_types):
+    if isinstance(obj, str):
         return False  # avoid iterating over characters of a string
     if hasattr(obj, "next"):
         return True  # any iterator will do

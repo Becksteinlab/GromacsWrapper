@@ -187,9 +187,6 @@ Classes and functions
 .. autofunction:: break_array
 
 """
-from __future__ import with_statement, absolute_import
-
-from six.moves import zip, range
 
 import os
 import errno

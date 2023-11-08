@@ -125,8 +125,6 @@ file. For specialized cases the two following functions are useful:
 # new class and set arguments explicitly in init (using kwargs['flag'] =
 # default) ... or I can write some meta(??) class to do this nicely
 
-from __future__ import absolute_import, with_statement
-
 __docformat__ = "restructuredtext en"
 
 import sys
@@ -136,7 +134,6 @@ import warnings
 import tempfile
 import shutil
 import glob
-import six
 
 import logging
 

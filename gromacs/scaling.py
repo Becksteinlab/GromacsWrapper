@@ -20,8 +20,6 @@ simulations with Hamiltonian replicate exchange and partial tempering
 .. autofunction:: partial_tempering
 
 """
-from __future__ import absolute_import, division, print_function
-
 import math
 import copy
 import logging

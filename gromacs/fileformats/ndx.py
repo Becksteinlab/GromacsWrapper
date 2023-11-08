@@ -23,10 +23,6 @@ access to the individual groups.
 .. autoclass:: IndexSet
 """
 
-from __future__ import absolute_import, with_statement
-
-from six.moves import range
-
 import os, errno
 import re
 import warnings

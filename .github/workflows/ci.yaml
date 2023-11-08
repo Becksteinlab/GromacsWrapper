@@ -25,27 +25,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macOS-latest]
-        python-version: ["2.7", "3.6", "3.7", "3.8", "3.9", "3.10", "3.11"]
-        gromacs-version: ["2021.1"]
+        os: [ubuntu-latest]
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
+        gromacs-version: ["2023.1"]
         # Test other GROMACS versions selectively on a recent Python.
         # On macOS only test one GROMACS version and two Python versions
         # to keep the testing matrix manageable.
-        exclude:
-          - os: macOS-latest
-            python-version: "3.6"
-          - os: macOS-latest
-            python-version: "3.7"
-          - os: macOS-latest
-            python-version: "3.8"
-          - os: macOS-latest
-            python-version: "3.9"
-          - os: macOS-latest
-            python-version: "3.10"
         include:
-          - os: ubuntu-latest
-            python-version: "2.7"
-            gromacs-version: "4.6.5"    
           - os: ubuntu-latest
             python-version: "3.11"
             gromacs-version: "4.6.5"
@@ -60,10 +46,18 @@ jobs:
             gromacs-version: "2020.6"
           - os: ubuntu-latest
             python-version: "3.11"
-            gromacs-version: "2022.4"
+            gromacs-version: "2021.1"       
           - os: ubuntu-latest
             python-version: "3.11"
-            gromacs-version: "2023.1"
+            gromacs-version: "2022.4"
+          # explicitly include a few macOS runners
+          # (conda-forge GROMACS >= 2021 is compiled to use rdtscp CPU instruction but these
+          # are not available in the macOS GitHub runner so we need to use a different GROMACS
+          # version. Try 2018.5 from bioconda. (2021.5 worked previously but not anymore.)
+          # Locally 2023.1 was successfully tested on Intel macOS 13.5.)
+          - os: macOS-latest
+            python-version: "3.11"
+            gromacs-version: "2018.6"
             
 
     env:
@@ -95,6 +89,7 @@ jobs:
       run: |
          micromamba info
          micromamba list
+         cat /proc/cpuinfo || (/usr/sbin/system_profiler SPHardwareDataType; /usr/sbin/sysctl -a | grep machdep.cpu)
 
     - name: Install pytest and plugins
       run: |
@@ -103,7 +98,6 @@ jobs:
     - name: Install GROMACS (${{ matrix.gromacs-version }})
       # UGLY HACK/FIX (probably to issues with bioconda packages)
       # - For 3.9, micromamba insists on using pypy 3.9 (and --py-pin does not help).
-      # - For 2.7 macOS, numkit would get uninstalled.
       # We can't freeze because then it's not possible to install older GROMACS versions from bioconda. 
       run: |
          micromamba install 'gromacs==${{ matrix.gromacs-version }}' pocl numkit python=${{ matrix.python-version }}.*=*_cpython
