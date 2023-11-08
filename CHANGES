@@ -6,6 +6,7 @@
 orbeckst
 
 * removed support for legacy Python (<= 3.7) (#259)
+* fix bug in gromacs TOP reader (#261)
 
 
 2023-09-16      0.8.5
