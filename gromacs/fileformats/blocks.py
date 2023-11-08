@@ -56,7 +56,7 @@ Sources adapted from code by Reza Salari https://github.com/resal81/PyTopol
 """
 
 import logging
-from aenum import IntEnum
+from enum import IntEnum
 
 
 class System(object):

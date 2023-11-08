@@ -63,7 +63,6 @@ setup(
         ],
     },
     install_requires=[
-        "aenum",
         "matplotlib",
         "numkit",  # numerical helpers
         "numpy>=1.0",
