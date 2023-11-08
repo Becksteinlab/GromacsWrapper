@@ -25,19 +25,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macOS-latest]
+        os: [ubuntu-latest]
         python-version: ["3.8", "3.9", "3.10", "3.11"]
         gromacs-version: ["2023.1"]
         # Test other GROMACS versions selectively on a recent Python.
         # On macOS only test one GROMACS version and two Python versions
         # to keep the testing matrix manageable.
-        exclude:
-          - os: macOS-latest
-            python-version: "3.8"
-          - os: macOS-latest
-            python-version: "3.9"
-          - os: macOS-latest
-            python-version: "3.10"
         include:
           - os: ubuntu-latest
             python-version: "3.11"
@@ -57,6 +50,13 @@ jobs:
           - os: ubuntu-latest
             python-version: "3.11"
             gromacs-version: "2022.4"
+          # explicitly include a few macOS runners
+          # (conda-forge GROMACS 2023.1 is compiled to use rdtscp CPU instruction but these
+          # are not available in the GitHub runner so we need to use a different GROMACS
+          # version; locally 2023.1 was successfully tested on Intel macOS 13.5)
+          - os: macOS-latest
+            python-version: "3.11"
+            gromacs-version: "2022.4"       
             
 
     env:
