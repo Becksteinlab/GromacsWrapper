@@ -69,10 +69,11 @@ setup(
         ],
     },
     install_requires=[
+        "aenum",
+        "matplotlib",
+        "numkit",  # numerical helpers
         "numpy>=1.0",
         "six",  # towards py 3 compatibility
-        "numkit",  # numerical helpers
-        "matplotlib",
     ],
     tests_require=["pytest", "pandas>=0.17"],
     zip_safe=True,
