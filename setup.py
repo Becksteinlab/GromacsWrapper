@@ -4,7 +4,6 @@
 #
 # See the files INSTALL and README for details or visit
 # https://github.com/Becksteinlab/GromacsWrapper
-from __future__ import with_statement
 from setuptools import setup, find_packages
 
 import versioneer
@@ -17,7 +16,7 @@ setup(
     name="GromacsWrapper",
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
-    description="A Python wrapper around the Gromacs tools.",
+    description="A Python wrapper around the GROMACS tools.",
     long_description=long_description,
     long_description_content_type="text/x-rst",
     author="Oliver Beckstein",
@@ -35,12 +34,7 @@ setup(
         "Operating System :: POSIX",
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: Microsoft :: Windows ",
-        "Programming Language :: Python",
-        "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
@@ -70,7 +64,6 @@ setup(
     },
     install_requires=[
         "numpy>=1.0",
-        "six",  # towards py 3 compatibility
         "numkit",  # numerical helpers
         "matplotlib",
     ],

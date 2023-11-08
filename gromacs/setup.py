@@ -114,9 +114,6 @@ Defined constants:
 .. autodata:: vdw_lipid_atom_radii
 
 """
-
-from __future__ import absolute_import, with_statement
-
 __docformat__ = "restructuredtext en"
 
 import os

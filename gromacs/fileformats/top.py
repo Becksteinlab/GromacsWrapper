@@ -51,7 +51,6 @@ Write out the scaled down topology::
    Exchange (HREX) simulations. See ``scripts/gw-partial_tempering.py`` for an example.
 
 """
-from __future__ import absolute_import
 
 import textwrap
 import logging
