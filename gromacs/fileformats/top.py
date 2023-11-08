@@ -566,7 +566,7 @@ class TOP(blocks.System):
                             }
                         else:
                             raise NotImplementedError(
-                                f"Function type {fu} is not implemented"
+                                "Function type {fu} is not implemented".forma(fu=fu)
                             )
 
                     # Add the angle to the appropriate list and call _add_info
