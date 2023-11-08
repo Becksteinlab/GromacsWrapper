@@ -489,7 +489,9 @@ class TOP(blocks.System):
 
                     if len(fields[4:]) != 0 and len(fields[4:]) != fu.num_params:
                         raise ValueError(
-                            f"Expected {fu.num_params} parameters for function type {fu}, got {len(fields[4:])}"
+                            "Expected {num_params} parameters for function type {fu}, got {len(fields[4:])}".format(
+                                num_params=fu.num_params, fu=fu
+                            )
                         )
 
                     ang = blocks.AngleType("gromacs")

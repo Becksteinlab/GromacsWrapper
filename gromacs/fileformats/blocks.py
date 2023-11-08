@@ -55,8 +55,8 @@ Sources adapted from code by Reza Salari https://github.com/resal81/PyTopol
 
 """
 
-import enum
 import logging
+from aenum import IntEnum
 
 
 class System(object):
@@ -442,7 +442,7 @@ class BondType(Param):
         )
 
 
-class AngleFunctionType(enum.IntEnum):
+class AngleFunctionType(IntEnum):
     HARMONIC = 1
     G96_ANGLE = 2
     CROSS_BOND_BOND = 3
