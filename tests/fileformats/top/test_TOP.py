@@ -1,8 +1,21 @@
 import gromacs as gmx
-from unittest.mock import patch, mock_open
+import io
 import random
 import pytest
 from gromacs.fileformats import blocks
+
+
+# This class simulates a file object
+class MockFile(io.StringIO):
+    def __init__(self, text):
+        super(MockFile, self).__init__(text)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close()
+        return False
 
 
 def generate_topology_line(func_type):
@@ -59,11 +72,18 @@ Example	1
 
 
 @pytest.mark.parametrize("func_type", blocks.AngleFunctionType)
-def test_angles(func_type):
-    with patch(
-        "builtins.open", mock_open(read_data=create_topology_data(func_type))
-    ) as mock:
-        topol = gmx.fileformats.top.TOP("topol.top")
-        [molecule] = topol.molecules
-        [angle] = molecule.angles
-        assert len(angle.gromacs["param"].keys()) == func_type.num_params
+def test_angles(func_type, monkeypatch):
+    # Create a custom function that will replace 'open'
+    def mock_open(*args, **kwargs):
+        if args[0] == "topol.top":
+            return MockFile(create_topology_data(func_type))
+        else:
+            return open(*args, **kwargs)
+
+    # Use monkeypatch to replace 'open' with 'mock_open'
+    monkeypatch.setattr("builtins.open", mock_open)
+
+    topol = gmx.fileformats.top.TOP("topol.top")
+    [molecule] = topol.molecules
+    [angle] = molecule.angles
+    assert len(angle.gromacs["param"].keys()) == func_type.num_params
