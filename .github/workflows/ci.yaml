@@ -27,7 +27,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macOS-latest]
         python-version: ["3.8", "3.9", "3.10", "3.11"]
-        gromacs-version: ["2021.1"]
+        gromacs-version: ["2023.1"]
         # Test other GROMACS versions selectively on a recent Python.
         # On macOS only test one GROMACS version and two Python versions
         # to keep the testing matrix manageable.
@@ -53,10 +53,10 @@ jobs:
             gromacs-version: "2020.6"
           - os: ubuntu-latest
             python-version: "3.11"
-            gromacs-version: "2022.4"
+            gromacs-version: "2021.1"       
           - os: ubuntu-latest
             python-version: "3.11"
-            gromacs-version: "2023.1"
+            gromacs-version: "2022.4"
             
 
     env:
