@@ -63,9 +63,9 @@ setup(
         ],
     },
     install_requires=[
-        "numpy>=1.0",
-        "numkit",  # numerical helpers
         "matplotlib",
+        "numkit",  # numerical helpers
+        "numpy>=1.0",
     ],
     tests_require=["pytest", "pandas>=0.17"],
     zip_safe=True,
