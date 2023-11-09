@@ -4,9 +4,9 @@ channels:
 - defaults
 dependencies:
 - python=3.11
-- six
 - numpy>=1.0
 - matplotlib-base
 - pandas
 - numkit>=1.0
 - gromacs==2023.1
+- sphinx_rtd_theme
