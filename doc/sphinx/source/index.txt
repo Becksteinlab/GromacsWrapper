@@ -2,21 +2,21 @@
 .. GromacsWrapper documentation master file, created by sphinx-quickstart on Tue Jun 23 19:38:56 2009.
 
 ====================================================
-  GromacsWrapper --- a Python framework for Gromacs
+  GromacsWrapper --- a Python framework for GROMACS
 ====================================================
 
 :Release: |release|
 :Date: |today|
 
 
-**GromacsWrapper** is a Python package (Python 2.7.x and Python ≥ 3.6)
-that wraps system calls to GROMACS_ tools into thin classes. This
-allows for fairly seamless integration of the gromacs tools into
-Python_ scripts. This is generally superior to shell scripts because
-of Python's better error handling and superior data structures. It
-also allows for modularization and code re-use. In addition, commands,
-warnings and errors are logged to a file so that there exists a
-complete history of what has been done.
+**GromacsWrapper** is a pure Python package that wraps system calls to
+GROMACS_ tools into thin classes. This allows for fairly seamless
+integration of the GROMACS tools into Python_ scripts. This is
+generally superior to shell scripts because of Python's better error
+handling and superior data structures. It also allows for
+modularization and code re-use. In addition, commands, warnings and
+errors are logged to a file so that there exists a complete history of
+what has been done.
 
 GROMACS_ versions 4.6.x, 2016.x, 2018.x, 2019.x, 2020.x, 2021.x,
 2022.x, and 2023.x are all supported. GromacsWrapper detects your
@@ -24,8 +24,8 @@ Gromacs tools and provides them as :func:`gromacs.grompp`,
 :func:`gromacs.mdrun`, etc, regardless of your Gromacs version, which
 allows one to write scripts that are broadly Gromacs-version
 agnostic. Source your ``GMXRC`` file or make the :program:`gmx` binary
-(for versions ≥ 5.x) or all the Gromacs tools available on your
-:envvar:`PATH` for GromacsWrapper to find the Gromacs installation.
+(for versions ≥ 5.x) or all the GROMACS tools available on your
+:envvar:`PATH` for GromacsWrapper to find the GROMACS installation.
 
 .. warning::
 
@@ -51,9 +51,9 @@ you're fixing.
 Getting started
 ===============
 	     
-See :ref:`installation` for download and installation instructions. The
-:ref:`quickstart` provides a brief example of how to use
-GromacsWrapper in the most basic fashion.
+See :ref:`installation` for supported versions of Python and download
+and installation instructions. The :ref:`quickstart` provides a brief
+example of how to use GromacsWrapper in the most basic fashion.
 
 The source code itself is available in the `GromacsWrapper git
 repository`_.
