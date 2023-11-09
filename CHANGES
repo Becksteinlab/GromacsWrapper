@@ -3,10 +3,11 @@
 ==============================
 
 2023-xx-xx      0.9.0
-orbeckst
+orbeckst, jandom
 
 * removed support for legacy Python (<= 3.7) (#259)
-* fix bug in gromacs TOP reader (#261)
+* fixed GROMACS TOP reader not reading angle parameters from topology
+  file (#261)
 
 
 2023-09-16      0.8.5
