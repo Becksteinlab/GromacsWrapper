@@ -120,10 +120,19 @@ class AttributeDict(dict):
     """A dictionary with pythonic access to keys as attributes --- useful for interactive work."""
 
     def __getattribute__(self, x):
+        # First try to get the attribute from the class parent (AttributeDict)
         try:
             return super(AttributeDict, self).__getattribute__(x)
+
+        # AttributeError is raised if the attribute doesn't exist
         except AttributeError:
-            return self[x]
+            # Next try to get the attribute from self (dict)
+            try:
+                return self[x]
+
+            # If that fails, raise an AttributeError exception
+            except KeyError:
+                raise AttributeError
 
     def __setattr__(self, name, value):
         try:
