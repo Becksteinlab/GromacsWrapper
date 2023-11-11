@@ -232,6 +232,7 @@ class MDrunner(utilities.FileUtils):
             os.path.join(self.dirname, self.filename(logname, ext="log"))
         )
         self.process = None
+        self.signal_handled = False
         signal.signal(signal.SIGINT, self.signal_handler)
 
     def signal_handler(self, signum, frame):
@@ -240,6 +241,7 @@ class MDrunner(utilities.FileUtils):
             try:
                 self.process.terminate()  # Attempt to terminate the subprocess
                 self.process.wait()  # Wait for the subprocess to terminate
+                self.signal_handled = True
             except Exception as e:
                 logger.error(f"Error terminating subprocess: {e}")
         raise KeyboardInterrupt  # Re-raise the KeyboardInterrupt to exit the main script
