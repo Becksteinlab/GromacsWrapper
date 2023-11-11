@@ -1,9 +1,14 @@
-name: test
+name: gromacs_wrapper
 channels:
 - conda-forge
 dependencies:
-- python
-- numpy>=1.0
 - matplotlib
-- pandas>=0.17
 - numkit>=1.0
+- numpy>=1.0
+- pandas>=0.17
+- pocl
+# dev tools
+- codecov
+- pytest 
+- pytest-cov 
+- pytest-pep8 

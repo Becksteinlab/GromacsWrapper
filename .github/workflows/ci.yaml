@@ -81,8 +81,6 @@ jobs:
         create-args: >-
            python=${{ matrix.python-version }}.*=*_cpython
            gromacs==${{ matrix.gromacs-version }}
-    
-    - run: micromamba install pocl
 
     - name: Python version information ${{ matrix.python-version }}
       run: |
