@@ -8,6 +8,7 @@ orbeckst, jandom
 * removed support for legacy Python (<= 3.7) (#259)
 * fixed GROMACS TOP reader not reading angle parameters from topology
   file (#261)
+* fixed AttributeDict does not support hasattr (#214)
 
 
 2023-09-16      0.8.5
