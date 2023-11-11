@@ -8,7 +8,7 @@ orbeckst, jandom
 * removed support for legacy Python (<= 3.7) (#259)
 * fixed GROMACS TOP reader not reading angle parameters from topology
   file (#261)
-
+* fixed Python 3.12: No module named ('pkg_resources' #263)
 
 2023-09-16      0.8.5
 orbeckst
