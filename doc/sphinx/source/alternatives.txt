@@ -24,11 +24,20 @@ gmxapi_ (M.E. Irrgang, J.M. Hays, and P.M. Kasson)
    `10.1093/bioinformatics/bty484
    <https://doi.org/10.1093/bioinformatics/bty484>`_
 
+`gromacs_py`_ (Samuel Murail, Maxence Delaunay, Damien Espana)
+   Gromacs_py is a Python library allowing a simplified use of the
+   Gromacs MD simulation software. Gromacs_py can build a system
+   topologie based on a pdb file, create the simulation system (pbc
+   box, adding water and ions) and run minimisation, equilibration and
+   production runs. One of the main objective of the Gromacs_py
+   wrapper is to automatize routine operations for MD simulation of
+   multiple systems.
+   
 MDAnalysis_ (N. Michaud-Agrawal, E. J. Dennning, and O. Beckstein)
   Reads various trajectories (dcd, xtc, trr) and makes coordinates
   available as numpy_ arrays. It also has a fairly sophisticated
   selection language, similar to Charmm_ or VMD_.
-
+  
 ParmEd_
   A general tool for working with topology files for all the popular
   MD codes, including the `parmed.gromacs`_ module for ITP and TOP
@@ -160,3 +169,4 @@ they can be added here. Thanks.
 .. _issue tracker: https://github.com/Becksteinlab/GromacsWrapper/issues
 .. _ParmEd: http://parmed.github.io/ParmEd/html/index.html
 .. _parmed.gromacs: http://parmed.github.io/ParmEd/html/api/parmed/parmed.gromacs.html
+.. _`gromacs_py`: https://github.com/samuelmurail/gromacs_py

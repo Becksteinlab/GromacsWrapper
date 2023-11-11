@@ -6,7 +6,6 @@
  Installation
 ==============
 
-
 This document should help you to install the **GromacsWrapper**
 package. Please raise and issue in the `Issue Tracker`_ if problems
 occur or if you have suggestions on how to improve the package or
@@ -103,19 +102,17 @@ formatting so please install black_ and run it on your code.
 Requirements
 ============
 
-Python_ 2.7.x or Python >= 3.6 and GROMACS_ (4.6.x, 2016, 2018, 2019,
-2020, 2021, 2022) must be installed. ipython_ is very much
-recommended.
+Python_ >= 3.8 and GROMACS_ (4.6.x, 2016, 2018, 2019, 2020, 2021,
+2022, 2023) must be installed.
 
 .. _Python: http://www.python.org
-.. _ipython: http://ipython.scipy.org
 
 
 System requirements
 -------------------
 
-Tested with Python 2.7.x and Python 3.6--3.11 on Linux and Mac
-OS X. Earlier Python versions are not supported.
+Tested with Python 3.8--3.11 on Linux and Mac OS X. Earlier Python
+versions were only supported until release 0.8.5.
 
 
 Required Python modules

@@ -51,7 +51,6 @@ Write out the scaled down topology::
    Exchange (HREX) simulations. See ``scripts/gw-partial_tempering.py`` for an example.
 
 """
-from __future__ import absolute_import
 
 import textwrap
 import logging
@@ -471,7 +470,7 @@ class TOP(blocks.System):
                     else:
                         raise NotImplementedError
 
-                elif curr_sec in ("angletypes", "angles"):
+                elif curr_sec in {"angletypes", "angles"}:
                     """
                     section     #at     fu      #param
                     ----------------------------------
@@ -483,110 +482,101 @@ class TOP(blocks.System):
                     angles      3       6       6
                     angles      3       8       ??
                     """
-
                     ai, aj, ak = fields[:3]
-                    fu = int(fields[3])
-                    assert fu in (1, 2, 3, 4, 5, 6, 8)  # no 7
 
-                    if fu not in (1, 2, 5):
-                        raise NotImplementedError(
-                            "function {0:d} is not yet supported".format(fu)
+                    fu = blocks.AngleFunctionType(int(fields[3]))
+
+                    if len(fields[4:]) != 0 and len(fields[4:]) != fu.num_params:
+                        raise ValueError(
+                            "Expected {num_params} parameters for function type {fu}, got {len(fields[4:])}".format(
+                                num_params=fu.num_params, fu=fu
+                            )
                         )
 
                     ang = blocks.AngleType("gromacs")
-                    if fu == 1:
-                        if curr_sec == "angletypes":
-                            ang.atype1 = ai
-                            ang.atype2 = aj
-                            ang.atype3 = ak
+                    ang.gromacs = {"func": fu}
 
-                            tetha0, ktetha = list(map(float, fields[4:6]))
-                            ang.gromacs = {
-                                "param": {
-                                    "ktetha": ktetha,
-                                    "tetha0": tetha0,
-                                    "kub": None,
-                                    "s0": None,
-                                },
-                                "func": fu,
+                    if curr_sec == "angletypes":
+                        ang.atype1 = ai
+                        ang.atype2 = aj
+                        ang.atype3 = ak
+                    elif curr_sec == "angles":
+                        ai, aj, ak = list(map(int, [ai, aj, ak]))
+                        ang.atom1 = mol.atoms[ai - 1]
+                        ang.atom2 = mol.atoms[aj - 1]
+                        ang.atom3 = mol.atoms[ak - 1]
+
+                    # Parse parameters based on the function type
+                    params = list(map(float, fields[4:]))
+
+                    # Handle parameters based on function types
+                    if fu.num_params == len(params):
+                        if fu in {
+                            blocks.AngleFunctionType.HARMONIC,
+                            blocks.AngleFunctionType.G96_ANGLE,
+                        }:
+                            ang.gromacs["param"] = {
+                                "tetha0": params[0],
+                                "ktetha": params[1],
                             }
-
-                            self.angletypes.append(ang)
-                            _add_info(self, curr_sec, self.angletypes)
-
-                        elif curr_sec == "angles":
-                            ai, aj, ak = list(map(int, [ai, aj, ak]))
-                            ang.atom1 = mol.atoms[ai - 1]
-                            ang.atom2 = mol.atoms[aj - 1]
-                            ang.atom3 = mol.atoms[ak - 1]
-                            ang.gromacs["func"] = fu
-
-                            mol.angles.append(ang)
-                            _add_info(mol, curr_sec, mol.angles)
-
+                        elif fu == blocks.AngleFunctionType.CROSS_BOND_BOND:
+                            ang.gromacs["param"] = {
+                                "r1e": params[0],
+                                "r2e": params[1],
+                                "krrprime": params[2],
+                            }
+                        elif fu == blocks.AngleFunctionType.CROSS_BOND_ANGLE:
+                            ang.gromacs["param"] = {
+                                "r1e": params[0],
+                                "r2eprime": params[1],
+                                "r3e": params[2],
+                                "krtheta": params[3],
+                            }
+                        elif fu == blocks.AngleFunctionType.UREY_BRADLEY:
+                            ang.gromacs["param"] = {
+                                "tetha0": params[0],
+                                "ktetha": params[1],
+                                "s0": params[2],
+                                "kub": params[3],
+                            }
+                        elif fu == blocks.AngleFunctionType.QUARTIC_ANGLE:
+                            ang.gromacs["param"] = {
+                                "tetha0": params[0],
+                                "C1": params[1],
+                                "C2": params[2],
+                                "C3": params[3],
+                                "C4": params[4],
+                                "C5": params[5],
+                            }
+                        elif fu == blocks.AngleFunctionType.TABULATED_ANGLE:
+                            ang.gromacs["param"] = {
+                                "table_number": params[0],
+                                "k": params[1],
+                            }  # Assuming 'table number' is a parameter here
+                        elif fu == blocks.AngleFunctionType.LINEAR_ANGLE:
+                            ang.gromacs["param"] = {
+                                "a0": params[0],
+                                "klin": params[1],
+                            }
+                        elif fu == blocks.AngleFunctionType.RESTRICTED_BENDING:
+                            ang.gromacs["param"] = {
+                                "tetha0": params[0],
+                                "ktheta": params[1],
+                            }
                         else:
-                            raise ValueError
+                            raise NotImplementedError(
+                                "Function type {fu} is not implemented".forma(fu=fu)
+                            )
 
-                    elif fu == 2:
-                        if curr_sec == "angletypes":
-                            raise NotImplementedError()
-
-                        elif curr_sec == "angles":
-                            ai, aj, ak = list(map(int, [ai, aj, ak]))
-                            ang.atom1 = mol.atoms[ai - 1]
-                            ang.atom2 = mol.atoms[aj - 1]
-                            ang.atom3 = mol.atoms[ak - 1]
-                            ang.gromacs["func"] = fu
-
-                            tetha0, ktetha = list(map(float, fields[4:6]))
-                            ang.gromacs = {
-                                "param": {
-                                    "ktetha": ktetha,
-                                    "tetha0": tetha0,
-                                    "kub": None,
-                                    "s0": None,
-                                },
-                                "func": fu,
-                            }
-
-                            mol.angles.append(ang)
-                            _add_info(mol, curr_sec, mol.angles)
-
-                    elif fu == 5:
-                        if curr_sec == "angletypes":
-                            ang.atype1 = ai
-                            ang.atype2 = aj
-                            ang.atype3 = ak
-                            tetha0, ktetha, s0, kub = list(map(float, fields[4:8]))
-
-                            ang.gromacs = {
-                                "param": {
-                                    "ktetha": ktetha,
-                                    "tetha0": tetha0,
-                                    "kub": kub,
-                                    "s0": s0,
-                                },
-                                "func": fu,
-                            }
-
-                            self.angletypes.append(ang)
-                            _add_info(self, curr_sec, self.angletypes)
-
-                        elif curr_sec == "angles":
-                            ai, aj, ak = list(map(int, [ai, aj, ak]))
-                            ang.atom1 = mol.atoms[ai - 1]
-                            ang.atom2 = mol.atoms[aj - 1]
-                            ang.atom3 = mol.atoms[ak - 1]
-                            ang.gromacs["func"] = fu
-
-                            mol.angles.append(ang)
-                            _add_info(mol, curr_sec, mol.angles)
-
-                        else:
-                            raise ValueError
-
+                    # Add the angle to the appropriate list and call _add_info
+                    if curr_sec == "angletypes":
+                        self.angletypes.append(ang)
+                        _add_info(self, curr_sec, self.angletypes)
+                    elif curr_sec == "angles":
+                        mol.angles.append(ang)
+                        _add_info(mol, curr_sec, mol.angles)
                     else:
-                        raise NotImplementedError
+                        raise ValueError("Unknown section while parsing angles")
 
                 elif curr_sec in ("dihedraltypes", "dihedrals"):
                     """
@@ -1231,8 +1221,8 @@ class SystemToGroTop(object):
 
             ktetha = ang.gromacs["param"]["ktetha"]
             tetha0 = ang.gromacs["param"]["tetha0"]
-            kub = ang.gromacs["param"]["kub"]
-            s0 = ang.gromacs["param"]["s0"]
+            kub = ang.gromacs["param"].get("kub")
+            s0 = ang.gromacs["param"].get("s0")
 
             fu = ang.gromacs["func"]
 
@@ -1410,7 +1400,12 @@ class SystemToGroTop(object):
         result = []
         for ang in m.angles:
             fu = ang.gromacs["func"]
-            if ang.gromacs["param"]["ktetha"] and ang.gromacs["param"]["tetha0"]:
+            has_params = (
+                "param" in ang.gromacs
+                and ang.gromacs["param"]["ktetha"]
+                and ang.gromacs["param"]["tetha0"]
+            )
+            if has_params:
                 ktetha, tetha0 = (
                     ang.gromacs["param"]["ktetha"],
                     ang.gromacs["param"]["tetha0"],

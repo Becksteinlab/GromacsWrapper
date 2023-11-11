@@ -225,43 +225,13 @@ completely transparent to the user.
 .. autodata:: qscript_template
 
 """
-from __future__ import absolute_import, with_statement, print_function
-
 import os
 import logging
 import re
 import subprocess
 import sys
 
-if sys.version_info[0] < 3:  # several differences for Python 2
-    from ConfigParser import SafeConfigParser as ConfigParser
-    from ConfigParser import NoSectionError, NoOptionError
-
-    # Define read_file to point to the (deprecated in Python 3) readfp
-    # in order to have consistent, non-deprecated syntax
-    ConfigParser.read_file = ConfigParser.readfp
-
-    # Implement the new `fallback` kwarg based on the Python 3.7 implementation
-    # https://github.com/python/cpython/blob/3.7/Lib/configparser.py#L804
-    # This should ensure backwards compatibility.
-    _cf_getbool = ConfigParser.getboolean
-    _UNSET = object()
-
-    def _getboolean(self, section, option, fallback=_UNSET, **kwargs):
-        """Return a boolean for the specified config option
-
-        If *fallback* is used, it will be returned if there if the
-        option is not specified anywhere (defaults, config file)."""
-        try:  # Try using the Python 2 function
-            return _cf_getbool(self, section, option, **kwargs)
-        except (NoSectionError, NoOptionError):
-            if fallback is _UNSET:
-                raise
-        return fallback  # If fallback is given, use that value
-
-    ConfigParser.getboolean = _getboolean
-else:
-    from configparser import ConfigParser
+from configparser import ConfigParser
 
 from pkg_resources import resource_filename, resource_listdir
 

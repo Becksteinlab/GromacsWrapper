@@ -169,8 +169,6 @@ The package version is recorded in the :const:`gromacs.__version__` variable.
 .. autodata:: __version__
 
 """
-from __future__ import absolute_import
-
 __docformat__ = "restructuredtext en"
 
 import os
@@ -180,7 +178,7 @@ import logging
 # __all__ is extended with all gromacs command instances later
 __all__ = ["config", "tools", "cbook", "fileformats"]
 
-from ._version import get_versions
+from . import _version
 
 #: Version of the package, following `semantic versioning`_ in the form
 #: MAJOR.MINOR.PATCH. When PATCH increases, bugs are fixed or documentation
@@ -195,8 +193,7 @@ from ._version import get_versions
 #: the commit ID encoded in the trailing string.
 #:
 #: .. _`semantic versioning`: https://semver.org/
-__version__ = get_versions()["version"]
-del get_versions
+__version__ = _version.get_versions()["version"]
 
 from . import fileformats
 from .exceptions import (
