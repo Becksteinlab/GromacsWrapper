@@ -26,7 +26,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
         gromacs-version: ["2023.1"]
         # Test other GROMACS versions selectively on a recent Python.
         # On macOS only test one GROMACS version and two Python versions
@@ -80,6 +80,7 @@ jobs:
         cache-environment: true
         create-args: >-
            python=${{ matrix.python-version }}.*=*_cpython
+           gromacs==${{ matrix.gromacs-version }}
 
     - name: Python version information ${{ matrix.python-version }}
       run: |
@@ -90,17 +91,6 @@ jobs:
          micromamba info
          micromamba list
          cat /proc/cpuinfo || (/usr/sbin/system_profiler SPHardwareDataType; /usr/sbin/sysctl -a | grep machdep.cpu)
-
-    - name: Install pytest and plugins
-      run: |
-         micromamba install pytest pytest-pep8 pytest-cov codecov
-
-    - name: Install GROMACS (${{ matrix.gromacs-version }})
-      # UGLY HACK/FIX (probably to issues with bioconda packages)
-      # - For 3.9, micromamba insists on using pypy 3.9 (and --py-pin does not help).
-      # We can't freeze because then it's not possible to install older GROMACS versions from bioconda. 
-      run: |
-         micromamba install 'gromacs==${{ matrix.gromacs-version }}' pocl numkit python=${{ matrix.python-version }}.*=*_cpython
 
     - name: Install package (with no dependencies)
       run: |
