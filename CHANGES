@@ -9,6 +9,8 @@ orbeckst, jandom
 * fixed GROMACS TOP reader not reading angle parameters from topology
   file (#261)
 * fixed Python 3.12: No module named ('pkg_resources' #263)
+* fixed AttributeDict does not support hasattr (#214)
+
 
 2023-09-16      0.8.5
 orbeckst

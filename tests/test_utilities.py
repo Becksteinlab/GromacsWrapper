@@ -52,6 +52,11 @@ class TestAttributeDict(object):
         self.d["gargl"] = "blaster"
         assert self.d["gargl"] == "blaster"
 
+    def test_dict_hasattr(self):
+        assert hasattr(self.d, "foo")
+        assert hasattr(self.d, "baz")
+        assert not hasattr(self.d, "bar")
+
     def test_pickle(self):
         try:
             dump = pickle.dumps(self.d, pickle.HIGHEST_PROTOCOL)
