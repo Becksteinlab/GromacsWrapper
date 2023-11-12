@@ -66,7 +66,7 @@ setup(
         "matplotlib",
         "numkit",  # numerical helpers
         "numpy>=1.0",
-        "setuptools",  # contains 'pkg_resources' for versioneer
+        'setuptools; python_version >= "3.12"',  # contains 'pkg_resources' for versioneer
     ],
     tests_require=["pytest", "pandas>=0.17"],
     zip_safe=True,
