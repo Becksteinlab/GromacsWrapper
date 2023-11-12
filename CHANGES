@@ -3,11 +3,13 @@
 ==============================
 
 2023-xx-xx      0.9.0
-orbeckst, jandom
+orbeckst, jandom, njzjz
 
+* officially support Python 3.12 (PR #271, issue #263)
 * removed support for legacy Python (<= 3.7) (#259)
 * fixed GROMACS TOP reader not reading angle parameters from topology
   file (#261)
+* fixed Python 3.12: No module named ('pkg_resources' #263)
 * fixed AttributeDict does not support hasattr (#214)
 
 
