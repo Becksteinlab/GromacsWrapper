@@ -9,6 +9,7 @@ orbeckst, jandom
 * fixed GROMACS TOP reader not reading angle parameters from topology
   file (#261)
 * fixed handle KeyboardInterrupts when using MDRunner.run() (#252)
+* fixed AttributeDict does not support hasattr (#214)
 
 
 2023-09-16      0.8.5
