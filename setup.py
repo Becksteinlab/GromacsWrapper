@@ -39,6 +39,7 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
         "Topic :: Scientific/Engineering :: Bio-Informatics",
         "Topic :: Scientific/Engineering :: Chemistry",
         "Topic :: Software Development :: Libraries :: Python Modules",
@@ -66,6 +67,7 @@ setup(
         "matplotlib",
         "numkit",  # numerical helpers
         "numpy>=1.0",
+        'setuptools; python_version >= "3.12"',  # contains 'pkg_resources' for versioneer
     ],
     tests_require=["pytest", "pandas>=0.17"],
     zip_safe=True,
