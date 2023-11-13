@@ -7,4 +7,3 @@ dependencies:
 - matplotlib
 - pandas>=0.17
 - numkit>=1.0
-- setuptools

@@ -14,7 +14,6 @@ these instructions. Ask for help in the `discussions`_ forum.
 .. _Issue Tracker: https://github.com/Becksteinlab/GromacsWrapper/issues
 .. _discussions:
    https://github.com/Becksteinlab/GromacsWrapper/discussions
-.. _setuptools: https://pypi.org/project/setuptools/
 
 
 ``pip`` installation

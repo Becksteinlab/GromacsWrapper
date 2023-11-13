@@ -229,11 +229,11 @@ import os
 import logging
 import re
 import subprocess
-import sys
 
 from configparser import ConfigParser
 
-from pkg_resources import resource_filename, resource_listdir
+from importlib import resources
+from pathlib import Path
 
 from . import utilities
 
@@ -309,23 +309,20 @@ path = [os.path.curdir, qscriptdir, templatesdir]
 def _generate_template_dict(dirname):
     """Generate a list of included files *and* extract them to a temp space.
 
-    Templates have to be extracted from the egg because they are used
-    by external code. All template filenames are stored in
-    :data:`config.templates`.
+    Templates have to be extracted because they are used by external code.
+    All template filenames are stored in config.templates.
     """
-    return dict(
-        (resource_basename(fn), resource_filename(__name__, dirname + "/" + fn))
-        for fn in resource_listdir(__name__, dirname)
-        if not fn.endswith("~")
-    )
+    with resources.path(__package__, dirname) as dir_path:
+        return {
+            path.name: path
+            for path in Path(dir_path).iterdir()
+            if path.is_file() and not path.name.endswith("~")
+        }
 
 
 def resource_basename(resource):
     """Last component of a resource (which always uses '/' as sep)."""
-    if resource.endswith("/"):
-        resource = resource[:-1]
-    parts = resource.split("/")
-    return parts[-1]
+    return Path(resource).name
 
 
 templates = _generate_template_dict("templates")
