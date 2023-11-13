@@ -70,12 +70,12 @@ If your prefer to download manually, get the latest stable release
 from https://github.com/Becksteinlab/GromacsWrapper/releases and
 either ::
 
-  pip install GromacsWrapper-0.8.3.tar.gz
+  pip install GromacsWrapper-0.8.5.tar.gz
 
 or install from the unpacked source::
 
-  tar -zxvf GromacsWrapper-0.8.3.tar.gz
-  cd GromacsWrapper-0.8.3
+  tar -zxvf GromacsWrapper-0.8.5.tar.gz
+  cd GromacsWrapper-0.8.5
   pip install .
 
 
@@ -111,7 +111,7 @@ Python_ >= 3.8 and GROMACS_ (4.6.x, 2016, 2018, 2019, 2020, 2021,
 System requirements
 -------------------
 
-Tested with Python 3.8--3.11 on Linux and Mac OS X. Earlier Python
+Tested with Python 3.8--3.12 on Linux and Mac OS X. Earlier Python
 versions were only supported until release 0.8.5.
 
 
