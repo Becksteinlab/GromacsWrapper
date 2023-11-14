@@ -232,7 +232,6 @@ import subprocess
 
 from configparser import ConfigParser
 
-from importlib import resources
 from pathlib import Path
 
 from . import utilities
