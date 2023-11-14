@@ -312,17 +312,12 @@ def _generate_template_dict(dirname):
     Templates have to be extracted because they are used by external code.
     All template filenames are stored in config.templates.
     """
-    with resources.path(__package__, dirname) as dir_path:
-        return {
-            path.name: path
-            for path in Path(dir_path).iterdir()
-            if path.is_file() and not path.name.endswith("~")
-        }
-
-
-def resource_basename(resource):
-    """Last component of a resource (which always uses '/' as sep)."""
-    return Path(resource).name
+    resource_path = Path(__package__) / dirname
+    return {
+        path.name: str(path.absolute())
+        for path in Path(resource_path).iterdir()
+        if path.is_file() and not path.name.endswith("~")
+    }
 
 
 templates = _generate_template_dict("templates")
