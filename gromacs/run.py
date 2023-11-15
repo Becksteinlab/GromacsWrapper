@@ -102,6 +102,7 @@ import warnings
 import subprocess
 import os.path
 import errno
+import signal
 
 # logging
 import logging
@@ -230,6 +231,20 @@ class MDrunner(utilities.FileUtils):
         self.logname = os.path.realpath(
             os.path.join(self.dirname, self.filename(logname, ext="log"))
         )
+        self.process = None
+        self.signal_handled = False
+        signal.signal(signal.SIGINT, self.signal_handler)
+
+    def signal_handler(self, signum, frame):
+        """Custom signal handler for SIGINT."""
+        if self.process is not None:
+            try:
+                self.process.terminate()  # Attempt to terminate the subprocess
+                self.process.wait()  # Wait for the subprocess to terminate
+                self.signal_handled = True
+            except Exception as e:
+                logger.error(f"Error terminating subprocess: {e}")
+        raise KeyboardInterrupt  # Re-raise the KeyboardInterrupt to exit the main script
 
     def commandline(self, **mpiargs):
         """Returns simple command line to invoke mdrun.
@@ -308,17 +323,22 @@ class MDrunner(utilities.FileUtils):
             try:
                 self.prehook(**pre)
                 logger.info(" ".join(cmd))
-                rc = subprocess.call(cmd)
+                self.process = subprocess.Popen(cmd)  # Use Popen instead of call
+                returncode = self.process.wait()  # Wait for the process to complete
+            except KeyboardInterrupt:
+                # Handle the keyboard interrupt gracefully
+                logger.info("Keyboard Interrupt received, terminating the subprocess.")
+                raise
             except:
                 logger.exception("Failed MD run for unknown reasons.")
                 raise
             finally:
                 self.posthook(**post)
-        if rc == 0:
-            logger.info("MDrun completed ok, returncode = {0:d}".format(rc))
+        if returncode == 0:
+            logger.info("MDrun completed ok, returncode = {0:d}".format(returncode))
         else:
-            logger.critical("Failure in MDrun, returncode = {0:d}".format(rc))
-        return rc
+            logger.critical("Failure in MDrun, returncode = {0:d}".format(returncode))
+        return returncode
 
     def run_check(self, **kwargs):
         """Run :program:`mdrun` and check if run completed when it finishes.
