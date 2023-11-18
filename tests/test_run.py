@@ -5,7 +5,11 @@
 
 from __future__ import division, absolute_import, print_function
 
+import time
 import pytest
+import os
+import signal
+import threading
 
 from .datafiles import datafile
 
@@ -52,6 +56,49 @@ def test_MDRunner():
 
     rc = mdrun.run(mdrunargs={"version": True})
     assert rc == 0, "mdrun failed to run through MDrunner"
+
+
+def test_MDRunner_keyboard_interrupt(monkeypatch):
+    """Test that a keyboard interrupt is handled correctly."""
+
+    # Create a mock for subprocess.Popen
+    class MockPopen:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        def wait(self):
+            time.sleep(2)  # Simulate a long-running process
+
+        def terminate(self):
+            pass
+
+    # Use monkeypatch to replace subprocess.Popen with MockPopen
+    monkeypatch.setattr("gromacs.run.subprocess.Popen", MockPopen)
+
+    # Initialize MDrunner
+    mdrunner = gromacs.run.MDrunner()
+
+    # Function to send SIGINT after a delay
+    def send_interrupt():
+        time.sleep(1)  # Short delay before sending SIGINT
+        os.kill(os.getpid(), signal.SIGINT)
+
+    # Start a thread to send the SIGINT
+    interrupt_thread = threading.Thread(target=send_interrupt)
+    interrupt_thread.start()
+
+    # Run the MDrunner in the main thread to handle the signal
+    try:
+        mdrunner.run()
+    except KeyboardInterrupt:
+        # Handle the KeyboardInterrupt within the test
+        pass
+
+    # Ensure the signal handler was called
+    assert mdrunner.signal_handled, "The signal handler was not called as expected"
+
+    # Ensure the interrupt thread has finished
+    interrupt_thread.join()
 
 
 class Test_find_gromacs_command(object):

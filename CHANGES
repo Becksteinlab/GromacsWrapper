@@ -11,6 +11,7 @@ orbeckst, jandom, njzjz
   file (#261)
 * fixed Python 3.12: No module named ('pkg_resources' #263)
 * fixed AttributeDict does not support hasattr (#214)
+* fixed handle KeyboardInterrupts when using MDRunner.run() (#252)
 
 
 2023-09-16      0.8.5
