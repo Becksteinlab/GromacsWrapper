@@ -312,6 +312,7 @@ def _generate_template_dict(dirname):
     All template filenames are stored in config.templates.
     """
     import importlib_resources
+
     resource_path = importlib_resources.files("gromacs.config").joinpath(dirname)
     return {
         path.name: str(path.absolute())
