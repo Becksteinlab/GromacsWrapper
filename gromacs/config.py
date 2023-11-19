@@ -232,7 +232,7 @@ import subprocess
 
 from configparser import ConfigParser
 
-from pathlib import Path
+from importlib import resources
 
 from . import utilities
 
@@ -311,9 +311,8 @@ def _generate_template_dict(dirname):
     Templates have to be extracted because they are used by external code.
     All template filenames are stored in config.templates.
     """
-    import importlib_resources
 
-    resource_path = importlib_resources.files("gromacs.config").joinpath(dirname)
+    resource_path = resources.files("gromacs.config").joinpath(dirname)
     return {
         path.name: str(path.absolute())
         for path in resource_path.iterdir()
