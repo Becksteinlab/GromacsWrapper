@@ -311,10 +311,11 @@ def _generate_template_dict(dirname):
     Templates have to be extracted because they are used by external code.
     All template filenames are stored in config.templates.
     """
-    resource_path = Path(__package__) / dirname
+    import importlib_resources
+    resource_path = importlib_resources.files("gromacs.config").joinpath(dirname)
     return {
         path.name: str(path.absolute())
-        for path in Path(resource_path).iterdir()
+        for path in resource_path.iterdir()
         if path.is_file() and not path.name.endswith("~")
     }
 
