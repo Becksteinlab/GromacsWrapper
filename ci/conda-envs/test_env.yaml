@@ -1,3 +1,4 @@
+# it is important to install gromacs together with everything else to ensure correct dependency resolution
 name: gromacs_wrapper
 channels:
 - conda-forge

@@ -70,7 +70,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: micromamba environment and package installation (Python ${{ matrix.python-version }})
+    - name: micromamba package and testing environment installation (Python ${{ matrix.python-version }}, GROMACS ${{ matrix.gromacs-version }})
       uses: mamba-org/setup-micromamba@v1
       with:
         environment-file: ci/conda-envs/test_env.yaml
@@ -94,6 +94,8 @@ jobs:
          micromamba info
          micromamba list
          cat /proc/cpuinfo || (/usr/sbin/system_profiler SPHardwareDataType; /usr/sbin/sysctl -a | grep machdep.cpu)
+         micromamba list | grep gromacs | grep ${{ matrix.gromacs-version }}
+         micromamba list | grep python | grep ${{ matrix.python-version }}
 
     - name: Install package (with no dependencies)
       run: |
