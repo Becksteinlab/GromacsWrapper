@@ -1,10 +1,16 @@
-name: test
+# it is important to install gromacs together with everything else to ensure correct dependency resolution
+name: gromacs_wrapper
 channels:
 - conda-forge
 dependencies:
-- python
-- numpy>=1.0
 - matplotlib
-- pandas>=0.17
 - numkit>=1.0
+- numpy>=1.0
+- pandas>=0.17
+- pocl
 - setuptools
+# dev tools
+- codecov
+- pytest 
+- pytest-cov 
+- pytest-pep8 

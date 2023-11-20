@@ -70,7 +70,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: micromamba environment and package installation (Python ${{ matrix.python-version }})
+    - name: micromamba package and testing environment installation (Python ${{ matrix.python-version }}, GROMACS ${{ matrix.gromacs-version }})
       uses: mamba-org/setup-micromamba@v1
       with:
         environment-file: ci/conda-envs/test_env.yaml
@@ -83,6 +83,7 @@ jobs:
         cache-environment: true
         create-args: >-
            python=${{ matrix.python-version }}.*=*_cpython
+           gromacs==${{ matrix.gromacs-version }}
 
     - name: Python version information ${{ matrix.python-version }}
       run: |
@@ -93,17 +94,8 @@ jobs:
          micromamba info
          micromamba list
          cat /proc/cpuinfo || (/usr/sbin/system_profiler SPHardwareDataType; /usr/sbin/sysctl -a | grep machdep.cpu)
-
-    - name: Install pytest and plugins
-      run: |
-         micromamba install pytest pytest-pep8 pytest-cov codecov
-
-    - name: Install GROMACS (${{ matrix.gromacs-version }})
-      # UGLY HACK/FIX (probably to issues with bioconda packages)
-      # - For 3.9, micromamba insists on using pypy 3.9 (and --py-pin does not help).
-      # We can't freeze because then it's not possible to install older GROMACS versions from bioconda. 
-      run: |
-         micromamba install 'gromacs==${{ matrix.gromacs-version }}' pocl numkit python=${{ matrix.python-version }}.*=*_cpython
+         micromamba list | grep gromacs | grep ${{ matrix.gromacs-version }}
+         micromamba list | grep python | grep ${{ matrix.python-version }}
 
     - name: Install package (with no dependencies)
       run: |
