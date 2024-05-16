@@ -34,7 +34,7 @@ def test_realpath(path):
 
 
 class TestAttributeDict(object):
-    def setUp(self):
+    def setup_method(self):
         self.d = gromacs.utilities.AttributeDict(foo="bar", baz="boing")
 
     def test_attribute_get(self):
