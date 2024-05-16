@@ -115,7 +115,7 @@ class XPM(utilities.FileUtils):
     #:
     #: .. _`printable ASCII character`: http://www.danshort.com/ASCIImap/indexhex.htm
     COLOUR = re.compile(
-        r"""\
+        r"""
             ^.*"                   # start with quotation mark
             (?P<symbol>[\x20-\x7E])# printable ASCII symbol used in the actual pixmap: 'space' to '~'
             \s+                    # white-space separated
