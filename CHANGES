@@ -2,16 +2,24 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
-2023-xx-xx      0.9.0
+2024-xx-xx      0.9.0
 orbeckst, jandom, njzjz
 
 * officially support Python 3.12 (PR #271, issue #263)
-* removed support for legacy Python (<= 3.7) (#259)
+* removed support for legacy Python (<= 3.8) (#259)
 * fixed GROMACS TOP reader not reading angle parameters from topology
   file (#261)
 * fixed Python 3.12: No module named ('pkg_resources' #263)
 * fixed AttributeDict does not support hasattr (#214)
 * fixed handle KeyboardInterrupts when using MDRunner.run() (#252)
+* internally switched to pyproject.toml (#278)
+* Pending Deprecation for the gw-*.py scripts:
+
+  The gw-*.py scripts are NOT anymore installed (it's technically
+  messy with the new system #278 and requires code refactoring). They
+  will likely be DEPRECATED. See issue #279 for more details and voice
+  your opinion if you really need these scripts.
+  
 
 
 2023-09-16      0.8.5
