@@ -11,8 +11,8 @@
 
 A primitive Python wrapper around the Gromacs_ tools. The library is
 tested with GROMACS 4.6.5, 2018.x, 2019.x, 2020.x, 2021.x, 2022.x,
-2023.x (and 5.x and 2016.x should also work). It supports Python
-3.8--3.12 on Linux and macOS.
+2023.x, 2024.x (and 5.x and 2016.x should also work). It supports
+Python 3.9--3.12 on Linux and macOS.
 
 GromacsWrapper also provides a small library (cook book) of often-used
 recipes and helper functions to set up MD simulations.
@@ -22,9 +22,9 @@ available at https://gromacswrapper.readthedocs.org for recent releases.
 
 The source code is available in the `GromacsWrapper git repository`_.
 
-Please be aware that this is **beta** software that most definitely
-contains bugs. It is *your* responsibility to ensure that you are
-running simulations with sensible parameters.
+Please be aware that this software is only minimally maintained and it
+most definitely contains bugs. It is *your* responsibility to ensure
+that you are running simulations with sensible parameters.
 
 .. _Gromacs: http://www.gromacs.org
 .. _Documentation: 
@@ -165,7 +165,7 @@ your own development::
 Questions
 =========
 
-Please ask questions in the `Issue Tracker`_ (instead of private email).
+Please ask questions in the `Discussion forum`_ (instead of private email).
 
 
 Reporting Bugs and Contributing to GromacsWrapper

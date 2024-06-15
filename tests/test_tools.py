@@ -60,7 +60,18 @@ def test_failure_ignore():
 
 class TestRelease(object):
     # add tested releases here
-    major_releases = ("4", "5", "2016", "2018", "2019", "2020", "2021", "2022", "2023")
+    major_releases = (
+        "4",
+        "5",
+        "2016",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+    )
 
     def test_release(self):
         assert gromacs.release().startswith(self.major_releases)
