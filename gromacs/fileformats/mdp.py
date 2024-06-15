@@ -58,7 +58,7 @@ class MDP(odict, utilities.FileUtils):
     COMMENT = re.compile("""\s*;\s*(?P<value>.*)""")  # eat initial ws
     # see regex in cbook.edit_mdp()
     PARAMETER = re.compile(
-        """
+        r"""
                             \s*(?P<parameter>[^=]+?)\s*=\s*  # parameter (ws-stripped), before '='
                             (?P<value>[^;]*)                # value (stop before comment=;)
                             (?P<comment>\s*;.*)?            # optional comment
