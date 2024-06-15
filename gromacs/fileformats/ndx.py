@@ -82,7 +82,7 @@ class NDX(odict, utilities.FileUtils):
     default_extension = "ndx"
 
     # match:  [ index_groupname ]
-    SECTION = re.compile("""\s*\[\s*(?P<name>\S.*\S)\s*\]\s*""")
+    SECTION = re.compile(r"""\s*\[\s*(?P<name>\S.*\S)\s*\]\s*""")
 
     #: standard ndx file format: 15 columns
     ncol = 15
