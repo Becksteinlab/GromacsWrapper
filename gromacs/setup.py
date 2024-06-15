@@ -182,7 +182,7 @@ def topology(
     posres="posres.itp",
     ff="oplsaa",
     water="tip4p",
-    **pdb2gmx_args
+    **pdb2gmx_args,
 ):
     """Build Gromacs topology files from pdb.
 
@@ -407,7 +407,7 @@ def solvate_sol(
     solvent_name="SOL",
     with_membrane=False,
     dirname="solvate",
-    **kwargs
+    **kwargs,
 ):
     structure = realpath(struct)
     topology = realpath(top)
@@ -511,7 +511,7 @@ def solvate_ion(
     ndx="main.ndx",
     mainselection='"Protein"',
     dirname="solvate",
-    **kwargs
+    **kwargs,
 ):
     structure = realpath(struct)
     topology = realpath(top)
@@ -665,7 +665,7 @@ def solvate(
     ndx="main.ndx",
     mainselection='"Protein"',
     dirname="solvate",
-    **kwargs
+    **kwargs,
 ):
     """Put protein into box, add water, add counter-ions.
 
@@ -750,7 +750,7 @@ def solvate(
         solvent_name=solvent_name,
         with_membrane=with_membrane,
         dirname=dirname,
-        **kwargs
+        **kwargs,
     )
 
     ion = solvate_ion(
@@ -763,7 +763,7 @@ def solvate(
         ndx=ndx,
         mainselection=mainselection,
         dirname=dirname,
-        **kwargs
+        **kwargs,
     )
     return ion
 
@@ -788,7 +788,7 @@ def energy_minimize(
     deffnm="em",
     mdrunner=None,
     mdrun_args=None,
-    **kwargs
+    **kwargs,
 ):
     """Energy minimize the system.
 
@@ -1023,7 +1023,7 @@ def _setup_MD(
     walltime=1 / 3.0,
     dt=0.002,
     runtime=1e3,
-    **mdp_kwargs
+    **mdp_kwargs,
 ):
     """Generic function to set up a ``mdrun`` MD simulation.
 

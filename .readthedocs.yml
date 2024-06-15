@@ -15,12 +15,12 @@ sphinx:
 # Optionally build your docs in additional formats such as PDF and ePub
 formats: all
 
-#### Ignored when using conda
-# python:
-#     install:
-#       - method: pip
-#         path: .
-#       - requirements: ci/readthedocs/requirements.txt
+
+# install package
+python:
+   install:
+      - method: pip
+        path: .
 
 conda:
     environment: ci/readthedocs/environment.yml

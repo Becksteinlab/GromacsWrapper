@@ -26,7 +26,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
         gromacs-version: ["2023.1"]
         # Test other GROMACS versions selectively on a recent Python.
         # On macOS only test one GROMACS version and two Python versions
@@ -50,25 +50,33 @@ jobs:
           - os: ubuntu-latest
             python-version: "3.11"
             gromacs-version: "2022.4"
-          # explicitly include a few macOS runners: MUST use 2018.6:
-          # (conda-forge GROMACS >= 2021 is compiled to use rdtscp CPU instruction but these
-          # are not available in the macOS GitHub runner so we need to use a different GROMACS
-          # version. 2018.5 from bioconda works. (2021.5 worked previously but not anymore.)
-          # Locally 2023.1 was successfully tested on Intel macOS 13.5.)
+          - os: ubuntu-latest
+            python-version: "3.11"
+            gromacs-version: "2023.4"       
+          - os: ubuntu-latest
+            python-version: "3.11"
+            gromacs-version: "2024.2"
+          # explicitly include a few macOS runners; finding a version that works
+          # on the GH runners is tricky (eg some are compiled for rdtscp CPU instructions
+          # that are not available); 2018.6 (bioconda) worked for a while, but then stopped
+          # being resolved. 2024.2 (conda-forge) runs at the moment
           - os: macOS-latest
             python-version: "3.11"
-            gromacs-version: "2018.6"
+            gromacs-version: "2024.2"
           - os: macOS-latest
             python-version: "3.12"
-            gromacs-version: "2018.6"
-            
+            gromacs-version: "2024.2"
+
 
     env:
       MPLBACKEND: agg
         
 
     steps:
-    - uses: actions/checkout@v3
+    - name: git checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-tags: true
 
     - name: micromamba package and testing environment installation (Python ${{ matrix.python-version }}, GROMACS ${{ matrix.gromacs-version }})
       uses: mamba-org/setup-micromamba@v1

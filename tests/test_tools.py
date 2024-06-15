@@ -3,8 +3,6 @@
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
 
-from __future__ import division, absolute_import, print_function
-
 import pytest
 
 import gromacs
@@ -62,7 +60,18 @@ def test_failure_ignore():
 
 class TestRelease(object):
     # add tested releases here
-    major_releases = ("4", "5", "2016", "2018", "2019", "2020", "2021", "2022", "2023")
+    major_releases = (
+        "4",
+        "5",
+        "2016",
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+    )
 
     def test_release(self):
         assert gromacs.release().startswith(self.major_releases)

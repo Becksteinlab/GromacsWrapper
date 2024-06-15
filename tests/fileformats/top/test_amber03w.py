@@ -32,7 +32,7 @@ class TestAmber03w(TopologyTest):
     ]
 
     @pytest.mark.xfail(
-        gromacs.release().startswith(("2022", "2023")),
+        gromacs.release().startswith(("2022", "2023", "2024")),
         reason="issue #236 https://github.com/Becksteinlab/GromacsWrapper/issues/236",
     )
     def test_mdrun(self, tmpdir, low_performance):

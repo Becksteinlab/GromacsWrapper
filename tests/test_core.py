@@ -4,10 +4,6 @@
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
 
-from __future__ import division, absolute_import, print_function
-
-import six
-
 import os.path
 import pytest
 
@@ -73,10 +69,7 @@ class TestCommand(object):
     def test_Popen_with_input(self, command, inp):
         po = command.Popen(stdout=False, stderr=False, input=inp)
         inp_string = "\n".join(gromacs.utilities.asiterable(inp)) + "\n"
-        if six.PY2:
-            assert po.input == inp_string.encode("utf-8")
-        else:
-            assert po.input == inp_string
+        assert po.input == inp_string
 
     def test_help_short(self, command, capsys):
         command.help()

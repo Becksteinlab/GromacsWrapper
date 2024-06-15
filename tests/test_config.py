@@ -3,17 +3,12 @@
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
 
-from __future__ import division, absolute_import, print_function
-
 import contextlib
 import os
 import errno
 import sys
 
-if sys.version_info[0] < 3:
-    from ConfigParser import NoOptionError, NoSectionError
-else:
-    from configparser import NoOptionError, NoSectionError
+from configparser import NoOptionError, NoSectionError
 
 import pytest
 

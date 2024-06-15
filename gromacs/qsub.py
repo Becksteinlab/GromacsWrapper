@@ -331,7 +331,7 @@ def generate_submit_scripts(
     jobarray_string=None,
     startdir=None,
     npme=None,
-    **kwargs
+    **kwargs,
 ):
     """Write scripts for queuing systems.
 

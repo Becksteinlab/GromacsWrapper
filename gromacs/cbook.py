@@ -358,7 +358,7 @@ def trj_fitandcenter(xy=False, **kwargs):
             boxcenter="tric",
             pbc="mol",
             input=inpcompact,
-            **kwargs
+            **kwargs,
         )
         # explicitly set pbc="none" for the fitting stage (anything else will produce rubbish and/or
         # complaints from Gromacs)
@@ -375,7 +375,7 @@ def trj_fitandcenter(xy=False, **kwargs):
                 fit=fitmode,
                 center=True,
                 input=inpfit,
-                **kwargs
+                **kwargs,
             )
         else:
             # make sure that we fit EXACTLY as the user wants
@@ -387,7 +387,7 @@ def trj_fitandcenter(xy=False, **kwargs):
                 n=ndx,
                 fit=fitmode,
                 input=inpfit,
-                **kwargs
+                **kwargs,
             )
     finally:
         utilities.unlink_gmx(tmptrj)
@@ -2081,7 +2081,7 @@ class Transformer(utilities.FileUtils):
         compact=False,
         resn="SOL",
         groupname="notwater",
-        **kwargs
+        **kwargs,
     ):
         """Write xtc and tpr with water (by resname) removed.
 

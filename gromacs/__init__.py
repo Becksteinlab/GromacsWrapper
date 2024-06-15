@@ -193,7 +193,8 @@ from . import _version
 #: the commit ID encoded in the trailing string.
 #:
 #: .. _`semantic versioning`: https://semver.org/
-__version__ = _version.get_versions()["version"]
+__version__ = _version.__version__
+del _version
 
 from . import fileformats
 from .exceptions import (

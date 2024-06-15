@@ -3,8 +3,6 @@
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
 
-from __future__ import division, absolute_import, print_function
-
 import os.path
 import re
 
