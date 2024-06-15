@@ -37,7 +37,6 @@ that you are running simulations with sensible parameters.
 .. |cov| image:: https://codecov.io/gh/Becksteinlab/GromacsWrapper/badge.svg
    :target: https://codecov.io/gh/Becksteinlab/GromacsWrapper
    :alt: Code Coverage
-   :scale: 100%
 .. |zenodo| image:: https://zenodo.org/badge/13219/Becksteinlab/GromacsWrapper.svg
    :target: https://zenodo.org/badge/latestdoi/13219/Becksteinlab/GromacsWrapper
    :alt: Latest release on zenodo (with DOI)
