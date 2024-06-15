@@ -3,13 +3,11 @@
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
 
-from __future__ import division, absolute_import, print_function
-
 import os.path
 import pytest
-from six.moves import cPickle as pickle
-from six.moves import StringIO
-from six.moves.collections_abc import Iterable
+import pickle
+from io import StringIO
+from collections.abc import Iterable
 
 import numpy as np
 
@@ -34,40 +32,42 @@ def test_realpath(path):
 
 
 class TestAttributeDict(object):
-    def setup(self):
-        self.d = gromacs.utilities.AttributeDict(foo="bar", baz="boing")
 
-    def test_attribute_get(self):
-        assert self.d.foo == "bar"
+    @pytest.fixture
+    def d(self):
+        return gromacs.utilities.AttributeDict(foo="bar", baz="boing")
 
-    def test_dict_get(self):
-        assert self.d["foo"] == "bar"
-        assert self.d.get("foo") == "bar"
+    def test_attribute_get(self, d):
+        assert d.foo == "bar"
 
-    def test_attribute_set(self):
-        self.d.gargl = "blaster"
-        assert self.d.gargl == "blaster"
+    def test_dict_get(self, d):
+        assert d["foo"] == "bar"
+        assert d.get("foo") == "bar"
 
-    def test_dict_set(self):
-        self.d["gargl"] = "blaster"
-        assert self.d["gargl"] == "blaster"
+    def test_attribute_set(self, d):
+        d.gargl = "blaster"
+        assert d.gargl == "blaster"
 
-    def test_dict_hasattr(self):
-        assert hasattr(self.d, "foo")
-        assert hasattr(self.d, "baz")
-        assert not hasattr(self.d, "bar")
+    def test_dict_set(self, d):
+        d["gargl"] = "blaster"
+        assert d["gargl"] == "blaster"
 
-    def test_pickle(self):
+    def test_dict_hasattr(self, d):
+        assert hasattr(d, "foo")
+        assert hasattr(d, "baz")
+        assert not hasattr(d, "bar")
+
+    def test_pickle(self, d):
         try:
-            dump = pickle.dumps(self.d, pickle.HIGHEST_PROTOCOL)
+            dump = pickle.dumps(d, pickle.HIGHEST_PROTOCOL)
         except Exception as err:
             raise AssertionError("serializing failed: {}".format(err))
         try:
-            d = pickle.loads(dump)
+            d_new = pickle.loads(dump)
         except Exception as err:
             raise AssertionError("de-serializing failed: {0}".format(str(err)))
-        assert set(d.keys()) == set(self.d.keys())
-        assert set(d.values()) == set(self.d.values())
+        assert set(d_new.keys()) == set(d.keys())
+        assert set(d_new.values()) == set(d.values())
 
 
 @pytest.fixture(

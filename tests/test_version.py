@@ -13,8 +13,8 @@ def test_version():
     release = gromacs.__version__
     assert isinstance(release, str)
 
+
 def test_version_pep440_like():
     release = gromacs.__version__
     match = re.match(r"\d+\.\d+\.\d+", release)
     assert match, f"Version {release} does not look like MAJOR.MINOR.PATCH..."
-

@@ -3,8 +3,6 @@
 # Released under the GNU Public License 3 (or higher, your choice)
 # See the file COPYING for details.
 
-from __future__ import division, absolute_import, print_function
-
 import os.path
 import pytest
 
@@ -68,7 +66,7 @@ def energy_minimize(solvate, low_performance):
             integrator="steep",
             emtol=5000,
             maxwarn=1,
-            **solvate_args
+            **solvate_args,
         )
     return TMPDIR, em_args
 
