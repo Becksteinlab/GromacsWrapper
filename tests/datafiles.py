@@ -16,9 +16,14 @@ Basically, wheneever you need the path to the file, wrap the filename in ``dataf
 """
 
 
+import sys
 import os.path
-from pkg_resources import resource_filename
+from importlib import resources
 
 
 def datafile(name):
-    return resource_filename(__name__, os.path.join("data", name))
+    return (
+        resources.files(sys.modules[__name__].__package__)
+        .joinpath("data")
+        .joinpath(name)
+    )

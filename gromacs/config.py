@@ -232,8 +232,7 @@ import subprocess
 import sys
 
 from configparser import ConfigParser
-
-from pkg_resources import resource_filename, resource_listdir
+from importlib import resources
 
 from . import utilities
 
@@ -307,25 +306,28 @@ path = [os.path.curdir, qscriptdir, templatesdir]
 
 
 def _generate_template_dict(dirname):
-    """Generate a list of included files *and* extract them to a temp space.
+    """Generate a list of included files *and* make them available.
 
-    Templates have to be extracted from the egg because they are used
-    by external code. All template filenames are stored in
-    :data:`config.templates`.
+    Template files are stored inside the package. They are made available as
+    :class:` importlib.resources.abc.Traversable` object with
+    :mod:`pathlib.Path`-like methods. They can normally be read with the usual
+    :func:`open` function but if a real file needs to be present, use
+    :func:`importlib.resources.as_file`.
+
+    All template entries are stored in :data:`config.templates`.
+
+    .. SeeAlso:: importlib.resources
+
     """
+    # for Python >= 3.12:
+    # replace `sys.modules[__name__].__package__` with `__name__`
     return dict(
-        (resource_basename(fn), resource_filename(__name__, dirname + "/" + fn))
-        for fn in resource_listdir(__name__, dirname)
-        if not fn.endswith("~")
+        (entry.name, entry)
+        for entry in resources.files(sys.modules[__name__].__package__)
+        .joinpath(dirname)
+        .iterdir()
+        if not entry.name.endswith(("~", "__pycache__", "__init__.py"))
     )
-
-
-def resource_basename(resource):
-    """Last component of a resource (which always uses '/' as sep)."""
-    if resource.endswith("/"):
-        resource = resource[:-1]
-    parts = resource.split("/")
-    return parts[-1]
 
 
 templates = _generate_template_dict("templates")
@@ -334,10 +336,10 @@ and queuing system scripts. They are provided as a convenience and
 examples but **WITHOUT ANY GUARANTEE FOR CORRECTNESS OR SUITABILITY FOR
 ANY PURPOSE**.
 
-All template filenames are stored in
-:data:`gromacs.config.templates`. Templates have to be extracted from
-the GromacsWrapper python egg file because they are used by external
-code: find the actual file locations from this variable.
+All templates are stored in :data:`gromacs.config.templates` as :class:`
+importlib.resources.abc.Traversable` objects with :mod:`pathlib.Path`-like
+methods. They can normally be read with the usual :func:`open` function but if
+a real file needs to be present, use :func:`importlib.resources.as_file`.
 
 **Gromacs mdp templates**
 
@@ -357,6 +359,7 @@ code: find the actual file locations from this variable.
    The queing system scripts are highly specific and you will need to add your
    own into :data:`gromacs.config.qscriptdir`.
    See :mod:`gromacs.qsub` for the format and how these files are processed.
+
 """
 
 #: The default template for SGE/PBS run scripts.
