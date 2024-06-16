@@ -434,8 +434,8 @@ class GromacsCommand(Command):
 
     command_name = None
     driver = None
-    doc_pattern = """.*?(?P<DOCS>DESCRIPTION.*)"""
-    gmxfatal_pattern = """----+\n                   # ---- decorator line
+    doc_pattern = r""".*?(?P<DOCS>DESCRIPTION.*)"""
+    gmxfatal_pattern = r"""----+\n                  # ---- decorator line
             \s*Program\s+(?P<program_name>\w+),     #  Program name,
               \s+VERSION\s+(?P<version>[\w.]+)\s*\n #    VERSION 4.0.5
             (?P<message>.*?)\n                      # full message, multiple lines
