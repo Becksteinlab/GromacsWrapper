@@ -2,6 +2,12 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
+2024-??-??      0.9.1
+
+* fixed reporting of failures of GromacsCommand and DeprecationWarnings for use
+  of \s in regular expression strings (#285)
+
+
 2024-06-15      0.9.0
 orbeckst, jandom, njzjz
 
