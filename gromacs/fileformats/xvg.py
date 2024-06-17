@@ -605,7 +605,7 @@ class XVG(utilities.FileUtils):
 
     def _get_colors(self, color, columns):
         try:
-            cmap = matplotlib.cm.get_cmap(color)
+            cmap = matplotlib.colormaps[color]
             colors = cmap(
                 matplotlib.colors.Normalize()(
                     numpy.arange(len(columns[1:]), dtype=float)
