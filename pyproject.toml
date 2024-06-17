@@ -84,6 +84,13 @@ rmprefix = "release-"
 file = "gromacs/_version.py"
 
 
-
 [tool.black]
 extend-exclude = "tests/(test_core|fileformats/test_convert)\\.py"
+
+
+[tool.pytest.ini_options]
+filterwarnings = [
+	       "ignore::gromacs.AutoCorrectionWarning",
+	       "ignore::gromacs.LowAccuracyWarning",
+	       "ignore::numkit.LowAccuracyWarning",
+	       ]

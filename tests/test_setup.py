@@ -61,13 +61,17 @@ def energy_minimize(solvate, low_performance):
     TMPDIR, solvate_args = solvate
     nt = 2 if low_performance else 0
     with TMPDIR.as_cwd():
-        em_args = gromacs.setup.energy_minimize(
-            mdrun_args={"nt": nt},
-            integrator="steep",
-            emtol=5000,
-            maxwarn=1,
-            **solvate_args,
-        )
+        with pytest.warns(
+            gromacs.UsageWarning,
+            match="Unprocessed mdp option are interpreted as options for grompp",
+        ):
+            em_args = gromacs.setup.energy_minimize(
+                mdrun_args={"nt": nt},
+                integrator="steep",
+                emtol=5000,
+                maxwarn=1,
+                **solvate_args,
+            )
     return TMPDIR, em_args
 
 
@@ -106,18 +110,22 @@ def test_energy_minimize_custom_mdp(
     TMPDIR, solvate_args = solvate
     nt = 2 if low_performance else 0
     with TMPDIR.as_cwd():
-        try:
-            em_args = gromacs.setup.energy_minimize(
-                mdrun_args={"nt": nt}, mdp=mdp, emtol=5000, **solvate_args
-            )
-        except gromacs.exceptions.GromacsError as err:
-            # sometimes the em does not converge at all, e.g. 5.02988e+04 on atom 3277;
-            # (happens on Travis Linux with Gromacs 4.6.5 but not locally or on Travis OSX) so we
-            # re-run with a ridiculous tolerance so that we can at least test that the whole
-            # function can run to completion
-            em_args = gromacs.setup.energy_minimize(
-                mdrun_args={"nt": nt}, mdp=mdp, emtol=6e4, **solvate_args
-            )
+        with pytest.warns(
+            gromacs.UsageWarning,
+            match="Unprocessed mdp option are interpreted as options for grompp",
+        ):
+            try:
+                em_args = gromacs.setup.energy_minimize(
+                    mdrun_args={"nt": nt}, mdp=mdp, emtol=5000, **solvate_args
+                )
+            except gromacs.exceptions.GromacsError as err:
+                # sometimes the em does not converge at all, e.g. 5.02988e+04 on atom 3277;
+                # (happens on Travis Linux with Gromacs 4.6.5 but not locally or on Travis OSX) so we
+                # re-run with a ridiculous tolerance so that we can at least test that the whole
+                # function can run to completion
+                em_args = gromacs.setup.energy_minimize(
+                    mdrun_args={"nt": nt}, mdp=mdp, emtol=6e4, **solvate_args
+                )
     assert os.path.exists(em_args["struct"])
     assert os.path.exists(em_args["top"])
     assert em_args["mainselection"] == '"Protein"'
