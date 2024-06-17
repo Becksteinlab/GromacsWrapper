@@ -34,7 +34,7 @@ that you are running simulations with sensible parameters.
 .. |build| image:: https://github.com/Becksteinlab/GromacsWrapper/actions/workflows/ci.yaml/badge.svg?branch=main
    :target: https://github.com/Becksteinlab/GromacsWrapper/actions/workflows/ci.yaml
    :alt: Build Status	     
-.. |cov| image:: https://codecov.io/gh/Becksteinlab/GromacsWrapper/badge.svg
+.. |cov| image:: https://codecov.io/gh/Becksteinlab/GromacsWrapper/branch/main/graph/badge.svg?token=LvbLZ49wxN
    :target: https://codecov.io/gh/Becksteinlab/GromacsWrapper
    :alt: Code Coverage
 .. |zenodo| image:: https://zenodo.org/badge/13219/Becksteinlab/GromacsWrapper.svg
