@@ -626,7 +626,7 @@ class Release(object):
     """
 
     gromacs_version = re.compile(
-        "^G[rR][oO][mM][aA][cC][sS] version:" "\s*(VERSION)?\s*(?P<version>.+)$"
+        r"^G[rR][oO][mM][aA][cC][sS] version:" "\s*(VERSION)?\s*(?P<version>.+)$"
     )
 
     def __init__(self):

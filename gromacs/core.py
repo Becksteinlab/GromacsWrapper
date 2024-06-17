@@ -434,13 +434,14 @@ class GromacsCommand(Command):
 
     command_name = None
     driver = None
-    doc_pattern = """.*?(?P<DOCS>DESCRIPTION.*)"""
-    gmxfatal_pattern = """----+\n                   # ---- decorator line
-            \s*Program\s+(?P<program_name>\w+),     #  Program name,
-              \s+VERSION\s+(?P<version>[\w.]+)\s*\n #    VERSION 4.0.5
-            (?P<message>.*?)\n                      # full message, multiple lines
-            \s*                                     # empty line (?)
-            ----+\n                                 # ---- decorator line
+    doc_pattern = r""".*?(?P<DOCS>DESCRIPTION.*)"""
+    # gmxfatal_pattern is used with re.X | re.DOTALL so no need to match \n
+    gmxfatal_pattern = r"""----+\s*                       # ---- decorator line
+            \s*Program:?\s+(?P<program_name>[^,]+),\s*    # Program[:] gmx grompp
+            \s+(VERSION|version)\s+(?P<version>[^\s]+)\s* # VERSION 4.0.5, version 2023.1-macports
+            (?P<message>.*?)                              # full message, multiple lines
+            \s*                                           # empty line (?)
+            ----+                                         # ---- decorator line
             """
     # matches gmx_fatal() output
     # -------------------------------------------------------

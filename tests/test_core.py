@@ -81,3 +81,25 @@ class TestCommand(object):
         captured = capsys.readouterr()
         assert command.command_name in captured.out
         assert gromacs.core.Command.__call__.__doc__ in captured.out
+
+
+class TestGromacsCommand:
+    def test_check_failure_raise(self):
+        assert gromacs.grompp.failuremode == "raise"
+        with pytest.raises(gromacs.GromacsError,
+                           match="Gromacs tool failed.*\nCommand invocation:.*grompp"):
+            gromacs.grompp()
+
+    def test_check_failure_warn(self):
+        grompp = gromacs.tools.Grompp(failure="warn")
+        assert grompp.failuremode == "warn"
+        with pytest.warns(gromacs.GromacsFailureWarning,
+                           match="Error code"):
+            rc, stout, stderr = grompp()
+        assert rc == 1 or rc == 255   # almost all GMX or GMX 4.6.5
+
+    def test_check_failure_none(self):
+        grompp = gromacs.tools.Grompp(failure=None)
+        assert grompp.failuremode == None
+        rc, stout, stderr = grompp()
+        assert rc == 1 or rc == 255   # almost all GMX or GMX 4.6.5
