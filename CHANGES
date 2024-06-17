@@ -3,7 +3,13 @@
 ==============================
 
 2024-??-??      0.9.1
+orbeckst
 
+* templates in `config.templates` are now stored as
+  `importlib.resources.abc.Traversable` (PosixPath-like) objects instead of
+  strings of paths to files in the file system because we switched from
+  pkg_resources to importlib.resources for managing access to included files
+  (#282)
 * fixed reporting of failures of GromacsCommand and DeprecationWarnings for use
   of \s in regular expression strings (#285)
 
