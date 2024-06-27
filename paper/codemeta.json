@@ -1,0 +1,65 @@
+{
+  "@context": "https://raw.githubusercontent.com/codemeta/codemeta/master/codemeta.jsonld",
+  "@type": "Code",
+  "author": [
+    {
+      "@id": "http://orcid.org/0000-0003-1340-0831",
+      "@type": "Person",
+      "email": "oliver.beckstein@asu.edu",
+      "name": "Oliver Beckstein",
+      "affiliation": "Arizona State University"
+    },
+    {
+      "@id": "",
+      "@type": "Person",
+      "email": "",
+      "name": "Pedro Lacerda",
+      "affiliation": ""
+    },
+    {
+      "@id": "https://orcid.org/0000-0002-3241-1846",
+      "@type": "Person",
+      "email": "richardjgowers@gmail.com",
+      "name": "Richard J. Gowers",
+      "affiliation": "University of New Hampshire"
+    },
+    {
+      "@id": "",
+      "@type": "Person",
+      "email": "ikenney@asu.edu",
+      "name": "Ian Kenney",
+      "affiliation": "Arizona State University"
+    },
+    {
+      "@id": "",
+      "@type": "Person",
+      "email": "",
+      "name": "Andy Somogyi",
+      "affiliation": ""
+    },
+    {
+      "@id": "",
+      "@type": "Person",
+      "email": "",
+      "name": "Philip Loche",
+      "affiliation": ""
+    },
+    {
+      "@id": "http://orcid.org/0000-0002-6647-3965",
+      "@type": "Person",
+      "email": "andrew.white@rochester.edu",
+      "name": "Andrew D White",
+      "affiliation": "University of Rochester"
+    }
+  ],
+  "identifier": "10.5281/zenodo.17901",
+  "codeRepository": "https://github.com/Becksteinlab/GromacsWrapper",
+  "datePublished": "2018-08-17",
+  "dateModified": "2018-08-17",
+  "dateCreated": "2018-08-17",
+  "description": "GromacsWrapper is a Python package that wraps system calls to the Gromacs molecular dynamics tools into thin classes and provides a Python-like API. This allows for fairly seamless integration of the gromacs tools (v4.6.x, v5.x, 2016.x, 2018.x, all with the same Python code) into python scripts. ",
+  "keywords": "python, molecular-dynamics, gromacs",
+  "license": "GPL v3.0",
+  "title": "GromacsWrapper",
+  "version": "v0.7.0"
+}
