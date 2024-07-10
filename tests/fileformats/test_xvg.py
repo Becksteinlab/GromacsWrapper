@@ -87,7 +87,7 @@ class TestXVG_array(object):
 
 def test_break_array():
     angles = np.pi * np.array([-1.9, -1, -1, -0.5, 0, 0.9, 1.5, 2, -2, -1.4])
-    expected = np.pi * np.array([-1.9, -1, -1, -0.5, 0, 0.9, 1.5, 2, np.NAN, -2, -1.4])
+    expected = np.pi * np.array([-1.9, -1, -1, -0.5, 0, 0.9, 1.5, 2, np.nan, -2, -1.4])
     other = np.ones_like(angles)
     ma, mother = gromacs.fileformats.xvg.break_array(
         angles, threshold=np.pi, other=other
