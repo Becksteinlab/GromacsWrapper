@@ -3,7 +3,7 @@
 ==============================
 
 2024-??-??      0.9.1
-orbeckst
+orbeckst, hsk17
 
 * templates in `config.templates` are now stored as
   `importlib.resources.abc.Traversable` (PosixPath-like) objects instead of
