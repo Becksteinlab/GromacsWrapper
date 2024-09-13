@@ -431,9 +431,9 @@ def generate_submit_scripts(
                 [
                     ("^ *DEFFNM=", "(?<==)(.*)", deffnm),
                     (
-                       "^#.*(-N|job_name)",
-                       r"((?<=-N\s)|(?<=job_name\s))\s*\w+",
-                       jobname,
+                        "^#.*(-N|job_name)",
+                        r"((?<=-N\s)|(?<=job_name\s))\s*\w+",
+                        jobname,
                     ),
                     (
                         "^#.*(-A|account_no)",
