@@ -430,7 +430,11 @@ def generate_submit_scripts(
                 template,
                 [
                     ("^ *DEFFNM=", "(?<==)(.*)", deffnm),
-                    ("^#.*(-N|job_name)", r"((?<=-N\s)|(?<=job_name\s))\s*\w+", jobname),
+                    (
+                       "^#.*(-N|job_name)",
+                       r"((?<=-N\s)|(?<=job_name\s))\s*\w+",
+                       jobname,
+                    ),
                     (
                         "^#.*(-A|account_no)",
                         r"((?<=-A\s)|(?<=account_no\s))\s*\w+",
