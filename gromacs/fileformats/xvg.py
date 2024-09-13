@@ -214,7 +214,7 @@ import gromacs.collections
 class XVG(utilities.FileUtils):
     """Class that represents the numerical data in a grace xvg file.
 
-    All data must be numerical. :const:`NAN` and :const:`INF` values are
+    All data must be numerical. :const:`nan` and :const:`inf` values are
     supported via python's :func:`float` builtin function.
 
     The :attr:`~XVG.array` attribute can be used to access the the
@@ -1326,12 +1326,12 @@ def break_array(a, threshold=numpy.pi, other=None):
     mask = numpy.zeros_like(b, dtype=bool)
     mask[b_breaks] = True
     b[~mask] = a
-    b[mask] = numpy.NAN
+    b[mask] = numpy.nan
 
     if other is not None:
         c = numpy.empty_like(b)
         c[~mask] = other
-        c[mask] = numpy.NAN
+        c[mask] = numpy.nan
         ma_c = numpy.ma.array(c, mask=mask)
     else:
         ma_c = None
