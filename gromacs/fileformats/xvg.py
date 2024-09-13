@@ -214,7 +214,7 @@ import gromacs.collections
 class XVG(utilities.FileUtils):
     """Class that represents the numerical data in a grace xvg file.
 
-    All data must be numerical. :const:`nan` and :const:`INF` values are
+    All data must be numerical. :const:`nan` and :const:`inf` values are
     supported via python's :func:`float` builtin function.
 
     The :attr:`~XVG.array` attribute can be used to access the the
