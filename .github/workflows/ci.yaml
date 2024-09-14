@@ -102,21 +102,33 @@ jobs:
          micromamba info
          micromamba list
          cat /proc/cpuinfo || (/usr/sbin/system_profiler SPHardwareDataType; /usr/sbin/sysctl -a | grep machdep.cpu)
-         micromamba list | grep gromacs | grep ${{ matrix.gromacs-version }}
          micromamba list | grep python | grep ${{ matrix.python-version }}
 
     - name: Install package (with no dependencies)
       run: |
-        python -m pip install --no-deps .
+        python -m pip install --no-deps -e .
 
     - name: Run tests
+      run: >-
+        pytest -v
+        --disable-pytest-warnings
+        --durations=20
+        --low-performance
+        --cov-config=pyproject.toml
+        --cov="./gromacs"
+        --cov-report=xml
+        --cov-report=term
+        --color=yes
+        ./tests
+
+    - name: Coverage report
       run: |
-        pytest -v --disable-pytest-warnings --durations=20 --low-performance --cov=gromacs --cov-report=xml --color=yes ./tests
+        coverage report --show-missing
 
     - name: Codecov
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v5
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}
-        file: ./coverage.xml
+        files: ./coverage.xml
         fail_ci_if_error: false

@@ -89,6 +89,23 @@ file = "gromacs/_version.py"
 extend-exclude = "tests/(test_core|fileformats/test_convert)\\.py"
 
 
+[tool.coverage.run]
+branch = true
+omit = [
+    "doc/sphinx/source/conf.py"
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "def _repr_html_",
+    "def __str__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:"
+]
+
 [tool.pytest.ini_options]
 filterwarnings = [
 	       "ignore::gromacs.AutoCorrectionWarning",
