@@ -10,7 +10,8 @@ dependencies:
 - pocl
 - setuptools
 # dev tools
-- codecov
 - pytest 
 - pytest-cov 
-- pytest-pep8 
+- pytest-pep8
+- coverage
+- codecov

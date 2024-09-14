@@ -9,6 +9,7 @@ build/
 .idea/
 .cache/
 .coverage
+coverage.xml
 .pytest_cache/
 dist
 gromacs.log
