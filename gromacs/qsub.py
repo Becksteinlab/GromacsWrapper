@@ -405,13 +405,13 @@ def generate_submit_scripts(
                 template,
                 [
                     ("^ *DEFFNM=", "(?<==)(.*)", deffnm),
-                    ("^#.*(-J)", "((?<=-J\s))\s*\w+", jobname),
+                    ("^#.*(-J)", r"((?<=-J\s))\s*\w+", jobname),
                     (
                         "^#.*(-A|account_no)",
-                        "((?<=-A\s)|(?<=account_no\s))\s*\w+",
+                        r"((?<=-A\s)|(?<=account_no\s))\s*\w+",
                         budget,
                     ),
-                    ("^#.*(-t)", "(?<=-t\s)(\d+:\d+:\d+)", walltime),
+                    ("^#.*(-t)", r"(?<=-t\s)(\d+:\d+:\d+)", walltime),
                     ("^ *WALL_HOURS=", "(?<==)(.*)", wall_hours),
                     ("^ *STARTDIR=", "(?<==)(.*)", startdir),
                     ("^ *NPME=", "(?<==)(.*)", npme),
@@ -430,15 +430,19 @@ def generate_submit_scripts(
                 template,
                 [
                     ("^ *DEFFNM=", "(?<==)(.*)", deffnm),
-                    ("^#.*(-N|job_name)", "((?<=-N\s)|(?<=job_name\s))\s*\w+", jobname),
+                    (
+                        "^#.*(-N|job_name)",
+                        r"((?<=-N\s)|(?<=job_name\s))\s*\w+",
+                        jobname,
+                    ),
                     (
                         "^#.*(-A|account_no)",
-                        "((?<=-A\s)|(?<=account_no\s))\s*\w+",
+                        r"((?<=-A\s)|(?<=account_no\s))\s*\w+",
                         budget,
                     ),
                     (
                         "^#.*(-l walltime|wall_clock_limit)",
-                        "(?<==)(\d+:\d+:\d+)",
+                        r"(?<==)(\d+:\d+:\d+)",
                         walltime,
                     ),
                     ("^ *WALL_HOURS=", "(?<==)(.*)", wall_hours),
