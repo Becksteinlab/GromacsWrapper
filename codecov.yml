@@ -1,0 +1,22 @@
+codecov:
+  branch: main
+
+coverage:
+  status:
+    project:
+      default: false
+      tests:
+        paths: ["tests/"]
+        target: 100%
+      package:
+        paths: ["gromacs/"]
+    patch:
+      default: false
+      test:
+        paths: ["tests/"]
+        target: 100%
+        threshold: 0%
+      package: 
+        paths: ["gromacs/"]
+        target: auto
+        threshold: 0%
