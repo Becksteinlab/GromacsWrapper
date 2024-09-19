@@ -3,11 +3,7 @@ branch = True
 source = gromacs
 
 omit =
-    setup.py
     doc/sphinx/source/conf.py
-    */tests/*
-    # omit the versioneer-installed _version.py
-    */gromacs/_version.py
     
 [report]
 exclude_lines =
