@@ -1,0 +1,55 @@
+name: Build and upload to PyPi
+
+on:
+  push:
+    tags:
+      - "*"
+  release:
+    types:
+      - published
+
+jobs:
+  test_pypi_push:
+    environment:
+      name: TestPyPi
+      url: https://test.pypi.org/p/GromacsWrapper
+    permissions:
+      id-token: write
+    if: |
+      github.repository == 'Becksteinlab/GromacsWrapper' &&
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/'))
+    name: "TestPyPi: Build, upload, and test pure Python wheels"
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: testpypi_deploy
+        uses: MDAnalysis/pypi-deployment@main
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        with:
+          test_submission: true
+          package_name: 'GromacsWrapper'
+          module_name: 'gromacs'
+
+  pypi_push:
+    environment:
+      name: PyPi
+      url: https://pypi.org/p/GromacsWrapper
+    permissions:
+      id-token: write
+    if: |
+      github.repository == 'Becksteinlab/GromacsWrapper' &&
+      (github.event_name == 'release' && github.event.action == 'published')
+    name: "PyPi: Build, upload, and test pure Python wheels"
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: pypi_deploy
+        uses: MDAnalysis/pypi-deployment@main
+        if: github.event_name == 'release' && github.event.action == 'published'
+        with:
+          package_name: 'GromacsWrapper'
+          module_name: 'gromacs'
