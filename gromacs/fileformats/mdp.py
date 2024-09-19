@@ -55,7 +55,7 @@ class MDP(odict, utilities.FileUtils):
     default_extension = "mdp"
     logger = logging.getLogger("gromacs.formats.MDP")
 
-    COMMENT = re.compile("""\s*;\s*(?P<value>.*)""")  # eat initial ws
+    COMMENT = re.compile(r"""\s*;\s*(?P<value>.*)""")  # eat initial ws
     # see regex in cbook.edit_mdp()
     PARAMETER = re.compile(
         r"""
