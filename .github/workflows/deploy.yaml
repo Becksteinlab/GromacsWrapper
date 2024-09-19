@@ -18,7 +18,7 @@ jobs:
     if: |
       github.repository == 'Becksteinlab/GromacsWrapper' &&
       (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/'))
-    name: "TestPyPi: Build, upload, and test pure Python wheels"
+    name: "TestPyPi: Build and upload pure Python wheels"
     runs-on: ubuntu-latest
 
     steps:
@@ -28,7 +28,7 @@ jobs:
         uses: MDAnalysis/pypi-deployment@main
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
         with:
-          test_submission: true
+          test_submission: false
           package_name: 'GromacsWrapper'
           module_name: 'gromacs'
 
@@ -41,7 +41,7 @@ jobs:
     if: |
       github.repository == 'Becksteinlab/GromacsWrapper' &&
       (github.event_name == 'release' && github.event.action == 'published')
-    name: "PyPi: Build, upload, and test pure Python wheels"
+    name: "PyPi: Build and upload pure Python wheels"
     runs-on: ubuntu-latest
 
     steps:
@@ -51,5 +51,6 @@ jobs:
         uses: MDAnalysis/pypi-deployment@main
         if: github.event_name == 'release' && github.event.action == 'published'
         with:
+          test_submission: false        
           package_name: 'GromacsWrapper'
           module_name: 'gromacs'
