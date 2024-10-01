@@ -100,10 +100,10 @@ jobs:
     - name: micromamba environment information
       run: |
          micromamba info
-         micromamba list
+         echo "DISABLED: issue #298: micromamba list"
          cat /proc/cpuinfo || (/usr/sbin/system_profiler SPHardwareDataType; /usr/sbin/sysctl -a | grep machdep.cpu)
-         micromamba list | grep gromacs | grep ${{ matrix.gromacs-version }}
-         micromamba list | grep python | grep ${{ matrix.python-version }}
+         echo "DISABLED: issue #298: micromamba list | grep gromacs | grep ${{ matrix.gromacs-version }}"
+         echo "DISABLED: issue #298: micromamba list | grep python | grep ${{ matrix.python-version }}"
 
     - name: Install package (with no dependencies)
       run: |
