@@ -79,7 +79,7 @@ jobs:
         fetch-tags: true
 
     - name: micromamba package and testing environment installation (Python ${{ matrix.python-version }}, GROMACS ${{ matrix.gromacs-version }})
-      uses: mamba-org/setup-micromamba@v1
+      uses: mamba-org/setup-micromamba@v2
       with:
         environment-file: ci/conda-envs/test_env.yaml
         condarc: |
