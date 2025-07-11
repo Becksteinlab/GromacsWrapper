@@ -110,7 +110,7 @@ Python_ >= 3.9 and GROMACS_ (4.6.x, 2016, 2018, 2019, 2020, 2021,
 System requirements
 -------------------
 
-Tested with Python 3.9--3.12 on Linux and Mac OS X. Earlier Python
+Tested with Python 3.9--3.13 on Linux and Mac OS X. Earlier Python
 versions were only supported until release 0.8.5.
 
 

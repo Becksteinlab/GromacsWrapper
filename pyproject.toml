@@ -26,6 +26,7 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",    
     "Topic :: Scientific/Engineering :: Bio-Informatics",
     "Topic :: Scientific/Engineering :: Chemistry",
     "Topic :: Software Development :: Libraries :: Python Modules"
@@ -45,7 +46,7 @@ bug-tracker = "https://github.com/Becksteinlab/GromacsWrapper/issues"
 
 
 [project.optional-dependencies]
-test = ["pytest", "pandas>=0.17"]
+test = ["pytest", "pytest-cov", "setuptools; python_version >= '3.12'", "pandas>=0.17"]
 
 
 [tool.setuptools]
