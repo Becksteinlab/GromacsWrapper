@@ -2,10 +2,12 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
-2025-07-??      0.9.2
+2025-07-11      0.9.2
 orbeckst
 
-* officially support Python 3.13
+* officially support Python 3.13 (PR #305)
+* fixed coverage reporting (#287)
+* updated automatic deployment workflow (PR #305)
 
 
 2024-09-18      0.9.1
