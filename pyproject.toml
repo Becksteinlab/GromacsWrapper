@@ -6,7 +6,8 @@ build-backend = "setuptools.build_meta"
 name = "GromacsWrapper"
 description = "A Python wrapper around the GROMACS tools."
 readme = "README.rst"
-license = { text = "GPL-3.0-or-later" }
+license = "GPL-3.0-or-later"
+license-files = ["COPYING"]
 authors = [
     { name = "Oliver Beckstein", email = "orbeckst@gmail.com" }
 ]
@@ -17,7 +18,6 @@ classifiers = [
     "Development Status :: 6 - Mature",
     "Environment :: Console",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: GNU General Public License (GPL)",
     "Operating System :: POSIX",
     "Operating System :: MacOS :: MacOS X",
     "Operating System :: Microsoft :: Windows",
