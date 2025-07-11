@@ -45,7 +45,7 @@ bug-tracker = "https://github.com/Becksteinlab/GromacsWrapper/issues"
 
 
 [project.optional-dependencies]
-testing = ["pytest", "pandas>=0.17"]
+test = ["pytest", "pandas>=0.17"]
 
 
 [tool.setuptools]
