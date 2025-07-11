@@ -1,4 +1,4 @@
-name: Build and upload to PyPi
+name: Build and Deploy Package
 
 on:
   push:
@@ -9,49 +9,193 @@ on:
       - published
 
 jobs:
-  test_pypi_push:
-    environment:
-      name: TestPyPi
-      url: https://test.pypi.org/p/GromacsWrapper
-    permissions:
-      id-token: write
+  build:
+    name: Build package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install build dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build twine
+
+      - name: Build package (binary wheel and source distribution package)
+        run: |
+          python -m build
+
+      - name: Check package
+        run: |
+          twine check dist/*
+
+      - name: Upload dist files
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-files
+          path: dist/
+          retention-days: 1
+
+  test-install:
+    name: Test package installation
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Download dist files
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-files
+          path: dist/
+
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          pip install dist/*.whl
+
+      - name: Test import
+        run: |
+          python -c "import gromacs; print('Package imported successfully')"
+
+  test-pytest:
+    name: Run tests
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Download dist files
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-files
+          path: dist/
+
+      - name: Install system dependencies (GROMACS)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gromacs
+
+      - name: Install package with test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          WHEEL_FILE=$(ls dist/*.whl)
+          pip install "$WHEEL_FILE"[test]
+
+      - name: Install sources with tests
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Run tests
+        run: |
+          pytest --verbose --disable-pytest-warnings --low-performance --color=yes ./tests/
+
+  deploy-testpypi:
+    name: Deploy to TestPyPI
+    runs-on: ubuntu-latest
+    needs: [build, test-install, test-pytest]
     if: |
       github.repository == 'Becksteinlab/GromacsWrapper' &&
       (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/'))
-    name: "TestPyPi: Build and upload pure Python wheels"
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: testpypi_deploy
-        uses: MDAnalysis/pypi-deployment@main
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
-        with:
-          test_submission: true
-          package_name: 'GromacsWrapper'
-          module_name: 'gromacs'
-          tests: false
-          
-  pypi_push:
     environment:
-      name: PyPi
-      url: https://pypi.org/p/GromacsWrapper
+      name: testpypi
+      url: https://test.pypi.org/p/GromacsWrapper
     permissions:
-      id-token: write
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
+    steps:
+      - name: Download dist files
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-files
+          path: dist/
+
+      - name: Publish to TestPyPI
+        uses: pypa/gh-action-pypi-publish@v1.12.4
+        with:
+          repository-url: https://test.pypi.org/legacy/
+
+  deploy-pypi:
+    name: Deploy to PyPI
+    runs-on: ubuntu-latest
+    needs: [build, test-install, test-pytest]
     if: |
       github.repository == 'Becksteinlab/GromacsWrapper' &&
       (github.event_name == 'release' && github.event.action == 'published')
-    name: "PyPi: Build and upload pure Python wheels"
-    runs-on: ubuntu-latest
-
+    environment:
+      name: pypi
+      url: https://pypi.org/p/GromacsWrapper
+    permissions:
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
     steps:
-      - uses: actions/checkout@v4
+      - name: Download dist files
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-files
+          path: dist/
 
-      - name: pypi_deploy
-        uses: MDAnalysis/pypi-deployment@main
-        if: github.event_name == 'release' && github.event.action == 'published'
-        with:        
-          package_name: 'GromacsWrapper'
-          module_name: 'gromacs'
-          tests: false
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@v1.12.4
+
+  test-deployed-testpypi:
+    name: Test deployed package (TestPyPI)
+    runs-on: ubuntu-latest
+    needs: deploy-testpypi
+    if: |
+      github.repository == 'Becksteinlab/GromacsWrapper' &&
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/'))
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install from TestPyPI
+        run: |
+          python -m pip install --upgrade pip
+          pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ GromacsWrapper[test]
+
+      - name: Test import
+        run: |
+          python -c "import gromacs; print('Package imported successfully from TestPyPI')"
+
+      - name: Run basic tests
+        run: |
+          python -c "import gromacs; print('Package version:', gromacs.__version__)"
+
+  test-deployed-pypi:
+    name: Test deployed package (PyPI)
+    runs-on: ubuntu-latest
+    needs: deploy-pypi
+    if: |
+      github.repository == 'Becksteinlab/GromacsWrapper' &&
+      (github.event_name == 'release' && github.event.action == 'published')
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install from PyPI
+        run: |
+          python -m pip install --upgrade pip
+          pip install GromacsWrapper[test]
+
+      - name: Test import
+        run: |
+          python -c "import gromacs; print('Package imported successfully from PyPI')"
+
+      - name: Run basic tests
+        run: |
+          python -c "import gromacs; print('Package version:', gromacs.__version__)"
