@@ -1,4 +1,3 @@
 include   COPYING README.rst CHANGES AUTHORS
 recursive-include scripts *.py
 graft     gromacs/templates/
-include gromacs/_version.py

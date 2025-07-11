@@ -178,7 +178,8 @@ import logging
 # __all__ is extended with all gromacs command instances later
 __all__ = ["config", "tools", "cbook", "fileformats"]
 
-from . import _version
+# Version is handled by versioningit
+from importlib.metadata import version
 
 #: Version of the package, following `semantic versioning`_ in the form
 #: MAJOR.MINOR.PATCH. When PATCH increases, bugs are fixed or documentation
@@ -193,8 +194,7 @@ from . import _version
 #: the commit ID encoded in the trailing string.
 #:
 #: .. _`semantic versioning`: https://semver.org/
-__version__ = _version.__version__
-del _version
+__version__ = version("GromacsWrapper")
 
 from . import fileformats
 from .exceptions import (
