@@ -114,6 +114,7 @@ Defined constants:
 .. autodata:: vdw_lipid_atom_radii
 
 """
+
 __docformat__ = "restructuredtext en"
 
 import os
@@ -143,7 +144,6 @@ from . import cbook
 from . import qsub
 from . import utilities
 from .utilities import in_dir, realpath, Timedelta, asiterable, firstof
-
 
 #: Concentration of water at standard conditions in mol/L.
 #: Density at 25 degrees C and 1 atmosphere pressure: rho = 997.0480 g/L.

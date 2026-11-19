@@ -20,6 +20,7 @@ simulations with Hamiltonian replicate exchange and partial tempering
 .. autofunction:: partial_tempering
 
 """
+
 import math
 import copy
 import logging

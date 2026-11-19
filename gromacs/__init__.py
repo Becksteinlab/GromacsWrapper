@@ -169,6 +169,7 @@ The package version is recorded in the :const:`gromacs.__version__` variable.
 .. autodata:: __version__
 
 """
+
 __docformat__ = "restructuredtext en"
 
 import os
@@ -210,7 +211,6 @@ from .exceptions import (
     UsageWarning,
     LowAccuracyWarning,
 )
-
 
 # Import configuration before anything else
 from . import config

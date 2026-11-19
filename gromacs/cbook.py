@@ -973,9 +973,7 @@ def edit_mdp(mdp, new_mdp=None, extend_parameters=None, **substitutions):
                        (?P<assignment>\s*{0!s}\s*=\s*)  # parameter == everything before the value
                        (?P<value>[^;]*)              # value (stop before comment=;)
                        (?P<comment>\s*;.*)?          # optional comment
-                       """.format(
-                demangled(parameter)
-            ),
+                       """.format(demangled(parameter)),
             re.VERBOSE,
         )
         for parameter in substitutions

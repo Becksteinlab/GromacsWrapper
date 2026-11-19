@@ -96,6 +96,7 @@ Helper functions
 .. autofunction:: find_gromacs_command
 
 """
+
 __docformat__ = "restructuredtext en"
 
 import warnings

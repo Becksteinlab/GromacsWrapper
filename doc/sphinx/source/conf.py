@@ -18,7 +18,6 @@ import datetime
 # https://sphinx-rtd-theme.readthedocs.io/en/stable/
 import sphinx_rtd_theme
 
-
 # If your extensions are in another directory, add it here. If the directory
 # is relative to the documentation root, use os.path.abspath to make it
 # absolute, like shown here.

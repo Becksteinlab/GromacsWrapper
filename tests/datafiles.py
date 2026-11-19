@@ -15,7 +15,6 @@ Basically, wheneever you need the path to the file, wrap the filename in ``dataf
 
 """
 
-
 import sys
 import os.path
 from importlib import resources
