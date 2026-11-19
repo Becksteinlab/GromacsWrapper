@@ -7,7 +7,6 @@ import pytest
 
 import gromacs
 
-
 common_tool_names = ["pdb2gmx", "grompp", "editconf", "mdrun"]
 aliased_tool_names = list(gromacs.tools.NAMES5TO4.values())
 

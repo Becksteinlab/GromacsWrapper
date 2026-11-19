@@ -66,9 +66,7 @@ Example     3
 [ molecules ]
 ; Compound        #mols
 Example	1
-""".format(
-        line=line
-    )
+""".format(line=line)
 
 
 @pytest.mark.parametrize("func_type", blocks.AngleFunctionType)

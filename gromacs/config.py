@@ -225,6 +225,7 @@ completely transparent to the user.
 .. autodata:: qscript_template
 
 """
+
 import os
 import logging
 import re
@@ -235,7 +236,6 @@ from configparser import ConfigParser
 from importlib import resources
 
 from . import utilities
-
 
 #: Default name of the global configuration file.
 CONFIGNAME = os.path.expanduser(os.path.join("~", ".gromacswrapper.cfg"))

@@ -17,7 +17,6 @@ dictionary.
    :members:
 """
 
-
 import os, errno
 import re
 import warnings

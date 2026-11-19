@@ -86,6 +86,7 @@ Data
 .. autodata:: amino_acid_codes
 
 """
+
 __docformat__ = "restructuredtext en"
 
 import os

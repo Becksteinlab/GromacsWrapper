@@ -98,6 +98,7 @@ Classes
 .. autoclass:: PopenWithInput
    :members:
 """
+
 __docformat__ = "restructuredtext en"
 
 import sys
