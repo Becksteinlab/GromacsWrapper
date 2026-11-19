@@ -47,6 +47,7 @@ bug-tracker = "https://github.com/Becksteinlab/GromacsWrapper/issues"
 
 [project.optional-dependencies]
 test = ["pytest", "pytest-cov", "setuptools; python_version >= '3.12'", "pandas>=0.17"]
+dev = ["black"]  # style checks via black CI (#313)
 
 
 [tool.setuptools]

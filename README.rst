@@ -145,7 +145,11 @@ and install ::
    pip install GromacsWrapper/
 
 Code contributions are welcome. We use `black`_ for uniform code
-formatting so please install black_ and run it on your code.
+formatting (CI runs ``black --check``). Please install black_ and
+run it on your code::
+
+   pip install -e ".[dev]"
+   black .
 
 .. _`black`: https://github.com/psf/black
 

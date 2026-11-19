@@ -2,6 +2,14 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
+2026-11-19
+orbeckst
+
+* removed obsolete pytest-pep8 from the CI test environment (it is
+  unmaintained and broke pytest collection); style checks are enforced
+  with the existing black CI workflow (#313)
+
+
 2025-07-11      0.9.2
 orbeckst
 
