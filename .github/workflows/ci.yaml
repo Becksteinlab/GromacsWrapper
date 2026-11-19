@@ -74,12 +74,12 @@ jobs:
 
     steps:
     - name: git checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
       with:
         fetch-tags: true
 
     - name: micromamba package and testing environment installation (Python ${{ matrix.python-version }}, GROMACS ${{ matrix.gromacs-version }})
-      uses: mamba-org/setup-micromamba@v2
+      uses: mamba-org/setup-micromamba@v3
       with:
         environment-file: ci/conda-envs/test_env.yaml
         condarc: |
@@ -126,7 +126,7 @@ jobs:
         coverage report --show-missing
 
     - name: Codecov
-      uses: codecov/codecov-action@v5
+      uses: codecov/codecov-action@v7
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}
