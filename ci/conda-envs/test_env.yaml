@@ -9,6 +9,8 @@ dependencies:
 - pandas>=0.17
 - pocl
 - setuptools
+# older bioconda gromacs (e.g. 2018.6) needs libxml2.so.2 but does not always pull it in
+- libxml2
 # dev tools
 - pytest
 - pytest-cov
