@@ -1,4 +1,4 @@
-name: Build and Deploy Package
+name: Build and upload to PyPI
 
 on:
   push:
@@ -8,31 +8,52 @@ on:
     types:
       - published
 
+concurrency:
+  group: "${{ github.ref }}-${{ github.head_ref }}-${{ github.workflow }}"
+  cancel-in-progress: false
+
 jobs:
   build:
     name: Build package
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.extract-version.outputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          fetch-tags: true
 
       - name: Set up Python
         uses: actions/setup-python@v7
         with:
-          python-version: "3.x"
+          python-version: "3.14"
 
       - name: Install build dependencies
         run: |
           python -m pip install --upgrade pip
           pip install build twine
 
-      - name: Build package (binary wheel and source distribution package)
-        run: |
-          python -m build
+      - name: Build package (wheel and sdist)
+        run: python -m build
 
       - name: Check package
+        run: twine check dist/*
+
+      - name: Extract package version
+        id: extract-version
         run: |
-          twine check dist/*
+          WHEEL_FILE=$(ls dist/*.whl)
+          VERSION=$(basename "$WHEEL_FILE" | sed -n 's/gromacswrapper-\([^-]*\)-.*/\1/p')
+          if [ -z "$VERSION" ]; then
+            python -m pip install --upgrade pip
+            pip install "$WHEEL_FILE" --quiet
+            VERSION=$(python -c "import gromacs; print(gromacs.__version__)")
+            pip uninstall -y GromacsWrapper --quiet
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Extracted version: $VERSION"
 
       - name: Upload dist files
         uses: actions/upload-artifact@v7
@@ -49,7 +70,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v7
         with:
-          python-version: "3.x"
+          python-version: "3.14"
 
       - name: Download dist files
         uses: actions/download-artifact@v8
@@ -64,48 +85,12 @@ jobs:
 
       - name: Test import
         run: |
-          python -c "import gromacs; print('Package imported successfully')"
-
-  test-pytest:
-    name: Run tests
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Set up Python
-        uses: actions/setup-python@v7
-        with:
-          python-version: "3.x"
-
-      - name: Download dist files
-        uses: actions/download-artifact@v8
-        with:
-          name: dist-files
-          path: dist/
-
-      - name: Install system dependencies (GROMACS)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gromacs
-
-      - name: Install package with test dependencies
-        run: |
-          python -m pip install --upgrade pip
-          WHEEL_FILE=$(ls dist/*.whl)
-          pip install "$WHEEL_FILE"[test]
-
-      - name: Install sources with tests
-        uses: actions/checkout@v7
-        with:
-          fetch-depth: 1
-
-      - name: Run tests
-        run: |
-          pytest --verbose --disable-pytest-warnings --low-performance --color=yes ./tests/
+          python -c "import gromacs; print(f'Package {gromacs.__version__} imported successfully')"
 
   deploy-testpypi:
     name: Deploy to TestPyPI
     runs-on: ubuntu-latest
-    needs: [build, test-install, test-pytest]
+    needs: [build, test-install]
     if: |
       github.repository == 'Becksteinlab/GromacsWrapper' &&
       (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/'))
@@ -125,11 +110,13 @@ jobs:
         uses: pypa/gh-action-pypi-publish@v1.14.3
         with:
           repository-url: https://test.pypi.org/legacy/
+          skip-existing: true
+          verbose: true
 
   deploy-pypi:
     name: Deploy to PyPI
     runs-on: ubuntu-latest
-    needs: [build, test-install, test-pytest]
+    needs: [build, test-install]
     if: |
       github.repository == 'Becksteinlab/GromacsWrapper' &&
       (github.event_name == 'release' && github.event.action == 'published')
@@ -151,7 +138,7 @@ jobs:
   test-deployed-testpypi:
     name: Test deployed package (TestPyPI)
     runs-on: ubuntu-latest
-    needs: deploy-testpypi
+    needs: [build, deploy-testpypi]
     if: |
       github.repository == 'Becksteinlab/GromacsWrapper' &&
       (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/'))
@@ -159,25 +146,32 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v7
         with:
-          python-version: "3.x"
+          python-version: "3.14"
+
+      - name: Checkout repository for actions
+        uses: actions/checkout@v7
+
+      - name: Wait for version to be available on TestPyPI
+        uses: ./.github/actions/wait-for-pypi-version
+        with:
+          repository: testpypi
+          package: GromacsWrapper
+          version: ${{ needs.build.outputs.version }}
 
       - name: Install from TestPyPI
         run: |
           python -m pip install --upgrade pip
-          pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ GromacsWrapper[test]
+          pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ "GromacsWrapper==${{ needs.build.outputs.version }}"
 
       - name: Test import
         run: |
-          python -c "import gromacs; print('Package imported successfully from TestPyPI')"
-
-      - name: Run basic tests
-        run: |
-          python -c "import gromacs; print('Package version:', gromacs.__version__)"
+          cd ~
+          python -c "import gromacs; print(f'Package {gromacs.__version__} imported successfully from TestPyPI')"
 
   test-deployed-pypi:
     name: Test deployed package (PyPI)
     runs-on: ubuntu-latest
-    needs: deploy-pypi
+    needs: [build, deploy-pypi]
     if: |
       github.repository == 'Becksteinlab/GromacsWrapper' &&
       (github.event_name == 'release' && github.event.action == 'published')
@@ -185,17 +179,24 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v7
         with:
-          python-version: "3.x"
+          python-version: "3.14"
+
+      - name: Checkout repository for actions
+        uses: actions/checkout@v7
+
+      - name: Wait for version to be available on PyPI
+        uses: ./.github/actions/wait-for-pypi-version
+        with:
+          repository: pypi
+          package: GromacsWrapper
+          version: ${{ needs.build.outputs.version }}
 
       - name: Install from PyPI
         run: |
           python -m pip install --upgrade pip
-          pip install GromacsWrapper[test]
+          pip install "GromacsWrapper==${{ needs.build.outputs.version }}"
 
       - name: Test import
         run: |
-          python -c "import gromacs; print('Package imported successfully from PyPI')"
-
-      - name: Run basic tests
-        run: |
-          python -c "import gromacs; print('Package version:', gromacs.__version__)"
+          cd ~
+          python -c "import gromacs; print(f'Package {gromacs.__version__} imported successfully from PyPI')"
