@@ -37,9 +37,6 @@ jobs:
             gromacs-version: "4.6.5"
           - os: ubuntu-latest
             python-version: "3.11"
-            gromacs-version: "2018.6"
-          - os: ubuntu-latest
-            python-version: "3.11"
             gromacs-version: "2019.6"
           - os: ubuntu-latest
             python-version: "3.11"
