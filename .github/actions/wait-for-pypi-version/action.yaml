@@ -1,0 +1,93 @@
+name: 'Wait for PyPI version'
+description: 'Wait for a specific package version to become available on PyPI or TestPyPI'
+inputs:
+  repository:
+    description: 'PyPI repository type: "pypi" or "testpypi"'
+    required: true
+  package:
+    description: 'Package name'
+    required: true
+  version:
+    description: 'Package version to wait for'
+    required: true
+  max_attempts:
+    description: 'Maximum number of retry attempts'
+    required: false
+    default: '30'
+  wait_seconds:
+    description: 'Seconds to wait between attempts'
+    required: false
+    default: '10'
+
+runs:
+  using: composite
+  steps:
+    - name: Install requests
+      shell: bash
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests
+
+    - name: Wait for version to be available
+      shell: python
+      env:
+        REPOSITORY: ${{ inputs.repository }}
+        PACKAGE: ${{ inputs.package }}
+        VERSION: ${{ inputs.version }}
+        MAX_ATTEMPTS: ${{ inputs.max_attempts }}
+        WAIT_SECONDS: ${{ inputs.wait_seconds }}
+      run: |
+        import os
+        import sys
+        import time
+
+        import requests
+
+        repository = os.environ["REPOSITORY"].strip().lower()
+        package = os.environ["PACKAGE"]
+        version = os.environ["VERSION"]
+        max_attempts = int(os.environ.get("MAX_ATTEMPTS", "30"))
+        wait_seconds = int(os.environ.get("WAIT_SECONDS", "10"))
+
+        if repository == "testpypi":
+            api_url = f"https://test.pypi.org/pypi/{package}/json"
+            repo_name = "TestPyPI"
+        elif repository == "pypi":
+            api_url = f"https://pypi.org/pypi/{package}/json"
+            repo_name = "PyPI"
+        else:
+            print(
+                f"ERROR: repository must be 'pypi' or 'testpypi', got {repository!r}",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+
+        for attempt in range(max_attempts):
+            try:
+                r = requests.get(api_url, timeout=10)
+                r.raise_for_status()
+                data = r.json()
+                versions = data.get("releases", {})
+                keys = list(versions.keys())
+                print("Available versions:", keys[-10:])  # Show last 10 versions
+                if version in versions:
+                    print(f"✓ Version {version} is available on {repo_name}")
+                    print(f"Version {version} is now available on {repo_name}")
+                    sys.exit(0)
+                print(f"✗ Version {version} is NOT available on {repo_name}")
+            except Exception as e:
+                print(f"Error checking version: {e}")
+
+            current = attempt + 1
+            print(
+                f"Attempt {current}/{max_attempts}: Version {version} not yet available "
+                f"on {repo_name}, waiting {wait_seconds} seconds..."
+            )
+            time.sleep(wait_seconds)
+
+        print(
+            f"ERROR: Version {version} did not become available on {repo_name} "
+            f"after {max_attempts} attempts",
+            file=sys.stderr,
+        )
+        sys.exit(1)
