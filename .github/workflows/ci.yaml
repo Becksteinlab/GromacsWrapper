@@ -49,7 +49,7 @@ jobs:
             gromacs-version: "2025.4"
           - os: ubuntu-latest
             python-version: "3.11"
-            gromacs-version: "2026.3"                        
+            gromacs-version: "2026.3"
           # explicitly include a few macOS runners; finding a version that works
           # on the GH runners is tricky (eg some are compiled for rdtscp CPU instructions
           # that are not available); 2018.6 (bioconda) worked for a while, but then stopped

@@ -230,7 +230,11 @@ class TopologyTest(object):
             df3 = rerun_energy(tpr, reference_trr, prefix="scaled", nt=nt)
             # print(df1, df1.columns)
             # print(df3, df3.columns)
-            unscaled_terms = ["Time (ps)", "Improper Dih."]
+            # GROMACS >= 2022 may omit Improper Dih. from energy output for these
+            # AMBER topologies (see issue #236); only compare terms that exist.
+            unscaled_terms = ["Time (ps)"]
+            if "Improper Dih." in df1.columns and "Improper Dih." in df3.columns:
+                unscaled_terms.append("Improper Dih.")
             scaled_terms = ["Proper Dih."]
 
             assert_frame_equal(
