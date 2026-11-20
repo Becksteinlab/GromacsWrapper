@@ -11,7 +11,7 @@
 
 A primitive Python wrapper around the Gromacs_ tools. The library is
 tested with GROMACS 4.6.5, 2019.x, 2022.x, 2024.x, 2025.x, 2026.x (and
-5.x and 2016.x should also work). It supports Python 3.9--3.13 on Linux
+5.x and 2016.x should also work). It supports Python 3.9--3.14 on Linux
 and macOS.
 
 GromacsWrapper also provides a small library (cook book) of often-used

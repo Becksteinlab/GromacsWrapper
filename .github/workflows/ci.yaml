@@ -26,7 +26,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
         gromacs-version: ["2023.1"]
         # Test other GROMACS versions selectively on a recent Python.
         # On macOS only test one GROMACS version and two Python versions
