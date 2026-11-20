@@ -37,25 +37,19 @@ jobs:
             gromacs-version: "4.6.5"
           - os: ubuntu-latest
             python-version: "3.11"
-            gromacs-version: "2018.6"
-          - os: ubuntu-latest
-            python-version: "3.11"
-            gromacs-version: "2019.1"
-          - os: ubuntu-latest
-            python-version: "3.11"
-            gromacs-version: "2020.6"
-          - os: ubuntu-latest
-            python-version: "3.11"
-            gromacs-version: "2021.1"       
+            gromacs-version: "2019.6"
           - os: ubuntu-latest
             python-version: "3.11"
             gromacs-version: "2022.4"
           - os: ubuntu-latest
             python-version: "3.11"
-            gromacs-version: "2023.4"       
+            gromacs-version: "2024.2"
           - os: ubuntu-latest
             python-version: "3.11"
-            gromacs-version: "2024.2"
+            gromacs-version: "2025.4"
+          - os: ubuntu-latest
+            python-version: "3.11"
+            gromacs-version: "2026.3"
           # explicitly include a few macOS runners; finding a version that works
           # on the GH runners is tricky (eg some are compiled for rdtscp CPU instructions
           # that are not available); 2018.6 (bioconda) worked for a while, but then stopped
@@ -74,12 +68,12 @@ jobs:
 
     steps:
     - name: git checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
       with:
         fetch-tags: true
 
     - name: micromamba package and testing environment installation (Python ${{ matrix.python-version }}, GROMACS ${{ matrix.gromacs-version }})
-      uses: mamba-org/setup-micromamba@v2
+      uses: mamba-org/setup-micromamba@v3
       with:
         environment-file: ci/conda-envs/test_env.yaml
         condarc: |
@@ -126,7 +120,7 @@ jobs:
         coverage report --show-missing
 
     - name: Codecov
-      uses: codecov/codecov-action@v5
+      uses: codecov/codecov-action@v7
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}
