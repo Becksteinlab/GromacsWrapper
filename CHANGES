@@ -2,9 +2,10 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
-2026-11-19
+2026-11-20
 orbeckst
 
+* officially support Python 3.14
 * removed obsolete pytest-pep8 from the CI test environment (it is
   unmaintained and broke pytest collection); style checks are enforced
   with the existing black CI workflow (#313)
