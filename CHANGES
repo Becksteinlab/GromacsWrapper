@@ -2,7 +2,7 @@
  CHANGELOG for GromacsWrapper
 ==============================
 
-2026-11-20
+2026-11-20      0.9.3
 orbeckst
 
 * officially support Python 3.14
@@ -12,6 +12,7 @@ orbeckst
 * fixed topology mdrun tests for GROMACS >= 2022 when Improper Dih.
   energy terms are absent (issue #236) and recognized GROMACS 2025/2026
   in release tests
+* updated automatic deployment workflow (PR #318)
 
 
 2025-07-11      0.9.2
